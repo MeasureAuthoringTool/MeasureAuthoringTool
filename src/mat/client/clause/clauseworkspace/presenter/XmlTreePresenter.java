@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -53,8 +54,10 @@ public class XmlTreePresenter {
 	 */
 	private static final int NODESIZE = 500;
 	
+	/** The is specific occ. */
 	boolean isSpecificOcc = false;
 	
+	/** The current selected clause. */
 	String currentSelectedClause = null;
 	
 	/** The is unsaved data. */
@@ -218,60 +221,84 @@ public class XmlTreePresenter {
 	 */
 	private void addClauseHandler() {
 		
-		xmlTreeDisplay.getClauseNamesListBox().addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				System.out.println("listbox change event caught in XmlTreePresenter:"+event.getAssociatedType().getName());
-				int selectedIndex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
-				String selectedItemUUID = xmlTreeDisplay.getClauseNamesListBox().getValue(selectedIndex);
-				String selectedItemName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedIndex);
-				String measureId = MatContext.get().getCurrentMeasureId();
-				CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
-						.getXmlTree().getRootTreeNode().getChildValue(0));
-				boolean checkIfUsedInLogic = true;
-				// Disable Show Clause Button for Occurrence CLauses.
-				xmlTreeDisplay.getShowClauseButton().setEnabled(true);
-				
-				Node node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(selectedItemName + "~" + selectedItemUUID);
-				NamedNodeMap namedNodeMap = node.getAttributes();
-				if (namedNodeMap.getNamedItem("instance") != null) {
-					xmlTreeDisplay.getShowClauseButton().setEnabled(false);
-				}
-				if(!MatContext.get().getMeasureLockService().checkForEditPermission()){
-					//If the measure is Read Only, the disable the Delete Clause button.
-					xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
-					checkIfUsedInLogic = false;
-				}else if(cellTreeNode.getChilds().size() > 0){
-					CellTreeNode childNode = cellTreeNode.getChilds().get(0);
-					String nodeName = childNode.getName();
-					if (nodeName.equals(selectedItemName)) {
-						System.out.println("The clause is already being displayed on the LHS tree. Disable Delete Clause button now.");
-						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
-						checkIfUsedInLogic = false;
+		xmlTreeDisplay.getClauseNamesListBox().addChangeHandler(
+				new ChangeHandler() {
+
+					@Override
+					public void onChange(ChangeEvent event) {
+						System.out
+								.println("listbox change event caught in XmlTreePresenter:"
+										+ event.getAssociatedType().getName());
+						int selectedIndex = xmlTreeDisplay
+								.getClauseNamesListBox().getSelectedIndex();
+						String selectedItemUUID = xmlTreeDisplay
+								.getClauseNamesListBox()
+								.getValue(selectedIndex);
+						String selectedItemName = xmlTreeDisplay
+								.getClauseNamesListBox().getItemText(
+										selectedIndex);
+						String measureId = MatContext.get()
+								.getCurrentMeasureId();
+						CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+								.getXmlTree().getRootTreeNode()
+								.getChildValue(0));
+						boolean checkIfUsedInLogic = true;
+						// Disable Show Clause Button for Occurrence CLauses.
+						xmlTreeDisplay.getShowClauseButton().setEnabled(true);
+						
+							Node node = PopulationWorkSpaceConstants
+									.getSubTreeLookUpNode().get(
+											selectedItemName + "~"
+													+ selectedItemUUID);
+							NamedNodeMap namedNodeMap = node.getAttributes();
+							if (namedNodeMap.getNamedItem("instance") != null) {
+								xmlTreeDisplay.getShowClauseButton()
+										.setEnabled(false);
+							}
+						
+						if (!MatContext.get().getMeasureLockService()
+								.checkForEditPermission()) {
+							// If the measure is Read Only, the disable the
+							// Delete Clause button.
+							xmlTreeDisplay.getDeleteClauseButton().setEnabled(
+									false);
+							checkIfUsedInLogic = false;
+						} else if (cellTreeNode.getChilds().size() > 0) {
+							CellTreeNode childNode = cellTreeNode.getChilds()
+									.get(0);
+							String nodeName = childNode.getName();
+							if (nodeName.equals(selectedItemName)) {
+								System.out
+										.println("The clause is already being displayed on the LHS tree. Disable Delete Clause button now.");
+								xmlTreeDisplay.getDeleteClauseButton()
+										.setEnabled(false);
+								checkIfUsedInLogic = false;
+							}
+						}
+
+						if (checkIfUsedInLogic) {
+							service.isSubTreeReferredInLogic(measureId,
+									selectedItemUUID,
+									new AsyncCallback<Boolean>() {
+
+										@Override
+										public void onFailure(Throwable caught) {
+											// TODO Auto-generated method stub
+
+										}
+
+										@Override
+										public void onSuccess(Boolean result) {
+											xmlTreeDisplay
+													.getDeleteClauseButton()
+													.setEnabled(!result);
+										}
+									});
+
+						}
 					}
-				}
-				
-				if(checkIfUsedInLogic){
-					service.isSubTreeReferredInLogic(measureId, selectedItemUUID, new AsyncCallback<Boolean>() {
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
-						
-						@Override
-						public void onSuccess(Boolean result) {
-							xmlTreeDisplay.getDeleteClauseButton().setEnabled(!result);
-						}
-					});
-					
-					
-				}
-			}
-			
-		});
+
+				});
 		
 		
 		xmlTreeDisplay.getShowClauseButton().addClickHandler(new ClickHandler() {
@@ -366,7 +393,7 @@ public class XmlTreePresenter {
 						@Override
 						public void onSuccess(MeasureXmlModel result) {
 							setOriginalXML(result.getXml());
-							updateSubTreeElementsMap(getOriginalXML());
+							updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
 							if (xmlTreeDisplay != null) {
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
@@ -523,8 +550,8 @@ public class XmlTreePresenter {
 								.getSuccessMessageDisplay()
 								.setMessage(
 										"Changes are successfully saved.");
-								setOriginalXML(result.getXml());
-								updateSubTreeElementsMap(getOriginalXML());
+								setOriginalXML(result.getXml());								
+								updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
 								System.out.println("originalXML is:"
@@ -646,14 +673,17 @@ public class XmlTreePresenter {
 			}
 		});
 	}
+	
 	/**
 	 * Method to Reterive SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
 	 * Also it retrieves Name and UUID and put it in subTreeNodeName map for display.
+	 *
 	 * @param xml - String.
+	 * @param orderedClauseMap the ordered clause map
 	 */
-	protected void updateSubTreeElementsMap(String xml) {
+	protected void updateSubTreeElementsMap(String xml, LinkedHashMap<String, String> orderedClauseMap) {
 		if(PopulationWorkSpaceConstants.subTreeLookUpName == null){
-			PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
+			PopulationWorkSpaceConstants.subTreeLookUpName = new LinkedHashMap<String, String>();
 		}
 		if(PopulationWorkSpaceConstants.subTreeLookUpNode == null){
 			PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, com.google.gwt.xml.client.Node>();
@@ -674,8 +704,10 @@ public class XmlTreePresenter {
 					PopulationWorkSpaceConstants.subTreeLookUpNode.remove(subTreeLookUpNode);
 				}
 				PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, nodeList.item(i));
-				PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+				//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
 			}
+			PopulationWorkSpaceConstants.subTreeLookUpName.clear();
+			PopulationWorkSpaceConstants.subTreeLookUpName.putAll(orderedClauseMap);
 		}
 		System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName:"+PopulationWorkSpaceConstants.subTreeLookUpName);
 	}
@@ -904,7 +936,9 @@ public class XmlTreePresenter {
 	}
 	
 	/**
-	 * @param clauseUUID
+	 * Enable disable qdm variable check box.
+	 *
+	 * @param clauseUUID the clause uuid
 	 */
 	private void enableDisableQDMVariableCheckBox(final String clauseUUID) {
 		xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(true);

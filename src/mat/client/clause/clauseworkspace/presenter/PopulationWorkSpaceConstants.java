@@ -2,8 +2,10 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.google.gwt.xml.client.Node;
 
 // TODO: Auto-generated Javadoc
@@ -91,10 +93,19 @@ public class PopulationWorkSpaceConstants {
 	public static Map<String, Node> elementLookUpNode;
 	
 	/** The element look up name. */
-	public static Map<String, String> subTreeLookUpName;
+	public static LinkedHashMap<String, String> subTreeLookUpName;
 	/** The element look up node. */
 	public static Map<String, Node> subTreeLookUpNode;
 	
+	/**
+	 * Sets the sub tree look up node.
+	 *
+	 * @param subTreeLookUpNode the sub tree look up node
+	 */
+	public static void setSubTreeLookUpNode(Map<String, Node> subTreeLookUpNode) {
+		PopulationWorkSpaceConstants.subTreeLookUpNode = subTreeLookUpNode;
+	}
+
 	/** The Constant ELEMENT_REF. */
 	public static final String ELEMENT_REF = "elementRef";
 	
@@ -172,6 +183,7 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant CLAUSE_QDM_VARIABLE. */
 	public static final String CLAUSE_QDM_VARIABLE = "qdmVariable";
 	
+	/** The datatype map. */
 	public static Map<String, List<String>> datatypeMap;
 	
 	static {
@@ -256,6 +268,8 @@ public class PopulationWorkSpaceConstants {
 	}
 	
 	/**
+	 * Gets the element look up data type name.
+	 *
 	 * @return the elementLookUpDataTypeName
 	 */
 	public static Map<String, String> getElementLookUpDataTypeName() {
@@ -317,12 +331,19 @@ public class PopulationWorkSpaceConstants {
 	}
 	
 	/**
+	 * Gets the datatype map.
+	 *
 	 * @return the datatypeMap
 	 */
 	public static Map<String, List<String>> getDatatypeMap() {
 		return datatypeMap;
 	}
 	
+	/**
+	 * Sets the datatype map.
+	 *
+	 * @param datatypeMap the datatype map
+	 */
 	public static  void setDatatypeMap(Map<String, List<String>> datatypeMap) {
 		PopulationWorkSpaceConstants.datatypeMap = datatypeMap;
 	}

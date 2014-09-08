@@ -1,9 +1,12 @@
 package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -13,6 +16,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -38,6 +42,8 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	/**
@@ -80,7 +86,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				@Override
 				public void onSuccess(MeasureXmlModel result) {
 					String xml = result != null ? result.getXml() : null;
-					setQdmElementsAndSubTreeLookUpMap(xml);
+					setQdmElementsAndSubTreeLookUpMap(xml, result.getClauseMap());
 					loadClauseWorkSpaceView(simplepanel);
 				}
 				@Override
@@ -91,20 +97,22 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 			});
 		}
 	}
+	
 	/**
 	 * Sets the qdm elements map also  reterives SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
-	 * 
-	 * @param xml
-	 *            the new qdm elements map
+	 *
+	 * @param xml            the new qdm elements map
+	 * @param sortedClauseMap the sorted clause map
 	 */
-	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
+	private void setQdmElementsAndSubTreeLookUpMap(String xml, LinkedHashMap<String, String> sortedClauseMap) {		
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
-		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
+		PopulationWorkSpaceConstants.subTreeLookUpName = new LinkedHashMap<String, String>();
 		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
 		PopulationWorkSpaceConstants.elementLookUpDataTypeName = new TreeMap<String, String>();
-		Document document = XMLParser.parse(xml);
-		NodeList nodeList = document.getElementsByTagName("elementLookUp");
+		Document document = XMLParser.parse(xml);	
+			
+		NodeList nodeList = document.getElementsByTagName("elementLookUp");		
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
 			NodeList qdms = nodeList.item(0).getChildNodes();
 			for (int i = 0; i < qdms.getLength(); i++) {
@@ -113,6 +121,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
 					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
+						
 						// Prod Issue fixed : qdm name has trailing spaces which is reterived frm VSAC.
 						//So QDM attribute dialog box is throwing error in FF.
 						//To fix that spaces are removed from start and end.
@@ -133,12 +142,14 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				}
 			}
 		}
+		
 		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
 		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
-			NodeList subTree = subTreesNodeList.item(0).getChildNodes();
+			NodeList subTree = subTreesNodeList.item(0).getChildNodes();			
 			for (int i = 0; i < subTree.getLength(); i++) {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
+					
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
 					if (namedNodeMap.getNamedItem("instance") != null) {
 						String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString() + " of";
@@ -149,9 +160,11 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 					//name = name.replaceAll("^\\s+|\\s+$", "");
 					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 					PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, subTree.item(i));
-					PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+					//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
 				}
-			}
+			}			
+			//PopulationWorkSpaceConstants.subTreeLookUpName.clear();
+			PopulationWorkSpaceConstants.subTreeLookUpName.putAll(sortedClauseMap);
 		}
 		
 		List<String> dataTypeList = new ArrayList<String>();

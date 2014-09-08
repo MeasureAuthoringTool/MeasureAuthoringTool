@@ -1,12 +1,11 @@
 package mat.client.clause.clauseworkspace.view;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -25,7 +24,9 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -284,8 +285,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The is valid. */
 	private boolean isValid = false;
 	
+	/** The is valid human readable. */
 	private boolean isValidHumanReadable = false;
+	
+	/** The is date time diff not in mo. */
 	boolean isDateTimeDiffNotInMO = false;
+	
+	/** The is sub tree logic valid in population work space. */
 	boolean isSubTreeLogicValidInPopulationWorkSpace = true;
 	/** The Constant MEASURE_OBSERVATIONS. */
 	private static final String MEASURE_OBSERVATIONS = "Measure Observations";
@@ -649,13 +655,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if(subTreeNameListBox != null){
 			subTreeNameListBox.clear();
 			List<Entry<String,String>> subTreeNameEntries = new LinkedList<Map.Entry<String,String>>(PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
-			Collections.sort(subTreeNameEntries, new Comparator<Entry<String, String>>() {
+			/*Collections.sort(subTreeNameEntries, new Comparator<Entry<String, String>>() {
 				@Override
 				public int compare(Entry<String, String> o1,
 						Entry<String, String> o2) {
 					return o1.getValue().compareTo(o2.getValue());
 				}
-			});
+			});*/
 			
 			for(Entry<String, String> entry:subTreeNameEntries){
 				subTreeNameListBox.addItem(entry.getValue(),entry.getKey());
@@ -1790,6 +1796,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		openAllNodes(getXmlTree().getRootTreeNode());
 		return inValidNodeAtPopulationWorkspace;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validatePopulationCellTreeNodes(mat.client.clause.clauseworkspace.model.CellTreeNode)
+	 */
 	@Override
 	public List<String> validatePopulationCellTreeNodes(CellTreeNode cellNode) {
 		List<String> inValidNodeAtPopulationWorkspace = new ArrayList<String>();
@@ -2017,6 +2027,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Validate clause workspace cell tree nodes.
 	 *
 	 * @param treeNode the tree node
+	 * @param isValidateButtonClicked the is validate button clicked
 	 */
 	private void validateClauseWorkspaceCellTreeNodes(final TreeNode treeNode , final boolean isValidateButtonClicked) {
 		List<String> inValidNodeList = new ArrayList<String>();
@@ -2608,6 +2619,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Checks if is valid human readable.
+	 *
 	 * @return the isValidHumanReadable
 	 */
 	@Override
@@ -2616,6 +2629,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Sets the valid human readable.
+	 *
 	 * @param isValidHumanReadable the isValidHumanReadable to set
 	 */
 	public void setValidHumanReadable(boolean isValidHumanReadable) {

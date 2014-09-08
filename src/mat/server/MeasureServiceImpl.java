@@ -1,8 +1,10 @@
 package mat.server;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -345,7 +347,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel , String nodeName, String nodeUUID) {
+	public SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel , String nodeName, String nodeUUID) {
 		return this.getMeasureLibraryService().saveSubTreeInMeasureXml(measureXmlModel , nodeName, nodeUUID);
 	}
 	
@@ -437,15 +439,29 @@ MeasureService {
 		return this.getMeasureLibraryService().getAllAuthors();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveSubTreeOccurrence(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
+	public SortedClauseMapResult saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
 		return this.getMeasureLibraryService().saveSubTreeOccurrence(measureXmlModel, nodeName, nodeUUID);
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#isQDMVariableEnabled(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean isQDMVariableEnabled(String measureId, String subTreeUUID) {
 		return this.getMeasureLibraryService().isQDMVariableEnabled(measureId, subTreeUUID);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getSortedClauseMap(java.lang.String)
+	 */
+	@Override
+	public LinkedHashMap<String, String> getSortedClauseMap(String measureId) {		
+		return this.getMeasureLibraryService().getSortedClauseMap(measureId);
 	}
 	
 }

@@ -3,13 +3,16 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
@@ -176,7 +179,6 @@ public class XmlTreePresenter {
 		Mat.focusSkipLists("MeasureComposer");
 		
 	}
-	
 	/**
 	 * Method to create Clause Work space View.
 	 * @param clauseWorkSpacePanel - SimplePanel.
@@ -372,7 +374,6 @@ public class XmlTreePresenter {
 	 * 
 	 * **/
 	public XmlTreePresenter() {
-		
 		MatContext.get().getEventBus().addHandler(ClauseSpecificOccurenceEvent.TYPE, new ClauseSpecificOccurenceEvent.Handler() {
 			@Override
 			public void onSave(ClauseSpecificOccurenceEvent event) {
@@ -385,14 +386,14 @@ public class XmlTreePresenter {
 				event.setOccurrenceCreated(false);
 				if (isSpecificOcc) {
 					service.saveSubTreeOccurrence(measureXmlModel,
-							nodeName, nodeUUID, new AsyncCallback<MeasureXmlModel>() {
+							nodeName, nodeUUID, new AsyncCallback<SortedClauseMapResult>() {
 						@Override
 						public void onFailure(Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 						@Override
-						public void onSuccess(MeasureXmlModel result) {
-							setOriginalXML(result.getXml());
+						public void onSuccess(SortedClauseMapResult result) {
+							setOriginalXML(result.getMeasureXmlModel().getXml());							
 							updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
 							if (xmlTreeDisplay != null) {
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
@@ -539,18 +540,18 @@ public class XmlTreePresenter {
 						
 						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
 						service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
-								new AsyncCallback<MeasureXmlModel>() {
+								new AsyncCallback<SortedClauseMapResult>() {
 							@Override
 							public void onFailure(final Throwable caught) {
 							}
 							@Override
-							public void onSuccess(MeasureXmlModel result) {
+							public void onSuccess(SortedClauseMapResult result) {
 								xmlTreeDisplay.getWarningMessageDisplay().clear();
 								xmlTreeDisplay
 								.getSuccessMessageDisplay()
 								.setMessage(
-										"Changes are successfully saved.");
-								setOriginalXML(result.getXml());								
+										"Changes are successfully saved.");								
+								setOriginalXML(result.getMeasureXmlModel().getXml());								
 								updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
@@ -679,37 +680,48 @@ public class XmlTreePresenter {
 	 * Also it retrieves Name and UUID and put it in subTreeNodeName map for display.
 	 *
 	 * @param xml - String.
-	 * @param orderedClauseMap the ordered clause map
+	 * @param sortedClauseMap the sorted clause map
 	 */
-	protected void updateSubTreeElementsMap(String xml, LinkedHashMap<String, String> orderedClauseMap) {
+	protected void updateSubTreeElementsMap(String xml, LinkedHashMap<String, String> sortedClauseMap) {
+		
 		if(PopulationWorkSpaceConstants.subTreeLookUpName == null){
 			PopulationWorkSpaceConstants.subTreeLookUpName = new LinkedHashMap<String, String>();
 		}
 		if(PopulationWorkSpaceConstants.subTreeLookUpNode == null){
-			PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, com.google.gwt.xml.client.Node>();
+			PopulationWorkSpaceConstants.subTreeLookUpNode = new LinkedHashMap<String, Node>();
 		}
+		PopulationWorkSpaceConstants.subTreeLookUpName = sortedClauseMap;
 		Document document = XMLParser.parse(xml);
+		
+		List<Entry<String, String>> sortedClauses = new LinkedList<Map.Entry<String, String>>(
+				PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
+		for (Entry<String, String> entry1 : sortedClauses) {
 		NodeList nodeList = document.getElementsByTagName("subTree");
 		if ((nodeList != null) && (nodeList.getLength() > 0)) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
 				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
-				if(namedNodeMap.getNamedItem("instance")!=null){
+				/*if(namedNodeMap.getNamedItem("instance")!=null){
 					String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
 					name = occurrText + " of " + name;
-				}
+				}*/
 				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 				String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
 				if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){
 					PopulationWorkSpaceConstants.subTreeLookUpNode.remove(subTreeLookUpNode);
 				}
-				PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, nodeList.item(i));
+				if(uuid.equalsIgnoreCase(entry1.getKey())){
+					PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), nodeList.item(i));
+					break;
+				}
 				//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
 			}
-			PopulationWorkSpaceConstants.subTreeLookUpName.clear();
-			PopulationWorkSpaceConstants.subTreeLookUpName.putAll(orderedClauseMap);
+			//PopulationWorkSpaceConstants.subTreeLookUpName.clear();
+			//PopulationWorkSpaceConstants.subTreeLookUpName.putAll(orderedClauseMap);
+		
 		}
-		System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName:"+PopulationWorkSpaceConstants.subTreeLookUpName);
+		
+	}
 	}
 	/**
 	 * Invoke validate handler on population workspace.

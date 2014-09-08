@@ -2,9 +2,11 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
@@ -138,7 +140,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							populationClausePresenter.setOriginalXML(newXML);
 							measureObsClausePresenter.setOriginalXML(newXML);
 							stratificationClausePresenter.setOriginalXML(newXML);
-							setQdmElementsAndSubTreeLookUpMap(xml, result.getClauseMap());
+							setQdmElementsAndSubTreeLookUpMap(xml, result.getMeasureId());
 							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
 						} else {
@@ -184,14 +186,16 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	 * Sets the qdm elements map also  reterives SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
 	 *
 	 * @param xml            the new qdm elements map
-	 * @param sortedClauseMap the sorted clause map
+	 * @param measureId the measure id
 	 */
-	private void setQdmElementsAndSubTreeLookUpMap(String xml, LinkedHashMap<String, String> sortedClauseMap) {
+	private void setQdmElementsAndSubTreeLookUpMap(String xml, String measureId) {
+		
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
 		PopulationWorkSpaceConstants.elementLookUpDataTypeName = new TreeMap<String, String>();
-		PopulationWorkSpaceConstants.subTreeLookUpName = new LinkedHashMap<String, String>();
-		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
+		List<Entry<String, String>> sortedClauses = new LinkedList<Map.Entry<String, String>>(
+				PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
+		PopulationWorkSpaceConstants.subTreeLookUpNode = new LinkedHashMap<String, Node>();
 		
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
@@ -224,7 +228,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			}
 			
 		}
-		
+		for (Entry<String, String> entry1 : sortedClauses) {
 		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
 		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
 			NodeList subTree = subTreesNodeList.item(0).getChildNodes();
@@ -232,20 +236,23 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
-					if(namedNodeMap.getNamedItem("instance")!=null){
+					/*if(namedNodeMap.getNamedItem("instance")!=null){
 						String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
 						name = occurrText + " of " + name;
-					}
+					}*/
 					// SubTree name might has trailing spaces.
 					name = name.trim();
 					//					name = name.replaceAll("^\\s+|\\s+$", "");
 					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
-					PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, subTree.item(i));
+					if(uuid.equalsIgnoreCase(entry1.getKey())){
+						PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), subTree.item(i));
+						break;
+					}
 					//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
 				}
 			}
-			//PopulationWorkSpaceConstants.subTreeLookUpName.clear();
-			PopulationWorkSpaceConstants.subTreeLookUpName.putAll(sortedClauseMap);
+		}
+			
 		}
 		
 		List<String> dataTypeList = new ArrayList<String>();

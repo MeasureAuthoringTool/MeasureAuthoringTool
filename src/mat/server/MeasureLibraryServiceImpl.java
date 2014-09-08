@@ -29,6 +29,7 @@ import mat.DTO.AuthorDTO;
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -318,10 +319,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
+	public SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
 		logger.info("Inside saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-		
+		SortedClauseMapResult clauseMapResult = new SortedClauseMapResult();
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());		
+		clauseMapResult.setMeasureXmlModel(xmlModel);
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			/*System.out.println("Measure XML is:"+xmlModel.getXml());*/
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
@@ -397,20 +399,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				e.printStackTrace();
 			}
 		}
-		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
-		measureXmlModel.setClauseMap(getSortedClauseMap(measureXmlModel.getMeasureId()));
-		return measureXmlModel;
+		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");		
+		clauseMapResult.setClauseMap(getSortedClauseMap(measureXmlModel.getMeasureId()));
+		return clauseMapResult;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeOccurrence(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID){
+	public SortedClauseMapResult saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID){
 		logger.info("Inside saveSubTreeOccurrence Method for measure Id " + measureXmlModel.getMeasureId() + " .");
+		SortedClauseMapResult sortedClauseMapResult = new SortedClauseMapResult();
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-		//added by hari
-		measureXmlModel.setClauseMap(getSortedClauseMap(measureXmlModel.getMeasureId()));
+		sortedClauseMapResult.setMeasureXmlModel(xmlModel);
 		int ASCII_START = 65;
 		int ASCII_END = 90;
 		int occurrenceCount = ASCII_START;
@@ -470,7 +472,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				exception.printStackTrace();
 			}
 		}
-		return measureXmlModel;
+		sortedClauseMapResult.setClauseMap(getSortedClauseMap(measureXmlModel.getMeasureId()));
+		return sortedClauseMapResult;
 	}
 	/**
 	 * Method to call XMLProcessor appendNode method to append new xml nodes
@@ -1375,8 +1378,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);
-		measureXmlModel.setClauseMap(getSortedClauseMap(measureId));
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
 		if (measureXmlModel == null) {
 			logger.info("Measure XML is null");
 		} else {
@@ -1384,16 +1386,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return measureXmlModel;
 	}
-	//added by hari
+	
 	/**
 	 * Gets the sorted clause map.
 	 *
 	 * @param measureId the measure id
 	 * @return the sorted clause map
 	 */
+	@Override
 	public LinkedHashMap<String, String> getSortedClauseMap(String measureId){
 
-	logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
+	logger.info("In MeasureLibraryServiceImpl.getSortedClauseMap()");
 	MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(
 			measureId);
 	

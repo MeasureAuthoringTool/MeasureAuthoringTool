@@ -3,8 +3,10 @@ package mat.server.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -385,9 +387,9 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel the measure xml model
 	 * @param nodeName the node name
 	 * @param nodeUUID the node uuid
-	 * @return
+	 * @return the sorted clause map result
 	 */
-	MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
+	SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
 	
 	/**
 	 * Check and delete sub tree.
@@ -497,7 +499,30 @@ public interface MeasureLibraryService {
 	 */
 	List<Author> getAllAuthors();
 	
-	MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
+	/**
+	 * Save sub tree occurrence.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
+	 * @return the sorted clause map result
+	 */
+	SortedClauseMapResult saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
 	
+	/**
+	 * Checks if is QDM variable enabled.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @return true, if is QDM variable enabled
+	 */
 	boolean isQDMVariableEnabled(String measureId, String subTreeUUID);
+
+	/**
+	 * Gets the sorted clause map.
+	 *
+	 * @param measureId the measure id
+	 * @return the sorted clause map
+	 */
+	LinkedHashMap<String, String> getSortedClauseMap(String measureId);
 }

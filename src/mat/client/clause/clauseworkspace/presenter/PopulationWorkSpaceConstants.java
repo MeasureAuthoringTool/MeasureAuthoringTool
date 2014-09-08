@@ -95,14 +95,14 @@ public class PopulationWorkSpaceConstants {
 	/** The element look up name. */
 	public static LinkedHashMap<String, String> subTreeLookUpName;
 	/** The element look up node. */
-	public static Map<String, Node> subTreeLookUpNode;
+	public static LinkedHashMap<String, Node> subTreeLookUpNode;
 	
 	/**
 	 * Sets the sub tree look up node.
 	 *
 	 * @param subTreeLookUpNode the sub tree look up node
 	 */
-	public static void setSubTreeLookUpNode(Map<String, Node> subTreeLookUpNode) {
+	public static void setSubTreeLookUpNode(LinkedHashMap<String, Node> subTreeLookUpNode) {
 		PopulationWorkSpaceConstants.subTreeLookUpNode = subTreeLookUpNode;
 	}
 

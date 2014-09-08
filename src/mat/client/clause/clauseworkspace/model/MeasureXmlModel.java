@@ -1,12 +1,6 @@
 package mat.client.clause.clauseworkspace.model;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.xml.client.NamedNodeMap;
 
 
 // TODO: Auto-generated Javadoc
@@ -31,27 +25,6 @@ public class MeasureXmlModel implements IsSerializable {
 	/** The parent node. */
 	private String parentNode;
 	
-	/** The clause map. */
-	private LinkedHashMap<String, String> clauseMap;
-	
-	/**
-	 * Gets the clause map.
-	 *
-	 * @return the clause map
-	 */
-	public LinkedHashMap<String, String> getClauseMap() {
-		return clauseMap;
-	}
-
-	/**
-	 * Sets the clause map.
-	 *
-	 * @param clauseMap the clause map
-	 */
-	public void setClauseMap(LinkedHashMap<String, String> clauseMap) {
-		this.clauseMap = clauseMap;
-	}
-
 	/**
 	 * Gets the meausre export id.
 	 * 

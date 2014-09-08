@@ -1,8 +1,10 @@
 package mat.client.measure.service;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -412,9 +414,24 @@ public interface MeasureServiceAsync {
 	 */
 	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
+	/**
+	 * Save sub tree in measure xml.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
+	 * @param callback the callback
+	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID,
-			AsyncCallback<MeasureXmlModel> callback);
+			AsyncCallback<SortedClauseMapResult> callback);
 	
+	/**
+	 * Check and delete sub tree.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @param callback the callback
+	 */
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID, AsyncCallback<HashMap<String, String>> callback);
 	
 	/**
@@ -510,9 +527,34 @@ public interface MeasureServiceAsync {
 	 */
 	void getAllAddEditAuthors(AsyncCallback<List<Author>> asyncCallback);
 	
+	/**
+	 * Save sub tree occurrence.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
+	 * @param callback the callback
+	 */
 	void saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID,
-			AsyncCallback<MeasureXmlModel> callback);
+			AsyncCallback<SortedClauseMapResult> callback);
 	
-	void isQDMVariableEnabled(String measureId, String subTreeUUID, AsyncCallback<Boolean> callback);
+	/**
+	 * Checks if is qdm variable enabled.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @param callback the callback
+	 */
+	void isQDMVariableEnabled(String measureId, String subTreeUUID, AsyncCallback<Boolean> callback);	
 	
+	/**
+	 * Gets the sorted clause map.
+	 *
+	 * @param measureId the measure id
+	 * @param callback the callback
+	 * @return the sorted clause map
+	 */
+	void getSortedClauseMap(String measureId,
+			AsyncCallback<LinkedHashMap<String, String>> callback);
+		
 }

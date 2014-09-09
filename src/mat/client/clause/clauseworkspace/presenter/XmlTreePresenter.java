@@ -706,10 +706,10 @@ public class XmlTreePresenter {
 					name = occurrText + " of " + name;
 				}*/
 				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
-				String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
-				if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){
+				//String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
+				/*if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){
 					PopulationWorkSpaceConstants.subTreeLookUpNode.remove(subTreeLookUpNode);
-				}
+				}*/
 				if(uuid.equalsIgnoreCase(entry1.getKey())){
 					PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), nodeList.item(i));
 					break;

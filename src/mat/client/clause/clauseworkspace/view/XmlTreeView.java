@@ -652,13 +652,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if(subTreeNameListBox != null){
 			subTreeNameListBox.clear();
 			List<Entry<String,String>> subTreeNameEntries = new LinkedList<Map.Entry<String,String>>(PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
-			/*Collections.sort(subTreeNameEntries, new Comparator<Entry<String, String>>() {
-				@Override
-				public int compare(Entry<String, String> o1,
-						Entry<String, String> o2) {
-					return o1.getValue().compareTo(o2.getValue());
-				}
-			});*/
 			
 			for(Entry<String, String> entry:subTreeNameEntries){
 				subTreeNameListBox.addItem(entry.getValue(),entry.getKey());

@@ -228,6 +228,7 @@ public class XmlTreePresenter {
 
 					@Override
 					public void onChange(ChangeEvent event) {
+						xmlTreeDisplay.getClauseNamesListBox();
 						System.out
 								.println("listbox change event caught in XmlTreePresenter:"
 										+ event.getAssociatedType().getName());
@@ -247,6 +248,7 @@ public class XmlTreePresenter {
 						boolean checkIfUsedInLogic = true;
 						// Disable Show Clause Button for Occurrence CLauses.
 						xmlTreeDisplay.getShowClauseButton().setEnabled(true);
+						
 						
 							Node node = PopulationWorkSpaceConstants
 									.getSubTreeLookUpNode().get(
@@ -550,8 +552,8 @@ public class XmlTreePresenter {
 								xmlTreeDisplay
 								.getSuccessMessageDisplay()
 								.setMessage(
-										"Changes are successfully saved.");								
-								setOriginalXML(result.getMeasureXmlModel().getXml());								
+										"Changes are successfully saved.");	
+								setOriginalXML(result.getMeasureXmlModel().getXml());
 								updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
@@ -696,32 +698,25 @@ public class XmlTreePresenter {
 		List<Entry<String, String>> sortedClauses = new LinkedList<Map.Entry<String, String>>(
 				PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
 		for (Entry<String, String> entry1 : sortedClauses) {
-		NodeList nodeList = document.getElementsByTagName("subTree");
-		if ((nodeList != null) && (nodeList.getLength() > 0)) {
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
-				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
-				/*if(namedNodeMap.getNamedItem("instance")!=null){
-					String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
-					name = occurrText + " of " + name;
-				}*/
-				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
-				//String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
-				/*if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){
-					PopulationWorkSpaceConstants.subTreeLookUpNode.remove(subTreeLookUpNode);
-				}*/
-				if(uuid.equalsIgnoreCase(entry1.getKey())){
-					PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), nodeList.item(i));
-					break;
+			NodeList nodeList = document.getElementsByTagName("subTree");
+			if ((nodeList != null) && (nodeList.getLength() > 0)) {
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					NamedNodeMap namedNodeMap = nodeList.item(i)
+							.getAttributes();
+					String uuid = namedNodeMap.getNamedItem("uuid")
+							.getNodeValue();
+					if (uuid.equalsIgnoreCase(entry1.getKey())) {
+						PopulationWorkSpaceConstants.subTreeLookUpNode.put(
+								entry1.getValue() + "~" + entry1.getKey(),
+								nodeList.item(i));
+						break;
+					}
+
 				}
-				//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+
 			}
-			//PopulationWorkSpaceConstants.subTreeLookUpName.clear();
-			//PopulationWorkSpaceConstants.subTreeLookUpName.putAll(orderedClauseMap);
-		
+
 		}
-		
-	}
 	}
 	/**
 	 * Invoke validate handler on population workspace.

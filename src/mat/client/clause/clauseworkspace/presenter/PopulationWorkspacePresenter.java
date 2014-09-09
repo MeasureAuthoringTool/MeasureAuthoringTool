@@ -272,12 +272,32 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	public void setSortedSubTreeLookUpMap(){
+		service.getSortedClauseMap(MatContext.get().getCurrentMeasureId(), new AsyncCallback<LinkedHashMap<String,String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(LinkedHashMap<String, String> result) {
+				PopulationWorkSpaceConstants.subTreeLookUpName = result;
+				System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName: 34454657   "+PopulationWorkSpaceConstants.subTreeLookUpName);
+				setXMLOnTabs();
+				
+			}
+		});
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
 	@Override
 	public void beforeDisplay() {
-		setXMLOnTabs();
+		setSortedSubTreeLookUpMap();
+		//setXMLOnTabs();
 	}
 	
 	/* (non-Javadoc)

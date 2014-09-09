@@ -236,19 +236,14 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
-					/*if(namedNodeMap.getNamedItem("instance")!=null){
-						String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
-						name = occurrText + " of " + name;
-					}*/
-					// SubTree name might has trailing spaces.
+					
 					name = name.trim();
 					//					name = name.replaceAll("^\\s+|\\s+$", "");
 					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 					if(uuid.equalsIgnoreCase(entry1.getKey())){
 						PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), subTree.item(i));
 						break;
-					}
-					//PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+					}					
 				}
 			}
 		}
@@ -273,7 +268,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 		});
 	}
 	
-	public void setSortedSubTreeLookUpMap(){
+	public void setXmlView(){
 		service.getSortedClauseMap(MatContext.get().getCurrentMeasureId(), new AsyncCallback<LinkedHashMap<String,String>>() {
 
 			@Override
@@ -284,8 +279,8 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(LinkedHashMap<String, String> result) {
+				System.out.println("SubTreeLookUpMap:"+ result);
 				PopulationWorkSpaceConstants.subTreeLookUpName = result;
-				System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName: 34454657   "+PopulationWorkSpaceConstants.subTreeLookUpName);
 				setXMLOnTabs();
 				
 			}
@@ -296,8 +291,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		setSortedSubTreeLookUpMap();
-		//setXMLOnTabs();
+		setXmlView();
 	}
 	
 	/* (non-Javadoc)

@@ -75,10 +75,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 		});
 	}
 	
-	/**
-	 * Sets the sorted sub tree look up map.
-	 */
-	public void setSortedSubTreeLookUpMap(){
+	public void setXmlView(){
 		service.getSortedClauseMap(MatContext.get().getCurrentMeasureId(), new AsyncCallback<LinkedHashMap<String,String>>() {
 
 			@Override
@@ -89,13 +86,14 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 
 			@Override
 			public void onSuccess(LinkedHashMap<String, String> result) {
-				PopulationWorkSpaceConstants.subTreeLookUpName = result;
-				System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName: 34454657   "+PopulationWorkSpaceConstants.subTreeLookUpName);
+				System.out.println("SubTreeLookUpMap:"+ result);
+				PopulationWorkSpaceConstants.subTreeLookUpName = result;				
 				loadMeasureXML();
 				
 			}
 		});
 	}
+	
 	/**
 	 * Load measure xml.
 	 */
@@ -191,15 +189,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 								.getAttributes();
 
 						String name = namedNodeMap.getNamedItem("displayName")
-								.getNodeValue();
-						/*
-						 * if (namedNodeMap.getNamedItem("instance") != null) {
-						 * String occurrText = "Occurrence " +
-						 * namedNodeMap.getNamedItem
-						 * ("instance").getNodeValue().toString() + " of"; name
-						 * = occurrText + " " + name; }
-						 */
-						// SubTree name Might have trailing spaces.
+								.getNodeValue();						
 						name = name.trim();
 						// name = name.replaceAll("^\\s+|\\s+$", "");
 						String uuid = namedNodeMap.getNamedItem("uuid")
@@ -215,11 +205,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				}
 			}
 
-		}
-
-		System.out
-				.println("PopulationWorkSpaceConstants.subTreeLookUpName: 576879809   "
-						+ PopulationWorkSpaceConstants.subTreeLookUpName);
+		}		
 		List<String> dataTypeList = new ArrayList<String>();
 		dataTypeList.addAll(PopulationWorkSpaceConstants
 				.getElementLookUpDataTypeName().values());
@@ -254,11 +240,10 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
 	@Override
-	public void beforeDisplay() {
-		setSortedSubTreeLookUpMap();
+	public void beforeDisplay() {		
+		setXmlView();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkSpacePanel");
 		Mat.focusSkipLists("MeasureComposer");
-		//		loadClauseWorkSpaceView(simplepanel);
 	}
 	
 	/* (non-Javadoc)

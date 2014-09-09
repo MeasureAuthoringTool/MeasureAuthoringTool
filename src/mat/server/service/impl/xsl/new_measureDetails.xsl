@@ -164,7 +164,13 @@
 	         <code nullFlavor="OTH">
 	            <originalText value="eMeasure Identifier (Measure Authoring Tool)"/>
 	         </code>
-	         <value xsi:type="ED" mediaType="text/plain" value="146"/>
+	         <value xsi:type="ED" mediaType="text/plain">
+	         	<xsl:attribute name="value">
+	         		<xsl:call-template name="trim">
+                 		<xsl:with-param name="textString" select="emeasureid"/>
+              		</xsl:call-template>
+	         	</xsl:attribute>
+	         </value>
 	      </measureAttribute>
 	  </subjectOf>
 	  <subjectOf>
@@ -235,8 +241,18 @@
                      <code code="MSRTYPE" codeSystem="2.16.840.1.113883.5.4">
                      	<displayName value="Measure Type"/>
                      </code>
-                     <value xsi:type="CD" code="{@id}" codeSystem="2.16.840.1.113883.1.11.20367">
-                     	<displayName value="{normalize-space(@id)}"/>
+                     <value xsi:type="CD" code="{@id}" codeSystem="2.16.840.1.113883.1.11.20368">
+                     	<displayName>
+                     		<xsl:attribute name="value">
+                     			<xsl:choose>
+	                     			<xsl:when test="@id = 'PATENGEXP'">EXPERIENCE</xsl:when>
+	                     			<xsl:when test="@id = 'COSTRESOURCEUSE'">RESOURCE</xsl:when>
+	                     			<xsl:otherwise>
+	                     				<xsl:value-of select="upper-case(.)"/>
+	                     			</xsl:otherwise>
+                     			</xsl:choose>
+                     		</xsl:attribute>
+                     	</displayName>
                      </value> 
                   </measureAttribute>
                </subjectOf>

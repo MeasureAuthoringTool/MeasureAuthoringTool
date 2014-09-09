@@ -449,7 +449,7 @@
          <xsl:with-param name="text">
             <xsl:value-of select="initialPopDescription/text()"/>
          </xsl:with-param>
-         <xsl:with-param name="code">IPP</xsl:with-param>
+         <xsl:with-param name="code">IPOP</xsl:with-param>
          <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
       </xsl:call-template>  
       

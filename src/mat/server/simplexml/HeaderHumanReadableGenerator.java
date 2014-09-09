@@ -102,7 +102,8 @@ public class HeaderHumanReadableGenerator {
 			Element table) throws DOMException, XPathExpressionException {
 		// eMeasure Title
 		createRowAndColumns(table, "eMeasure Title");
-		column.appendText(getShortTitle(processor));
+		
+		column.append("<h1 style=\"font-size:10px\">" + getShortTitle(processor) +"</h1>");
 		
 		// eMeasure Identifier and Version number
 		row = table.appendElement(HTML_TR);
@@ -664,7 +665,6 @@ public class HeaderHumanReadableGenerator {
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column, "80%", "3");
 	}
-	
 	/**
 	 * Used to format and make a span element
 	 * 
@@ -718,8 +718,6 @@ public class HeaderHumanReadableGenerator {
 		Element head = htmlDocument.head();
 		htmlDocument.title(title);
 		appendStyleNode(head);
-		Element bodyElement = htmlDocument.body();
-		bodyElement.appendElement("h1").attr("style", "font-size:0px").text(title);
 		return htmlDocument;
 	}
 	

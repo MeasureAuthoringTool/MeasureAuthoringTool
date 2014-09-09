@@ -1861,7 +1861,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					isDateTimeDiffNotInMO = false;
 				} else if(isSubTreeLogicValidInPopulationWorkSpace){
 					if (!inValidNodeAtPopulationWorkspace
-							.contains("invalidClauseLogic") && !checkValidation
+							.contains("invalidClauseLogic") && checkValidation
 							) {
 						inValidNodeAtPopulationWorkspace
 						.add("invalidClauseLogic");
@@ -1927,6 +1927,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private boolean validateSubtreeNodeAtPopulation(CellTreeNode subTreeCellTreeNode) {
 		int nodeType = subTreeCellTreeNode.getNodeType();
 		ArrayList<String> inValideNodesList =  new ArrayList<String>();
+		System.out.println("Start Node evaluated === "+ subTreeCellTreeNode.getName());
+		System.out.println("isValid Flag  === "+ isValid);
 		switch(nodeType){
 			case CellTreeNode.SET_OP_NODE:
 			case CellTreeNode.TIMING_NODE:
@@ -1937,10 +1939,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (isValidHumanReadable) {
 					setValidHumanReadable(inValideNodesList.size() == 0);
 				}
-				if( ! isSubTreeLogicValidInPopulationWorkSpace) {
+				if(! isSubTreeLogicValidInPopulationWorkSpace) {
 					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
-				setValid(!(inValideNodesList.size()==0));
+				if(!isValid) {
+					setValid(!(inValideNodesList.size() == 0));
+				}
 				
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
@@ -1951,7 +1955,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if(! isSubTreeLogicValidInPopulationWorkSpace) {
 					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
-				setValid(!(inValideNodesList.size()==0));
+				if(!isValid) {
+					setValid(!(inValideNodesList.size() == 0));
+				}
+				
 				break;
 			case CellTreeNode.FUNCTIONS_NODE:
 				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode, PopulationWorkSpaceConstants.datatypeMap, inValideNodesList);
@@ -1961,7 +1968,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if(! isSubTreeLogicValidInPopulationWorkSpace) {
 					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
-				setValid(!(inValideNodesList.size()==0));
+				if(!isValid) {
+					setValid(!(inValideNodesList.size() == 0));
+				}
 				
 				if (!isMeasureObservations
 						&& subTreeCellTreeNode.getName().contains("DATETIMEDIFF")) {
@@ -1971,7 +1980,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				break;
 		}
-		
+		System.out.println("End Node evaluated === "+ subTreeCellTreeNode.getName());
+		System.out.println("isValid Flag  === "+ isValid);
 		List<CellTreeNode> children = subTreeCellTreeNode.getChilds();
 		if((children != null) && (children.size() > 0)
 				&& !isValid()){

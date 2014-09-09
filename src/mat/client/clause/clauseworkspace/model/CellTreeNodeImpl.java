@@ -288,6 +288,12 @@ public class CellTreeNodeImpl implements CellTreeNode {
 				} else if ("Equal To".equalsIgnoreCase(modeName)) {
 					stringBuilder.append(" = ");
 				}
+				String attrName = attributeNode.getExtraInformation("name").toString();
+				if(attrName.contains("datetime")){
+					String attributeDate = (String) attributeNode
+							.getExtraInformation("attrDate");
+					stringBuilder.append(attributeDate);
+				} else {
 				String comparisonValue = (String) attributeNode
 						.getExtraInformation("comparisonValue");
 				stringBuilder.append(comparisonValue);
@@ -295,6 +301,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 						.getExtraInformation("unit");
 				if (null != unit) {
 					stringBuilder.append(" ").append(unit);
+				}
 				}
 			}
 			attrib = stringBuilder.append(")").toString();

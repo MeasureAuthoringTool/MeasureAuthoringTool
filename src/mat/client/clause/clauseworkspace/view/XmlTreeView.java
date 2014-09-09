@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -24,9 +23,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -1787,6 +1784,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		List<String> inValidNodeAtPopulationWorkspace = new ArrayList<String>();
 		if (treeNode != null) {
 			closeNodes(treeNode);
+			setValidHumanReadable(true);
+			isSubTreeLogicValidInPopulationWorkSpace = false;
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				//TreeNode subTree = null;
 				CellTreeNode node =(CellTreeNode) treeNode.getChildValue(i);
@@ -1850,19 +1849,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
-				editNode(!validateSubTreeRefNode(cellTreeNode), cellTreeNode);
+				boolean checkValidation = validateSubTreeRefNode(cellTreeNode);
+				editNode(!checkValidation, cellTreeNode);
 				if (isDateTimeDiffNotInMO) {
 					if (!inValidNodeAtPopulationWorkspace
 							.contains("inValidAtPopulationAndStratificationNode")
-							&& validateSubTreeRefNode(cellTreeNode)) {
+							&& checkValidation) {
 						inValidNodeAtPopulationWorkspace
 						.add("inValidAtPopulationAndStratificationNode");
 					}
 					isDateTimeDiffNotInMO = false;
 				} else if(isSubTreeLogicValidInPopulationWorkSpace){
 					if (!inValidNodeAtPopulationWorkspace
-							.contains("invalidClauseLogic")
-							&& validateSubTreeRefNode(cellTreeNode)) {
+							.contains("invalidClauseLogic") && !checkValidation
+							) {
 						inValidNodeAtPopulationWorkspace
 						.add("invalidClauseLogic");
 					}
@@ -1937,8 +1937,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (isValidHumanReadable) {
 					setValidHumanReadable(inValideNodesList.size() == 0);
 				}
-				if(! isSubTreeLogicValidInPopulationWorkSpace) {
-					isSubTreeLogicValidInPopulationWorkSpace = (inValideNodesList.size()==0);
+				if( ! isSubTreeLogicValidInPopulationWorkSpace) {
+					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
 				setValid(!(inValideNodesList.size()==0));
 				
@@ -1949,8 +1949,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					setValidHumanReadable(inValideNodesList.size() == 0);
 				}
 				if(! isSubTreeLogicValidInPopulationWorkSpace) {
-					isSubTreeLogicValidInPopulationWorkSpace = (inValideNodesList.size()==0);
+					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
+				setValid(!(inValideNodesList.size()==0));
 				break;
 			case CellTreeNode.FUNCTIONS_NODE:
 				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode, PopulationWorkSpaceConstants.datatypeMap, inValideNodesList);
@@ -1958,11 +1959,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					setValidHumanReadable(inValideNodesList.size() == 0);
 				}
 				if(! isSubTreeLogicValidInPopulationWorkSpace) {
-					isSubTreeLogicValidInPopulationWorkSpace = (inValideNodesList.size()==0);
+					isSubTreeLogicValidInPopulationWorkSpace = !(inValideNodesList.size()==0);
 				}
 				setValid(!(inValideNodesList.size()==0));
 				
-				if(!isMeasureObservations && subTreeCellTreeNode.getName().contains("DATETIMEDIFF")){
+				if (!isMeasureObservations
+						&& subTreeCellTreeNode.getName().contains("DATETIMEDIFF")) {
 					setValid(true);
 					isDateTimeDiffNotInMO = true;
 					setValidHumanReadable(false);

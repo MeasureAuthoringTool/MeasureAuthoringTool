@@ -241,18 +241,17 @@
                      <code code="MSRTYPE" codeSystem="2.16.840.1.113883.5.4">
                      	<displayName value="Measure Type"/>
                      </code>
-                     <value xsi:type="CD" code="{@id}" codeSystem="2.16.840.1.113883.1.11.20368">
-                     	<displayName>
-                     		<xsl:attribute name="value">
-                     			<xsl:choose>
-	                     			<xsl:when test="@id = 'PATENGEXP'">EXPERIENCE</xsl:when>
-	                     			<xsl:when test="@id = 'COSTRESOURCEUSE'">RESOURCE</xsl:when>
-	                     			<xsl:otherwise>
-	                     				<xsl:value-of select="upper-case(.)"/>
-	                     			</xsl:otherwise>
-                     			</xsl:choose>
-                     		</xsl:attribute>
-                     	</displayName>
+                     <xsl:variable name="nameVar">
+                     	<xsl:choose>
+                 			<xsl:when test="@id = 'PATENGEXP'">EXPERIENCE</xsl:when>
+                 			<xsl:when test="@id = 'COSTRESOURCEUSE'">RESOURCE</xsl:when>
+                 			<xsl:otherwise>
+                 				<xsl:value-of select="upper-case(.)"/>
+                 			</xsl:otherwise>
+                		</xsl:choose>
+                     </xsl:variable>
+                     <value xsi:type="CD" code="{$nameVar}" codeSystem="2.16.840.1.113883.1.11.20368">
+                     	<displayName value="{$nameVar}"/>
                      </value> 
                   </measureAttribute>
                </subjectOf>
@@ -326,7 +325,7 @@
       <!-- Clinical Recommendation Statement -->
        <subjectOf>
           <measureAttribute>
-             <code code="CRS" codeSystem="2.16.840.1.113883.3.560">
+             <code code="CRS" codeSystem="2.16.840.1.113883.5.4">
              	<displayName value="Clinical Recommendation Statement"/>
              </code>
               <xsl:variable name="recommendationsTxt">
@@ -341,7 +340,7 @@
       <!-- Improvement Notation -->
       <subjectOf>
          <measureAttribute>
-            <code code="IDUR" codeSystem="2.16.840.1.113883.3.560">
+            <code code="IDUR" codeSystem="2.16.840.1.113883.5.4">
             	<displayName value="Improvement Notation"/>
             </code>
             <xsl:variable name="improvementNotationsTxt">
@@ -402,7 +401,7 @@
 				<xsl:for-each select="definitions">
 					<subjectOf>
 						<measureAttribute>
-							<code code="DEF" codeSystem="2.16.840.1.113883.3.560">
+							<code code="DEF" codeSystem="2.16.840.1.113883.5.4">
 								<displayName value="Definition"/>
 							</code>
 							<xsl:variable name="definitionsTxt">
@@ -418,7 +417,7 @@
 			<xsl:otherwise>
 				<subjectOf>
 					<measureAttribute>
-						<code code="DEF" codeSystem="2.16.840.1.113883.3.560">
+						<code code="DEF" codeSystem="2.16.840.1.113883.5.4">
 							<displayName value="Definition"/>
 						</code>
 						<value xsi:type="ED" mediaType="text/plain"/>

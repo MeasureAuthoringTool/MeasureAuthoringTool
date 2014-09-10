@@ -1194,6 +1194,8 @@ public class HumanReadableGenerator {
 		} else if (functionDisplayName.startsWith("FIFTH")) {
 			functionDisplayName = functionDisplayName.replaceFirst("FIFTH",
 					"Fifth");
+		} else if(functionDisplayName.startsWith("DATETIMEDIFF")){
+			functionDisplayName = functionDisplayName.replaceFirst("DATETIMEDIFF", "Datetime difference") + " of";
 		}
 
 		if (item.getAttributes().getNamedItem("unit") != null) {

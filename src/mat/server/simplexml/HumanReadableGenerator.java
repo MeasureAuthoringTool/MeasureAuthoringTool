@@ -475,16 +475,24 @@ public class HumanReadableGenerator {
 				if(map.getNamedItem("instanceOf") == null){
 					displayName = "$"+StringUtils.deleteWhitespace(displayName);
 				}
-				
 				parentListElement.appendText(displayName+ " ");
+				
+				if(COMMENT.equals(item.getFirstChild().getNodeName())){
+					String commentValue = item.getFirstChild().getTextContent();
+					if (commentValue != null && commentValue.trim().length() > 0) {
+						Element italicElement = parentListElement.appendElement("i");
+						italicElement.appendText("# " + commentValue);
+					}
+				}
+				
 			} else {
 				showOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
 				for (int i = 0; i < childNodes.getLength(); i++) {
 					Element temp = parentListElement;
-					if(temp.html().contains("Measure Observation")){
-						temp = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
-					}
+//					if(temp.html().contains("Measure Observation")){
+//						temp = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+//					}
 					parseChild(childNodes.item(i), temp,
 							parentNode, populationOrSubtreeXMLProcessor,
 							satisfiesAnyAll);
@@ -1680,6 +1688,7 @@ public class HumanReadableGenerator {
 			boldNameElement.appendText(populationName + " =");
 			Element childPopulationULElement = populationListElement
 					.appendElement(HTML_UL);
+			System.out.println("clauseNodes.size():"+clauseNodes.size());
 			for (int c = 0; c < clauseNodes.size(); c++) {
 				Node clauseNode = clauseNodes.get(c);
 				Element childPopulationListElement = childPopulationULElement
@@ -1705,6 +1714,9 @@ public class HumanReadableGenerator {
 						+ (popassoc.length() > 0 ? popassoc : "")
 						+ (itemCountText.length() > 0 ? itemCountText : "")
 						+ " =");
+				if(childPopulationName.startsWith("Measure Observation")){
+					childPopulationListElement = childPopulationListElement.appendElement(HTML_UL);
+				}
 				parseAndBuildHTML(simpleXMLProcessor,
 						childPopulationListElement, clauseNode, c + 1);
 			}
@@ -1713,6 +1725,7 @@ public class HumanReadableGenerator {
 					.appendElement(HTML_LI);
 			Element boldNameElement = populationListElement.appendElement("b");
 			String populationName = getPopulationName(populationType);
+				
 			// if (totalGroupCount > 1){
 			// populationName += " " + (currentGroupNumber+1);
 			// }
@@ -1724,6 +1737,9 @@ public class HumanReadableGenerator {
 			String itemCountText = getItemCountText(clauseNodes.get(0));
 			boldNameElement.appendText(populationName
 					+ (itemCountText.length() > 0 ? itemCountText : "") + " =");
+			if(populationName.startsWith("Measure Observation")){
+				populationListElement = populationListElement.appendElement(HTML_UL);
+			}
 			parseAndBuildHTML(simpleXMLProcessor, populationListElement,
 					clauseNodes.get(0), 1);
 		}

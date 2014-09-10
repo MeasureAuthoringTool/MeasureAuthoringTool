@@ -289,7 +289,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 					stringBuilder.append(" = ");
 				}
 				String attrName = attributeNode.getExtraInformation("name").toString();
-				if(attrName.contains("datetime")){
+				if(attrName.contains("date")){
 					String attributeDate = (String) attributeNode
 							.getExtraInformation("attrDate");
 					stringBuilder.append(attributeDate);

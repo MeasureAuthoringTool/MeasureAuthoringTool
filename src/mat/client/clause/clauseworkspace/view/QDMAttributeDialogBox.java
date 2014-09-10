@@ -325,6 +325,7 @@ public class QDMAttributeDialogBox {
 			unitsListBox.setEnabled(false);	
 			quantityTextBox.setValue("");
 			quantityTextBox.setEnabled(false);
+			qdmAttributeDate.setValue("");
 			qdmAttributeDate.setEnabled(false);
 			hPanel.clear();
 			getWidget(hPanel,"Attributes may only be added to valid datatypes");
@@ -361,6 +362,13 @@ public class QDMAttributeDialogBox {
 				}
 				else{
 					modeListBox.setEnabled(true);
+					qdmAttributeDate.setValue("");
+					quantityTextBox.setValue("");
+					//set Unit Names:
+					unitsListBox.clear();
+					for (String unitName : unitNames) {
+						unitsListBox.addItem(unitName);
+					}
 					setEnabled(attributeListBox);
 				}
 			}
@@ -426,7 +434,7 @@ public class QDMAttributeDialogBox {
 						
 						@Override
 						public void onKeyDown(KeyDownEvent event) {
-							//clearErrorMsg();
+							qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 							
 						}
 					};
@@ -435,7 +443,7 @@ public class QDMAttributeDialogBox {
 						
 						@Override
 						public void onClick(ClickEvent event) {
-							//clearErrorMsg();
+							qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 							
 						}
 					};
@@ -443,6 +451,7 @@ public class QDMAttributeDialogBox {
 					qdmAttributeDate.getCalendar().addClickHandler(clickHandler);
 					qdmAttributeDate.setWidth("200px");
 					qdmAttributeDate.setHeight("19");
+					qdmAttributeDate.setValue("");
 					dialogContents1.add(qdmAttributeDateLabel);
 					dialogContents1.setCellHorizontalAlignment(qdmAttributeDateLabel, HasHorizontalAlignment.ALIGN_LEFT);
 					dialogContents1.setCellHorizontalAlignment(qdmAttributeDate, HasHorizontalAlignment.ALIGN_LEFT);
@@ -626,7 +635,7 @@ public class QDMAttributeDialogBox {
 					String uuid = qdmListBox.getValue(qdmListBox.getSelectedIndex());
 					attributeNode.setExtraInformation(QDM_UUID, uuid);
 				}
-		} else if(attributeName.contains("datetime")){
+		} else if(attributeName.contains("date")){
 			attributeNode.setExtraInformation(MODE, modeName);
 			attributeNode.setExtraInformation(ATTRIBUTE_DATE,qdmAttributeDate.getValue());	
 			
@@ -749,8 +758,7 @@ public class QDMAttributeDialogBox {
 					
 					@Override
 					public void onKeyDown(KeyDownEvent event) {
-						//clearErrorMsg();
-						
+						qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 					}
 				};
 				
@@ -758,14 +766,15 @@ public class QDMAttributeDialogBox {
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						//clearErrorMsg();
-						
+						qdmAttributeDate.removeStyleName("gwt-TextBoxRed");	
 					}
 				};
 				qdmAttributeDate.getDateBox().addKeyDownHandler(keyDownHandler);
 				qdmAttributeDate.getCalendar().addClickHandler(clickHandler);
 				qdmAttributeDate.setWidth("200px");
 				qdmAttributeDate.setHeight("19");
+				quantityTextBox.setValue((String) attributeNode
+						.getExtraInformation(ATTRIBUTE_DATE));
 				dialogContents1.add(qdmAttributeDateLabel);
 				dialogContents1.setCellHorizontalAlignment(qdmAttributeDateLabel, HasHorizontalAlignment.ALIGN_LEFT);
 				dialogContents1.setCellHorizontalAlignment(qdmAttributeDate, HasHorizontalAlignment.ALIGN_LEFT);
@@ -1063,8 +1072,9 @@ public class QDMAttributeDialogBox {
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		boolean isValid = true;
 		if(quantityTextBox.getValue().equals("") && 
-				!attributeName.contains("datetime")){
+				!attributeName.contains("date")){
 			quantityTextBox.setStyleName("gwt-TextBoxRed");
+			qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 			isValid = false;
 		}
 		return isValid;
@@ -1082,8 +1092,9 @@ public class QDMAttributeDialogBox {
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		boolean isValid = true;
 		if(qdmAttributeDate.getValue().equals("") && 
-				attributeName.contains("datetime")){
+				attributeName.contains("date")){
 			qdmAttributeDate.setStyleName("gwt-TextBoxRed");
+			quantityTextBox.removeStyleName("gwt-TextBoxRed");
 			isValid = false;
 		}
 		return isValid;
@@ -1147,8 +1158,10 @@ public class QDMAttributeDialogBox {
 	 */
 	private static void setEnabled(ListBox attributeListBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-		if(attributeName.contains("datetime")){
-			qdmAttributeDate.setEnabled(true);
+		qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
+		quantityTextBox.removeStyleName("gwt-TextBoxRed");
+		if(attributeName.contains("date")){
+			qdmAttributeDate.setEnabled(true);			
 			unitsListBox.setEnabled(false);
 			quantityTextBox.setEnabled(false);
 		} else {

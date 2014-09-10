@@ -773,7 +773,7 @@ public class QDMAttributeDialogBox {
 				qdmAttributeDate.getCalendar().addClickHandler(clickHandler);
 				qdmAttributeDate.setWidth("200px");
 				qdmAttributeDate.setHeight("19");
-				quantityTextBox.setValue((String) attributeNode
+				qdmAttributeDate.setValue((String) attributeNode
 						.getExtraInformation(ATTRIBUTE_DATE));
 				dialogContents1.add(qdmAttributeDateLabel);
 				dialogContents1.setCellHorizontalAlignment(qdmAttributeDateLabel, HasHorizontalAlignment.ALIGN_LEFT);

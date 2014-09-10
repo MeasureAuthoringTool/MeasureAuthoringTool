@@ -620,23 +620,24 @@
    <xsl:template name="itemCountTemplate">
    		<xsl:if test="itemCount">
    			<xsl:if test="itemCount/elementRef">
-	   			<subjectOf>
-		   			<measureAttribute>
-			   			<code code="ITMCNT" codeSystem="2.16.840.1.113883.5.4">
-				            <displayName value="Items to count"/>
-				        </code>
-			   			<xsl:for-each select="itemCount/elementRef">
-			   				<value xsi:type="II">
-					        	<xsl:attribute name="root">
-					        		<xsl:value-of select="@id"/>
-					        	</xsl:attribute>
-					        	<xsl:attribute name="extension">
-					        		<xsl:value-of select="@dataType"/>
-					        	</xsl:attribute>
-					        </value>
-			   			</xsl:for-each>
-		   			</measureAttribute>
-	   			</subjectOf>
+   				<xsl:for-each select="itemCount/elementRef">
+		   			<subjectOf>
+			   			<measureAttribute>
+				   			<code code="ITMCNT" codeSystem="2.16.840.1.113883.5.4">
+					            <displayName value="Items to count"/>
+					        </code>
+				   			
+				   				<value xsi:type="II">
+						        	<xsl:attribute name="root">
+						        		<xsl:value-of select="@id"/>
+						        	</xsl:attribute>
+						        	<xsl:attribute name="extension">
+						        		<xsl:value-of select="@dataType"/>
+						        	</xsl:attribute>
+						        </value>
+				   		</measureAttribute>
+		   			</subjectOf>
+	   			</xsl:for-each>
    			</xsl:if>
    		</xsl:if> 
    </xsl:template>

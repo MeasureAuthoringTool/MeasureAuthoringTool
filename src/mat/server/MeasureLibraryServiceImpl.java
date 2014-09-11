@@ -3226,6 +3226,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		NodeList groupedSubTreeRefIdsNodeListMO;
 		NodeList groupedSubTreeRefIdListStrat;
 		String uuidXPathString = "";
+		
 		for(String uuidString: measureGroupingIDList){
 			uuidXPathString += "@uuid = '"+uuidString + "' or";
 		}
@@ -3243,6 +3244,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						.item(i);
 				String uuid = groupedSubTreeRefIdAttributeNodePop
 						.getNodeValue();
+				
 				uuid = checkIfQDMVarInstanceIsPresent(uuid, xmlProcessor);
 				if(!usedSubTreeRefIdsPop.contains(uuid)){
 					usedSubTreeRefIdsPop.add(uuid);
@@ -3343,8 +3345,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 									+ "']//subTreeRef[@id='"
 									+ allSubTreeRefIds.get(j) + "']",
 									xmlProcessor.getOriginalDoc(), XPathConstants.NODE);
+					
 					if (usedSubTreeRefNode != null) {
+						
+						String subTreeUUID = usedSubTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
+				      String XPATH_IS_INSTANCE_OF = "//subTree [boolean(@instanceOf)]/@uuid ='"
+				    	        + subTreeUUID +"'";
+				    	      boolean isOccurrenceNode = (Boolean) xPath.evaluate(XPATH_IS_INSTANCE_OF, xmlProcessor.getOriginalDoc(), XPathConstants.BOOLEAN);
+				    	      if(isOccurrenceNode) {
+				    	       String XPATH_PARENT_UUID = "//subTree [@uuid ='"+subTreeUUID +"']/@instanceOf";
+				    	       String parentUUID = (String) xPath.evaluate(XPATH_PARENT_UUID, xmlProcessor.getOriginalDoc(), XPathConstants.STRING);
+				    	       if (!usedSubTreeRefIds.contains(parentUUID)) {
+				    	        usedSubTreeRefIds.add(parentUUID);
+				    	       }
+
+						}
 						if (!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))) {
+							
+							
 							usedSubTreeRefIds.add(allSubTreeRefIds.get(j));
 						}
 					}

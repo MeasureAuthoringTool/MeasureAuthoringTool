@@ -1387,6 +1387,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return measureXmlModel;
 	}
 	
+	@Override
+	public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(final String measureId){
+		 SortedClauseMapResult result = new SortedClauseMapResult();
+		  MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		  LinkedHashMap<String, String> sortedSubTreeMap = getSortedClauseMap(measureId);		 
+		  result.setMeasureXmlModel(model);
+		  result.setClauseMap(sortedSubTreeMap);
+		  return result;
+		 }
+	
 	/**
 	 * Gets the sorted clause map.
 	 *

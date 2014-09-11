@@ -14,6 +14,7 @@ import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
@@ -73,26 +74,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				PopulationWorkSpaceConstants.units = (ArrayList<String>) result;
 			}
 		});
-	}
-	
-	public void setXmlView(){
-		service.getSortedClauseMap(MatContext.get().getCurrentMeasureId(), new AsyncCallback<LinkedHashMap<String,String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(LinkedHashMap<String, String> result) {
-				System.out.println("SubTreeLookUpMap:"+ result);
-				PopulationWorkSpaceConstants.subTreeLookUpName = result;				
-				loadMeasureXML();
-				
-			}
-		});
-	}
+	}	
 	
 	/**
 	 * Load measure xml.
@@ -101,12 +83,13 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 		
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
-			service.getMeasureXmlForMeasure(MatContext.get()
+			service.getMeasureXmlForMeasureAndSortedSubTreeMap(MatContext.get()
 					.getCurrentMeasureId(),
-					new AsyncCallback<MeasureXmlModel>() { // Loading the measure's XML from the Measure_XML table
+					new AsyncCallback<SortedClauseMapResult>() { // Loading the measure's XML from the Measure_XML table
 				@Override
-				public void onSuccess(MeasureXmlModel result) {
-					String xml = result != null ? result.getXml() : null;
+				public void onSuccess(SortedClauseMapResult result) {
+					String xml = result != null ? result.getMeasureXmlModel().getXml() : null;
+					PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();
 					setQdmElementsAndSubTreeLookUpMap(xml);
 					loadClauseWorkSpaceView(simplepanel);
 				}
@@ -240,8 +223,8 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
 	@Override
-	public void beforeDisplay() {		
-		setXmlView();
+	public void beforeDisplay() {
+		loadMeasureXML();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkSpacePanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}

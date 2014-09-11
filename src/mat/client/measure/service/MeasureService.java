@@ -492,4 +492,13 @@ public interface MeasureService extends RemoteService {
 	 * @return the sorted clause map
 	 */
 	LinkedHashMap<String, String> getSortedClauseMap(String measureId);
+
+	/**
+	 * Gets the measure xml for measure and sorted sub tree map.
+	 *
+	 * @param currentMeasureId the current measure id
+	 * @return the measure xml for measure and sorted sub tree map
+	 */
+	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
+			String currentMeasureId);
 }

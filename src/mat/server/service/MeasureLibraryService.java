@@ -525,4 +525,13 @@ public interface MeasureLibraryService {
 	 * @return the sorted clause map
 	 */
 	LinkedHashMap<String, String> getSortedClauseMap(String measureId);
+
+	/**
+	 * Gets the measure xml for measure and sorted sub tree map.
+	 *
+	 * @param measureId the measure id
+	 * @return the measure xml for measure and sorted sub tree map
+	 */
+	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
+			String measureId);
 }

@@ -556,5 +556,16 @@ public interface MeasureServiceAsync {
 	 */
 	void getSortedClauseMap(String measureId,
 			AsyncCallback<LinkedHashMap<String, String>> callback);
+
+	/**
+	 * Gets the measure xml for measure and sorted sub tree map.
+	 *
+	 * @param currentMeasureId the current measure id
+	 * @param asyncCallback the async callback
+	 * @return the measure xml for measure and sorted sub tree map
+	 */
+	void getMeasureXmlForMeasureAndSortedSubTreeMap(
+			String currentMeasureId,
+			AsyncCallback<SortedClauseMapResult> Callback);
 		
 }

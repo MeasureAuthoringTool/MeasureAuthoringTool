@@ -12,6 +12,7 @@ import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
@@ -95,14 +96,15 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	private void setXMLOnTabs() {
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
-			service.getMeasureXmlForMeasure(MatContext.get()
+			service.getMeasureXmlForMeasureAndSortedSubTreeMap(MatContext.get()
 					.getCurrentMeasureId(),
-					new AsyncCallback<MeasureXmlModel>() { // Loading the measure's SimpleXML from the Measure_XML table
+					new AsyncCallback<SortedClauseMapResult>() { // Loading the measure's SimpleXML from the Measure_XML table
 				@Override
-				public void onSuccess(MeasureXmlModel result) {
+				public void onSuccess(SortedClauseMapResult result) {
 					try {
-						String xml = result != null ? result.getXml() : null;
+						String xml = result != null ? result.getMeasureXmlModel().getXml() : null;
 						com.google.gwt.xml.client.Document document = XMLParser.parse(xml);
+						PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();
 						NodeList nodeList = document.getElementsByTagName("scoring");
 						
 						if ((nodeList != null) && (nodeList.getLength() > 0)) {
@@ -140,7 +142,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							populationClausePresenter.setOriginalXML(newXML);
 							measureObsClausePresenter.setOriginalXML(newXML);
 							stratificationClausePresenter.setOriginalXML(newXML);
-							setQdmElementsAndSubTreeLookUpMap(xml, result.getMeasureId());
+							setQdmElementsAndSubTreeLookUpMap(xml);
 							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
 						} else {
@@ -188,7 +190,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	 * @param xml            the new qdm elements map
 	 * @param measureId the measure id
 	 */
-	private void setQdmElementsAndSubTreeLookUpMap(String xml, String measureId) {
+	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
 		
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
@@ -266,32 +268,14 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				
 			}
 		});
-	}
+	}	
 	
-	public void setXmlView(){
-		service.getSortedClauseMap(MatContext.get().getCurrentMeasureId(), new AsyncCallback<LinkedHashMap<String,String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSuccess(LinkedHashMap<String, String> result) {
-				System.out.println("SubTreeLookUpMap:"+ result);
-				PopulationWorkSpaceConstants.subTreeLookUpName = result;
-				setXMLOnTabs();
-				
-			}
-		});
-	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
 	@Override
 	public void beforeDisplay() {
-		setXmlView();
+		setXMLOnTabs();		
 	}
 	
 	/* (non-Javadoc)

@@ -463,5 +463,14 @@ MeasureService {
 	public LinkedHashMap<String, String> getSortedClauseMap(String measureId) {		
 		return this.getMeasureLibraryService().getSortedClauseMap(measureId);
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getMeasureXmlForMeasureAndSortedSubTreeMap(java.lang.String)
+	 */
+	@Override
+	public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
+			String currentMeasureId) {		
+		return this.getMeasureLibraryService().getMeasureXmlForMeasureAndSortedSubTreeMap(currentMeasureId);
+	}
 	
 }

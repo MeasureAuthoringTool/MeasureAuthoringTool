@@ -526,12 +526,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	
 	private String getEMeasureXML(MeasureExport me){
-		XMLUtility xmlUtility = new XMLUtility();
+		String xml = ""; // Add call to class that creates HQMF when ready
+		return xml;
+		
+		/*XMLUtility xmlUtility = new XMLUtility();
 		
 		String eMeasureXML = xmlUtility.applyXSL(me.getSimpleXML(),
 				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
 
-		return eMeasureXML;
+		return eMeasureXML;*/
 	}
 	/**
 	 * Gets the human readable for measure.

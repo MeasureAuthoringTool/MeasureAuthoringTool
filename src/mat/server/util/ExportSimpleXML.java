@@ -233,6 +233,7 @@ public class ExportSimpleXML {
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
 		System.out.println("usedSubTreeIds:"+usedSubTreeIds);
 	   
+		formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
 		
@@ -251,6 +252,33 @@ public class ExportSimpleXML {
 		return transform(originalDoc);
 	}
 	
+	/**
+	 * Format attribute date in qdm attribute.
+	 *
+	 * @param usedSubTreeIds the used sub tree ids
+	 * @param originalDoc the original doc
+	 */
+	private static void formatAttributeDateInQDMAttribute(List<String> usedSubTreeIds,
+			Document originalDoc) {
+		
+		String XPATH_EXP_ATTR_DATE = "/measure/subTreeLookUp//elementRef/attribute";
+		try {
+			NodeList qdmAttributeList = (NodeList) xPath.evaluate(XPATH_EXP_ATTR_DATE,
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for(int i = 0; i< qdmAttributeList.getLength(); i++){
+				Node attrNode = qdmAttributeList.item(i);
+				if(attrNode.getAttributes().getNamedItem("attrDate")!=null){
+					String date = attrNode.getAttributes().getNamedItem("attrDate").getNodeValue();
+					attrNode.getAttributes().getNamedItem("attrDate").setNodeValue(formatDate(date));
+				}
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
 	/**
 	 * Adds the uuid to qdm attribute.
 	 *
@@ -970,6 +998,15 @@ public class ExportSimpleXML {
 		return usedSubTreeRefIds;
 	}
 	
+	/**
+	 * Gets the referenced sub trees.
+	 *
+	 * @param usedSubTreeRefIds the used sub tree ref ids
+	 * @param allSubTreeRefIds the all sub tree ref ids
+	 * @param originalDoc the original doc
+	 * @return the referenced sub trees
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static List<String> getReferencedSubTrees(List<String> usedSubTreeRefIds, List<String> allSubTreeRefIds, Document originalDoc) throws XPathExpressionException{
 		List<String> referencedIds = new ArrayList<String>();
 		

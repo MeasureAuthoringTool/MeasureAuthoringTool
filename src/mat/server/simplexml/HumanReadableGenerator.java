@@ -1281,7 +1281,7 @@ public class HumanReadableGenerator {
 		if(attributeName.contains("date")){
 		String attrDate = attributeNode.getAttributes()
 				.getNamedItem("attrDate").getNodeValue();
-		attributeText = " (" + attributeName + operator + attrDate + ")";
+		attributeText = " (" + attributeName + operator + formatDate(attrDate) + ")";
 		} else {
 		String comparisonValue = attributeNode.getAttributes()
 				.getNamedItem("comparisonValue").getNodeValue();
@@ -2190,8 +2190,9 @@ public class HumanReadableGenerator {
 	 * are. 
 	 * This method will look for subTreeRef's in subTree and resolve them to subTree, so that proper human readable 
 	 * is generated.   
-	 * @param simpleXMLProcessor
-	 * @throws XPathExpressionException 
+	 *
+	 * @param simpleXMLProcessor the simple xml processor
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void resolveRemainingSubTreeRefs(
 			XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
@@ -2210,6 +2211,28 @@ public class HumanReadableGenerator {
 				subTreeRefParentNode.replaceChild(clonedSubTreeNode, subTreeRefNode);
 			}
 		}
+	}
+	
+	/**
+	 * Format date.
+	 *
+	 * @param date the date
+	 * @return the string
+	 */
+	private static String formatDate(String date){
+		String dateString = "";
+		if(!date.contains("/")){
+			String year = date.substring(0, 4);
+			String month = date.substring(4, 6);
+			String dt = date.substring(6, 8);
+			if(year.length() != 4 || year.toLowerCase().indexOf("x") > -1){
+			    year = "0000";
+			   }
+			dateString = month.concat("/") + dt.concat("/") + year;
+		} else {
+			return date;
+		}
+		return dateString;
 	}
 	
 }

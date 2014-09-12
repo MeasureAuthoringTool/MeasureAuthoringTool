@@ -1459,7 +1459,8 @@ public class HumanReadableGenerator {
 								+ "Most likely you have included a clause within clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
-			
+			resolveRemainingSubTreeRefs(simpleXMLProcessor);
+						
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
@@ -2181,6 +2182,34 @@ public class HumanReadableGenerator {
 			e.printStackTrace();
 		}
 		return simpleXMLProcessor;
+	}
+	
+	/**
+	 * Because of "QDM Variable with Occurances", we might have some subTree's with subTreeRef's in subTreeLookUp.
+	 * This is because these subTree's aren't directly referred to in the clause logic, but their occurrance(s) 
+	 * are. 
+	 * This method will look for subTreeRef's in subTree and resolve them to subTree, so that proper human readable 
+	 * is generated.   
+	 * @param simpleXMLProcessor
+	 * @throws XPathExpressionException 
+	 */
+	private static void resolveRemainingSubTreeRefs(
+			XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		
+		NodeList remainingSubTreeRefs = simpleXMLProcessor.findNodeList(
+				simpleXMLProcessor.getOriginalDoc(),
+				"/measure/subTreeLookUp//subTreeRef");
+		
+		for(int i=0;i<remainingSubTreeRefs.getLength();i++){
+			Node subTreeRefNode = remainingSubTreeRefs.item(i);
+			String subTreeNodeID = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
+			Node subTreeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeNodeID+"']");
+			if(subTreeNode != null){
+				Node clonedSubTreeNode = subTreeNode.cloneNode(true);
+				Node subTreeRefParentNode = subTreeRefNode.getParentNode();
+				subTreeRefParentNode.replaceChild(clonedSubTreeNode, subTreeRefNode);
+			}
+		}
 	}
 
 	/**

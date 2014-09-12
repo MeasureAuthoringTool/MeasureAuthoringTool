@@ -517,22 +517,20 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
-				String emeasureXML = getEMeasureXML(me);
+				//String emeasureXML = getEMeasureXML(me);
+				String emeasureXML = "";
 				ZipPackager zp = new ZipPackager();
 				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML);
 		}
 	
 	
 	private String getEMeasureXML(MeasureExport me){
-		String xml = ""; // Add call to class that creates HQMF when ready
-		return xml;
-		
-		/*XMLUtility xmlUtility = new XMLUtility();
+		XMLUtility xmlUtility = new XMLUtility();
 		
 		String eMeasureXML = xmlUtility.applyXSL(me.getSimpleXML(),
 				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
 
-		return eMeasureXML;*/
+		return eMeasureXML;
 	}
 	/**
 	 * Gets the human readable for measure.
@@ -750,7 +748,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
-		String emeasureXMLStr = getEMeasureXML(me);
+//		String emeasureXMLStr = getEMeasureXML(me);
+		String emeasureXMLStr = "";
 		String emeasureName = me.getMeasure().getaBBRName();
 
 		ZipPackager zp = new ZipPackager();

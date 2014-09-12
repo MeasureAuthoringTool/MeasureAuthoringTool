@@ -2211,22 +2211,5 @@ public class HumanReadableGenerator {
 			}
 		}
 	}
-
-	/**
-	 * Removes the node.
-	 *
-	 * @param nodeXPath the node x path
-	 * @param xmlProcessor the xml processor
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void removeNode(String nodeXPath, XmlProcessor xmlProcessor)
-			throws XPathExpressionException {
-		Node node = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-				nodeXPath);
-		if (node != null) {
-			Node parentNode = node.getParentNode();
-			parentNode.removeChild(node);
-		}
-	}
-
+	
 }

@@ -787,8 +787,6 @@ public class HumanReadableGenerator {
 						System.out.println(" if Adding a new line");
 					} else {
 						Element ulElement = parentListElement;
-						System.out.println("else Adding a new line");
-						System.out.println(childNodes.toString());
 						if ( !(childNodes.getLength() == 0) && (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
 								.equals(FUNCTIONAL_OP))) {
 							ulElement = parentListElement
@@ -797,11 +795,16 @@ public class HumanReadableGenerator {
 						for (int i = 0; i < childNodes.getLength(); i++) {
 							if (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
 									.equals(FUNCTIONAL_OP)) {
-								ulElement = ulElement.appendElement(HTML_LI);
+								Element newLiElem = ulElement.appendElement(HTML_LI);
+								//ulElement = ulElement.appendElement(HTML_LI);
+								parseChild(childNodes.item(i), newLiElem, item,
+										populationOrSubtreeXMLProcessor,
+										satisfiesAnyAll);
+							}else{
+								parseChild(childNodes.item(i), ulElement, item,
+										populationOrSubtreeXMLProcessor,
+										satisfiesAnyAll);
 							}
-							parseChild(childNodes.item(i), ulElement, item,
-									populationOrSubtreeXMLProcessor,
-									satisfiesAnyAll);
 						}
 					}
 				}
@@ -890,7 +893,7 @@ public class HumanReadableGenerator {
 		}
 
 	}
-
+	
 	/**
 	 * Display initial pop.
 	 *

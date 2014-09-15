@@ -583,15 +583,17 @@ public class HumanReadableGenerator {
 				if(map.getNamedItem("instanceOf") == null){
 					displayName = "$"+StringUtils.deleteWhitespace(displayName);
 				}
-				parentListElement.appendText(displayName+ " ");
-				
+								
 				if(COMMENT.equals(item.getFirstChild().getNodeName())){
 					String commentValue = item.getFirstChild().getTextContent();
 					if (commentValue != null && commentValue.trim().length() > 0) {
+						parentListElement.appendElement("br");
 						Element italicElement = parentListElement.appendElement("i");
 						italicElement.appendText("# " + commentValue);
+						parentListElement.appendElement("br");
 					}
 				}
+				parentListElement.appendText(displayName+ " ");
 				
 			} else {
 				showOnlyVariableName = false;

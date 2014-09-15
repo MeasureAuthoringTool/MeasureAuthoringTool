@@ -2063,10 +2063,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						
 					} else if(element.equalsIgnoreCase("inValidAtSetoperatorAndOrFunction")){
 						warningMessages.add(MatContext.get().getMessageDelegate().getATLEAST_ONE_CHILD_REQUIRED());
-					} /*else if (element.equalsIgnoreCase("invalidClauseLogic")){
-						warningMessages.add("Invalid Clause is used.");
-					}*/
-					
+					} else if (element.equalsIgnoreCase("invalidClauseLogic")){
+						warningMessages.add("Invalid Clause(s) used in Logic.");
+					}
 				}
 				
 				if(warningMessages.size()>0){
@@ -2224,7 +2223,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					break;
-					/*case CellTreeNode.SUBTREE_REF_NODE:
+				case CellTreeNode.SUBTREE_REF_NODE:
 					boolean checkForValidation = validateSubTreeRefNode(node);
 					if(checkForValidation){
 						if(!inValidNodeList.contains("invalidClauseLogic")){
@@ -2232,7 +2231,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						editNode(false, node);
 					}
-					break;*/
+					break;
 				default:
 					break;
 			}

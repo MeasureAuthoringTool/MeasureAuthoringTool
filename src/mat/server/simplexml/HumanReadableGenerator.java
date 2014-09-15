@@ -748,11 +748,15 @@ public class HumanReadableGenerator {
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
 							if (childNodes.getLength() > 1) {
-								liElement = liElement.appendElement(HTML_LI);
+								Element newLiElement = liElement.appendElement(HTML_LI);
+								parseChild(childNodes.item(i), newLiElement, item,
+										populationOrSubtreeXMLProcessor,
+										satisfiesAnyAll);
+							}else{
+								parseChild(childNodes.item(i), liElement, item,
+										populationOrSubtreeXMLProcessor,
+										satisfiesAnyAll);
 							}
-							parseChild(childNodes.item(i), liElement, item,
-									populationOrSubtreeXMLProcessor,
-									satisfiesAnyAll);
 						}
 					}
 				}

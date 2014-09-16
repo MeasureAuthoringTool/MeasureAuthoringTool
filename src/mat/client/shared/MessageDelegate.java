@@ -598,7 +598,7 @@ public class MessageDelegate {
 	/** The removed functions error message. */
 	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Highlighted clause contains DATETIMEDIFF Function.";
 	
-	
+	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE ="Invalid Clause(s) used in Logic.";
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -2152,12 +2152,19 @@ public class MessageDelegate {
 	public String getINVALID_LOGIC_POPULATION_WORK_SPACE() {
 		return INVALID_LOGIC_POPULATION_WORK_SPACE;
 	}
-
+	
 	/**
 	 * @return the iNVALIDLOGIC_CLAUSE_WORK_SPACE
 	 */
 	public String getINVALIDLOGIC_CLAUSE_WORK_SPACE() {
 		return INVALIDLOGIC_CLAUSE_WORK_SPACE;
+	}
+	
+	/**
+	 * @return the cLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE
+	 */
+	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE() {
+		return CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE;
 	}
 	
 	

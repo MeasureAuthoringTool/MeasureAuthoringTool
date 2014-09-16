@@ -941,7 +941,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setOwnerLastName(user.getLastName());
 		detail.setOwnerEmailAddress(user.getEmailAddress());
 		detail.setDraft(dto.isDraft());
-		String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(), dto.getRevisionNumber(), dto.isDraft());
 		detail.setVersion(formattedVersion);
 		detail.setFinalizedDate(dto.getFinalizedDate());
 		detail.setMeasureSetId(dto.getMeasureSetId());
@@ -1149,7 +1149,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					.after(getFormattedReleaseDate(releaseDate))
 					|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
 			/*detail.setStatus(measure.getMeasureStatus());*/
-			String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(),
+			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(), measure.getRevisionNumber(),
 					measure.isDraft());
 			detail.setVersion(formattedVersion);
 			detail.setFinalizedDate(measure.getFinalizedDate());
@@ -2246,7 +2246,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void setDTOtoModel(final List<ManageMeasureSearchModel.Result> detailModelList, final MeasureShareDTO dto,
 			final String currentUserId, final boolean isSuperUser) {
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
-		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();		
 		detail.setName(dto.getMeasureName());
 		detail.setShortName(dto.getShortName());
 		detail.setStatus(dto.getStatus());
@@ -2880,7 +2880,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(measure.getDescription());
 		detail.setId(measure.getId());
-		String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(), measure.getRevisionNumber(), measure.isDraft());
 		detail.setVersion(formattedVersion);
 		detail.setFinalizedDate(measure.getFinalizedDate());
 		return detail;

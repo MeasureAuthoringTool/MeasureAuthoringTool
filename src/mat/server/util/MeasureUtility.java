@@ -83,6 +83,16 @@ public class MeasureUtility {
 		}
 	}
 	
+	public static String getVersionTextWithRevisionNumber(String orgVersionNumber, String revisionNumber, boolean draft) {
+		String mVersion = formatVersionText(orgVersionNumber);
+		
+		if(draft) {
+			return "Draft based on v" + mVersion;
+		} else {
+			return "v" + mVersion+ "." + revisionNumber;
+		}
+	}
+	
 	public static String formatVersionText(String revisionNumber, String version) {
 		StringUtility su = new StringUtility();
 		String[] versionArr = version.split("\\.");

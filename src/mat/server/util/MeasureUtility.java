@@ -5,6 +5,7 @@ package mat.server.util;
 
 import mat.shared.StringUtility;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureUtility.
  * 
@@ -73,6 +74,14 @@ public class MeasureUtility {
 		}
 	}
 	
+	/**
+	 * Gets the version text.
+	 *
+	 * @param orgVersionNumber the org version number
+	 * @param revisionNumber the revision number
+	 * @param draft the draft
+	 * @return the version text
+	 */
 	public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean draft) {
 		String mVersion = formatVersionText(orgVersionNumber);
 		
@@ -83,6 +92,14 @@ public class MeasureUtility {
 		}
 	}
 	
+	/**
+	 * Gets the version text with revision number.
+	 *
+	 * @param orgVersionNumber the org version number
+	 * @param revisionNumber the revision number
+	 * @param draft the draft
+	 * @return the version text with revision number
+	 */
 	public static String getVersionTextWithRevisionNumber(String orgVersionNumber, String revisionNumber, boolean draft) {
 		String mVersion = formatVersionText(orgVersionNumber);
 		
@@ -93,6 +110,13 @@ public class MeasureUtility {
 		}
 	}
 	
+	/**
+	 * Format version text.
+	 *
+	 * @param revisionNumber the revision number
+	 * @param version the version
+	 * @return the string
+	 */
 	public static String formatVersionText(String revisionNumber, String version) {
 		StringUtility su = new StringUtility();
 		String[] versionArr = version.split("\\.");

@@ -2031,7 +2031,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			List<MeasureShareDTO> measureTotalList = measureList;
 			
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (pageSize < measureTotalList.size()) {
+			if (pageSize <= measureTotalList.size()) {
 				measureList = measureTotalList
 						.subList(startIndex - 1, pageSize);
 			} else if (pageSize > measureList.size()) {

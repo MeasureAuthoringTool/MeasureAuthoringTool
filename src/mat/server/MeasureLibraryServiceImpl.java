@@ -2259,7 +2259,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setSharable(isOwner || isSuperUser);
 		detail.setLockedUserInfo(dto.getLockedUserInfo());
 		detail.setDraft(dto.isDraft());
-		String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(), dto.getRevisionNumber(), dto.isDraft());
 		detail.setVersion(formattedVersion);
 		detail.setScoringType(dto.getScoringType());
 		detail.setMeasureSetId(dto.getMeasureSetId());

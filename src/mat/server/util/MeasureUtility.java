@@ -104,9 +104,9 @@ public class MeasureUtility {
 		String mVersion = formatVersionText(orgVersionNumber);
 		
 		if(draft) {
-			return "Draft based on v" + mVersion;
+			return "Draft v" + mVersion+ "." + revisionNumber;
 		} else {
-			return "v" + mVersion+ "." + revisionNumber;
+			return "v" + mVersion;
 		}
 	}
 	

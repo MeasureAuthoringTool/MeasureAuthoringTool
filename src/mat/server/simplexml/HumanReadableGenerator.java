@@ -507,7 +507,6 @@ public class HumanReadableGenerator {
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
 		if (LOGICAL_OP.equals(nodeName)) {
-
 			String nodeDisplayName = item.getAttributes()
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 			String parentNodeDisplayName = parentNode.getAttributes()
@@ -535,8 +534,13 @@ public class HumanReadableGenerator {
 			}
 			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() == 0) {
-				displayNone(ulElement, populationOrSubtreeXMLProcessor,
+				boolean isNoneAdded = displayNone(ulElement, populationOrSubtreeXMLProcessor,
 						parentNode);
+				if(!isNoneAdded){
+					if(ulElement.childNodeSize() == 0){
+						ulElement.remove();
+					}
+				}
 				// ulElement.appendElement(HTML_LI).appendText("None");
 			}
 			for (int i = 0; i < childNodes.getLength(); i++) {
@@ -712,8 +716,14 @@ public class HumanReadableGenerator {
 						parentListElement = parentListElement.appendElement(
 								HTML_UL).appendElement(HTML_LI);
 					}
-					parentListElement.appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
+					String parentNodeName = parentListElement.nodeName();
+					if("ul".equals(parentNodeName)){
+						parentListElement.appendElement(HTML_LI).appendText(getNodeText(item,
+								populationOrSubtreeXMLProcessor));
+					}else{					
+						parentListElement.appendText(getNodeText(item,
+								populationOrSubtreeXMLProcessor));
+					}
 				}
 			}
 		} else if (FUNCTIONAL_OP.equals(nodeName)) {
@@ -875,8 +885,9 @@ public class HumanReadableGenerator {
 	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
 	 * @param parentNode the parent node
 	 */
-	private static void displayNone(Element list,
+	private static boolean displayNone(Element list,
 			XmlProcessor populationOrSubtreeXMLProcessor, Node parentNode) {
+		boolean retValue = false;
 		try {
 			String scoring = populationOrSubtreeXMLProcessor.findNode(
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
@@ -893,12 +904,13 @@ public class HumanReadableGenerator {
 					|| ("cohort".equalsIgnoreCase(scoring))) {
 
 				list.appendElement(HTML_LI).appendText("None");
-			}
+				retValue = true;
+			}			
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		return retValue;
 	}
 	
 	/**

@@ -521,9 +521,9 @@ public class HumanReadableGenerator {
 					if (isNestedNot) {
 						// liElement.appendText(nodeDisplayName+":");
 					} else {
-						Element liElement = parentListElement
+						parentListElement = parentListElement
 								.appendElement(HTML_LI);
-						liElement.appendText(parentNodeDisplayName + ":");
+						parentListElement.appendText(parentNodeDisplayName + ":");
 					}
 				}
 			}
@@ -620,7 +620,8 @@ public class HumanReadableGenerator {
 			}
 			// Element ulElement = liElement.appendElement(HTML_UL);
 			if (parentListElement.nodeName().equals(HTML_UL)) {
-				parentListElement.appendElement(HTML_LI).appendText(
+				parentListElement = parentListElement.appendElement(HTML_LI);
+				parentListElement.appendText(
 						getNodeText(item, populationOrSubtreeXMLProcessor));
 			} else {
 				if (parentListElement.html().contains("Stratification")) {

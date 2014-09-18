@@ -1488,6 +1488,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			selectedNode.setName(name);
 			selectedNode.setLabel(label);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode.getParent(), true);
+			// This is done to invoke focus event on Parent node to show Inline comment in Comment Area
+			//when Edit Operation is Performed on ClauseWorspace or PopulationWorkspace.
+			((NodeCell) getNodeInfo(selectedNode.getParent()).getCell()).
+			onBrowserEvent(new Context(0, 0, null), null, selectedNode.getParent(), Document.get().createFocusEvent(), null);
 		}
 	}
 	/**

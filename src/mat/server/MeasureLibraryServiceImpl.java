@@ -1838,6 +1838,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 			} else {
 				if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
+					versionNumber = versionArr[0]+"."+versionArr[1];
 					return incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
 				} else {
 					return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);

@@ -3,13 +3,13 @@ package mat.client.measure.metadata;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
-import mat.client.shared.CustomButton;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -28,6 +28,7 @@ import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -43,7 +44,6 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -269,7 +269,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private Button addEditMeasureType = new PrimaryButton("Add/Edit Measure Type","primaryMetaDataButton");
 	
 	/** The add edit authors. */
-	private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)","primaryMetaDataButton");
+	//private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)","primaryMetaDataButton");
 	
 	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new PrimaryButton("Add/Edit Component Measures","primaryMetaDataButton");
@@ -373,7 +373,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
 	
 	/** The authors selected list. */
-	private List<Author> authorsSelectedList;
+	private List<Author> authorsSelectedList = new ArrayList<Author>();
 	
 	
 	/**
@@ -531,7 +531,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//fPanel.add(emptyAuthorsPanel);
 		//fPanel.add(addEditAuthors);
 		fPanel.add(authorSPanel);
-		fPanel.add(addEditAuthors);
+		//fPanel.add(addEditAuthors);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(endorsedByNQF, "Endorsed By NQF"));
@@ -1001,6 +1001,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 		
 	}
+	public void updateAuthorSelectedList(List<Author> authorList) {
+		if (authorsSelectedList.size() != 0) {
+			for (int i = 0; i < authorsSelectedList.size(); i++) {
+				for (int j = 0; j < authorList.size(); j++) {
+					if (authorsSelectedList.get(i).getOrgId().
+							equalsIgnoreCase(authorList.get(j).getOrgId())) {
+						authorsSelectedList.set(i, authorList.get(j));
+						break;
+					}
+				}
+			}
+		}
+		
+	}
 	
 	
 	/**
@@ -1306,7 +1320,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void buildAuthorCellTable(List<Author> currentAuthorsList, boolean editable) {
 		authorSPanel.clear();
 		authorSPanel.setStyleName("cellTablePanel");
-		if(currentAuthorsList.size()>0){
+		/*if(currentAuthorsList.size()>0){*/
 			authorCellTable = new CellTable<Author>();
 			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<Author> sortProvider = new ListDataProvider<Author>();
@@ -1315,6 +1329,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.refresh();
 			sortProvider.getList().addAll(currentAuthorsList);
 			addAuthorColumnToTable(editable);
+			updateAuthorSelectedList(currentAuthorsList);
 			sortProvider.addDataDisplay(authorCellTable);
 			authorCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
@@ -1324,11 +1339,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			authorSPanel.setSize("500px", "150px");
 			authorSPanel.add(invisibleLabel);
 			authorSPanel.setWidget(authorCellTable);
-		}else {
+		/*}else {
 			HTML desc = new HTML("<p> No Measure Developer Selected.</p>");
 			authorSPanel.setSize("200px", "75px");
 			authorSPanel.setWidget(desc);
-		}
+		}*/
 		
 		
 	}
@@ -1400,7 +1415,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			
 			@Override
 			public SafeHtml getValue(Author object) {
-				return CellTableUtility.getColumnToolTip(object.getAuthorName());
+				return CellTableUtility.getColumnToolTip(object.getAuthorName(), object.getOrgId());
 			}
 		};
 		
@@ -1536,10 +1551,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEditAuthorsButton()
 	 */
-	@Override
+	/*@Override
 	public HasClickHandlers getEditAuthorsButton() {
 		return addEditAuthors;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getFocusPanel()
@@ -2217,7 +2232,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void setAddEditButtonsVisible(boolean b) {
-		addEditAuthors.setEnabled(b);
+		//addEditAuthors.setEnabled(b);
 		addEditMeasureType.setEnabled(b);
 		addEditCmponentMeasures.setEnabled(b);
 		measurePeriodFromInput.setEnableCSS(b);

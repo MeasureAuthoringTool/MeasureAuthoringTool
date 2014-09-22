@@ -1,4 +1,4 @@
-package mat.client.measure.metadata;
+/*package mat.client.measure.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,67 +37,67 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 // TODO: Auto-generated Javadoc
-/**
+*//**
  * The Class AddEditAuthorsView.
- */
+ *//*
 public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDisplay{
 	
-	/** The author h panel. */
+	*//** The author h panel. *//*
 	private HorizontalPanel authorHPanel = new HorizontalPanel();
 	
-	/** The message h panel. */
+	*//** The message h panel. *//*
 	private HorizontalPanel messageHPanel = new HorizontalPanel();
 	
-	/** The author v panel. */
+	*//** The author v panel. *//*
 	private VerticalPanel authorVPanel = new VerticalPanel();
 	
-	/** The message v panel. */
+	*//** The message v panel. *//*
 	private VerticalPanel messageVPanel = new VerticalPanel();
 	
-	/** The add success msg panel. */
+	*//** The add success msg panel. *//*
 	VerticalPanel addSuccessMsgPanel =  new VerticalPanel();
 	
-	/** The author cell table. */
+	*//** The author cell table. *//*
 	private CellTable<Author> authorCellTable;
 	
-	/** The author selection model. */
+	*//** The author selection model. *//*
 	private MultiSelectionModel<Author> authorSelectionModel;
 	
-	/** The author selected list. */
+	*//** The author selected list. *//*
 	private List<Author> authorSelectedList;
 	
-	/** The list of all author. */
+	*//** The list of all author. *//*
 	private List<Author> listOfAllAuthor;
 	
-	/** The cancel button. */
+	*//** The cancel button. *//*
 	private Button addEditcancelButton = new PrimaryButton("cancel");
 	
-	/** The add button. */
+	*//** The add button. *//*
 	private Button addButton = new PrimaryButton("Add to List");
 	
-	/** The main panel. */
+	*//** The main panel. *//*
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	/** The Constant PAGE_SIZE. */
+	*//** The Constant PAGE_SIZE. *//*
 	private static final int PAGE_SIZE = 25;
 	
-	/** The measure dev input. */
+	*//** The measure dev input. *//*
 	private TextBox measureDevInput = new TextBox(); 
 	
-	/** The simp panel. */
+	*//** The simp panel. *//*
 	private SimplePanel simpPanel = new SimplePanel();
 	
-	/** The return button. */
+	*//** The return button. *//*
 	protected Button returnButton = new PrimaryButton("Return to Previous");
 	
-	/** The success messages. */
+	*//** The success messages. *//*
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 
 	
 	
-	/**
+	*//**
 	 * Instantiates a new adds the edit authors view.
-	 */
+	 *//*
 	public AddEditAuthorsView() {		
 		addSuccessMsgPanel.addStyleName("marginTop");
 		addSuccessMsgPanel.setWidth("800px");
@@ -112,11 +112,11 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 		mainPanel.add(messageHPanel);
 	}
 	
-	/**
+	*//**
 	 * Builds the add measure dev panel.
 	 *
 	 * @return the widget
-	 */
+	 *//*
 	public Widget buildAddMeasureDevPanel(){
 		VerticalPanel addMeasureDevPanel = new VerticalPanel();		
 		addMeasureDevPanel.getElement().setId("searchPanel_VerticalPanel");
@@ -153,20 +153,20 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 		return addMeasureDevPanel;
 	}
 	
-	/** The add to measure developer list. */
+	*//** The add to measure developer list. *//*
 	Button addToMeasureDeveloperList = new PrimaryButton("Add To Measure Developer List");
 	
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.client.measure.metadata.AddEditMetadataBaseView#asWidget()
-	 */
+	 
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
-		/* (non-Javadoc)
+		 (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#buildAuthorCellTable(java.util.List, boolean)
-	 */
+	 
 	@Override
 	public void buildAuthorCellTable(List<Author> authorList, boolean editable, List<Author> authorsSelectedList){
 		measureDevInput.setText("");
@@ -218,11 +218,11 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 			
 	}
 
-	/**
+	*//**
 	 * Adds the author column to table.
 	 *
 	 * @param editable the editable
-	 */
+	 *//*
 	private void addAuthorColumnToTable(boolean editable) {
 		Label measureSearchHeader = new Label("Measure Developer List");
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
@@ -296,115 +296,116 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	}
 	
 	
-	/**
+	*//**
 	 * Gets the author selected list.
 	 *
 	 * @return the authorSelectedList
-	 */
+	 *//*
 	@Override
 	public List<Author> getAuthorSelectedList() {
 		return authorSelectedList;
 	}
 
-	/**
+	*//**
 	 * Sets the author selected list.
 	 *
 	 * @param authorSelectedList the authorSelectedList to set
-	 */
+	 *//*
 	@Override
 	public void setAuthorSelectedList(List<Author> authorSelectedList) {
 		this.authorSelectedList = authorSelectedList;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getAddToMeasureDeveloperListBtn()
-	 */
+	 
 	@Override
 	public Button getAddToMeasureDeveloperListBtn() {
 		return addToMeasureDeveloperList;
 	}
 
-	/**
+	*//**
 	 * Gets the adds the to measure developer list.
 	 *
 	 * @return the addToMeasureDeveloperList
-	 */
+	 *//*
 	public Button getAddToMeasureDeveloperList() {
 		return addToMeasureDeveloperList;
 	}
 
-	/**
+	*//**
 	 * Sets the adds the to measure developer list.
 	 *
 	 * @param addToMeasureDeveloperList the addToMeasureDeveloperList to set
-	 */
+	 *//*
 	public void setAddToMeasureDeveloperList(Button addToMeasureDeveloperList) {
 		this.addToMeasureDeveloperList = addToMeasureDeveloperList;
 	}
 
-	/**
+	*//**
 	 * Gets the adds the button.
 	 *
 	 * @return the addButton
-	 */
+	 *//*
 	@Override
 	public Button getAddButton() {
 		return addButton;
 	}
 
-	/**
+	*//**
 	 * Gets the measure dev input.
 	 *
 	 * @return the measureDevInput
-	 */
+	 *//*
 	@Override
 	public TextBox getMeasureDevInput() {
 		return measureDevInput;
 	}
 
-	/**
+	*//**
 	 * Sets the measure dev input.
 	 *
 	 * @param measureDevInput the measureDevInput to set
-	 */
+	 *//*
 	@Override
 	public void setMeasureDevInput(TextBox measureDevInput) {
 		this.measureDevInput = measureDevInput;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getListOfAllAuthor()
-	 */
+	 
 	@Override
 	public List<Author> getListOfAllAuthor() {
 		return listOfAllAuthor;
 	}
 
-	/**
+	*//**
 	 * Gets the adds the edit cancel button.
 	 *
 	 * @return the addEditcancelButton
-	 */
+	 *//*
 	@Override
 	public Button getAddEditCancelButton() {
 		return addEditcancelButton;
 	}
 
 	
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getSuccessMessageDisplay()
-	 */
+	 
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getReturnButton()
-	 */
+	 
 	@Override
 	public HasClickHandlers getReturnButton() {
 		return returnButton;
 	}
 	
 }
+*/

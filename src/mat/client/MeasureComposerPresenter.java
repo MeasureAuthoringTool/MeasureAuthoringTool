@@ -7,7 +7,8 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.MeasureNotesPresenter;
 import mat.client.measure.MeasureNotesView;
-import mat.client.measure.metadata.AddEditAuthorsView;
+//MAT-4898
+//import mat.client.measure.metadata.AddEditAuthorsView;
 import mat.client.measure.metadata.AddEditComponentMeasuresView;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
@@ -324,10 +325,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 */
 	private MatPresenter buildMeasureMetaDataPresenter() {
 		MetaDataView mdV = new MetaDataView();
-		AddEditAuthorsView aeaV = new AddEditAuthorsView();
+		//MAT-4898
+		//AddEditAuthorsView aeaV = new AddEditAuthorsView();
 		//AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
 		AddEditComponentMeasuresView aecmV = new AddEditComponentMeasuresView();
-		MetaDataPresenter mdP = new MetaDataPresenter(mdV, aeaV,aecmV, buttonBar, MatContext.get().getListBoxCodeProvider());
+		MetaDataPresenter mdP = new MetaDataPresenter(mdV, aecmV, buttonBar, MatContext.get().getListBoxCodeProvider());
 		return mdP;
 	}
 	

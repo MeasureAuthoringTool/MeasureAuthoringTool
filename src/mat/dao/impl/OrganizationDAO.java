@@ -62,6 +62,7 @@ mat.dao.OrganizationDAO {
 		List<Organization> organizations = new ArrayList<Organization>();
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Organization.class);
+		criteria.add(Restrictions.ne("organizationName",""));
 		criteria.addOrder(Order.asc("organizationName"));
 		if (!criteria.list().isEmpty()) {
 			organizations = criteria.list();

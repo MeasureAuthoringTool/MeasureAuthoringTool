@@ -47,6 +47,7 @@ import mat.dao.AuthorDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureTypeDAO;
+import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -58,6 +59,7 @@ import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureType;
+import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
@@ -180,6 +182,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Autowired
 	private OperatorDAO operatorDAO;
 	
+	@Autowired
+	private OrganizationDAO organizationDAO;
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
@@ -2200,8 +2204,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (StringUtils.isNotBlank(measureDetailModel.getGroupName())) {
 			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());
 		}
-		
-		setOrgIdInAuthor(measureDetailModel.getAuthorSelectedList());
+		//MAT-4898
+		//setOrgIdInAuthor(measureDetailModel.getAuthorSelectedList());
 		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeSelectedList());
 		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
 		
@@ -3616,13 +3620,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public List<Author> getAllAuthors() {
-		List<AuthorDTO> authorDTOList = authorDAO.getAllAuthors();
+		List<Organization> organizationDTOList = organizationDAO.getAllOrganizations();
 		List<Author> authorList = new ArrayList<Author>();
-		for(AuthorDTO authorDTO : authorDTOList){
+		for(Organization organizationDTO : organizationDTOList){
 			Author author = new Author();
-			author.setAuthorName(authorDTO.getAuthorName());
-			String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
-			author.setOrgId(oid);
+			author.setAuthorName(organizationDTO.getOrganizationName());
+			author.setOrgId(organizationDTO.getOrganizationOID());
 			authorList.add(author);
 		}
 		return authorList;

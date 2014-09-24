@@ -18,6 +18,7 @@ import mat.client.shared.MatException;
 import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
+import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
@@ -434,9 +435,9 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#getAllAddEditAuthors()
 	 */
 	@Override
-	public List<Author> getAllAddEditAuthors() {
+	public List<Organization> getAllOrganizations() {
 		
-		return this.getMeasureLibraryService().getAllAuthors();
+		return this.getMeasureLibraryService().getAllOrganizations();
 	}
 	
 	/* (non-Javadoc)

@@ -1,5 +1,7 @@
 package mat.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * Model class representing the Organization table in the database.
  * Referred to in the Organization.hbm.xml file.
@@ -7,10 +9,10 @@ package mat.model;
  *
  */
 
-public class Organization {
+public class Organization implements IsSerializable{
 	
 	/** The id. */
-	private long id;
+	private String id;
 	
 	/** The organization name. */
 	private String organizationName;
@@ -22,14 +24,14 @@ public class Organization {
 	/** Sets the id.
 	 * 
 	 * @param id the new id */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
 	/** Gets the id.
 	 * 
 	 * @return the id */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 	

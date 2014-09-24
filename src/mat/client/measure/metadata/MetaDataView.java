@@ -18,6 +18,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -25,6 +26,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.util.CellTableUtility;
 import mat.model.Author;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
@@ -73,6 +75,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -146,6 +149,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The author s panel. */
 	protected ScrollPanel authorSPanel = new ScrollPanel();
+	
+	/** The steward s panel. */
+	protected ScrollPanel stewardSPanel = new ScrollPanel();
 	
 	/** The measure steward other input. */
 	protected TextBox measureStewardOtherInput = new TextBox();
@@ -247,6 +253,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected RadioButton Yes = new RadioButton("NQFgroup","Yes");
 	
 	
+	
 	/** The clinical stmt input. */
 	protected TextAreaWithMaxLength  clinicalStmtInput = new TextAreaWithMaxLength ();
 	
@@ -346,6 +353,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The author cell table. */
 	private CellTable<Author> authorCellTable;
 	
+	/** The steward cell table. */
+	private CellTable<MeasureSteward> stewardCellTable;
+	
 	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 	
@@ -361,6 +371,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The author selection model. */
 	private MultiSelectionModel<Author> authorSelectionModel;
 	
+	/** The steward selection model. */
+	private SingleSelectionModel<MeasureSteward> stewardSelectionModel;
+	
 	// private MatButtonCell searchButton = new MatButtonCell("click to Search Measures","customSearchButton");
 	
 	/** The search button. */
@@ -375,6 +388,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The authors selected list. */
 	private List<Author> authorsSelectedList = new ArrayList<Author>();
 	
+	/** The steward selected list. */
+	private List<MeasureSteward> stewardsSelectedList = new ArrayList<MeasureSteward>();
+
+	private String stewardUuid;	
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -517,7 +534,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		//US 413. Included for measure steward other option.
-		VerticalPanel verStewardPanel = new VerticalPanel();
+		//MAT-4903
+		/*VerticalPanel verStewardPanel = new VerticalPanel();
 		verStewardPanel.getElement().setId("verStewardPanel_verStewardPanel");
 		verStewardPanel.add(LabelBuilder.buildLabel(measureStewardInput, "Measure Steward"));
 		verStewardPanel.add(measureStewardInput);
@@ -525,6 +543,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		verStewardPanel.add(emptyTextBoxHolder);
 		measureStewardInput.addChangeHandler(changeHandler);
 		fPanel.add(verStewardPanel);
+		fPanel.add(new SpacerWidget());*/
+		
+		fPanel.add(LabelBuilder.buildLabel(stewardCellTable, "Measure Steward"));
+		fPanel.add(stewardSPanel);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));
@@ -1001,7 +1023,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 		
 	}
-	public void updateAuthorSelectedList(List<Author> authorList) {
+	
+	/**
+	 * Update author selected list.
+	 *
+	 * @param authorList the author list
+	 */
+	/*public void updateAuthorSelectedList(List<Author> authorList) {
 		if (authorsSelectedList.size() != 0) {
 			for (int i = 0; i < authorsSelectedList.size(); i++) {
 				for (int j = 0; j < authorList.size(); j++) {
@@ -1015,7 +1043,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 		
 	}
-	
+	*/
 	
 	/**
 	 * Update measure type selected list.
@@ -1329,7 +1357,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.refresh();
 			sortProvider.getList().addAll(currentAuthorsList);
 			addAuthorColumnToTable(editable);
-			updateAuthorSelectedList(currentAuthorsList);
+			//updateAuthorSelectedList(currentAuthorsList);
 			sortProvider.addDataDisplay(authorCellTable);
 			authorCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
@@ -1363,7 +1391,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		caption.appendChild(measureSearchHeader.getElement());
 		authorSelectionModel = new MultiSelectionModel<Author>();
 		authorCellTable.setSelectionModel(authorSelectionModel);
-		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
+		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
 		Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(
 				chbxCell) {
 			
@@ -1372,8 +1400,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				boolean isSelected = false;
 				if ((authorsSelectedList != null) && (authorsSelectedList.size() > 0)) {
 					for (int i = 0; i < authorsSelectedList.size(); i++) {
-						if (authorsSelectedList.get(i).getOrgId()
-								.equalsIgnoreCase(object.getOrgId())) {
+						if (authorsSelectedList.get(i).getId()
+								.equalsIgnoreCase(object.getId())) {
 							isSelected = true;
 							break;
 						}
@@ -1395,8 +1423,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					authorsSelectedList.add(object);
 				} else {
 					for (int i = 0; i < authorsSelectedList.size(); i++) {
-						if (authorsSelectedList.get(i).getOrgId()
-								.equalsIgnoreCase(object.getOrgId())) {
+						if (authorsSelectedList.get(i).getId()
+								.equalsIgnoreCase(object.getId())) {
 							authorsSelectedList.remove(i);
 							break;
 						}
@@ -1423,6 +1451,77 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				SafeHtmlUtils.fromSafeConstant("<span title='Measure Developers Name'>"
 						+ "Measure Developer" + "</span>"));
 		
+		
+	}
+	
+	
+	/**
+	 * Adds the steward column to table.
+	 *
+	 * @param editable the editable
+	 */
+	private void addStewardColumnToTable(boolean editable) {
+
+		Label measureSearchHeader = new Label("Measure Steward List");
+		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
+		measureSearchHeader.setStyleName("recentSearchHeader");
+		com.google.gwt.dom.client.TableElement elem = stewardCellTable.getElement().cast();
+		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(measureSearchHeader.getElement());
+		stewardSelectionModel = new SingleSelectionModel<MeasureSteward>();
+		stewardCellTable.setSelectionModel(stewardSelectionModel);
+		RadioButtonCell stewardRadioButton = new RadioButtonCell(false, true, editable);
+		Column<MeasureSteward, Boolean> selectColumn = new Column<MeasureSteward, Boolean>(
+				stewardRadioButton) {
+			
+			@Override
+			public Boolean getValue(MeasureSteward object) {
+				boolean isSelected = false;
+
+				if ((stewardUuid != null)) {
+
+					if (stewardUuid.equalsIgnoreCase(object.getId())) {
+						isSelected = true;
+					}
+				} else {
+					isSelected = false;
+				}
+				return isSelected;
+
+			}
+		};
+		
+		selectColumn.setFieldUpdater(new FieldUpdater<MeasureSteward, Boolean>() {
+			
+			@Override
+			public void update(int index, MeasureSteward object, Boolean value) {
+				stewardSelectionModel.setSelected(object, value);
+				if (value) {					
+					setStewardUuid(object.getId());
+				}
+				
+			}
+		});
+		stewardCellTable.addColumn(selectColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
+						+ "Select" + "</span>"));
+		
+		Column<MeasureSteward, SafeHtml> measureNameColumn = new Column<MeasureSteward, SafeHtml>(
+				new SafeHtmlCell()) {
+			
+			@Override
+			public SafeHtml getValue(MeasureSteward object) {
+				return CellTableUtility.getColumnToolTip(object.getOrgName(), object.getOrgOid());
+			}
+		};
+		
+		stewardCellTable.addColumn(measureNameColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='Measure Steward'>"
+						+ "Measure Steward" + "</span>"));
+		
+		
+	
 		
 	}
 	
@@ -1616,10 +1715,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#setMeasureStewardOptions(java.util.List)
 	 */
-	@Override
+	/*@Override
 	public void setMeasureStewardOptions(List<? extends HasListBox> itemList) {
 		setListBoxOptions(measureStewardInput, itemList, "--Select--");
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getVersionNumber()
@@ -1689,10 +1788,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureSteward()
 	 */
-	@Override
+	/*@Override
 	public ListBoxMVP getMeasureSteward() {
 		return measureStewardInput;
-	}
+	}*/
 	
 	//US 413
 	/* Returns the Steward Other text box object
@@ -2117,10 +2216,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardValue()
 	 */
-	@Override
+	/*@Override
 	public String getMeasureStewardValue() {
 		return measureStewardInput.getItemText(measureStewardInput.getSelectedIndex());
-	}
+	}*/
 	
 	//US 413
 	/* Returns the index value of Measure Steward listbox
@@ -2422,5 +2521,71 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.authorsSelectedList = authorsSelectedList;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildStewardCellTable(java.util.List, boolean)
+	 */
+	@Override
+	public void buildStewardCellTable(List<MeasureSteward> currentStewardList,
+			boolean editable) {
+		
+		stewardSPanel.clear();
+		stewardSPanel.setStyleName("cellTablePanel");		
+		stewardCellTable = new CellTable<MeasureSteward>();
+		stewardCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<MeasureSteward> sortProvider = new ListDataProvider<MeasureSteward>();
+			stewardCellTable.setRowData(currentStewardList);
+			stewardCellTable.setRowCount(currentStewardList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(currentStewardList);
+			addStewardColumnToTable(editable);		
+			sortProvider.addDataDisplay(stewardCellTable);
+			stewardCellTable.setWidth("100%");
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("stewardListSummary",
+					"In the following Steward List table, Select is given in first Column and Steward is given in Second column");
+			stewardSPanel.getElement().setAttribute("id", "StewardListCellTable");
+			stewardSPanel.getElement().setAttribute("aria-describedby", "stewardListSummary");
+			stewardSPanel.setSize("500px", "150px");
+			stewardSPanel.add(invisibleLabel);
+			stewardSPanel.setWidget(stewardCellTable);
+	}
+
+
+	
+
+
+	/**
+	 * Update steward selected list.
+	 *
+	 * @param stewardList the steward list
+	 */
+	private void updateStewardSelectedList(
+			List<MeasureSteward> stewardList) {
+		if (stewardsSelectedList.size() != 0) {
+			for (int i = 0; i < stewardsSelectedList.size(); i++) {
+				for (int j = 0; j < stewardList.size(); j++) {
+					if (stewardsSelectedList.get(i).getOrgName().
+							equalsIgnoreCase(stewardList.get(j).getOrgName())) {
+						stewardsSelectedList.set(i, stewardList.get(j));
+						break;
+					}
+				}
+			}
+		}
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardSelectedList(java.util.List)
+	 */
+	@Override
+	public void setStewardSelectedList(List<MeasureSteward> steward) {		
+		this.stewardsSelectedList = steward;
+	}
+	@Override
+	public void setStewardUuid(String uuid){
+		this.stewardUuid = uuid;
+	}
 	
 }

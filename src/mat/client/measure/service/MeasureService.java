@@ -15,6 +15,7 @@ import mat.client.shared.MatException;
 import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
+import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -464,7 +465,7 @@ public interface MeasureService extends RemoteService {
 	 *
 	 * @return the all add edit authors
 	 */
-	List<Author> getAllAddEditAuthors();
+	List<Organization> getAllOrganizations();
 	
 	/**
 	 * Save sub tree occurrence.

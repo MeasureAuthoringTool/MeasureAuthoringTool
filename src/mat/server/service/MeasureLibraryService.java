@@ -19,6 +19,7 @@ import mat.client.shared.MatException;
 import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
+import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
@@ -497,7 +498,7 @@ public interface MeasureLibraryService {
 	 *
 	 * @return the all authors
 	 */
-	List<Author> getAllAuthors();
+	List<Organization> getAllOrganizations();
 	
 	/**
 	 * Save sub tree occurrence.

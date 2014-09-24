@@ -11,9 +11,9 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
-import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
+import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -525,7 +525,7 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 * @return the all add edit authors
 	 */
-	void getAllAddEditAuthors(AsyncCallback<List<Author>> asyncCallback);
+	void getAllOrganizations(AsyncCallback<List<Organization>> asyncCallback);
 	
 	/**
 	 * Save sub tree occurrence.

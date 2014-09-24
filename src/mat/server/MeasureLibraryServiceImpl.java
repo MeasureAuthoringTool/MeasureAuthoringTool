@@ -58,6 +58,7 @@ import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -2191,15 +2192,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			measureDetailModel.setPeriodModel(periodModel);
 		}
+					
+			//measureDetailModel.setStewardUuid();
 		
-		if (StringUtils.isNotBlank(measureDetailModel.getMeasSteward())
+		
+		/*if (StringUtils.isNotBlank(measureDetailModel.getMeasSteward())
 				&& !StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other")) {
 			String oid = getService().retrieveStewardOID(measureDetailModel.getMeasSteward().trim());
 			measureDetailModel.setStewardUuid(oid);
 		} else if (StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other")
 				&& StringUtils.isNotBlank(measureDetailModel.getMeasStewardOther())) {
 			measureDetailModel.setStewardUuid(UUID.randomUUID().toString());
-		}
+		}*/
 		
 		if (StringUtils.isNotBlank(measureDetailModel.getGroupName())) {
 			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());
@@ -3619,16 +3623,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#getAllAuthors()
 	 */
 	@Override
-	public List<Author> getAllAuthors() {
+	public List<Organization> getAllOrganizations(){
 		List<Organization> organizationDTOList = organizationDAO.getAllOrganizations();
-		List<Author> authorList = new ArrayList<Author>();
-		for(Organization organizationDTO : organizationDTOList){
-			Author author = new Author();
-			author.setAuthorName(organizationDTO.getOrganizationName());
-			author.setOrgId(organizationDTO.getOrganizationOID());
-			authorList.add(author);
-		}
-		return authorList;
+		return organizationDTOList;
 	}
 	
 	/**

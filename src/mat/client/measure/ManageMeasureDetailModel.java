@@ -1,10 +1,13 @@
 package mat.client.measure;
 
 import java.util.List;
+
 import mat.model.Author;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
@@ -96,6 +99,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/** The author list. */
 	private List<Author> authorSelectedList;
+	
+	/** The steward selected list. */
+	private List<MeasureSteward> stewardSelectedList;
 	
 	/** The measure type list. */
 	private List<MeasureType> measureTypeSelectedList;
@@ -1762,21 +1768,17 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.endorsementId = endorsementId;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
 				+ ", shortName=" + shortName + ", versionNumber="
-				+ versionNumber + ", measureId=" + measureId + ", groupName="
-				+ groupName + ", groupId=" + groupId + ", finalizedDate="
-				+ finalizedDate + ", measFromPeriod=" + measFromPeriod
-				+ ", measToPeriod=" + measToPeriod + ", measScoring="
-				+ measScoring + ", measSteward=" + measSteward
-				+ ", measStewardOther=" + measStewardOther + ", endorseByNQF="
-				+ endorseByNQF
-				/*+ endorseByNQF + ", measureStatus=" + measureStatus*/
+				+ versionNumber + ", revisionNumber=" + revisionNumber
+				+ ", measureId=" + measureId + ", groupName=" + groupName
+				+ ", groupId=" + groupId + ", finalizedDate=" + finalizedDate
+				+ ", measFromPeriod=" + measFromPeriod + ", measToPeriod="
+				+ measToPeriod + ", measScoring=" + measScoring
+				+ ", measSteward=" + measSteward + ", measStewardOther="
+				+ measStewardOther + ", endorseByNQF=" + endorseByNQF
 				+ ", nqfId=" + nqfId + ", description=" + description
 				+ ", copyright=" + copyright + ", clinicalRecomms="
 				+ clinicalRecomms + ", definitions=" + definitions
@@ -1784,31 +1786,36 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ transmissionFormat + ", rationale=" + rationale
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
-				+ ", authorSelectedList=" + authorSelectedList + ", measureTypeList="
-				+ measureTypeSelectedList + ", qdsSelectedList=" + qdsSelectedList
-				+",componentMeasuresSelectedList=" +componentMeasuresSelectedList
-				+ ", toCompareAuthor=" + toCompareAuthor
-				+ ", toCompareMeasure=" + toCompareMeasure
+				+ ", authorSelectedList=" + authorSelectedList
+				+ ", stewardSelectedList=" + stewardSelectedList
+				+ ", measureTypeSelectedList=" + measureTypeSelectedList
+				+ ", qdsSelectedList=" + qdsSelectedList
+				+ ", componentMeasuresSelectedList="
+				+ componentMeasuresSelectedList + ", toCompareAuthor="
+				+ toCompareAuthor + ", toCompareMeasure=" + toCompareMeasure
 				+ ", toCompareItemCount=" + toCompareItemCount
-				+ ", toCompareComponentMeasures =" + toCompareComponentMeasures
-				+", draft=" + draft
-				+ ", measureSetId=" + measureSetId + ", valueSetDate="
-				+ valueSetDate + ", supplementalData=" + supplementalData
-				+ ", disclaimer=" + disclaimer + ", riskAdjustment="
-				+ riskAdjustment + ", rateAggregation=" + rateAggregation
-				+ ", initialPop=" + initialPop + ", denominator="
-				+ denominator + ", denominatorExclusions="
+				+ ", toCompareComponentMeasures=" + toCompareComponentMeasures
+				+ ", draft=" + draft + ", measureSetId=" + measureSetId
+				+ ", valueSetDate=" + valueSetDate + ", supplementalData="
+				+ supplementalData + ", disclaimer=" + disclaimer
+				+ ", riskAdjustment=" + riskAdjustment + ", rateAggregation="
+				+ rateAggregation + ", initialPop=" + initialPop
+				+ ", denominator=" + denominator + ", denominatorExclusions="
 				+ denominatorExclusions + ", numerator=" + numerator
 				+ ", numeratorExclusions=" + numeratorExclusions
 				+ ", denominatorExceptions=" + denominatorExceptions
 				+ ", measurePopulation=" + measurePopulation
 				+ ", measureObservations=" + measureObservations
-				+ ", eMeasureId=" + eMeasureId + ", versionNumberInt="
+				+ ", eMeasureId=" + eMeasureId + ", orgVersionNumber="
+				+ orgVersionNumber + ", qltyMeasureSetUuid="
 				+ qltyMeasureSetUuid + ", stewardUuid=" + stewardUuid
 				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
-				+ (periodModel != null ? periodModel.toString() : null) + ", endorsement=" + endorsement
-				+ ", endorsementId=" + endorsementId + ", nqfModel="
-				+ (nqfModel != null ? nqfModel.toString() : null) +"]";
+				+ periodModel + ", endorsement=" + endorsement
+				+ ", endorsementId=" + endorsementId + ", nqfModel=" + nqfModel
+				+ ", isDeleted=" + isDeleted + ", measureOwnerId="
+				+ measureOwnerId + ", measurePopulationExclusions="
+				+ measurePopulationExclusions + ", isEditable=" + isEditable
+				+ "]";
 	}
 	
 	/**
@@ -1941,5 +1948,24 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
+
+	/**
+	 * Gets the steward selected list.
+	 *
+	 * @return the steward selected list
+	 */
+	public List<MeasureSteward> getStewardSelectedList() {		
+		return stewardSelectedList;
+	}
+	
+	/**
+	 * Sets the steward selected list.
+	 *
+	 * @param steSelectedList the new steward selected list
+	 */
+	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {		
+		this.stewardSelectedList =steSelectedList; 
+	}
+	
 	
 }

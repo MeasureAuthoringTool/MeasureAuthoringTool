@@ -77,7 +77,7 @@
       <bind-xml name="steward" node="element"/>
     </field>
     
-    <field name="stewardUuid" 
+    <field name="stewardId" 
            type="java.lang.String">
       <bind-xml name="id" node="attribute" location="steward"/>
     </field>
@@ -93,7 +93,7 @@
       <bind-xml name="developer" location="developers">
       	<class name="mat.model.Author">
       	
-		    <field name="orgId"
+		    <field name="id"
 		           type="java.lang.String" >
 		      <bind-xml name="id" node="attribute"/>
 		    </field>

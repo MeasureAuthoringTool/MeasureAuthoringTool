@@ -681,7 +681,9 @@ public class MetaDataPresenter  implements MatPresenter {
 		public void buildStewardCellTable(List<MeasureSteward> result,
 				boolean editable);
 
-		public void setStewardUuid(String stewardUuid);
+		public void setStewardId(String stewardId);
+
+		String getStewardId();
 	}
 	
 	/**
@@ -888,7 +890,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	private MetaDataDetailDisplay metaDataDisplay;
 	
 	/** The add edit authors display. */
-	private AddEditAuthorsDisplay addEditAuthorsDisplay;
+	//private AddEditAuthorsDisplay addEditAuthorsDisplay;
 	
 	/** The add edit component measures display. */
 	private AddEditComponentMeasuresDisplay addEditComponentMeasuresDisplay;
@@ -900,7 +902,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	private ManageAuthorsModel currentAuthorsList;
 	
 	/** The current measure type list. */
-	private ManageMeasureTypeModel currentMeasureTypeList;
+	//private ManageMeasureTypeModel currentMeasureTypeList;
 	
 	/** The author list. */
 	private List<Author> authorList = new ArrayList<Author>();
@@ -1593,14 +1595,17 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
 		
 		//US 413. Populate Steward and Steward Other value if any.
-		/*String steward = currentMeasureDetail.getMeasSteward();
-		metaDataDisplay.getMeasureSteward().setValueMetadata(currentMeasureDetail.getMeasSteward());
-		if ((metaDataDisplay.getMeasureSteward().getSelectedIndex() == 0) && (steward != null) && !steward.equals("")) {
+		String steward = currentMeasureDetail.getMeasSteward();
+		//metaDataDisplay.getMeasureSteward().setValueMetadata(currentMeasureDetail.getMeasSteward());
+		if(steward!=null){
+			metaDataDisplay.setStewardId(steward);
+		}
+		/*if ((metaDataDisplay.getMeasureSteward().getSelectedIndex() == 0) && (steward != null) && !steward.equals("")) {
 			steward = "Other";
 			currentMeasureDetail.setMeasStewardOther(currentMeasureDetail.getMeasSteward());
 			metaDataDisplay.getMeasureSteward().setValueMetadata(steward);
-		}*/
-		/*boolean setSteward = (steward != null) && steward.equalsIgnoreCase("Other");
+		}
+		boolean setSteward = (steward != null) && steward.equalsIgnoreCase("Other");
 		if (setSteward) {
 			metaDataDisplay.showOtherTextBox();
 			metaDataDisplay.getMeasureStewardOther().setValue(currentMeasureDetail.getMeasStewardOther());
@@ -1614,14 +1619,14 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());
 		
 		//stewardList
-		if(currentMeasureDetail.getStewardUuid()!=null){
+		/*if(currentMeasureDetail.getStewardUuid()!=null){
 			metaDataDisplay.setStewardUuid(currentMeasureDetail.getSteward());
 			
 		}else{
 			List<MeasureSteward> stewardList = new ArrayList<MeasureSteward>();			
 			metaDataDisplay.setStewardSelectedList(stewardList);			
 			currentMeasureDetail.setStewardSelectedList(stewardList);
-		}
+		}*/
 		/*if (currentMeasureDetail.getStewardSelectedList() != null) {
 			metaDataDisplay.setStewardSelectedList(currentMeasureDetail.getStewardSelectedList());
 		} else {
@@ -1851,6 +1856,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		} else {
 			currentMeasureDetail.setMeasSteward(null);
 		}*/
+		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());
 		currentMeasureDetail.setMeasStewardOther(metaDataDisplay.getMeasureStewardOtherValue());
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());
 		currentMeasureDetail.setSupplementalData(metaDataDisplay.getSupplementalData().getValue());

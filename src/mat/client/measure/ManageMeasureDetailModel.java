@@ -180,7 +180,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private String qltyMeasureSetUuid;
 	
 	/** The steward uuid. */
-	private String stewardUuid;
+	private String stewardId;
 	
 	/** The scoring abbr. */
 	private String scoringAbbr;
@@ -1678,8 +1678,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the stewardUuid
 	 */
-	public String getStewardUuid() {
-		return stewardUuid;
+	public String getStewardId() {
+		return stewardId;
 	}
 	
 	/**
@@ -1688,8 +1688,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * @param stewardUuid
 	 *            the stewardUuid to set
 	 */
-	public void setStewardUuid(String stewardUuid) {
-		this.stewardUuid = stewardUuid;
+	public void setStewardId(String stewardId) {
+		this.stewardId = stewardId;
 	}
 	
 	/**
@@ -1808,7 +1808,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", measureObservations=" + measureObservations
 				+ ", eMeasureId=" + eMeasureId + ", orgVersionNumber="
 				+ orgVersionNumber + ", qltyMeasureSetUuid="
-				+ qltyMeasureSetUuid + ", stewardUuid=" + stewardUuid
+				+ qltyMeasureSetUuid + ", stewardId=" + stewardId
 				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
 				+ periodModel + ", endorsement=" + endorsement
 				+ ", endorsementId=" + endorsementId + ", nqfModel=" + nqfModel

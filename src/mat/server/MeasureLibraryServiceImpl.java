@@ -2192,18 +2192,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			measureDetailModel.setPeriodModel(periodModel);
 		}
-					
-			//measureDetailModel.setStewardUuid();
-		
-		
-		/*if (StringUtils.isNotBlank(measureDetailModel.getMeasSteward())
-				&& !StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other")) {
-			String oid = getService().retrieveStewardOID(measureDetailModel.getMeasSteward().trim());
-			measureDetailModel.setStewardUuid(oid);
-		} else if (StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other")
-				&& StringUtils.isNotBlank(measureDetailModel.getMeasStewardOther())) {
-			measureDetailModel.setStewardUuid(UUID.randomUUID().toString());
-		}*/
 		
 		if (StringUtils.isNotBlank(measureDetailModel.getGroupName())) {
 			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());

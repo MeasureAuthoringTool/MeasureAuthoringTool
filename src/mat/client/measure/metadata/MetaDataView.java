@@ -391,7 +391,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The steward selected list. */
 	private List<MeasureSteward> stewardsSelectedList = new ArrayList<MeasureSteward>();
 
-	private String stewardUuid;	
+	private String stewardId;
+
+	//private String stewardUuid;	
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -1479,9 +1481,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			public Boolean getValue(MeasureSteward object) {
 				boolean isSelected = false;
 
-				if ((stewardUuid != null)) {
+				if ((stewardId != null)) {
 
-					if (stewardUuid.equalsIgnoreCase(object.getId())) {
+					if (stewardId.equalsIgnoreCase(object.getId())) {
 						isSelected = true;
 					}
 				} else {
@@ -1498,7 +1500,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			public void update(int index, MeasureSteward object, Boolean value) {
 				stewardSelectionModel.setSelected(object, value);
 				if (value) {					
-					setStewardUuid(object.getId());
+					setStewardId(object.getId());
 				}
 				
 			}
@@ -2550,32 +2552,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			stewardSPanel.setWidget(stewardCellTable);
 	}
 
-
-	
-
-
-	/**
-	 * Update steward selected list.
-	 *
-	 * @param stewardList the steward list
-	 */
-	private void updateStewardSelectedList(
-			List<MeasureSteward> stewardList) {
-		if (stewardsSelectedList.size() != 0) {
-			for (int i = 0; i < stewardsSelectedList.size(); i++) {
-				for (int j = 0; j < stewardList.size(); j++) {
-					if (stewardsSelectedList.get(i).getOrgName().
-							equalsIgnoreCase(stewardList.get(j).getOrgName())) {
-						stewardsSelectedList.set(i, stewardList.get(j));
-						break;
-					}
-				}
-			}
-		}
-		
-	}
-
-
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardSelectedList(java.util.List)
 	 */
@@ -2584,8 +2560,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.stewardsSelectedList = steward;
 	}
 	@Override
-	public void setStewardUuid(String uuid){
-		this.stewardUuid = uuid;
+	public void setStewardId(String id){
+		this.stewardId = id;
 	}
-	
+
+
+	@Override
+	public String getStewardId() {		
+		return this.stewardId;
+	}
+		
 }

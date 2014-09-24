@@ -70,7 +70,7 @@ public class HumanReadableGenerator {
 	private static Boolean showOnlyVariableName = false;
 	
 	/** The lhs id. */
-	private static String lhsID;
+	private static List<String> lhsID = new ArrayList<String>();
 	
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
@@ -684,7 +684,7 @@ public class HumanReadableGenerator {
 		} else if (ELEMENT_REF.equals(nodeName)) {
 			if (satisfiesAnyAll
 					&& lhsID != null
-					&& lhsID.equalsIgnoreCase(item.getAttributes()
+					&& lhsID.contains(item.getAttributes()
 							.getNamedItem("id").getNodeValue())) {
 				if (item.hasChildNodes()) {
 					// TODO: Don't know how this will work with
@@ -865,7 +865,10 @@ public class HumanReadableGenerator {
 			liElement.appendText(" "
 					+ item.getAttributes().getNamedItem("displayName")
 							.getNodeValue().toLowerCase());
-			lhsID = lhs.getAttributes().getNamedItem("id").getNodeValue();
+			String lhsId = lhs.getAttributes().getNamedItem("id").getNodeValue();
+			if(!lhsID.contains(lhsId)){
+			   lhsID.add(lhsId);
+			}
 			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
 				liElement = liElement.appendElement(HTML_UL);

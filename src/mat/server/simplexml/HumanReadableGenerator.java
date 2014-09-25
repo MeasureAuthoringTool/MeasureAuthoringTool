@@ -530,7 +530,11 @@ public class HumanReadableGenerator {
 			if (isNestedNot) {
 				ulElement = parentListElement;
 			} else {
-				ulElement = parentListElement.appendElement(HTML_UL);
+				if(parentListElement.nodeName().equals(HTML_UL) && parentListElement.parent().html().contains("Measure Observation")){
+					ulElement = parentListElement;
+				}else{
+					ulElement = parentListElement.appendElement(HTML_UL);
+				}
 			}
 			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() == 0) {
@@ -542,6 +546,18 @@ public class HumanReadableGenerator {
 					}
 				}
 				// ulElement.appendElement(HTML_LI).appendText("None");
+			}else if(childNodes.getLength() == 1 && childNodes.item(0).getNodeName().equals(COMMENT)){
+				Node commentNode = childNodes.item(0);
+				String commentValue = commentNode.getTextContent();
+				if (commentValue == null || commentValue.trim().length() == 0) {
+					boolean isNoneAdded = displayNone(ulElement, populationOrSubtreeXMLProcessor,
+							parentNode);
+					if(!isNoneAdded){
+						if(ulElement.childNodeSize() == 0){
+							ulElement.remove();
+						}
+					}
+				}
 			}
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				parseChild(childNodes.item(i), ulElement, item,
@@ -1895,8 +1911,8 @@ public class HumanReadableGenerator {
 		for (int i = 0; i < groupNodeList.getLength(); i++) {
 
 			if (groupNodeList.getLength() > 1) {
-				mainListElement.append("<br><b>------ Population Criteria "
-						+ (i + 1) + " ------</b><br><br>");
+				mainListElement.append("<li style=\"list-style: none;\"><br><b>------ Population Criteria "
+						+ (i + 1) + " ------</b><br><br></li>");
 			}
 
 			Node groupNode = groupNodeList.item(i);

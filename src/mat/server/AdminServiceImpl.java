@@ -276,7 +276,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			ManageOrganizationSearchModel.Result r = new ManageOrganizationSearchModel.Result();
 			r.setOrgName(org.getOrganizationName());
 			r.setOid(org.getOrganizationOID());
-			r.setId(org.getId());
+			r.setId(Long.toString(org.getId()));
 			detailList.add(r);
 		}
 		model.setData(detailList);

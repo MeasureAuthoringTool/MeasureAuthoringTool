@@ -182,6 +182,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	/** The steward uuid. */
 	private String stewardId;
 	
+	/** The steward value. */
+	private String stewardValue;
+	
 	/** The scoring abbr. */
 	private String scoringAbbr;
 	
@@ -1684,9 +1687,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/**
 	 * Sets the steward uuid.
-	 * 
-	 * @param stewardUuid
-	 *            the stewardUuid to set
+	 *
+	 * @param stewardId the new steward id
 	 */
 	public void setStewardId(String stewardId) {
 		this.stewardId = stewardId;
@@ -1768,6 +1770,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.endorsementId = endorsementId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
@@ -1965,6 +1970,24 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 */
 	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {		
 		this.stewardSelectedList =steSelectedList; 
+	}
+
+	/**
+	 * Gets the steward value.
+	 *
+	 * @return the steward value
+	 */
+	public String getStewardValue() {
+		return stewardValue;
+	}
+
+	/**
+	 * Sets the steward value.
+	 *
+	 * @param stewardValue the new steward value
+	 */
+	public void setStewardValue(String stewardValue) {
+		this.stewardValue = stewardValue;
 	}
 	
 	

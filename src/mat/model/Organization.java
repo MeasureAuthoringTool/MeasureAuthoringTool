@@ -12,7 +12,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Organization implements IsSerializable{
 	
 	/** The id. */
-	private String id;
+	private Long id;
 	
 	/** The organization name. */
 	private String organizationName;
@@ -24,14 +24,14 @@ public class Organization implements IsSerializable{
 	/** Sets the id.
 	 * 
 	 * @param id the new id */
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
 	/** Gets the id.
 	 * 
 	 * @return the id */
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 	

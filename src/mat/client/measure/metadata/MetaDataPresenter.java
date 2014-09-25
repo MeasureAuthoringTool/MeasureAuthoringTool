@@ -264,7 +264,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @param steward the new steward selected list
 		 */
-		public void setStewardSelectedList(List<MeasureSteward> steward);
+		//public void setStewardSelectedList(List<MeasureSteward> steward);
 		
 		/**
 		 * Gets the authors selected list.
@@ -684,6 +684,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		public void setStewardId(String stewardId);
 
 		String getStewardId();
+		String getStewardValue();
+		public void setStewardValue(String stewardValue);
 	}
 	
 	/**
@@ -1595,10 +1597,9 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
 		
 		//US 413. Populate Steward and Steward Other value if any.
-		String steward = currentMeasureDetail.getMeasSteward();
-		//metaDataDisplay.getMeasureSteward().setValueMetadata(currentMeasureDetail.getMeasSteward());
-		if(steward!=null){
-			metaDataDisplay.setStewardId(steward);
+		String stewardId = currentMeasureDetail.getStewardId();		
+		if(stewardId!=null){
+			metaDataDisplay.setStewardId(stewardId);
 		}
 		/*if ((metaDataDisplay.getMeasureSteward().getSelectedIndex() == 0) && (steward != null) && !steward.equals("")) {
 			steward = "Other";
@@ -1725,10 +1726,10 @@ public class MetaDataPresenter  implements MatPresenter {
 					Author author = new Author();
 					steward.setOrgName(organization.getOrganizationName());
 					steward.setOrgOid(organization.getOrganizationOID());
-					steward.setId(organization.getId());
+					steward.setId(Long.toString(organization.getId()));
 					author.setAuthorName(organization.getOrganizationName());
 					author.setOrgId(organization.getOrganizationOID());
-					author.setId(organization.getId());
+					author.setId(Long.toString(organization.getId()));
 					stewardList.add(steward);
 					authorList.add(author);
 				}
@@ -1841,7 +1842,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setDenominatorExceptions(metaDataDisplay.getDenominatorExceptions().getValue());
 		currentMeasureDetail.setMeasurePopulation(metaDataDisplay.getMeasurePopulation().getValue());
 		currentMeasureDetail.setMeasureObservations(metaDataDisplay.getMeasureObservations().getValue());
-		
+		//currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
+		currentMeasureDetail.setMeasSteward(metaDataDisplay.getStewardValue());
 		currentMeasureDetail.setCopyright(metaDataDisplay.getCopyright().getValue());
 		currentMeasureDetail.setEndorseByNQF(metaDataDisplay.getEndorsebyNQF().getValue());
 		currentMeasureDetail.setGuidance(metaDataDisplay.getGuidance().getValue());
@@ -1857,7 +1859,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			currentMeasureDetail.setMeasSteward(null);
 		}*/
 		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());
-		currentMeasureDetail.setMeasStewardOther(metaDataDisplay.getMeasureStewardOtherValue());
+		//currentMeasureDetail.setMeasStewardOther(metaDataDisplay.getMeasureStewardOtherValue());
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());
 		currentMeasureDetail.setSupplementalData(metaDataDisplay.getSupplementalData().getValue());
 		/*if (nullCheck(metaDataDisplay.getMeasureStatusValue())) {

@@ -389,9 +389,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private List<Author> authorsSelectedList = new ArrayList<Author>();
 	
 	/** The steward selected list. */
-	private List<MeasureSteward> stewardsSelectedList = new ArrayList<MeasureSteward>();
+	//private List<MeasureSteward> stewardsSelectedList = new ArrayList<MeasureSteward>();
 
 	private String stewardId;
+	private String stewardValue;
 
 	//private String stewardUuid;	
 	
@@ -1501,6 +1502,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				stewardSelectionModel.setSelected(object, value);
 				if (value) {					
 					setStewardId(object.getId());
+					setStewardValue(object.getOrgName());
+					
 				}
 				
 			}
@@ -2555,10 +2558,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardSelectedList(java.util.List)
 	 */
-	@Override
+	/*@Override
 	public void setStewardSelectedList(List<MeasureSteward> steward) {		
 		this.stewardsSelectedList = steward;
-	}
+	}*/
 	@Override
 	public void setStewardId(String id){
 		this.stewardId = id;
@@ -2568,6 +2571,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public String getStewardId() {		
 		return this.stewardId;
+	}
+
+
+	@Override
+	public String getStewardValue() {	
+		return this.stewardValue;
+	}
+	@Override
+	public void setStewardValue(String stewardValue){
+		this.stewardValue = stewardValue;
 	}
 		
 }

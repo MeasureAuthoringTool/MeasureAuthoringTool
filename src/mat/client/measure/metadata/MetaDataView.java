@@ -386,15 +386,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
 	
 	/** The authors selected list. */
-	private List<Author> authorsSelectedList = new ArrayList<Author>();
+	private List<Author> authorsSelectedList = new ArrayList<Author>();	
 	
-	/** The steward selected list. */
-	//private List<MeasureSteward> stewardsSelectedList = new ArrayList<MeasureSteward>();
-
+	/** The steward id. */
 	private String stewardId;
+	
+	/** The steward value. */
 	private String stewardValue;
 
-	//private String stewardUuid;	
+
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -460,15 +460,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		FlowPanel fPanel = new FlowPanel();
 		
 		fPanel.setStyleName("leftSideForm");
-		fPanel.getElement().setId("fPanel_FlowPanelLeft");
-		
-		
-		
+		fPanel.getElement().setId("fPanel_FlowPanelLeft");		
 		fPanel.add(new Label("All fields are required except where noted as optional."));
 		fPanel.add(new SpacerWidget());
-		
 		fPanel.add(errorMessages);
-		
 		
 		fPanel.add(LabelBuilder.buildLabel(nameInput, "eMeasure Title"));
 		HorizontalPanel hp = new HorizontalPanel();
@@ -536,27 +531,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(measurePeriodPanel);
 		fPanel.add(new SpacerWidget());
 		
-		//US 413. Included for measure steward other option.
-		//MAT-4903
-		/*VerticalPanel verStewardPanel = new VerticalPanel();
-		verStewardPanel.getElement().setId("verStewardPanel_verStewardPanel");
-		verStewardPanel.add(LabelBuilder.buildLabel(measureStewardInput, "Measure Steward"));
-		verStewardPanel.add(measureStewardInput);
-		verStewardPanel.add(new SpacerWidget());
-		verStewardPanel.add(emptyTextBoxHolder);
-		measureStewardInput.addChangeHandler(changeHandler);
-		fPanel.add(verStewardPanel);
-		fPanel.add(new SpacerWidget());*/
-		
 		fPanel.add(LabelBuilder.buildLabel(stewardCellTable, "Measure Steward"));
 		fPanel.add(stewardSPanel);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));
-		//fPanel.add(emptyAuthorsPanel);
-		//fPanel.add(addEditAuthors);
+		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));		
 		fPanel.add(authorSPanel);
-		//fPanel.add(addEditAuthors);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(endorsedByNQF, "Endorsed By NQF"));
@@ -1028,27 +1008,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	/**
-	 * Update author selected list.
-	 *
-	 * @param authorList the author list
-	 */
-	/*public void updateAuthorSelectedList(List<Author> authorList) {
-		if (authorsSelectedList.size() != 0) {
-			for (int i = 0; i < authorsSelectedList.size(); i++) {
-				for (int j = 0; j < authorList.size(); j++) {
-					if (authorsSelectedList.get(i).getOrgId().
-							equalsIgnoreCase(authorList.get(j).getOrgId())) {
-						authorsSelectedList.set(i, authorList.get(j));
-						break;
-					}
-				}
-			}
-		}
-		
-	}
-	*/
-	
-	/**
 	 * Update measure type selected list.
 	 *
 	 * @param measureTypeList the measure type list
@@ -1350,8 +1309,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void buildAuthorCellTable(List<Author> currentAuthorsList, boolean editable) {
 		authorSPanel.clear();
-		authorSPanel.setStyleName("cellTablePanel");
-		/*if(currentAuthorsList.size()>0){*/
+		authorSPanel.setStyleName("cellTablePanel");	
 			authorCellTable = new CellTable<Author>();
 			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<Author> sortProvider = new ListDataProvider<Author>();
@@ -1359,8 +1317,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			authorCellTable.setRowCount(currentAuthorsList.size(), true);
 			sortProvider.refresh();
 			sortProvider.getList().addAll(currentAuthorsList);
-			addAuthorColumnToTable(editable);
-			//updateAuthorSelectedList(currentAuthorsList);
+			addAuthorColumnToTable(editable);		
 			sortProvider.addDataDisplay(authorCellTable);
 			authorCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
@@ -1369,14 +1326,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			authorSPanel.getElement().setAttribute("aria-describedby", "authorListSummary");
 			authorSPanel.setSize("500px", "150px");
 			authorSPanel.add(invisibleLabel);
-			authorSPanel.setWidget(authorCellTable);
-		/*}else {
-			HTML desc = new HTML("<p> No Measure Developer Selected.</p>");
-			authorSPanel.setSize("200px", "75px");
-			authorSPanel.setWidget(desc);
-		}*/
-		
-		
+			authorSPanel.setWidget(authorCellTable);		
 	}
 	
 	/**
@@ -1464,7 +1414,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param editable the editable
 	 */
 	private void addStewardColumnToTable(boolean editable) {
-
 		Label measureSearchHeader = new Label("Measure Steward List");
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
@@ -1502,8 +1451,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				stewardSelectionModel.setSelected(object, value);
 				if (value) {					
 					setStewardId(object.getId());
-					setStewardValue(object.getOrgName());
-					
+					setStewardValue(object.getOrgName());					
 				}
 				
 			}
@@ -1651,15 +1599,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return errorMessages;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEditAuthorsButton()
-	 */
-	/*@Override
-	public HasClickHandlers getEditAuthorsButton() {
-		return addEditAuthors;
-	}*/
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getFocusPanel()
 	 */
@@ -1705,26 +1644,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param defaultText
 	 *            the default text
 	 */
-	private void setListBoxOptions(ListBox input, List<? extends HasListBox> itemList, String defaultText) {
-		input.clear();
-		if (defaultText != null) {
-			input.addItem(defaultText, "");
-		}
-		if (itemList != null) {
-			for (HasListBox listBoxContent : itemList) {
-				input.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#setMeasureStewardOptions(java.util.List)
-	 */
-	/*@Override
-	public void setMeasureStewardOptions(List<? extends HasListBox> itemList) {
-		setListBoxOptions(measureStewardInput, itemList, "--Select--");
-	}*/
-	
+		
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getVersionNumber()
 	 */
@@ -1789,19 +1709,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measureTypeInput.getValue(measureTypeInput.getSelectedIndex());
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureSteward()
-	 */
-	/*@Override
-	public ListBoxMVP getMeasureSteward() {
-		return measureStewardInput;
-	}*/
-	
-	//US 413
-	/* Returns the Steward Other text box object
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOther()
-	 */
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOther()
 	 */
@@ -2213,23 +2120,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public DateBoxWithCalendar getMeasurementToPeriodInputBox() {
 		return measurePeriodToInput;
 	}
-	
-	//US 413
-	/* Returns the text value of Measure Steward
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardValue()
-	 */
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardValue()
-	 */
-	/*@Override
-	public String getMeasureStewardValue() {
-		return measureStewardInput.getItemText(measureStewardInput.getSelectedIndex());
-	}*/
-	
-	//US 413
-	/* Returns the index value of Measure Steward listbox
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardListBox()
-	 */
+		
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardListBox()
 	 */
@@ -2285,11 +2176,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return deleteMeasure;
 	}
 	
-	
-	//US 413
-	/* Clears out the Steward Other panel and re-draw the Steward Other input components
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()
-	 */
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()
 	 */
@@ -2301,10 +2187,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		emptyTextBoxHolder.add(measureStewardOtherInput);
 	}
 	
-	//US 413
-	/* Clears out the Steward Other panel by calling local method .
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#hideOtherTextBox()
-	 */
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#hideOtherTextBox()
 	 */
@@ -2555,29 +2437,32 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			stewardSPanel.setWidget(stewardCellTable);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardSelectedList(java.util.List)
-	 */
-	/*@Override
-	public void setStewardSelectedList(List<MeasureSteward> steward) {		
-		this.stewardsSelectedList = steward;
-	}*/
+	
 	@Override
 	public void setStewardId(String id){
 		this.stewardId = id;
 	}
 
-
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStewardId()
+	 */
 	@Override
 	public String getStewardId() {		
 		return this.stewardId;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStewardValue()
+	 */
 	@Override
 	public String getStewardValue() {	
 		return this.stewardValue;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardValue(java.lang.String)
+	 */
 	@Override
 	public void setStewardValue(String stewardValue){
 		this.stewardValue = stewardValue;

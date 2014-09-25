@@ -6,7 +6,6 @@ import java.util.List;
 
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
-import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
@@ -126,7 +125,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected ListBox measureTypeListBox = new ListBox();
 	
 	/** The measure steward input. */
-	protected ListBoxMVP measureStewardInput = new ListBoxMVP(false);
+	//protected ListBoxMVP measureStewardInput = new ListBoxMVP(false);
 	
 	//US 413. Added panel and input box for Steward Other option.
 	/** The empty text box holder. */
@@ -274,9 +273,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The add edit measure type. */
 	private Button addEditMeasureType = new PrimaryButton("Add/Edit Measure Type","primaryMetaDataButton");
-	
-	/** The add edit authors. */
-	//private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)","primaryMetaDataButton");
 	
 	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new PrimaryButton("Add/Edit Component Measures","primaryMetaDataButton");
@@ -1636,13 +1632,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/**
 	 * Sets the list box options.
-	 * 
-	 * @param input
-	 *            the input
-	 * @param itemList
-	 *            the item list
-	 * @param defaultText
-	 *            the default text
+	 *
+	 * @return the version number
 	 */
 		
 	/* (non-Javadoc)
@@ -1708,15 +1699,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public String getMeasureType() {
 		return measureTypeInput.getValue(measureTypeInput.getSelectedIndex());
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOther()
-	 */
-	@Override
-	public TextBox getMeasureStewardOther() {
-		return measureStewardOtherInput;
-	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEndorsebyNQF()
@@ -2120,26 +2102,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public DateBoxWithCalendar getMeasurementToPeriodInputBox() {
 		return measurePeriodToInput;
 	}
-		
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardListBox()
-	 */
-	@Override
-	public HasValue<String> getMeasureStewardListBox(){
-		return measureStewardInput;
-	}
-	
-	//US 413
-	/* Returns the Measure Steward Other value.
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOtherValue()
-	 */
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOtherValue()
-	 */
-	@Override
-	public String getMeasureStewardOtherValue() {
-		return measureStewardOtherInput.getValue();
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEmeasureId()
@@ -2176,26 +2138,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return deleteMeasure;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()
-	 */
-	@Override
-	public void showOtherTextBox() {
-		clearOtherPanel();
-		Widget otherSpecify = LabelBuilder.buildLabel(measureStewardOtherInput, "User Defined Steward");
-		emptyTextBoxHolder.add(otherSpecify);
-		emptyTextBoxHolder.add(measureStewardOtherInput);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#hideOtherTextBox()
-	 */
-	@Override
-	public void hideOtherTextBox() {
-		clearOtherPanel();
-	}
-	
-	//US 413
 	/**
 	 * Local method to clear out the Steward other panel.
 	 */
@@ -2218,7 +2160,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void setAddEditButtonsVisible(boolean b) {
-		//addEditAuthors.setEnabled(b);
 		addEditMeasureType.setEnabled(b);
 		addEditCmponentMeasures.setEnabled(b);
 		measurePeriodFromInput.setEnableCSS(b);
@@ -2415,29 +2356,36 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void buildStewardCellTable(List<MeasureSteward> currentStewardList,
 			boolean editable) {
-		
+
 		stewardSPanel.clear();
-		stewardSPanel.setStyleName("cellTablePanel");		
+		stewardSPanel.setStyleName("cellTablePanel");
 		stewardCellTable = new CellTable<MeasureSteward>();
-		stewardCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			ListDataProvider<MeasureSteward> sortProvider = new ListDataProvider<MeasureSteward>();
-			stewardCellTable.setRowData(currentStewardList);
-			stewardCellTable.setRowCount(currentStewardList.size(), true);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(currentStewardList);
-			addStewardColumnToTable(editable);		
-			sortProvider.addDataDisplay(stewardCellTable);
-			stewardCellTable.setWidth("100%");
-			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("stewardListSummary",
-					"In the following Steward List table, Select is given in first Column and Steward is given in Second column");
-			stewardSPanel.getElement().setAttribute("id", "StewardListCellTable");
-			stewardSPanel.getElement().setAttribute("aria-describedby", "stewardListSummary");
-			stewardSPanel.setSize("500px", "150px");
-			stewardSPanel.add(invisibleLabel);
-			stewardSPanel.setWidget(stewardCellTable);
+		stewardCellTable
+				.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<MeasureSteward> sortProvider = new ListDataProvider<MeasureSteward>();
+		stewardCellTable.setRowData(currentStewardList);
+		stewardCellTable.setRowCount(currentStewardList.size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(currentStewardList);
+		addStewardColumnToTable(editable);
+		sortProvider.addDataDisplay(stewardCellTable);
+		stewardCellTable.setWidth("100%");
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"stewardListSummary",
+						"In the following Steward List table, Select is given in first Column and Steward is given in Second column");
+		stewardSPanel.getElement().setAttribute("id", "StewardListCellTable");
+		stewardSPanel.getElement().setAttribute("aria-describedby",
+				"stewardListSummary");
+		stewardSPanel.setSize("500px", "150px");
+		stewardSPanel.add(invisibleLabel);
+		stewardSPanel.setWidget(stewardCellTable);
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardId(java.lang.String)
+	 */
 	@Override
 	public void setStewardId(String id){
 		this.stewardId = id;

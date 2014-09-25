@@ -19,12 +19,14 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 	/**
 	 * An html string representation of a checked radio button.
 	 */
-	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" checked=\"checked\"/>");
+	private static String radioButtonTitle = "Click radioButton to select";
+	
+	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" title =\" "+radioButtonTitle+ "\" checked=\"checked\"/>");
 
 	/**
 	 * An html string representation of an unchecked radio button.
 	 */
-	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\"/>");
+	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" title =\" "+radioButtonTitle+ "\" />");
 	
 	/** The Constant INPUT_UNCHECKED_DISABLED. */
 	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" disabled=\"disabled\" />");

@@ -90,13 +90,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		public Label getMeasureScoring();
 		
 		/**
-		 * Gets the edits the authors button.
-		 * 
-		 * @return the edits the authors button
-		 */
-		//public HasClickHandlers getEditAuthorsButton();
-		
-		/**
 		 * Gets the edits the measure type button.
 		 * 
 		 * @return the edits the measure type button
@@ -116,7 +109,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * @return the version number
 		 */
 		public Label getVersionNumber();
-		//public HasValue<String> getMeasureId();
+	
 		/**
 		 * Gets the sets the name.
 		 * 
@@ -179,43 +172,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * @return the measure type
 		 */
 		public String getMeasureType();
-		
-		/**
-		 * Gets the measure steward.
-		 * 
-		 * @return the measure steward
-		 */
-		//public ListBoxMVP getMeasureSteward();
-		
-		//US 413. Introduced Measure Steward Other option.
-		/**
-		 * Gets the measure steward list box.
-		 * 
-		 * @return the measure steward list box
-		 */
-		public HasValue<String> getMeasureStewardListBox();
-		
-		/**
-		 * Gets the measure steward value.
-		 * 
-		 * @return the measure steward value
-		 */
-		//public String getMeasureStewardValue();
-		
-		/**
-		 * Gets the measure steward other.
-		 * 
-		 * @return the measure steward other
-		 */
-		public TextBox getMeasureStewardOther();
-		
-		/**
-		 * Gets the measure steward other value.
-		 * 
-		 * @return the measure steward other value
-		 */
-		public String getMeasureStewardOtherValue();
-		
 		/**
 		 * Gets the endorseby nqf.
 		 * 
@@ -258,13 +214,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *            the new authors list
 		 */
 		public void setAuthorsSelectedList(List<Author> author);
-		
-		/**
-		 * Sets the steward selected list.
-		 *
-		 * @return the authors selected list
-		 */
-		//public void setStewardSelectedList(List<MeasureSteward> steward);
 		
 		/**
 		 * Gets the authors selected list.
@@ -496,17 +445,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * @return the save button
 		 */
 		public HasClickHandlers getSaveButton();
-		
-		//US 413. Interfaces to show or clear out Steward Other text boxes.
-		/**
-		 * Show other text box.
-		 */
-		public void showOtherTextBox();
-		
-		/**
-		 * Hide other text box.
-		 */
-		public void hideOtherTextBox();
 		
 		/**
 		 * Gets the save btn.

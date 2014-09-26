@@ -1,13 +1,11 @@
 package mat.client.measure;
 
 import java.util.List;
-
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
@@ -183,7 +181,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private String stewardId;
 	
 	/** The steward value. */
-	private String stewardValue;
+	//private String stewardValue;
 	
 	/** The scoring abbr. */
 	private String scoringAbbr;
@@ -1319,7 +1317,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		} else if (!trimToNull(measFromPeriod).equals(trimToNull(other.measFromPeriod))) {
 			return false;
 		}
-		if (trimToNull(measSteward) == null) {
+		/*if (trimToNull(measSteward) == null) {
 			if (trimToNull(other.measSteward) != null) {
 				return false;
 			}
@@ -1332,6 +1330,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				return false;
 			}
 		}else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
+			return false;
+		}*/
+		if (trimToNull(stewardId) == null) {
+			if (trimToNull(other.stewardId) != null) {
+				return false;
+			}
+		}else if (!trimToNull(stewardId).equals(trimToNull(other.stewardId))) {
 			return false;
 		}
 		if (trimToNull(measToPeriod) == null) {
@@ -1670,10 +1675,10 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * @return the steward
 	 */
 	public String getSteward() {
-		if (this.measSteward != null && this.measSteward.equalsIgnoreCase("Other")) {
+		if ((measSteward != null) && measSteward.equalsIgnoreCase("Other")) {
 			return null;
 		}
-		return this.measSteward;
+		return measSteward;
 	}
 	
 	/**
@@ -1953,13 +1958,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
-
+	
 	/**
 	 * Gets the steward selected list.
 	 *
 	 * @return the steward selected list
 	 */
-	public List<MeasureSteward> getStewardSelectedList() {		
+	public List<MeasureSteward> getStewardSelectedList() {
 		return stewardSelectedList;
 	}
 	
@@ -1968,27 +1973,27 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 *
 	 * @param steSelectedList the new steward selected list
 	 */
-	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {		
-		this.stewardSelectedList =steSelectedList; 
+	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {
+		stewardSelectedList =steSelectedList;
 	}
-
+	
 	/**
 	 * Gets the steward value.
 	 *
 	 * @return the steward value
 	 */
-	public String getStewardValue() {
+	/*public String getStewardValue() {
 		return stewardValue;
-	}
-
+	}*/
+	
 	/**
 	 * Sets the steward value.
 	 *
 	 * @param stewardValue the new steward value
 	 */
-	public void setStewardValue(String stewardValue) {
+	/*public void setStewardValue(String stewardValue) {
 		this.stewardValue = stewardValue;
-	}
+	}*/
 	
 	
 }

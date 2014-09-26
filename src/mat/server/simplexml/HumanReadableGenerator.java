@@ -458,15 +458,23 @@ public class HumanReadableGenerator {
 			String scoring = populationOrSubtreeXMLProcessor.findNode(
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();
+			String parentName = clauseNode.getAttributes().getNamedItem("type")
+					.getNodeValue();
 			if (childNodes.getLength() == 1) {
-				displayNone(
-						populationOrSubtreeListElement.appendElement(HTML_UL),
-						populationOrSubtreeXMLProcessor, clauseNode);
+				if("measureObservation".equalsIgnoreCase(parentName)){
+					displayNone(
+							populationOrSubtreeListElement,
+							populationOrSubtreeXMLProcessor, clauseNode);
+				}else{
+					displayNone(
+							populationOrSubtreeListElement.appendElement(HTML_UL),
+							populationOrSubtreeXMLProcessor, clauseNode);
+				}
 			}
-			String parentName = "";
+//			String parentName = "";
 			if (clauseNode.getAttributes().getNamedItem("type") != null) {
-				parentName = clauseNode.getAttributes().getNamedItem("type")
-						.getNodeValue();
+//				parentName = clauseNode.getAttributes().getNamedItem("type")
+//						.getNodeValue();
 				if (("denominator".equalsIgnoreCase(parentName)
 						|| "measurePopulation".equalsIgnoreCase(parentName) || ("numerator"
 						.equalsIgnoreCase(parentName) && "ratio"

@@ -1463,7 +1463,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		if(stewardId!=null){
 			metaDataDisplay.setStewardId(stewardId);
 		}else{
-			metaDataDisplay.setStewardId("");
+			metaDataDisplay.setStewardId("");					
 		}
 		
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
@@ -1482,7 +1482,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
 		getAllOrganizations();
 		authorList = currentMeasureDetail.getAuthorSelectedList();
-		//stewardList = currentMeasureDetail.getStewardSelectedList();
+	
 		//measureTypeSelectList
 		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
 			metaDataDisplay.setMeasureTypeSelectedList(currentMeasureDetail.getMeasureTypeSelectedList());
@@ -1679,8 +1679,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setImprovNotations(metaDataDisplay.getImprovementNotation().getValue());
 		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());
 		
-		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
-		currentMeasureDetail.setMeasSteward(metaDataDisplay.getStewardValue());
+		if(!metaDataDisplay.getStewardId().isEmpty()){
+			currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
+			currentMeasureDetail.setMeasSteward(metaDataDisplay.getStewardValue());
+		}		
 		
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());
 		currentMeasureDetail.setSupplementalData(metaDataDisplay.getSupplementalData().getValue());		

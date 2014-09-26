@@ -27,10 +27,8 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.vsac.VSACGroovyClient;
+import org.vsac.VSACResponseResult;
 import org.xml.sax.InputSource;
-/*import org.telligen.vsac.dao.ValueSetsResponseDAO;
-import org.telligen.vsac.object.ValueSetsResponse;
-import org.telligen.vsac.service.VSACTicketService;*/
 
 // TODO: Auto-generated Javadoc
 /** VSACAPIServiceImpl class. **/
@@ -44,9 +42,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** The Constant PROXY_PORT. */
 	private static final int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
 	
-	private static String server = System.getProperty("SERVER_TICKET_URL");//"https://vsac.nlm.nih.gov/vsac/ws/Ticket";
-	private static String service = System.getProperty("SERVICE_URL");//"http://umlsks.nlm.nih.gov";
-	private static String retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");//"https://vsac.nlm.nih.gov/vsac/ws/RetrieveMultipleValueSets?";
+	private static String server = System.getProperty("SERVER_TICKET_URL");
+	private static String service = System.getProperty("SERVICE_URL");
+	private static String retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
 	
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
@@ -126,17 +124,18 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			if ((oid != null) && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
 				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-				String xmlPayLoad = null;
+				VSACResponseResult vsacResponseResult = null;
 				if ((version != null) && StringUtils.isNotEmpty(version)) {
-					xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version,fiveMinServiceTicket);
+					vsacResponseResult = vGroovyClient.
+							getMultipleValueSetsResponseByOIDAndVersion(oid.trim(),version,fiveMinServiceTicket);
 				} else if ((effectiveDate != null) && StringUtils.isNotEmpty(effectiveDate)) {
-					xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOIDAndEffectiveDate(oid, effectiveDate,fiveMinServiceTicket);
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndEffectiveDate(oid, effectiveDate,fiveMinServiceTicket);
 				} else {
-					xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket);
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket);
 				}
-				if(!StringUtils.isEmpty(xmlPayLoad)) {
+				if(!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
 					result.setSuccess(true);
-					VSACValueSetWrapper wrapper = convertXmltoValueSet(xmlPayLoad);
+					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 					for (MatValueSet valueSet : wrapper.getValueSetList()) {
 						handleVSACGroupedValueSet(eightHourTicket, valueSet);
 					}
@@ -187,8 +186,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				if (groupedValueSetOid.length == 2) {
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
 					String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-					String xmlGroupingPayload = vGroovyClient.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim(),fiveMinServiceTicket);
-					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(xmlGroupingPayload);
+					VSACResponseResult vsacResponseResult = vGroovyClient.
+							getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim(),fiveMinServiceTicket);
+					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 					valueSet.getGroupedValueSet().add(wrapperGrouped.getValueSetList().get(0));
 				}
 			}
@@ -268,37 +268,40 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
 					// Only Update Measure XML for those which have version as 1.0 or 1.
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-					String xmlPayLoad = null;
+					VSACResponseResult vsacResponseResult = null;
 					try {
-						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket( eightHourTicket);
-						xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
+						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+								qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
 					} catch (Exception ex) {
 						LOGGER.info("Value Set reterival failed at VSAC for OID :"
 								+ qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType());
 					}
-					if (xmlPayLoad != null) {
-						/*LOGGER.info("Value Set from VSAC for OID :"
+					if (vsacResponseResult.getXmlPayLoad() != null) {
+						LOGGER.info("Value Set from VSAC for OID :"
 								+ qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType()
-								+ ". Failure Reason:" + vsr.getFailReason());
-						if (vsr.isFailResponse()) {
-							int failReason = vsr.getFailReason();
+								+ ". Failure Reason:" + vsacResponseResult.getFailReason());
+						if (vsacResponseResult.getIsFailResponse()) {
+							int failReason = vsacResponseResult.getFailReason();
 							if (failReason == VSAC_TIME_OUT_FAILURE_CODE) {
 								LOGGER.info("Value Set reterival failed at VSAC for OID :"
 										+ qualityDataSetDTO.getOid() + " with Data Type : "
 										+ qualityDataSetDTO.getDataType()
-										+ ". Failure Reason:" + vsr.getFailReason());
+										+ ". Failure Reason:" + vsacResponseResult.getFailReason());
 								result.setSuccess(false);
-								result.setFailureReason(vsr.getFailReason());
+								result.setFailureReason(vsacResponseResult.getFailReason());
 								return result;
 							} else if (failReason == VSAC_REQUEST_FAILURE_CODE) {
 								notFoundOIDList.add(qualityDataSetDTO.getOid());
 								continue;
 							}
-						}*/
-						if ((xmlPayLoad != null) && StringUtils.isNotEmpty(xmlPayLoad)) {
-							VSACValueSetWrapper wrapper = convertXmltoValueSet(xmlPayLoad);
+						}
+						if ((vsacResponseResult.getXmlPayLoad() != null)
+								&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(
+									vsacResponseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
 							if (matValueSet != null) {
@@ -327,18 +330,18 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					}
 				} else { // Add specific version other then 1.0 QDM in matValueSetList - Used for Value set sheet creation.
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-					String xmlPayLoad = null;
+					VSACResponseResult responseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-						xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion( qualityDataSetDTO.getOid(),
+						responseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion( qualityDataSetDTO.getOid(),
 								qualityDataSetDTO.getVersion(),fiveMinuteServiceTicket);
 					} catch (Exception ex) {
 						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
 								+ " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
-					if (xmlPayLoad != null) {
-						if ((xmlPayLoad != null) && StringUtils.isNotEmpty(xmlPayLoad)) {
-							VSACValueSetWrapper wrapper = convertXmltoValueSet(xmlPayLoad);
+					if (responseResult.getXmlPayLoad() != null) {
+						if ((responseResult.getXmlPayLoad() != null) && StringUtils.isNotEmpty(responseResult.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(responseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
@@ -412,32 +415,34 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
-					String xmlPayLoad = null;
+					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
 								);
-						xmlPayLoad = vGroovyClient.getMultipleValueSetsResponseByOID(
+						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 								qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
 								+ "VSAC for OID :" + qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType());
 					}
-					if (xmlPayLoad != null) {
-						/*if (vsr.isFailResponse() && (vsr.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					if (vsacResponseResult.getXmlPayLoad() != null) {
+						if (vsacResponseResult.getIsFailResponse()
+								&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
 							LOGGER.info("Value Set reterival failed at VSAC for OID :"
 									+ qualityDataSetDTO.getOid() + " with Data Type : "
 									+ qualityDataSetDTO.getDataType() + ". Failure Reason: "
-									+ vsr.getFailReason());
+									+ vsacResponseResult.getFailReason());
 							// inValidateVsacUser();
 							// MatContext.get().setUMLSLoggedIn(false);
 							result.setSuccess(false);
-							result.setFailureReason(vsr.getFailReason());
+							result.setFailureReason(vsacResponseResult.getFailReason());
 							return result;
-						}*/
-						if ((xmlPayLoad != null) && StringUtils.isNotEmpty(xmlPayLoad)) {
-							VSACValueSetWrapper wrapper = convertXmltoValueSet(xmlPayLoad);
+						}
+						if ((vsacResponseResult.getXmlPayLoad() != null)
+								&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {
 								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());

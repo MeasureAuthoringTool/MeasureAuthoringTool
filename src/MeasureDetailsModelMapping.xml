@@ -82,10 +82,10 @@
       <bind-xml name="id" node="attribute" location="steward"/>
     </field>
     
-    <field name="measStewardOther"
+    <!-- <field name="measStewardOther"
            type="java.lang.String">
      <bind-xml name="steward" node="element"/>
-    </field>
+    </field> -->
     
      <field name="authorSelectedList"
            type="mat.model.Author"

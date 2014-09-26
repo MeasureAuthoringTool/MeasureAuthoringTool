@@ -54,7 +54,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	//US 413. Support Steward Other
 	/** The meas steward other. */
-	private String measStewardOther;
+	//private String measStewardOther;
 	
 	/** The endorse by nqf. */
 	private Boolean endorseByNQF;
@@ -765,9 +765,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the meas steward other
 	 */
-	public String getMeasStewardOther() {
+	/*public String getMeasStewardOther() {
 		return measStewardOther;
-	}
+	}*/
 	
 	/**
 	 * Sets the meas steward other.
@@ -775,9 +775,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * @param measStewardOther
 	 *            the new meas steward other
 	 */
-	public void setMeasStewardOther(String measStewardOther) {
+	/*public void setMeasStewardOther(String measStewardOther) {
 		this.measStewardOther = doTrim(measStewardOther);
-	}
+	}*/
 	
 	/**
 	 * Do trim.
@@ -1127,9 +1127,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ((measScoring == null) ? 0 : measScoring.hashCode());
 		result = (prime * result)
 				+ ((measSteward == null) ? 0 : measSteward.hashCode());
-		result = (prime
+		/*result = (prime
 				* result)
-				+ ((measStewardOther == null) ? 0 : measStewardOther.hashCode());
+				+ ((measStewardOther == null) ? 0 : measStewardOther.hashCode());*/
 		result = (prime * result)
 				+ ((measToPeriod == null) ? 0 : measToPeriod.hashCode());
 		result = (prime * result)
@@ -1775,9 +1775,6 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.endorsementId = endorsementId;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
@@ -1787,16 +1784,15 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", groupId=" + groupId + ", finalizedDate=" + finalizedDate
 				+ ", measFromPeriod=" + measFromPeriod + ", measToPeriod="
 				+ measToPeriod + ", measScoring=" + measScoring
-				+ ", measSteward=" + measSteward + ", measStewardOther="
-				+ measStewardOther + ", endorseByNQF=" + endorseByNQF
-				+ ", nqfId=" + nqfId + ", description=" + description
-				+ ", copyright=" + copyright + ", clinicalRecomms="
-				+ clinicalRecomms + ", definitions=" + definitions
-				+ ", guidance=" + guidance + ", transmissionFormat="
-				+ transmissionFormat + ", rationale=" + rationale
-				+ ", improvNotations=" + improvNotations + ", stratification="
-				+ stratification + ", referencesList=" + referencesList
-				+ ", authorSelectedList=" + authorSelectedList
+				+ ", measSteward=" + measSteward + ", endorseByNQF="
+				+ endorseByNQF + ", nqfId=" + nqfId + ", description="
+				+ description + ", copyright=" + copyright
+				+ ", clinicalRecomms=" + clinicalRecomms + ", definitions="
+				+ definitions + ", guidance=" + guidance
+				+ ", transmissionFormat=" + transmissionFormat + ", rationale="
+				+ rationale + ", improvNotations=" + improvNotations
+				+ ", stratification=" + stratification + ", referencesList="
+				+ referencesList + ", authorSelectedList=" + authorSelectedList
 				+ ", stewardSelectedList=" + stewardSelectedList
 				+ ", measureTypeSelectedList=" + measureTypeSelectedList
 				+ ", qdsSelectedList=" + qdsSelectedList

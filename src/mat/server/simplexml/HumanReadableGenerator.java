@@ -6,12 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
-
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,7 +22,7 @@ import org.w3c.dom.NodeList;
  * The Class HumanReadableGenerator.
  */
 public class HumanReadableGenerator {
-
+	
 	/** The Constant ELEMENT_LOOK_UP. */
 	private static final String ELEMENT_LOOK_UP = "elementLookUp";
 	
@@ -61,11 +58,11 @@ public class HumanReadableGenerator {
 	
 	/** The Constant popNameArray. */
 	private static final String[] popNameArray = { "initialPopulation",
-			"denominator", "denominatorExclusions", "numerator",
-			"numeratorExclusions", "denominatorExceptions",
-			"measurePopulation", "measurePopulationExclusions",
-			"measureObservation", "stratum" };
-
+		"denominator", "denominatorExclusions", "numerator",
+		"numeratorExclusions", "denominatorExceptions",
+		"measurePopulation", "measurePopulationExclusions",
+		"measureObservation", "stratum" };
+	
 	/** The show only variable name. */
 	private static Boolean showOnlyVariableName = false;
 	
@@ -74,7 +71,7 @@ public class HumanReadableGenerator {
 	
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
-
+	
 	/**
 	 * Generate html for population or subtree.
 	 *
@@ -92,7 +89,7 @@ public class HumanReadableGenerator {
 			//System.out.println("Original subXML:" + subXML);
 			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(
 					subXML, measureXML, true);
-
+			
 			if (populationOrSubtreeXMLProcessor == null) {
 				htmlDocument = createBaseHumanReadableDocument();
 				Element bodyElement = htmlDocument.body();
@@ -101,32 +98,32 @@ public class HumanReadableGenerator {
 				Element populationListElement = mainListElement
 						.appendElement(HTML_LI);
 				populationListElement
-						.appendText("Human readable encountered problems. "
-								+ "Most likely you have included a clause with clause which is causing an infinite loop.");
+				.appendText("Human readable encountered problems. "
+						+ "Most likely you have included a clause with clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
-
+			
 			boolean isPopulation = checkIfPopulation(populationOrSubtreeXMLProcessor);
 			String name = getPopulationOrSubtreeName(
 					populationOrSubtreeXMLProcessor, isPopulation);
-
+			
 			htmlDocument = createBaseHumanReadableDocument();
 			Element bodyElement = htmlDocument.body();
 			Element mainDivElement = bodyElement.appendElement("div");
 			Element mainListElement = mainDivElement.appendElement(HTML_UL);
 			Element populationOrSubtreeListElement = mainListElement
 					.appendElement(HTML_LI);
-
+			
 			Element boldNameElement = populationOrSubtreeListElement
 					.appendElement("b");
 			boldNameElement.appendText(name + " =");
-
+			
 			if (!isPopulation) {
 				populationOrSubtreeListElement.appendElement("br");
 				populationOrSubtreeListElement = populationOrSubtreeListElement
 						.appendElement(HTML_UL).appendElement(HTML_LI);
 			}
-
+			
 			parseAndBuildHTML(populationOrSubtreeXMLProcessor,
 					populationOrSubtreeListElement);
 		} catch (XPathExpressionException e) {
@@ -140,7 +137,7 @@ public class HumanReadableGenerator {
 		}
 		return returnHTML;
 	}
-
+	
 	/**
 	 * Check if population.
 	 *
@@ -160,8 +157,8 @@ public class HumanReadableGenerator {
 	}
 	
 	/**
-	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with 
-	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children. 
+	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with
+	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children.
 	 *
 	 * @param measureXMLProcessor the measure xml processor
 	 * @throws XPathExpressionException the x path expression exception
@@ -186,7 +183,7 @@ public class HumanReadableGenerator {
 			qdmVariableNode.appendChild(mainChildClone);
 		}
 	}
-
+	
 	/**
 	 * Expand sub trees and import qd ms.
 	 *
@@ -198,16 +195,16 @@ public class HumanReadableGenerator {
 	 */
 	private static XmlProcessor expandSubTreesAndImportQDMs(String subXML,
 			String measureXML, boolean isImportElementLookup)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		modifySubTreeLookUpForOccurances(measureXMLProcessor);
-
+		
 		return expandSubTreesAndImportQDMs(populationOrSubtreeXMLProcessor,
 				measureXMLProcessor, isImportElementLookup);
 	}
-
+	
 	/**
 	 * Expand sub trees and import qd ms.
 	 *
@@ -220,31 +217,31 @@ public class HumanReadableGenerator {
 	private static XmlProcessor expandSubTreesAndImportQDMs(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			XmlProcessor measureXMLProcessor, boolean isImportElementLookup)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		// find all <subTreeRef> tags in 'populationSubXML'
 		NodeList subTreeRefNodeList = populationOrSubtreeXMLProcessor
 				.findNodeList(populationOrSubtreeXMLProcessor.getOriginalDoc(),
 						"//subTreeRef");
-
+		
 		if (subTreeRefNodeList.getLength() > 0) {
-
+			
 			// For each <subTreeRef> node replace it by actual <subTree> node
 			// from 'simpleXML'
 			for (int i = 0; i < subTreeRefNodeList.getLength(); i++) {
 				Node subTreeRefNode = subTreeRefNodeList.item(i);
 				Node firstChildNode = subTreeRefNode.getFirstChild();
 				Node commentNode = null;
-				if (firstChildNode != null
+				if ((firstChildNode != null)
 						&& "comment".equals(firstChildNode.getNodeName())) {
 					commentNode = firstChildNode.cloneNode(true);
 				}
 				String subTreeId = subTreeRefNode.getAttributes()
 						.getNamedItem("id").getNodeValue();
-//				System.out.println("subTreeId:" + subTreeId);
-
+				//				System.out.println("subTreeId:" + subTreeId);
+				
 				Node subTreeNode = resolveMainSubTreeNode(measureXMLProcessor,
 						subTreeId);
-
+				
 				if (subTreeNode != null) {
 					replaceSubTreeNode(populationOrSubtreeXMLProcessor,
 							subTreeRefNode, commentNode, subTreeNode);
@@ -260,24 +257,24 @@ public class HumanReadableGenerator {
 			Node importedElementLookUpNode = populationOrSubtreeXMLProcessor
 					.getOriginalDoc().importNode(elementLookUpNode, true);
 			populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild()
-					.appendChild(importedElementLookUpNode);
+			.appendChild(importedElementLookUpNode);
 		}
-
+		
 		// import 'measureDetails'
 		Node measureDetailsNode = measureXMLProcessor.findNode(
 				measureXMLProcessor.getOriginalDoc(), "//measureDetails");
 		Node importedMeasureDetailsNode = populationOrSubtreeXMLProcessor
 				.getOriginalDoc().importNode(measureDetailsNode, true);
 		populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild()
-				.appendChild(importedMeasureDetailsNode);
-
+		.appendChild(importedMeasureDetailsNode);
+		
 		/*System.out.println("Inflated popualtion tree: "
 				+ populationOrSubtreeXMLProcessor
 						.transform(populationOrSubtreeXMLProcessor
 								.getOriginalDoc()));*/
 		return populationOrSubtreeXMLProcessor;
 	}
-
+	
 	/**
 	 * Resolve main sub tree node.
 	 *
@@ -288,7 +285,7 @@ public class HumanReadableGenerator {
 	 */
 	private static Node resolveMainSubTreeNode(
 			XmlProcessor measureXMLProcessor, String subTreeId)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		Node subTreeNode = measureXMLProcessor.findNode(
 				measureXMLProcessor.getOriginalDoc(),
 				"/measure/subTreeLookUp/subTree[@uuid='" + subTreeId + "']");
@@ -297,8 +294,8 @@ public class HumanReadableGenerator {
 		NodeList subTreeRefNodeList = measureXMLProcessor.findNodeList(
 				measureXMLProcessor.getOriginalDoc(),
 				"/measure/subTreeLookUp/subTree[@uuid='" + subTreeId
-						+ "']//subTreeRef");
-
+				+ "']//subTreeRef");
+		
 		// resolve for each subTreeRef with subTree (clause within clause)
 		for (int i = 0; i < subTreeRefNodeList.getLength(); i++) {
 			Node subTreeRefNode = subTreeRefNodeList.item(i);
@@ -314,7 +311,7 @@ public class HumanReadableGenerator {
 		}
 		return subTreeNode;
 	}
-
+	
 	/**
 	 * Resolve child sub tree node.
 	 *
@@ -327,7 +324,7 @@ public class HumanReadableGenerator {
 	private static boolean resolveChildSubTreeNode(
 			XmlProcessor measureXMLProcessor, Node subTreeRefNode,
 			List<String> childSubTreeRefList) throws XPathExpressionException {
-
+		
 		String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id")
 				.getNodeValue();
 		//System.out.println("sub subTreeId:" + subTreeId);
@@ -338,12 +335,12 @@ public class HumanReadableGenerator {
 							"/measure/subTreeLookUp/subTree[@uuid='"
 									+ subTreeId + "']");
 			// Node subTreeNodeClone = subTreeNode.cloneNode(true);
-
+			
 			// find all <subTreeRef> tags in 'subTreeNode'
 			NodeList subTreeRefNodeList = measureXMLProcessor.findNodeList(
 					measureXMLProcessor.getOriginalDoc(),
 					"/measure/subTreeLookUp/subTree[@uuid='" + subTreeId
-							+ "']//subTreeRef");
+					+ "']//subTreeRef");
 			for (int i = 0; i < subTreeRefNodeList.getLength(); i++) {
 				Node childSubTreeRefNode = subTreeRefNodeList.item(i);
 				// Node childSubTreeRefNodeClone =
@@ -359,14 +356,14 @@ public class HumanReadableGenerator {
 					subTreeNode);
 		} else {
 			System.out
-					.println("Found a chain of Clauses. Abort Human readable generation.");
+			.println("Found a chain of Clauses. Abort Human readable generation.");
 			//System.out.println(childSubTreeRefList);
 			return false;
 		}
 		childSubTreeRefList.remove(subTreeId);
 		return true;
 	}
-
+	
 	/**
 	 * Replace sub tree node.
 	 *
@@ -388,7 +385,7 @@ public class HumanReadableGenerator {
 		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone,
 				subTreeRefNode);
 	}
-
+	
 	/**
 	 * Gets the population or subtree name.
 	 *
@@ -418,7 +415,7 @@ public class HumanReadableGenerator {
 		}
 		return name;
 	}
-
+	
 	/**
 	 * Parses the and build html.
 	 *
@@ -428,7 +425,7 @@ public class HumanReadableGenerator {
 	private static void parseAndBuildHTML(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement) {
-
+		
 		try {
 			Node rootNode = populationOrSubtreeXMLProcessor.getOriginalDoc()
 					.getFirstChild();
@@ -439,7 +436,7 @@ public class HumanReadableGenerator {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Parses the and build html.
 	 *
@@ -452,14 +449,17 @@ public class HumanReadableGenerator {
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement, Node clauseNode,
 			int currentGroupNumber) {
-
+		
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
 			String scoring = populationOrSubtreeXMLProcessor.findNode(
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();
-			String parentName = clauseNode.getAttributes().getNamedItem("type")
-					.getNodeValue();
+			String parentName = "";
+			if (clauseNode.getAttributes().getNamedItem("type") != null) {
+				parentName = clauseNode.getAttributes().getNamedItem("type")
+						.getNodeValue();
+			}
 			if (childNodes.getLength() == 1) {
 				if("measureObservation".equalsIgnoreCase(parentName)){
 					displayNone(
@@ -471,17 +471,17 @@ public class HumanReadableGenerator {
 							populationOrSubtreeXMLProcessor, clauseNode);
 				}
 			}
-//			String parentName = "";
+			/*String parentName = "";*/
 			if (clauseNode.getAttributes().getNamedItem("type") != null) {
-//				parentName = clauseNode.getAttributes().getNamedItem("type")
-//						.getNodeValue();
+				/*parentName = clauseNode.getAttributes().getNamedItem("type")
+						.getNodeValue();*/
 				if (("denominator".equalsIgnoreCase(parentName)
 						|| "measurePopulation".equalsIgnoreCase(parentName) || ("numerator"
-						.equalsIgnoreCase(parentName) && "ratio"
-						.equalsIgnoreCase(scoring)))
-						&& !"measureDetails".equalsIgnoreCase(clauseNode
-								.getNodeName())) {
-
+								.equalsIgnoreCase(parentName) && "ratio"
+								.equalsIgnoreCase(scoring)))
+								&& !"measureDetails".equalsIgnoreCase(clauseNode
+										.getNodeName())) {
+					
 					displayInitialPop(populationOrSubtreeListElement,
 							populationOrSubtreeXMLProcessor, clauseNode,
 							currentGroupNumber);
@@ -500,7 +500,7 @@ public class HumanReadableGenerator {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Parses the child.
 	 *
@@ -522,7 +522,7 @@ public class HumanReadableGenerator {
 			// set the Flag is we have AND -> AND NOT or OR -> OR NOT
 			boolean isNestedNot = (nodeDisplayName.equals(parentNodeDisplayName
 					+ " NOT"));
-
+			
 			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 					if (isNestedNot) {
@@ -554,10 +554,10 @@ public class HumanReadableGenerator {
 					}
 				}
 				// ulElement.appendElement(HTML_LI).appendText("None");
-			}else if(childNodes.getLength() == 1 && childNodes.item(0).getNodeName().equals(COMMENT)){
+			}else if((childNodes.getLength() == 1) && childNodes.item(0).getNodeName().equals(COMMENT)){
 				Node commentNode = childNodes.item(0);
 				String commentValue = commentNode.getTextContent();
-				if (commentValue == null || commentValue.trim().length() == 0) {
+				if ((commentValue == null) || (commentValue.trim().length() == 0)) {
 					boolean isNoneAdded = displayNone(ulElement, populationOrSubtreeXMLProcessor,
 							parentNode);
 					if(!isNoneAdded){
@@ -573,13 +573,13 @@ public class HumanReadableGenerator {
 			}
 		} else if (COMMENT.equals(nodeName)) {
 			String commentValue = item.getTextContent();
-			if (commentValue != null && commentValue.trim().length() > 0) {
+			if ((commentValue != null) && (commentValue.trim().length() > 0)) {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				liElement.attr("style", "list-style-type: none");
 				Element italicElement = liElement.appendElement("i");
 				italicElement.appendText("# " + item.getTextContent());
 			}
-			if (item.getParentNode().getChildNodes().getLength() == 1
+			if ((item.getParentNode().getChildNodes().getLength() == 1)
 					&& "AND".equalsIgnoreCase(item.getParentNode()
 							.getAttributes().getNamedItem("displayName")
 							.getNodeValue())) {
@@ -591,9 +591,9 @@ public class HumanReadableGenerator {
 			return;
 		} else if (SUB_TREE.equals(nodeName)) {
 			NamedNodeMap map = item.getAttributes();
-			if (map.getNamedItem("qdmVariable") != null
+			if ((map.getNamedItem("qdmVariable") != null)
 					&& "true".equalsIgnoreCase(map.getNamedItem("qdmVariable")
-							.getNodeValue()) && showOnlyVariableName == false) {
+							.getNodeValue()) && (showOnlyVariableName == false)) {
 				if (parentListElement.nodeName().equals(HTML_UL) ) {
 					parentListElement = parentListElement
 							.appendElement(HTML_LI);
@@ -611,10 +611,10 @@ public class HumanReadableGenerator {
 				if(map.getNamedItem("instanceOf") == null){
 					displayName = "$"+StringUtils.deleteWhitespace(displayName);
 				}
-								
+				
 				if(COMMENT.equals(item.getFirstChild().getNodeName())){
 					String commentValue = item.getFirstChild().getTextContent();
-					if (commentValue != null && commentValue.trim().length() > 0) {
+					if ((commentValue != null) && (commentValue.trim().length() > 0)) {
 						parentListElement.appendElement("br");
 						Element italicElement = parentListElement.appendElement("i");
 						italicElement.appendText("# " + commentValue);
@@ -628,9 +628,9 @@ public class HumanReadableGenerator {
 				NodeList childNodes = item.getChildNodes();
 				for (int i = 0; i < childNodes.getLength(); i++) {
 					Element temp = parentListElement;
-//					if(temp.html().contains("Measure Observation")){
-//						temp = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
-//					}
+					//					if(temp.html().contains("Measure Observation")){
+					//						temp = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+					//					}
 					parseChild(childNodes.item(i), temp,
 							parentNode, populationOrSubtreeXMLProcessor,
 							satisfiesAnyAll);
@@ -704,10 +704,10 @@ public class HumanReadableGenerator {
 				 * parseChild(childNodes.item(1),parentListElement,item); }
 				 */
 			}
-
+			
 		} else if (ELEMENT_REF.equals(nodeName)) {
 			if (satisfiesAnyAll
-					&& lhsID != null
+					&& (lhsID != null)
 					&& lhsID.contains(item.getAttributes()
 							.getNamedItem("id").getNodeValue())) {
 				if (item.hasChildNodes()) {
@@ -744,7 +744,7 @@ public class HumanReadableGenerator {
 					if("ul".equals(parentNodeName)){
 						parentListElement.appendElement(HTML_LI).appendText(getNodeText(item,
 								populationOrSubtreeXMLProcessor));
-					}else{					
+					}else{
 						parentListElement.appendText(getNodeText(item,
 								populationOrSubtreeXMLProcessor));
 					}
@@ -763,22 +763,22 @@ public class HumanReadableGenerator {
 				}
 				if (item.getAttributes().getNamedItem("type").getNodeValue()
 						.contains("SATISFIES")) {
-
+					
 					createSatisfies(item, liElement,
 							populationOrSubtreeXMLProcessor);
 				} else {
 					liElement.appendText(getFunctionText(item));
 					NodeList childNodes = item.getChildNodes();
-					if (childNodes.getLength() == 1
+					if ((childNodes.getLength() == 1)
 							&& ELEMENT_REF.equals(childNodes.item(0)
 									.getNodeName())) {
 						parseChild(childNodes.item(0), liElement, item,
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
 					} else {
-						if (childNodes.getLength() > 1
+						if ((childNodes.getLength() > 1)
 								|| childNodes.item(0).getNodeName()
-										.equals(FUNCTIONAL_OP)) {
+								.equals(FUNCTIONAL_OP)) {
 							liElement = liElement.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
@@ -819,7 +819,7 @@ public class HumanReadableGenerator {
 					}
 					parentListElement.appendText(getFunctionText(item));
 					NodeList childNodes = item.getChildNodes();
-					if (childNodes.getLength() == 1
+					if ((childNodes.getLength() == 1)
 							&& ELEMENT_REF.equals(childNodes.item(0)
 									.getNodeName())) {
 						parseChild(childNodes.item(0), parentListElement, item,
@@ -828,13 +828,13 @@ public class HumanReadableGenerator {
 						System.out.println(" if Adding a new line");
 					} else {
 						Element ulElement = parentListElement;
-						if ( !(childNodes.getLength() == 0) && (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
+						if ( !(childNodes.getLength() == 0) && ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
 								.equals(FUNCTIONAL_OP))) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
+							if ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
 									.equals(FUNCTIONAL_OP)) {
 								Element newLiElem = ulElement.appendElement(HTML_LI);
 								//ulElement = ulElement.appendElement(HTML_LI);
@@ -856,7 +856,7 @@ public class HumanReadableGenerator {
 			// ignore
 		} else {
 			Element liElement = parentListElement.appendElement(HTML_LI);
-
+			
 			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 				// liElement.appendText(" "+getNodeText(parentNode,
 				// populationOrSubtreeXMLProcessor));
@@ -871,7 +871,7 @@ public class HumanReadableGenerator {
 					+ " ");
 		}
 	}
-
+	
 	/**
 	 * Creates the satisfies.
 	 *
@@ -888,10 +888,10 @@ public class HumanReadableGenerator {
 					false);
 			liElement.appendText(" "
 					+ item.getAttributes().getNamedItem("displayName")
-							.getNodeValue().toLowerCase());
+					.getNodeValue().toLowerCase());
 			String lhsId = lhs.getAttributes().getNamedItem("id").getNodeValue();
 			if(!lhsID.contains(lhsId)){
-			   lhsID.add(lhsId);
+				lhsID.add(lhsId);
 			}
 			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
@@ -904,7 +904,7 @@ public class HumanReadableGenerator {
 			}
 		}
 	}
-
+	
 	/**
 	 * Display none.
 	 *
@@ -926,13 +926,13 @@ public class HumanReadableGenerator {
 					|| ("ratio".equalsIgnoreCase(scoring)
 							&& !"denominator".equalsIgnoreCase(type) && !"numerator"
 							.equalsIgnoreCase(type))
-					|| ("continuous Variable".equalsIgnoreCase(scoring) && !"measurePopulation"
-							.equalsIgnoreCase(type))
-					|| ("cohort".equalsIgnoreCase(scoring))) {
-
+							|| ("continuous Variable".equalsIgnoreCase(scoring) && !"measurePopulation"
+									.equalsIgnoreCase(type))
+									|| ("cohort".equalsIgnoreCase(scoring))) {
+				
 				list.appendElement(HTML_LI).appendText("None");
 				retValue = true;
-			}			
+			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -951,7 +951,7 @@ public class HumanReadableGenerator {
 	private static void displayInitialPop(
 			Element populationOrSubtreeListElement,
 			XmlProcessor populationOrSubtreeXMLProcessor, Node clause, int loop) {
-
+		
 		Element listStart = populationOrSubtreeListElement
 				.appendElement(HTML_UL);
 		Element list = listStart.appendElement(HTML_LI);
@@ -982,7 +982,7 @@ public class HumanReadableGenerator {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Gets the relational op text.
 	 *
@@ -1001,7 +1001,7 @@ public class HumanReadableGenerator {
 		 * child.
 		 */
 		NodeList childNodes = item.getChildNodes();
-
+		
 		if (childNodes.getLength() == 2) {
 			Element newLiElement = liElement;
 			if (newLiElement.nodeName().equals(HTML_UL)) {
@@ -1010,23 +1010,23 @@ public class HumanReadableGenerator {
 			String name = item.getAttributes().getNamedItem(DISPLAY_NAME)
 					.getNodeValue().toLowerCase()
 					+ " ";
-
+			
 			if (item.getAttributes().getNamedItem("unit") != null) {
 				name = name.replaceFirst(
 						item.getAttributes().getNamedItem("unit")
-								.getNodeValue(), getUnitString(item));
+						.getNodeValue(), getUnitString(item));
 			}
-
+			
 			boolean isChild1QDMOrVariable = checkIfElementRefOrQDMVariable(childNodes
 					.item(0));
 			boolean isChild2QDMOrVariable = checkIfElementRefOrQDMVariable(childNodes
 					.item(1));
-
+			
 			if (isParentNodeName(item, LOGICAL_OP) && !isChild1QDMOrVariable) {
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(
 						HTML_LI);
 			}
-
+			
 			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
 				NodeList children = childNodes.item(0).getChildNodes();
 				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
@@ -1036,10 +1036,10 @@ public class HumanReadableGenerator {
 					newLiElement.appendText(" (");
 				}
 			}
-
+			
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
-
+			
 			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
 				NodeList children = childNodes.item(0).getChildNodes();
 				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
@@ -1049,28 +1049,28 @@ public class HumanReadableGenerator {
 					newLiElement.appendText(") ");
 				}
 			}
-
+			
 			if (!newLiElement.children().isEmpty()) {
 				Element firstElement = newLiElement.children().first();
 				if (HTML_UL.equals(firstElement.nodeName())) {
 					newLiElement = firstElement.appendElement(HTML_LI);
 				}
 			}
-
+			
 			if (!isChild2QDMOrVariable) {
 				newLiElement.appendText(name);
 				newLiElement = newLiElement.appendElement(HTML_UL)
 						.appendElement(HTML_LI);
 			} else {
 				newLiElement.appendText(name);
-
+				
 				if (RELATIONAL_OP.equals(childNodes.item(1).getNodeName())) {
 					NodeList children = childNodes.item(1).getChildNodes();
 					if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
 							.item(0))))
 							&& (ELEMENT_REF.equals(children.item(1)
 									.getNodeName()) || checkIfQDMVariable(children
-									.item(1)))) {
+											.item(1)))) {
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
@@ -1078,13 +1078,13 @@ public class HumanReadableGenerator {
 						return;
 					}
 				}
-
+				
 			}
 			parseChild(childNodes.item(1), newLiElement, item,
 					populationOrSubtreeXMLProcessor, false);
 		}
 	}
-
+	
 	/**
 	 * Checks if the Node is a "elementRef" node or a "subTree" node with a
 	 * "qdmVariable" attribute whose value is "true". If Yes, returns true, else
@@ -1120,10 +1120,10 @@ public class HumanReadableGenerator {
 				retValue = true;
 			}
 		}
-
+		
 		return retValue;
 	}
-
+	
 	/**
 	 * Check if qdm variable.
 	 *
@@ -1142,7 +1142,7 @@ public class HumanReadableGenerator {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Checks if is parent node name.
 	 *
@@ -1152,10 +1152,10 @@ public class HumanReadableGenerator {
 	 */
 	private static boolean isParentNodeName(Node item, String parentNodeName) {
 		Node parentNode = item.getParentNode();
-		if (parentNode != null && SUB_TREE.equals(parentNode.getNodeName())) {
+		if ((parentNode != null) && SUB_TREE.equals(parentNode.getNodeName())) {
 			parentNode = parentNode.getParentNode();
 		}
-
+		
 		if (parentNode != null) {
 			if (parentNodeName.equals(parentNode.getNodeName())) {
 				return true;
@@ -1163,7 +1163,7 @@ public class HumanReadableGenerator {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * This method is used to get the correct text to add to human readable
 	 * depending on the type of node.
@@ -1193,7 +1193,7 @@ public class HumanReadableGenerator {
 			} else if (!name.endsWith(" : Patient Characteristic Birthdate")
 					&& !name.endsWith(" : Patient Characteristic Expired")) {
 				String[] nameArr = name.split(":");
-
+				
 				if (nameArr.length == 2) {
 					name = nameArr[1].trim() + ": " + nameArr[0].trim();
 				}
@@ -1211,7 +1211,7 @@ public class HumanReadableGenerator {
 					name = occur.concat(name);
 				}
 			}
-
+			
 			if (node.hasChildNodes()) {
 				NodeList childNodes = node.getChildNodes();
 				for (int j = 0; j < childNodes.getLength(); j++) {
@@ -1245,19 +1245,19 @@ public class HumanReadableGenerator {
 								name = occur.concat(name);
 							}
 						}
-
+						
 						else {
 							name += attributeText;
 						}
 					}
 				}
 			}
-
+			
 			name = "\"" + name + "\" ";
 		}
 		return name;
 	}
-
+	
 	/**
 	 * Gets the attribute text.
 	 *
@@ -1272,7 +1272,7 @@ public class HumanReadableGenerator {
 				.getNamedItem("name").getNodeValue();
 		String modeName = attributeNode.getAttributes().getNamedItem("mode")
 				.getNodeValue();
-
+		
 		if ("Check if Present".equals(modeName)) {
 			attributeText = " (" + attributeName + ")";
 		} else if ("Less Than Or Equal To".equals(modeName)) {
@@ -1293,7 +1293,7 @@ public class HumanReadableGenerator {
 				Node qdmNodeNameAttribute = populationOrSubtreeXMLProcessor
 						.findNode(attributeNode.getOwnerDocument(),
 								"//elementLookUp/qdm[@uuid='" + qdmUUIDValue
-										+ "']/@name");
+								+ "']/@name");
 				if (qdmNodeNameAttribute != null) {
 					if ("negation rationale".equals(attributeName)) {
 						attributeText = " not done: "
@@ -1311,11 +1311,11 @@ public class HumanReadableGenerator {
 				e.printStackTrace();
 				attributeText = "";
 			}
-
+			
 		}
 		return attributeText;
 	}
-
+	
 	/**
 	 * Gets the attribute text.
 	 *
@@ -1328,18 +1328,18 @@ public class HumanReadableGenerator {
 			String attributeName, String operator) {
 		String attributeText;
 		if(attributeName.contains("date")){
-		String attrDate = attributeNode.getAttributes()
-				.getNamedItem("attrDate").getNodeValue();
-		attributeText = " (" + attributeName + operator + formatDate(attrDate) + ")";
+			String attrDate = attributeNode.getAttributes()
+					.getNamedItem("attrDate").getNodeValue();
+			attributeText = " (" + attributeName + operator + formatDate(attrDate) + ")";
 		} else {
-		String comparisonValue = attributeNode.getAttributes()
-				.getNamedItem("comparisonValue").getNodeValue();
-		attributeText = " (" + attributeName + operator + comparisonValue
-				+ " " + getUnitString(attributeNode) + ")";
+			String comparisonValue = attributeNode.getAttributes()
+					.getNamedItem("comparisonValue").getNodeValue();
+			attributeText = " (" + attributeName + operator + comparisonValue
+					+ " " + getUnitString(attributeNode) + ")";
 		}
 		return attributeText;
 	}
-
+	
 	/**
 	 * Gets the unit string.
 	 *
@@ -1348,7 +1348,7 @@ public class HumanReadableGenerator {
 	 */
 	private static String getUnitString(Node attributeNode) {
 		String unitValue = "";
-
+		
 		Node unitNode = attributeNode.getAttributes().getNamedItem("unit");
 		if (unitNode != null) {
 			unitValue = attributeNode.getAttributes().getNamedItem("unit")
@@ -1373,10 +1373,10 @@ public class HumanReadableGenerator {
 		} else if (unitValue.equals("second") || unitValue.equals("seconds")) {
 			unitValue = "second(s)";
 		}
-
+		
 		return unitValue;
 	}
-
+	
 	/**
 	 * Gets the function text.
 	 *
@@ -1387,12 +1387,12 @@ public class HumanReadableGenerator {
 		if (!FUNCTIONAL_OP.equals(item.getNodeName())) {
 			return "";
 		}
-
+		
 		String typeAttribute = item.getAttributes().getNamedItem("type")
 				.getNodeValue();
 		String functionDisplayName = item.getAttributes()
 				.getNamedItem(DISPLAY_NAME).getNodeValue();
-
+		
 		if ("AGE AT".equals(typeAttribute)) {
 			functionDisplayName = item.getAttributes()
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase();
@@ -1430,7 +1430,7 @@ public class HumanReadableGenerator {
 		} else if(functionDisplayName.startsWith("DATETIMEDIFF")){
 			functionDisplayName = functionDisplayName.replaceFirst("DATETIMEDIFF", "Datetime difference") + " of";
 		}
-
+		
 		if (item.getAttributes().getNamedItem("unit") != null) {
 			String unit = item.getAttributes().getNamedItem("unit")
 					.getNodeValue();
@@ -1439,10 +1439,10 @@ public class HumanReadableGenerator {
 		}
 		functionDisplayName = StringUtils.capitalize(functionDisplayName
 				.toLowerCase());
-
+		
 		return functionDisplayName + ": ";
 	}
-
+	
 	/**
 	 * This will look at the elementRef node and return an appropriate display
 	 * text for human readable HTML for that QDM. TODO: Write code to take
@@ -1462,7 +1462,7 @@ public class HumanReadableGenerator {
 	// }
 	// return "\"" + displayName + "\" ";
 	// }
-
+	
 	private static org.jsoup.nodes.Document createBaseHumanReadableDocument() {
 		org.jsoup.nodes.Document htmlDocument = org.jsoup.nodes.Document
 				.createShell("");
@@ -1470,7 +1470,7 @@ public class HumanReadableGenerator {
 		appendStyleNode(head);
 		return htmlDocument;
 	}
-
+	
 	/**
 	 * Append style node.
 	 *
@@ -1480,7 +1480,7 @@ public class HumanReadableGenerator {
 		String styleTagString = MATCssUtil.getCSS();
 		head.append(styleTagString);
 	}
-
+	
 	/**
 	 * Generate html for measure.
 	 *
@@ -1504,12 +1504,12 @@ public class HumanReadableGenerator {
 				Element populationListElement = mainListElement
 						.appendElement(HTML_LI);
 				populationListElement
-						.appendText("Human readable encountered problems. "
-								+ "Most likely you have included a clause within clause which is causing an infinite loop.");
+				.appendText("Human readable encountered problems. "
+						+ "Most likely you have included a clause within clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
 			resolveRemainingSubTreeRefs(simpleXMLProcessor);
-						
+			
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
@@ -1518,7 +1518,7 @@ public class HumanReadableGenerator {
 		}
 		return humanReadableHTML;
 	}
-
+	
 	/**
 	 * Generate human readable.
 	 *
@@ -1528,8 +1528,8 @@ public class HumanReadableGenerator {
 	 */
 	private static void generateHumanReadable(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor);
@@ -1539,7 +1539,7 @@ public class HumanReadableGenerator {
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
 	}
-
+	
 	/**
 	 * Generate table of contents.
 	 *
@@ -1549,35 +1549,35 @@ public class HumanReadableGenerator {
 	private static void generateTableOfContents(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
 		Element bodyElement = humanReadableHTMLDocument.body();
-
+		
 		bodyElement.append("<h2><a name=\"toc\">Table of Contents</a></h2>");
 		Element tocULElement = bodyElement.appendElement(HTML_UL);
-
+		
 		Element populationCriteriaLI = tocULElement.appendElement(HTML_LI);
 		populationCriteriaLI
-				.append("<a href=\"#d1e405\">Population criteria</a>");
-
+		.append("<a href=\"#d1e405\">Population criteria</a>");
+		
 		// TODO:code to decide if we need to add 'Measure observations'
-
+		
 		Element dataVariables = tocULElement.appendElement(HTML_LI);
 		dataVariables
-				.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
-
+		.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
+		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
-				.append("<a href=\"#d1e647\">Data criteria (QDM Data Elements)</a>");
-
+		.append("<a href=\"#d1e647\">Data criteria (QDM Data Elements)</a>");
+		
 		// TODO:code to decide if we need to add 'Reporting Stratification'
-
+		
 		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
 		supplementalCriteriaLI
-				.append("<a href=\"#d1e767\">Supplemental Data Elements</a>");
-
+		.append("<a href=\"#d1e767\">Supplemental Data Elements</a>");
+		
 		bodyElement
-				.append("<div style=\"float:left; background:teal; height:3px; width:80%\"></div><pre><br/></pre>");
-
+		.append("<div style=\"float:left; background:teal; height:3px; width:80%\"></div><pre><br/></pre>");
+		
 	}
-
+	
 	/**
 	 * Generate data criteria.
 	 *
@@ -1587,15 +1587,15 @@ public class HumanReadableGenerator {
 	 */
 	private static void generateDataCriteria(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-				.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
-
+		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
+		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-
+		
 		// get all qdm elemes in 'elementLookUp' which are not attributes or
 		// dont have 'Timing Element', 'Patient Characteristic Expired' and
 		// 'Patient Characteristic Birthdate' Default QDM data type and are not
@@ -1605,10 +1605,10 @@ public class HumanReadableGenerator {
 				"/measure/elementLookUp/qdm[@datatype != 'Timing Element' and @oid!='"
 						+ ConstantMessages.BIRTHDATE_OID + "' " + "and @oid!='"
 						+ ConstantMessages.EXPIRED_OID + "']");
-
+		
 		Map<String, Node> qdmMap = new HashMap<String, Node>();
 		Map<String, Node> attributeMap = new HashMap<String, Node>();
-
+		
 		for (int i = 0; i < qdmElements.getLength(); i++) {
 			Node qdmNode = qdmElements.item(i);
 			String oid = qdmNode.getAttributes().getNamedItem("oid")
@@ -1621,7 +1621,7 @@ public class HumanReadableGenerator {
 					.getNodeValue();
 			String name = qdmNode.getAttributes().getNamedItem("name")
 					.getNodeValue();
-
+			
 			if ("attribute".equals(datatype)) {
 				attributeMap.put(oid + datatype, qdmNode);
 			} else if ("true".equals(suppDataElement)) {
@@ -1654,7 +1654,7 @@ public class HumanReadableGenerator {
 				}
 			}
 		}
-
+		
 		List<String> qdmNameList = new ArrayList<String>(qdmMap.keySet());
 		Collections.sort(qdmNameList, new Comparator<String>() {
 			@Override
@@ -1668,7 +1668,7 @@ public class HumanReadableGenerator {
 			for (String s : qdmNameList) {
 				Node qdm = qdmMap.get(s);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
-
+				
 				String qdmString = "\""
 						+ qdmAttribs.getNamedItem("datatype").getNodeValue()
 						+ ": " + qdmAttribs.getNamedItem("name").getNodeValue()
@@ -1678,11 +1678,11 @@ public class HumanReadableGenerator {
 						+ " Value Set ("
 						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"";
 				qdmItemList.add(qdmString);
-
+				
 				checkForNegationRationaleAttributes(simpleXMLProcessor,
 						mainListElement, qdm, qdmItemList);
 			}
-
+			
 			Collections.sort(qdmItemList, new Comparator<String>() {
 				@Override
 				public int compare(String o1, String o2) {
@@ -1691,17 +1691,17 @@ public class HumanReadableGenerator {
 									o2.substring(0, o2.indexOf(':')));
 				}
 			});
-
+			
 			for (String qdmString : qdmItemList) {
 				mainListElement.appendElement(HTML_LI).appendText(qdmString);
 			}
-
+			
 			for (Node qdm : attributeMap.values()) {
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor
 						.getOriginalDoc(), "//attribute[@qdmUUID=\""
-						+ qdmAttribs.getNamedItem("uuid").getNodeValue()
-						+ "\"][@name != \"negation rationale\"]");
+								+ qdmAttribs.getNamedItem("uuid").getNodeValue()
+								+ "\"][@name != \"negation rationale\"]");
 				String name = "";
 				if (node != null) {
 					name = node.getAttributes().getNamedItem("name")
@@ -1717,7 +1717,7 @@ public class HumanReadableGenerator {
 							+ qdmAttribs.getNamedItem("name").getNodeValue()
 							+ " "
 							+ qdmAttribs.getNamedItem("taxonomy")
-									.getNodeValue() + " Value Set ("
+							.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
 							+ ")\"");
 				}
@@ -1726,7 +1726,7 @@ public class HumanReadableGenerator {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
-
+	
 	/**
 	 * Check for negation rationale attributes.
 	 *
@@ -1740,14 +1740,14 @@ public class HumanReadableGenerator {
 			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm,
 			List<String> itemList) throws XPathExpressionException {
 		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
-
+		
 		String xPathString = "//elementRef[@id='" + uuid
 				+ "']/attribute[@name='negation rationale'][@qdmUUID]";
 		NodeList elementRefList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(), xPathString);
-
+		
 		List<String> attribUUIDList = new ArrayList<String>();
-
+		
 		for (int i = 0; i < elementRefList.getLength(); i++) {
 			Node attribNode = elementRefList.item(i);
 			String attribUUID = attribNode.getAttributes()
@@ -1758,12 +1758,12 @@ public class HumanReadableGenerator {
 						+ "'][@datatype='attribute']";
 				Node qdmAttributeNode = simpleXMLProcessor.findNode(
 						simpleXMLProcessor.getOriginalDoc(), xPathString);
-
+				
 				if (qdmAttributeNode != null) {
 					String parentDataType = qdm.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
 					NamedNodeMap qdmAttribs = qdmAttributeNode.getAttributes();
-
+					
 					String negRationalText = "\""
 							+ parentDataType.trim()
 							+ " not done: "
@@ -1772,10 +1772,10 @@ public class HumanReadableGenerator {
 							+ qdmAttribs.getNamedItem("name").getNodeValue()
 							+ " "
 							+ qdmAttribs.getNamedItem("taxonomy")
-									.getNodeValue() + " Value Set ("
+							.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
 							+ ")\"";
-
+					
 					if (!itemList.contains(negRationalText)) {
 						itemList.add(negRationalText);
 					}
@@ -1783,7 +1783,7 @@ public class HumanReadableGenerator {
 			}
 		}
 	}
-
+	
 	/**
 	 * Generate supplemental data.
 	 *
@@ -1793,15 +1793,15 @@ public class HumanReadableGenerator {
 	 */
 	private static void generateSupplementalData(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-				.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
-
+		.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
+		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-
+		
 		NodeList elements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/supplementalDataElements/elementRef");
@@ -1819,7 +1819,7 @@ public class HumanReadableGenerator {
 						+ ": " + qdmMap.getNamedItem("name").getNodeValue(),
 						qdm);
 			}
-
+			
 			List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
 			Collections.sort(qdmNameList, new Comparator<String>() {
 				@Override
@@ -1827,12 +1827,12 @@ public class HumanReadableGenerator {
 					return o1.compareToIgnoreCase(o2);
 				}
 			});
-
+			
 			for (String s : qdmNameList) {
 				Node qdm = qdmNodeMap.get(s);
 				NamedNodeMap qdmMap = qdm.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
-
+				
 				listItem.appendText("\""
 						+ qdmMap.getNamedItem("datatype").getNodeValue() + ": "
 						+ qdmMap.getNamedItem("name").getNodeValue()
@@ -1846,7 +1846,7 @@ public class HumanReadableGenerator {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
-
+	
 	/**
 	 * Generate qdm variables.
 	 *
@@ -1856,15 +1856,15 @@ public class HumanReadableGenerator {
 	 */
 	private static void generateQDMVariables(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-				.append("<h3><a name=\"d1e539\" href=\"#toc\">Data Criteria (QDM Variables)</a></h3>");
-
+		.append("<h3><a name=\"d1e539\" href=\"#toc\">Data Criteria (QDM Variables)</a></h3>");
+		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-
+		
 		NodeList variables = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/subTreeLookUp/subTree[@qdmVariable='true'][not(@instanceOf)]");
@@ -1893,7 +1893,7 @@ public class HumanReadableGenerator {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
-
+	
 	/**
 	 * Generate population criteria human readable.
 	 *
@@ -1903,34 +1903,34 @@ public class HumanReadableGenerator {
 	 */
 	private static void generatePopulationCriteriaHumanReadable(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException {
-
+					throws XPathExpressionException {
+		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-				.append("<h3><a name=\"d1e405\" href=\"#toc\">Population criteria</a></h3>");
-
+		.append("<h3><a name=\"d1e405\" href=\"#toc\">Population criteria</a></h3>");
+		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-
+		
 		NodeList groupNodeList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/measureGrouping/group");
-
+		
 		for (int i = 0; i < groupNodeList.getLength(); i++) {
-
+			
 			if (groupNodeList.getLength() > 1) {
 				mainListElement.append("<li style=\"list-style: none;\"><br><b>------ Population Criteria "
 						+ (i + 1) + " ------</b><br><br></li>");
 			}
-
+			
 			Node groupNode = groupNodeList.item(i);
-
+			
 			NodeList clauseNodeList = groupNode.getChildNodes();
 			generatePopulationNodes(clauseNodeList, mainListElement,
 					groupNodeList.getLength(), i, simpleXMLProcessor);
 		}
 	}
-
+	
 	/**
 	 * Generate population nodes.
 	 *
@@ -1943,15 +1943,15 @@ public class HumanReadableGenerator {
 	private static void generatePopulationNodes(NodeList clauseNodeList,
 			Element mainListElement, int totalGroupCount,
 			int currentGroupNumber, XmlProcessor simpleXMLProcessor) {
-
-		for (int i = 0; i < popNameArray.length; i++) {
-			generatePopulationNodes(popNameArray[i], clauseNodeList,
+		
+		for (String element : popNameArray) {
+			generatePopulationNodes(element, clauseNodeList,
 					mainListElement, totalGroupCount, currentGroupNumber,
 					simpleXMLProcessor);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Generate population nodes.
 	 *
@@ -1966,7 +1966,7 @@ public class HumanReadableGenerator {
 			NodeList clauseNodeList, Element mainListElement,
 			int totalGroupCount, int currentGroupNumber,
 			XmlProcessor simpleXMLProcessor) {
-
+		
 		// find all clause nodes with attribute type=populationType
 		List<Node> clauseNodes = new ArrayList<Node>();
 		for (int j = 0; j < clauseNodeList.getLength(); j++) {
@@ -1979,7 +1979,7 @@ public class HumanReadableGenerator {
 				}
 			}
 		}
-
+		
 		if (clauseNodes.size() > 1) {
 			Element populationListElement = mainListElement
 					.appendElement(HTML_LI);
@@ -1989,8 +1989,8 @@ public class HumanReadableGenerator {
 			 * if (totalGroupCount > 1){ populationName += "s " +
 			 * (currentGroupNumber+1); }
 			 *//*
-				 * else{ populationName += "s"; }
-				 */
+			 * else{ populationName += "s"; }
+			 */
 			boldNameElement.appendText(populationName + " =");
 			Element childPopulationULElement = populationListElement
 					.appendElement(HTML_UL);
@@ -2031,7 +2031,7 @@ public class HumanReadableGenerator {
 					.appendElement(HTML_LI);
 			Element boldNameElement = populationListElement.appendElement("b");
 			String populationName = getPopulationName(populationType);
-				
+			
 			// if (totalGroupCount > 1){
 			// populationName += " " + (currentGroupNumber+1);
 			// }
@@ -2050,7 +2050,7 @@ public class HumanReadableGenerator {
 					clauseNodes.get(0), 1);
 		}
 	}
-
+	
 	/**
 	 * Gets the pop assoc.
 	 *
@@ -2066,7 +2066,7 @@ public class HumanReadableGenerator {
 				Node nodeAssoc = node.getAttributes().getNamedItem(
 						"associatedPopulationUUID");
 				if (nodeAssoc != null) {
-
+					
 					Node newAssoc = processor.findNode(
 							processor.getOriginalDoc(), "//clause[@uuid=\""
 									+ nodeAssoc.getNodeValue() + "\"]");
@@ -2084,7 +2084,7 @@ public class HumanReadableGenerator {
 		}
 		return stringAssoc;
 	}
-
+	
 	/**
 	 * Gets the item count text.
 	 *
@@ -2093,7 +2093,7 @@ public class HumanReadableGenerator {
 	 */
 	private static String getItemCountText(Node node) {
 		String itemCountText = "";
-
+		
 		if ("clause".equals(node.getNodeName())) {
 			NodeList childNodes = node.getChildNodes();
 			for (int i = 0; i < childNodes.getLength(); i++) {
@@ -2106,7 +2106,7 @@ public class HumanReadableGenerator {
 								.getNamedItem("dataType").getNodeValue()
 								+ ": "
 								+ elementRef.getAttributes()
-										.getNamedItem("name").getNodeValue();
+								.getNamedItem("name").getNodeValue();
 						if (j == (elementRefList.getLength() - 1)) {
 							itemCountText += nodeText;
 						} else {
@@ -2121,10 +2121,10 @@ public class HumanReadableGenerator {
 				}
 			}
 		}
-
+		
 		return itemCountText;
 	}
-
+	
 	/**
 	 * Gets the population name.
 	 *
@@ -2142,7 +2142,7 @@ public class HumanReadableGenerator {
 		}
 		return name;
 	}
-
+	
 	/**
 	 * Gets the population name.
 	 *
@@ -2174,7 +2174,7 @@ public class HumanReadableGenerator {
 		}
 		return populationName;
 	}
-
+	
 	/**
 	 * Resolve sub trees in populations.
 	 *
@@ -2183,7 +2183,7 @@ public class HumanReadableGenerator {
 	 */
 	private static XmlProcessor resolveSubTreesInPopulations(String simpleXmlStr) {
 		XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
-
+		
 		try {
 			NodeList clauseNodeList = simpleXMLProcessor.findNodeList(
 					simpleXMLProcessor.getOriginalDoc(),
@@ -2193,12 +2193,12 @@ public class HumanReadableGenerator {
 				Node clauseNode = clauseNodeList.item(i);
 				String clauseNodeXMLString = simpleXMLProcessor
 						.transform(clauseNode);
-
+				
 				/*System.out.println("");
 				System.out.println("clauseNode XML String:"
 						+ clauseNodeXMLString);
 				System.out.println("");*/
-
+				
 				XmlProcessor clauseXMLProcessor = new XmlProcessor(
 						clauseNodeXMLString);
 				clauseXMLProcessor = expandSubTreesAndImportQDMs(
@@ -2208,15 +2208,15 @@ public class HumanReadableGenerator {
 				}
 				Node expandedClauseNode = clauseXMLProcessor.getOriginalDoc()
 						.getFirstChild();
-
+				
 				nodeArr[i][0] = clauseNode;
 				nodeArr[i][1] = expandedClauseNode;
 			}
-
-			for (int j = 0; j < nodeArr.length; j++) {
-				Node clauseNode = (Node) nodeArr[j][0];
-				Node expandedClauseNode = (Node) nodeArr[j][1];
-
+			
+			for (Object[] element : nodeArr) {
+				Node clauseNode = (Node) element[0];
+				Node expandedClauseNode = (Node) element[1];
+				
 				Node importedClauseNode = simpleXMLProcessor.getOriginalDoc()
 						.importNode(expandedClauseNode, true);
 				Node parentNode = clauseNode.getParentNode();
@@ -2235,10 +2235,10 @@ public class HumanReadableGenerator {
 	
 	/**
 	 * Because of "QDM Variable with Occurances", we might have some subTree's with subTreeRef's in subTreeLookUp.
-	 * This is because these subTree's aren't directly referred to in the clause logic, but their occurrance(s) 
-	 * are. 
-	 * This method will look for subTreeRef's in subTree and resolve them to subTree, so that proper human readable 
-	 * is generated.   
+	 * This is because these subTree's aren't directly referred to in the clause logic, but their occurrance(s)
+	 * are.
+	 * This method will look for subTreeRef's in subTree and resolve them to subTree, so that proper human readable
+	 * is generated.
 	 *
 	 * @param simpleXMLProcessor the simple xml processor
 	 * @throws XPathExpressionException the x path expression exception
@@ -2274,9 +2274,9 @@ public class HumanReadableGenerator {
 			String year = date.substring(0, 4);
 			String month = date.substring(4, 6);
 			String dt = date.substring(6, 8);
-			if(year.length() != 4 || year.toLowerCase().indexOf("x") > -1){
-			    year = "0000";
-			   }
+			if((year.length() != 4) || (year.toLowerCase().indexOf("x") > -1)){
+				year = "0000";
+			}
 			dateString = month.concat("/") + dt.concat("/") + year;
 		} else {
 			return date;

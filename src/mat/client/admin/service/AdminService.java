@@ -8,6 +8,7 @@ package mat.client.admin.service;
 
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
 import mat.shared.InCorrectUserRoleException;
@@ -96,4 +97,6 @@ public interface AdminService extends RemoteService {
 	 * 
 	 * @return the all organizations */
 	ManageOrganizationSearchModel getAllOrganizations();
+	
+	void deleteOrganization(Result organization) throws InCorrectUserRoleException;
 }

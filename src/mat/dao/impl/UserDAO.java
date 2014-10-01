@@ -1,8 +1,11 @@
 package mat.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import mat.dao.search.GenericDAO;
+import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
@@ -37,7 +40,7 @@ mat.dao.UserDAO {
 		}
 	}
 	
-		
+	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#expireTemporaryPasswords(java.util.Date)
 	 */
@@ -143,7 +146,21 @@ mat.dao.UserDAO {
 			criteria.setMaxResults(numResults);
 		}*/
 		return criteria.list();
-		
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public
+	HashMap < String , Organization> searchAllUsedOrganizations(){
+		List<Organization> usedOrganization = new ArrayList<Organization>();
+		HashMap < String , Organization> usedOrganizationMap = new HashMap<String,Organization>();
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.setProjection(Projections.distinct(Projections.property("organization")));
+		usedOrganization = criteria.list();
+		for(Organization org : usedOrganization){
+			usedOrganizationMap.put(Long.toString(org.getId()), org);
+		}
+		return usedOrganizationMap;
 	}
 	
 	/* (non-Javadoc)
@@ -330,12 +347,12 @@ mat.dao.UserDAO {
 		if (null == user) {
 			question = getRandomSecurityQuestion();
 		}else{
-//			String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
-//					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '"
-//					+ user.getId() + "' ORDER BY RAND() LIMIT 1";
+			//			String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
+			//					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '"
+			//					+ user.getId() + "' ORDER BY RAND() LIMIT 1";
 			String sql = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
-				+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = :userId"
-				+ " ORDER BY RAND() LIMIT 1";
+					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = :userId"
+					+ " ORDER BY RAND() LIMIT 1";
 			
 			Session session = getSessionFactory().getCurrentSession();
 			SQLQuery query = session.createSQLQuery(sql);

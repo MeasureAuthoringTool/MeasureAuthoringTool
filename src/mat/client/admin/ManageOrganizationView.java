@@ -5,11 +5,13 @@ import java.util.List;
 import mat.client.CustomPager;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
@@ -43,6 +45,11 @@ import com.google.gwt.view.client.ListDataProvider;
 /** ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay. **/
 public class ManageOrganizationView implements ManageOrganizationPresenter.SearchDisplay,
 HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
+	
+	public static interface Observer {
+		void onDeleteClicked(ManageOrganizationSearchModel.Result result);
+	}
+	
 	/** Cell Table Columns width - 50% each. */
 	private static final double CELLTABLE_COLUMN_WIDTH = 50.0;
 	/** MARGIN Constant value. */
@@ -67,6 +74,11 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private TextBox searchText = new TextBox();
 	/** The search label. */
 	private Widget searchTextLabel = LabelBuilder.buildLabel(searchText, "Search for a Organization");
+	/** The observer. */
+	private Observer observer;
+	
+	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 	/** Constructor. **/
 	public ManageOrganizationView() {
 		searchText.setWidth("256px");
@@ -85,6 +97,8 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageDisplay);
+		mainPanel.add(errorMessageDisplay);
 		cellTablePanel.getElement().setId("manageOrganizationCellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("98%");
 		mainPanel.add(cellTablePanel);
@@ -132,7 +146,44 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 			}
 		};
 		cellTable.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
+		
+		Column<Result, SafeHtml> editColumn = new Column<Result, SafeHtml>( new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return getDeleteColumnToolTip(object);
+			}
+		};
+		editColumn.setFieldUpdater(new FieldUpdater<Result, SafeHtml>() {
+			@Override
+			public void update(int index, Result object,
+					SafeHtml value) {
+				if(!object.isUsed()){
+					observer.onDeleteClicked(object);
+				}
+			}
+		});
+		cellTable.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
 		return cellTable;
+	}
+	
+	private SafeHtml getDeleteColumnToolTip(Result object){
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title;
+		String cssClass;
+		if (!object.isUsed()) {
+			
+			title = "Delete";
+			cssClass = "customDeleteButton";
+			
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+		} else {
+			title = "Delete";
+			cssClass = "customDeleteDisableButton";
+			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+		}
+		
+		return sb.toSafeHtml();
 	}
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageOrganizationSearchModel.Result> handler) {
@@ -221,5 +272,44 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	@Override
 	public HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool() {
 		return this;
+	}
+	/**
+	 * @return the observer
+	 */
+	public Observer getObserver() {
+		return observer;
+	}
+	/**
+	 * @param observer the observer to set
+	 */
+	@Override
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
+	/**
+	 * @return the successMessageDisplay
+	 */
+	@Override
+	public SuccessMessageDisplay getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
+	/**
+	 * @param successMessageDisplay the successMessageDisplay to set
+	 */
+	public void setSuccessMessageDisplay(SuccessMessageDisplay successMessageDisplay) {
+		this.successMessageDisplay = successMessageDisplay;
+	}
+	/**
+	 * @return the errorMessageDisplay
+	 */
+	@Override
+	public ErrorMessageDisplay getErrorMessageDisplay() {
+		return errorMessageDisplay;
+	}
+	/**
+	 * @param errorMessageDisplay the errorMessageDisplay to set
+	 */
+	public void setErrorMessageDisplay(ErrorMessageDisplay errorMessageDisplay) {
+		this.errorMessageDisplay = errorMessageDisplay;
 	}
 }

@@ -14,7 +14,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -41,7 +40,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
@@ -434,7 +432,7 @@ public class UserServiceImpl implements UserService {
 	 *            the new password
 	 */
 	private void sendResetPassword(String email, String newPassword) {
-		logger.info("In sendResetPassword(String email, String newPassword)........");
+		logger.info("In sendResetPassword(String email, String newPassword)........" +newPassword);
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(email);
@@ -464,6 +462,11 @@ public class UserServiceImpl implements UserService {
 			orgId = "";
 		}
 		return userDAO.searchForUsersByName(orgId);
+	}
+	
+	@Override
+	public HashMap<String, Organization> searchForUsedOrganizations() {
+		return userDAO.searchAllUsedOrganizations();
 	}
 	
 	/* (non-Javadoc)

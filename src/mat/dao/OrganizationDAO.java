@@ -21,5 +21,6 @@ public interface OrganizationDAO extends IDAO<Organization, Long> {
 	 *
 	 * @return The list of all organizations
 	 */
-	List<Organization> getAllOrganizations();	
+	List<Organization> getAllOrganizations();
+	void deleteOrganization(Organization entity);
 }

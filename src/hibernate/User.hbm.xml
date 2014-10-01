@@ -27,7 +27,7 @@
 	<property name="loginId" column="LOGIN_ID"/>
 	<one-to-one name="password" class="mat.model.UserPassword" lazy="proxy" property-ref="user"  cascade="all"/>
 	<many-to-one name="organization" column="ORG_ID" 
-	    class="mat.model.Organization" unique="false" cascade="none"/>
+	    class="mat.model.Organization" unique="false"  lazy="false" cascade="none"/>
 	<many-to-one name="status" column="STATUS_ID"
 		class="mat.model.Status" unique="false" cascade="none" />
 	<many-to-one name="auditLog" column="AUDIT_ID"

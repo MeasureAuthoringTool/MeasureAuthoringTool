@@ -15,7 +15,7 @@ IsSerializable {
 	/**
 	 * The Class Result.
 	 */
-	public static class Result implements IsSerializable {		
+	public static class Result implements IsSerializable {
 		/** The organization id. */
 		private String id;
 		
@@ -24,6 +24,8 @@ IsSerializable {
 		
 		/** The organization name. */
 		private String orgName;
+		
+		private boolean isUsed;
 		
 		/**
 		 * Gets the organization id.
@@ -51,7 +53,7 @@ IsSerializable {
 		public String getOid() {
 			return oid;
 		}
-				
+		
 		/**
 		 * Sets the organization oid.
 		 *
@@ -78,6 +80,20 @@ IsSerializable {
 		 */
 		public void setOrgName(String orgName) {
 			this.orgName = orgName;
+		}
+
+		/**
+		 * @return the isUsed
+		 */
+		public boolean isUsed() {
+			return isUsed;
+		}
+
+		/**
+		 * @param isUsed the isUsed to set
+		 */
+		public void setUsed(boolean isUsed) {
+			this.isUsed = isUsed;
 		}
 	}
 	

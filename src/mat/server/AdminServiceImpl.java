@@ -1,6 +1,7 @@
 package mat.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
@@ -55,6 +56,13 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		checkAdminUser();
 		getUserService().deleteUser(userId);
 	}
+	
+	@Override
+	public void deleteOrganization(ManageOrganizationSearchModel.Result organization) {
+		Organization org = getOrganizationDAO().findByOid(organization.getOid());
+		getOrganizationDAO().deleteOrganization(org);
+	}
+	
 	
 	/** Extract organization model.
 	 * 
@@ -269,6 +277,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public ManageOrganizationSearchModel searchOrganization(String key)	{
 		List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
+		UserService userService = getUserService();
+		HashMap<String, Organization> usedOrganizationsMap = userService.searchForUsedOrganizations();
 		logger.info("Organization search returned " + searchResults.size());
 		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
 		List<ManageOrganizationSearchModel.Result> detailList = new ArrayList<ManageOrganizationSearchModel.Result>();
@@ -277,6 +287,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			r.setOrgName(org.getOrganizationName());
 			r.setOid(org.getOrganizationOID());
 			r.setId(Long.toString(org.getId()));
+			r.setUsed(usedOrganizationsMap.get(Long.toString(org.getId()))!=null);
 			detailList.add(r);
 		}
 		model.setData(detailList);

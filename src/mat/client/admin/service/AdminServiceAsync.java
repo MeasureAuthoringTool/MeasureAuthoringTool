@@ -87,4 +87,6 @@ public interface AdminServiceAsync {
 	 * @param callback the callback
 	 * @return the all organizations */
 	void getAllOrganizations(AsyncCallback<ManageOrganizationSearchModel> callback);
+	
+	void deleteOrganization(ManageOrganizationSearchModel.Result organization, AsyncCallback<Void> callback);
 }

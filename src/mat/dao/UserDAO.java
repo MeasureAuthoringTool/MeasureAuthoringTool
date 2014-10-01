@@ -1,7 +1,9 @@
 package mat.dao;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import mat.model.Organization;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -153,5 +155,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @return the all non admin active users
 	 */
 	public List<User> getAllNonAdminActiveUsers();
+	
+	HashMap<String, Organization> searchAllUsedOrganizations();
 	
 }

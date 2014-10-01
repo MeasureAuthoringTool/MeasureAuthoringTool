@@ -76,8 +76,13 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private Widget searchTextLabel = LabelBuilder.buildLabel(searchText, "Search for a Organization");
 	/** The observer. */
 	private Observer observer;
-	
+	/**
+	 * The Success Message Display.
+	 */
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	/**
+	 * The Erro Message Display.
+	 */
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 	/** Constructor. **/
 	public ManageOrganizationView() {
@@ -171,18 +176,15 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		String title;
 		String cssClass;
 		if (!object.isUsed()) {
-			
 			title = "Delete";
 			cssClass = "customDeleteButton";
-			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
-			title = "Delete";
+			title = "Organization is already in use. Not Eligible for deletion";
 			cssClass = "customDeleteDisableButton";
 			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
 		}
-		
 		return sb.toSafeHtml();
 	}
 	@Override
@@ -226,8 +228,8 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		cellTable.setColumnWidth(1, CELLTABLE_COLUMN_WIDTH, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
 				"manageOrganizationSummary",
-				"In the following Manage organizations table, Organization is given in the first column "
-						+ "and OID in the Third Column.");
+				"In the following Manage organizations table, Organization Name is given in the first column "
+						+ ", OID in the second Column and Delete button in third column.");
 		cellTable.getElement().setAttribute("id", "manageOrganizationCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "manageOrganizationSummary");
 		cellTablePanel.add(invisibleLabel);

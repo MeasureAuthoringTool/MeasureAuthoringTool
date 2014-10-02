@@ -542,20 +542,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(descriptionInput, "Description"));
 		fPanel.add(descriptionInput);
-		descriptionInput.getElement().setId("Description");
+		descriptionInput.getElement().setId("descriptionInput_TextAreaWithMaxLength");
 		descriptionInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(copyrightInput, "Copyright"));
 		fPanel.add(copyrightInput);
-		copyrightInput.getElement().setId("Copyright");
+		copyrightInput.getElement().setId("copyrightInput_TextAreaWithMaxLength");
 		copyrightInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		//Disclaimer
 		fPanel.add(LabelBuilder.buildLabel(disclaimerInput, "Disclaimer"));
 		fPanel.add(disclaimerInput);
-		disclaimerInput.getElement().setId("Disclaimer");
+		disclaimerInput.getElement().setId("disclaimerInput_TextAreaWithMaxLength");
 		disclaimerInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
@@ -582,39 +582,39 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(stratificationInput , "Stratification"));
 		fPanel.add(stratificationInput);
-		stratificationInput.getElement().setId("Stratification");
+		stratificationInput.getElement().setId("stratificationInput_TextAreaWithMaxLength");
 		stratificationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(riskAdjustmentInput, "Risk Adjustment"));
 		fPanel.add(riskAdjustmentInput);
-		riskAdjustmentInput.getElement().setId("Risk Adjustment");
+		riskAdjustmentInput.getElement().setId("riskAdjustmentInput_TextAreaWithMaxLength");
 		riskAdjustmentInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		//Rate Aggregation riskAggregationInput
 		fPanel.add(LabelBuilder.buildLabel(rateAggregationInput, "Rate Aggregation"));
 		fPanel.add(rateAggregationInput);
-		rateAggregationInput.getElement().setId("Rate Aggregation");
+		rateAggregationInput.getElement().setId("rateAggregationInput_TextAreaWithMaxLength");
 		rateAggregationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		
 		fPanel.add(LabelBuilder.buildLabel(rationaleInput, "Rationale"));
 		fPanel.add(rationaleInput);
-		rationaleInput.getElement().setId("Rationale");
+		rationaleInput.getElement().setId("rationaleInput_TextAreaWithMaxLength");
 		rationaleInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(clinicalStmtInput, "Clinical Recommendation Statement"));
 		fPanel.add(clinicalStmtInput);
-		clinicalStmtInput.getElement().setId("Clinical Recommendation Statement");
+		clinicalStmtInput.getElement().setId("clinicalStmtInput_TextAreaWithMaxLength");
 		clinicalStmtInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(improvementNotationInput, "Improvement Notation"));
 		fPanel.add(improvementNotationInput);
-		improvementNotationInput.getElement().setId("Improvement Notation");
+		improvementNotationInput.getElement().setId("improvementNotationInput_TextAreaWithMaxLength");
 		improvementNotationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
@@ -625,90 +625,90 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		referencePlaceHolder.add(referenceTable);
 		fPanel.add(LabelBuilder.buildLabel(referencePlaceHolder, "Reference(s)"));
 		fPanel.add(referencePlaceHolder);
-		referencePlaceHolder.getElement().setId("Reference(s)");
+		referencePlaceHolder.getElement().setId("referencePlaceHolder_SimplePanel");
 		//fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(definitionsInput, "Definition"));
 		fPanel.add(definitionsInput);
-		definitionsInput.getElement().setId("Definition");
+		definitionsInput.getElement().setId("definitionsInput_TextAreaWithMaxLength");
 		definitionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(guidanceInput, "Guidance"));
 		fPanel.add(guidanceInput);
-		guidanceInput.getElement().setId("Guidance");
+		guidanceInput.getElement().setId("guidanceInput_TextAreaWithMaxLength");
 		guidanceInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(transmissionFormatInput, "Transmission Format"));
 		fPanel.add(transmissionFormatInput);
-		transmissionFormatInput.getElement().setId("Transmission Format");
+		transmissionFormatInput.getElement().setId("transmissionFormatInput_TextAreaWithMaxLength");
 		transmissionFormatInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		
 		fPanel.add(LabelBuilder.buildLabel(initialPopInput, "Initial Population"));
 		fPanel.add(initialPopInput);
-		initialPopInput.getElement().setId("Initial Population");
+		initialPopInput.getElement().setId("initialPopInput_TextAreaWithMaxLength");
 		initialPopInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorInput, "Denominator"));
 		fPanel.add(denominatorInput);
-		denominatorInput.getElement().setId("Denominator");
+		denominatorInput.getElement().setId("denominatorInput_TextAreaWithMaxLength");
 		denominatorInput.addKeyDownHandler(keyDownHandler);			
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions"));
 		fPanel.add(denominatorExclusionsInput);
-		denominatorExclusionsInput.getElement().setId("Denominator Exclusions");
+		denominatorExclusionsInput.getElement().setId("denominatorExclusionsInput_TextAreaWithMaxLength");
 		denominatorExclusionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(numeratorInput, "Numerator"));
 		fPanel.add(numeratorInput);
-		numeratorInput.getElement().setId("Numerator");
+		numeratorInput.getElement().setId("numeratorInput_TextAreaWithMaxLength");
 		numeratorInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(numeratorExclusionsInput, "Numerator Exclusions"));
 		fPanel.add(numeratorExclusionsInput);
-		numeratorExclusionsInput.getElement().setId("Numerator Exclusions");
+		numeratorExclusionsInput.getElement().setId("numeratorExclusionsInput_TextAreaWithMaxLength");
 		numeratorExclusionsInput.addKeyDownHandler(keyDownHandler);
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorExceptionsInput, "Denominator Exceptions"));
 		fPanel.add(denominatorExceptionsInput);
-		denominatorExceptionsInput.getElement().setId("Denominator Exceptions");
+		denominatorExceptionsInput.getElement().setId("denominatorExceptionsInput_TextAreaWithMaxLength");
 		denominatorExceptionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measurePopulationInput, "Measure Population"));
 		fPanel.add(measurePopulationInput);
-		measurePopulationInput.getElement().setId("Measure Population");
+		measurePopulationInput.getElement().setId("measurePopulationInput_TextAreaWithMaxLength");
 		measurePopulationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions"));
 		fPanel.add(measurePopulationExclusionsInput);
-		measurePopulationExclusionsInput.getElement().setId("Measure Population Exclusions");
+		measurePopulationExclusionsInput.getElement().setId("MmeasurePopulationExclusionsInput_TextAreaWithMaxLength");
 		measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations"));
 		fPanel.add(measureObservationsInput);
-		measureObservationsInput.getElement().setId("Measure Observations");
+		measureObservationsInput.getElement().setId("measureObservationsInput_TextAreaWithMaxLength");
 		measureObservationsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(supplementalDataInput, "Supplemental Data Elements"));
 		fPanel.add(supplementalDataInput);
-		supplementalDataInput.getElement().setId("Supplemental Data Elements");
+		supplementalDataInput.getElement().setId("supplementalDataInput_TextAreaWithMaxLength");
 		supplementalDataInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(setNameInput, "Measure Set"));
 		fPanel.add(setNameInput);
-		setNameInput.getElement().setId("Measure Set");
+		setNameInput.getElement().setId("setNameInput_TextAreaWithMaxLength");
 		setNameInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
@@ -2103,7 +2103,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(newReferenceBoxLabel);
 		hp.add(newReferenceBox);
-		newReferenceBox.getElement().setId(dynamicLabel);
+		newReferenceBox.getElement().setId(newReferenceBox+dynamicLabel+"_TextAreaWithMaxLength");
 		Button newremoveButton = new PrimaryButton("Remove", "primaryGreyLeftButton");
 		newremoveButton.addClickHandler(new ClickHandler() {
 			

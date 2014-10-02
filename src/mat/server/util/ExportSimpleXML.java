@@ -227,12 +227,10 @@ public class ExportSimpleXML {
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		//to get SubTreeRefIds from Population WorkSpace
 		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(originalDoc);
-		System.out.println("usedSubtreeRefIds:"+usedSubtreeRefIds);
-		
+				
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
-		System.out.println("usedSubTreeIds:"+usedSubTreeIds);
-	   
+			   
 		formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
@@ -404,7 +402,6 @@ public class ExportSimpleXML {
 			}
 					
 		} else {
-		    System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
 		    NodeList allSubTreeNodeList = (NodeList) xPath.evaluate("/measure/subTreeLookUp/subTree",
 					originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		    for(int i = 0; i<allSubTreeNodeList.getLength(); i++ ) {
@@ -471,12 +468,11 @@ public class ExportSimpleXML {
 			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
 			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			displayName = "Occurrence "+occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
-			System.out.println("UUID:"+uuid);
-			
+						
 			qdmVariableNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
 			
 			String referencedUUID = qdmVariableNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
-			System.out.println("instanceof UUID:"+referencedUUID);
+			
 			Node referencedSubTreeNode = (Node)xPath.evaluate("/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']", originalDoc.getDocumentElement(),XPathConstants.NODE);
 			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
 			Node mainChildClone = mainChild.cloneNode(true);
@@ -506,7 +502,6 @@ public class ExportSimpleXML {
 			e.printStackTrace();
 		}
 		_logger.info("Document object to ByteArray transformation complete");
-		//System.out.println(arrayOutputStream.toString());
 		return arrayOutputStream.toString();
 	}
 
@@ -725,9 +720,9 @@ public class ExportSimpleXML {
 			List<String> clauseList = new ArrayList<String>();
 			clauseList = getRequiredClauses(node.getTextContent());
 			groupNode = groupNodes.item(i);
-			System.out.println("GROUP NODE: "+ groupNode.getNodeName());
+			
 			NodeList children = groupNode.getChildNodes();
-			System.out.println(children.getLength());
+			
 			for(int j = 0; j<children.getLength(); j++){
 				childNode = children.item(j);
 				NamedNodeMap map = childNode.getAttributes();
@@ -759,13 +754,11 @@ public class ExportSimpleXML {
 
 		for(int i = 0; i<logicalNode.getLength();i++){
 			Node innerNode = logicalNode.item(i);
-			System.out.println(innerNode.getNodeName());
+			
 			NodeList innerNodeChildren = innerNode.getChildNodes();
 			int length =  innerNodeChildren.getLength();
 			for(int j = length - 1; j>-1; j--){
 				Node child = innerNodeChildren.item(j);
-				System.out.println("J= " + j);
-				System.out.println("REMOVING THIS NODE " + child.getNodeName() + " " + j);
 				innerNode.removeChild(child);
 			}
 		}
@@ -1025,7 +1018,7 @@ public class ExportSimpleXML {
 				}
 			}
 		}
-		System.out.println("referencedIds:"+referencedIds);
+		
 		if(referencedIds.size() > 0){
 			
 			//for each used subTree id, find out if this an occurance of a QDM Variable.
@@ -1126,8 +1119,6 @@ public class ExportSimpleXML {
 		//Create Document object
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
-		System.out.println("Measyre XML:");
-		System.out.println(measureXMLObject.getMeasureXMLAsString());
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;
 	}

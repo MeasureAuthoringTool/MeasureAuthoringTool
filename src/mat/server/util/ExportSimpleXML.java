@@ -342,9 +342,9 @@ public class ExportSimpleXML {
 		String measureId ="";
 		String componentMeasureName ="";
 		String componentMeasureSetId ="";
-		String xPathForComponentMeasureIds = "/measure//componentMeasures/measure";
+		String xPathForComponentMeasureIds = "/measure/measureDetails/componentMeasures/measure";
 		NodeList componentMeasureIdList = (NodeList) xPath.evaluate(xPathForComponentMeasureIds, originalDoc, XPathConstants.NODESET);
-		if(componentMeasureIdList !=null && componentMeasureIdList.getLength() >0){
+		if(componentMeasureIdList !=null){
 			for(int i=0; i<componentMeasureIdList.getLength(); i++){
 				Node measureNode = componentMeasureIdList.item(i);
 				measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();

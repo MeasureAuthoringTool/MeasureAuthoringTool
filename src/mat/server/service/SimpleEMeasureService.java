@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import mat.model.MatValueSet;
+import mat.model.clause.MeasureExport;
 
 
 /**
@@ -134,5 +135,6 @@ public interface SimpleEMeasureService {
 	ExportResult getHumanReadableForNode(String measureId, String populationSubXML) throws Exception;
 
 	ExportResult getNewEMeasureHTML(String measureId) throws Exception;
+	public ExportResult getNewEMeasureXML(String measureId);
 
 }

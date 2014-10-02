@@ -36,6 +36,7 @@ import mat.model.clause.MeasureXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.simplexml.HQMFGenerator;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
@@ -518,20 +519,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
 				//String emeasureXML = getEMeasureXML(me);
-				String emeasureXML = "";
+				//String emeasureXML = "";
+				String emeasureXML = getNewEMeasureXML(me);
 				ZipPackager zp = new ZipPackager();
 				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML);
 		}
 	
 	
-	private String getEMeasureXML(MeasureExport me){
-		XMLUtility xmlUtility = new XMLUtility();
-		
-		String eMeasureXML = xmlUtility.applyXSL(me.getSimpleXML(),
-				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
-
-		return eMeasureXML;
-	}
 	/**
 	 * Gets the human readable for measure.
 	 *
@@ -544,6 +538,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
 		return html;
 
+	}
+	
+	public ExportResult getNewEMeasureXML(String measureId){
+		MeasureExport measureExport = getMeasureExport(measureId);
+		String newEmeasureXML = getNewEMeasureXML(measureExport);
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		result.export = newEmeasureXML;
+		return result;
+	}
+	
+	private String getNewEMeasureXML(MeasureExport me){
+		
+		String eMeasurexml = HQMFGenerator.generateEMeasureXMLforMeasure(me);
+		return eMeasurexml;
 	}
 
 	/**
@@ -748,8 +757,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
-//		String emeasureXMLStr = getEMeasureXML(me);
-		String emeasureXMLStr = "";
+		String emeasureXMLStr = getNewEMeasureXML(me);
+		//String emeasureXMLStr = "";
 		String emeasureName = me.getMeasure().getaBBRName();
 
 		ZipPackager zp = new ZipPackager();

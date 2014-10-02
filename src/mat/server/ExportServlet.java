@@ -165,11 +165,13 @@ public class ExportServlet extends HttpServlet {
 //						}
 					}
 				}else{
-					export = getService().getNewEMeasureHTML(id);
-					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
-					if (SAVE.equals(type)) {
+					if ("open".equals(type)) {
+						export = getService().getNewEMeasureHTML(id);
+						resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+					}else if (SAVE.equals(type)) {
+						export = getService().getNewEMeasureXML(id);
 						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getEmeasureHTMLName(export.measureName + matVersion[1]));
+								+ fnu.getEmeasureXMLName(export.measureName + matVersion[1]));
 					}
 				}				
 			} else if (CODELIST.equals(format)) {

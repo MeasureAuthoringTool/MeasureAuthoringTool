@@ -1770,10 +1770,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		if (matValueSetTransferObject.isSpecificOccurrence()) {
 			QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
 			String dataType = matValueSetTransferObject.getDatatype();
-			if (dataType != null) {
-				DataType dt = dataTypeDAO.find(dataType);
-				qds.setDataType(dt.getDescription());
-			}
 			MatValueSet matValueSet = matValueSetTransferObject.getMatValueSet();
 			qds.setOid(matValueSet.getID());
 			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -1798,6 +1794,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
 				char occTxt = (char) occurrenceCount;
 				qds.setOccurrenceText("Occurrence" + " " + occTxt);
+				if (dataType != null) {
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
+				}
 				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 				result.setOccurrenceMessage(qds.getOccurrenceText());

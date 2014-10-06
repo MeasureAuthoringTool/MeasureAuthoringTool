@@ -36,7 +36,7 @@ import mat.model.clause.MeasureXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HumanReadableGenerator;
-import mat.server.simplexml.HQMFGenerator;
+import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
@@ -551,7 +551,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	private String getNewEMeasureXML(MeasureExport me){
 		
-		String eMeasurexml = HQMFGenerator.generateEMeasureXMLforMeasure(me);
+		String eMeasurexml = new HQMFGenerator().generate(me);
 		return eMeasurexml;
 	}
 

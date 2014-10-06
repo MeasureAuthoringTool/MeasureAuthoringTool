@@ -1,4 +1,4 @@
-package mat.server.simplexml;
+package mat.server.simplexml.hqmf;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
-public class HQMFDataCriteriaGenerator {
+public class HQMFDataCriteriaGenerator implements Generator {
 
 	/** The document. */
 	private static Document document;
@@ -43,12 +43,13 @@ public class HQMFDataCriteriaGenerator {
 	private static String output;
 
 	/**
-	 * Generate hqm ffor measure.
+	 * Generate hqm for measure.
 	 *
 	 * @param me the me
 	 * @return the string
 	 */
-	public static String generateHQMFforMeasure(MeasureExport me) {
+	@Override
+	public String generate(MeasureExport me) {
 
 		String dataCriteria = "";
 //		dataCriteria = createDateCriteriaTemplate(me);

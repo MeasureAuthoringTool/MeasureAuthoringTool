@@ -466,11 +466,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		hp.getElement().setAttribute("id", "emeasureTitlePanel");
 		hp.add(nameInput);
 		hp.add(deleteMeasure);
+		deleteMeasure.getElement().setId("deleteMeasure_Button");
 		fPanel.add(hp);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title"));
 		fPanel.add(abbrInput);
+		abbrInput.getElement().setId("abbrInput_Label");
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
@@ -483,20 +485,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(eMeasureIdentifierInput);
 		fPanel.add(generateeMeasureIDButton);
+		generateeMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		generateeMeasureIDButton.addClickHandler(clickHandler);
 		generateeMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(finalizedDate, "Finalized Date"));
 		fPanel.add(finalizedDate);
+		finalizedDate.getElement().setId("finalizedDate_Label");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(eMeasureIdentifier, "GUID"));
 		fPanel.add(eMeasureIdentifier);
+		eMeasureIdentifier.getElement().setId("eMeasureIdentifier_Label");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(versionInput, "eMeasure Version Number"));
 		fPanel.add(versionInput);
+		versionInput.getElement().setId("versionInput_Label");
 		fPanel.add(new SpacerWidget());
 		// MAT 2995 : Commented Measure Status Field from Measure Detail View.
 		/*fPanel.add(LabelBuilder.buildLabel(objectStatusInput, "Measure Status"));
@@ -506,6 +512,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(NQFIDInput, "NQF Number"));
 		fPanel.add(NQFIDInput);
+		NQFIDInput.getElement().setId("NQFIDInput_TextBox");
 		NQFIDInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
@@ -515,10 +522,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fromLabel.addStyleName("firstLabel");
 		measurePeriodPanel.add(fromLabel);
 		measurePeriodPanel.add(measurePeriodFromInput);
+		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
 		Label toLabel = new Label("To");
 		toLabel.addStyleName("secondLabel");
 		measurePeriodPanel.add(toLabel);
 		measurePeriodPanel.add(measurePeriodToInput);
+		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
 		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
@@ -536,8 +545,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(endorsedByNQF, "Endorsed By NQF"));
+		endorsedByNQF.getElement().setId("endorsedByNQF_Label");
 		fPanel.add(wrapRadioButton(No));
+		No.getElement().setId("No_RadioButton");
 		fPanel.add(wrapRadioButton(Yes));
+		Yes.getElement().setId("Yes_RadioButton");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(descriptionInput, "Description"));
@@ -562,6 +574,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
 		fPanel.add(LabelBuilder.buildLabel(measScoringInput, "Measure Scoring"));
 		fPanel.add(measScoringInput);
+		measScoringInput.getElement().setId("measScoringInput_Label");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measureTypeCellTable, "Measure Type"));

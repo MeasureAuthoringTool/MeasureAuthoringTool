@@ -3,6 +3,8 @@ package mat.client.measure.metadata;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
@@ -82,6 +84,9 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public class MetaDataView implements MetaDataDetailDisplay{
 	
+	/** The Constant LOGGER. */
+	private final static Logger LOGGER = Logger.getLogger(MetaDataView.class
+		      .getName());
 	/** The main panel. */
 	protected FlowPanel mainPanel = new FlowPanel();
 	
@@ -1588,10 +1593,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				boolean isSelected = false;
 
 				if ((stewardId != null)) {
-
 					if (stewardId.equalsIgnoreCase(object.getId())) {
 						setStewardValue(object.getOrgName());
 						isSelected = true;
+						LOGGER.setLevel(Level.INFO);			
+						LOGGER.info("Marked as Selected on the table and Updated steward Value from Table");
 					}
 				} else {
 					isSelected = false;
@@ -1606,9 +1612,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public void update(int index, MeasureSteward object, Boolean value) {
 				stewardSelectionModel.setSelected(object, value);
-				if (value) {					
+				if (value) {				
 					setStewardId(object.getId());
-					setStewardValue(object.getOrgName());					
+					setStewardValue(object.getOrgName());
+					LOGGER.setLevel(Level.INFO);			
+					LOGGER.info("stewardId and stewardValue id updated from User");
 				}
 				
 			}

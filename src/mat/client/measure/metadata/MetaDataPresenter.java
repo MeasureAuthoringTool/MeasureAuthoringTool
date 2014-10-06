@@ -2,13 +2,14 @@ package mat.client.measure.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
@@ -61,7 +62,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MetaDataPresenter  implements MatPresenter {
 	
-	
+	/** The Constant LOGGER. */
+	private final static Logger LOGGER = Logger.getLogger(MetaDataPresenter.class
+		      .getName());
 	/**
 	 * The Interface MetaDataDetailDisplay.
 	 */
@@ -1464,9 +1467,13 @@ public class MetaDataPresenter  implements MatPresenter {
 		if(stewardId!=null && stewardValue!=null && !stewardId.isEmpty() && !stewardValue.isEmpty()){
 			metaDataDisplay.setStewardId(stewardId);
 			metaDataDisplay.setStewardValue(stewardValue);
+			LOGGER.setLevel(Level.INFO);			
+			LOGGER.info("Seted StewardId and stewardValue from the CurrentMeasureDetail");
 		}else{
 			metaDataDisplay.setStewardId(null);
 			metaDataDisplay.setStewardValue(null);
+			LOGGER.setLevel(Level.INFO);		
+			LOGGER.info("Seted StewardId and stewardValue both Null");
 		}
 		
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
@@ -1685,6 +1692,8 @@ public class MetaDataPresenter  implements MatPresenter {
 	/*	if(metaDataDisplay.getStewardId()!=null && metaDataDisplay.getStewardValue()!=null){*/
 			currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
 			currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
+			LOGGER.setLevel(Level.INFO);			
+			LOGGER.info("Updated StewardId and stewardValue from the UI and seted to the CurrentMeasureDetail");
 		//}		
 		
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());

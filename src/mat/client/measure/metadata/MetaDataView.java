@@ -1577,6 +1577,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				if ((stewardId != null)) {
 
 					if (stewardId.equalsIgnoreCase(object.getId())) {
+						setStewardValue(object.getOrgName());
 						isSelected = true;
 					}
 				} else {

@@ -72,7 +72,7 @@
       <bind-xml name="period"/>
     </field>
     
-    <field name="measSteward" get-method="getSteward" set-method="setMeasSteward"
+    <field name="stewardValue" get-method="getStewardValue" set-method="setStewardValue"
            type="java.lang.String">
       <bind-xml name="steward" node="element"/>
     </field>

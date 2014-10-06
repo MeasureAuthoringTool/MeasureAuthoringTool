@@ -1459,11 +1459,14 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());		
 		
-		String stewardId = currentMeasureDetail.getStewardId();		
-		if(stewardId!=null){
+		String stewardId = currentMeasureDetail.getStewardId();	
+		String stewardValue = currentMeasureDetail.getStewardValue();
+		if(stewardId!=null && stewardValue!=null && !stewardId.isEmpty() && !stewardValue.isEmpty()){
 			metaDataDisplay.setStewardId(stewardId);
+			metaDataDisplay.setStewardValue(stewardValue);
 		}else{
-			metaDataDisplay.setStewardId("");					
+			metaDataDisplay.setStewardId(null);
+			metaDataDisplay.setStewardValue(null);
 		}
 		
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
@@ -1679,10 +1682,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setImprovNotations(metaDataDisplay.getImprovementNotation().getValue());
 		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());
 		
-		if(!metaDataDisplay.getStewardId().isEmpty()){
+	/*	if(metaDataDisplay.getStewardId()!=null && metaDataDisplay.getStewardValue()!=null){*/
 			currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
-			currentMeasureDetail.setMeasSteward(metaDataDisplay.getStewardValue());
-		}		
+			currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
+		//}		
 		
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());
 		currentMeasureDetail.setSupplementalData(metaDataDisplay.getSupplementalData().getValue());		

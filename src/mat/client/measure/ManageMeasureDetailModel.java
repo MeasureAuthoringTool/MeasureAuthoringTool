@@ -50,7 +50,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private String measScoring;
 	
 	/** The meas steward. */
-	private String measSteward;
+	//private String measSteward;
+	private String stewardValue;
 	
 	//US 413. Support Steward Other
 	/** The meas steward other. */
@@ -479,19 +480,19 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the meas steward
 	 */
-	public String getMeasSteward() {
+	/*public String getMeasSteward() {
 		return measSteward;
 	}
-	
+	*/
 	/**
 	 * Sets the meas steward.
 	 * 
 	 * @param measSteward
 	 *            the new meas steward
 	 */
-	public void setMeasSteward(String measSteward) {
+	/*public void setMeasSteward(String measSteward) {
 		this.measSteward = doTrim(measSteward);
-	}
+	}*/
 	
 	/**
 	 * Gets the endorse by nqf.
@@ -1126,7 +1127,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		result = (prime * result)
 				+ ((measScoring == null) ? 0 : measScoring.hashCode());
 		result = (prime * result)
-				+ ((measSteward == null) ? 0 : measSteward.hashCode());
+				+ ((stewardValue == null) ? 0 : stewardValue.hashCode());
 		/*result = (prime
 				* result)
 				+ ((measStewardOther == null) ? 0 : measStewardOther.hashCode());*/
@@ -1332,6 +1333,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		}else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
 			return false;
 		}*/
+		if (trimToNull(stewardValue) == null) {
+			if (trimToNull(other.stewardValue) != null) {
+				return false;
+			}
+		}else if (!trimToNull(stewardValue).equals(trimToNull(other.stewardValue))) {
+			return false;
+		}
 		if (trimToNull(stewardId) == null) {
 			if (trimToNull(other.stewardId) != null) {
 				return false;
@@ -1674,12 +1682,12 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the steward
 	 */
-	public String getSteward() {
+	/*public String getSteward() {
 		if ((measSteward != null) && measSteward.equalsIgnoreCase("Other")) {
 			return null;
 		}
 		return measSteward;
-	}
+	}*/
 	
 	/**
 	 * Gets the steward uuid.
@@ -1784,7 +1792,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", groupId=" + groupId + ", finalizedDate=" + finalizedDate
 				+ ", measFromPeriod=" + measFromPeriod + ", measToPeriod="
 				+ measToPeriod + ", measScoring=" + measScoring
-				+ ", measSteward=" + measSteward + ", endorseByNQF="
+				+ ", stewardValue=" + stewardValue + ", endorseByNQF="
 				+ endorseByNQF + ", nqfId=" + nqfId + ", description="
 				+ description + ", copyright=" + copyright
 				+ ", clinicalRecomms=" + clinicalRecomms + ", definitions="
@@ -1971,6 +1979,14 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 */
 	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {
 		stewardSelectedList =steSelectedList;
+	}
+
+	public String getStewardValue() {
+		return stewardValue;
+	}
+
+	public void setStewardValue(String stewardValue) {
+		this.stewardValue = stewardValue;
 	}
 	
 	/**

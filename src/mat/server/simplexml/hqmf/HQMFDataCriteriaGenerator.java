@@ -16,13 +16,19 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import mat.model.clause.MeasureExport;
+import mat.server.util.XmlProcessor;
 
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -41,6 +47,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/** The output. */
 	private static String output;
+	
+	static javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	
 
 	/**
 	 * Generate hqm for measure.
@@ -52,8 +61,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	public String generate(MeasureExport me) {
 
 		String dataCriteria = "";
-//		dataCriteria = createDateCriteriaTemplate(me);
-		return dataCriteria;
+		dataCriteria = createDateCriteriaTemplate(me);
+		dataCriteria += createDataCriteriaForQDMELements(me); 
+		return dataCriteria.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
 	}
 
 	/**
@@ -64,6 +74,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 */
 	private static String createDateCriteriaTemplate(MeasureExport me) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		HQMFXmlProcessor hqmfXmlProcessor = new HQMFXmlProcessor();
 		
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -93,86 +104,78 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 		}
-
-		return convertXMLDocumentToString();
+		//createDataCriteriaForQDMELements(me);
+		return HQMFXmlProcessor.convertXMLDocumentToString(document); 
 	}
 	
+	
 	/**
-	 * Convert xml document to string.
+	 * Creates the data criteria for qdme lements.
 	 *
+	 * @param me the me
 	 * @return the string
 	 */
-	private static String convertXMLDocumentToString(){
-		StreamResult result = null;
-		Transformer transformer;
+	private static String createDataCriteriaForQDMELements(MeasureExport me) {
+		
+		String simpleXMLStr = me.getSimpleXML();
+		XmlProcessor xmlProcessor = new XmlProcessor(simpleXMLStr);
+		String xPathForElementLookUp = "/measure/elementLookUp/qdm";
+		String dataTypeCriteria="";
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			  result = new StreamResult(new StringWriter());
-			  DOMSource source = new DOMSource(document);
-			  try {
-				transformer.transform(source, result);
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			NodeList elementLookUpNode = (NodeList) xPath.evaluate(xPathForElementLookUp, 
+					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+			if(elementLookUpNode!=null&& elementLookUpNode.getLength()>0){
+				for(int i=0; i<elementLookUpNode.getLength();i++){
+					Node childNode = elementLookUpNode.item(i);
+					String dataType = childNode.getAttributes().getNamedItem("datatype").getNodeValue();
+					HQMFXmlProcessor processor = new HQMFXmlProcessor();
+					Document templateDoc = processor.getXmlDocument("templates.xml");
+					dataTypeCriteria += createxmlForDataCriteria(dataType, templateDoc, childNode);
+				}
 			}
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
+			
+		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		  
-		  return format(result.getWriter().toString());
+		
+		return dataTypeCriteria;
 	}
 	
-	 /**
- 	 * Format.
- 	 *
- 	 * @param unformattedXml the unformatted xml
- 	 * @return the string
- 	 */
- 	@SuppressWarnings("deprecation")
-	public static String format(String unformattedXml) {
-	        try {
-	            Document document = parseXmlFile(unformattedXml);
-	 
-	            OutputFormat format = new OutputFormat(document);
-	            format.setLineWidth(65);
-	            format.setIndenting(true);
-	            format.setIndent(2);
-	            Writer out = new StringWriter();
-	            XMLSerializer serializer = new XMLSerializer(out, format);
-	            serializer.serialize(document);
-	            return out.toString();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            return "";
-	        }
+	
 
-}
-	 
-	 /**
- 	 * Parses the xml file.
- 	 *
- 	 * @param in the in
- 	 * @return the document
- 	 */
- 	private static Document parseXmlFile(String xmlString) {
-	        try {
-	            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	            DocumentBuilder db = dbf.newDocumentBuilder();
-	            InputSource is = new InputSource(new StringReader(xmlString));
-	            return db.parse(is);
-	        } catch (ParserConfigurationException e) {
-	            throw new RuntimeException(e);
-	        } catch (SAXException e) {
-	            throw new RuntimeException(e);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	        return null;
-	    }
+	/**
+	 * Createxml for data criteria.
+	 *
+	 * @param dataType the data type
+	 * @param templateDoc the template doc
+	 */
+	private static String createxmlForDataCriteria(String dataType,
+			Document templateDoc, Node qdmNode) {
+		HQMFXmlProcessor hqmfXmlProcessor = new HQMFXmlProcessor();
+		String xPathForTemplate = "/templates/template[text()='"+dataType.toLowerCase()+"']";
+		String actText = "";
+		String qdmElementStr = "";
+		try {
+			Node templateNode = (Node) xPath.evaluate(xPathForTemplate, 
+					templateDoc, XPathConstants.NODE);
+			if(templateNode!=null){
+				String attrClass = templateNode.getAttributes().getNamedItem("class").getNodeValue();
+				String xpathForAct = "/templates/acts/act[@a_id='"+attrClass+"']";
+				Node actNode = (Node) xPath.evaluate(xpathForAct, 
+					templateDoc, XPathConstants.NODE);
+				if(actNode!=null){
+					actText =  actNode.getTextContent();
+				}
+			}
+			qdmElementStr = hqmfXmlProcessor.getCreateDataCreateElemetTag(actText, templateNode, 
+					qdmNode);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return qdmElementStr;
+		
+	}
 	 
 }

@@ -37,14 +37,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** Logger for VSACAPIServiceImpl class. **/
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
 	/** The Constant PROXY_HOST. */
-	private static final String PROXY_HOST = System.getProperty("vsac_proxy_host");
-	
+	private String PROXY_HOST;
 	/** The Constant PROXY_PORT. */
-	private static final int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+	private int PROXY_PORT;
 	
-	private static String server = System.getProperty("SERVER_TICKET_URL");
-	private static String service = System.getProperty("SERVICE_URL");
-	private static String retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
+	private String server;
+	private String service;
+	private String retieriveMultiOIDSService;
 	
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
@@ -53,7 +52,18 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
 	
-	private VSACGroovyClient vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService);
+	private VSACGroovyClient vGroovyClient;
+	
+	public VSACAPIServiceImpl(){
+		PROXY_HOST = System.getProperty("vsac_proxy_host");
+		if(PROXY_HOST !=null) {
+			PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+		}
+		server = System.getProperty("SERVER_TICKET_URL");
+		service = System.getProperty("SERVICE_URL");
+		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
+		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService);
+	}
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.

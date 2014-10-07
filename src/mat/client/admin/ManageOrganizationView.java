@@ -181,7 +181,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
-			title = "Delete";
+			title = "Organization already in use.";
 			cssClass = "customDeleteDisableButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\"></button>");

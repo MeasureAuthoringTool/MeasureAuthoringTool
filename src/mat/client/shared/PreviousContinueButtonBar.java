@@ -88,7 +88,9 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 	 */
 	public void  setPageNames(String previousPage, String nextPage){
 		previousButton.setText("<< Go to "+previousPage);
+		previousButton.getElement().setId(previousPage+"_MATAnchor");
 		continueButton.setText("Go to "+ nextPage +" >>");
+		continueButton.getElement().setId(nextPage+"_MATAnchor");
 	}
 	
 	/** The button panel. */

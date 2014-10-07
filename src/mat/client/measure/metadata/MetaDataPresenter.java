@@ -1503,10 +1503,10 @@ public class MetaDataPresenter  implements MatPresenter {
 					List<Author> authorSelectedList, List<Organization> result) {
 				List<Author> updatedAuthorSelectedList = new ArrayList<Author>();
 				for (int i = 0; i < result.size(); i++) {
-					for (int j = 0; j < authorList.size(); j++) {
+					for (int j = 0; j < authorSelectedList.size(); j++) {
 						if (Long.toString(result.get(i).getId()).
-								equalsIgnoreCase(authorList.get(j).getId())) {
-							updatedAuthorSelectedList.add(authorList.get(j));
+								equalsIgnoreCase(authorSelectedList.get(j).getId())) {
+							updatedAuthorSelectedList.add(authorSelectedList.get(j));
 							
 						}
 					}

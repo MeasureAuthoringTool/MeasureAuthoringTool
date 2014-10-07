@@ -482,6 +482,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		horizontalPanel.add(LabelBuilder.buildLabel(eMeasureIdentifierInput, "eMeasure Identifier (Measure Authoring Tool)"));
 		Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
 		optionLabelWidget.setStyleName("generate-emeasureid-button");
+		eMeasureIdentifierInput.getElement().setId("eMeasureIdentifierInput_TextBox");
 		horizontalPanel.add(optionLabelWidget);
 		fPanel.add(horizontalPanel);
 		
@@ -593,6 +594,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(horzComponentMeasurePanel);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(addEditCmponentMeasures);
+		addEditCmponentMeasures.getElement().setId("addEditCmponentMeasures_Button");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(stratificationInput , "Stratification"));
@@ -736,10 +738,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			}
 		});
 		
-		
+		AddRowButton.getElement().setId("AddRowButton_Button");
 		fPanel.add(errorMessages);
 		fPanel.add(successMessages);
 		saveButton.setTitle("Save");
+		saveButton.getElement().setId("saveButton_Button");
 		fPanel.add(saveButton);
 		successMessages.setMessage("");
 		fPanel.add(new SpacerWidget());
@@ -2118,7 +2121,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(newReferenceBoxLabel);
 		hp.add(newReferenceBox);
-		newReferenceBox.getElement().setId(newReferenceBox+dynamicLabel+"_TextAreaWithMaxLength");
+		newReferenceBox.getElement().setId(dynamicLabel+"_TextAreaWithMaxLength");
 		Button newremoveButton = new PrimaryButton("Remove", "primaryGreyLeftButton");
 		newremoveButton.addClickHandler(new ClickHandler() {
 			
@@ -2135,6 +2138,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		referenceTable.setWidget(numRows, 0, hp);
 		//referenceTable.setWidget(numRows, 1, new SimplePanel());
 		referenceTable.setWidget(numRows, 1, newremoveButton);
+		newremoveButton.getElement().setId("newremoveButton"+numRows+"_Button");
 		referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
 		referenceArrayList.add(newReferenceBox);
 	}

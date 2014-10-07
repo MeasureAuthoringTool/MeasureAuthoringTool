@@ -181,13 +181,10 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
-			title = "Organization is already in use. Not Eligible for deletion";
-			cssClass = "\\images\\trashDisable.png";
-			sb.appendHtmlConstant("<img  alt='" + title + "' src='/images/trashDisable.png' title='" + title + "'>");
-			sb.appendHtmlConstant("</img>");
-			/*title = "Organization is already in use. Not Eligible for deletion";
+			title = "Delete";
 			cssClass = "customDeleteDisableButton";
-			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");*/
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		}
 		return sb.toSafeHtml();
 	}

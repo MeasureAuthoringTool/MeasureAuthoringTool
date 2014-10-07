@@ -336,7 +336,7 @@ left:50px;
 
 .customDeleteButton {
     background: url("images/trash.png");
-    background-position:left;
+    background-position:centre;
     background-repeat:no-repeat;
     height: 25px;
     width: 30px;
@@ -345,21 +345,17 @@ left:50px;
     cursor: hand;
 }
 
-/*  .customDeleteDisableButton {
-    url: url("images/trashDisable.png");
+  .customDeleteDisableButton {
+    background: url("images/trashDisable.png");
     background-position:center;
     background-repeat:no-repeat;
+     display: block;
     height: 25px;
     width: 30px;
     border: 0px;
     font-size: 0;
     cursor: cursor;
-}  */
-.customDeleteDisableButton {
-    font-size: 0;
-    cursor: text;
-    empty-cells: show;
-}
+}  
 .customCompositeEmptyCell{
 	cursor: text;
 }

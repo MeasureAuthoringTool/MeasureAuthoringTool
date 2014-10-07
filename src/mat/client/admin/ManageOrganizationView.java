@@ -182,8 +182,12 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
 			title = "Organization is already in use. Not Eligible for deletion";
+			cssClass = "\\images\\trashDisable.png";
+			sb.appendHtmlConstant("<img  alt='" + title + "' src='" + cssClass + "' title='" + title + "'>");
+			sb.appendHtmlConstant("</img>");
+			/*title = "Organization is already in use. Not Eligible for deletion";
 			cssClass = "customDeleteDisableButton";
-			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");*/
 		}
 		return sb.toSafeHtml();
 	}
@@ -224,8 +228,9 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		spager.setPageSize(PAGE_SIZE);
 		/* spager.setToolTipAndTabIndex(spager); */
 		cellTable.setWidth("100%");
-		cellTable.setColumnWidth(0, CELLTABLE_COLUMN_WIDTH, Unit.PCT);
-		cellTable.setColumnWidth(1, CELLTABLE_COLUMN_WIDTH, Unit.PCT);
+		cellTable.setColumnWidth(0, 40, Unit.PCT);
+		cellTable.setColumnWidth(1, 40, Unit.PCT);
+		cellTable.setColumnWidth(2, 20, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
 				"manageOrganizationSummary",
 				"In the following Manage organizations table, Organization Name is given in the first column "

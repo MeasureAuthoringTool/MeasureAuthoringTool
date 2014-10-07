@@ -183,7 +183,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		} else {
 			title = "Organization is already in use. Not Eligible for deletion";
 			cssClass = "\\images\\trashDisable.png";
-			sb.appendHtmlConstant("<img  alt='" + title + "' src='" + cssClass + "' title='" + title + "'>");
+			sb.appendHtmlConstant("<img  alt='" + title + "' src='/images/trashDisable.png' title='" + title + "'>");
 			sb.appendHtmlConstant("</img>");
 			/*title = "Organization is already in use. Not Eligible for deletion";
 			cssClass = "customDeleteDisableButton";

@@ -1,6 +1,7 @@
 package mat.server.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
@@ -300,6 +301,30 @@ public class XmlProcessor {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	/**
+	 * Instantiates a new xml processor for HQMFMeasureXml.
+	 *
+	 * @param file the file
+	 */
+	public XmlProcessor(File file) {
+		try {
+			docBuilder = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder();
+			originalDoc = docBuilder.parse(file);
+			LOG.info("Document Object created successfully for the XML String");
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			LOG.info("Exception thrown on XmlProcessor() costructor");
+			caughtExceptions(e);
+			e.printStackTrace();
+		}
+
 	}
 	
 	/**
@@ -1567,5 +1592,15 @@ public class XmlProcessor {
 			e.printStackTrace();
 		}
 		return transform(originalDoc);
+	}
+	
+	/**
+	 * Creates the data criteria element.
+	 *
+	 * @return the string
+	 */
+	public String createDataCriteriaElement(){
+		
+		return null;
 	}
 }

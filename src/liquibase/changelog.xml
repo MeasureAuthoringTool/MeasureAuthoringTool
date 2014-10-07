@@ -163,4 +163,6 @@
 		<include file="classpath:/liquibase/deploy_sprint-44_US4558_New.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-44_US4573.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-46_US4697_US4752_US4757.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-50_delete_anatomical_approach_site_attr_Physical_Exams_dataType.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-50_delete_method_attr_Prodecure_Intolerance_dataType.xml"/>
 	</databaseChangeLog>

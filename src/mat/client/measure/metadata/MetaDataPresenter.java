@@ -62,9 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MetaDataPresenter  implements MatPresenter {
 	
-	/** The Constant LOGGER. */
-	private final static Logger LOGGER = Logger.getLogger(MetaDataPresenter.class
-		      .getName());
 	/**
 	 * The Interface MetaDataDetailDisplay.
 	 */
@@ -1460,39 +1457,85 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getFinalizedDate().setText(currentMeasureDetail.getFinalizedDate());
 		metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(currentMeasureDetail.getMeasFromPeriod());
 		metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
-		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());		
-		
-		String stewardId = currentMeasureDetail.getStewardId();	
-		String stewardValue = currentMeasureDetail.getStewardValue();
-		if(stewardId!=null && stewardValue!=null && !stewardId.isEmpty() && !stewardValue.isEmpty()){
-			metaDataDisplay.setStewardId(stewardId);
-			metaDataDisplay.setStewardValue(stewardValue);
-			LOGGER.setLevel(Level.INFO);			
-			LOGGER.info("Seted StewardId and stewardValue from the CurrentMeasureDetail");
-		}else{
-			metaDataDisplay.setStewardId(null);
-			metaDataDisplay.setStewardValue(null);
-			LOGGER.setLevel(Level.INFO);		
-			LOGGER.info("Seted StewardId and stewardValue both Null");
-		}
-		
+		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
 		metaDataDisplay.getStratification().setValue(currentMeasureDetail.getStratification());
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());	
+		//steward and Author table
+		service.getAllOrganizations(new AsyncCallback<List<Organization>>() {
+			
+			@Override
+			public void onSuccess(List<Organization> result) {				
+				String stewardId = currentMeasureDetail.getStewardId();	
+				String stewardValue = currentMeasureDetail.getStewardValue();
+				if(stewardId!=null && stewardValue!=null && !stewardId.isEmpty() && !stewardValue.isEmpty()){
+					boolean isDeleted = checkIfDeletedFromOrgTable(stewardId, result);
+					if(isDeleted){
+						metaDataDisplay.setStewardId(null);
+						metaDataDisplay.setStewardValue(null);
+					}else{
+						metaDataDisplay.setStewardId(stewardId);
+						metaDataDisplay.setStewardValue(stewardValue);
+					}
+					
+				}else{
+					metaDataDisplay.setStewardId(null);
+					metaDataDisplay.setStewardValue(null);
+					
+				}		
+				//authorSelectedList
+				if (currentMeasureDetail.getAuthorSelectedList() != null) {
+					List<Author> updatedAuthorSelectedList = getUpdatedAuthorList(currentMeasureDetail.getAuthorSelectedList(), result);
+					metaDataDisplay.setAuthorsSelectedList(updatedAuthorSelectedList);
+				} else {
+					List<Author> authorList = new ArrayList<Author>();
+					metaDataDisplay.setAuthorsSelectedList(authorList);
+					currentMeasureDetail.setAuthorSelectedList(authorList);
+				}
+				dbAuthorList.clear();
+				dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
+				getAllOrganizations();
+				authorList = currentMeasureDetail.getAuthorSelectedList();
+			
+			}
+			
+			private List<Author> getUpdatedAuthorList(
+					List<Author> authorSelectedList, List<Organization> result) {
+				List<Author> updatedAuthorSelectedList = new ArrayList<Author>();
+				for (int i = 0; i < result.size(); i++) {
+					for (int j = 0; j < authorList.size(); j++) {
+						if (Long.toString(result.get(i).getId()).
+								equalsIgnoreCase(authorList.get(j).getId())) {
+							updatedAuthorSelectedList.add(authorList.get(j));
+							
+						}
+					}
+				}
+				return updatedAuthorSelectedList;
+			}
+
+			private boolean checkIfDeletedFromOrgTable(String stewardId,
+					List<Organization> result) {
+				boolean isDeleted = false;
+				for(int i=0;i<result.size();i++){
+					if(stewardId.equalsIgnoreCase(Long.toString(result.get(i).getId()))){
+						isDeleted=false;
+						break;
+					}else{
+						isDeleted=true;
+					}
+				}
+				return isDeleted;
+				
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+		});			
 		
-		//authorSelectedList
-		if (currentMeasureDetail.getAuthorSelectedList() != null) {
-			metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
-		} else {
-			List<Author> authorList = new ArrayList<Author>();
-			metaDataDisplay.setAuthorsSelectedList(authorList);
-			currentMeasureDetail.setAuthorSelectedList(authorList);
-		}
-		dbAuthorList.clear();
-		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
-		getAllOrganizations();
-		authorList = currentMeasureDetail.getAuthorSelectedList();
-	
+		
 		//measureTypeSelectList
 		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
 			metaDataDisplay.setMeasureTypeSelectedList(currentMeasureDetail.getMeasureTypeSelectedList());
@@ -1687,14 +1730,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setGuidance(metaDataDisplay.getGuidance().getValue());
 		currentMeasureDetail.setTransmissionFormat(metaDataDisplay.getTransmissionFormat().getValue());
 		currentMeasureDetail.setImprovNotations(metaDataDisplay.getImprovementNotation().getValue());
-		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());
+		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());	
 		
-	/*	if(metaDataDisplay.getStewardId()!=null && metaDataDisplay.getStewardValue()!=null){*/
-			currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
-			currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
-			LOGGER.setLevel(Level.INFO);			
-			LOGGER.info("Updated StewardId and stewardValue from the UI and seted to the CurrentMeasureDetail");
-		//}		
+		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	
+		currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
 		
 		currentMeasureDetail.setMeasToPeriod(metaDataDisplay.getMeasurementToPeriod());
 		currentMeasureDetail.setSupplementalData(metaDataDisplay.getSupplementalData().getValue());		

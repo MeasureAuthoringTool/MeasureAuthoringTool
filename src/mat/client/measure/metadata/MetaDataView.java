@@ -83,10 +83,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class MetaDataView.
  */
 public class MetaDataView implements MetaDataDetailDisplay{
-	
-	/** The Constant LOGGER. */
-	private final static Logger LOGGER = Logger.getLogger(MetaDataView.class
-		      .getName());
+
 	/** The main panel. */
 	protected FlowPanel mainPanel = new FlowPanel();
 	
@@ -1595,9 +1592,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				if ((stewardId != null)) {
 					if (stewardId.equalsIgnoreCase(object.getId())) {
 						setStewardValue(object.getOrgName());
-						isSelected = true;
-						LOGGER.setLevel(Level.INFO);			
-						LOGGER.info("Marked as Selected on the table and Updated steward Value from Table");
+						isSelected = true;						
 					}
 				} else {
 					isSelected = false;
@@ -1615,8 +1610,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				if (value) {				
 					setStewardId(object.getId());
 					setStewardValue(object.getOrgName());
-					LOGGER.setLevel(Level.INFO);			
-					LOGGER.info("stewardId and stewardValue id updated from User");
 				}
 				
 			}

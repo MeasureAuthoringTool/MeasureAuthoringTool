@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
  * The Class MatTabLayoutPanel.
  */
 public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHandler<Integer>, Enableable {
-	final  Logger log = Logger.getLogger(MatTabLayoutPanel.class.getName());
 	
 	/** The presenter map. */
 	private Map<Integer, MatPresenter> presenterMap = new HashMap<Integer, MatPresenter>();
@@ -398,17 +397,13 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				metaDataPresenter.getMetaDataDisplay().setSaveButtonEnabled(
 						MatContext.get().getMeasureLockService().checkForEditPermission());	
 				metaDataPresenter.getComponentMeasures();
-				metaDataPresenter.getAllOrganizations();
-				log.info("info");
-				log.log(Level.ALL, "log for dirty check");
+				metaDataPresenter.getAllOrganizations();				
 				}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
 			handleClickEventsOnUnsavedErrorMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay()
 					.getSaveErrorMsg().getButtons(), metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg(), null);
-		} else {
-			log.info("info");
-			log.log(Level.ALL, "log for dirty check");
+		} else {		
 			isUnsavedData = false;
 		}
 	}
@@ -541,9 +536,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		metaDataPresenter.updateModelDetailsFromView(pageData, metaDataPresenter.getMetaDataDisplay());
 		ManageMeasureDetailModel dbData = metaDataPresenter.getCurrentMeasureDetail();
 		if (dbData.isDeleted() || !dbData.isEditable()) {
-			//dont show dirty check message when measure is deleted.
-			log.info("info");
-			log.log(Level.ALL, "log for dirty check");
+			//dont show dirty check message when measure is deleted.			
 			return true;
 		} else {
 			pageData.setToCompareAuthor(pageData.getAuthorSelectedList());
@@ -553,9 +546,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());
 			dbData.setToCompareMeasure(metaDataPresenter.getDbMeasureTypeList());
 			dbData.setToCompareItemCount(metaDataPresenter.getDbQDMSelectedList());
-			dbData.setToCompareComponentMeasures(metaDataPresenter.getDbComponentMeasuresSelectedList());
-			log.info("info");
-			log.log(Level.ALL, "log for dirty check");
+			dbData.setToCompareComponentMeasures(metaDataPresenter.getDbComponentMeasuresSelectedList());		
 			return pageData.equals(dbData);
 		}
 	}

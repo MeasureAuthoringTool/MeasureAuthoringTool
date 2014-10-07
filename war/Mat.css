@@ -336,7 +336,7 @@ left:50px;
 
 .customDeleteButton {
     background: url("images/trash.png");
-    background-position:centre;
+    background-position:left;
     background-repeat:no-repeat;
     height: 25px;
     width: 30px;
@@ -347,9 +347,8 @@ left:50px;
 
   .customDeleteDisableButton {
     background: url("images/trashDisable.png");
-    background-position:center;
+    background-position:left;
     background-repeat:no-repeat;
-     display: block;
     height: 25px;
     width: 30px;
     border: 0px;

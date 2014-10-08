@@ -1,7 +1,6 @@
 package mat.server.simplexml.hqmf;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -20,8 +19,7 @@ import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,6 +62,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private static String getHQMFXmlString(MeasureExport me) {
 		createDateCriteriaTemplate(me);
 		createDataCriteriaForQDMELements(me);
+		//addDataCriteriaComment();
 		return convertXMLDocumentToString(outputProcessor.getOriginalDoc());
 	}
 
@@ -236,55 +235,35 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @return the string
 	 */
 	public static String convertXMLDocumentToString(Document document) {
-		StreamResult result = null;
-		Transformer transformer;
+		Transformer tf;
+		Writer out = null;
 		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			result = new StreamResult(new StringWriter());
-			DOMSource source = new DOMSource(document);
-			try {
-				transformer.transform(source, result);
-			} catch (TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			tf = TransformerFactory.newInstance().newTransformer();
+			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			tf.setOutputProperty(OutputKeys.INDENT, "yes");
+			out = new StringWriter();
+			tf.transform(new DOMSource(document), new StreamResult(out));
 		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-
-		return format(result.getWriter().toString(), document);
+		
+		return out.toString();
 	}
 
-	/**
-	 * Format.
-	 * 
-	 * @param unformattedXml
-	 *            the unformatted xml
-	 * @param document
-	 *            the document
-	 * @return the string
-	 */
-	@SuppressWarnings("deprecation")
-	public static String format(String unformattedXml, Document document) {
-		try {
-			OutputFormat format = new OutputFormat(document);
-			format.setLineWidth(70);
-			format.setIndenting(true);
-			format.setIndent(3);
-			Writer out = new StringWriter();
-			XMLSerializer serializer = new XMLSerializer(out, format);
-			serializer.serialize(document);
-			return out.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
+	
 
+	/**
+	 * Adds the data criteria comment.
+	 */
+	public static void addDataCriteriaComment() {
+		Element element = outputProcessor.getOriginalDoc().getDocumentElement();
+		Comment comment = outputProcessor.getOriginalDoc().createComment(
+				"Data Criteria Section");
+		element.getParentNode().insertBefore(comment, element);
 	}
 
 }

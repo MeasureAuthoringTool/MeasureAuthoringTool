@@ -3,9 +3,10 @@ package mat.client.measure.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import mat.DTO.MeasureNoteDTO;
-import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -16,6 +17,7 @@ import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -489,8 +491,8 @@ public interface MeasureServiceAsync {
 	 * @param measureId the measure id
 	 * @param asyncCallback the async callback
 	 */
-	void updateComponentMeasuresFromXml(String measureId, AsyncCallback<Void> asyncCallback);
-	
+	void updateMeasureXmlOnDeletion(String measureId, AsyncCallback<Void> asyncCallback);
+		
 	/**
 	 * Validate for group.
 	 *
@@ -561,7 +563,7 @@ public interface MeasureServiceAsync {
 	 * Gets the measure xml for measure and sorted sub tree map.
 	 *
 	 * @param currentMeasureId the current measure id
-	 * @param asyncCallback the async callback
+	 * @param Callback the callback
 	 * @return the measure xml for measure and sorted sub tree map
 	 */
 	void getMeasureXmlForMeasureAndSortedSubTreeMap(

@@ -25,12 +25,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.DTO.AuthorDTO;
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
-import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -58,7 +57,6 @@ import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
-import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -183,6 +181,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Autowired
 	private OperatorDAO operatorDAO;
 	
+	/** The organization dao. */
 	@Autowired
 	private OrganizationDAO organizationDAO;
 	/** The x path. */
@@ -1296,41 +1295,139 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	/**
+	 * Check if deleted.
+	 *
+	 * @param id the id
+	 * @return true, if successful
+	 */
+	private boolean checkIfDeleted(String id) {
+		boolean isDeleted=false;
+		List<Organization> currentOrgList =getAllOrganizations();
+		for(Organization org:currentOrgList){
+			if(id.equalsIgnoreCase(Long.toString(org.getId()))){
+				isDeleted = false;
+				break;
+			}else{
+				isDeleted=true;
+			}
+		}
+		return isDeleted;
+	}
+
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#updateComponentMeasuresOnDeletion(java.lang.String)
+	 * @see mat.server.service.MeasureLibraryService#updateComponentMeasuresOnDeletion(java.lang.String
 	 */
 	@Override
-	public void updateComponentMeasuresOnDeletion(String measureId){
+	public void updateMeasureXmlOnDeletion(String measureId){
 		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
 		if(xmlModel!=null){
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_EXPRESSION_COMPONENT_MEASURES = "/measure//measureDetails//componentMeasures";
-			try {
-				NodeList parentNodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_COMPONENT_MEASURES,
-						processor.getOriginalDoc(),	XPathConstants.NODESET);
-				Node parentNode = parentNodeList.item(0);
-				NodeList nodeList = parentNode.getChildNodes();
-				
-				for(int i = 0; i<nodeList.getLength() ; i++){
-					Node newNode = nodeList.item(i);
-					String id = newNode.getAttributes().getNamedItem("id").getNodeValue();
-					boolean isDeleted = getService().getMeasure(id);
-					if(!isDeleted){
-						parentNode.removeChild(newNode);
-					}
-				}
-				
-				xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-				getService().saveMeasureXml(xmlModel);
-				
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			updateComponentMeasuresOnDeletion(processor);
+			updateStewardOnDeletion(processor);
+			updateMeasureDevelopersOnDeletion(processor);				
+			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+			getService().saveMeasureXml(xmlModel);			
 		}
 		
 	}
 	
+	/**
+	 * Update measure developers on deletion.
+	 *
+	 * @param processor the processor
+	 */
+	private void updateMeasureDevelopersOnDeletion(XmlProcessor processor) {
+		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
+		try {
+			NodeList developerParentNodeList = (NodeList) xPath.evaluate(
+					XPATH_EXPRESSION_DEVELOPERS, processor.getOriginalDoc(),
+					XPathConstants.NODESET);
+			Node developerParentNode = developerParentNodeList.item(0);
+			if (developerParentNode != null) {
+				NodeList developerNodeList = developerParentNode
+						.getChildNodes();
+
+				for (int i = 0; i < developerNodeList.getLength(); i++) {
+					Node newNode = developerNodeList.item(i);
+					String developerId = newNode.getAttributes()
+							.getNamedItem("id").getNodeValue();
+					boolean isDeveloperDeleted = checkIfDeleted(developerId);
+					if (isDeveloperDeleted) {
+						developerParentNode.removeChild(newNode);
+					}
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Update steward on deletion.
+	 *
+	 * @param processor the processor
+	 */
+	private void updateStewardOnDeletion(XmlProcessor processor) {
+		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
+		try {
+			// steward
+			Node stewardParentNode = (Node) xPath.evaluate(
+					XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(),
+					XPathConstants.NODE);
+			if (stewardParentNode != null) {
+				String id = stewardParentNode.getAttributes()
+						.getNamedItem("id").getNodeValue();
+				boolean isStewardDeleted = checkIfDeleted(id);
+				if (isStewardDeleted) {
+					removeNode(XPATH_EXPRESSION_STEWARD,
+							processor.getOriginalDoc());
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Update component measures on deletion.
+	 *
+	 * @param processor the processor
+	 */
+	private void updateComponentMeasuresOnDeletion(XmlProcessor processor) {
+		String XPATH_EXPRESSION_COMPONENT_MEASURES = "/measure//measureDetails//componentMeasures";
+		try {
+			NodeList componentMeasureParentNodeList = (NodeList) xPath
+					.evaluate(XPATH_EXPRESSION_COMPONENT_MEASURES,
+							processor.getOriginalDoc(), XPathConstants.NODESET);
+			Node componentMeasureParentNode = componentMeasureParentNodeList
+					.item(0);
+			if (componentMeasureParentNode != null) {
+				NodeList nodeList = componentMeasureParentNode.getChildNodes();
+
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					Node newNode = nodeList.item(i);
+					String id = newNode.getAttributes().getNamedItem("id")
+							.getNodeValue();
+					boolean isDeleted = getService().getMeasure(id);
+					if (!isDeleted) {
+						componentMeasureParentNode.removeChild(newNode);
+					}
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Gets the measure dao.
 	 * 
@@ -1392,6 +1489,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return measureXmlModel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getMeasureXmlForMeasureAndSortedSubTreeMap(java.lang.String)
+	 */
 	@Override
 	public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(final String measureId){
 		 SortedClauseMapResult result = new SortedClauseMapResult();

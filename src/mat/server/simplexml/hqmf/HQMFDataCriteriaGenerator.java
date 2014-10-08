@@ -34,9 +34,6 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	/** The x path. */
 	static javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
-	/** The output processor. */
-	private static XmlProcessor outputProcessor;
-
 	/**
 	 * Generate hqm for measure.
 	 * 
@@ -60,10 +57,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @return the HQMF xml string
 	 */
 	private static String getHQMFXmlString(MeasureExport me) {
-		createDateCriteriaTemplate(me);
-		createDataCriteriaForQDMELements(me);
-		//addDataCriteriaComment();
-		return convertXMLDocumentToString(outputProcessor.getOriginalDoc());
+		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
+		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor);
+		//addDataCriteriaComment(dataCriteriaXMLProcessor);
+		return convertXMLDocumentToString(dataCriteriaXMLProcessor.getOriginalDoc());
 	}
 
 	/**
@@ -73,8 +70,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 *            the me
 	 * @return the string
 	 */
-	private static void createDateCriteriaTemplate(MeasureExport me) {
-		outputProcessor = new XmlProcessor(
+	private static XmlProcessor createDateCriteriaTemplate(MeasureExport me) {
+		XmlProcessor outputProcessor = new XmlProcessor(
 				"<component><dataCriteriaSection></dataCriteriaSection></component>");
 		Node dataCriteriaElem = outputProcessor.getOriginalDoc()
 				.getElementsByTagName("dataCriteriaSection").item(0);
@@ -101,6 +98,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.createElement("text");
 		textElem.setAttribute("value", "Data Criteria text");
 		dataCriteriaElem.appendChild(textElem);
+		
+		return outputProcessor;
 	}
 
 	/**
@@ -108,9 +107,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * 
 	 * @param me
 	 *            the me
+	 * @param dataCriteriaXMLProcessor 
 	 * @return the string
 	 */
-	private static void createDataCriteriaForQDMELements(MeasureExport me) {
+	private static void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor) {
 
 		String simpleXMLStr = me.getSimpleXML();
 		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
@@ -124,7 +124,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					Node childNode = elementLookUpNode.item(i);
 					String dataType = childNode.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
-					createXmlForDataCriteria(dataType, childNode);
+					createXmlForDataCriteria(dataType, childNode, dataCriteriaXMLProcessor);
 				}
 			}
 
@@ -140,9 +140,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 *            the data type
 	 * @param qdmNode
 	 *            the qdm node
+	 * @param dataCriteriaXMLProcessor 
 	 * @return the string
 	 */
-	private static void createXmlForDataCriteria(String dataType, Node qdmNode) {
+	private static void createXmlForDataCriteria(String dataType, Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
 		XmlProcessor tempProcessor = new XmlProcessor(new File("templates.xml"));
 		String xPathForTemplate = "/templates/template[text()='"
 				+ dataType.toLowerCase() + "']";
@@ -161,7 +162,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					actNodeStr = actNode.getTextContent();
 				}
 			}
-			createDataCriteriaElemetTag(actNodeStr, templateNode, qdmNode);
+			createDataCriteriaElemetTag(actNodeStr, templateNode, qdmNode, dataCriteriaXMLProcessor);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -177,10 +178,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 *            the child node
 	 * @param qdmNode
 	 *            the qdm node
+	 * @param dataCriteriaXMLProcessor 
 	 * @return the creates the data create elemet tag
 	 */
 	public static void createDataCriteriaElemetTag(String actNodeStr,
-			Node childNode, Node qdmNode) {
+			Node childNode, Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
 		String oidValue = childNode.getAttributes().getNamedItem("oid")
 				.getNodeValue();
 		String classCodeValue = childNode.getAttributes().getNamedItem("class")
@@ -195,39 +197,40 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem("oid")
 				.getNodeValue();
-		Node dataCriteriaSectionElem = outputProcessor.getOriginalDoc()
+		Node dataCriteriaSectionElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.getElementsByTagName("dataCriteriaSection").item(0);
-		Element dataCriteriaElem = (Element) outputProcessor.getOriginalDoc()
+		Element dataCriteriaElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(actNodeStr);
 		dataCriteriaSectionElem.appendChild(dataCriteriaElem);
 		dataCriteriaElem.setAttribute("classCode", classCodeValue);
 		dataCriteriaElem.setAttribute("moodCode", moodValue);
-		Element templateId = (Element) outputProcessor.getOriginalDoc()
+		Element templateId = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("templateId");
 		dataCriteriaElem.appendChild(templateId);
-		Element itemChild = (Element) outputProcessor.getOriginalDoc()
+		Element itemChild = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("item");
 		itemChild.setAttribute("root", oidValue);
 		templateId.appendChild(itemChild);
-		Element idElem = (Element) outputProcessor.getOriginalDoc()
+		Element idElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("id");
 		idElem.setAttribute("root", rootValue);
 		dataCriteriaElem.appendChild(idElem);
-		Element titleElem = (Element) outputProcessor.getOriginalDoc()
+		Element titleElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("title");
 		titleElem.setAttribute("value", dataType);
 		dataCriteriaElem.appendChild(titleElem);
-		Element statusCodeElem = (Element) outputProcessor.getOriginalDoc()
+		Element statusCodeElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("statusCode");
 		statusCodeElem.setAttribute("code", statusValue);
 		dataCriteriaElem.appendChild(statusCodeElem);
-		Element valueElem = (Element) outputProcessor.getOriginalDoc()
+		Element valueElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("value");
 		valueElem.setAttribute("valueSet", qdmOidValue);
 		dataCriteriaElem.appendChild(valueElem);
 	}
 
 	/**
+
 	 * Convert xml document to string.
 	 * 
 	 * @param document
@@ -253,15 +256,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		return out.toString();
 	}
-
 	
-
-	/**
-	 * Adds the data criteria comment.
-	 */
-	public static void addDataCriteriaComment() {
-		Element element = outputProcessor.getOriginalDoc().getDocumentElement();
-		Comment comment = outputProcessor.getOriginalDoc().createComment(
+	public static void addDataCriteriaComment(XmlProcessor dataCriteriaXMLProcessor) {
+		Element element = dataCriteriaXMLProcessor.getOriginalDoc().getDocumentElement();
+		Comment comment = dataCriteriaXMLProcessor.getOriginalDoc().createComment(
 				"Data Criteria Section");
 		element.getParentNode().insertBefore(comment, element);
 	}

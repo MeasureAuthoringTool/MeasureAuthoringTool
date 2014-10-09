@@ -27,6 +27,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 		// searchInput.setWatermark("Search");
 		searchButton = new PrimaryButton("Search", "primaryButton");
 		searchButton.addClickHandler(this);
+		searchButton.getElement().setId("searchButton_PrimaryButton");
 		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
 		searchInput.getElement().getStyle().setMarginLeft(10, Unit.PX);
 		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
@@ -39,7 +40,9 @@ public class SearchWidget extends Composite implements ClickHandler {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
 		horizontalPanel.add(searchInput);
+		searchInput.getElement().setId("searchInput_TextBox");
 		horizontalPanel.add(searchButton);
+		searchButton.getElement().setId("searchButton_PrimaryButton");
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed"),
 				"SearchWidgetDisplayed");
 		topPanel.add(invisibleLabel);

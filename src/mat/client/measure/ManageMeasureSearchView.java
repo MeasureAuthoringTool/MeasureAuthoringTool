@@ -221,8 +221,10 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		HorizontalPanel hp = new HorizontalPanel();
 		FlowPanel fp1 = new FlowPanel();
 		fp1.add(searchInput);
+		searchInput.getElement().setId("searchInput_TextBox");
 		searchButton.setTitle("Search");
 		fp1.add(searchButton);
+		searchButton.getElement().setId("searchButton_Button");
 		fp1.add(new SpacerWidget());
 		hp.add(fp1);
 		return hp;

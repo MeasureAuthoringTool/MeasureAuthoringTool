@@ -85,9 +85,10 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	 */
 	public ManageMeasureVersionView() {
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
+		zoomButton.getElement().setId("zoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
-		mainPanel.add(searchWidget);
+		mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
@@ -96,13 +97,17 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(errorMessages);
+		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		VerticalPanel radioPanel = new VerticalPanel();
 		radioPanel.getElement().getStyle().setMarginLeft(5, Unit.PX);
 		radioPanel.add(new Label("Select Version Type"));
 		radioPanel.add(new SpacerWidget());
 		radioPanel.add(majorRadio);
+		majorRadio.getElement().setId("majorRadio_RadioButton");
 		radioPanel.add(minorRadio);
+		minorRadio.getElement().setId("minorRadio_RadioButton");
+	
 		mainPanel.add(radioPanel);
 		mainPanel.add(new SpacerWidget());
 		

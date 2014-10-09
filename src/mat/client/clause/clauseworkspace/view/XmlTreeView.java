@@ -351,7 +351,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
 		buttonExpand.setStylePrimaryName("expandAllButton");
+		buttonExpand.getElement().setId("buttonExpand_Button");
 		buttonCollapse.setStylePrimaryName("collapseAllButton");
+		buttonCollapse.getElement().setId("buttonCollapse_Button");
 		buttonExpand.setTitle("Expand All (Shift +)");
 		buttonCollapse.setTitle("Collapse All (Shift -)");
 		expandCollapse.add(buttonExpand);
@@ -370,16 +372,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		savePanel.getElement().setId("savePanel_VerticalPanel");
 		//savePanel.add(new SpacerWidget());
 		vp.add(successMessageDisplay);
+		successMessageDisplay.getElement().setId("successMessageDisplay_SuccessMessageDisplay");
 		savePanel.add(saveBtn);
 		//Commented Validate Button from Population Work Space as part of Mat-3162
 		validateBtnPopulationWorkspace.setTitle("Validate");//uncommented
+		validateBtnPopulationWorkspace.getElement().setId("validateBtnPopulationWorkspace_Button");
 		savePanel.add(validateBtnPopulationWorkspace);// uncommented
 		vp.add(warningMessageDisplay);//uncommented
+		warningMessageDisplay.getElement().setId("warningMessageDisplay_WarningMessageDisplay");
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
 		SimplePanel errPanel = new SimplePanel();
 		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
+		errorMessageDisplay.getElement().setId("errorMessageDisplay_ErrorMessageDisplay");
 		addCommentPanel = addCommentPanelToRightPanel();
 		addCommentPanel.setVisible(false);
 		rightPanel.add(addCommentPanel);

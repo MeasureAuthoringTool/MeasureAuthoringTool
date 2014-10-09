@@ -100,6 +100,7 @@ public class ManageMeasureDetailView
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(errorMessages);
+		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		FlowPanel leftPanel = new FlowPanel();
 		leftPanel.getElement().setId("leftPanel_FlowPanel");
@@ -119,8 +120,10 @@ public class ManageMeasureDetailView
 		HorizontalPanel hp = new HorizontalPanel();
 		leftPanel.getElement().setId("hp_HorizontalPanel");
 		hp.add(measScoringInput);
+		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
 		hp.add(new HTML("&nbsp;"));
 		hp.add(cautionMsgPlaceHolder);
+		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");
 		
 		//US 421. Measure scoring choice is now part of measure creation process.
 		leftPanel.add(LabelBuilder.buildLabel(measScoringInput, scoringLabel));

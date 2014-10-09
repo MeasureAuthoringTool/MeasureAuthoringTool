@@ -1538,7 +1538,7 @@ public class MetaDataPresenter  implements MatPresenter {
 					metaDataDisplay.setStewardValue(null);
 				}
 				
-				if(result.getUsedAuthorList() !=null){
+				if(currentMeasureDetail.getAuthorSelectedList() !=null){
 					metaDataDisplay.setAuthorsSelectedList(result.getUsedAuthorList());
 				} else {
 					List<Author> authorList = new ArrayList<Author>();
@@ -1546,8 +1546,8 @@ public class MetaDataPresenter  implements MatPresenter {
 					currentMeasureDetail.setAuthorSelectedList(authorList);
 				}
 				dbAuthorList.clear();
-				dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
 				
+				dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());				
 				metaDataDisplay.buildStewardCellTable(result.getAllStewardList(), editable);
 				metaDataDisplay.buildAuthorCellTable(result.getAllAuthorList(), editable);	
 			}

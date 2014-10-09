@@ -1094,6 +1094,7 @@ public class ExportSimpleXML {
 			Node qdmNode = allQDMs.item(i);
 			String dataTypeValue = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			dataTypeValue = StringUtils.deleteWhitespace(dataTypeValue) + "_" + (i+1);
+			dataTypeValue = StringUtils.remove(dataTypeValue, ',');
 			
 			Attr localVarNameAttribute = originalDoc.createAttribute("localVariableName");
 			localVarNameAttribute.setNodeValue(dataTypeValue);

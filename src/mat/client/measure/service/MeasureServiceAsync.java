@@ -7,6 +7,7 @@ import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -484,14 +485,6 @@ public interface MeasureServiceAsync {
 	void validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
 	
-	
-	/**
-	 * Update component measures from xml.
-	 *
-	 * @param measureId the measure id
-	 * @param asyncCallback the async callback
-	 */
-	void updateMeasureXmlOnDeletion(String measureId, AsyncCallback<Void> asyncCallback);
 		
 	/**
 	 * Validate for group.
@@ -569,5 +562,11 @@ public interface MeasureServiceAsync {
 	void getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId,
 			AsyncCallback<SortedClauseMapResult> Callback);
+
+	void getUsedStewardAndDevelopersList(String measureId,
+			AsyncCallback<MeasureDetailResult> asyncCallback);
+
+	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
+			AsyncCallback<Void> asyncCallback);
 		
 }

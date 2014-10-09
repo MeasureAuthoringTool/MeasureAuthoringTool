@@ -397,7 +397,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				metaDataPresenter.getMetaDataDisplay().setSaveButtonEnabled(
 						MatContext.get().getMeasureLockService().checkForEditPermission());	
 				metaDataPresenter.getComponentMeasures();
-				metaDataPresenter.getAllOrganizations();				
+				metaDataPresenter.setStewardAndMeasureDevelopers();
 				}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);

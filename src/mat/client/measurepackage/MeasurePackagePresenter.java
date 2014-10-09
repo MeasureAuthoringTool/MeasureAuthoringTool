@@ -963,6 +963,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 			
 			/**
@@ -973,7 +974,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				if (result.isSuccess()) {					
-					updateMeasureXmlOnDeletion();
+					updateMeasureXmlForDeletedComponentMeasureAndOrg();
 					
 				} else {
 					Mat.hideLoadingMessage();
@@ -996,15 +997,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Update component measures from xml.
 	 */
-	private void updateMeasureXmlOnDeletion(){
+	private void updateMeasureXmlForDeletedComponentMeasureAndOrg(){
 		
-		MatContext.get().getMeasureService().updateMeasureXmlOnDeletion(model.getId(), new AsyncCallback<Void>() {
+		MatContext.get().getMeasureService().updateMeasureXmlForDeletedComponentMeasureAndOrg(model.getId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);				
-				System.out.println(" Updation of MeasureXml on Creation of Measure Packager: " + caught.getStackTrace());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
@@ -1031,6 +1032,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 			
 			@Override

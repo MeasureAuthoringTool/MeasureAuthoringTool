@@ -30,6 +30,7 @@ import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -57,6 +58,7 @@ import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -1319,13 +1321,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#updateComponentMeasuresOnDeletion(java.lang.String
 	 */
 	@Override
-	public void updateMeasureXmlOnDeletion(String measureId){
+	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId){
 		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
 		if(xmlModel!=null){
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			updateComponentMeasuresOnDeletion(processor);
-			updateStewardOnDeletion(processor);
-			updateMeasureDevelopersOnDeletion(processor);				
+			removeDeletedComponentMeasures(processor);
+			removeDeletedSteward(processor);
+			removeDeletedDevelopers(processor);				
 			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			getService().saveMeasureXml(xmlModel);			
 		}
@@ -1337,7 +1339,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @param processor the processor
 	 */
-	private void updateMeasureDevelopersOnDeletion(XmlProcessor processor) {
+	private void removeDeletedDevelopers(XmlProcessor processor) {
 		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
 		try {
 			NodeList developerParentNodeList = (NodeList) xPath.evaluate(
@@ -1371,7 +1373,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @param processor the processor
 	 */
-	private void updateStewardOnDeletion(XmlProcessor processor) {
+	private void removeDeletedSteward(XmlProcessor processor) {
 		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
 		try {
 			// steward
@@ -1400,7 +1402,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @param processor the processor
 	 */
-	private void updateComponentMeasuresOnDeletion(XmlProcessor processor) {
+	private void removeDeletedComponentMeasures(XmlProcessor processor) {
 		String XPATH_EXPRESSION_COMPONENT_MEASURES = "/measure//measureDetails//componentMeasures";
 		try {
 			NodeList componentMeasureParentNodeList = (NodeList) xPath
@@ -3729,6 +3731,150 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return allOperatorsTypeList;
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getUsedStewardAndDevelopersList(java.lang.String)
+	 */
+	@Override
+	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {
+		logger.info("In MeasureLibraryServiceImpl.getUsedStewardAndDevelopersList() method..");
+		logger.info("Loading Measure for MeasueId: " + measureId);
+		Measure measure = getService().getById(measureId);
+		MeasureDetailResult usedStewardAndAuthorList = new MeasureDetailResult();		
+		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);			
+		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml));
+		usedStewardAndAuthorList.setUsedSteward(getSteward(xml));
+		usedStewardAndAuthorList.setAllAuthorList(getAllAuthorList());
+		usedStewardAndAuthorList.setAllStewardList(getAllStewardList());
+		return usedStewardAndAuthorList;
+		
+	}
+
+	/**
+	 * Gets the all steward list.
+	 *
+	 * @return the all steward list
+	 */
+	private List<MeasureSteward> getAllStewardList() {
+		List<MeasureSteward> stewardList = new ArrayList<MeasureSteward>();
+		List<Organization> organizationList = getAllOrganizations();
+		for(Organization org:organizationList){
+			MeasureSteward steward= new MeasureSteward();
+			steward.setId(Long.toString(org.getId()));
+			steward.setOrgName(org.getOrganizationName());
+			steward.setOrgOid(org.getOrganizationOID());
+			stewardList.add(steward);
+		}
+		return stewardList;
+	}
+
+	/**
+	 * Gets the all author list.
+	 *
+	 * @return the all author list
+	 */
+	private List<Author> getAllAuthorList() {
+		List<Author> authorList = new ArrayList<Author>();
+		List<Organization> organizationList = getAllOrganizations();
+		for(Organization org:organizationList){
+			Author author= new Author();
+			author.setId(Long.toString(org.getId()));
+			author.setAuthorName(org.getOrganizationName());
+			author.setOrgId(org.getOrganizationOID());
+			authorList.add(author);
+		}
+		
+		return authorList;
+	}
+
+	/**
+	 * Gets the authors list.
+	 *
+	 * @param xmlModel the xml model
+	 * @return the authors list
+	 */
+	private List<Author> getAuthorsList(MeasureXmlModel xmlModel) {
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
+		List<Author> authorList = new ArrayList<Author>();
+		List<Author> usedAuthorList = new ArrayList<Author>();
+		List<Organization> allOrganization = getAllOrganizations();
+		try {
+			
+			NodeList developerParentNodeList = (NodeList) xPath.evaluate(
+					XPATH_EXPRESSION_DEVELOPERS, processor.getOriginalDoc(),
+					XPathConstants.NODESET);
+			Node developerParentNode = developerParentNodeList.item(0);
+			if (developerParentNode != null) {
+				NodeList developerNodeList = developerParentNode
+						.getChildNodes();
+
+				for (int i = 0; i < developerNodeList.getLength(); i++) {					
+					Author author = new Author();
+					String developerId = developerNodeList.item(i).getAttributes()
+							.getNamedItem("id").getNodeValue();
+					String AuthorValue = developerNodeList.item(i).getTextContent();
+					author.setId(developerId);
+					author.setAuthorName(AuthorValue);
+					authorList.add(author);				
+					
+				}
+				//if deleted, remove from the list
+				for(Organization org:allOrganization){
+					for(int i=0;i<authorList.size();i++){
+						if(authorList.get(i).getId().equalsIgnoreCase(Long.toString(org.getId()))){
+							usedAuthorList.add(authorList.get(i));
+						}
+					}
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return usedAuthorList;
+	}
+
+	/**
+	 * Gets the steward id.
+	 *
+	 * @param xmlModel the xml model
+	 * @return the steward id
+	 */
+	private MeasureSteward getSteward(MeasureXmlModel xmlModel) {
+		MeasureSteward measureSteward = new MeasureSteward();
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+		List<Organization> allOrganization = getAllOrganizations();
+		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
+		
+		try {			
+			Node stewardParentNode = (Node) xPath.evaluate(
+					XPATH_EXPRESSION_STEWARD, processor.getOriginalDoc(),
+					XPathConstants.NODE);
+			if (stewardParentNode != null) {
+				String id = stewardParentNode.getAttributes()
+						.getNamedItem("id").getNodeValue();
+				for(Organization org:allOrganization){
+					if(id.equalsIgnoreCase(Long.toString(org.getId()))){
+						measureSteward.setId(id);
+						measureSteward.setOrgName(org.getOrganizationName());
+						measureSteward.setOrgOid(org.getOrganizationOID());
+					}
+				}
+				
+			}
+
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return measureSteward;
+		
+	}
+	
 
 	
 }

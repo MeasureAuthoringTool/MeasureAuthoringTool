@@ -9,6 +9,7 @@ import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -466,7 +467,7 @@ public interface MeasureLibraryService {
 	 *
 	 * @param measureId the measure id
 	 */
-	void updateMeasureXmlOnDeletion(String measureId);
+	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId);
 	
 	/**
 	 * Validate for group.
@@ -535,6 +536,8 @@ public interface MeasureLibraryService {
 	 */
 	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String measureId);
+
+	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
 
 	/**
 	 * Update steward and measure developers on deletion.

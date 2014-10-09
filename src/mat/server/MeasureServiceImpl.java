@@ -7,6 +7,7 @@ import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -400,9 +401,9 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#updateComponentMeasuresFromXml(java.lang.String)
 	 */
 	@Override
-	public void updateMeasureXmlOnDeletion(String measureId) {
+	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
 		
-		this.getMeasureLibraryService().updateMeasureXmlOnDeletion(measureId);
+		this.getMeasureLibraryService().updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
 	}
 			
 	/* (non-Javadoc)
@@ -472,6 +473,11 @@ MeasureService {
 	public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId) {		
 		return this.getMeasureLibraryService().getMeasureXmlForMeasureAndSortedSubTreeMap(currentMeasureId);
+	}
+
+	@Override
+	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {		
+		return this.getMeasureLibraryService().getUsedStewardAndDevelopersList(measureId);
 	}
 	
 }

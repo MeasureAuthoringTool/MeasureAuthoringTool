@@ -7,6 +7,7 @@ import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -430,13 +431,6 @@ public interface MeasureService extends RemoteService {
 			MeasureXmlModel measureXmlModel);
 	
 	/**
-	 * Update component measures from xml.
-	 *
-	 * @param measureId the measure id
-	 */
-	void updateMeasureXmlOnDeletion(String measureId);
-	
-	/**
 	 * Validate for group.
 	 *
 	 * @param model the model
@@ -503,5 +497,9 @@ public interface MeasureService extends RemoteService {
 	 */
 	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId);
+
+	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
+
+	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id);
 	
 }

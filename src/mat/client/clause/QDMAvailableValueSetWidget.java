@@ -227,6 +227,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		valueSetDetailsPanel.getElement().setId("valueSetDetailsPanel_VerticalPanel");
 		disclosurePanelVSAC.setWidth("100%");
 		disclosurePanelVSAC.add(mainPanel);
+		disclosurePanelVSAC.getElement().setId("disclosurePanelVSAC_DisclosurePanel");
 		disclosurePanelVSAC.setOpen(true);
 		return disclosurePanelVSAC;
 	}
@@ -333,6 +334,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		mainPanel.add(buttonHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
 		disclosurePanel.add(mainPanel);
+		disclosurePanel.getElement().setId("disclosurePanel_DisclosurePanel");
 		return disclosurePanel;
 	}
 	

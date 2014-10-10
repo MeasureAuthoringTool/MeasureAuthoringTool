@@ -99,15 +99,18 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
+		removeButton.getElement().setId("removeButton_Button");
 		modify.setEnabled(checkForEnable() ? true : false);
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		removeButton.setTitle("Remove");
 		modify.setTitle("Modify");
+		modify.getElement().setId("modify_Button");
 		modify.setStyleName("rightAlignSecondaryButton");
 		updateVsacButton.setStylePrimaryName("rightAlignSecondaryButton");
 		updateVsacButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
+		updateVsacButton.getElement().setId("updateVsacButton_Button");
 		buttonLayout.add(removeButton);
 		buttonLayout.add(modify);
 		buttonLayout.add(updateVsacButton);

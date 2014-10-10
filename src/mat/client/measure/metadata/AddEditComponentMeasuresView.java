@@ -583,6 +583,7 @@ public class AddEditComponentMeasuresView implements
 	 * #getRetButton()
 	 */
 	public Button getRetButton() {
+		returnButton.getElement().setId("returnButton_Button");
 		return returnButton;
 	}
 
@@ -594,6 +595,7 @@ public class AddEditComponentMeasuresView implements
 	 * #getAddtoComponentMeasuresBtn()
 	 */
 	public Button getAddtoComponentMeasuresBtn() {
+		addtoComponentMeasures.getElement().setId("addtoComponentMeasures_Button");
 		return addtoComponentMeasures;
 	}
 

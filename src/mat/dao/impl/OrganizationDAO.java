@@ -53,6 +53,17 @@ mat.dao.OrganizationDAO {
 			return null;
 		}
 	}
+	@Override
+	public Organization findById(String id) {
+		Organization org = null;
+		try {
+			org = find(Long.valueOf(id));
+		} catch (Exception e) {
+			return null;
+		}
+		return org;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
 	 */

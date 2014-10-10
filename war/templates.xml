@@ -11,19 +11,19 @@
     </acts>
        
     <!-- care goal -->
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">care goal</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">care goal</template>
     
     <!-- care experience -->
-    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codesystem="2.16.840.1.113883.6.96">patient care experience</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codesystem="2.16.840.1.113883.6.96">provider care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96">patient care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96">provider care experience</template>
     
     <!-- communication -->    
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from patient to provider</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from provider to patient</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from provider to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to provider</template>
 
     <!-- device -->
-    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">device, adverse event</template>
     <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
     <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, allergy</template>
     <template oid="2.16.840.1.113883.10.20.28.3.13" class="OBS" mood="EVN" status="COMPLETED" code="360030002" codesystem="2.16.840.1.113883.6.96">device, applied</template>
@@ -32,14 +32,14 @@
     <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE">device, recommended</template>
     
     <!-- diagnosis -->
-    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED">diagnosis, active</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED">diagnosis, family history</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED">diagnosis, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED">diagnosis, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.5.4">diagnosis, family history</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, resolved</template>
     
     <!-- diagnostic study -->
-    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED">diagnostic study, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED">diagnostic study, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE">diagnostic study, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED">diagnostic study, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE">diagnostic study, recommended</template>    

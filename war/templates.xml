@@ -59,7 +59,7 @@
     <!-- patient characteristic -->
     <template oid="2.16.840.1.113883.10.20.28.3.53" class="OBS" mood="EVN" status="COMPLETED">patient characteristic</template>
     <template oid="2.16.840.1.113883.10.20.28.3.54" class="OBS" mood="EVN" status="COMPLETED">patient characteristic birthdate</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.56" class="OBS" mood="EVN" status="COMPLETED">patient characteristic ethnicity</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.56" class="OBS" mood="EVN" status="COMPLETED" valuetype="CD" code="54133-4" codesystem="2.16.840.1.113883.6.1">patient characteristic ethnicity</template>
     <template oid="2.16.840.1.113883.10.20.28.3.57" class="OBS" mood="EVN" status="COMPLETED">patient characteristic expired</template> 
     <template oid="2.16.840.1.113883.10.20.28.3.58" class="OBS" mood="EVN" status="COMPLETED">patient characteristic payer</template>    
     <template oid="2.16.840.1.113883.10.20.28.3.59" class="OBS" mood="EVN" status="COMPLETED">patient characteristic race</template>

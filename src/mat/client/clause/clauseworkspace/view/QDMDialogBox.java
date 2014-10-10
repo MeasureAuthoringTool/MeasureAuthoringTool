@@ -56,6 +56,7 @@ public class QDMDialogBox {
 			boolean isAdd) {
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setGlassEnabled(true);
+		dialogBox.getElement().setId("dialogBox_DialogBox");
 		dialogBox.setAnimationEnabled(true);
 		setSelected(false);
 		dialogBox.setText("Double Click to Select QDM Element.");
@@ -66,12 +67,14 @@ public class QDMDialogBox {
 		dialogContents.setWidth("20em");
 		dialogContents.setHeight("15em");
 		dialogContents.setSpacing(8);
+		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		dialogBox.setWidget(dialogContents);
 		
 		// Create Search box
 		final SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
 		suggestBox.setWidth("18em");
 		suggestBox.setText("Search");
+		suggestBox.getElement().setId("suggestBox_SuggestBox");
 		suggestBox.getValueBox().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -106,6 +109,7 @@ public class QDMDialogBox {
 				dialogBox.hide();
 			}
 		});
+		closeButton.getElement().setId("closeButton_Button");
 		
 		Button selectButton = new Button("Select", new ClickHandler() {
 			@Override
@@ -118,9 +122,11 @@ public class QDMDialogBox {
 				}
 			}
 		});
+		selectButton.getElement().setId("selectButton_Button");
 		HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
 		horizontalButtonPanel.setSpacing(5);
 		horizontalButtonPanel.add(selectButton);
+		horizontalButtonPanel.getElement().setId("horizontalButtonPanel_HorizontalPanel");
 		horizontalButtonPanel.setCellHorizontalAlignment(selectButton,
 				HasHorizontalAlignment.ALIGN_RIGHT);
 		horizontalButtonPanel.add(closeButton);

@@ -11,23 +11,23 @@
     </acts>
        
     <!-- care goal -->
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE">care goal</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">care goal</template>
     
     <!-- care experience -->
-    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED">patient care experience</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED">provider care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codesystem="2.16.840.1.113883.6.96">patient care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codesystem="2.16.840.1.113883.6.96">provider care experience</template>
     
     <!-- communication -->    
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP">communication: from patient to provider</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP">communication: from provider to patient</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP">communication: from provider to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codesystem="2.16.840.1.113883.6.96">communication: from provider to provider</template>
 
     <!-- device -->
-    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED">device, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, adverse event</template>
     <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
-    <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN">device, allergy</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.13" class="OBS" mood="EVN" status="COMPLETED">device, applied</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED">device, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.13" class="OBS" mood="EVN" status="COMPLETED" code="360030002" codesystem="2.16.840.1.113883.6.96">device, applied</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.15" class="OBS" mood="RQO" status="ACTIVE">device, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE">device, recommended</template>
     

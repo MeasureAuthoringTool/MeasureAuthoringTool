@@ -1322,6 +1322,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId){
+		logger.info("In MeasureLibraryServiceImpl. updateMeasureXmlForDeletedComponentMeasureAndOrg() method..");
+		logger.info("Updating Measure for MeasueId: " + measureId);
 		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
 		if(xmlModel!=null){
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
@@ -1357,12 +1359,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					boolean isDeveloperDeleted = checkIfDeleted(developerId);
 					if (isDeveloperDeleted) {
 						developerParentNode.removeChild(newNode);
+					}else{
+						String currentOrgName = getCurrentOrganizationName(developerId);	
+						newNode.setTextContent(currentOrgName);
 					}
 				}
 			}
-
+			logger.info("Deleted MeasureDevelopers Deleted successFully From MeasureXml.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
+			logger.info("Failed to delete  MeasureDevelopers From MeasureXml. Exception occured.");			
 			e.printStackTrace();
 		}
 
@@ -1387,14 +1392,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (isStewardDeleted) {
 					removeNode(XPATH_EXPRESSION_STEWARD,
 							processor.getOriginalDoc());
+				} else{
+					String currentOrgName = getCurrentOrganizationName(id);	
+					stewardParentNode.setTextContent(currentOrgName);
 				}
 			}
-
+			logger.info("Deleted steward Deleted successFully From MeasureXml.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
+			logger.info("Failed to delete  steward From MeasureXml. Exception occured.");	
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Gets the current organization name.
+	 *
+	 * @param id the id
+	 * @return the current organization name
+	 */
+	private String getCurrentOrganizationName(String id) {
+		String orgName ="";
+		List<Organization> allOrgList = getAllOrganizations();
+		for(Organization org:allOrgList){
+			if(id.equalsIgnoreCase(Long.toString(org.getId()))){
+				orgName=org.getOrganizationName();
+			}
+			
+		}
+		return orgName;
 	}
 
 	/**
@@ -1423,9 +1449,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				}
 			}
-
+			logger.info("Deleted componentMeasures Deleted successFully From MeasureXml.");
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
+			logger.info("Failed to delete  componentMeasures From MeasureXml. Exception occured.");	
 			e.printStackTrace();
 		}
 	}
@@ -3663,6 +3689,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			parentNode.removeChild(node);
 		}
 	}
+	
+	/**
+	 * Update node.
+	 *
+	 * @param nodeXPath the node x path
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void updateNode(String nodeXPath, Document originalDoc) throws XPathExpressionException {
+		Node node = (Node)xPath.evaluate(nodeXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+		if(node != null){
+			Node parentNode = node.getParentNode();
+			parentNode.removeChild(node);
+		}
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getAppliedQDMForItemCount(java.lang.String, boolean)

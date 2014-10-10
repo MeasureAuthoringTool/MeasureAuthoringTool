@@ -70,8 +70,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED">provider characteristic</template>
     
     <!-- intervention -->
-    <template oid="2.16.840.1.113883.10.20.28.3.33" class="ACT" mood="EVN" status="COMPLETED">intervention, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.34" class="ACT" mood="EVN" status="COMPLETED">intervention, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.33" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">intervention, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.34" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.3.4">intervention, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE">intervention, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED">intervention, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE">intervention, recommended</template>

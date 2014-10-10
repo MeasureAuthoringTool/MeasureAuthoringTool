@@ -77,8 +77,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE">intervention, recommended</template>
     
     <!-- laboratory test -->
-    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED">laboratory test, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED">laboratory test, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">laboratory test, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">laboratory test, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE">laboratory test, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED">laboratory test, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE">laboratory test, recommended</template>

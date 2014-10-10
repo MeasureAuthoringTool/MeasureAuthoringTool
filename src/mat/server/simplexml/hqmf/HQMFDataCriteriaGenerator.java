@@ -21,6 +21,7 @@ import mat.server.util.XmlProcessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,6 +39,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/** The Constant logger. */
 	private final Log LOG = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+	
+	/** The name space. */
+	private final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
 
 	/**
 	 * Generate hqm for measure.
@@ -78,6 +82,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private XmlProcessor createDateCriteriaTemplate(MeasureExport me) {
 		XmlProcessor outputProcessor = new XmlProcessor(
 				"<component><dataCriteriaSection></dataCriteriaSection></component>");
+		
 		Node dataCriteriaElem = outputProcessor.getOriginalDoc()
 				.getElementsByTagName("dataCriteriaSection").item(0);
 		Element templateId = (Element) outputProcessor.getOriginalDoc()
@@ -109,10 +114,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 
 	/**
 	 * Creates the data criteria for qdme lements.
-	 * 
-	 * @param me
-	 *            the me
-	 * @param dataCriteriaXMLProcessor 
+	 *
+	 * @param me            the me
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the string
 	 */
 	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor) {
@@ -137,12 +141,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 
 	/**
 	 * Createxml for data criteria.
-	 * 
-	 * @param dataType
-	 *            the data type
-	 * @param qdmNode
-	 *            the qdm node
-	 * @param dataCriteriaXMLProcessor 
+	 *
+	 * @param qdmNode            the qdm node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the string
 	 */
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
@@ -177,19 +178,16 @@ public class HQMFDataCriteriaGenerator implements Generator {
 
 	/**
 	 * Gets the creates the data create elemet tag.
-	 * 
-	 * @param actNodeStr
-	 *            the act node str
-	 * @param childNode
-	 *            the child node
-	 * @param qdmNode
-	 *            the qdm node
-	 * @param dataCriteriaXMLProcessor 
+	 *
+	 * @param actNodeStr            the act node str
+	 * @param childNode            the child node
+	 * @param qdmNode            the qdm node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the creates the data create elemet tag
 	 */
-	public void createDataCriteriaElementTag(String actNodeStr,
-			Node childNode, Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
-		
+	public void createDataCriteriaElementTag(String actNodeStr, Node childNode,
+			Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
+
 		String oidValue = childNode.getAttributes().getNamedItem("oid")
 				.getNodeValue();
 		String classCodeValue = childNode.getAttributes().getNamedItem("class")
@@ -204,56 +202,69 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem("oid")
 				.getNodeValue();
-		String qdmLocalVariableName = qdmNode.getAttributes().getNamedItem("localVariableName")
-				.getNodeValue();
-		
-		Node dataCriteriaSectionElem = dataCriteriaXMLProcessor.getOriginalDoc()
-				.getElementsByTagName("dataCriteriaSection").item(0);
-		
-		//creating Entry Tag
-		Element entryElem = (Element)dataCriteriaXMLProcessor.getOriginalDoc()
+		String qdmLocalVariableName = qdmNode.getAttributes()
+				.getNamedItem("localVariableName").getNodeValue();
+
+		Element dataCriteriaSectionElem = (Element)dataCriteriaXMLProcessor
+				.getOriginalDoc().getElementsByTagName("dataCriteriaSection")
+				.item(0);
+		Attr nameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc()
+				.createAttribute("xmlns:xsi");
+		nameSpaceAttr.setNodeValue(nameSpace);
+		dataCriteriaSectionElem.setAttributeNodeNS(nameSpaceAttr);
+		// creating Entry Tag
+		Element entryElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("entry");
 		entryElem.setAttribute("typeCode", "DRIV");
 		dataCriteriaSectionElem.appendChild(entryElem);
-		
-		//creating LocalVariableName Tag
-		Element localVarElem = (Element)dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement("localVariableName");
+
+		// creating LocalVariableName Tag
+		Element localVarElem = (Element) dataCriteriaXMLProcessor
+				.getOriginalDoc().createElement("localVariableName");
 		localVarElem.setAttribute("value", qdmLocalVariableName);
 		entryElem.appendChild(localVarElem);
-		
-		Element dataCriteriaElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement(actNodeStr);
+
+		Element dataCriteriaElem = (Element) dataCriteriaXMLProcessor
+				.getOriginalDoc().createElement(actNodeStr);
 		entryElem.appendChild(dataCriteriaElem);
 		dataCriteriaElem.setAttribute("classCode", classCodeValue);
 		dataCriteriaElem.setAttribute("moodCode", moodValue);
-		
-		Element templateId = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement("templateId");
+
+		Element templateId = (Element) dataCriteriaXMLProcessor
+				.getOriginalDoc().createElement("templateId");
 		dataCriteriaElem.appendChild(templateId);
-		
+
 		Element itemChild = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("item");
 		itemChild.setAttribute("root", oidValue);
 		templateId.appendChild(itemChild);
-		
+
 		Element idElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("id");
 		idElem.setAttribute("root", rootValue);
 		dataCriteriaElem.appendChild(idElem);
-		
+
+		Element codeElement = (Element) createCodeForDatatype(childNode,
+				dataCriteriaXMLProcessor);
+		if (codeElement != null) {
+			dataCriteriaElem.appendChild(codeElement);
+		}
 		Element titleElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("title");
 		titleElem.setAttribute("value", dataType);
 		dataCriteriaElem.appendChild(titleElem);
-		
-		Element statusCodeElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement("statusCode");
+
+		Element statusCodeElem = (Element) dataCriteriaXMLProcessor
+				.getOriginalDoc().createElement("statusCode");
 		statusCodeElem.setAttribute("code", statusValue);
 		dataCriteriaElem.appendChild(statusCodeElem);
-		
+
 		Element valueElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("value");
+		Node valueTypeAttr = childNode.getAttributes().getNamedItem("valueType");
+		if(valueTypeAttr!=null){
+			valueElem.setAttribute("xsi:type", valueTypeAttr.getNodeValue());
+		}
 		valueElem.setAttribute("valueSet", qdmOidValue);
 		dataCriteriaElem.appendChild(valueElem);
 	}
@@ -286,11 +297,44 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		return out.toString();
 	}
 	
+	/**
+	 * Adds the data criteria comment.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 */
 	public void addDataCriteriaComment(XmlProcessor dataCriteriaXMLProcessor) {
 		Element element = dataCriteriaXMLProcessor.getOriginalDoc().getDocumentElement();
 		Comment comment = dataCriteriaXMLProcessor.getOriginalDoc().createComment(
 				"Data Criteria Section");
 		element.getParentNode().insertBefore(comment, element);
 	}
-
+	
+	/**
+	 * Creates the code for datatype.
+	 *
+	 * @param childNode the child node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @return the element
+	 */
+	public Element createCodeForDatatype(Node childNode,
+			XmlProcessor dataCriteriaXMLProcessor) {
+		Node codeAttr = childNode.getAttributes().getNamedItem("code");
+		Node codeSystemAttr = childNode.getAttributes().getNamedItem(
+				"codeSystem");
+		Element codeElement = null;
+		if (codeAttr != null || codeSystemAttr != null) {
+			codeElement = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement("code");
+			if (codeAttr != null) {
+				codeElement.setAttribute("code", 
+						codeAttr.getNodeValue());
+			}
+			if (codeSystemAttr != null) {
+				codeElement.setAttribute("codeSystem",
+						codeSystemAttr.getNodeValue());
+			}
+		}
+		return codeElement;
+	}
+	
 }

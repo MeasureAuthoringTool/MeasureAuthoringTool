@@ -3,12 +3,12 @@ package mat.server.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureAuditLogDAO;
+import mat.dao.OrganizationDAO;
 import mat.dao.PropertyOperator;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.StewardDAO;
@@ -40,7 +40,6 @@ import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
 import mat.shared.ValidationUtility;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +69,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	/** The measure dao. */
 	@Autowired
 	private MeasureDAO measureDAO;
+	
+	/** The Organization dao. */
+	@Autowired
+	private OrganizationDAO organizationDAO;
 	
 	/** The measure export dao. */
 	@Autowired
@@ -232,7 +235,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			final List<MatValueSet> matValueSetList) throws Exception {
 		
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
-		String exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO);
+		String exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO);
 		if (exportedXML.length() == 0) {
 			return;
 		}
@@ -634,7 +637,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		return humanReadableHTML;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#getMeasure(java.lang.String)
 	 */

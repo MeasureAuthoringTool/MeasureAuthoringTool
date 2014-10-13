@@ -2155,6 +2155,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						} else if (attributeValue.isEmpty()) {
 							if (!dataTypeMap.containsKey(nodeDataType)) {
 								inValidAtQdmNode(node, inValidNodeList);
+							} else { //Removed attributes when
+								//replaced with blank still showing red.Added else to set text to black.
+								if (!node.getValidNode()) {
+									editNode(true, node);
+								}
 							}
 						} else if (!attributeValue.isEmpty() && (attributeValue.length() > 0)) {
 							if (!dataTypeMap.containsKey(nodeDataType)) {

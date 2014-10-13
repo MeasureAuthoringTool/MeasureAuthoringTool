@@ -2168,6 +2168,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								List<String> attribList = dataTypeMap.get(nodeDataType);
 								if (!attribList.contains(attributeValue)) {
 									inValidAtQdmNode(node, inValidNodeList);
+								} else { //Removed attributes when
+									//replaced with valid attributes still showing red.
+									//Added else to set text to black.
+									if (!node.getValidNode()) {
+										editNode(true, node);
+									}
 								}
 							}
 						} else {

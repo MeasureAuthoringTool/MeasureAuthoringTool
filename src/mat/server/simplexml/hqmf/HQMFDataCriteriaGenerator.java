@@ -68,6 +68,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private String getHQMFXmlString(MeasureExport me) {
 		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor);
+		//createDataCriteriaForAttributes(me, dataCriteriaXMLProcessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return convertXMLDocumentToString(dataCriteriaXMLProcessor.getOriginalDoc());
 	}
@@ -204,6 +205,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmLocalVariableName = qdmNode.getAttributes()
 				.getNamedItem("localVariableName").getNodeValue();
+		String qdmName = qdmNode.getAttributes()
+				.getNamedItem("name").getNodeValue();
+		String qdmTaxonomy = qdmNode.getAttributes()
+				.getNamedItem("taxonomy").getNodeValue();
 
 		Element dataCriteriaSectionElem = (Element)dataCriteriaXMLProcessor
 				.getOriginalDoc().getElementsByTagName("dataCriteriaSection")
@@ -242,6 +247,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element idElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("id");
 		idElem.setAttribute("root", rootValue);
+		idElem.setAttribute("extension", qdmName+"_"+qdmLocalVariableName);
 		dataCriteriaElem.appendChild(idElem);
 
 		Element codeElement = (Element) createCodeForDatatype(childNode,
@@ -266,6 +272,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			valueElem.setAttribute("xsi:type", valueTypeAttr.getNodeValue());
 		}
 		valueElem.setAttribute("valueSet", qdmOidValue);
+		
+		Element displayNameElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
+				.createElement("displayName");
+		displayNameElem.setAttribute("value", qdmName+" "+qdmTaxonomy+" Value Set");
+		
+		valueElem.appendChild(displayNameElem);		
 		dataCriteriaElem.appendChild(valueElem);
 	}
 

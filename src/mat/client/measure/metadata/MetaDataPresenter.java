@@ -1174,7 +1174,8 @@ public class MetaDataPresenter  implements MatPresenter {
 				@Override
 				public void onSuccess(ManageMeasureSearchModel result) {
 					List<ManageMeasureSearchModel.Result> measureSelectedList = result.getData();
-					currentMeasureDetail.setComponentMeasuresSelectedList(measureSelectedList);
+					//currentMeasureDetail.setComponentMeasuresSelectedList(measureSelectedList);
+					metaDataDisplay.setComponentMeasureSelectedList(measureSelectedList);// Added To fix the Dirty Check Message issue
 					metaDataDisplay.buildComponentMeasuresSelectedList(measureSelectedList, editable);
 				}
 			});

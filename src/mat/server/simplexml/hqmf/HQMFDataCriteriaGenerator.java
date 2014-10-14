@@ -68,10 +68,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private String getHQMFXmlString(MeasureExport me) {
 		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor);
-		//createDataCriteriaForAttributes(me, dataCriteriaXMLProcessor);
+		createDataCriteriaForAttributes(me, dataCriteriaXMLProcessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return convertXMLDocumentToString(dataCriteriaXMLProcessor.getOriginalDoc());
 	}
+
 
 	/**
 	 * Creates the date criteria template.
@@ -186,7 +187,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the creates the data create elemet tag
 	 */
-	public void createDataCriteriaElementTag(String actNodeStr, Node childNode,
+	private void createDataCriteriaElementTag(String actNodeStr, Node childNode,
 			Node qdmNode, XmlProcessor dataCriteriaXMLProcessor) {
 
 		String oidValue = childNode.getAttributes().getNamedItem("oid")
@@ -289,7 +290,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 *            the document
 	 * @return the string
 	 */
-	public String convertXMLDocumentToString(Document document) {
+	private String convertXMLDocumentToString(Document document) {
 		Transformer tf;
 		Writer out = null;
 		try {
@@ -314,7 +315,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 *
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 */
-	public void addDataCriteriaComment(XmlProcessor dataCriteriaXMLProcessor) {
+	private void addDataCriteriaComment(XmlProcessor dataCriteriaXMLProcessor) {
 		Element element = dataCriteriaXMLProcessor.getOriginalDoc().getDocumentElement();
 		Comment comment = dataCriteriaXMLProcessor.getOriginalDoc().createComment(
 				"Data Criteria Section");
@@ -328,7 +329,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the element
 	 */
-	public Element createCodeForDatatype(Node childNode,
+	private Element createCodeForDatatype(Node childNode,
 			XmlProcessor dataCriteriaXMLProcessor) {
 		Node codeAttr = childNode.getAttributes().getNamedItem("code");
 		Node codeSystemAttr = childNode.getAttributes().getNamedItem(
@@ -347,6 +348,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 		}
 		return codeElement;
+	}
+	
+	private void createDataCriteriaForAttributes(MeasureExport me,
+			XmlProcessor dataCriteriaXMLProcessor) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

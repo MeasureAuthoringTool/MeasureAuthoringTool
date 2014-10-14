@@ -3,9 +3,6 @@ package mat.client.measure.metadata;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -31,7 +28,6 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -83,7 +79,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class MetaDataView.
  */
 public class MetaDataView implements MetaDataDetailDisplay{
-
+	
 	/** The main panel. */
 	protected FlowPanel mainPanel = new FlowPanel();
 	
@@ -200,7 +196,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
 	
 	/** The measure observations input. */
-	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();	
+	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
 	
 	/** The measure type input. */
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
@@ -384,15 +380,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
 	
 	/** The authors selected list. */
-	private List<Author> authorsSelectedList = new ArrayList<Author>();	
+	private List<Author> authorsSelectedList = new ArrayList<Author>();
 	
 	/** The steward id. */
 	private String stewardId;
 	
 	/** The steward value. */
 	private String stewardValue;
-
-
+	
+	
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -458,8 +454,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		FlowPanel fPanel = new FlowPanel();
 		
 		fPanel.setStyleName("leftSideForm");
-		fPanel.getElement().setId("fPanel_FlowPanelLeft");		
-		fPanel.add(new Label("All fields are required except where noted as optional."));
+		fPanel.getElement().setId("fPanel_FlowPanelLeft");
+		//fPanel.add(new Label("All fields are required except where noted as optional."));
 		fPanel.add(new SpacerWidget());
 		fPanel.add(errorMessages);
 		
@@ -480,10 +476,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
 		horizontalPanel.add(LabelBuilder.buildLabel(eMeasureIdentifierInput, "eMeasure Identifier (Measure Authoring Tool)"));
-		Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
-		optionLabelWidget.setStyleName("generate-emeasureid-button");
+		//Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
+		//optionLabelWidget.setStyleName("generate-emeasureid-button");
 		eMeasureIdentifierInput.getElement().setId("eMeasureIdentifierInput_TextBox");
-		horizontalPanel.add(optionLabelWidget);
+		//horizontalPanel.add(optionLabelWidget);
 		fPanel.add(horizontalPanel);
 		
 		fPanel.add(eMeasureIdentifierInput);
@@ -543,7 +539,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(stewardSPanel);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));		
+		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));
 		fPanel.add(authorSPanel);
 		fPanel.add(new SpacerWidget());
 		
@@ -585,12 +581,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//fPanel.add(addEditMeasureType);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
+		fPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted"));
 		fPanel.add(horzPanel);
 		fPanel.add(new SpacerWidget());
 		
 		
-		fPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted - Optional"));
+		fPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted"));
 		fPanel.add(horzComponentMeasurePanel);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(addEditCmponentMeasures);
@@ -673,7 +669,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(LabelBuilder.buildLabel(denominatorInput, "Denominator"));
 		fPanel.add(denominatorInput);
 		denominatorInput.getElement().setId("denominatorInput_TextAreaWithMaxLength");
-		denominatorInput.addKeyDownHandler(keyDownHandler);			
+		denominatorInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions"));
@@ -959,18 +955,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 			cellTable.setSelectionModel(selectionModel);
-			if ((qdmSelectedList!=null) && qdmSelectedList.size()>0) {
+			if ((qdmSelectedList!=null) && (qdmSelectedList.size()>0)) {
 				updateQDMSelectedList(appliedListModel.getAppliedQDMs());
 				List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
 				selectedQDMList.addAll(swapQdmElements(appliedListModel.getAppliedQDMs()));
-			    cellTable.setRowData(selectedQDMList);
-			    cellTable.setRowCount(selectedQDMList.size(), true);
-			    sortProvider.refresh();
+				cellTable.setRowData(selectedQDMList);
+				cellTable.setRowCount(selectedQDMList.size(), true);
+				sortProvider.refresh();
 				sortProvider.getList().addAll(selectedQDMList);
 			} else {
 				cellTable.setRowData(appliedListModel.getAppliedQDMs());
-			    cellTable.setRowCount(appliedListModel.getAppliedQDMs().size(), true);
-			    sortProvider.refresh();
+				cellTable.setRowCount(appliedListModel.getAppliedQDMs().size(), true);
+				sortProvider.refresh();
 				sortProvider.getList().addAll(appliedListModel.getAppliedQDMs());
 			}
 			cellTable.redraw();
@@ -979,7 +975,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			ListHandler<QualityDataSetDTO> sortHandler = new ListHandler<QualityDataSetDTO>(sortProvider.getList());
 			cellTable.addColumnSortHandler(sortHandler);
 			cellTable = addColumnToTable(cellTable, isEditable);
-//			updateQDMSelectedList(appliedListModel.getAppliedQDMs());
+			//			updateQDMSelectedList(appliedListModel.getAppliedQDMs());
 			sortProvider.addDataDisplay(cellTable);
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
@@ -1182,10 +1178,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setSelectionModel(measureSelectionModel);
 		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
-
+		
 		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
 				chbxCell) {
-
+			
 			@Override
 			public Boolean getValue(Result object) {
 				boolean isSelected = false;
@@ -1206,62 +1202,62 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				return isSelected;
 			}
 		};
-
+		
 		selectColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-
-					@Override
-					public void update(int index, Result object, Boolean value) {
-						measureSelectionModel.setSelected(object, value);
-						if (value) {
-							componentMeasureSelectedList.add(object);
-						} else {
-							for (int i = 0; i < componentMeasureSelectedList
-									.size(); i++) {
-								if (componentMeasureSelectedList.get(i).getId()
-										.equalsIgnoreCase(object.getId())) {
-									componentMeasureSelectedList.remove(i);
-									break;
-								}
-							}
+			
+			@Override
+			public void update(int index, Result object, Boolean value) {
+				measureSelectionModel.setSelected(object, value);
+				if (value) {
+					componentMeasureSelectedList.add(object);
+				} else {
+					for (int i = 0; i < componentMeasureSelectedList
+							.size(); i++) {
+						if (componentMeasureSelectedList.get(i).getId()
+								.equalsIgnoreCase(object.getId())) {
+							componentMeasureSelectedList.remove(i);
+							break;
 						}
-						componentMeasuresLabel.setText("Selected Items: "
-								+ componentMeasureSelectedList.size());
 					}
-				});
-
+				}
+				componentMeasuresLabel.setText("Selected Items: "
+						+ componentMeasureSelectedList.size());
+			}
+		});
+		
 		componentMeasureCellTable.addColumn(selectColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
 						+ "Select" + "</span>"));
-
+		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureNameColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-
+			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getName());
 			}
 		};
-
+		
 		componentMeasureCellTable.addColumn(measureNameColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
 						+ "Measure Name" + "</span>"));
-
+		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> versionColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-
+			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
 			}
 		};
-
+		
 		componentMeasureCellTable.addColumn(versionColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Version'>"
 						+ "Version" + "</span>"));
-
+		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDateColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-
+			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility
@@ -1269,13 +1265,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 								.getFinalizedDate()));
 			}
 		};
-
+		
 		componentMeasureCellTable.addColumn(finalizedDateColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Finalized Date'>"
 						+ "Finalized Date" + "</span>"));
-
+		
 		return componentMeasureCellTable;
-
+		
 	}
 	
 	/* (non-Javadoc)
@@ -1394,7 +1390,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					}
 					
 				}
-			
+				
 			}
 		});
 		measureTypeCellTable.addColumn(selectColumn,
@@ -1456,38 +1452,38 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void buildAuthorCellTable(List<Author> currentAuthorsList, boolean editable) {
 		authorSPanel.clear();
-		authorSPanel.setStyleName("cellTablePanel");	
-			authorCellTable = new CellTable<Author>();
-			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			ListDataProvider<Author> sortProvider = new ListDataProvider<Author>();
+		authorSPanel.setStyleName("cellTablePanel");
+		authorCellTable = new CellTable<Author>();
+		authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<Author> sortProvider = new ListDataProvider<Author>();
+		authorCellTable.setRowData(currentAuthorsList);
+		if((authorsSelectedList!=null) && (authorsSelectedList.size()>0)){
+			List<Author> selectauthorsList = new ArrayList<Author>();
+			updateMeasureDevelopersSelectedList(currentAuthorsList);
+			selectauthorsList.addAll(swapMeasureDevelopersList(currentAuthorsList));
+			authorCellTable.setRowData(selectauthorsList);
+			authorCellTable.setRowCount(selectauthorsList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(selectauthorsList);
+		} else {
 			authorCellTable.setRowData(currentAuthorsList);
-			if(authorsSelectedList!=null && authorsSelectedList.size()>0){
-				List<Author> selectauthorsList = new ArrayList<Author>();
-				updateMeasureDevelopersSelectedList(currentAuthorsList);
-				selectauthorsList.addAll(swapMeasureDevelopersList(currentAuthorsList));
-				authorCellTable.setRowData(selectauthorsList);
-				authorCellTable.setRowCount(selectauthorsList.size(), true);
-				sortProvider.refresh();
-				sortProvider.getList().addAll(selectauthorsList);
-			} else {
-				authorCellTable.setRowData(currentAuthorsList);
-				authorCellTable.setRowCount(currentAuthorsList.size(), true);
-				sortProvider.refresh();
-				sortProvider.getList().addAll(currentAuthorsList);
-			}
 			authorCellTable.setRowCount(currentAuthorsList.size(), true);
 			sortProvider.refresh();
 			sortProvider.getList().addAll(currentAuthorsList);
-			addAuthorColumnToTable(editable);		
-			sortProvider.addDataDisplay(authorCellTable);
-			authorCellTable.setWidth("100%");
-			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
-					"In the following Measure Type List table,Select is given in first Column and Author is given in Second column");
-			authorSPanel.getElement().setAttribute("id", "AuthorListCellTable");
-			authorSPanel.getElement().setAttribute("aria-describedby", "authorListSummary");
-			authorSPanel.setSize("500px", "150px");
-			authorSPanel.add(invisibleLabel);
-			authorSPanel.setWidget(authorCellTable);		
+		}
+		authorCellTable.setRowCount(currentAuthorsList.size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(currentAuthorsList);
+		addAuthorColumnToTable(editable);
+		sortProvider.addDataDisplay(authorCellTable);
+		authorCellTable.setWidth("100%");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
+				"In the following Measure Type List table,Select is given in first Column and Author is given in Second column");
+		authorSPanel.getElement().setAttribute("id", "AuthorListCellTable");
+		authorSPanel.getElement().setAttribute("aria-describedby", "authorListSummary");
+		authorSPanel.setSize("500px", "150px");
+		authorSPanel.add(invisibleLabel);
+		authorSPanel.setWidget(authorCellTable);
 	}
 	
 	/**
@@ -1591,17 +1587,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public Boolean getValue(MeasureSteward object) {
 				boolean isSelected = false;
-
+				
 				if ((stewardId != null)) {
 					if (stewardId.equalsIgnoreCase(object.getId())) {
 						setStewardValue(object.getOrgName());
-						isSelected = true;						
+						isSelected = true;
 					}
 				} else {
 					isSelected = false;
 				}
 				return isSelected;
-
+				
 			}
 		};
 		
@@ -1610,7 +1606,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public void update(int index, MeasureSteward object, Boolean value) {
 				stewardSelectionModel.setSelected(object, value);
-				if (value) {				
+				if (value) {
 					setStewardId(object.getId());
 					setStewardValue(object.getOrgName());
 				}
@@ -1635,7 +1631,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						+ "Measure Steward" + "</span>"));
 		
 		
-	
+		
 		
 	}
 	
@@ -1800,7 +1796,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 *
 	 * @return the version number
 	 */
-		
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getVersionNumber()
 	 */
@@ -2234,7 +2230,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private void buildReferenceTable(TextAreaWithMaxLength referenceInput) {
 		clearReferences();
 		referenceTable.setWidget(0, 0, referenceInput);
-		referenceArrayList.add(referenceInput);	
+		referenceArrayList.add(referenceInput);
 		referenceTable.setWidget(0, 1, new SimplePanel());
 		referenceTable.setWidget(0, 2, AddRowButton);
 	}
@@ -2515,22 +2511,22 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
 		this.authorsSelectedList = authorsSelectedList;
 	}
-
-
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildStewardCellTable(java.util.List, boolean)
 	 */
 	@Override
 	public void buildStewardCellTable(List<MeasureSteward> currentStewardList,
 			boolean editable) {
-
+		
 		stewardSPanel.clear();
 		stewardSPanel.setStyleName("cellTablePanel");
 		stewardCellTable = new CellTable<MeasureSteward>();
 		stewardCellTable
-				.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<MeasureSteward> sortProvider = new ListDataProvider<MeasureSteward>();
-		if(stewardId!=null) { 
+		if(stewardId!=null) {
 			List<MeasureSteward> measureStewardSelectedList = new ArrayList<MeasureSteward>();
 			measureStewardSelectedList.addAll(swapMeasureStewardList(currentStewardList));
 			stewardCellTable.setRowData(measureStewardSelectedList);
@@ -2558,7 +2554,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		stewardSPanel.add(invisibleLabel);
 		stewardSPanel.setWidget(stewardCellTable);
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardId(java.lang.String)
@@ -2567,7 +2563,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setStewardId(String id){
 		this.stewardId = id;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStewardId()
 	 */
@@ -2575,8 +2571,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public String getStewardId() {		
 		return this.stewardId;
 	}
-
-
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStewardValue()
 	 */
@@ -2592,5 +2588,5 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setStewardValue(String stewardValue){
 		this.stewardValue = stewardValue;
 	}
-		
+	
 }

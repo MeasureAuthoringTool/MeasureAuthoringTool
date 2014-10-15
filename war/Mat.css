@@ -2100,6 +2100,7 @@ padding: 2px;
     padding: 5px;
     width: 495px;
     text-align:left;
+    margin-bottom: 2px;
 }
 
 .measureDetailTableHeader{
@@ -2112,4 +2113,14 @@ padding: 2px;
     margin-left:3px;
     width:505px;
     text-align:left;
+}
+
+.invisibleTableCaption{
+    /* position:absolute;
+            left:-10000px;
+            top:auto;
+            width:1px;
+            height:1px; */
+           color:transparent;
+            //overflow:hidden;
 }

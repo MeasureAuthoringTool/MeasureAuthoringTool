@@ -471,6 +471,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(hp);
 		fPanel.add(new SpacerWidget());
 		
+		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
+		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
+		/*measScoringInputLabel.setStyleName("measureDetailLabelStyle");*/
+		fPanel.add(measScoringInputLabel);
+		fPanel.add(measScoringInput);
+		measScoringInput.getElement().setId("measScoringInput_Label");
+		fPanel.add(new SpacerWidget());
+		
 		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
 		/*abbrInputLabel.setStyleName("measureDetailLabelStyle");*/
 		fPanel.add(abbrInputLabel);
@@ -559,7 +567,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(stewardSPanel);
 		fPanel.add(new SpacerWidget());
 		
-		//fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));
+		Label authorTableLabel = (Label) LabelBuilder.buildLabel(authorCellTable, "Measure Developer List");
+		authorTableLabel.setStyleName("measureDetailTableHeader");
+		fPanel.add(authorTableLabel);
 		fPanel.add(authorSPanel);
 		fPanel.add(new SpacerWidget());
 		
@@ -598,25 +608,23 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		disclaimerInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
-		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
-		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
-		measScoringInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(measScoringInputLabel);
-		fPanel.add(measScoringInput);
-		measScoringInput.getElement().setId("measScoringInput_Label");
-		fPanel.add(new SpacerWidget());
-		
-		//	fPanel.add(LabelBuilder.buildLabel(measureTypeCellTable, "Measure Type"));
+		Label measureTypeTableLabel = (Label) LabelBuilder.buildLabel(measureTypeCellTable, "Measure Type List");
+		measureTypeTableLabel.setStyleName("measureDetailTableHeader");
+		fPanel.add(measureTypeTableLabel);
 		fPanel.add(measureTypeSPanel);
 		//fPanel.add(addEditMeasureType);
 		fPanel.add(new SpacerWidget());
 		
-		//	fPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted"));
+		Label itemCountTableLabel = (Label) LabelBuilder.buildLabel(cellTable, " ItemCount List");
+		itemCountTableLabel.setStyleName("measureDetailTableHeader");
+		fPanel.add(itemCountTableLabel);
 		fPanel.add(horzPanel);
 		fPanel.add(new SpacerWidget());
 		
 		
-		//fPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted"));
+		Label CompMeasureTableLabel = (Label) LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures List");
+		CompMeasureTableLabel.setStyleName("measureDetailTableHeader");
+		fPanel.add(CompMeasureTableLabel);
 		fPanel.add(horzComponentMeasurePanel);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(addEditCmponentMeasures);
@@ -693,7 +701,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		Label guidanceInputLabel = (Label) LabelBuilder.buildLabel(guidanceInput, "Guidance");
-		/*guidanceInputLabel.setStyleName("measureDetailLabelStyle");*/
+		guidanceInputLabel.setStyleName("measureDetailLabelStyle");
 		fPanel.add(guidanceInputLabel);
 		fPanel.add(guidanceInput);
 		guidanceInput.getElement().setId("guidanceInput_TextAreaWithMaxLength");
@@ -899,7 +907,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable, boolean isEditable) {
 		Label itemCountHeader = new Label("ItemCount List");
 		itemCountHeader.getElement().setId("itemCountHeader_Label");
-		itemCountHeader.setStyleName("recentSearchHeader");
+		itemCountHeader.setStyleName("invisibleTableCaption");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		itemCountHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
@@ -1087,7 +1095,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			
 		} else {
 			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
-			qdmItemCountListSPanel.setSize("200px", "50px");
+			qdmItemCountListSPanel.setSize("500px", "60px");
 			qdmItemCountListSPanel.setWidget(desc);
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
 			horzPanel.add(qdmItemCountListVPanel);
@@ -1250,7 +1258,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			boolean editable) {
 		Label measureSearchHeader = new Label("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
-		measureSearchHeader.setStyleName("recentSearchHeader");
+		measureSearchHeader.setStyleName("invisibleTableCaption");
 		com.google.gwt.dom.client.TableElement elem = componentMeasureCellTable
 				.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
@@ -1407,10 +1415,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			
 		} else {
 			HTML desc = new HTML("<p> No Component Measures Selected.</p>");
-			componentMeasuresListSPanel.setSize("200px", "75px");
+			componentMeasuresListSPanel.setSize("500px", "60px");
 			componentMeasuresListSPanel.setWidget(desc);
 			componentMeasuresListVPanel.add(componentMeasuresListSPanel);
 			horzComponentMeasurePanel.add(componentMeasuresListVPanel);
+			horzComponentMeasurePanel.setWidth("99%");
 		}
 		
 	}
@@ -1424,7 +1433,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private void addMeasureTypeColumnToTable(boolean editable) {
 		Label measureSearchHeader = new Label("Measure Type List");
 		measureSearchHeader.getElement().setId("measureTypeHeader_Label");
-		measureSearchHeader.setStyleName("recentSearchHeader");
+		measureSearchHeader.setStyleName("invisibleTableCaption");
 		com.google.gwt.dom.client.TableElement elem = measureTypeCellTable
 				.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
@@ -1575,7 +1584,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private void addAuthorColumnToTable(boolean editable) {
 		Label measureSearchHeader = new Label("Measure Developer List");
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
-		measureSearchHeader.setStyleName("recentSearchHeader");
+		measureSearchHeader.setStyleName("invisibleTableCaption");
 		com.google.gwt.dom.client.TableElement elem = authorCellTable.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
@@ -1654,7 +1663,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private void addStewardColumnToTable(boolean editable) {
 		Label measureSearchHeader = new Label("Measure Steward List");
 		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
-		measureSearchHeader.setStyleName("invisible");
+		measureSearchHeader.setStyleName("invisibleTableCaption");
 		com.google.gwt.dom.client.TableElement elem = stewardCellTable.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();

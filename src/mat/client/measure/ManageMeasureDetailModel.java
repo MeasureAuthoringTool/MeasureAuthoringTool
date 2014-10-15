@@ -1516,13 +1516,26 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		if (listA.size() != listB.size()) {
 			return false;
 		}
-		for (int i = 0; i < listA.size(); i++) {
+		for (int i = 0; i < listA.size(); i++) {			
 			if (listA.get(i) instanceof Author) {
-				Author author = (Author) listA.get(i);
-				Author otherAuthor = (Author) listB.get(i);
-				if (author.compare(author, otherAuthor) != 0) {
-					return false;
-				}
+				boolean checkIfEqual = true;
+				for(int j=0; j<listA.size(); j++){					
+					Author author = (Author) listA.get(j);
+					for(int k=0; k<listB.size(); k++){
+						Author otherAuthor = (Author) listB.get(k);
+						if (author.compare(author, otherAuthor) == 0) {
+							checkIfEqual = true;
+							break;
+						} else{
+							checkIfEqual = false;
+						}
+					}
+					if(!checkIfEqual){
+						break;
+					}
+				}				
+				return checkIfEqual;
+				
 			} else if (listA.get(i) instanceof MeasureType) {
 				MeasureType measureType = (MeasureType) listA.get(i);
 				MeasureType otherMeasureType = (MeasureType) listB.get(i);

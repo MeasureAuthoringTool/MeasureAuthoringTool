@@ -1516,45 +1516,72 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		if (listA.size() != listB.size()) {
 			return false;
 		}
-		for (int i = 0; i < listA.size(); i++) {			
+		for (int i = 0; i < listA.size(); i++) {
+			boolean checkIfEqual = true;
 			if (listA.get(i) instanceof Author) {
-				boolean checkIfEqual = true;
-				for(int j=0; j<listA.size(); j++){					
+				for (int j = 0; j < listA.size(); j++) {
 					Author author = (Author) listA.get(j);
-					for(int k=0; k<listB.size(); k++){
+					for (int k = 0; k < listB.size(); k++) {
 						Author otherAuthor = (Author) listB.get(k);
 						if (author.compare(author, otherAuthor) == 0) {
 							checkIfEqual = true;
 							break;
-						} else{
+						} else {
 							checkIfEqual = false;
 						}
 					}
-					if(!checkIfEqual){
+					if (!checkIfEqual) {
 						break;
 					}
-				}				
+				}
+				return checkIfEqual;
+
+			} else if (listA.get(i) instanceof MeasureType) {
+				for (int j = 0; j < listA.size(); j++) {
+					MeasureType measureType = (MeasureType) listA.get(j);
+					for (int k = 0; k < listB.size(); k++) {
+						MeasureType otherMeasureType = (MeasureType) listB
+								.get(k);
+						if (measureType.compare(measureType, otherMeasureType) == 0) {
+							checkIfEqual = true;
+							break;
+						} else {
+							checkIfEqual = false;
+						}
+					}
+					if (!checkIfEqual) {
+						break;
+					}
+				}
 				return checkIfEqual;
 				
-			} else if (listA.get(i) instanceof MeasureType) {
-				MeasureType measureType = (MeasureType) listA.get(i);
-				MeasureType otherMeasureType = (MeasureType) listB.get(i);
-				if (measureType.compare(measureType, otherMeasureType) != 0) {
-					return false;
-				}
 			} else if (listA.get(i) instanceof String) {
+				
 				String val1 = (String) listA.get(i);
 				String val2 = (String) listB.get(i);
 				if (val1.compareTo(val2) != 0) {
 					return false;
 				}
-			}
-			else if (listA.get(i) instanceof ManageMeasureSearchModel.Result) {
-				ManageMeasureSearchModel.Result val1 = (ManageMeasureSearchModel.Result) listA.get(i);
-				ManageMeasureSearchModel.Result val2 = (ManageMeasureSearchModel.Result) listB.get(i);
-				if (val1.compare(val1, val2) != 0) {
-					return false;
+			} else if (listA.get(i) instanceof ManageMeasureSearchModel.Result) {
+				for (int j = 0; j < listA.size(); j++) {
+					ManageMeasureSearchModel.Result val1 = (ManageMeasureSearchModel.Result) listA
+							.get(j);
+					for (int k = 0; k < listB.size(); k++) {
+						ManageMeasureSearchModel.Result val2 = (ManageMeasureSearchModel.Result) listB
+								.get(k);
+						if (val1.compare(val1, val2) == 0) {
+							checkIfEqual = true;
+							break;
+						} else {
+							checkIfEqual = false;
+						}
+					}
+					if (!checkIfEqual) {
+						break;
+					}
 				}
+				return checkIfEqual;
+				
 			}
 		}
 		return true;

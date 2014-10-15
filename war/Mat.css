@@ -2093,3 +2093,23 @@ padding: 2px;
     width: 99%;
 	margin-left:5px important!;
 }
+
+.measureDetailLabelStyle{
+    background-color: #DCE9F5; 
+    font-weight: bold;
+    padding: 5px;
+    width: 495px;
+    text-align:left;
+}
+
+.measureDetailTableHeader{
+    background-color: #DCE9F5; 
+    font-weight: bold;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left:5px;
+    margin-bottom:-7px;
+    margin-left:3px;
+    width:505px;
+    text-align:left;
+}

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    
+    <acts>
+        <act a_id="OBS">observationCriteria</act>
+        <act a_id="SBADM">substanceAdministrationCriteria</act>
+        <act a_id="PROC">procedureCriteria</act>
+        <act a_id="ENC">encounterCriteria</act>
+        <act a_id="ACT">actCriteria</act>
+        <act a_id="SPLY">supplyCriteria</act>
+    </acts>
+       
+    <!-- care goal -->
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">care goal</template>
+    
+    <!-- care experience -->
+    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96">patient care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96">provider care experience</template>
+    
+    <!-- communication -->    
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to provider</template>
+
+    <!-- device -->
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">device, adverse event</template>
+    <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
+    <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.13" class="OBS" mood="EVN" status="COMPLETED" code="360030002" codesystem="2.16.840.1.113883.6.96">device, applied</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codesystem="2.16.840.1.113883.5.4">device, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.15" class="OBS" mood="RQO" status="ACTIVE">device, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE">device, recommended</template>
+    
+    <!-- diagnosis -->
+    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.5.4">diagnosis, family history</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, resolved</template>
+    
+    <!-- diagnostic study -->
+    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE">diagnostic study, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED">diagnostic study, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE">diagnostic study, recommended</template>    
+    
+    <!-- encounter -->
+    <template oid="2.16.840.1.113883.10.20.28.3.26" class="ENC" mood="EVN" status="ACTIVE">encounter, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE">encounter, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED">encounter, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE">encounter, recommended</template>
+    
+    <!-- functional status -->
+    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE">functional status, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.30" class="OBS" mood="EVN" status="COMPLETED">functional status, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.31" class="OBS" mood="INT" status="ACTIVE">functional status, recommended</template>
+        
+    <!-- Individual Characteristic -->
+    <!-- patient characteristic -->
+    <template oid="2.16.840.1.113883.10.20.28.3.53" class="OBS" mood="EVN" status="COMPLETED">patient characteristic</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.54" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="21112-8" codeSystem="2.16.840.1.113883.6.1">patient characteristic birthdate</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.56" class="OBS" mood="EVN" status="COMPLETED" valuetype="CD" code="54133-4" codeSystem="2.16.840.1.113883.6.1">patient characteristic ethnicity</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.57" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">patient characteristic expired</template> 
+    <template oid="2.16.840.1.113883.10.20.28.3.58" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="48768-6" codeSystem="2.16.840.1.113883.6.1">patient characteristic payer</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1">patient characteristic race</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.55" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="263495000" codeSystem="2.16.840.1.113883.6.96">patient characteristic sex</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.6" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">patient characteristic clinical trial participant</template>
+    
+    <!-- provider characteristic -->
+    <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED">provider characteristic</template>
+    
+    <!-- intervention -->
+    <template oid="2.16.840.1.113883.10.20.28.3.33" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">intervention, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.34" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.3.4">intervention, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE">intervention, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED">intervention, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE">intervention, recommended</template>
+    
+    <!-- laboratory test -->
+    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">laboratory test, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">laboratory test, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE">laboratory test, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED">laboratory test, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE">laboratory test, recommended</template>
+    
+    <!-- medication -->
+    <template oid="2.16.840.1.113883.10.20.28.3.44" class="SBADM" mood="EVN" status="ACTIVE">medication, active</template>
+    <template oid=".16.840.1.113883.10.20.28.3.45" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96">medication, administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.46" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">medication, adverse effects</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.47" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">medication, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.48" class="SBADM" mood="RQO" status="ACTIVE" code="10183-2" codeSystem="2.16.840.1.113883.6.1">medication, discharge</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.49" class="SPLY" mood="EVN" status="COMPLETED">medication, dispensed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.50" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">medication, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.51" class="SBADM" mood="RQO" status="ACTIVE" >medication, order</template>
+    
+   <!-- physical exam -->    
+    <template oid="2.16.840.1.113883.10.20.28.3.61" class="OBS" mood="RQO" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96">physical exam, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.62" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96">physical exam, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.63" class="OBS" mood="INT" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96">physical exam, recommended</template>
+    
+    <!-- procedure -->
+    <template oid="2.16.840.1.113883.10.20.28.3.64" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">procedure, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.65" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">procedure, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" >procedure, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" status="COMPLETED">procedure, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE">procedure, recommended</template>
+    
+    <!-- risk category -->
+    <template oid="2.16.840.1.113883.10.20.28.3.72" class="OBS" mood="EVN" status="COMPLETED">risk category assessment</template>
+    
+    <!-- substance -->
+    <template oid="2.16.840.1.113883.10.20.28.3.73" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96">substance, administered</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.46.74" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">substance, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.75" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">substance, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.76" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">substance, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" >substance, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" >substance, recommended</template>
+    
+    <!-- symptom -->
+    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96">symptom, active</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.80" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96">symptom, assessed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96">symptom, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96">symptom, resolved</template>
+    
+    <!-- transfer -->
+    <template oid="2.16.840.1.113883.10.20.28.3.84" class="OBS" mood="EVN" status="COMPLETED">transfer from</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.85" class="OBS" mood="EVN" status="COMPLETED">transfer to</template>
+    
+
+    
+    <!-- attributes: -->
+    
+    <!--new attributes not in qdm hqmf ig-->
+<!--    <template oid="" class="" mood="" type="">active datetime</template>
+    <template oid="" class="" mood="" type="">time</template>
+    <template oid="" class="" mood="" type="">signed datetime</template>
+    <template oid="" class="" mood="" type="">anatomical approach site</template>
+    <template oid="" class="" mood="" type="">anatomical location site</template>
+    <template oid="" class="" mood="" type="" inv="true">cause</template>
+    <template oid="" class="" mood="" type="">target outcome</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" type="CAUS" inv="true">cause</template>-->
+    
+    <!-- data flow attributes -->
+    <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" inv="false">health record field</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" inv="false">recorder</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false">source</template>
+    
+    <!-- status -->
+    <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false">status</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" inv="false">status active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" inv="false">status inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" inv="false">status resolved</template>
+    
+    <!-- facility -->
+    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN">facility location</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN">facility location arrival datetime</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN">facility location departure datetime</template>
+    
+    <!-- misc -->
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">cumulative medication duration</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">frequency</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false">incision datetime</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">laterality</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="PAT" codesystem="2.16.840.1.113883.5.8">patient preference</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="103323008" codesystem="2.16.840.1.113883.6.96">provider preference</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation dosage</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation duration</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true">reaction</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false">reason</template>
+    <template class="OBS" mood="EVN" type="REFR" inv="false" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">result</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">severity</template>
+    
+</templates>

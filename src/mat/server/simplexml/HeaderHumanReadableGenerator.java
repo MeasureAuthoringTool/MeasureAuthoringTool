@@ -529,10 +529,19 @@ public class HeaderHumanReadableGenerator {
 					createRowAndColumns(table, "Measure Item Count");
 					if ((map.getNamedItem("dataType") != null)
 							&& (map.getNamedItem("name") != null)) {
-						createDiv(map.getNamedItem("dataType").getNodeValue()
-								+ ": "
-								+ map.getNamedItem("name").getNodeValue(),
-								column);
+						if(map.getNamedItem("instance")!=null){
+							createDiv(map.getNamedItem("instance").getNodeValue()+" of "+map.getNamedItem("dataType").getNodeValue()
+									+ ": "
+									+ map.getNamedItem("name").getNodeValue(),
+									column);
+							
+						} else{
+							createDiv(map.getNamedItem("dataType").getNodeValue()
+									+ ": "
+									+ map.getNamedItem("name").getNodeValue(),
+									column);
+						}
+						
 					} else {
 						createDiv("", column);
 					}

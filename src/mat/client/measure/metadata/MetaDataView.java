@@ -461,7 +461,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		
 		Label nameInputLabel = (Label) LabelBuilder.buildLabel(nameInput, "eMeasure Title");
-		/*nameInputLabel.setStyleName("measureDetailLabelStyle");*/
+		nameInputLabel.setStyleName("bold");
 		fPanel.add(nameInputLabel);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setAttribute("id", "emeasureTitlePanel");
@@ -473,14 +473,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
 		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
-		/*measScoringInputLabel.setStyleName("measureDetailLabelStyle");*/
+		measScoringInputLabel.setStyleName("bold");
 		fPanel.add(measScoringInputLabel);
 		fPanel.add(measScoringInput);
 		measScoringInput.getElement().setId("measScoringInput_Label");
 		fPanel.add(new SpacerWidget());
 		
 		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
-		/*abbrInputLabel.setStyleName("measureDetailLabelStyle");*/
+		abbrInputLabel.setStyleName("bold");
 		fPanel.add(abbrInputLabel);
 		fPanel.add(abbrInput);
 		abbrInput.getElement().setId("abbrInput_Label");
@@ -489,7 +489,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
 		Label eMeasureIdentifierInputLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifierInput, "eMeasure Identifier (Measure Authoring Tool)");
-		/*horizontalPanel.setStyleName("measureDetailLabelStyle");*/
+		horizontalPanel.setStyleName("bold");
 		horizontalPanel.add(eMeasureIdentifierInputLabel);
 		//Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
 		//optionLabelWidget.setStyleName("generate-emeasureid-button");
@@ -505,21 +505,21 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		Label finalizedDateLabel = (Label) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
-		/*finalizedDateLabel.setStyleName("measureDetailLabelStyle");*/
+		finalizedDateLabel.setStyleName("bold");
 		fPanel.add(finalizedDateLabel);
 		fPanel.add(finalizedDate);
 		finalizedDate.getElement().setId("finalizedDate_Label");
 		fPanel.add(new SpacerWidget());
 		
 		Label eMeasureIdentifierLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
-		/*eMeasureIdentifierLabel.setStyleName("measureDetailLabelStyle");*/
+		eMeasureIdentifierLabel.setStyleName("bold");
 		fPanel.add(eMeasureIdentifierLabel);
 		fPanel.add(eMeasureIdentifier);
 		eMeasureIdentifier.getElement().setId("eMeasureIdentifier_Label");
 		fPanel.add(new SpacerWidget());
 		
 		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
-		/*versionInputLabel.setStyleName("measureDetailLabelStyle");*/
+		versionInputLabel.setStyleName("bold");
 		fPanel.add(versionInputLabel);
 		fPanel.add(versionInput);
 		versionInput.getElement().setId("versionInput_Label");
@@ -531,7 +531,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());*/
 		
 		Label nQFIDInputLabel = (Label) LabelBuilder.buildLabel(NQFIDInput, "NQF Number");
-		/*nQFIDInputLabel.setStyleName("measureDetailLabelStyle");*/
+		nQFIDInputLabel.setStyleName("bold");
 		fPanel.add(nQFIDInputLabel);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(NQFIDInput);
@@ -556,7 +556,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
 		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
 		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
-		/*measurePeriodFromInputLabel.setStyleName("measureDetailLabelStyle");*/
+		measurePeriodFromInputLabel.setStyleName("bold");
 		fPanel.add(measurePeriodFromInputLabel);
 		fPanel.add(measurePeriodPanel);
 		fPanel.add(new SpacerWidget());

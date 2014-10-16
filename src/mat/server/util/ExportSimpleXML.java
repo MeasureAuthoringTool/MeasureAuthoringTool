@@ -191,7 +191,7 @@ public class ExportSimpleXML {
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		modifyElementLookUpForOccurances(originalDoc);
 		modifySubTreeLookUpForOccurances(originalDoc);
-		addLocalVariableNameToQDMs(originalDoc);
+		//addLocalVariableNameToQDMs(originalDoc);
 		return transform(originalDoc);
 	}
 	

@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
@@ -439,8 +440,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID)
 				.getNodeValue();
-		String qdmLocalVariableName = qdmNode.getAttributes()
-				.getNamedItem("localVariableName").getNodeValue();
+		// Local variable changes.
+		String qdmLocalVariableName = (dataType.replaceAll("\\W", "")).concat("_"+UUIDUtilClient.uuid().replaceAll("-", ""));
 		String qdmName = qdmNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes()

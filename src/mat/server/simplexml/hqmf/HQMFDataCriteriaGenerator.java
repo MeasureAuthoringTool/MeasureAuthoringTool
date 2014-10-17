@@ -2,7 +2,6 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -12,11 +11,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -111,7 +108,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		String dataCriteria = "";
 		dataCriteria = getHQMFXmlString(me);
-		return dataCriteria.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
+		dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);
+		return dataCriteria;
+		//return dataCriteria.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
 	}
 	
 	/**
@@ -445,7 +444,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID)
 				.getNodeValue();
 		// Local variable changes.
-		String qdmLocalVariableName = (dataType.replaceAll("\\W", "")).concat("_"+UUIDUtilClient.uuid().replaceAll("-", ""));
+		String qdmLocalVariableName = (StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
 		String qdmName = qdmNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes()
@@ -767,6 +766,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			tf = TransformerFactory.newInstance().newTransformer();
 			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			tf.setOutputProperty(OutputKeys.INDENT, "yes");
+			tf.setOutputProperty(OutputKeys.STANDALONE, "yes");
 			out = new StringWriter();
 			tf.transform(new DOMSource(document), new StreamResult(out));
 		} catch (TransformerConfigurationException e) {
@@ -776,10 +776,22 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-		
 		return out.toString();
 	}
 	
+	/**
+	 * This method removes top xml tag and xmlns from data critiera xml.
+	 * @param xmlString - xml String.
+	 * @return String.
+	 */
+	private String removeXmlTagNamespaceAndPreamble(String xmlString) {
+		xmlString = xmlString.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim().
+				replaceAll("(<\\?[^<]*\\?>)?", "")./* remove preamble */
+				replaceAll("xmlns.*?(\"|\').*?(\"|\')", "") /* remove xmlns declaration */
+				.replaceAll("(<)(\\w+:)(.*?>)", "$1$3") /* remove opening tag prefix */
+				.replaceAll("(</)(\\w+:)(.*?>)", "$1$3"); /* remove closing tags prefix */
+		return xmlString;
+	}
 	/**
 	 * Adds the data criteria comment.
 	 *

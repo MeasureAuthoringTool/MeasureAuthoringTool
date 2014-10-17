@@ -696,7 +696,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}else if(attributeQDMNode.getAttributes().getNamedItem("attrUUID") != null){
 			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem("attrUUID").getNodeValue());
 		}
-		String extensionId = StringUtils.deleteWhitespace(idElem.getAttribute(ROOT));
+		String extensionId = idElem.getAttribute(ROOT);
 		idElem.setAttribute("extension", StringUtils.deleteWhitespace(extensionId+"_"+attrName));
 		observationCriteriaElem.appendChild(idElem);
 		
@@ -707,7 +707,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);
-		displayNameElem.setAttribute(VALUE, attrName);
+		if(templateNode.getAttributes().getNamedItem("displayNameValue") != null){
+			displayNameElem.setAttribute(VALUE, templateNode.getAttributes().getNamedItem("displayNameValue").getNodeValue());
+		}else{
+			displayNameElem.setAttribute(VALUE, attrName);
+		}
 		
 		observationCriteriaElem.appendChild(codeElem);
 		codeElem.appendChild(displayNameElem);

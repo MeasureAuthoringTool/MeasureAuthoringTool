@@ -1118,26 +1118,6 @@ public class ExportSimpleXML {
 			functionalOpNode.getAttributes().setNamedItem(uuidAttr);
 		}
 	}
-	
-	private static void addLocalVariableNameToQDMs(Document originalDoc) throws XPathExpressionException {
-		
-		NodeList allQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for(int i=0;i<allQDMs.getLength();i++){
-			
-			Node qdmNode = allQDMs.item(i);
-			String dataTypeValue = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			dataTypeValue = StringUtils.deleteWhitespace(dataTypeValue) + "_" + (i+1);
-			dataTypeValue = StringUtils.remove(dataTypeValue, ',');
-			
-			Attr localVarNameAttribute = originalDoc.createAttribute("localVariableName");
-			localVarNameAttribute.setNodeValue(dataTypeValue);
-			
-			qdmNode.getAttributes().setNamedItem(localVarNameAttribute);
-			
-		}
-	}
-	
 	/**
 	 * This method will expect Date String in MM/DD/YYYY format And convert it
 	 * to YYYYMMDD format.

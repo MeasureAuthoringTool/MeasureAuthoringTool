@@ -10,7 +10,7 @@
         <act a_id="SPLY">supplyCriteria</act>
     </acts>
 
-	<communication1>
+	<communication-FromPatient-ToProvider>
 		<participation typeCode="AUT">
 			<role classCode="PAT"></role>
 		</participation>
@@ -21,11 +21,11 @@
 				</code>
 			</role>
 		</participation>
-	</communication1>
+	</communication-FromPatient-ToProvider>
 	
-	<communication2>
+	<communication-FromProvider-ToPatient>
 	    <participation typeCode="IRCP">
-			<role classCode="PAT"/>			
+			<role classCode="PAT"/>
 		</participation>
 		<participation typeCode="AUT">
 			<role classCode="ASSIGNED">
@@ -34,9 +34,9 @@
 				</code>
 			</role>
 		</participation>
-	</communication2>
+	</communication-FromProvider-ToPatient>
 	
-	<communication3>
+	<communication-FromProvider-ToProvider>
 		<participation typeCode="IRCP">
 			<role classCode="ASSIGNED">
 				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
@@ -51,7 +51,7 @@
 				</code>
 			</role>
 		</participation>
-	</communication3>
+	</communication-FromProvider-ToProvider>
 	    
     
     <!-- care goal -->
@@ -61,10 +61,10 @@
     <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96">patient care experience</template>
     <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96">provider care experience</template>
     
-    <!-- communication -->    
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication1">communication: from patient to provider</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication2">communication: from provider to patient</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication3">communication: from provider to provider</template>
+    <!-- communication -->
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication-FromPatient-ToProvider">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication-FromProvider-ToPatient">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication-FromProvider-ToProvider">communication: from provider to provider</template>
 
     <!-- device -->
     <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">device, adverse event</template>

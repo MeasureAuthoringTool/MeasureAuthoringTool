@@ -185,6 +185,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		vp.add(buildElementWithVSACValueSetWidget());
 		vp.add(new SpacerWidget());
 		vp.add(buildUserDefinedDisclosureWidget());
+		buildUserDefinedDisclosureWidget().getElement().setId("disclosurePanel_DisclosurePanel");
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
@@ -291,20 +292,20 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		VerticalPanel valueSetPanel = new VerticalPanel();
 		VerticalPanel dataTypePanel = new VerticalPanel();
 		
-		Widget widgetValueSet = LabelBuilder.buildLabel(userDefinedInput, "Name");
-		userDefinedInput.getElement().setId("userDefinedInput_TextBox");
-		valueSetPanel.add(widgetValueSet);
+		Widget widgetValueSet = LabelBuilder.buildLabel(userDefinedInput, "Name");		
+		valueSetPanel.add(widgetValueSet);		
 		valueSetPanel.add(new SpacerWidget());
 		userDefinedInput.setWidth("230px");
 		userDefinedInput.setMaxLength(255);
 		valueSetPanel.add(userDefinedInput);
-		
+		userDefinedInput.getElement().setId("userDefinedInput_TextBox");
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Datatype", "Select Datatype");
 		dataTypePanel.add(widgetDataType);
 		widgetDataType.getElement().setId("widgetDataType_Widget");
 		dataTypePanel.add(new SpacerWidget());
 		
 		dataTypePanel.add(allDataTypeInput);
+		allDataTypeInput.getElement().setId("allDataTypeInput_ListBoxMVP");
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {
 					@Override
@@ -377,12 +378,12 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
 		vPanel.addStyleName("valueSetMarginLeft_7px");
-		vPanel.add(LabelBuilder.buildLabel("Select Datatype", "Select Datatype"));
-		dataTypesListBox.getElement().setId("dataTypesListBox_ListBox");
+		vPanel.add(LabelBuilder.buildLabel("Select Datatype", "Select Datatype"));		
 		dataTypesListBox.setTitle("Select Datatype");
 		dataTypesListBox.setSelectedIndex(0);
 		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
+		dataTypesListBox.getElement().setId("dataTypesListBox_ListBox");
 		vPanel.add(new SpacerWidget());
 		HTML cautionMsg = new HTML(cautionMsgStr);
 		cautionMsg.getElement().setId("cautionMsg_HTML");
@@ -394,13 +395,12 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		vPanel.add(specificOccurrence);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
-		HorizontalPanel buttonsPanel = new HorizontalPanel();
-		buttonsPanel.getElement().setId("buttonsPanel_HorizontalPanel");
-		applyToMeasureButton.getElement().setId("applyToMeasureButton_Button");
+		HorizontalPanel buttonsPanel = new HorizontalPanel();				
 		applyToMeasureButton.addStyleName("firstLabel");
 		applyToMeasureButton.setTitle("Apply To Measure");
 		applyToMeasureButton.setEnabled(false);
 		buttonsPanel.add(applyToMeasureButton);
+		applyToMeasureButton.getElement().setId("applyToMeasureButton_Button");
 		cancelButton.getElement().setId("cancelButton_Button");
 		cancelButton.setTitle("Cancel");
 		cancelButton.addClickHandler(new ClickHandler() {
@@ -412,6 +412,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		});
 		buttonsPanel.add(cancelButton);
 		vPanel.add(buttonsPanel);
+		buttonsPanel.getElement().setId("buttonsPanel_HorizontalPanel");
 		return vPanel;
 	}
 	

@@ -422,6 +422,7 @@ public class QDMAttributeDialogBox {
 					
 					Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
 					dialogContents1.add(valueSet);
+					valueSet.getElement().setId("valueSet_Label");
 					dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
 					dialogContents1.setCellHorizontalAlignment(qdmListBox, HasHorizontalAlignment.ALIGN_LEFT);
 					dialogContents1.add(qdmListBox);
@@ -746,6 +747,7 @@ public class QDMAttributeDialogBox {
 				dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
 				dialogContents1.setCellHorizontalAlignment(qdmListBox, HasHorizontalAlignment.ALIGN_LEFT);
 				dialogContents1.add(qdmListBox);
+				qdmListBox.getElement().setId("qdmListBox_ListBox");
 			}
 			// If this is a Comparison operator
 			else {

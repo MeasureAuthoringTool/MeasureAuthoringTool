@@ -18,9 +18,9 @@
     <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96">provider care experience</template>
     
     <!-- communication -->    
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from patient to provider</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to patient</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" code="158965000" codeSystem="2.16.840.1.113883.6.96">communication: from provider to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from provider to provider</template>
 
     <!-- device -->
     <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">device, adverse event</template>
@@ -168,7 +168,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true">reaction</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false">reason</template>
     <template class="OBS" mood="EVN" type="REFR" inv="false" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
-    <template class="" mood="GOL" type="GOAL" valueType="CD" code="394617004" codesystem="2.16.840.1.113883.6.96">target outcome</template>
+    <template class="" mood="GOL" type="GOAL" valueType="CD" code="394617004" codesystem="2.16.840.1.113883.6.96" displayNameValue="Result">target outcome</template>
     <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">result</template>
     <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">severity</template>
     

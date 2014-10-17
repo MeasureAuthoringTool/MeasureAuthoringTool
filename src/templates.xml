@@ -9,7 +9,51 @@
         <act a_id="ACT">actCriteria</act>
         <act a_id="SPLY">supplyCriteria</act>
     </acts>
-       
+
+	<communication1>
+		<participation typeCode="AUT">
+			<role classCode="PAT"></role>
+		</participation>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication1>
+	
+	<communication2>
+	    <participation typeCode="IRCP">
+			<role classCode="PAT"/>			
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication2>
+	
+	<communication3>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+	</communication3>
+	    
+    
     <!-- care goal -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">care goal</template>
     
@@ -18,9 +62,9 @@
     <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96">provider care experience</template>
     
     <!-- communication -->    
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from patient to provider</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from provider to patient</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" >communication: from provider to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication1">communication: from patient to provider</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.9" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication2">communication: from provider to patient</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="communication3">communication: from provider to provider</template>
 
     <!-- device -->
     <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">device, adverse event</template>

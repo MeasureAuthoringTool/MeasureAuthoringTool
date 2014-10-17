@@ -2,6 +2,7 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -11,9 +12,12 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
@@ -484,7 +488,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
 		idElem.setAttribute(ROOT, rootValue);
-		idElem.setAttribute("extension", qdmName+"_"+qdmLocalVariableName);
+		idElem.setAttribute("extension", StringUtils.deleteWhitespace(qdmName+"_"+qdmLocalVariableName));
 		dataCriteriaElem.appendChild(idElem);
 		
 		Element codeElement = createCodeForDatatype(templateNode,
@@ -603,7 +607,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ID);
 			idElem.setAttribute(ROOT, attribUUID);
-			idElem.setAttribute("extension", attributeValueSetName);
+			idElem.setAttribute("extension", StringUtils.deleteWhitespace(attributeValueSetName));
 			observationCriteriaElem.appendChild(idElem);
 			
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -674,7 +678,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		outboundRelationshipElem.appendChild(observationCriteriaElem);
 		
-		if(!RELATED_TO.equals(attrName)){
+		if(templateNode.getAttributes().getNamedItem(OID) != null){
 			Element templateId = dataCriteriaXMLProcessor
 					.getOriginalDoc().createElement(TEMPLATE_ID);
 			observationCriteriaElem.appendChild(templateId);
@@ -692,6 +696,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}else if(attributeQDMNode.getAttributes().getNamedItem("attrUUID") != null){
 			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem("attrUUID").getNodeValue());
 		}
+		String extensionId = StringUtils.deleteWhitespace(idElem.getAttribute(ROOT));
+		idElem.setAttribute("extension", StringUtils.deleteWhitespace(extensionId+"_"+attrName));
 		observationCriteriaElem.appendChild(idElem);
 		
 		Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()

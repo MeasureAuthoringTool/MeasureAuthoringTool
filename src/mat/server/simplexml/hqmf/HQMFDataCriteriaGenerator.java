@@ -2,7 +2,6 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -12,10 +11,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
-
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +31,7 @@ import org.w3c.dom.NodeList;
 public class HQMFDataCriteriaGenerator implements Generator {
 	
 	private static final String ATTRIBUTE_UUID = "attributeUUID";
-
+	
 	private static final String RELATED_TO = "related to";
 	
 	private static final String CHECK_IF_PRESENT = "Check if Present";
@@ -53,6 +51,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private static final String DISPLAY_NAME = "displayName";
 	
 	private static final String CODE_SYSTEM = "codeSystem";
+	private static final String CODE_SYSTEM_NAME = "codeSystemName";
+	private static final String CODE_SYSTEM_DISPLAY_NAME = "codeDisplayName";
 	
 	private static final String ID = "id";
 	
@@ -83,6 +83,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private static final String CODE = "code";
 	
 	private static final String VALUE_SET = "Value Set";
+	private static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";
 	
 	private static final String ATTRIBUTE_MODE = "attributeMode";
 	
@@ -452,7 +453,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID)
 				.getNodeValue();
-			
+		
 		String qdmName = qdmNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
 		
@@ -556,11 +557,30 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				dataCriteriaElem.appendChild(participantNode);
 			}
 		}
+		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
+			String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
+			Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
+					+ subTemplateName);
+			NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
+					+ subTemplateName + "/child::node()");
+			String attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue();
+			Node  attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
+					+ subTemplateName+"//"+attributeToBeModified);
+			if (attributeToBeModified.equalsIgnoreCase(ID)) {
+				attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+			}
+			for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
+				Node childNode = subTemplateNodeChilds.item(i);
+				Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+				dataCriteriaElem.appendChild(nodeToAttach);
+			}
+		}
 		//checkForAttributes
 		if (attributeQDMNode != null) {
 			createDataCriteriaForAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}
+		
 	}
 	
 	
@@ -578,20 +598,38 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private void createDataCriteriaForAttributes(Node childNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		
 		if(NEGATION_RATIONALE.equals(attributeName)){
 			
 			generateNegationRationalEntries(childNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}else{
+		} else if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attributeName)) {
 			String attributeMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
-			
+			if(VALUE_SET.equals(attributeMode)){
+				Element targetSiteCodeElement = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement("targetSiteCode");
+				String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
+						.getNodeValue();
+				Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(ITEM);
+				valueElem.setAttribute("valueSet", qdmOidValue);
+				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(DISPLAY_NAME);
+				displayNameElem.setAttribute(VALUE, childNode.getAttributes().getNamedItem(NAME).getNodeValue()+" "+childNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue()+" Value Set");
+				valueElem.appendChild(displayNameElem);
+				targetSiteCodeElement.appendChild(valueElem);
+				Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
+				
+			} else if(CHECK_IF_PRESENT.equals(attributeMode)){
+				
+			}
+		} else {
+			String attributeMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 			if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode)){
 				//handle "Value Set" and "Check If Present" mode
 				generateOtherAttributes(childNode, dataCriteriaElem,
 						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-			}else {
-				//TODO:handle other modes
 			}
 		}
 	}
@@ -612,7 +650,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 			String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
-					
+			
 			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 					+ attrName + "']");
@@ -623,8 +661,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					.getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes()
 					.getNamedItem(TAXONOMY).getNodeValue();
-//			String attribUUID = attributeQDMNode.getAttributes()
-//					.getNamedItem(UUID).getNodeValue();
+			//			String attribUUID = attributeQDMNode.getAttributes()
+			//					.getNamedItem(UUID).getNodeValue();
 			
 			dataCriteriaElem.setAttribute("actionNegationInd", "true");
 			
@@ -865,8 +903,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Node codeAttr = templateNode.getAttributes().getNamedItem(CODE);
 		Node codeSystemAttr = templateNode.getAttributes().getNamedItem(
 				CODE_SYSTEM);
+		Node codeSystemNameAttr = templateNode.getAttributes().getNamedItem(
+				CODE_SYSTEM_NAME);
 		Element codeElement = null;
-		if ((codeAttr != null) || (codeSystemAttr != null)) {
+		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr !=null)) {
 			codeElement = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			if (codeAttr != null) {
@@ -876,6 +916,18 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if (codeSystemAttr != null) {
 				codeElement.setAttribute(CODE_SYSTEM,
 						codeSystemAttr.getNodeValue());
+			}
+			if(codeSystemNameAttr !=null){
+				codeElement.setAttribute(CODE_SYSTEM_NAME,
+						codeSystemNameAttr.getNodeValue());
+				Node codeDisplayNameAttr = templateNode.getAttributes().getNamedItem(
+						CODE_SYSTEM_DISPLAY_NAME);
+				if(codeDisplayNameAttr !=null){
+					Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(DISPLAY_NAME);
+					displayNameElem.setAttribute(VALUE,codeDisplayNameAttr.getNodeValue() );
+					codeElement.appendChild(displayNameElem);
+				}
 			}
 		}
 		return codeElement;

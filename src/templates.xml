@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templates>
+<templates xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance">
     
     <acts>
         <act a_id="OBS">observationCriteria</act>
@@ -33,14 +33,14 @@
     <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE">device, recommended</template>
     
     <!-- diagnosis -->
-    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, active</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.5.4">diagnosis, family history</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96">diagnosis, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-active">diagnosis, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.5.4" codeSystemName="LOINC" codeDisplayName="Family History">diagnosis, family history</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis">diagnosis, resolved</template>
     
     <!-- diagnostic study -->
-    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4">diagnostic study, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion">diagnostic study, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion">diagnostic study, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE">diagnostic study, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED">diagnostic study, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE">diagnostic study, recommended</template>    
@@ -175,6 +175,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">severity</template>
     
     
+    
     <communication-FromPatient-ToProvider>
 		<participation typeCode="AUT">
 			<role classCode="PAT"></role>
@@ -217,5 +218,24 @@
 			</role>
 		</participation>
 	</communication-FromProvider-ToProvider>
-    
+    <diagnosis-active changeAttribute ="id">
+	<outboundRelationship typeCode="REFR">
+		<observationCriteria classCode="OBS" moodCode="EVN">
+			<templateId>
+				<item root="2.16.840.1.113883.10.20.28.3.94"/>
+				<item root="2.16.840.1.113883.10.20.28.3.95"/>
+			</templateId>
+			<id root="$UUID" extension="statusactive"/>
+			<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+				codeSystemName="LOINC">
+				<displayName value="Status"/>
+			</code>
+			<title value="Status Active"/>
+			<value xsi:type="CD" code="55561003" codeSystem="2.16.840.1.113883.6.96"
+				codeSystemName="SNOMED CT">
+				<displayName value="Active"/>
+			</value>
+		</observationCriteria>
+	</outboundRelationship>
+    </diagnosis-active>
 </templates>

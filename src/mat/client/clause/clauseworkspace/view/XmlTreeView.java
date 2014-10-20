@@ -1078,7 +1078,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					== CellTreeNode.MASTER_ROOT_NODE)
 					|| (cellTreeNode.getNodeType()
 							== CellTreeNode.ROOT_NODE)) {
-				sb.append(template.outerDiv(getStyleClass(cellTreeNode), UUIDUtilClient.uuid().concat("_treeNode"),
+				sb.append(template.outerDiv(getStyleClass(cellTreeNode), UUIDUtilClient.uuid(5).concat("_treeNode_"+cellTreeNode.getLabel()),
 						cellTreeNode.getTitle(),
 						cellTreeNode.getLabel() != null
 						? cellTreeNode.getLabel() : cellTreeNode.getName()));
@@ -1094,7 +1094,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									&& (treeNode.getNodeText().length() > 0)
 									&& (treeNode.getNodeText().trim() != StringUtils.EMPTY)) {
 								sb.append(template.outerDivItemWithSpan(getStyleClass(cellTreeNode),
-										UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
+										UUIDUtilClient.uuid(5).concat("_treeNode_"+cellTreeNode.getLabel()), cellTreeNode.getTitle(),
 										cellTreeNode.getLabel() != null
 										? cellTreeNode.getLabel() : cellTreeNode.getName()));
 								foundComment = true;
@@ -1104,7 +1104,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					if(!foundComment) {
 						sb.append(template.outerDivItem(getStyleClass(cellTreeNode),
-								UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
+								UUIDUtilClient.uuid(5).concat("_treeNode_"+cellTreeNode.getLabel()), cellTreeNode.getTitle(),
 								cellTreeNode.getLabel() != null
 								? cellTreeNode.getLabel() : cellTreeNode.getName()));
 					}

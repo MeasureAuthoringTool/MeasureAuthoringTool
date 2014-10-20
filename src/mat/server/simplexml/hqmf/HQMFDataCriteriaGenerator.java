@@ -15,7 +15,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -33,6 +32,8 @@ import org.w3c.dom.NodeList;
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	
+	private static final String ATTRIBUTE_UUID = "attributeUUID";
+
 	private static final String RELATED_TO = "related to";
 	
 	private static final String CHECK_IF_PRESENT = "Check if Present";
@@ -301,10 +302,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 			
 			//We need some way of letting the methods downstream know that this is a "negation rationale" attribute w/o sending the <attribute> tag node.
-			Node clonedAttributeNode = attributeQDMNode.cloneNode(false);
-			clonedAttributeNode.setUserData(ATTRIBUTE_NAME, NEGATION_RATIONALE, null);
+			Node clonedAttributeQDMNode = attributeQDMNode.cloneNode(false);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_NAME, NEGATION_RATIONALE, null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
 			
-			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeNode);
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeQDMNode);
 			
 		}
 	}
@@ -340,11 +342,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 			
 			//We need some way of letting the methods downstream know the name of this attribute w/o sending the <attribute> tag node.
-			Node clonedAttributeNode = attributeQDMNode.cloneNode(false);
-			clonedAttributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
-			clonedAttributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+			Node clonedAttributeQDMNode = attributeQDMNode.cloneNode(false);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
 			
-			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeNode);
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeQDMNode);
 		}
 	}
 	
@@ -371,11 +374,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 			
 			//We need some way of letting the methods downstream know the name of this attribute w/o sending the <attribute> tag node.
-			Node clonedAttributeNode = attributeNode.cloneNode(false);
-			clonedAttributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
-			clonedAttributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+			Node clonedAttributeQDMNode = attributeNode.cloneNode(false);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
 			
-			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeNode);
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeQDMNode);
 		}
 	}
 	
@@ -448,10 +452,19 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID)
 				.getNodeValue();
-		// Local variable changes.
-		String qdmLocalVariableName = (StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
+			
 		String qdmName = qdmNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
+		
+		// Local variable changes.
+		//String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
+		String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType));
+		if(attributeQDMNode != null){
+			if(attributeQDMNode.getUserData(ATTRIBUTE_UUID) != null){
+				qdmLocalVariableName = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
+			}
+		}
+		
 		String qdmTaxonomy = qdmNode.getAttributes()
 				.getNamedItem(TAXONOMY).getNodeValue();
 		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor
@@ -466,11 +479,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.createElement("entry");
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
 		dataCriteriaSectionElem.appendChild(entryElem);
+		
 		// creating LocalVariableName Tag
-		Element localVarElem = dataCriteriaXMLProcessor
+		/*Element localVarElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement("localVariableName");
 		localVarElem.setAttribute(VALUE, qdmLocalVariableName);
-		entryElem.appendChild(localVarElem);
+		entryElem.appendChild(localVarElem);*/
+		
 		Element dataCriteriaElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement(actNodeStr);
 		entryElem.appendChild(dataCriteriaElem);
@@ -486,7 +501,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
 		idElem.setAttribute(ROOT, rootValue);
-		idElem.setAttribute("extension", StringUtils.deleteWhitespace(qdmName+"_"+qdmLocalVariableName));
+		idElem.setAttribute("extension", qdmLocalVariableName);
 		dataCriteriaElem.appendChild(idElem);
 		//Participant attribute check in templates.xml.
 		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
@@ -594,6 +609,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private void generateNegationRationalEntries(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		if(attributeQDMNode.getAttributes().getLength() > 0) {
+			
+			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+					
+			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
+					+ attrName + "']");
+			
 			String attributeValueSetName = attributeQDMNode.getAttributes()
 					.getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes()
@@ -607,12 +629,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Element outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(OUTBOUND_RELATIONSHIP);
-			outboundRelationshipElem.setAttribute(TYPE_CODE, "RSON");
+			outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
 			
 			Element observationCriteriaElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(OBSERVATION_CRITERIA);
-			observationCriteriaElem.setAttribute(CLASS_CODE, "OBS");
-			observationCriteriaElem.setAttribute(MOOD_CODE, "EVN");
+			observationCriteriaElem.setAttribute(CLASS_CODE, templateNode.getAttributes().getNamedItem(CLASS).getNodeValue());
+			observationCriteriaElem.setAttribute(MOOD_CODE, templateNode.getAttributes().getNamedItem(MOOD).getNodeValue());
 			
 			outboundRelationshipElem.appendChild(observationCriteriaElem);
 			
@@ -622,7 +644,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
-			itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.3.88");
+			itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
 			templateId.appendChild(itemChild);
 			
 			Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -633,8 +655,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
-			codeElem.setAttribute(CODE, "410666004");
-			codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.6.96");
+			codeElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem(CODE).getNodeValue());
+			codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem("codesystem").getNodeValue());
 			
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
@@ -650,7 +672,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(VALUE);
-			valueElem.setAttribute(XSI_TYPE, "CD");
+			valueElem.setAttribute(XSI_TYPE, templateNode.getAttributes().getNamedItem("valueType").getNodeValue());
 			valueElem.setAttribute("valueSet", attributeOID);
 			
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()

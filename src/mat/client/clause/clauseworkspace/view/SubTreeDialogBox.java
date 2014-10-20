@@ -71,6 +71,7 @@ public class SubTreeDialogBox {
 		dialogBox.getElement().setAttribute("id", "SubTreeDialogBox");
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
+		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		dialogContents.setWidth("20em");
 		dialogContents.setHeight("15em");
 		dialogContents.setSpacing(8);
@@ -78,6 +79,7 @@ public class SubTreeDialogBox {
 		
 		// Create Search box
 		final SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
+		suggestBox.getElement().setId("suggestBox_SuggestBox");
 		suggestBox.setWidth("18em");
 		suggestBox.setText("Search");
 		suggestBox.getValueBox().addClickHandler(new ClickHandler() {
@@ -96,6 +98,7 @@ public class SubTreeDialogBox {
 		
 		// Create ListBox
 		final ListBox listBox = new ListBox();
+		listBox.getElement().setId("listBox_ListBox");
 		listBox.setWidth("18em");
 		listBox.setVisibleItemCount(10);
 		String currentSelectedSubTreeuid = xmlTreeDisplay.getSelectedNode()
@@ -120,7 +123,7 @@ public class SubTreeDialogBox {
 				dialogBox.hide();
 			}
 		});
-		
+		closeButton.getElement().setId("closeButton_Button");
 		Button selectButton = new Button("Select", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -132,6 +135,7 @@ public class SubTreeDialogBox {
 				}
 			}
 		});
+		selectButton.getElement().setId("selectButton_Button");
 		HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
 		horizontalButtonPanel.setSpacing(5);
 		horizontalButtonPanel.add(selectButton);

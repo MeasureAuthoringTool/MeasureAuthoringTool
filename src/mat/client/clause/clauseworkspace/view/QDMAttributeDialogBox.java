@@ -397,6 +397,8 @@ public class QDMAttributeDialogBox {
 				} else if (VALUE_SET.equals(selectedMode)) {
 					dialogContents1.clear();
 					qdmListBox = createQdmListBox();
+					qdmListBox.getElement().setId("valueSet_qdmListBox");
+					qdmListBox.getElement().setTitle("valueSet_qdmListBox");
 					if(qdmListBox.getSelectedIndex()>-1){
 						setToolTipForEachElementInQdmListBox(qdmListBox);
 						SelectElement selectElement = SelectElement.as(qdmListBox.getElement());

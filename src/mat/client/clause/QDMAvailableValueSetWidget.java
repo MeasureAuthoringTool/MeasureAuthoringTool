@@ -185,15 +185,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		vp.add(buildElementWithVSACValueSetWidget());
 		vp.add(new SpacerWidget());
 		vp.add(buildUserDefinedDisclosureWidget());
-		buildUserDefinedDisclosureWidget().getElement().setId("disclosurePanel_DisclosurePanel");
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
 		mainPanel.setWidth("100%");
 		mainPanel.add(vp);
 		mainPanel.getElement().setAttribute("id", "ModifyMainPanel");
-		MatContext.get().setModifyQDMPopUpWidget(this);
-		
+		MatContext.get().setModifyQDMPopUpWidget(this);		
 		valueSetDetailsPanel.setVisible(false);
 	}
 	
@@ -228,7 +226,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		valueSetDetailsPanel.getElement().setId("valueSetDetailsPanel_VerticalPanel");
 		disclosurePanelVSAC.setWidth("100%");
 		disclosurePanelVSAC.add(mainPanel);
-		disclosurePanelVSAC.getElement().setId("disclosurePanelVSAC_DisclosurePanel");
 		disclosurePanelVSAC.setOpen(true);
 		return disclosurePanelVSAC;
 	}
@@ -297,15 +294,16 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		valueSetPanel.add(new SpacerWidget());
 		userDefinedInput.setWidth("230px");
 		userDefinedInput.setMaxLength(255);
-		valueSetPanel.add(userDefinedInput);
 		userDefinedInput.getElement().setId("userDefinedInput_TextBox");
+		userDefinedInput.getElement().setTitle("userDefinedInput_TextBox");
+		valueSetPanel.add(userDefinedInput);
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Datatype", "Select Datatype");
 		dataTypePanel.add(widgetDataType);
 		widgetDataType.getElement().setId("widgetDataType_Widget");
 		dataTypePanel.add(new SpacerWidget());
-		
-		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.getElement().setId("allDataTypeInput_ListBoxMVP");
+		allDataTypeInput.getElement().setTitle("allDataTypeInput_ListBoxMVP");
+		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {
 					@Override
@@ -319,8 +317,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		
 		HorizontalPanel buttonHorizontalPanel = new HorizontalPanel();
 		psuedoQDMToMeasure.setTitle("Apply to Measure");
-		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		psuedoQDMToMeasure.getElement().setId("psuedoQDMToMeasure_Button");
+		psuedoQDMToMeasure.getElement().setTitle("psuedoQDMToMeasure_Button");
+		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
 		buttonHorizontalPanel.add(new SpacerWidget());
 		
@@ -335,7 +334,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		mainPanel.add(buttonHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
 		disclosurePanel.add(mainPanel);
-		disclosurePanel.getElement().setId("disclosurePanel_DisclosurePanel");
 		return disclosurePanel;
 	}
 	

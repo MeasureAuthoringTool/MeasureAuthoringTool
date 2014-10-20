@@ -289,11 +289,15 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		valueSetPanel.add(new SpacerWidget());
 		userDefinedInput.setWidth("230px");
 		userDefinedInput.setMaxLength(255);
+		userDefinedInput.getElement().setId("userDefinedInput_TextBox");
+		userDefinedInput.getElement().setTitle("userDefinedInput_TextBox");
 		valueSetPanel.add(userDefinedInput);
 
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Datatype", "Select Datatype");
 		dataTypePanel.add(widgetDataType);
 		dataTypePanel.add(new SpacerWidget());
+		allDataTypeInput.getElement().setId("allDataTypeInput_ListBoxMVP");
+		allDataTypeInput.getElement().setTitle("allDataTypeInput_ListBoxMVP");
 		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {
@@ -308,6 +312,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 		HorizontalPanel buttonHorizontalPanel = new HorizontalPanel();
 		psuedoQDMToMeasure.setTitle("Apply to Measure");
+		psuedoQDMToMeasure.getElement().setId("psuedoQDMToMeasure_Button");
+		psuedoQDMToMeasure.getElement().setTitle("psuedoQDMToMeasure_Button");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
 

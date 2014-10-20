@@ -211,7 +211,28 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	/** The is editable. */
 	private boolean isEditable;
 	
+	/** The calender year. */
+	private boolean isCalenderYear;
 	
+	
+	/**
+	 * Checks if is calender year.
+	 *
+	 * @return true, if is calender year
+	 */
+	public boolean isCalenderYear() {
+		return isCalenderYear;
+	}
+
+	/**
+	 * Sets the calender year.
+	 *
+	 * @param calenderYear the new calender year
+	 */
+	public void setCalenderYear(boolean isCalenderYear) {
+		this.isCalenderYear = isCalenderYear;
+	}
+
 	/**
 	 * Checks if is deleted.
 	 * 
@@ -763,7 +784,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	//US 413
 	/**
 	 * Gets the meas steward other.
-	 * 
+	 *
+	 * @param str the str
 	 * @return the meas steward other
 	 */
 	/*public String getMeasStewardOther() {
@@ -1340,6 +1362,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		}else if (!trimToNull(stewardValue).equals(trimToNull(other.stewardValue))) {
 			return false;
 		}
+		if(isCalenderYear!=other.isCalenderYear){
+			return false;
+		}
 		if (trimToNull(stewardId) == null) {
 			if (trimToNull(other.stewardId) != null) {
 				return false;
@@ -1823,6 +1848,9 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.endorsementId = endorsementId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
@@ -1831,7 +1859,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", measureId=" + measureId + ", groupName=" + groupName
 				+ ", groupId=" + groupId + ", finalizedDate=" + finalizedDate
 				+ ", measFromPeriod=" + measFromPeriod + ", measToPeriod="
-				+ measToPeriod + ", measScoring=" + measScoring
+				+ measToPeriod +", isCalenderYear= "+ isCalenderYear  
+				+ ", measScoring=" + measScoring
 				+ ", stewardValue=" + stewardValue + ", endorseByNQF="
 				+ endorseByNQF + ", nqfId=" + nqfId + ", description="
 				+ description + ", copyright=" + copyright
@@ -2021,10 +2050,20 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		stewardSelectedList =steSelectedList;
 	}
 
+	/**
+	 * Gets the steward value.
+	 *
+	 * @return the steward value
+	 */
 	public String getStewardValue() {
 		return stewardValue;
 	}
 
+	/**
+	 * Sets the steward value.
+	 *
+	 * @param stewardValue the new steward value
+	 */
 	public void setStewardValue(String stewardValue) {
 		this.stewardValue = stewardValue;
 	}

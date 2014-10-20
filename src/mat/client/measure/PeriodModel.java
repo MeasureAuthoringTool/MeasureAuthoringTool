@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PeriodModel.
  */
@@ -21,6 +22,26 @@ public class PeriodModel implements IsSerializable{
 	
 	/** The stop date uuid. */
 	//private String stopDateUuid;
+	
+	private boolean calenderYear;
+
+	/**
+	 * Checks if is calender year.
+	 *
+	 * @return true, if is calender year
+	 */
+	public boolean isCalenderYear() {
+		return calenderYear;
+	}
+
+	/**
+	 * Sets the calender year.
+	 *
+	 * @param isCalenderYear the new calender year
+	 */
+	public void setCalenderYear(boolean calenderYear) {
+		this.calenderYear = calenderYear;
+	}
 
 	/**
 	 * Gets the uuid.

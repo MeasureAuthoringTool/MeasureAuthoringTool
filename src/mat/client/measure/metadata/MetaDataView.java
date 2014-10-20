@@ -57,6 +57,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
@@ -388,8 +389,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The steward value. */
 	private String stewardValue;
 	
+	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calender Year", "Calender Year", 1);
 	
-	
+
 	/**
 	 * Instantiates a new meta data view.
 	 */
@@ -539,26 +541,69 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		NQFIDInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
+//		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
+//		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
+//		Label fromLabel = new Label("From");
+//		fromLabel.addStyleName("firstLabel");
+//		measurePeriodPanel.add(fromLabel);
+//		measurePeriodPanel.add(measurePeriodFromInput);
+//		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
+//		Label toLabel = new Label("To");
+//		toLabel.addStyleName("secondLabel");
+//		measurePeriodPanel.add(toLabel);
+//		measurePeriodPanel.add(measurePeriodToInput);
+//		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
+//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
+//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
+//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
+//		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
+//		measurePeriodFromInputLabel.setStyleName("bold");
+//		fPanel.add(measurePeriodFromInputLabel);
+//		fPanel.add(measurePeriodPanel);
+//		fPanel.add(new SpacerWidget());
+		VerticalPanel measurementPeriodPanel = new VerticalPanel();
+		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
+		measurementPeriodPanel.setStyleName("valueSetSearchPanel");
+		//measurementPeriod Header
+		Label measurePeriodFromInputLabel = new Label("Measurement Period");
+		measurePeriodFromInputLabel.setStyleName("measurementPeriodHeader");
+		measurePeriodFromInputLabel.getElement().setId("measurementPeriodHeader_Label");
+		measurePeriodFromInputLabel.getElement().setAttribute("tabIndex", "0");
+		measurementPeriodPanel.add(measurePeriodFromInputLabel);
+		//measurementPeriodPanel.add(new SpacerWidget());
+		HorizontalPanel calenderYearDatePanel = new HorizontalPanel();
+		calenderYearDatePanel.getElement().setId("calenderYear_HorizontalPanel");
+		calenderYearDatePanel.add(calenderYear);
+		calenderYear.getElement().setId("calenderYear_CustomCheckBox");
+		calenderYear.addValueChangeHandler(calenderYearChangeHandler);
+		calenderYearDatePanel.addStyleName("marginTop");
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
 		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
 		Label fromLabel = new Label("From");
 		fromLabel.addStyleName("firstLabel");
 		measurePeriodPanel.add(fromLabel);
+		measurePeriodFromInput.getDateBox().setWidth("127px");
 		measurePeriodPanel.add(measurePeriodFromInput);
 		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
 		Label toLabel = new Label("To");
 		toLabel.addStyleName("secondLabel");
 		measurePeriodPanel.add(toLabel);
+		measurePeriodToInput.getDateBox().setWidth("127px");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
 		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
 		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
-		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
-		measurePeriodFromInputLabel.setStyleName("bold");
-		fPanel.add(measurePeriodFromInputLabel);
-		fPanel.add(measurePeriodPanel);
+		Grid queryGrid = new Grid(3, 1);
+		queryGrid.setWidget(0, 0, calenderYearDatePanel);
+		queryGrid.setWidget(1, 0, new SpacerWidget());
+		queryGrid.setWidget(2, 0, measurePeriodPanel);
+		queryGrid.setStyleName("secondLabel");
+		measurementPeriodPanel.add(queryGrid);
+		queryGrid.getElement().setId("queryGrid_Grid");
+		fPanel.add(measurementPeriodPanel);
 		fPanel.add(new SpacerWidget());
 		
 		Label stewardTableLabel = (Label) LabelBuilder.buildLabel(stewardCellTable, "Measure Steward List");
@@ -2421,6 +2466,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	@Override
+	public void setMeasurementPeriodButtonsVisible(boolean b){
+		measurePeriodFromInput.getDateBox().setEnabled(b);
+		measurePeriodToInput.getDateBox().setEnabled(b);
+		measurePeriodFromInput.setEnableCSS(b);
+		measurePeriodToInput.setEnableCSS(b);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getNotEndorsebyNQF()
@@ -2679,4 +2732,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.stewardValue = stewardValue;
 	}
 	
+	private  ValueChangeHandler<Boolean> calenderYearChangeHandler = new ValueChangeHandler<Boolean>() {
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			measurePeriodFromInput.setValue("");
+			measurePeriodToInput.setValue("");
+			if (calenderYear.getValue().equals(Boolean.TRUE)) {
+				measurePeriodFromInput.setEnabled(true);
+				measurePeriodToInput.setEnabled(true);
+			} else {
+				measurePeriodFromInput.setEnabled(false);
+				measurePeriodToInput.setEnabled(false);
+			}
+		}
+	};
+	
+	@Override
+	public CustomCheckBox getCalenderYear() {
+		return calenderYear;
+	}
+
 }

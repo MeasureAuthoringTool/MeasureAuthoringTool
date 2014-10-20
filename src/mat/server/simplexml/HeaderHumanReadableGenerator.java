@@ -328,17 +328,27 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void getMeasurePeriod(XmlProcessor processor, Element table)
 			throws XPathExpressionException {
+		boolean calenderYear = Boolean.valueOf(getInfo(processor, "period/@calenderYear"));
 		String start = getInfo(processor, "period/startDate");
 		String end = getInfo(processor, "period/stopDate");
 		String newStart = " ";
 		String newEnd = " ";
 		String through = " through ";
 		// if start or end are not null format the date
+		if(calenderYear){
 		if (!" ".equals(start)) {
 			newStart = formatDate(start);
 		}
 		if (!" ".equals(end)) {
 			newEnd = formatDate(end);
+		}
+		} else {
+			if (!" ".equals(start)) {
+				newStart = formatDate("20xx0101");
+			}
+			if (!" ".equals(end)) {
+				newEnd = formatDate("20xx1231");
+			}
 		}
 		// if the ending date is null we don't want through to display
 		if (" ".equals(newEnd)) {
@@ -484,8 +494,10 @@ public class HeaderHumanReadableGenerator {
 		Node node = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH
 				+ lookUp);
 		// If the node exists return the text value
-		if (node != null) {
+		if (node != null && node.getTextContent()!=null) {
 			returnVar = node.getTextContent();
+		} else if(node != null && node.getTextContent()==null){
+			returnVar = node.getNodeValue();
 		}
 		// else the node does not exist
 		// if were looking for "endorsement return None

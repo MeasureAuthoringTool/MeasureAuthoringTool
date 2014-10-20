@@ -647,6 +647,15 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * @param stewardValue the new steward value
 		 */
 		public void setStewardValue(String stewardValue);
+
+		/**
+		 * Gets the calender year.
+		 *
+		 * @return the calender year
+		 */
+		CustomCheckBox getCalenderYear();
+
+		void setMeasurementPeriodButtonsVisible(boolean b);
 	}
 	
 	/**
@@ -1416,6 +1425,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Prepopulate fields.
 	 */
 	private void prepopulateFields() {
+		removeMeasurementPeriodStyle();
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.getSetName().setValue(currentMeasureDetail.getGroupName());
@@ -1451,6 +1461,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getImprovementNotation().setValue(currentMeasureDetail.getImprovNotations());
 		metaDataDisplay.getSupplementalData().setValue(currentMeasureDetail.getSupplementalData());
 		metaDataDisplay.getFinalizedDate().setText(currentMeasureDetail.getFinalizedDate());
+		//currentMeasureDetail.setCalenderYear(metaDataDisplay.getCalenderYear().getValue());
+		metaDataDisplay.getCalenderYear().setValue(currentMeasureDetail.isCalenderYear());
 		metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(currentMeasureDetail.getMeasFromPeriod());
 		metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
@@ -1459,7 +1471,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());	
 		setStewardAndMeasureDevelopers();
 				
-		
 		//measureTypeSelectList
 		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
 			metaDataDisplay.setMeasureTypeSelectedList(currentMeasureDetail.getMeasureTypeSelectedList());
@@ -1513,10 +1524,15 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getDeleteMeasure().setEnabled(true);
 		}
 		currentMeasureDetail.setEditable(editable);
+		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.TRUE) && editable){
+			metaDataDisplay.setMeasurementPeriodButtonsVisible(true);
+		} else {
+			metaDataDisplay.setMeasurementPeriodButtonsVisible(false);
+		}
 	}
 
 	/**
-	 * steward and Author table
+	 * steward and Author table.
 	 */
 	public void setStewardAndMeasureDevelopers() {
 		service.getUsedStewardAndDevelopersList(MatContext.get().getCurrentMeasureId(),
@@ -1568,7 +1584,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getSuccessMessageDisplay().clear();
 		metaDataDisplay.getSaveBtn().setFocus(true);
 		updateModelDetailsFromView();
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear()) {
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
 			MatContext.get().getMeasureService().saveMeasureDetails(currentMeasureDetail,
@@ -1620,6 +1636,41 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 	
 	/**
+	 * Check if calender year.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkIfCalenderYear(){
+		boolean isCalender = false;
+		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.TRUE)){
+			if(!metaDataDisplay.getMeasurementFromPeriod().isEmpty() && 
+					!metaDataDisplay.getMeasurementToPeriod().isEmpty()){
+				metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+				metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+				isCalender = true;
+			}
+			else {
+				metaDataDisplay.getCalenderYear().setFocus(true);
+				metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
+				metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
+				isCalender = false;
+			}
+		} else {
+			isCalender = true;
+		}
+		
+		return isCalender;
+	}
+	
+	/**
+	 * Removes the measurement period style.
+	 */
+	private void removeMeasurementPeriodStyle(){
+		metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+		metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+	}
+	
+	/**
 	 * Update model details from view.
 	 */
 	private void updateModelDetailsFromView() {
@@ -1635,6 +1686,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the meta data display
 	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay) {
+		removeMeasurementPeriodStyle();
 		currentMeasureDetail.setName(metaDataDisplay.getMeasureName().getText());
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());
@@ -1657,6 +1709,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setGuidance(metaDataDisplay.getGuidance().getValue());
 		currentMeasureDetail.setTransmissionFormat(metaDataDisplay.getTransmissionFormat().getValue());
 		currentMeasureDetail.setImprovNotations(metaDataDisplay.getImprovementNotation().getValue());
+		currentMeasureDetail.setCalenderYear(metaDataDisplay.getCalenderYear().getValue());
 		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());	
 		
 		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());	

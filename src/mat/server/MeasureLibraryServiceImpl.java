@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -620,6 +621,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void convertAddlXmlElementsToModel(final ManageMeasureDetailModel manageMeasureDetailModel, final Measure measure) {
 		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
 		manageMeasureDetailModel.setId(measure.getId());
+		manageMeasureDetailModel.setCalenderYear(manageMeasureDetailModel.getPeriodModel().isCalenderYear());
 		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
 				.getPeriodModel().getStartDate() : null);
 		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
@@ -2269,22 +2271,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// change
 		// on
 		// unmarshalling.
-		if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())
-				|| StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {
+		/*if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())
+				|| StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {*/
 			PeriodModel periodModel = new PeriodModel();
 			periodModel.setUuid(UUID.randomUUID().toString());
-			if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())) {
+			periodModel.setCalenderYear(measureDetailModel.isCalenderYear());
+			if(measureDetailModel.isCalenderYear()){
 				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
-				//commented UUID as part of MAT-4613
-				//periodModel.setStartDateUuid(UUID.randomUUID().toString());
-			}
-			if (StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {
 				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
-				//commented UUID as part of MAT-4613
-				//periodModel.setStopDateUuid(UUID.randomUUID().toString());
+			} else { // for Default Dates
+				periodModel.setStartDate(getStartDate());
+				periodModel.setStopDate(getStopDate());
 			}
+//			if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())) {
+//				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
+//				//commented UUID as part of MAT-4613
+//				//periodModel.setStartDateUuid(UUID.randomUUID().toString());
+//			}
+//			if (StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {
+//				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
+//				//commented UUID as part of MAT-4613
+//				//periodModel.setStopDateUuid(UUID.randomUUID().toString());
+//			}
 			measureDetailModel.setPeriodModel(periodModel);
-		}
+		//}
 		
 		if (StringUtils.isNotBlank(measureDetailModel.getGroupName())) {
 			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());
@@ -2310,7 +2320,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
 	}
-	
+
+
 	/**
 	 * Sets the context.
 	 * 
@@ -3883,7 +3894,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	private String getStopDate() {
+		String stopDate = "12/31/".concat(getCurrentYear());
+		return stopDate;
+	}
+
+	private String getStartDate() {
+		String startDate = "01/01/".concat(getCurrentYear());
+		return startDate;
+	}
 	
+	private String getCurrentYear(){
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		String currentYear = String.valueOf(year);
+		return currentYear;
+	}
 	
 }
 

@@ -323,10 +323,14 @@
 
 	<class name="mat.client.measure.PeriodModel">
 	    <field name="uuid"
-	           type="java.lang.String">
+	           type="java.lang.String">   
 	      <bind-xml name="uuid" node="attribute"/>
 	    </field>
-
+	    
+	    <field name="calenderYear"
+	           type="java.lang.Boolean">   
+	      <bind-xml name="calenderYear" node="attribute"/>
+	    </field>
 	    <field name="startDate"
 	           type="java.lang.String">
 	      <bind-xml name="startDate" node="element"/>

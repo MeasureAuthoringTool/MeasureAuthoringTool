@@ -2115,6 +2115,14 @@ padding: 2px;
     text-align:left;
 }
 
+.measurementPeriodHeader{
+	background-color: #DCE9F5;
+	font-size: small;
+    font-weight: bold;
+    color: black;
+    padding: 5px;
+}
+
 .invisibleTableCaption{
     color:transparent;
     font-size:0;

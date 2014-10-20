@@ -458,7 +458,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		// Local variable changes.
 		//String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
-		String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType));
+		String qdmLocalVariableName = StringUtils.deleteWhitespace(qdmName + "_" + dataType);
 		if(attributeQDMNode != null){
 			if(attributeQDMNode.getUserData(ATTRIBUTE_UUID) != null){
 				qdmLocalVariableName = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
@@ -611,6 +611,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		if(attributeQDMNode.getAttributes().getLength() > 0) {
 			
 			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+			String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 					
 			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
@@ -622,8 +623,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					.getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes()
 					.getNamedItem(TAXONOMY).getNodeValue();
-			String attribUUID = attributeQDMNode.getAttributes()
-					.getNamedItem(UUID).getNodeValue();
+//			String attribUUID = attributeQDMNode.getAttributes()
+//					.getNamedItem(UUID).getNodeValue();
 			
 			dataCriteriaElem.setAttribute("actionNegationInd", "true");
 			
@@ -701,6 +702,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+		String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 		
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
@@ -734,13 +736,16 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
-		if(attributeQDMNode.getAttributes().getNamedItem(UUID) != null){
+		idElem.setAttribute(ROOT, attribUUID);
+		
+		/*if(attributeQDMNode.getAttributes().getNamedItem(UUID) != null){
 			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem(UUID).getNodeValue());
 		}else if(attributeQDMNode.getAttributes().getNamedItem("attrUUID") != null){
 			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem("attrUUID").getNodeValue());
-		}
-		String extensionId = idElem.getAttribute(ROOT);
-		idElem.setAttribute("extension", StringUtils.deleteWhitespace(extensionId+"_"+attrName));
+		}*/
+		//String extensionId = idElem.getAttribute(ROOT);
+		
+		idElem.setAttribute("extension", StringUtils.deleteWhitespace(attrName));
 		observationCriteriaElem.appendChild(idElem);
 		
 		Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()

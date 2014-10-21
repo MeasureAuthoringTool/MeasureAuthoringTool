@@ -161,9 +161,9 @@
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">cumulative medication duration</template>
     <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">frequency</template>
     <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false">incision datetime</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">laterality</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="PAT" codesystem="2.16.840.1.113883.5.8">patient preference</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="103323008" codesystem="2.16.840.1.113883.6.96">provider preference</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="PAT" codesystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="103323008" codesystem="2.16.840.1.113883.6.96" displayNameValue="Provider Preference">provider preference</template>
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation dosage</template>
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation duration</template>
     <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true">reaction</template>

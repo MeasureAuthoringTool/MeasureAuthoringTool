@@ -172,7 +172,7 @@
     <template class="OBS" mood="EVN" type="REFR" inv="false" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
     <template class="OBS" mood="GOL" type="GOAL" valueType="CD" code="394617004" codesystem="2.16.840.1.113883.6.96" displayNameValue="Result">target outcome</template>
     <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">result</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">severity</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="SEV" valueType="CD" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 ActCode" displayNameValue="Severity Observation">severity</template>
     <template target="targetSiteCode" childTarget="item">anatomical location site-value set</template>
     <template target="targetSiteCode" flavorId="ANY.NONNULL">anatomical location site-check if present</template>
     <template target="priorityCode" childTarget="item">ordinality-value set</template>

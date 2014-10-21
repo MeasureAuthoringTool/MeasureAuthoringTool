@@ -496,9 +496,7 @@ public class HeaderHumanReadableGenerator {
 		// If the node exists return the text value
 		if (node != null && node.getTextContent()!=null) {
 			returnVar = node.getTextContent();
-		} else if(node != null && node.getTextContent()==null){
-			returnVar = node.getNodeValue();
-		}
+		} 
 		// else the node does not exist
 		// if were looking for "endorsement return None
 		else if (lookUp.equalsIgnoreCase("endorsement")

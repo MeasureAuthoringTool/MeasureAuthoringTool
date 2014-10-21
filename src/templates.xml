@@ -147,7 +147,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false">source</template>
     
     <!-- status -->
-    <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false">status</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</template>
     <template oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" inv="false">status active</template>
     <template oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" inv="false">status inactive</template>
     <template oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" inv="false">status resolved</template>

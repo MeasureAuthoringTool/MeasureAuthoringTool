@@ -690,7 +690,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			codeElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem(CODE).getNodeValue());
-			codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem("codesystem").getNodeValue());
+			codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem(CODE_SYSTEM).getNodeValue());
 			
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
@@ -818,7 +818,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		/*Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(CODE);
 		codeElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem(CODE).getNodeValue());
-		codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem("codesystem").getNodeValue());*/
+		codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem("codeSystem").getNodeValue());*/
 		Element codeElem = createCodeForDatatype(templateNode, dataCriteriaXMLProcessor);
 		Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);

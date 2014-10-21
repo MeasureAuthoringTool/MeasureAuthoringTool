@@ -743,7 +743,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						valueElem.setAttribute("valueSet", qdmOidValue);
 						Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 								.createElement(DISPLAY_NAME);
-						displayNameElem.setAttribute(VALUE, qdmNode.getAttributes().getNamedItem(NAME).getNodeValue()+" "+qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue()+" Value Set");
+						displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()+" "+attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue()+" Value Set");
 						valueElem.appendChild(displayNameElem);
 						targetSiteCodeElement.appendChild(valueElem);
 						Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);

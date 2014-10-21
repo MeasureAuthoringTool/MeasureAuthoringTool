@@ -622,10 +622,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
 		manageMeasureDetailModel.setId(measure.getId());
 		manageMeasureDetailModel.setCalenderYear(manageMeasureDetailModel.getPeriodModel().isCalenderYear());
+		if(manageMeasureDetailModel.getPeriodModel().isCalenderYear()){
 		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
 				.getPeriodModel().getStartDate() : null);
 		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
 				.getPeriodModel().getStopDate() : null);
+		}
 		manageMeasureDetailModel.setEndorseByNQF((StringUtils.isNotBlank(
 				manageMeasureDetailModel.getEndorsement()) ? true : false));
 		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
@@ -2280,8 +2282,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
 				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
 			} else { // for Default Dates
-				periodModel.setStartDate(getStartDate());
-				periodModel.setStopDate(getStopDate());
+				periodModel.setStartDate("01/01/20XX");
+				periodModel.setStopDate("12/31/20XX");
 			}
 //			if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())) {
 //				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());

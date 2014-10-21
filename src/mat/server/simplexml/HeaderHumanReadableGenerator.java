@@ -344,10 +344,10 @@ public class HeaderHumanReadableGenerator {
 		}
 		} else {
 			if (!" ".equals(start)) {
-				newStart = formatDate("20xx0101");
+				newStart = formatDate("20XX0101");
 			}
 			if (!" ".equals(end)) {
-				newEnd = formatDate("20xx1231");
+				newEnd = formatDate("20XX1231");
 			}
 		}
 		// if the ending date is null we don't want through to display
@@ -379,7 +379,7 @@ public class HeaderHumanReadableGenerator {
 			month = getMonth(month);
 			// if the year equals 0000 we display 20xx
 			if ("0000".equals(year)) {
-				year = "20xx";
+				year = "20XX";
 			}
 			// if the day starts with a zero only display the second digit
 			if (day.charAt(0) == '0') {

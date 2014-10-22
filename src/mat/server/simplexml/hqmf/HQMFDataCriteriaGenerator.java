@@ -23,7 +23,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1099,9 +1098,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 */
 	private void addCommentNode(XmlProcessor xmlProcessor, String commentText, Node insertBeforeNode) {
 		Comment comment = xmlProcessor.getOriginalDoc().createComment(commentText);
-		Text newLineText = xmlProcessor.getOriginalDoc().createTextNode("\\n   \\r");
 		insertBeforeNode.getParentNode().insertBefore(comment, insertBeforeNode);
-		insertBeforeNode.getParentNode().insertBefore(newLineText, insertBeforeNode);
+		
 	}
 	
 	/**

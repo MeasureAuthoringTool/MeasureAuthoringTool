@@ -2,7 +2,6 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -12,11 +11,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -513,13 +511,19 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		String qdmName = qdmNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
-		
+		String entryCommentText = dataType;
 		// Local variable changes.
 		//String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
 		String qdmLocalVariableName = StringUtils.deleteWhitespace(qdmName + "_" + dataType);
 		if(attributeQDMNode != null){
 			if(attributeQDMNode.getUserData(ATTRIBUTE_UUID) != null){
 				qdmLocalVariableName = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
+			}
+			if(attributeQDMNode.getUserData(ATTRIBUTE_NAME) != null){
+				entryCommentText = entryCommentText+ " - " +attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+			}
+			if(attributeQDMNode.getUserData(ATTRIBUTE_MODE) != null){
+				entryCommentText = entryCommentText+ " With " +attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 			}
 		}
 		
@@ -538,6 +542,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
 		dataCriteriaSectionElem.appendChild(entryElem);
 		
+		addCommentNode(dataCriteriaXMLProcessor, entryCommentText, entryElem);
 		// creating LocalVariableName Tag
 		/*Element localVarElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement("localVariableName");
@@ -1045,7 +1050,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-		return out.toString();
+		String outputXmlString = out.toString()
+				.replaceAll("<!--", "\n<!--").replaceAll("-->", "-->\n");
+		return outputXmlString;
 	}
 	
 	/**
@@ -1071,6 +1078,18 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Comment comment = dataCriteriaXMLProcessor.getOriginalDoc().createComment(
 				"Data Criteria Section");
 		element.getParentNode().insertBefore(comment, element);
+	}
+	
+	/**
+	 * Add comment before specific Node.
+	 * @param xmlProcessor
+	 * @param commentText
+	 */
+	private void addCommentNode(XmlProcessor xmlProcessor, String commentText, Node insertBeforeNode) {
+		Comment comment = xmlProcessor.getOriginalDoc().createComment(commentText);
+		Text newLineText = xmlProcessor.getOriginalDoc().createTextNode("\\n   \\r");
+		insertBeforeNode.getParentNode().insertBefore(comment, insertBeforeNode);
+		insertBeforeNode.getParentNode().insertBefore(newLineText, insertBeforeNode);
 	}
 	
 	/**

@@ -33,6 +33,18 @@ import org.w3c.dom.NodeList;
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	
+	private static final String HIGH = "high";
+
+	private static final String STOP_DATETIME = "stop datetime";
+
+	private static final String START_DATETIME = "start datetime";
+
+	private static final String FLAVOR_ID = "flavorId";
+
+	private static final String LOW = "low";
+
+	private static final String EFFECTIVE_TIME = "effectiveTime";
+
 	private static final String ATTRIBUTE_UUID = "attributeUUID";
 	
 	private static final String RELATED_TO = "related to";
@@ -95,6 +107,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private static final String ATTRIBUTE_NAME = "attributeName";
 	
 	private static final String NEGATION_RATIONALE = "negation rationale";
+
+	private static final String ATTRIBUTE_DATE = "attrDate";
 	
 	/** The x path. */
 	//static javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -257,25 +271,27 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, NodeList qdmAttributeNodeList) throws XPathExpressionException {
 		
-		if(qdmAttributeNodeList == null){
-			return;
-		}
+//		if(qdmAttributeNodeList == null){
+//			return;
+//		}
 		
-		for(int i=0;i<qdmAttributeNodeList.getLength();i++){
-			Node attributeQDMNode = qdmAttributeNodeList.item(i);
-			String qdmUUID = attributeQDMNode.getAttributes().getNamedItem(UUID).getNodeValue();
-			
-			//Generate entries for Negation Rationale
-			generateNegationRationaleEntries(dataCriteriaXMLProcessor,
-					simpleXmlprocessor, attributeQDMNode, qdmUUID);
-			
-			//Generate entries for "Value Set" attributes
-			generateValueSetAttribEntries(dataCriteriaXMLProcessor,
-					simpleXmlprocessor, attributeQDMNode, qdmUUID, "Value Set");
+		if(qdmAttributeNodeList != null){
+			for(int i=0;i<qdmAttributeNodeList.getLength();i++){
+				Node attributeQDMNode = qdmAttributeNodeList.item(i);
+				String qdmUUID = attributeQDMNode.getAttributes().getNamedItem(UUID).getNodeValue();
+				
+				//Generate entries for Negation Rationale
+				generateNegationRationaleEntries(dataCriteriaXMLProcessor,
+						simpleXmlprocessor, attributeQDMNode, qdmUUID);
+				
+				//Generate entries for "Value Set" attributes
+				generateValueSetAttribEntries(dataCriteriaXMLProcessor,
+						simpleXmlprocessor, attributeQDMNode, qdmUUID, "Value Set");
+			}
 		}
 		//Generate entries for "Check if Present" attributes
 		generateCheckIfPresentAttribEntries(dataCriteriaXMLProcessor,simpleXmlprocessor);
-		
+		generateDateTimeAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor);
 	}
 	
 	/**
@@ -390,6 +406,41 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}
 	}
 	
+	private void generateDateTimeAttributeEntries(
+			XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
+		
+		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME+"']"
+				+ "[@mode != 'Check if Present']";
+		System.out.println("xPathForAttributeUse:"+xPathForAttributeUse);
+		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
+		
+		if(usedAttributeNodeList == null){
+			return;
+		}
+		
+		for(int j=0;j<usedAttributeNodeList.getLength();j++){
+			Node attributeNode = usedAttributeNodeList.item(j);
+			Node parentElementRefNode = attributeNode.getParentNode();
+			String qdmNodeUUID = parentElementRefNode.getAttributes().getNamedItem(ID).getNodeValue();
+			
+			String xPathForQDM = "/measure/elementLookUp/qdm[@uuid='"+qdmNodeUUID+"']";
+			Node qdmNode = simpleXmlprocessor.findNode(simpleXmlprocessor.getOriginalDoc(), xPathForQDM);
+			
+			if(qdmNode == null){
+				continue;
+			}
+			
+			//We need some way of letting the methods downstream know the name of this attribute w/o sending the <attribute> tag node.
+			Node clonedAttributeQDMNode = attributeNode.cloneNode(false);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
+			clonedAttributeQDMNode.setUserData(ATTRIBUTE_DATE, attributeNode.getAttributes().getNamedItem("attrDate").getNodeValue(), null);
+			
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeQDMNode);
+		}
+	}
 	/**
 	 * Create xml for data criteria.
 	 *
@@ -624,12 +675,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		if(NEGATION_RATIONALE.equals(attributeName)){
 			generateNegationRationalEntries(childNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}  else {
-			if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode)){
+		}else if(START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)){
+			generateDateTimeAttributes(childNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode)){
 				//handle "Value Set" and "Check If Present" mode
 				generateOtherAttributes(childNode, dataCriteriaElem,
 						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-			}
 		}
 	}
 	
@@ -769,9 +821,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
 						Node parentOfOutBoundElement = outBoundElement.getParentNode();
 						parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
-					} else if(templateNode.getAttributes().getNamedItem("flavorId") != null){
-						String flavorIdValue = templateNode.getAttributes().getNamedItem("flavorId").getNodeValue();
-						targetSiteCodeElement.setAttribute("flavorId", flavorIdValue);
+					} else if(templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null){
+						String flavorIdValue = templateNode.getAttributes().getNamedItem(FLAVOR_ID).getNodeValue();
+						targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
 						Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
 						Node parentOfOutBoundElement = outBoundElement.getParentNode();
 						parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
@@ -862,13 +914,110 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			valueElem.appendChild(valueDisplayNameElem);
 		}else if(CHECK_IF_PRESENT.equals(attrMode)){
 			valueElem.setAttribute(XSI_TYPE, "ANY");
-			valueElem.setAttribute("flavorId", "ANY.NONNULL");
+			valueElem.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 		}
 		
 		observationCriteriaElem.appendChild(valueElem);
 		
 		dataCriteriaElem.appendChild(outboundRelationshipElem);
 		
+	}
+	
+	/**
+	 * Method to generate HQMF XML for date time attributes
+	 * @param childNode
+	 * @param dataCriteriaElem
+	 * @param dataCriteriaXMLProcessor
+	 * @param simpleXmlprocessor
+	 * @param attributeQDMNode
+	 */
+	private void generateDateTimeAttributes(Node childNode,
+			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
+		
+		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+		String attrDate = (String) attributeQDMNode.getUserData(ATTRIBUTE_DATE);
+		
+		String timeTagName = "";
+		if(attrName.equals(START_DATETIME)){
+			timeTagName = LOW;
+		}else if(attrName.equals(STOP_DATETIME)){
+			timeTagName = HIGH;
+		}
+		
+		Element effectiveTimeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(EFFECTIVE_TIME);
+		effectiveTimeNode.setAttribute(XSI_TYPE, "IVL_TS");
+				
+		if(CHECK_IF_PRESENT.equals(attrMode)){
+			
+			if(timeTagName.length() > 0){
+				Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
+				timeTagNode.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+				effectiveTimeNode.appendChild(timeTagNode);
+			}
+		}else if(attrMode.startsWith("Less Than") || attrMode.startsWith("Greater Than") || attrMode.equals("Equal To")){
+			
+			if(attrMode.equals("Equal To")){
+				if(timeTagName.length() > 0){
+					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
+					timeTagNode.setAttribute(FLAVOR_ID, attrDate);
+					effectiveTimeNode.appendChild(timeTagNode);
+				}
+			}else if(attrMode.startsWith("Greater Than")){
+				if(timeTagName.length() > 0){
+					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
+					Element uncertainRangeNode = dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+					if(attrMode.equals("Greater Than")){
+						uncertainRangeNode.setAttribute("lowClosed", "false");
+					}
+					Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+					lowNode.setAttribute(XSI_TYPE, "TS");
+					lowNode.setAttribute(VALUE, attrDate);
+					
+					Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+					highNode.setAttribute(XSI_TYPE, "TS");
+					highNode.setAttribute("nullFlavor", "PINF");
+					
+					uncertainRangeNode.appendChild(lowNode);
+					uncertainRangeNode.appendChild(highNode);
+					timeTagNode.appendChild(uncertainRangeNode);
+					effectiveTimeNode.appendChild(timeTagNode);
+				}
+			}else if(attrMode.startsWith("Less Than")){
+				if(timeTagName.length() > 0){
+					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
+					Element uncertainRangeNode = dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+					if(attrMode.equals("Less Than")){
+						uncertainRangeNode.setAttribute("highClosed", "false");
+					}
+					Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+					lowNode.setAttribute(XSI_TYPE, "TS");
+					lowNode.setAttribute("nullFlavor", "NINF");
+					
+					Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+					highNode.setAttribute(XSI_TYPE, "TS");
+					highNode.setAttribute(VALUE, attrDate);
+					
+					uncertainRangeNode.appendChild(lowNode);
+					uncertainRangeNode.appendChild(highNode);
+					timeTagNode.appendChild(uncertainRangeNode);
+					effectiveTimeNode.appendChild(timeTagNode);
+				}
+			}
+		}
+		
+		/**
+		 * If effectiveTimeNode has any child nodes then add it to the main dataCriteriaNode.
+		 */
+		if(effectiveTimeNode.hasChildNodes()){
+			NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");
+			if(nodeList != null && nodeList.getLength() > 0){
+				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
+			}else{
+				dataCriteriaElem.appendChild(effectiveTimeNode);
+			}
+		}
 	}
 	
 	/**

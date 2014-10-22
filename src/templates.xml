@@ -35,8 +35,8 @@
     <!-- diagnosis -->
     <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-active">diagnosis, active</template>
     <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.5.4" codeSystemName="LOINC" codeDisplayName="Family History">diagnosis, family history</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis">diagnosis, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis">diagnosis, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-inactive">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-resolved">diagnosis, resolved</template>
     
     <!-- diagnostic study -->
     <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion">diagnostic study, adverse event</template>
@@ -179,47 +179,48 @@
     <template target="priorityCode" flavorId="ANY.NONNULL">ordinality-check if present</template>
     
     <communication-FromPatient-ToProvider>
-		<participation typeCode="AUT">
-			<role classCode="PAT"></role>
-		</participation>
-		<participation typeCode="IRCP">
-			<role classCode="ASSIGNED">
-				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-					<displayName value="Medical Practitioner" />
-				</code>
-			</role>
-		</participation>
+	<participation typeCode="AUT">
+		<role classCode="PAT"></role>
+	</participation>
+	<participation typeCode="IRCP">
+		<role classCode="ASSIGNED">
+			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+				<displayName value="Medical Practitioner" />
+			</code>
+		</role>
+	</participation>
 	</communication-FromPatient-ToProvider>
 	
 	<communication-FromProvider-ToPatient>
-	    <participation typeCode="IRCP">
-			<role classCode="PAT"/>
-		</participation>
-		<participation typeCode="AUT">
-			<role classCode="ASSIGNED">
-				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-					<displayName value="Medical Practitioner" />
-				</code>
-			</role>
-		</participation>
+	 <participation typeCode="IRCP">
+		<role classCode="PAT"/>
+	</participation>
+	<participation typeCode="AUT">
+		<role classCode="ASSIGNED">
+			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+				<displayName value="Medical Practitioner" />
+			</code>
+		</role>
+	</participation>
 	</communication-FromProvider-ToPatient>
 	
 	<communication-FromProvider-ToProvider>
-		<participation typeCode="IRCP">
-			<role classCode="ASSIGNED">
-				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-					<displayName value="Medical Practitioner" />
-				</code>
-			</role>
-		</participation>
-		<participation typeCode="AUT">
-			<role classCode="ASSIGNED">
-				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-					<displayName value="Medical Practitioner" />
-				</code>
-			</role>
-		</participation>
+	<participation typeCode="IRCP">
+		<role classCode="ASSIGNED">
+			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+				<displayName value="Medical Practitioner" />
+			</code>
+		</role>
+	</participation>
+	<participation typeCode="AUT">
+		<role classCode="ASSIGNED">
+			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+				<displayName value="Medical Practitioner" />
+			</code>
+		</role>
+	</participation>
 	</communication-FromProvider-ToProvider>
+    
     <diagnosis-active changeAttribute ="id">
 	<outboundRelationship typeCode="REFR">
 		<observationCriteria classCode="OBS" moodCode="EVN">
@@ -240,4 +241,43 @@
 		</observationCriteria>
 	</outboundRelationship>
     </diagnosis-active>
+    
+    <diagnosis-inactive changeAttribute ="id">
+    <outboundRelationship typeCode="REFR">
+        <observationCriteria classCode="OBS" moodCode="EVN">
+            <templateId>
+                <item root="2.16.840.1.113883.10.20.28.3.94"/>
+                <item root="2.16.840.1.113883.10.20.28.3.96"/>
+            </templateId>
+            <id root="$UUID" extension="statusinactive"/>
+            <code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+                codeSystemName="LOINC">
+                <displayName value="Status"/>
+            </code>
+            <title value="Status Inactive"/>
+            <value xsi:type="CD" code="73425007" codeSystem="2.16.840.1.113883.6.96"
+                codeSystemName="SNOMED CT">
+                <displayName value="Inactive"/>
+            </value>
+        </observationCriteria>
+    </outboundRelationship>
+    </diagnosis-inactive>
+    <diagnosis-resolved changeAttribute ="id">
+    <outboundRelationship typeCode="REFR">
+	   <observationCriteria classCode="OBS" moodCode="EVN">
+		  <templateId>
+			 <item root="2.16.840.1.113883.10.20.28.3.94"/>
+			 <item root="2.16.840.1.113883.10.20.28.3.97"/>
+		  </templateId>
+		  <id root="$UUID" extension="statusresolved" />
+		  <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+			<displayName value="Status"/>
+		  </code>
+		  <title value="Status Resolved"/>
+		  <value xsi:type="CD" code="413322009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+			<displayName value="Resolved"/>
+		</value>
+	   </observationCriteria>
+    </outboundRelationship>
+    </diagnosis-resolved>
 </templates>

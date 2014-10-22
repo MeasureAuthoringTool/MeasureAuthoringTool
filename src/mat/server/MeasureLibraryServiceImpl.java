@@ -3895,23 +3895,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return measureSteward;
 		
 	}
-	
-	private String getStopDate() {
-		String stopDate = "12/31/".concat(getCurrentYear());
-		return stopDate;
-	}
-
-	private String getStartDate() {
-		String startDate = "01/01/".concat(getCurrentYear());
-		return startDate;
-	}
-	
-	private String getCurrentYear(){
-		Calendar now = Calendar.getInstance();
-		int year = now.get(Calendar.YEAR);
-		String currentYear = String.valueOf(year);
-		return currentYear;
-	}
-	
+		
 }
 

@@ -834,13 +834,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()+" "+attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue()+" Value Set");
 						valueElem.appendChild(displayNameElem);
 						targetSiteCodeElement.appendChild(valueElem);
-						Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
+						Node outBoundElement =  dataCriteriaElem.getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
 						Node parentOfOutBoundElement = outBoundElement.getParentNode();
 						parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
 					} else if(templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null){
 						String flavorIdValue = templateNode.getAttributes().getNamedItem(FLAVOR_ID).getNodeValue();
 						targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
-						Node outBoundElement =  dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
+						Node outBoundElement =  dataCriteriaElem.getElementsByTagName(OUTBOUND_RELATIONSHIP).item(0);
 						Node parentOfOutBoundElement = outBoundElement.getParentNode();
 						parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
 					}

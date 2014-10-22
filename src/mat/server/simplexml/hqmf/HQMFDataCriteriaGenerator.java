@@ -32,17 +32,17 @@ import org.w3c.dom.Text;
 public class HQMFDataCriteriaGenerator implements Generator {
 	
 	private static final String HIGH = "high";
-
+	
 	private static final String STOP_DATETIME = "stop datetime";
-
+	
 	private static final String START_DATETIME = "start datetime";
-
+	
 	private static final String FLAVOR_ID = "flavorId";
-
+	
 	private static final String LOW = "low";
-
+	
 	private static final String EFFECTIVE_TIME = "effectiveTime";
-
+	
 	private static final String ATTRIBUTE_UUID = "attributeUUID";
 	
 	private static final String RELATED_TO = "related to";
@@ -105,7 +105,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private static final String ATTRIBUTE_NAME = "attributeName";
 	
 	private static final String NEGATION_RATIONALE = "negation rationale";
-
+	
 	private static final String ATTRIBUTE_DATE = "attrDate";
 	
 	/** The x path. */
@@ -269,9 +269,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, NodeList qdmAttributeNodeList) throws XPathExpressionException {
 		
-//		if(qdmAttributeNodeList == null){
-//			return;
-//		}
+		//		if(qdmAttributeNodeList == null){
+		//			return;
+		//		}
 		
 		if(qdmAttributeNodeList != null){
 			for(int i=0;i<qdmAttributeNodeList.getLength();i++){
@@ -566,14 +566,25 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		idElem.setAttribute(ROOT, rootValue);
 		idElem.setAttribute("extension", qdmLocalVariableName);
 		dataCriteriaElem.appendChild(idElem);
-		//Participant attribute check in templates.xml.
+		//Participant data type check in templates.xml.
 		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
-		if (!isPart) {
+		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
+		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
+		if (!isPart && !isPatientChar) {
 			Element codeElement = createCodeForDatatype(templateNode,
 					dataCriteriaXMLProcessor);
 			if (codeElement != null) {
 				dataCriteriaElem.appendChild(codeElement);
 			}
+			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, dataType);
+			dataCriteriaElem.appendChild(titleElem);
+		} else if (isPatientChar) {
+			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(CODE);
+			codeElem.setAttribute("valueSetId",qdmOidValue);
+			dataCriteriaElem.appendChild(codeElem);
 		} else  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
@@ -587,16 +598,17 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
+			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, dataType);
+			dataCriteriaElem.appendChild(titleElem);
 		}
-		Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement(TITLE);
-		titleElem.setAttribute(VALUE, dataType);
-		dataCriteriaElem.appendChild(titleElem);
+		
 		Element statusCodeElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement("statusCode");
 		statusCodeElem.setAttribute(CODE, statusValue);
 		dataCriteriaElem.appendChild(statusCodeElem);
-		if (!isPart) {
+		if (!isPart && !isPatientChar) {
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(VALUE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -609,7 +621,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			valueElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(valueElem);
-		} else {
+		} else if(isPart) {
 			String subTemplateName = templateNode.getAttributes().getNamedItem("isPart").getNodeValue();
 			NodeList subTemplateNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
 					+ subTemplateName + "/child::node()");
@@ -684,9 +696,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			generateDateTimeAttributes(childNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode)){
-				//handle "Value Set" and "Check If Present" mode
-				generateOtherAttributes(childNode, dataCriteriaElem,
-						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+			//handle "Value Set" and "Check If Present" mode
+			generateOtherAttributes(childNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}
 	}
 	
@@ -953,7 +965,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		Element effectiveTimeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(EFFECTIVE_TIME);
 		effectiveTimeNode.setAttribute(XSI_TYPE, "IVL_TS");
-				
+		
 		if(CHECK_IF_PRESENT.equals(attrMode)){
 			
 			if(timeTagName.length() > 0){
@@ -1017,7 +1029,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		 */
 		if(effectiveTimeNode.hasChildNodes()){
 			NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");
-			if(nodeList != null && nodeList.getLength() > 0){
+			if((nodeList != null) && (nodeList.getLength() > 0)){
 				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
 			}else{
 				dataCriteriaElem.appendChild(effectiveTimeNode);
@@ -1050,8 +1062,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-		String outputXmlString = out.toString()
-				.replaceAll("<!--", "\n<!--").replaceAll("-->", "-->\n");
+		String outputXmlString = out.toString().
+				replaceAll("<!--", "\n<!--").replaceAll("-->", "-->\n");
 		return outputXmlString;
 	}
 	

@@ -167,7 +167,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation dosage</template>
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation duration</template>
     <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true">reaction</template>
-    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false">reason</template>
+    <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">reason</template>
     <template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</template>
     <template class="OBS" mood="EVN" type="REFR" inv="false" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
     <template class="OBS" mood="GOL" type="GOAL" valueType="CD" code="394617004" codesystem="2.16.840.1.113883.6.96" displayNameValue="Result">target outcome</template>

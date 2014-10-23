@@ -3,6 +3,7 @@
  */
 package mat.client.util;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ClientConstants.
  * 
@@ -95,10 +96,14 @@ public class ClientConstants {
 	/** The Constant TITLE_MY_ACCOUNT. */
 	public final static String TITLE_MY_ACCOUNT="MAT Account";
 	
+	/** The Constant TITLE_ADMIN_ACCOUNT. */
 	public final static String TITLE_ADMIN_ACCOUNT="Administrator Account";
 	
 	/** The Constant TITLE_UMLS. */
 	public final static String TITLE_UMLS="UMLS Account";
+	
+	/** The Constant TITLE_WELCOME. */
+	public final static String TITLE_WELCOME="WelcomeUser";
 	
 	/** The Constant TITLE_VALUE_SET_CHANGE_OWNERSHIP. */
 	public final static String TITLE_VALUE_SET_CHANGE_OWNERSHIP ="Value Set Ownership";

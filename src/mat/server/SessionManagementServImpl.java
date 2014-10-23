@@ -6,6 +6,7 @@ import mat.model.User;
 import mat.server.service.UserService;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SessionManagementServImpl.
  */
@@ -30,6 +31,7 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 		result.userEmail = user.getEmailAddress();
 		result.signInDate = user.getSignInDate();
 		result.signOutDate = user.getSignOutDate();
+		result.userFirstName = user.getFirstName();
 		return result;
 	}
 	

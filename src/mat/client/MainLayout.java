@@ -7,6 +7,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SpacerWidget;
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
 
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MainLayout.
  */
@@ -56,11 +58,13 @@ public abstract class MainLayout {
 	protected static FocusableWidget skipListHolder;
 	
 	/** The umls active status label. */
-	static HTML umlsActiveStatusLabel;
+	static HTML umlsActiveStatusLabel;	
 	
 	/** The umls inactive status label. */
 	static HTML umlsInactiveStatusLabel;
 	
+	/** The welcome user label. */
+	static HTML welcomeUserLabel;	
 	/**
 	 * clear the loading panel
 	 * remove css style
@@ -147,8 +151,7 @@ public abstract class MainLayout {
 		getShowUMLSState().add(inActiveUmlsImage);
 		getShowUMLSState().add(umlsInactiveStatusLabel);
 		getShowUMLSState().getElement().setAttribute("role", "alert");
-	}
-	
+	}	
 	
 	/**
 	 * Show loading message.
@@ -192,6 +195,9 @@ public abstract class MainLayout {
 	/** The log out panel. */
 	private HorizontalFlowPanel logOutPanel;
 	
+	/** The welcome user panel. */
+	private HorizontalFlowPanel welcomeUserPanel;
+	
 	/**
 	 * Builds the content panel.
 	 *
@@ -204,8 +210,7 @@ public abstract class MainLayout {
 		content.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		content.getElement().setAttribute("aria-live", "assertive");
 		content.getElement().setAttribute("aria-atomic", "true");
-		content.getElement().setAttribute("aria-relevant", "all");
-		
+		content.getElement().setAttribute("aria-relevant", "all");		
 		content.setStylePrimaryName("mainContentPanel");
 		setId(content, "content");
 		Mat.removeInputBoxFromFocusPanel(content.getElement());
@@ -282,17 +287,21 @@ public abstract class MainLayout {
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
+		welcomeUserPanel = new HorizontalFlowPanel();
+		welcomeUserPanel.getElement().setId("welcomeUserPanel_HorizontalFlowPanel");
+		welcomeUserPanel.setStyleName("umlsStatePanel");
 		showUMLSState = buildUMLStatePanel();
 		showUMLSState.addStyleName("umlsStatePanel");
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(logOutPanel);
+		vp.add(logOutPanel);		
 		vp.add(showUMLSState);
+		vp.add(welcomeUserPanel);
+		vp.add(new SpacerWidget());
 		vp.addStyleName("logoutAndUMLSPanel");
-		topBanner.add(vp);
-		
+		topBanner.add(vp);		
 		return topBanner;
-	}
-	
+	}	
+
 	/**
 	 * Builds the uml state panel.
 	 *
@@ -424,6 +433,21 @@ public abstract class MainLayout {
 	 */
 	protected void setLogout(final HorizontalFlowPanel logOutPanel){
 		this.logOutPanel = logOutPanel;
+	}	
+
+	/**
+	 * Gets the welcome user panel.
+	 *
+	 * @param userFirstName the user first name
+	 * @return the welcome user panel
+	 */
+	public HorizontalFlowPanel getWelcomeUserPanel(String userFirstName) {		
+		welcomeUserLabel = new HTML("<h9><b>Welcome "+ userFirstName+"</b></h9>");
+		welcomeUserLabel.getElement().setId("welcomeUserLabel_HTML");
+		welcomeUserLabel.getElement().setAttribute("tabIndex", "0");		
+		welcomeUserLabel.setStylePrimaryName("htmlDescription");
+		welcomeUserPanel.add(welcomeUserLabel);
+		return welcomeUserPanel;
 	}
 	
 }

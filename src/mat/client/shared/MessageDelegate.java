@@ -11,6 +11,9 @@ import mat.shared.ConstantMessages;
  */
 public class MessageDelegate {
 	
+	/** The Constant WELCOME_MESSAGE. */
+	public static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
+	
 	/** The Constant ALERT_LOADING_MESSAGE. */
 	public static final String ALERT_LOADING_MESSAGE = "Please wait until loading is complete.";
 	
@@ -471,8 +474,10 @@ public class MessageDelegate {
 	/** The ratio too few populations. */
 	private final String RATIO_TOO_FEW_POPULATIONS = "For a Ratio measure, a grouping must contain at least one Population.";
 	
+	/** The invalid logic population work space. */
 	private final String INVALID_LOGIC_POPULATION_WORK_SPACE = "Measure Logic is incomplete.Please validate your measure logic in both Population Workspace and Clause Workspace.";
 	
+	/** The invalidlogic clause work space. */
 	private final String INVALIDLOGIC_CLAUSE_WORK_SPACE = "Clause logic is incomplete.Please validate your Clause logic.";
 	/**
 	 * Gets the ratio too few populations.
@@ -598,6 +603,7 @@ public class MessageDelegate {
 	/** The removed functions error message. */
 	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Highlighted clause contains DATETIMEDIFF Function.";
 	
+	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE ="Invalid Clause(s) used in Logic.";
 	/**
 	 * Gets the component measures added successfully.
@@ -2142,11 +2148,18 @@ public class MessageDelegate {
 		return EMAIL_ID_REQUIRED;
 	}
 	
+	/**
+	 * Gets the population workspace datetimediff error message.
+	 *
+	 * @return the population workspace datetimediff error message
+	 */
 	public String getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE() {
 		return POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE;
 	}
 	
 	/**
+	 * Gets the invalid logic population work space.
+	 *
 	 * @return the iNVALID_LOGIC_POPULATION_WORK_SPACE
 	 */
 	public String getINVALID_LOGIC_POPULATION_WORK_SPACE() {
@@ -2154,6 +2167,8 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the invalidlogic clause work space.
+	 *
 	 * @return the iNVALIDLOGIC_CLAUSE_WORK_SPACE
 	 */
 	public String getINVALIDLOGIC_CLAUSE_WORK_SPACE() {
@@ -2161,10 +2176,21 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the clause work space invalid nested clause.
+	 *
 	 * @return the cLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE
 	 */
 	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE() {
 		return CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE;
+	}
+
+	/**
+	 * Gets the welcome message.
+	 *
+	 * @return the welcome message
+	 */
+	public static String getWelcomeMessage() {
+		return WELCOME_MESSAGE;
 	}
 	
 	

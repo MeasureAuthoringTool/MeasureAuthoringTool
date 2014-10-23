@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface SessionManagementService.
  */
@@ -34,6 +35,9 @@ public interface SessionManagementService extends RemoteService{
 		
 		/** The login id. */
 		public String loginId;
+		
+		/** The user first name. */
+		public String userFirstName;
 	}
 	
 	/**

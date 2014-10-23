@@ -31,6 +31,7 @@ import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginView;
@@ -65,6 +66,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -189,7 +191,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				else{
 					MatContext.get().setUserSignInDate(result.userId);
 					MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
-					loadMatWidgets();
+					loadMatWidgets(result.userFirstName, isAlreadySignedIn);
 				}
 			}
 		}
@@ -280,11 +282,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	/**
 	 * Builds the umls widget.
 	 *
+	 * @param userFirstName the user first name
+	 * @param isAlreadySignedIn the is already signed in
 	 * @return the mat presenter
 	 */
-	private MatPresenter buildUMLSWidget(){
+	private MatPresenter buildUMLSWidget(String userFirstName, boolean isAlreadySignedIn){
 		UmlsLoginView umlsLoginView = new UmlsLoginView();
-		ManageUmlsPresenter manageUmlsPresenter = new ManageUmlsPresenter(umlsLoginView);
+		ManageUmlsPresenter manageUmlsPresenter = new ManageUmlsPresenter(umlsLoginView, userFirstName, isAlreadySignedIn);
 		return manageUmlsPresenter;
 	}
 	
@@ -440,9 +444,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	
 	/**
 	 * Load mat widgets.
+	 *
+	 * @param userFirstName the user first name
+	 * @param isAlreadySignedIn the is already signed in
 	 */
 	@SuppressWarnings("unchecked")
-	private void loadMatWidgets(){
+	private void loadMatWidgets(String userFirstName, boolean isAlreadySignedIn){
 		//US212 begin updating user sign in time at regular intervals
 		MatContext.get().startUserLockUpdate();
 		//US154 LOGIN_EVENT
@@ -472,6 +479,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		tabIndex = 0;
 		
 		currentUserRole = MatContext.get().getLoggedInUserRole();
+		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			
 			
@@ -491,7 +499,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			
 			title= ClientConstants.TITLE_UMLS;
-			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget();
+			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget(userFirstName, isAlreadySignedIn);
 			tabIndex = mainTabLayout.addPresenter(manageUmlsPresenter, mainTabLayout.fmt.normalTitle(title));
 			
 			hideUMLSActive();
@@ -516,7 +524,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
-			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));			
+			
 		}
 		else {
 			Window.alert("Unrecognized user role " + currentUserRole);
@@ -536,6 +545,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		});
 		
 		getLogoutPanel().add(signout);
+		getWelcomeUserPanel(userFirstName);
 		/*
 		 * no delay desired when hiding loading message here
 		 * tab selection below will fail if loading

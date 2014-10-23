@@ -389,6 +389,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		loginModel.setUserId(userDetails.getId());
 		loginModel.setEmail(userDetails.getEmailAddress());
 		loginModel.setLoginId(userDetails.getLoginId());
+		loginModel.setFirstName(userDetails.getUsername());
 		return loginModel;
 	}
 	//invokes On Success User Login and displays ChartReport

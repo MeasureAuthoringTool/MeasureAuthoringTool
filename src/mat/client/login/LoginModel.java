@@ -6,10 +6,14 @@ import mat.model.SecurityRole;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class LoginModel.
  */
 public class LoginModel implements IsSerializable{
+	
+	/** The first name. */
+	private String firstName;
 
 	/** The Role. */
 	private SecurityRole Role;
@@ -340,6 +344,24 @@ public class LoginModel implements IsSerializable{
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	/**
+	 * Gets the first name.
+	 *
+	 * @return the first name
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * Sets the first name.
+	 *
+	 * @param firstName the new first name
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 	
 }

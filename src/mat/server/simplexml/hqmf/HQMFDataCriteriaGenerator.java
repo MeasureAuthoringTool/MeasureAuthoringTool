@@ -2,6 +2,7 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -11,9 +12,11 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -979,7 +982,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if(attrMode.equals("Equal To")){
 				if(timeTagName.length() > 0){
 					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
-					timeTagNode.setAttribute(FLAVOR_ID, attrDate);
+					timeTagNode.setAttribute(VALUE, attrDate);
 					effectiveTimeNode.appendChild(timeTagNode);
 				}
 			}else if(attrMode.startsWith("Greater Than")){

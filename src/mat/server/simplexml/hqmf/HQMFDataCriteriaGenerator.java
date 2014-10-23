@@ -569,6 +569,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
 		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
+		// Add value tag in entry element.
+		String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
 		if (!isPart && !isPatientChar) {
 			Element codeElement = createCodeForDatatype(templateNode,
 					dataCriteriaXMLProcessor);
@@ -582,7 +584,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		} else if (isPatientChar) {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
-			codeElem.setAttribute("valueSetId",qdmOidValue);
+			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(),qdmOidValue);
 			dataCriteriaElem.appendChild(codeElem);
 		} else  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -607,7 +609,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getOriginalDoc().createElement("statusCode");
 		statusCodeElem.setAttribute(CODE, statusValue);
 		dataCriteriaElem.appendChild(statusCodeElem);
-		if (!isPart && !isPatientChar) {
+		if ("true".equalsIgnoreCase(addValueSetElement)) {
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(VALUE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");

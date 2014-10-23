@@ -2,7 +2,6 @@ package mat.server.simplexml.hqmf;
 
 import java.io.StringWriter;
 import java.io.Writer;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -12,11 +11,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -572,9 +569,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
 		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
+		
+		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
+		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
 		// Add value tag in entry element.
 		String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
-		if (!isPart && !isPatientChar) {
+		if (!isPart && !isPatientChar && !isFunctional) {
 			Element codeElement = createCodeForDatatype(templateNode,
 					dataCriteriaXMLProcessor);
 			if (codeElement != null) {
@@ -612,6 +612,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				.getOriginalDoc().createElement("statusCode");
 		statusCodeElem.setAttribute(CODE, statusValue);
 		dataCriteriaElem.appendChild(statusCodeElem);
+		
 		if ("true".equalsIgnoreCase(addValueSetElement)) {
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(VALUE);
@@ -625,7 +626,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			valueElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(valueElem);
-		} else if(isPart) {
+		}
+		
+		if(isPart) {
 			String subTemplateName = templateNode.getAttributes().getNamedItem("isPart").getNodeValue();
 			NodeList subTemplateNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
 					+ subTemplateName + "/child::node()");

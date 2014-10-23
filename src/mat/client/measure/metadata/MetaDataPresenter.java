@@ -655,6 +655,11 @@ public class MetaDataPresenter  implements MatPresenter {
 		 */
 		CustomCheckBox getCalenderYear();
 
+		/**
+		 * Sets the measurement period buttons visible.
+		 *
+		 * @param b the new measurement period buttons visible
+		 */
 		void setMeasurementPeriodButtonsVisible(boolean b);
 	}
 	
@@ -956,12 +961,12 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * @param pcButtons the pc buttons
 	 * @param lp the lp
 	 */
-	public MetaDataPresenter(MetaDataDetailDisplay mDisplay, AddEditComponentMeasuresView cmDisplay, HasVisible pcButtons, ListBoxCodeProvider lp) {
+	public MetaDataPresenter(MetaDataDetailDisplay mDisplay, HasVisible pcButtons, ListBoxCodeProvider lp) {
 		previousContinueButtons = pcButtons;
 		this.metaDataDisplay = mDisplay;
 		//MAT-4898
 		//this.addEditAuthorsDisplay = aDisplay;
-		this.addEditComponentMeasuresDisplay = cmDisplay;
+		//this.addEditComponentMeasuresDisplay = cmDisplay;
 		//getAllOrganizations();
 		//getMeasureStewardList(lp);
 		HandlerManager eventBus = MatContext.get().getEventBus();
@@ -977,7 +982,6 @@ public class MetaDataPresenter  implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				getMetaDataDisplay().getSaveErrorMsg().clear();
-				addEditComponentMeasuresDisplay.getSearchString().setValue("");
 				displayAddEditComponentMeasures();
 			}
 		});
@@ -1024,16 +1028,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			}
 		});*/
 		
-		addEditComponentMeasuresDisplay.getReturnButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				isSubView = false;
-				metaDataDisplay.setSaveButtonEnabled(editable);
-				getComponentMeasures();
-				backToDetail();
-			}
-		} );
+		
 //		
 //		addEditAuthorsDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 //			@Override
@@ -1140,22 +1135,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			}
 		});
 		
-		addEditComponentMeasuresDisplay.getAddtoComponentMeasuresButtonHandler().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
-				metaDataDisplay.setComponentMeasureSelectedList(addEditComponentMeasuresDisplay.getComponentMeasuresList());
-			}
-		});
-		addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, PAGE_SIZE, 1);
-			}
-		});
+		
 		
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
@@ -1745,6 +1725,9 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Display add edit component measures.
 	 */
 	private void displayAddEditComponentMeasures() {
+		AddEditComponentMeasuresView cmDisplay = new AddEditComponentMeasuresView();
+		this.addEditComponentMeasuresDisplay = cmDisplay;
+		addEditComponenetMeasuresClickHandlers();
 		isSubView = true;
 		clearMessages();
 		VerticalPanel vPanel = new VerticalPanel();
@@ -1759,6 +1742,57 @@ public class MetaDataPresenter  implements MatPresenter {
 		previousContinueButtons.setVisible(false);
 		Mat.focusSkipLists("MeasureComposer");
 	}
+
+	/**
+	 * Adds the edit componenet measures click handlers.
+	 */
+	private void addEditComponenetMeasuresClickHandlers() {
+		//AddToComponentMeasures Button clickHandler Handler
+		addEditComponentMeasuresDisplay
+				.getAddtoComponentMeasuresButtonHandler().addClickHandler(
+						new ClickHandler() {
+
+							@Override
+							public void onClick(ClickEvent event) {
+								addEditComponentMeasuresDisplay
+										.getSuccessMessageDisplay()
+										.setMessage(
+												MatContext
+														.get()
+														.getMessageDelegate()
+														.getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
+								metaDataDisplay
+										.setComponentMeasureSelectedList(addEditComponentMeasuresDisplay
+												.getComponentMeasuresList());
+							}
+						});
+		//Component Measures Search clickHandler handler
+		addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(
+				new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+
+						searchMeasuresList(addEditComponentMeasuresDisplay
+								.getSearchString().getValue(), 1, PAGE_SIZE, 1);
+					}
+				});
+
+		//component Measures Return click handler
+		addEditComponentMeasuresDisplay.getReturnButton().addClickHandler(
+				new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+						isSubView = false;
+						metaDataDisplay.setSaveButtonEnabled(editable);
+						getComponentMeasures();
+						backToDetail();
+					}
+				});
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */

@@ -443,19 +443,21 @@ left:50px;
 .continueButton{
 	float: right;
 	}
-
+.successIcon{
+	padding-right:2px;
+}
 .topBanner {
 	/*
     position: absolute; 
 	: 0pt; 
 	top: 0pt;
 	*/ 
-	overflow: visible; 
-	height: 75px; 
+	overflow: visible; 	 
 	/*border: 1px solid rgb(160, 160, 160);*/ 
 	background-image: url('images/hpgradient_small.jpg');
-	background-repeat: repeat-x;
-	background-position: left top; 
+	background-size: 100% 100%;
+	background-repeat: repeat-x;		
+	background-position: left top;	
     padding-left:25px;
     padding-right:25px;
     -moz-box-sizing: border-box; 
@@ -464,7 +466,12 @@ left:50px;
 	/*margin-left: 2px;*/ 
     margin-right: 2px; 
     margin-bottom: 10px; 
-    width: 100%;
+    width:100%;
+   
+    /*-moz-background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
+        src='images/hpgradient_small.jpg',
+        sizingMethod='scale');*/
    
 }
 
@@ -739,7 +746,20 @@ left:50px;
     padding: 6px 6px 6px 30px;
     text-align: left;
 }
-
+.matLoginSuccessMessage {
+	/*color: green;
+	font-size: .8em;
+	font-weight: bold;*/
+	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
+    border: 1px solid #ACDFA7;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto -5px;    
+    padding: 6px; 
+    text-align: left;
+    width: 100%;
+}
 .successMessageCommentPanel {
     /*color: green;
     font-size: .8em;
@@ -1151,7 +1171,7 @@ padding: 2px;
 .logoutPanel{
 	float: right;
 	position: relative;
-	padding-top: 12px;
+	padding-top: 5px;
 	cursor: pointer;
 	font-size:small;
 }
@@ -1166,7 +1186,7 @@ padding: 2px;
 .logoutAndUMLSPanel{
 	float: right;
 	position: relative;
-	padding-top: 12px;
+	/*padding-top: 12px;*/
 	font-size:small;
 }
 
@@ -1840,7 +1860,6 @@ padding: 2px;
 	position:relative;
 	/* font-style:Italic; */
 }
-
 .imageMiddleAlign{
 	vertical-align:middle;	
 }

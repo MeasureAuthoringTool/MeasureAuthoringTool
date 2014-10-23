@@ -52,10 +52,10 @@
     <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueTag="true">encounter, recommended</template>
     
     <!-- functional status -->
-    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false">functional status, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.30" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false">functional status, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.31" class="OBS" mood="INT" status="ACTIVE" addValueTag="false">functional status, recommended</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.32" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" addValueTag="true">functional status, result</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" isFunctional = "true" addValueTag="false">functional status, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.30" class="OBS" mood="EVN" status="COMPLETED" isFunctional = "true" addValueTag="false">functional status, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.31" class="OBS" mood="INT" status="ACTIVE" isFunctional = "true" addValueTag="false">functional status, recommended</template>
+    
         
     <!-- Individual Characteristic -->
     <!-- patient characteristic -->

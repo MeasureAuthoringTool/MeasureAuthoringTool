@@ -565,31 +565,63 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		idElem.setAttribute(ROOT, rootValue);
 		idElem.setAttribute("extension", qdmLocalVariableName);
 		dataCriteriaElem.appendChild(idElem);
+		
+		String isAddCodeTag = templateNode.getAttributes().getNamedItem("addCodeTag").getNodeValue();
+		if ("true".equalsIgnoreCase(isAddCodeTag)) { // Add Code Element to DataCriteria Element.
+			addCodeElementToDataCriteriaElement(templateNode, dataCriteriaXMLProcessor
+					, dataType, qdmOidValue, qdmName, qdmTaxonomy, dataCriteriaElem);
+		}
+		Element statusCodeElem = dataCriteriaXMLProcessor
+				.getOriginalDoc().createElement("statusCode");
+		statusCodeElem.setAttribute(CODE, statusValue);
+		dataCriteriaElem.appendChild(statusCodeElem);
+		// Add value tag in entry element.
+		String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
+		if ("true".equalsIgnoreCase(addValueSetElement)) {
+			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(VALUE);
+			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
+			if (valueTypeAttr != null) {
+				valueElem.setAttribute(XSI_TYPE, valueTypeAttr.getNodeValue());
+			}
+			valueElem.setAttribute("valueSet", qdmOidValue);
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			valueElem.appendChild(displayNameElem);
+			dataCriteriaElem.appendChild(valueElem);
+		}
+		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
+			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmOidValue);
+		}
+		//checkForAttributes
+		if (attributeQDMNode != null) {
+			createDataCriteriaForAttributes(qdmNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		}
+		
+	}
+	
+	/**
+	 * Add Code Element To data Criteria Element based on condition.
+	 * @param templateNode - Node
+	 * @param dataCriteriaXMLProcessor - XmlProcessor
+	 * @param dataType - String
+	 * @param qdmOidValue - String
+	 * @param qdmName - String
+	 * @param qdmTaxonomy - String
+	 * @param dataCriteriaElem - Element
+	 */
+	private void addCodeElementToDataCriteriaElement(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, String dataType,
+			String qdmOidValue, String qdmName, String qdmTaxonomy, Element dataCriteriaElem) {
 		//Participant data type check in templates.xml.
 		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
 		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
-		
 		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
-		// Add value tag in entry element.
-		String addValueSetElement = templateNode.getAttributes().getNamedItem("addValueTag").getNodeValue();
-		if (!isPart && !isPatientChar && !isFunctional) {
-			Element codeElement = createCodeForDatatype(templateNode,
-					dataCriteriaXMLProcessor);
-			if (codeElement != null) {
-				dataCriteriaElem.appendChild(codeElement);
-			}
-			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(TITLE);
-			titleElem.setAttribute(VALUE, dataType);
-			dataCriteriaElem.appendChild(titleElem);
-		} else if (isPatientChar) {
-			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(CODE);
-			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(),qdmOidValue);
-			dataCriteriaElem.appendChild(codeElem);
-		} else  {
+		
+		if (isPart || isFunctional)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -606,73 +638,54 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					.createElement(TITLE);
 			titleElem.setAttribute(VALUE, dataType);
 			dataCriteriaElem.appendChild(titleElem);
-		}
-		
-		Element statusCodeElem = dataCriteriaXMLProcessor
-				.getOriginalDoc().createElement("statusCode");
-		statusCodeElem.setAttribute(CODE, statusValue);
-		dataCriteriaElem.appendChild(statusCodeElem);
-		
-		if ("true".equalsIgnoreCase(addValueSetElement)) {
-			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(VALUE);
-			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
-			if (valueTypeAttr != null) {
-				valueElem.setAttribute(XSI_TYPE, valueTypeAttr.getNodeValue());
+		} else if (isPatientChar) {
+			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(CODE);
+			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(), qdmOidValue);
+			dataCriteriaElem.appendChild(codeElem);
+		} else {
+			Element codeElement = createCodeForDatatype(templateNode,
+					dataCriteriaXMLProcessor);
+			if (codeElement != null) {
+				dataCriteriaElem.appendChild(codeElement);
 			}
-			valueElem.setAttribute("valueSet", qdmOidValue);
-			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
-			valueElem.appendChild(displayNameElem);
-			dataCriteriaElem.appendChild(valueElem);
+			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, dataType);
+			dataCriteriaElem.appendChild(titleElem);
 		}
-		
-		if(isPart) {
-			String subTemplateName = templateNode.getAttributes().getNamedItem("isPart").getNodeValue();
-			NodeList subTemplateNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
-					+ subTemplateName + "/child::node()");
-			for (int i = 0; i < subTemplateNode.getLength(); i++) {
-				Node childNode = subTemplateNode.item(i);
-				Node participantNode = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
-				dataCriteriaElem.appendChild(participantNode);
-			}
-		}
-		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
-			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem);
-		}
-		//checkForAttributes
-		if (attributeQDMNode != null) {
-			createDataCriteriaForAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}
-		
 	}
 	
 	/**
-	 * @param templateNode
-	 * @param dataCriteriaXMLProcessor
-	 * @param templateXMLProcessor
-	 * @param dataCriteriaElem
+	 * Add SubTemplate defined in Template.xml to data criteria Element.
+	 * @param templateNode - Node
+	 * @param dataCriteriaXMLProcessor - XmlProcessor for Data Criteria
+	 * @param templateXMLProcessor -XmlProcessor for Template Xml.
+	 * @param dataCriteriaElem - Element
 	 * @throws XPathExpressionException
 	 */
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
-			Element dataCriteriaElem) throws XPathExpressionException {
+			Element dataCriteriaElem, String valueSetOID) throws XPathExpressionException {
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
 		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
 				+ subTemplateName);
 		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
 				+ subTemplateName + "/child::node()");
-		String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
-		
-		for (String changeAttribute : attributeToBeModified) {
-			Node  attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
-					+ subTemplateName+"//"+changeAttribute);
-			if (changeAttribute.equalsIgnoreCase(ID)) {
-				attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
+			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
+			
+			for (String changeAttribute : attributeToBeModified) {
+				Node  attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
+						+ subTemplateName+"//"+changeAttribute);
+				if (changeAttribute.equalsIgnoreCase(ID)) {
+					attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+				}
+				
+				if (changeAttribute.equalsIgnoreCase(CODE)) {
+					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSet").setNodeValue(valueSetOID);
+				}
 			}
 		}
-		
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
@@ -853,7 +866,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
 					}
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
-					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem);
+					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,null);
 				}
 				return;
 			}

@@ -575,7 +575,17 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if (valueTypeAttr != null) {
 				valueElem.setAttribute(XSI_TYPE, valueTypeAttr.getNodeValue());
 			}
-			valueElem.setAttribute("valueSet", qdmOidValue);
+			
+			Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
+			Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
+			
+			if(valueCode != null && valueCodeSystem != null){
+				valueElem.setAttribute("code", valueCode.getNodeValue());
+				valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
+			}else{
+				valueElem.setAttribute("valueSet", qdmOidValue);
+			}
+			
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
@@ -658,15 +668,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, String valueSetOID) throws XPathExpressionException {
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
-		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
+		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName);
-		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/"
+		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName + "/child::node()");
 		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
 			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
 			
 			for (String changeAttribute : attributeToBeModified) {
-				Node  attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/"
+				Node  attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 						+ subTemplateName+"//"+changeAttribute);
 				if (changeAttribute.equalsIgnoreCase(ID)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
@@ -845,6 +855,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(OUTBOUND_RELATIONSHIP);
 		outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
+		
+		Node invAttribNode = templateNode.getAttributes().getNamedItem("inv");
+		if(invAttribNode != null){
+			outboundRelationshipElem.setAttribute("inversionInd", invAttribNode.getNodeValue());
+		}
 		
 		Element observationCriteriaElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(OBSERVATION_CRITERIA);

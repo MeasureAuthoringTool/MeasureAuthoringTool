@@ -72,8 +72,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">provider characteristic</template>
     
     <!-- intervention -->
-    <template oid="2.16.840.1.113883.10.20.28.3.33" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">intervention, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.34" class="ACT" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.3.4" addValueTag="true" addCodeTag="true">intervention, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.33" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-adverseEvent">intervention, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.34" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-intolerance">intervention, intolerance</template>
     <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">intervention, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">intervention, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">intervention, recommended</template>
@@ -167,7 +167,7 @@
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="103323008" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Provider Preference">provider preference</template>
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation dosage</template>
     <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false">radiation duration</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true">reaction</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true" code="263851003" valueType="CD">reaction</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">reason</template>
     <template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</template>
     <template class="OBS" mood="EVN" type="REFR" inv="false" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
@@ -179,114 +179,143 @@
     <template target="priorityCode" childTarget="item">ordinality-value set</template>
     <template target="priorityCode" flavorId="ANY.NONNULL">ordinality-check if present</template>
     
-    <communication-FromPatient-ToProvider>
-	<participation typeCode="AUT">
-		<role classCode="PAT"></role>
-	</participation>
-	<participation typeCode="IRCP">
-		<role classCode="ASSIGNED">
-			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-				<displayName value="Medical Practitioner" />
-			</code>
-		</role>
-	</participation>
+    <subtemplates>
+
+	<communication-FromPatient-ToProvider>
+		<participation typeCode="AUT">
+			<role classCode="PAT"></role>
+		</participation>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
 	</communication-FromPatient-ToProvider>
-	
+
 	<communication-FromProvider-ToPatient>
-	 <participation typeCode="IRCP">
-		<role classCode="PAT"/>
-	</participation>
-	<participation typeCode="AUT">
-		<role classCode="ASSIGNED">
-			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-				<displayName value="Medical Practitioner" />
-			</code>
-		</role>
-	</participation>
+		<participation typeCode="IRCP">
+			<role classCode="PAT" />
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
 	</communication-FromProvider-ToPatient>
-	
+
 	<communication-FromProvider-ToProvider>
-	<participation typeCode="IRCP">
-		<role classCode="ASSIGNED">
-			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-				<displayName value="Medical Practitioner" />
-			</code>
-		</role>
-	</participation>
-	<participation typeCode="AUT">
-		<role classCode="ASSIGNED">
-			<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
-				<displayName value="Medical Practitioner" />
-			</code>
-		</role>
-	</participation>
+		<participation typeCode="IRCP">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
+		<participation typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+					<displayName value="Medical Practitioner" />
+				</code>
+			</role>
+		</participation>
 	</communication-FromProvider-ToProvider>
+
+	<diagnosis-active changeAttribute="id">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" />
+					<item root="2.16.840.1.113883.10.20.28.3.95" />
+				</templateId>
+				<id root="$UUID" extension="statusactive" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Active" />
+				<value xsi:type="CD" code="55561003" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Active" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</diagnosis-active>
+
+	<diagnosis-inactive changeAttribute="id">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" />
+					<item root="2.16.840.1.113883.10.20.28.3.96" />
+				</templateId>
+				<id root="$UUID" extension="statusinactive" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Inactive" />
+				<value xsi:type="CD" code="73425007" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Inactive" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</diagnosis-inactive>
+
+	<diagnosis-resolved changeAttribute="id">
+		<outboundRelationship typeCode="REFR">
+			<observationCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.94" />
+					<item root="2.16.840.1.113883.10.20.28.3.97" />
+				</templateId>
+				<id root="$UUID" extension="statusresolved" />
+				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
+					codeSystemName="LOINC">
+					<displayName value="Status" />
+				</code>
+				<title value="Status Resolved" />
+				<value xsi:type="CD" code="413322009" codeSystem="2.16.840.1.113883.6.96"
+					codeSystemName="SNOMED CT">
+					<displayName value="Resolved" />
+				</value>
+			</observationCriteria>
+		</outboundRelationship>
+	</diagnosis-resolved>
+
+	<transfer changeAttribute="code">
+		<participation typeCode="ORG">
+			<role classCode="LOCE">
+				<code xsi:type="CD" valueSet="$valueset" />
+			</role>
+		</participation>
+	</transfer>
+	
+	<intervention-adverseEvent changeAttribute="code">
+	    <outboundRelationship typeCode="CAUS" inversionInd="true">
+			<procedureCriteria classCode="PROC" moodCode="EVN">
+				<code valueSet="$QDMElementValueSetOID"/>
+			</procedureCriteria>
+		</outboundRelationship>
+	</intervention-adverseEvent>
+	
+	<intervention-intolerance changeAttribute="code">
+		<outboundRelationship typeCode="CAUS" inversionInd="true">
+			<actCriteria classCode="OBS" moodCode="EVN">
+				<templateId>
+					<item root="2.16.840.1.113883.10.20.28.3.36"/>
+				</templateId>
+				<id root="a2faf205-f9c1-485c-8edc-c9c0021a218c"/>
+				<code valueSet="{$QDMElementValueSetOID}"/>
+				<title value="Intervention, Performed"/>
+				<statusCode code="completed"/>
+			</actCriteria>
+		</outboundRelationship>
+    </intervention-intolerance>
     
-    <diagnosis-active changeAttribute ="id">
-	<outboundRelationship typeCode="REFR">
-		<observationCriteria classCode="OBS" moodCode="EVN">
-			<templateId>
-				<item root="2.16.840.1.113883.10.20.28.3.94"/>
-				<item root="2.16.840.1.113883.10.20.28.3.95"/>
-			</templateId>
-			<id root="$UUID" extension="statusactive"/>
-			<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
-				codeSystemName="LOINC">
-				<displayName value="Status"/>
-			</code>
-			<title value="Status Active"/>
-			<value xsi:type="CD" code="55561003" codeSystem="2.16.840.1.113883.6.96"
-				codeSystemName="SNOMED CT">
-				<displayName value="Active"/>
-			</value>
-		</observationCriteria>
-	</outboundRelationship>
-    </diagnosis-active>
-    
-    <diagnosis-inactive changeAttribute ="id">
-    <outboundRelationship typeCode="REFR">
-        <observationCriteria classCode="OBS" moodCode="EVN">
-            <templateId>
-                <item root="2.16.840.1.113883.10.20.28.3.94"/>
-                <item root="2.16.840.1.113883.10.20.28.3.96"/>
-            </templateId>
-            <id root="$UUID" extension="statusinactive"/>
-            <code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
-                codeSystemName="LOINC">
-                <displayName value="Status"/>
-            </code>
-            <title value="Status Inactive"/>
-            <value xsi:type="CD" code="73425007" codeSystem="2.16.840.1.113883.6.96"
-                codeSystemName="SNOMED CT">
-                <displayName value="Inactive"/>
-            </value>
-        </observationCriteria>
-    </outboundRelationship>
-    </diagnosis-inactive>
-    <diagnosis-resolved changeAttribute ="id">
-    <outboundRelationship typeCode="REFR">
-	   <observationCriteria classCode="OBS" moodCode="EVN">
-		  <templateId>
-			 <item root="2.16.840.1.113883.10.20.28.3.94"/>
-			 <item root="2.16.840.1.113883.10.20.28.3.97"/>
-		  </templateId>
-		  <id root="$UUID" extension="statusresolved" />
-		  <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
-			<displayName value="Status"/>
-		  </code>
-		  <title value="Status Resolved"/>
-		  <value xsi:type="CD" code="413322009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-			<displayName value="Resolved"/>
-		</value>
-	   </observationCriteria>
-    </outboundRelationship>
-    </diagnosis-resolved>
-    
-    <transfer changeAttribute="code">
-    <participation typeCode="ORG">
-	<role classCode="LOCE">
-		<code xsi:type="CD" valueSet="$valueset" />
-	</role>
-    </participation>
-    </transfer>
+    </subtemplates>
 </templates>

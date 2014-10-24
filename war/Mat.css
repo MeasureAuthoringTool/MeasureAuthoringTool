@@ -455,6 +455,7 @@ left:50px;
 	overflow: visible; 	 
 	/*border: 1px solid rgb(160, 160, 160);*/ 
 	background-image: url('images/hpgradient_small.jpg');
+	/* background-size: only supported by IE 9 and +*/
 	background-size: 100% 100%;
 	background-repeat: repeat-x;		
 	background-position: left top;	
@@ -466,13 +467,7 @@ left:50px;
 	/*margin-left: 2px;*/ 
     margin-right: 2px; 
     margin-bottom: 10px; 
-    width:100%;
-   
-    /*-moz-background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='images/hpgradient_small.jpg',
-        sizingMethod='scale');*/
-   
+    width:100%;   
 }
 
 .footer {
@@ -752,13 +747,11 @@ left:50px;
 	font-weight: bold;*/
 	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
     border: 1px solid #ACDFA7;
-    color: #000000;
     display: block;
     font-weight: bold;
     margin: 2px auto -5px;    
-    padding: 6px; 
-    text-align: left;
-    width: 100%;
+    padding: 6px 6px 0 6px; 
+    text-align: left;    
 }
 .successMessageCommentPanel {
     /*color: green;
@@ -1182,7 +1175,12 @@ padding: 2px;
 	padding-top: 12px;
 	font-size:small;
 }
-
+.welcomeUserPanel{
+	float: right;
+	position: relative;
+	padding-top: 12px;
+	font-size:small;	
+}
 .logoutAndUMLSPanel{
 	float: right;
 	position: relative;

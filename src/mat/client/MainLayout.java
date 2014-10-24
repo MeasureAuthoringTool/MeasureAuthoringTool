@@ -289,7 +289,7 @@ public abstract class MainLayout {
 		logOutPanel.addStyleName("logoutPanel");
 		welcomeUserPanel = new HorizontalFlowPanel();
 		welcomeUserPanel.getElement().setId("welcomeUserPanel_HorizontalFlowPanel");
-		welcomeUserPanel.setStyleName("umlsStatePanel");
+		welcomeUserPanel.setStyleName("welcomeUserPanel");
 		showUMLSState = buildUMLStatePanel();
 		showUMLSState.addStyleName("umlsStatePanel");
 		VerticalPanel vp = new VerticalPanel();

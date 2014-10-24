@@ -1446,6 +1446,9 @@ public class MetaDataPresenter  implements MatPresenter {
 		if (metaDataDisplay.getCalenderYear().getValue().equals(Boolean.TRUE)) {
 		metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(currentMeasureDetail.getMeasFromPeriod());
 		metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
+		} else {
+			metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(null);
+			metaDataDisplay.getMeasurementToPeriodInputBox().setValue(null);
 		}
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());

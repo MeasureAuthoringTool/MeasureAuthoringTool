@@ -1,6 +1,5 @@
 package mat.server.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -34,7 +33,6 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
-import net.sf.saxon.TransformerFactoryImpl;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -500,33 +498,7 @@ public class XmlProcessor {
 		}
 		return null;
 	}
-	
-	/**
-	 * Transform.
-	 * 
-	 * @param node
-	 *            the node
-	 * @return the string
-	 */
-	public String transform(Node node) {
-		LOG.info("In transform() method");
-		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-		TransformerFactory transformerFactory = TransformerFactoryImpl
-				.newInstance();
-		DOMSource source = new DOMSource(node);
-		StreamResult result = new StreamResult(arrayOutputStream);
 		
-		try {
-			transformerFactory.newTransformer().transform(source, result);
-		} catch (TransformerException e) {
-			LOG.info("Document object to ByteArray transformation failed "
-					+ e.getStackTrace());
-			e.printStackTrace();
-		}
-		LOG.info("Document object to ByteArray transformation complete");
-		return arrayOutputStream.toString();
-	}
-	
 	/**
 	 * Gets the original xml.
 	 * 
@@ -1599,34 +1571,40 @@ public class XmlProcessor {
 		}
 		return transform(originalDoc);
 	}
-	
+		
 	/**
-	 * Creates the data criteria element.
-	 *
+	 * Transform.
+	 * 
+	 * @param node
+	 *            the node
 	 * @return the string
 	 */
-	public String createDataCriteriaElement(){
-		
-		return null;
+	public String transform(Node node) {		
+		return transform(node,false);		
 	}
 	
-
 	/**
 	 * Convert xml document to string.
 	 *
 	 * @param document the document
+	 * @param isFormatted TODO
 	 * @return the string
 	 */
-	public String convertXMLDocumentToString(Document document) {
+	public String transform(Node node, boolean isFormatted) {
+		LOG.info("In transform() method");
 		Transformer tf;
 		Writer out = null;
 		try {
 			tf = TransformerFactory.newInstance().newTransformer();
 			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			tf.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			if(isFormatted){
+				tf.setOutputProperty(OutputKeys.INDENT, "yes");
+			}
+			
 			tf.setOutputProperty(OutputKeys.STANDALONE, "yes");
 			out = new StringWriter();
-			tf.transform(new DOMSource(document), new StreamResult(out));
+			tf.transform(new DOMSource(node), new StreamResult(out));
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerFactoryConfigurationError e) {
@@ -1634,6 +1612,7 @@ public class XmlProcessor {
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
+		LOG.info("Document object to ByteArray transformation complete");
 		return out.toString();
 	}
 }

@@ -56,7 +56,7 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 			e.printStackTrace();
 		}
 
-			return measureDetailsXml.convertXMLDocumentToString(measureDetailsXml.getOriginalDoc());
+			return measureDetailsXml.transform(measureDetailsXml.getOriginalDoc(), true);
 	}
 	
 	/**

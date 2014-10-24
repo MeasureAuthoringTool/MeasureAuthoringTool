@@ -1,25 +1,16 @@
 package mat.server.simplexml.hqmf;
 
-import java.io.StringWriter;
-import java.io.Writer;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -149,7 +140,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);
-		return convertXMLDocumentToString(dataCriteriaXMLProcessor.getOriginalDoc());
+		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
 	}
 	
 	
@@ -1069,36 +1060,6 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				dataCriteriaElem.appendChild(effectiveTimeNode);
 			}
 		}
-	}
-	
-	/**
-
-	 * Convert xml document to string.
-	 * 
-	 * @param document
-	 *            the document
-	 * @return the string
-	 */
-	private String convertXMLDocumentToString(Document document) {
-		Transformer tf;
-		Writer out = null;
-		try {
-			tf = TransformerFactory.newInstance().newTransformer();
-			tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			tf.setOutputProperty(OutputKeys.INDENT, "yes");
-			tf.setOutputProperty(OutputKeys.STANDALONE, "yes");
-			out = new StringWriter();
-			tf.transform(new DOMSource(document), new StreamResult(out));
-		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-		String outputXmlString = out.toString().
-				replaceAll("<!--", "\n<!--").replaceAll("-->", "-->\n");
-		return outputXmlString;
 	}
 	
 	/**

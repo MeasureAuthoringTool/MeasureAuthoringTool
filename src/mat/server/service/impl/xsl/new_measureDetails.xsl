@@ -636,7 +636,8 @@
 		<xsl:if test="period">
 			<controlVariable>
 				<measurePeriod>
-					<id root="dfa426b5-05c2-4fdf-814d-6332fb2acbd8" />
+					<!-- <id root="dfa426b5-05c2-4fdf-814d-6332fb2acbd8" extension="measureperiod"/> -->
+					<id root="{normalize-space(period/@uuid)}" extension="measureperiod"/>
 					<code code="MSRTP" codeSystem="2.16.840.1.113883.3.560">
 						<originalText value="Measurement Period" />
 					</code>

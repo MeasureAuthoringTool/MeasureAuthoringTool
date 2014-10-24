@@ -621,6 +621,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
+		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType)); 
 		
 		if (isPart || isFunctional)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -644,7 +645,16 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					.createElement(CODE);
 			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(), qdmOidValue);
 			dataCriteriaElem.appendChild(codeElem);
-		} else {
+		} else if(isIntervention){
+			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(CODE);
+			codeElem.setAttribute("valueSet", qdmOidValue);
+			dataCriteriaElem.appendChild(codeElem);
+			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, dataType);
+			dataCriteriaElem.appendChild(titleElem);
+		}else {
 			Element codeElement = createCodeForDatatype(templateNode,
 					dataCriteriaXMLProcessor);
 			if (codeElement != null) {

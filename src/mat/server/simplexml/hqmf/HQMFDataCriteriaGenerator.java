@@ -14,7 +14,7 @@ import org.w3c.dom.NodeList;
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
-public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
+public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * Generate hqm for measure.

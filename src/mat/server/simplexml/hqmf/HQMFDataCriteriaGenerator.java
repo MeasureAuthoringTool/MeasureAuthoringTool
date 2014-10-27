@@ -852,14 +852,22 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			valueElem.appendChild(displayNameElem);
 			targetSiteCodeElement.appendChild(valueElem);
 			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-			Node parentOfOutBoundElement = outBoundElement.getParentNode();
-			parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
+			if(outBoundElement !=null){
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
+			} else{
+				dataCriteriaElem.appendChild(targetSiteCodeElement);
+			}
 		} else if(templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null){
 			String flavorIdValue = templateNode.getAttributes().getNamedItem(FLAVOR_ID).getNodeValue();
 			targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
 			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-			Node parentOfOutBoundElement = outBoundElement.getParentNode();
-			parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
+			if(outBoundElement !=null){
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
+			} else{
+				dataCriteriaElem.appendChild(targetSiteCodeElement);
+			}
 		}
 	}
 	
@@ -952,10 +960,16 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		 */
 		if(effectiveTimeNode.hasChildNodes()){
 			NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");
-			if((nodeList != null) && (nodeList.getLength() > 0)){
+			if ((nodeList != null) && (nodeList.getLength() > 0)) {
 				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
-			}else{
-				dataCriteriaElem.appendChild(effectiveTimeNode);
+			} else {
+				//Check if participation Node exists for communication data type. Add EffectiveTime tag before that.
+				NodeList nodeListParticipation = dataCriteriaElem.getElementsByTagName("participation");
+				if ((nodeListParticipation != null) && (nodeListParticipation.getLength() > 0)) {
+					dataCriteriaElem.insertBefore(effectiveTimeNode, nodeListParticipation.item(0));
+				} else {
+					dataCriteriaElem.appendChild(effectiveTimeNode);
+				}
 			}
 		}
 	}

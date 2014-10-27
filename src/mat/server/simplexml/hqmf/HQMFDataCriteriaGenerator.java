@@ -533,10 +533,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(), qdmOidValue);
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			codeElem.appendChild(displayNameElem);
+			dataCriteriaElem.appendChild(codeElem);
 			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(TITLE);
 			titleElem.setAttribute(VALUE, dataType);
-			dataCriteriaElem.appendChild(codeElem);
+			dataCriteriaElem.appendChild(titleElem);
 		} else if(isIntervention){
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);

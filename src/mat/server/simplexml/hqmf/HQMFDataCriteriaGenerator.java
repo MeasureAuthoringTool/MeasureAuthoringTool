@@ -11,7 +11,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
@@ -31,7 +30,6 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 		dataCriteria = getHQMFXmlString(me);
 		dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);
 		return dataCriteria;
-		//return dataCriteria.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();
 	}
 	
 	/**
@@ -109,17 +107,10 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 		try {
 			
 			NodeList qdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMNoAttribs);
-			//NodeList qdmNoAttributeNodeList = (NodeList) xPath.evaluate(
-			//xPathForQDMNoAttribs, simpleXmlprocessor.getOriginalDoc(),
-			//	XPathConstants.NODESET);
-			
 			generateQDMEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmNoAttributeNodeList);
 			
 			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
-			/*NodeList qdmAttributeNodeList = (NodeList) xPath.evaluate(
-					xPathForQDMAttributes, simpleXmlprocessor.getOriginalDoc(),
-					XPathConstants.NODESET);*/
 			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmAttributeNodeList);
 			
@@ -148,9 +139,6 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 			
 			String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 			NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
-			/*	NodeList elementRefList = (NodeList) xPath.evaluate(
-					xPathForIndividualElementRefs, simpleXmlprocessor.getOriginalDoc(),
-					XPathConstants.NODESET);*/
 			if(elementRefList.getLength() > 0){
 				createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor, null);
 			}
@@ -356,24 +344,21 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 		System.out.println("xPathForTemplate:"+xPathForTemplate);
 		String actNodeStr = "";
 		try {
-			/*Node templateNode = (Node) xPath.evaluate(xPathForTemplate,
-					templateXMLProcessor.getOriginalDoc(), XPathConstants.NODE)*/;
-					Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPathForTemplate);
-					if (templateNode != null) {
-						String attrClass = templateNode.getAttributes()
-								.getNamedItem(CLASS).getNodeValue();
-						String xpathForAct = "/templates/acts/act[@a_id='" + attrClass
-								+ "']";
-						Node actNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xpathForAct);
-						/*Node actNode = (Node) xPath.evaluate(xpathForAct,
-								templateXMLProcessor.getOriginalDoc(), XPathConstants.NODE);*/
-						if (actNode != null) {
-							actNodeStr = actNode.getTextContent();
-						}
-						
-						createDataCriteriaElementTag(actNodeStr, templateNode, qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,templateXMLProcessor, attributeQDMNode);
-					}
-					
+			
+			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPathForTemplate);
+			if (templateNode != null) {
+				String attrClass = templateNode.getAttributes()
+						.getNamedItem(CLASS).getNodeValue();
+				String xpathForAct = "/templates/acts/act[@a_id='" + attrClass
+						+ "']";
+				Node actNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xpathForAct);
+				if (actNode != null) {
+					actNodeStr = actNode.getTextContent();
+				}
+				
+				createDataCriteriaElementTag(actNodeStr, templateNode, qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,templateXMLProcessor, attributeQDMNode);
+			}
+			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -443,12 +428,6 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 		dataCriteriaSectionElem.appendChild(entryElem);
 		
 		addCommentNode(dataCriteriaXMLProcessor, entryCommentText, entryElem);
-		// creating LocalVariableName Tag
-		/*Element localVarElem = dataCriteriaXMLProcessor
-				.getOriginalDoc().createElement("localVariableName");
-		localVarElem.setAttribute(VALUE, qdmLocalVariableName);
-		entryElem.appendChild(localVarElem);*/
-		
 		Element dataCriteriaElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement(actNodeStr);
 		entryElem.appendChild(dataCriteriaElem);
@@ -670,9 +649,6 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 					.getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes()
 					.getNamedItem(TAXONOMY).getNodeValue();
-			//			String attribUUID = attributeQDMNode.getAttributes()
-			//					.getNamedItem(UUID).getNodeValue();
-			
 			dataCriteriaElem.setAttribute("actionNegationInd", "true");
 			
 			Element outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -802,21 +778,8 @@ public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
 		idElem.setAttribute(ROOT, attribUUID);
-		
-		/*if(attributeQDMNode.getAttributes().getNamedItem(UUID) != null){
-			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem(UUID).getNodeValue());
-		}else if(attributeQDMNode.getAttributes().getNamedItem("attrUUID") != null){
-			idElem.setAttribute(ROOT, attributeQDMNode.getAttributes().getNamedItem("attrUUID").getNodeValue());
-		}*/
-		//String extensionId = idElem.getAttribute(ROOT);
-		
 		idElem.setAttribute("extension", StringUtils.deleteWhitespace(attrName));
 		observationCriteriaElem.appendChild(idElem);
-		// Commented and added call to method createCodeForDataType.
-		/*Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement(CODE);
-		codeElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem(CODE).getNodeValue());
-		codeElem.setAttribute(CODE_SYSTEM, templateNode.getAttributes().getNamedItem("codeSystem").getNodeValue());*/
 		Element codeElem = createCodeForDatatype(templateNode, dataCriteriaXMLProcessor);
 		Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);

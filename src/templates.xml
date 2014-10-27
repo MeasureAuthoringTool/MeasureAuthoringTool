@@ -119,10 +119,10 @@
     <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">substance, recommended</template>
     
     <!-- symptom -->
-    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">symptom, active</template>    
-    <template oid="2.16.840.1.113883.10.20.28.3.80" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">symptom, assessed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">symptom, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">symptom, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, active</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.80" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, assessed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom"  addValueTag="true" addCodeTag="true">symptom, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, resolved</template>
     
     <!-- transfer -->
     <template oid="2.16.840.1.113883.10.20.28.3.84" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="transfer">transfer from</template>

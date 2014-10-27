@@ -444,6 +444,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='"
 				+ dataType.toLowerCase() + "']";
+		System.out.println("xPathForTemplate:"+xPathForTemplate);
 		String actNodeStr = "";
 		try {
 			/*Node templateNode = (Node) xPath.evaluate(xPathForTemplate,

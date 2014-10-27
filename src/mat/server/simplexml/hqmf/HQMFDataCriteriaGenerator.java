@@ -1,14 +1,10 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
@@ -19,94 +15,7 @@ import org.w3c.dom.NodeList;
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
-public class HQMFDataCriteriaGenerator implements Generator {
-	
-	private static final String HIGH = "high";
-	
-	private static final String STOP_DATETIME = "stop datetime";
-	
-	private static final String START_DATETIME = "start datetime";
-	
-	private static final String FLAVOR_ID = "flavorId";
-	
-	private static final String LOW = "low";
-	
-	private static final String EFFECTIVE_TIME = "effectiveTime";
-	
-	private static final String ATTRIBUTE_UUID = "attributeUUID";
-	
-	private static final String RELATED_TO = "related to";
-	
-	private static final String CHECK_IF_PRESENT = "Check if Present";
-	
-	private static final String TYPE = "type";
-	
-	private static final String MOOD = "mood";
-	
-	private static final String CLASS = "class";
-	
-	private static final String XSI_TYPE = "xsi:type";
-	
-	private static final String VALUE = "value";
-	
-	private static final String TITLE = "title";
-	
-	private static final String DISPLAY_NAME = "displayName";
-	
-	private static final String CODE_SYSTEM = "codeSystem";
-	private static final String CODE_SYSTEM_NAME = "codeSystemName";
-	private static final String CODE_SYSTEM_DISPLAY_NAME = "codeDisplayName";
-	
-	private static final String ID = "id";
-	
-	private static final String ROOT = "root";
-	
-	private static final String ITEM = "item";
-	
-	private static final String TEMPLATE_ID = "templateId";
-	
-	private static final String MOOD_CODE = "moodCode";
-	
-	private static final String CLASS_CODE = "classCode";
-	
-	private static final String TYPE_CODE = "typeCode";
-	
-	private static final String OBSERVATION_CRITERIA = "observationCriteria";
-	
-	private static final String OUTBOUND_RELATIONSHIP = "outboundRelationship";
-	
-	private static final String UUID = "uuid";
-	
-	private static final String TAXONOMY = "taxonomy";
-	
-	private static final String OID = "oid";
-	
-	private static final String NAME = "name";
-	
-	private static final String CODE = "code";
-	
-	private static final String VALUE_SET = "Value Set";
-	private static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";
-	private static final String ORDINALITY = "Ordinality";
-	private static final String LATERALITY = "Laterality";
-	
-	private static final String ATTRIBUTE_MODE = "attributeMode";
-	
-	private static final String ATTRIBUTE_NAME = "attributeName";
-	
-	private static final String NEGATION_RATIONALE = "negation rationale";
-	
-	private static final String ATTRIBUTE_DATE = "attrDate";
-	
-	/** The x path. */
-	//static javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-	
-	/** The Constant logger. */
-	private final Log LOG = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
-	
-	/** The name space. */
-	private final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
-	
+public class HQMFDataCriteriaGenerator implements Generator, HQMFConstants {
 	
 	/**
 	 * Generate hqm for measure.
@@ -580,7 +489,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
 			Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
 			
-			if(valueCode != null && valueCodeSystem != null){
+			if((valueCode != null) && (valueCodeSystem != null)){
 				valueElem.setAttribute("code", valueCode.getNodeValue());
 				valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
 			}else{
@@ -622,7 +531,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
-		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType)); 
+		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
 		
 		if (isPart || isFunctional)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()

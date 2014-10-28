@@ -79,11 +79,11 @@
     <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true">intervention, recommended</template>
     
     <!-- laboratory test -->
-    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" includeSubTemplate="laboratory-test">laboratory test, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" includeSubTemplate="laboratory-test">laboratory test, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">laboratory test, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">laboratory test, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">laboratory test, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" includeSubTemplate="laboratory-test">laboratory test, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="laboratory-test">laboratory test, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set">laboratory test, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" codeDisplayName="LDL-c LOINC Value Set" >laboratory test, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set">laboratory test, recommended</template>
     
     <!-- medication -->
     <template oid="2.16.840.1.113883.10.20.28.3.44" class="SBADM" mood="EVN" status="ACTIVE" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationActive">medication, active</template>

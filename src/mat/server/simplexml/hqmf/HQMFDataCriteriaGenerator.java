@@ -175,7 +175,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 		}
 		//Generate entries for "Check if Present" attributes
-		generateCheckIfPresentAttribEntries(dataCriteriaXMLProcessor,simpleXmlprocessor);
+		generateNonValuesetAttribEntries(dataCriteriaXMLProcessor,simpleXmlprocessor);
 		generateDateTimeAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor);
 	}
 	
@@ -259,10 +259,18 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}
 	}
 	
-	private void generateCheckIfPresentAttribEntries(
+	/**
+	 * This method will look for attributes of mode = 
+	 * 'Check if Present', 'Equal To', 'Less Than (or Equal)', Greater than (or Equal) 
+	 * @param dataCriteriaXMLProcessor
+	 * @param simpleXmlprocessor
+	 * @throws XPathExpressionException
+	 */
+	private void generateNonValuesetAttribEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
-		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@mode = 'Check if Present'][@name != 'negation rationale']";
+		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@mode = 'Check if Present' or @mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]"
+				+ "[@name != 'negation rationale']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -639,8 +647,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}else if(START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)){
 			generateDateTimeAttributes(childNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode)){
-			//handle "Value Set" and "Check If Present" mode
+		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode) || attributeMode.startsWith(LESS_THAN) || attributeMode.startsWith(GREATER_THAN) || EQUAL_TO.equals(attributeMode)){
+			//handle "Value Set", "Check If Present" and comparison(less than, greater than, equals) mode
 			generateOtherAttributes(childNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}
@@ -845,6 +853,56 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}else if(CHECK_IF_PRESENT.equals(attrMode)){
 			valueElem.setAttribute(XSI_TYPE, "ANY");
 			valueElem.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+		}else if(EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)){
+			String nodeName = attributeQDMNode.getNodeName();
+			if(nodeName.equals("attribute"))
+			{
+				valueElem.setAttribute(XSI_TYPE, "IVL_PQ");
+				Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
+				if(EQUAL_TO.equals(attrMode) ){
+					Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(LOW);
+					lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if(unitAttrib != null){
+						lowElem.setAttribute("unit", unitAttrib.getNodeValue());
+					}
+					
+					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(HIGH);
+					highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if(unitAttrib != null){
+						highElem.setAttribute("unit", unitAttrib.getNodeValue());
+					}
+					
+					valueElem.appendChild(lowElem);
+					valueElem.appendChild(highElem);
+				}else if(attrMode.startsWith(GREATER_THAN)){
+					if(attrMode.equals(GREATER_THAN)){
+						valueElem.setAttribute("lowClosed", "false");
+					}
+					Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(LOW);
+					lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if(unitAttrib != null){
+						lowElem.setAttribute("unit", unitAttrib.getNodeValue());
+					}
+					
+					valueElem.appendChild(lowElem);
+				}else if(attrMode.startsWith(LESS_THAN)){
+					if(attrMode.equals(LESS_THAN)){
+						valueElem.setAttribute("highClosed", "false");
+					}
+					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(HIGH);
+					highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if(unitAttrib != null){
+						highElem.setAttribute("unit", unitAttrib.getNodeValue());
+					}
+					
+					valueElem.appendChild(highElem);
+				}
+			}
+			
 		}
 		
 		observationCriteriaElem.appendChild(valueElem);
@@ -929,19 +987,19 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				timeTagNode.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 				effectiveTimeNode.appendChild(timeTagNode);
 			}
-		}else if(attrMode.startsWith("Less Than") || attrMode.startsWith("Greater Than") || attrMode.equals("Equal To")){
+		}else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
 			
-			if(attrMode.equals("Equal To")){
+			if(attrMode.equals(Generator.EQUAL_TO)){
 				if(timeTagName.length() > 0){
 					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
 					timeTagNode.setAttribute(VALUE, attrDate);
 					effectiveTimeNode.appendChild(timeTagNode);
 				}
-			}else if(attrMode.startsWith("Greater Than")){
+			}else if(attrMode.startsWith(Generator.GREATER_THAN)){
 				if(timeTagName.length() > 0){
 					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
 					Element uncertainRangeNode = dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
-					if(attrMode.equals("Greater Than")){
+					if(attrMode.equals(Generator.GREATER_THAN)){
 						uncertainRangeNode.setAttribute("lowClosed", "false");
 					}
 					Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
@@ -957,11 +1015,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					timeTagNode.appendChild(uncertainRangeNode);
 					effectiveTimeNode.appendChild(timeTagNode);
 				}
-			}else if(attrMode.startsWith("Less Than")){
+			}else if(attrMode.startsWith(Generator.LESS_THAN)){
 				if(timeTagName.length() > 0){
 					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);
 					Element uncertainRangeNode = dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
-					if(attrMode.equals("Less Than")){
+					if(attrMode.equals(Generator.LESS_THAN)){
 						uncertainRangeNode.setAttribute("highClosed", "false");
 					}
 					Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);

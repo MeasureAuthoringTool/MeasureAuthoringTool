@@ -145,7 +145,7 @@
     <!-- data flow attributes -->
     <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" inv="false">health record field</template>
     <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" inv="false">recorder</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false">source</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false" codesystem="2.16.840.1.113883.6.96">source</template>
     
     <!-- status -->
     <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</template>
@@ -160,7 +160,7 @@
     
     <!-- misc -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" inv="false" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD">frequency</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" inv="false" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency">frequency</template>
     <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false">incision datetime</template>
     <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" inv="false" valueType="CD" code="PAT" codeSystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</template>

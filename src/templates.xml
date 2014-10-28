@@ -305,7 +305,7 @@
 	
 	<intervention-intolerance changeAttribute="code">
 		<outboundRelationship typeCode="CAUS" inversionInd="true">
-			<actCriteria classCode="OBS" moodCode="EVN">
+			<actCriteria classCode="ACT" moodCode="EVN">
 				<templateId>
 					<item root="2.16.840.1.113883.10.20.28.3.36"/>
 				</templateId>

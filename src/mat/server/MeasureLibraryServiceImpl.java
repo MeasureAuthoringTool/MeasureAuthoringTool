@@ -3123,7 +3123,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 					String dateTimeDiffFunction = "@type='DATETIMEDIFF'";
-					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
+					//String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
+					//geting Unique Ids only
+					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[not(@id =  preceding:: elementRef/@id)]";
 					String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//relationalOp";
 					String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+satisfyFunction+"]";
 					String XPATH_FUNCTIONS ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+otherThanSatisfyfunction+"]";
@@ -3166,24 +3168,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							
 						}
 						
-						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !flag; m++) {
-							String id = nodesSDE_qdmElementId.item(m).getNodeValue();
-							String xpathForAttribute ="/measure//subTreeLookUp//elementRef[@id='"+id+"']/attribute";
-							Node attributeNode = (Node)xPath.evaluate(xpathForAttribute, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
-							String attributeName="";
-							if(attributeNode!=null){
-								attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
-								
-							}
-							
-							
+						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !flag; m++) {							
+							String id = nodesSDE_qdmElementId.item(m).getAttributes().getNamedItem("id").getNodeValue();
+							String xpathForQdmWithAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"']/attribute";
+							String xpathForQdmWithOutAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"'][not(attribute)]";
 							String XPATH_QDMLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+id+"']";
 							Node qdmNode = (Node)xPath.evaluate(XPATH_QDMLOOKUP, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
-							flag = !validateQdmNode(qdmNode, attributeName);
-							
-							if(flag){
-								break;
+							NodeList qdmWithAttributeNodeList = (NodeList)xPath.evaluate(xpathForQdmWithAttributeList, xmlProcessor.getOriginalDoc(),XPathConstants.NODESET);
+							NodeList qdmWithOutAttributeList = (NodeList)xPath.evaluate(xpathForQdmWithOutAttributeList, xmlProcessor.getOriginalDoc(),XPathConstants.NODESET);														
+							//validation for QDMwithAttributeList
+							//checking for all the Attribute That are used for The Id
+							for(int n=0; n<qdmWithAttributeNodeList.getLength(); n++){								
+									String attributeName = qdmWithAttributeNodeList.item(n).getAttributes().getNamedItem("name").getNodeValue();								
+								flag = !validateQdmNode(qdmNode, attributeName);							
+								if(flag){
+									break;
+								}
 							}
+							//validation for QDMwithOutAttributeList for the Id							
+							if(qdmWithOutAttributeList.getLength() >0){	
+								String attributeName ="";
+								flag = !validateQdmNode(qdmNode, attributeName);							
+								if(flag){
+									break;
+								}
+							}
+							
 						}
 						
 						for (int n = 0; (n <nodesSDE_functions.getLength()) && !flag; n++) {

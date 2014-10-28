@@ -143,9 +143,9 @@
     <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" type="CAUS" inv="true">cause</template>-->
     
     <!-- data flow attributes -->
-    <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" inv="false">health record field</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" inv="false">recorder</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false" codesystem="2.16.840.1.113883.6.96">source</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" inv="false" code="395676008" codesystem="2.16.840.1.113883.6.96" valueType="CD">health record field</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" inv="false" code="419358007" codesystem="2.16.840.1.113883.6.96" valueType="CD">recorder</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false" code="260753009" codesystem="2.16.840.1.113883.6.96" valueType="CD">source</template>
     
     <!-- status -->
     <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</template>

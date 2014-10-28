@@ -464,20 +464,14 @@
 		</subjectOf>
 
 
-		<!-- Initial Patient Population Description -->
+		<!-- Initial Population Description -->
 		<xsl:call-template name="subjOfOrigText">
-			<xsl:with-param name="origText">
-				Initial Patient Population
-			</xsl:with-param>
+			<xsl:with-param name="origText">Initial Population</xsl:with-param>
 			<xsl:with-param name="text">
 				<xsl:value-of select="initialPopDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				IPOP
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">IPOP</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 
 		<!-- Denominator Description -->
@@ -488,12 +482,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="denominatorDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				DENOM
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">DENOM</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 
 		<!-- Denominator Exclusions Description -->
@@ -504,12 +494,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="denominatorExclusionsDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				DENEX
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">DENEX</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 
 		<!-- Numerator Description -->
@@ -520,12 +506,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="numeratorDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				NUMER
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">NUMER</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 		<!-- Numerator Exclusions Description -->
 		<xsl:call-template name="subjOfOrigText">
@@ -535,12 +517,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="numeratorExclusionsDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				NUMEX
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">NUMEX</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 		<!-- Denominator Exceptions Description -->
 		<xsl:call-template name="subjOfOrigText">
@@ -550,12 +528,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="denominatorExceptionsDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				DENEXCEP
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">DENEXCEP</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 		<!-- Measure Population Description -->
 		<xsl:call-template name="subjOfOrigText">
@@ -565,12 +539,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="measurePopulationDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				MSRPOPL
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">MSRPOPL</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 		<!-- Measure Population Exclusions -->
 		<xsl:call-template name="subjOfOrigText">
@@ -580,12 +550,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="measurePopulationExclusionsDescription/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				MSRPOPLEX
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">MSRPOPLEX</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 		<!-- Measure Observations Description -->
 		<xsl:call-template name="subjOfOrigText">
@@ -604,12 +570,8 @@
 			<xsl:with-param name="text">
 				<xsl:value-of select="supplementalData/text()" />
 			</xsl:with-param>
-			<xsl:with-param name="code">
-				SDE
-			</xsl:with-param>
-			<xsl:with-param name="codeSystem">
-				2.16.840.1.113883.5.1063
-			</xsl:with-param>
+			<xsl:with-param name="code">SDE</xsl:with-param>
+			<xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
 		</xsl:call-template>
 
 		<xsl:variable name="qms_uuid">
@@ -735,9 +697,7 @@
 				<xsl:when test="string-length($xtype)>0">
 					<xsl:value-of select="$xtype" />
 				</xsl:when>
-				<xsl:otherwise>
-					ED
-				</xsl:otherwise>
+				<xsl:otherwise>ED</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<subjectOf>
@@ -749,16 +709,16 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:attribute name="code">
-                        <xsl:value-of select="$code" />
+                        <xsl:value-of select="normalize-space($code)" />
                      </xsl:attribute>
 							<xsl:attribute name="codeSystem">
-                        <xsl:value-of select="$codeSystem" />
+                        <xsl:value-of select="normalize-space($codeSystem)" />
                      </xsl:attribute>
 						</xsl:otherwise>
 					</xsl:choose>
 					<displayName>
 						<xsl:attribute name="value">	
-                  		<xsl:value-of select="$origText" />
+                  		<xsl:value-of select="normalize-space($origText)" />
                   </xsl:attribute>
 					</displayName>
 				</code>

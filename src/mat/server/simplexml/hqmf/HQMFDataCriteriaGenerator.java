@@ -467,7 +467,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
 			Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
-			
+			Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
 			if((valueCode != null) && (valueCodeSystem != null)){
 				valueElem.setAttribute("code", valueCode.getNodeValue());
 				valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
@@ -477,7 +477,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			if (valueDisplayName != null) {
+				displayNameElem.setAttribute(VALUE, valueDisplayName.getNodeValue());
+			} else {
+				displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			}
 			valueElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(valueElem);
 		}
@@ -796,10 +800,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}else{
 			displayNameElem.setAttribute(VALUE, attrName);
 		}
-		
-		observationCriteriaElem.appendChild(codeElem);
-		codeElem.appendChild(displayNameElem);
-		
+		if (codeElem != null) {
+			observationCriteriaElem.appendChild(codeElem);
+			codeElem.appendChild(displayNameElem);
+		}
 		Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(TITLE);
 		titleElem.setAttribute(VALUE, attrName);

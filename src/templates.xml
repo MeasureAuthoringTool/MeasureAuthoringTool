@@ -33,10 +33,10 @@
     <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE" addCodeTag="true" addValueTag="true">device, recommended</template>
     
     <!-- diagnosis -->
-    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-active" addValueTag="true" addCodeTag="true">diagnosis, active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="status-active" addValueTag="true" addCodeTag="true">diagnosis, active</template>
     <template oid="2.16.840.1.113883.10.20.28.3.17" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true">diagnosis, family history</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="diagnosis-inactive">diagnosis, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="diagnosis-resolved">diagnosis, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.18" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="status-inactive">diagnosis, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="status-resolved">diagnosis, resolved</template>
     
     <!-- diagnostic study -->
     <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true">diagnostic study, adverse event</template>
@@ -119,10 +119,10 @@
     <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">substance, recommended</template>
     
     <!-- symptom -->
-    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, active</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" includeSubTemplate="status-active">symptom, active</template>    
     <template oid="2.16.840.1.113883.10.20.28.3.80" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, assessed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom"  addValueTag="true" addCodeTag="true">symptom, inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom, resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.81" class="OBS" mood="EVN" status="SUSPENDED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom"  addValueTag="true" addCodeTag="true" includeSubTemplate="status-inactive">symptom, inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.82" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" includeSubTemplate="status-resolved">symptom, resolved</template>
     
     <!-- transfer -->
     <template oid="2.16.840.1.113883.10.20.28.3.84" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="transfer">transfer from</template>
@@ -224,7 +224,7 @@
 		</participation>
 	</communication-FromProvider-ToProvider>
 
-	<diagnosis-active changeAttribute="id">
+	<status-active changeAttribute="id">
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
@@ -243,9 +243,9 @@
 				</value>
 			</observationCriteria>
 		</outboundRelationship>
-	</diagnosis-active>
+	</status-active>
 
-	<diagnosis-inactive changeAttribute="id">
+	<status-inactive changeAttribute="id">
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
@@ -264,9 +264,9 @@
 				</value>
 			</observationCriteria>
 		</outboundRelationship>
-	</diagnosis-inactive>
+	</status-inactive>
 
-	<diagnosis-resolved changeAttribute="id">
+	<status-resolved changeAttribute="id">
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
@@ -285,7 +285,7 @@
 				</value>
 			</observationCriteria>
 		</outboundRelationship>
-	</diagnosis-resolved>
+	</status-resolved>
 
 	<transfer changeAttribute="code">
 		<participation typeCode="ORG">
@@ -411,6 +411,5 @@
 		</observationCriteria>
 	</outboundRelationship>
  </laboratory-test>
- 
     </subtemplates>
 </templates>

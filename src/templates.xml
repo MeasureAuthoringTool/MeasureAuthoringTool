@@ -169,8 +169,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true" code="263851003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Reaction" valueType="CD">reaction</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">reason</template>
     <template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</template>
-    <template class="OBS" mood="EVN" type="REFR" valueType="CD" code="REL" codesystem="2.16.840.1.113883.5.107">related to</template>
-    <template class="OBS" mood="GOL" type="GOAL" valueType="CD" code="394617004" codesystem="2.16.840.1.113883.6.96" displayNameValue="Result">target outcome</template>
+    <template class="OBS" mood="EVN" type="REFR" valueType="CD" code="REL" codeSystem="2.16.840.1.113883.5.107">related to</template>
+    <template class="OBS" mood="GOL" type="GOAL" valueType="CD" code="394617004" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Result">target outcome</template>
     <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Result" valueType="CD">result</template>
     <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="SEV" valueType="CD" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 ActCode" displayNameValue="Severity Observation">severity</template>
     <template target="targetSiteCode" childTarget="item">anatomical location site-value set</template>

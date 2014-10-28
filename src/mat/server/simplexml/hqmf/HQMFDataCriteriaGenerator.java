@@ -737,7 +737,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
-				+ attrName + "']");
+				+ attrName.toLowerCase() + "']");
 		
 		if(templateNode == null){
 			templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"

@@ -468,9 +468,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
 			Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
 			Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
+			Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
 			if((valueCode != null) && (valueCodeSystem != null)){
 				valueElem.setAttribute("code", valueCode.getNodeValue());
 				valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
+				if(valueCodeSystemName!=null){
+					valueElem.setAttribute("codeSystemName", valueCodeSystemName.getNodeValue());
+				}
 			}else{
 				valueElem.setAttribute("valueSet", qdmOidValue);
 			}
@@ -515,8 +519,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
 		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
+		boolean isLaboratoryTest = ("Laboratory Test, Order".equals(dataType) || "Laboratory Test, Performed".equals(dataType) || "Laboratory Test, Recommended".equals(dataType));
 		
-		if (isPart || isFunctional)  {
+		if (isPart || isFunctional || isLaboratoryTest)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -526,7 +531,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			codeElem.setAttribute("valueSet", qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			Node codeDisplayName = templateNode.getAttributes().getNamedItem(CODE_SYSTEM_DISPLAY_NAME);
+			String displayName = "";
+			if(codeDisplayName!=null){
+				displayName = codeDisplayName.getNodeValue();
+			} else {
+				displayName = qdmName+" "+qdmTaxonomy+" Value Set";
+			}
+			displayNameElem.setAttribute(VALUE, displayName);
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -738,7 +750,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
-		
+		boolean isResultOrStatus = ("status".equalsIgnoreCase(attrName) || "result".equalsIgnoreCase(attrName));
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
@@ -823,12 +835,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			valueElem.setAttribute(XSI_TYPE, templateNode.getAttributes().getNamedItem("valueType").getNodeValue());
 			valueElem.setAttribute("valueSet", attributeOID);
-			
+			if(!isResultOrStatus){
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
 			
 			valueElem.appendChild(valueDisplayNameElem);
+			}
 		}else if(CHECK_IF_PRESENT.equals(attrMode)){
 			valueElem.setAttribute(XSI_TYPE, "ANY");
 			valueElem.setAttribute(FLAVOR_ID, "ANY.NONNULL");

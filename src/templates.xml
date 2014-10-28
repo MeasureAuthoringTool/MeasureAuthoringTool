@@ -303,13 +303,13 @@
 		</outboundRelationship>
 	</intervention-adverseEvent>
 	
-	<intervention-intolerance changeAttribute="code">
+	<intervention-intolerance changeAttribute="code,id">
 		<outboundRelationship typeCode="CAUS" inversionInd="true">
 			<actCriteria classCode="ACT" moodCode="EVN">
 				<templateId>
 					<item root="2.16.840.1.113883.10.20.28.3.36"/>
 				</templateId>
-				<id root="a2faf205-f9c1-485c-8edc-c9c0021a218c"/>
+				<id root="$UUID"/>
 				<code valueSet="{$QDMElementValueSetOID}"/>
 				<title value="Intervention, Performed"/>
 				<statusCode code="completed"/>

@@ -604,7 +604,7 @@
 						<originalText value="Measurement Period" />
 					</code>
 					<xsl:choose>
-						<xsl:when test="period/@calenderYear='false'">
+						<xsl:when test="period/@calenderYear='true'">
 							<value xsi:type="PIVL_TS">
 								<phase lowClosed="true" highClosed="true">
 									<low value="{normalize-space(period/startDate/text())}" />

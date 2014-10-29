@@ -335,7 +335,7 @@ public class HeaderHumanReadableGenerator {
 		String newEnd = " ";
 		String through = " through ";
 		// if start or end are not null format the date
-		if(calenderYear){
+		if(!calenderYear){
 		if (!" ".equals(start)) {
 			newStart = formatDate(start);
 		}

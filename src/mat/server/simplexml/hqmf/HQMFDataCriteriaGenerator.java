@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -262,8 +260,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * This method will look for attributes of mode = 
-	 * 'Check if Present', 'Equal To', 'Less Than (or Equal)', Greater than (or Equal) 
+	 * This method will look for attributes of mode =
+	 * 'Check if Present', 'Equal To', 'Less Than (or Equal)', Greater than (or Equal)
 	 * @param dataCriteriaXMLProcessor
 	 * @param simpleXmlprocessor
 	 * @throws XPathExpressionException
@@ -772,11 +770,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				return;
 			} else {
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)) {
-					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode,OUTBOUND_RELATIONSHIP);
+					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
 					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,null);
 				} else if(ORDINALITY.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode,VALUE);
+					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
+				}else if (ROUTE.equalsIgnoreCase(attrName)){
+					
+					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}
 				return;
 			}
@@ -846,11 +847,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			valueElem.setAttribute(XSI_TYPE, templateNode.getAttributes().getNamedItem("valueType").getNodeValue());
 			valueElem.setAttribute("valueSet", attributeOID);
 			if(!isResultOrStatus){
-			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
-			
-			valueElem.appendChild(valueDisplayNameElem);
+				Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(DISPLAY_NAME);
+				valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+				
+				valueElem.appendChild(valueDisplayNameElem);
 			}
 		}else if(CHECK_IF_PRESENT.equals(attrMode)){
 			valueElem.setAttribute(XSI_TYPE, "ANY");
@@ -865,7 +866,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(LOW);
 					lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-										
+					
 					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(HIGH);
 					highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
@@ -909,8 +910,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 		}
 		
-		observationCriteriaElem.appendChild(valueElem);		
-		dataCriteriaElem.appendChild(outboundRelationshipElem);		
+		observationCriteriaElem.appendChild(valueElem);
+		dataCriteriaElem.appendChild(outboundRelationshipElem);
 	}
 	
 	/**
@@ -918,14 +919,17 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor
 	 * @param attributeQDMNode
 	 * @param templateNode
-	 * @param insertBeforeNodeName
 	 */
 	private void addTargetSiteOrPriorityCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
-			Node attributeQDMNode, Node templateNode , String insertBeforeNodeName) {
+			Node attributeQDMNode, Node templateNode) {
 		String targetElementName = templateNode.getAttributes().getNamedItem("target").getNodeValue();
 		Element targetSiteCodeElement = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(targetElementName);
-		if(templateNode.getAttributes().getNamedItem("childTarget") != null){
+		String insertBeforeNodeName = null;
+		if (templateNode.getAttributes().getNamedItem("insertBeforeNode") != null) {
+			insertBeforeNodeName = templateNode.getAttributes().getNamedItem("insertBeforeNode").getNodeValue();
+		}
+		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
 					.getNodeValue();
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -933,24 +937,53 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			valueElem.setAttribute("valueSet", qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()+" "+attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue()+" Value Set");
+			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			valueElem.appendChild(displayNameElem);
 			targetSiteCodeElement.appendChild(valueElem);
-			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-			if(outBoundElement !=null){
-				Node parentOfOutBoundElement = outBoundElement.getParentNode();
-				parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
-			} else{
+			if (insertBeforeNodeName != null) {
+				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
+				if (outBoundElement != null) {
+					Node parentOfOutBoundElement = outBoundElement.getParentNode();
+					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					dataCriteriaElem.appendChild(targetSiteCodeElement);
+				}
+			} else {
 				dataCriteriaElem.appendChild(targetSiteCodeElement);
 			}
-		} else if(templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null){
+		} else if (templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null) {
 			String flavorIdValue = templateNode.getAttributes().getNamedItem(FLAVOR_ID).getNodeValue();
 			targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
-			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-			if(outBoundElement !=null){
-				Node parentOfOutBoundElement = outBoundElement.getParentNode();
-				parentOfOutBoundElement.insertBefore(targetSiteCodeElement,outBoundElement );
-			} else{
+			if (insertBeforeNodeName != null) {
+				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
+				if (outBoundElement != null) {
+					Node parentOfOutBoundElement = outBoundElement.getParentNode();
+					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					dataCriteriaElem.appendChild(targetSiteCodeElement);
+				}
+			} else {
+				dataCriteriaElem.appendChild(targetSiteCodeElement);
+			}
+		} else if (templateNode.getAttributes().getNamedItem("addValueSet") != null) {
+			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
+					.getNodeValue();
+			targetSiteCodeElement.setAttribute("valueSet", qdmOidValue);
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
+			targetSiteCodeElement.appendChild(displayNameElem);
+			if (insertBeforeNodeName != null) {
+				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
+				if (outBoundElement != null) {
+					Node parentOfOutBoundElement = outBoundElement.getParentNode();
+					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					dataCriteriaElem.appendChild(targetSiteCodeElement);
+				}
+			} else {
 				dataCriteriaElem.appendChild(targetSiteCodeElement);
 			}
 		}

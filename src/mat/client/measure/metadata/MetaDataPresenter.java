@@ -1509,7 +1509,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getDeleteMeasure().setEnabled(true);
 		}
 		currentMeasureDetail.setEditable(editable);
-		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.TRUE) && editable){
+		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE) && editable){
 			metaDataDisplay.setMeasurementPeriodButtonsVisible(true);
 		} else {
 			metaDataDisplay.setMeasurementPeriodButtonsVisible(false);
@@ -1627,7 +1627,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	private boolean checkIfCalenderYear(){
 		boolean isCalender = false;
-		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.TRUE)){
+		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE)){
 			if(!metaDataDisplay.getMeasurementFromPeriod().isEmpty() && 
 					!metaDataDisplay.getMeasurementToPeriod().isEmpty()){
 				metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");

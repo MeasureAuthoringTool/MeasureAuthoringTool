@@ -39,8 +39,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -389,6 +394,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The steward value. */
 	private String stewardValue;
 	
+	/** The calender year. */
 	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calender Year", "Calender Year", 1);
 	
 
@@ -444,7 +450,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				
 			}
 		};
-		
+			
 		authorListBox.setVisibleItemCount(5);
 		authorListBox.addChangeHandler(changeHandler);
 		authorListBox.getElement().setId("authorListBox_ListBox");
@@ -575,6 +581,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalPanel calenderYearDatePanel = new HorizontalPanel();
 		calenderYearDatePanel.getElement().setId("calenderYear_HorizontalPanel");
 		calenderYearDatePanel.add(calenderYear);
+		Label calenderYearLabel = new Label("(January 1,20XX through December 31,20XX)");
+		calenderYearLabel.setStyleName("secondLabel");
+		calenderYearDatePanel.add(calenderYearLabel);
 		calenderYear.getElement().setId("calenderYear_CustomCheckBox");
 		calenderYear.addValueChangeHandler(calenderYearChangeHandler);
 		calenderYearDatePanel.addStyleName("marginTop");
@@ -592,8 +601,23 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodToInput.getDateBox().setWidth("127px");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
-		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
-		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
+//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+		measurePeriodFromInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				formatDateValue(event,measurePeriodFromInput.getDateBox(), "");
+			}
+		});
+		
+		measurePeriodToInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				formatDateValue(event,measurePeriodToInput.getDateBox(), "");
+			}
+		});
 		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
 		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
 		Grid queryGrid = new Grid(3, 1);
@@ -2466,6 +2490,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasurementPeriodButtonsVisible(boolean)
+	 */
 	@Override
 	public void setMeasurementPeriodButtonsVisible(boolean b){
 		measurePeriodFromInput.getDateBox().setEnabled(b);
@@ -2732,12 +2759,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.stewardValue = stewardValue;
 	}
 	
+	/** The calender year change handler. */
 	private  ValueChangeHandler<Boolean> calenderYearChangeHandler = new ValueChangeHandler<Boolean>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			measurePeriodFromInput.setValue("");
 			measurePeriodToInput.setValue("");
-			if (calenderYear.getValue().equals(Boolean.TRUE)) {
+			if (calenderYear.getValue().equals(Boolean.FALSE)) {
 				measurePeriodFromInput.setEnabled(true);
 				measurePeriodToInput.setEnabled(true);
 			} else {
@@ -2747,9 +2775,25 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 	};
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getCalenderYear()
+	 */
 	@Override
 	public CustomCheckBox getCalenderYear() {
 		return calenderYear;
 	}
-
+	
+	/**
+	 * Format date value.
+	 *
+	 * @param event the event
+	 * @param dateBox the date box
+	 * @param availableDateId the available date id
+	 */
+	private void formatDateValue(KeyUpEvent event, TextBox dateBox, String availableDateId) {
+		if(!event.isAnyModifierKeyDown()) {
+			dateBox.setValue("");
+			dateBox.setCursorPos(0);
+		}
+	}
 }

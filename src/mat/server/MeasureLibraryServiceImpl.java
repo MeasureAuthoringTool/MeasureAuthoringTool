@@ -622,7 +622,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
 		manageMeasureDetailModel.setId(measure.getId());
 		manageMeasureDetailModel.setCalenderYear(manageMeasureDetailModel.getPeriodModel().isCalenderYear());
-		if(manageMeasureDetailModel.getPeriodModel().isCalenderYear()){
+		if(!manageMeasureDetailModel.getPeriodModel().isCalenderYear()){
 		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
 				.getPeriodModel().getStartDate() : null);
 		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
@@ -2278,7 +2278,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			PeriodModel periodModel = new PeriodModel();
 			periodModel.setUuid(UUID.randomUUID().toString());
 			periodModel.setCalenderYear(measureDetailModel.isCalenderYear());
-			if(measureDetailModel.isCalenderYear()){
+			if(!measureDetailModel.isCalenderYear()){
 				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
 				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
 			} else { // for Default Dates

@@ -1159,8 +1159,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				CODE_SYSTEM);
 		Node codeSystemNameAttr = templateNode.getAttributes().getNamedItem(
 				CODE_SYSTEM_NAME);
+		Node codeDisplayNameAttr = templateNode.getAttributes().getNamedItem(
+				CODE_SYSTEM_DISPLAY_NAME);
 		Element codeElement = null;
-		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr !=null)) {
+		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr !=null) || 
+				(codeDisplayNameAttr!=null)) {
 			codeElement = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			if (codeAttr != null) {
@@ -1174,14 +1177,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if(codeSystemNameAttr !=null){
 				codeElement.setAttribute(CODE_SYSTEM_NAME,
 						codeSystemNameAttr.getNodeValue());
-				Node codeDisplayNameAttr = templateNode.getAttributes().getNamedItem(
-						CODE_SYSTEM_DISPLAY_NAME);
-				if(codeDisplayNameAttr !=null){
-					Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-							.createElement(DISPLAY_NAME);
-					displayNameElem.setAttribute(VALUE,codeDisplayNameAttr.getNodeValue() );
-					codeElement.appendChild(displayNameElem);
-				}
+			}
+			if(codeDisplayNameAttr !=null){
+				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(DISPLAY_NAME);
+				displayNameElem.setAttribute(VALUE,codeDisplayNameAttr.getNodeValue() );
+				codeElement.appendChild(displayNameElem);
 			}
 		}
 		return codeElement;

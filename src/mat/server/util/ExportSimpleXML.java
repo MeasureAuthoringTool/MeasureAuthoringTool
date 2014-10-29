@@ -170,7 +170,7 @@ public class ExportSimpleXML {
 		//using the above list we need to traverse the originalDoc and remove the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		//to get SubTreeRefIds from Population WorkSpace
-		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(originalDoc);
+		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(usedClauseIds, originalDoc);
 		
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
@@ -814,17 +814,26 @@ public class ExportSimpleXML {
 	
 	/**
 	 * Gets the used subtree ref ids.
+	 * @param usedClauseIds 
 	 *
 	 * @param originalDoc the original doc
 	 * @return the used subtree ref ids
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private static List<String> getUsedSubtreeRefIds(Document originalDoc)
+	private static List<String> getUsedSubtreeRefIds(List<String> usedClauseIds, Document originalDoc)
 			throws XPathExpressionException {
 		// Populations
 		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
+        String uuidXPathString = "";
+		
+		for(String uuidString: usedClauseIds){
+			uuidXPathString += "@uuid = '"+uuidString + "' or";
+		}
+		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
+		String XPATH_POPULATION_SUBTREEREF = "/measure/populations//clause["+uuidXPathString+"]" +
+				"//subTreeRef[not(@id = preceding:: populations//clause//subTreeRef/@id)]/@id";
 		NodeList groupedSubTreeRefIdsNodeListPop = (NodeList) xPath.evaluate(
-				"/measure/populations//subTreeRef/@id",
+				XPATH_POPULATION_SUBTREEREF,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for (int i = 0; i < groupedSubTreeRefIdsNodeListPop.getLength(); i++) {
@@ -836,8 +845,10 @@ public class ExportSimpleXML {
 		
 		// Measure Observations
 		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
+		String measureObservationSubTreeRefID = "/measure/measureObservations//clause["+
+				uuidXPathString+"]//subTreeRef[not(@id = preceding:: measureObservations//clause//subTreeRef/@id)]/@id";
 		NodeList groupedSubTreeRefIdsNodeListMO = (NodeList) xPath.evaluate(
-				"/measure/measureObservations//subTreeRef/@id",
+				measureObservationSubTreeRefID,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for (int i = 0; i < groupedSubTreeRefIdsNodeListMO.getLength(); i++) {
@@ -849,9 +860,10 @@ public class ExportSimpleXML {
 		
 		// Stratifications
 		List<String> usedSubTreeRefIdsStrat = new ArrayList<String>();
-		
+		String startSubTreeRefID = "/measure/strata//clause["+
+				uuidXPathString+"]//subTreeRef[not(@id = preceding:: strata//clause//subTreeRef/@id)]/@id";
 		NodeList groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(
-				"/measure/strata/stratification//subTreeRef/@id",
+				startSubTreeRefID,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for (int i = 0; i < groupedSubTreeRefIdListStrat.getLength(); i++) {

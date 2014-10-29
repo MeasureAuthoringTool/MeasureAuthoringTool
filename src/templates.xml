@@ -16,7 +16,7 @@
     
     <!-- care experience -->
     <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">patient care experience</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">provider care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true">provider care experience</template>
     
     <!-- communication -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.8" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" isPart="true" addCodeTag="true" includeSubTemplate="communication-FromPatient-ToProvider" addValueTag="false">communication: from patient to provider</template>
@@ -69,7 +69,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.6" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">patient characteristic clinical trial participant</template>
     
     <!-- provider characteristic -->
-    <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">provider characteristic</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.71" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="provider-char">provider characteristic</template>
     
     <!-- intervention -->
     <template oid="2.16.840.1.113883.10.20.28.3.33" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-adverseEvent">intervention, adverse event</template>
@@ -433,5 +433,16 @@
     </role>
 </participation>
  </substance-order>
+ <provider-char changeAttribute="code,displayName">
+ <participation>
+    <role classCode="ASSIGNED">
+        <playingDevice classCode="DEV" determinerCode="KIND">
+        <code valueSet="$QDMElementValueSetOID">
+            <displayName value="$valueSetName"/>
+        </code>
+    </playingDevice>
+    </role>
+</participation>
+ </provider-char>
     </subtemplates>
 </templates>

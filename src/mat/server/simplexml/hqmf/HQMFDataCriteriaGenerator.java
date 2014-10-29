@@ -770,14 +770,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				return;
 			} else {
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)) {
-					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
+					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
 					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,null);
 				} else if(ORDINALITY.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
+					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}else if (ROUTE.equalsIgnoreCase(attrName)){
-					
-					addTargetSiteOrPriorityCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
+					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}
 				return;
 			}
@@ -920,7 +919,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param attributeQDMNode
 	 * @param templateNode
 	 */
-	private void addTargetSiteOrPriorityCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	private void addTargetSiteOrPriorityCodeOrRouteCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			Node attributeQDMNode, Node templateNode) {
 		String targetElementName = templateNode.getAttributes().getNamedItem("target").getNodeValue();
 		Element targetSiteCodeElement = dataCriteriaXMLProcessor.getOriginalDoc()

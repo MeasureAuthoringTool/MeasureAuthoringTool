@@ -115,8 +115,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.46.74" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="282100009" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction to Substance" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.75" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="419199007" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, allergy</template>
     <template oid="2.16.840.1.113883.10.20.28.3.76" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">substance, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">substance, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-order">substance, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-participation">substance, recommended</template>
     
     <!-- symptom -->
     <template oid="2.16.840.1.113883.10.20.28.3.79" class="OBS" mood="EVN" status="ACTIVE" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" includeSubTemplate="status-active">symptom, active</template>    
@@ -422,6 +422,16 @@
     </role>
 </participation>
  </substance-participation>
- 
+ <substance-order changeAttribute="code,displayName">
+ <participation typeCode="CSM">
+    <role classCode="ADMM">
+        <playingMaterial classCode="MAT" determinerCode="KIND">
+        <code valueSet="$QDMElementValueSetOID">
+            <displayName value="$valueSetName"/>
+        </code>
+    </playingMaterial>
+    </role>
+</participation>
+ </substance-order>
     </subtemplates>
 </templates>

@@ -1,7 +1,6 @@
 package mat.server.simplexml.hqmf;
 
 import mat.model.clause.MeasureExport;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -74,6 +73,7 @@ public interface Generator {
 	public static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";
 	public static final String ORDINALITY = "Ordinality";
 	public static final String LATERALITY = "Laterality";
+	public static final String ROUTE = "route";
 	
 	public static final String ATTRIBUTE_MODE = "attributeMode";
 	
@@ -87,11 +87,11 @@ public interface Generator {
 	
 	/** The name space. */
 	public final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
-
+	
 	public static final String LESS_THAN = "Less Than";
-
+	
 	public static final String GREATER_THAN = "Greater Than";
-
+	
 	public static final String EQUAL_TO = "Equal To";
 	public abstract String generate(MeasureExport me);
 	

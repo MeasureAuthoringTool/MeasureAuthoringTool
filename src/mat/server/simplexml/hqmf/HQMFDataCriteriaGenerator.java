@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -863,15 +865,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 					Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(LOW);
 					lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-					if(unitAttrib != null){
-						lowElem.setAttribute("unit", unitAttrib.getNodeValue());
-					}
-					
+										
 					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(HIGH);
 					highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					
 					if(unitAttrib != null){
-						highElem.setAttribute("unit", unitAttrib.getNodeValue());
+						String unitString = getUnitString(unitAttrib.getNodeValue());
+						lowElem.setAttribute("unit", unitString);
+						highElem.setAttribute("unit", unitString);
 					}
 					
 					valueElem.appendChild(lowElem);
@@ -884,7 +886,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 							.createElement(LOW);
 					lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 					if(unitAttrib != null){
-						lowElem.setAttribute("unit", unitAttrib.getNodeValue());
+						String unitString = getUnitString(unitAttrib.getNodeValue());
+						lowElem.setAttribute("unit", unitString);
 					}
 					
 					valueElem.appendChild(lowElem);
@@ -896,7 +899,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 							.createElement(HIGH);
 					highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 					if(unitAttrib != null){
-						highElem.setAttribute("unit", unitAttrib.getNodeValue());
+						String unitString = getUnitString(unitAttrib.getNodeValue());
+						highElem.setAttribute("unit", unitString);
 					}
 					
 					valueElem.appendChild(highElem);
@@ -905,10 +909,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 		}
 		
-		observationCriteriaElem.appendChild(valueElem);
-		
-		dataCriteriaElem.appendChild(outboundRelationshipElem);
-		
+		observationCriteriaElem.appendChild(valueElem);		
+		dataCriteriaElem.appendChild(outboundRelationshipElem);		
 	}
 	
 	/**
@@ -1133,6 +1135,48 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			}
 		}
 		return codeElement;
+	}
+	
+	private String getUnitString(String unitString){
+		String returnString = unitString;
+		
+		if(unitString.equals("years") || unitString.equals("year")){
+			returnString = "a";
+		}else if(unitString.equals("month") || unitString.equals("months")){
+			returnString = "mo";
+		}else if(unitString.equals("day") || unitString.equals("days")){
+			returnString = "d";
+		}else if(unitString.equals("hours") || unitString.equals("hour")){
+			returnString = "h";
+		}else if(unitString.equals("week") || unitString.equals("weeks")){
+			returnString = "wk";
+		}else if(unitString.equals("minutes") || unitString.equals("minute")){
+			returnString = "min";
+		}else if(unitString.equals("quarter") || unitString.equals("quarters")){
+			returnString = "[qtr]";
+		}else if(unitString.equals("second") || unitString.equals("seconds")){
+			returnString = "s";
+		}else if(unitString.equals("bpm")){
+			returnString = "{H.B}";
+		}else if(unitString.equals("mmHG")){
+			returnString = "mm[Hg]";
+		}else if(unitString.equals("mEq")){
+			returnString = "meq";
+		}else if(unitString.equals("celsius")){
+			returnString = "cel";
+		}else if(unitString.equals("WBC/mm3")){
+			returnString = "{WBC}/mm3";
+		}else if(unitString.equals("WBC/hpf")){
+			returnString = "{WBC}/[HPF]";
+		}else if(unitString.equals("CFU/mL")){
+			returnString = "{CFU}/mL";
+		}else if(unitString.equals("per mm3")){
+			returnString = "/mm3";
+		}else if(unitString.equals("copies/mL")){
+			returnString = "[copies]/mL";
+		}
+		
+		return returnString;
 	}
 	
 	

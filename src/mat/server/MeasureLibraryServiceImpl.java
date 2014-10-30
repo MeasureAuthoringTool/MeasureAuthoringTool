@@ -1838,6 +1838,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		} else {
 			// creating a new measure.
+			setMeasureCreated(false);
 			pkg = new Measure();
 			/*model.setMeasureStatus("In Progress");*/
 			model.setRevisionNumber("000");

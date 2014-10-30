@@ -15,7 +15,7 @@
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">care goal</template>
     
     <!-- care experience -->
-    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96" addValueTag="true" addCodeTag="true">patient care experience</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.52" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="406193000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Patient Satisfaction" addValueTag="true" addCodeTag="true">patient care experience</template>
     <template oid="2.16.840.1.113883.10.20.28.3.70" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="405193005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true">provider care experience</template>
     
     <!-- communication -->
@@ -108,7 +108,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">procedure, recommended</template>
     
     <!-- risk category -->
-    <template oid="2.16.840.1.113883.10.20.28.3.72" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">risk category assessment</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.72" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" isRiskCategory="true">risk category assessment</template>
     
     <!-- substance -->
     <template oid="2.16.840.1.113883.10.20.28.3.73" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addValueTag="false" addCodeTag="true" includeSubTemplate="substance-participation">substance, administered</template>

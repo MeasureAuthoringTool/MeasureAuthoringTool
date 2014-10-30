@@ -73,10 +73,20 @@ public interface Generator {
 	public static final String VERSIONID = "2014-11-24";
 	
 	public static final String VALUE_SET = "Value Set";
+	
 	public static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";
+	
 	public static final String ORDINALITY = "Ordinality";
+	
 	public static final String LATERALITY = "Laterality";
+	
 	public static final String ROUTE = "route";
+	
+	public static final String FACILITY_LOCATION = "facility location";
+	
+	public static final String FACILITY_LOCATION_ARRIVAL_DATETIME = "facility location arrival datetime";
+	
+	public static final String FACILITY_LOCATION_DEPARTURE_DATETIME = "facility location departure datetime";
 	
 	public static final String ATTRIBUTE_MODE = "attributeMode";
 	

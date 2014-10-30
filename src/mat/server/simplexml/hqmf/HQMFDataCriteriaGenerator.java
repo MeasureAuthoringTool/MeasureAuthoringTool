@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -303,9 +305,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
 		
-		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME+"']"
-				+ "[@mode != 'Check if Present']";
-		System.out.println("xPathForAttributeUse:"+xPathForAttributeUse);
+		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute"
+				+ "[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME+"']"
+						+ "[@mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]";
+
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){

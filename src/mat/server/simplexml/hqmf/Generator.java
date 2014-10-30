@@ -93,6 +93,6 @@ public interface Generator {
 	public static final String GREATER_THAN = "Greater Than";
 	
 	public static final String EQUAL_TO = "Equal To";
-	public abstract String generate(MeasureExport me);
+	public abstract String generate(MeasureExport me) throws Exception;
 	
 }

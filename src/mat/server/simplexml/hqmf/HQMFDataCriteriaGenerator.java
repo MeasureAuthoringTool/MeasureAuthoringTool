@@ -26,7 +26,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @return the string
 	 */
 	@Override
-	public String generate(MeasureExport me) {
+	public String generate(MeasureExport me) throws Exception{
 		
 		String dataCriteria = "";
 		dataCriteria = getHQMFXmlString(me);
@@ -1165,7 +1165,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Node codeDisplayNameAttr = templateNode.getAttributes().getNamedItem(
 				CODE_SYSTEM_DISPLAY_NAME);
 		Element codeElement = null;
-		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr !=null) || 
+		if ((codeAttr != null) || (codeSystemAttr != null) || (codeSystemNameAttr !=null) ||
 				(codeDisplayNameAttr!=null)) {
 			codeElement = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);

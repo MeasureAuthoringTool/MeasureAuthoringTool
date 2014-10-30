@@ -134,22 +134,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The release date. */
 	private String releaseDate;
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
-	 */
-	@Override
-	public String getReleaseDate() {
-		return releaseDate;
-	}
-	
-	/**
-	 * Sets the release date.
-	 *
-	 * @param releaseDate the new release date
-	 */
-	public void setReleaseDate(String releaseDate) {
-		this.releaseDate = releaseDate;
-	}
+	/** The is measure created. */
+	private boolean isMeasureCreated;
+
 	
 	/**
 	 * Comparator.
@@ -1830,6 +1817,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure pkg = null;
 		MeasureSet measureSet = null;
 		if (model.getId() != null) {
+			setMeasureCreated(true);
 			// editing an existing measure
 			pkg = getService().getById(model.getId());
 			model.setVersionNumber(pkg.getVersion());
@@ -1850,7 +1838,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		} else {
 			// creating a new measure.
-			
 			pkg = new Measure();
 			/*model.setMeasureStatus("In Progress");*/
 			model.setRevisionNumber("000");
@@ -2277,6 +2264,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				|| StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {*/
 			PeriodModel periodModel = new PeriodModel();
 			periodModel.setUuid(UUID.randomUUID().toString());
+			//for New measures checking Calender year to add Default Dates
+			if(!isMeasureCreated()){
+				measureDetailModel.setCalenderYear(true);
+			}
 			periodModel.setCalenderYear(measureDetailModel.isCalenderYear());
 			if(!measureDetailModel.isCalenderYear()){
 				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
@@ -3904,6 +3895,41 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return measureSteward;
 		
+	}
+	
+	/**
+	 * Checks if is measure created.
+	 *
+	 * @return true, if is measure created
+	 */
+	public boolean isMeasureCreated() {
+		return isMeasureCreated;
+	}
+
+	/**
+	 * Sets the measure created.
+	 *
+	 * @param isMeasureCreated the new measure created
+	 */
+	public void setMeasureCreated(boolean isMeasureCreated) {
+		this.isMeasureCreated = isMeasureCreated;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
+	 */
+	@Override
+	public String getReleaseDate() {
+		return releaseDate;
+	}
+	
+	/**
+	 * Sets the release date.
+	 *
+	 * @param releaseDate the new release date
+	 */
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
 	}
 		
 }

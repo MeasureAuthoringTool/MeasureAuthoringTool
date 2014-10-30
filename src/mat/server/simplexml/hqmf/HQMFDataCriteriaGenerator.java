@@ -272,7 +272,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
 		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@mode = 'Check if Present' or @mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]"
-				+ "[@name != 'negation rationale']";
+				+ "[@name != 'negation rationale' or @name != '"+START_DATETIME+"' or @name !='"+STOP_DATETIME+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){

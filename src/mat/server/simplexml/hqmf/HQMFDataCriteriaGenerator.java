@@ -72,6 +72,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.2");
+		itemChild.setAttribute("extension", VERSIONID);
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -271,8 +272,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private void generateNonValuesetAttribEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
-		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@mode = 'Check if Present' or @mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]"
-				+ "[@name != 'negation rationale' or @name != '"+START_DATETIME+"' or @name !='"+STOP_DATETIME+"']";
+		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/"
+				+ "attribute[@mode = 'Check if Present' or @mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]"
+				+ "[@name != 'negation rationale' and @name != '"+START_DATETIME+"' and @name !='"+STOP_DATETIME+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -352,7 +354,6 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='"
 				+ dataType.toLowerCase() + "']";
-		System.out.println("xPathForTemplate:"+xPathForTemplate);
 		String actNodeStr = "";
 		try {
 			
@@ -450,6 +451,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, oidValue);
+		itemChild.setAttribute("extension", VERSIONID);
 		templateId.appendChild(itemChild);
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
@@ -690,7 +692,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 					+ attrName + "']");
-			
+			System.out.println("----------");
+			System.out.println(attributeQDMNode.getNodeName());
+			System.out.println(attributeQDMNode.getAttributes());
+			System.out.println(simpleXmlprocessor.transform(attributeQDMNode));
+			System.out.println("----------");
 			String attributeValueSetName = attributeQDMNode.getAttributes()
 					.getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes()
@@ -717,6 +723,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
+			itemChild.setAttribute("extension", VERSIONID);
 			templateId.appendChild(itemChild);
 			
 			Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -833,6 +840,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
+			itemChild.setAttribute("extension", VERSIONID);
 			templateId.appendChild(itemChild);
 		}
 		

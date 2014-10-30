@@ -1,6 +1,7 @@
 package mat.server.simplexml.hqmf;
 
 import mat.model.clause.MeasureExport;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +69,8 @@ public interface Generator {
 	public static final String NAME = "name";
 	
 	public static final String CODE = "code";
+	
+	public static final String VERSIONID = "2014-11-24";
 	
 	public static final String VALUE_SET = "Value Set";
 	public static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";

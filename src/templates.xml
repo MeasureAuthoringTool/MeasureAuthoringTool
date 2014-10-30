@@ -143,15 +143,15 @@
     <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" type="CAUS" inv="true">cause</template>-->
     
     <!-- data flow attributes -->
-    <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" inv="false" code="395676008" codeSystem="2.16.840.1.113883.6.96" valueType="CD">health record field</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" inv="false" code="419358007" codeSystem="2.16.840.1.113883.6.96" valueType="CD">recorder</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" inv="false" code="260753009" codeSystem="2.16.840.1.113883.6.96" valueType="CD">source</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" code="395676008" codeSystem="2.16.840.1.113883.6.96" valueType="CD">health record field</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" code="419358007" codeSystem="2.16.840.1.113883.6.96" valueType="CD">recorder</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" code="260753009" codeSystem="2.16.840.1.113883.6.96" valueType="CD">source</template>
     
     <!-- status -->
-    <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" inv="false" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" inv="false">status active</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" inv="false">status inactive</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" inv="false">status resolved</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" >status active</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" >status inactive</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" >status resolved</template>
     
     <!-- facility -->
     <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN">facility location</template>
@@ -230,8 +230,8 @@
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
-					<item root="2.16.840.1.113883.10.20.28.3.94" />
-					<item root="2.16.840.1.113883.10.20.28.3.95" />
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.95" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="statusactive" />
 				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
@@ -251,8 +251,8 @@
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
-					<item root="2.16.840.1.113883.10.20.28.3.94" />
-					<item root="2.16.840.1.113883.10.20.28.3.96" />
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.96" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="statusinactive" />
 				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
@@ -272,8 +272,8 @@
 		<outboundRelationship typeCode="REFR">
 			<observationCriteria classCode="OBS" moodCode="EVN">
 				<templateId>
-					<item root="2.16.840.1.113883.10.20.28.3.94" />
-					<item root="2.16.840.1.113883.10.20.28.3.97" />
+					<item root="2.16.840.1.113883.10.20.28.3.94" extension="2014-11-24"/>
+					<item root="2.16.840.1.113883.10.20.28.3.97" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="statusresolved" />
 				<code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
@@ -297,93 +297,111 @@
 		</participation>
 	</transfer>
 	
-	<intervention-adverseEvent changeAttribute="code">
+	<intervention-adverseEvent changeAttribute="code,displayName">
 	    <outboundRelationship typeCode="CAUS" inversionInd="true">
 			<procedureCriteria classCode="PROC" moodCode="EVN">
-				<code valueSet="$QDMElementValueSetOID"/>
+				<code valueSet="$QDMElementValueSetOID">
+				    <displayName value="$displaynamevalue"/>
+				</code>
 			</procedureCriteria>
 		</outboundRelationship>
 	</intervention-adverseEvent>
 	
-	<intervention-intolerance changeAttribute="code,id">
+	<intervention-intolerance changeAttribute="code,displayName,id">
 		<outboundRelationship typeCode="CAUS" inversionInd="true">
 			<actCriteria classCode="ACT" moodCode="EVN">
 				<templateId>
-					<item root="2.16.840.1.113883.10.20.28.3.36"/>
+					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID"/>
-				<code valueSet="{$QDMElementValueSetOID}"/>
+				<code valueSet="{$QDMElementValueSetOID}">
+				    <displayName value="$displaynamevalue"/>
+				</code>
 				<title value="Intervention, Performed"/>
 				<statusCode code="completed"/>
 			</actCriteria>
 		</outboundRelationship>
     </intervention-intolerance>
     
-	<medicationActive changeAttribute="code">
+	<medicationActive changeAttribute="code,displayName">
 		<participation typeCode="CSM">
 			<role classCode="MANU">
 				<playingMaterial classCode="MMAT" determinerCode="KIND">
-					<code valueSet="$valueSet"/>
+					<code valueSet="$valueSet">
+					    <displayName value="$displaynamevalue"/>
+					</code>				    
 				</playingMaterial>
 			</role>
 		</participation>
 	</medicationActive>
     
-	<medicationAdministered changeAttribute="code">
+	<medicationAdministered changeAttribute="code,displayName">
 		<participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueset"/>	
+		<code valueSet="$valueset">
+		    <displayName value="$displaynamevalue"/>
+		</code>    	
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationAdministered>
 	
-	<medicationAdverseEffects changeAttribute="code">
+	<medicationAdverseEffects changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID"/>
+		<code valueSet="$QDMElementValueSetOID">
+		    <displayName value="$displaynamevalue"/>
+		</code>
 		</playingEntity>
 		</role>
 	</participation>
 	</medicationAdverseEffects>
 	
-	<medicationAllergy changeAttribute="code">
+	<medicationAllergy changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet"/>
+		<code valueSet="$valueSet">
+		    <displayName value="$displaynamevalue"/>
+		</code>    
 		</playingEntity>
 		</role>
 		</participation>
 	</medicationAllergy>
 	
-	<medicationDischarge changeAttribute="code">
+	<medicationDischarge changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet"/>
+		<code valueSet="$valueSet">
+		    <displayName value="$displaynamevalue"/>
+		</code>    
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationDischarge>
 	
-	<medicationDispensed changeAttribute="code">
+	<medicationDispensed changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" />
+		<code valueSet="$QDMElementValueSetOID" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationDispensed>
 	
-	<medicationIntolerance changeAttribute="code">
+	<medicationIntolerance changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet"/>
+		<code valueSet="$valueSet">
+		    <displayName value="$displaynamevalue"/>
+		</code>
 		</playingMaterial>
 		</role>
 		</participation>
@@ -399,25 +417,30 @@
 		</participation>
 	</medicationOrder>
 	
-	<laboratory-test changeAttribute = "id,code">
+	<laboratory-test changeAttribute = "id,code,displayName">
 	<outboundRelationship typeCode="CAUS"
 		inversionInd="true">
 		<observationCriteria classCode="OBS" moodCode="EVN">
 			<templateId>
-				<item root="2.16.840.1.113883.10.20.28.3.42" />
+				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
 			</templateId>
 			<id root="$UUID" />
-			<code valueSet="$QDMElementValueSetOID" />
+			<code valueSet="$QDMElementValueSetOID" >
+			    <displayName value="$displaynamevalue"/>
+			</code>
 			<title value="Laboratory Test, Performed" />
 			<statusCode code="completed" />
 		</observationCriteria>
 	</outboundRelationship>
  </laboratory-test>
- <substance-participation changeAttribute="code">
+
+ <substance-participation changeAttribute="code, displayName">
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" />
+        <code valueSet="$QDMElementValueSetOID" >
+            <displayName value="$displaynamevalue"/>
+        </code>    
     </playingMaterial>
     </role>
 </participation>

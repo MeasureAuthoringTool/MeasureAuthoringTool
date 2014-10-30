@@ -176,7 +176,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						simpleXmlprocessor, attributeQDMNode, qdmUUID, "Value Set");
 			}
 		}
-		//Generate entries for "Check if Present" attributes
+		//Generate entries for "Check if Present", attributes
 		generateNonValuesetAttribEntries(dataCriteriaXMLProcessor,simpleXmlprocessor);
 		generateDateTimeAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor);
 	}
@@ -480,24 +480,26 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
 			Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
 			Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
+			
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			
 			if((valueCode != null) && (valueCodeSystem != null)){
 				valueElem.setAttribute("code", valueCode.getNodeValue());
 				valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
 				if(valueCodeSystemName!=null){
 					valueElem.setAttribute("codeSystemName", valueCodeSystemName.getNodeValue());
 				}
+				if (valueDisplayName != null) {
+					displayNameElem.setAttribute(VALUE, valueDisplayName.getNodeValue());
+				}
 			}else{
 				valueElem.setAttribute("valueSet", qdmOidValue);
-			}
-			
-			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(DISPLAY_NAME);
-			if (valueDisplayName != null) {
-				displayNameElem.setAttribute(VALUE, valueDisplayName.getNodeValue());
-			} else {
 				displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			}
-			valueElem.appendChild(displayNameElem);
+			if(displayNameElem.hasAttribute(VALUE)){			
+				valueElem.appendChild(displayNameElem);
+			}
 			dataCriteriaElem.appendChild(valueElem);
 		}
 		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
@@ -573,6 +575,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			codeElem.setAttribute("valueSet", qdmOidValue);
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(TITLE);

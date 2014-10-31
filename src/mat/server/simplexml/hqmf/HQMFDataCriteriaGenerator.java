@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
@@ -20,10 +21,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * Generate hqm for measure.
-	 * 
-	 * @param me
-	 *            the me
+	 *
+	 * @param me            the me
 	 * @return the string
+	 * @throws Exception the exception
 	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception{
@@ -123,10 +124,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param qdmNoAttributeNodeList
-	 * @throws XPathExpressionException
+	 * Generate qdm entries.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param qdmNoAttributeNodeList the qdm no attribute node list
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateQDMEntries(XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, NodeList qdmNoAttributeNodeList)
@@ -150,10 +153,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param qdmAttributeNodeList
-	 * @throws XPathExpressionException
+	 * Generate qdm attribute entries.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param qdmAttributeNodeList the qdm attribute node list
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateQDMAttributeEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
@@ -183,11 +188,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param attributeQDMNode
-	 * @param qdmUUID
-	 * @throws XPathExpressionException
+	 * Generate negation rationale entries.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param qdmUUID the qdm uuid
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateNegationRationaleEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
@@ -223,11 +230,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param attributeQDMNode
-	 * @param qdmUUID
-	 * @throws XPathExpressionException
+	 * Generate value set attrib entries.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param qdmUUID the qdm uuid
+	 * @param modeValue the mode value
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateValueSetAttribEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
@@ -264,10 +274,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * This method will look for attributes of mode =
-	 * 'Check if Present', 'Equal To', 'Less Than (or Equal)', Greater than (or Equal)
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @throws XPathExpressionException
+	 * 'Check if Present', 'Equal To', 'Less Than (or Equal)', Greater than (or Equal).
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateNonValuesetAttribEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
@@ -304,6 +315,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate date time attribute entries.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateDateTimeAttributeEntries(
 			XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) throws XPathExpressionException {
@@ -345,13 +363,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor,clonedAttributeQDMNode);
 		}
 	}
+	
 	/**
 	 * Create xml for data criteria.
 	 *
 	 * @param qdmNode            the qdm node
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @param attributeQDMNode
+	 * @param attributeQDMNode the attribute qdm node
 	 * @return the string
 	 */
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
@@ -609,11 +628,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * Add SubTemplate defined in Template.xml to data criteria Element.
+	 *
 	 * @param templateNode - Node
 	 * @param dataCriteriaXMLProcessor - XmlProcessor for Data Criteria
 	 * @param templateXMLProcessor -XmlProcessor for Template Xml.
 	 * @param dataCriteriaElem - Element
-	 * @throws XPathExpressionException
+	 * @param qdmNode the qdm node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, Node qdmNode) throws XPathExpressionException {
@@ -653,12 +674,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	/**
 	 * Method to append Facility Location attribute template to data type. This attribute can only have value ser
 	 * and Check If present mode's and these are added to code tag.
-	 * @param templateNode
-	 * @param dataCriteriaXMLProcessor
-	 * @param templateXMLProcessor
-	 * @param dataCriteriaElem
-	 * @param attrNode
-	 * @throws XPathExpressionException
+	 *
+	 * @param templateNode the template node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param templateXMLProcessor the template xml processor
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param attrNode the attr node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void appendSubTemplateInFacilityAttribute(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, Node attrNode) throws XPathExpressionException{
@@ -713,7 +735,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @param attributeQDMNode
+	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createDataCriteriaForAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode
@@ -732,6 +754,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			generateFacilityLocationTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 			
+		}else if(DOSE.equalsIgnoreCase(attributeName)){
+			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+			
 		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode) || attributeMode.startsWith(LESS_THAN) || attributeMode.startsWith(GREATER_THAN) || EQUAL_TO.equals(attributeMode)){
 			//handle "Value Set", "Check If Present" and comparison(less than, greater than, equals) mode
 			generateOtherAttributes(qdmNode, dataCriteriaElem,
@@ -739,6 +765,91 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate dose type attributes.
+	 *
+	 * @param qdmNode the qdm node
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
+	 */
+	private void generateDoseTypeAttributes(Node qdmNode,
+			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
+		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+		Node attrOID = attributeQDMNode.getAttributes().getNamedItem("oid");
+		Node participationElem = dataCriteriaElem.getElementsByTagName("participation").item(0);
+		Node parentNode = participationElem.getParentNode();
+		Element doseQuantityTag = dataCriteriaElem.getOwnerDocument().createElement(DOSE_QUANTITY);
+		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
+           if(CHECK_IF_PRESENT.equals(attrMode)){
+				doseQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+			}  else if(VALUE_SET.equals(attrMode)){
+				doseQuantityTag.setAttribute(FLAVOR_ID, "UNK");
+				Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
+				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
+				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(DISPLAY_NAME);
+				displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+						+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
+				translationNode.appendChild(displayNameElem);
+				doseQuantityTag.appendChild(translationNode);
+			} else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
+				if(attrMode.equals(Generator.EQUAL_TO)){
+					doseQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if(unitAttrib!=null){
+						doseQuantityTag.setAttribute("unit", unitAttrib.getNodeValue());	
+					}
+				} else if(attrMode.startsWith(Generator.LESS_THAN)){
+					Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+				    if(attrMode.equals(Generator.LESS_THAN)){
+						uncertainRangeNode.setAttribute("highClosed", "false");
+					}
+				    Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+				    lowNode.setAttribute("nullFlavor", "NINF");
+				    Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				    highNode.setAttribute("xsi:type", "PQ");
+				    highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				    if(unitAttrib!=null){
+				    	highNode.setAttribute("unit", unitAttrib.getNodeValue());	
+					}
+				    uncertainRangeNode.appendChild(lowNode);
+				    uncertainRangeNode.appendChild(highNode);
+				    doseQuantityTag.appendChild(uncertainRangeNode);
+				    
+				} else if(attrMode.startsWith(Generator.GREATER_THAN)){
+					Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+				    if(attrMode.equals(Generator.GREATER_THAN)){
+						uncertainRangeNode.setAttribute("lowClosed", "false");
+					}
+				    Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+				    lowNode.setAttribute("nullFlavor", "NINF");
+				    Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				    highNode.setAttribute("xsi:type", "PQ");
+				    highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				    if(unitAttrib!=null){
+				    	highNode.setAttribute("unit", unitAttrib.getNodeValue());	
+					}
+				    uncertainRangeNode.appendChild(lowNode);
+				    uncertainRangeNode.appendChild(highNode);
+				    doseQuantityTag.appendChild(uncertainRangeNode);
+				}
+			}
+           parentNode.insertBefore(doseQuantityTag, participationElem);
+		
+	}
+	
+	/**
+	 * Generate facility location type attributes.
+	 *
+	 * @param qdmNode the qdm node
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
@@ -761,7 +872,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @param attributeQDMNode
+	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateNegationRationalEntries(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
@@ -850,12 +961,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	/**
 	 * Generate other attribute entries.
 	 *
-	 * @param childNode the child node
+	 * @param qdmNode the qdm node
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
-	 * @param attributeQDMNode
-	 * @throws XPathExpressionException
+	 * @param attributeQDMNode the attribute qdm node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateOtherAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
@@ -958,11 +1069,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * @param dataCriteriaXMLProcessor
-	 * @param attributeQDMNode
-	 * @param isResultOrStatus
-	 * @param templateNode
-	 * @param valueElem
+	 * Check if selected mode is value set.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param isResultOrStatus the is result or status
+	 * @param templateNode the template node
+	 * @param valueElem the value elem
+	 * @return the element
 	 */
 	private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode, boolean isResultOrStatus,
 			Node templateNode,Element valueElem) {
@@ -990,6 +1104,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	
+	/**
+	 * Check if selected mode is present.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param templateNode the template node
+	 * @param valueElem the value elem
+	 * @return the element
+	 */
 	private Element checkIfSelectedModeIsPresent(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem){
 		valueElem.setAttribute(XSI_TYPE, "ANY");
@@ -997,6 +1120,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		return valueElem;
 	}
 	
+	/**
+	 * Check if selected mode is arthimatic expr.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param templateNode the template node
+	 * @param valueElem the value elem
+	 * @return the element
+	 */
 	private Element checkIfSelectedModeIsArthimaticExpr(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode, Element valueElem){
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
@@ -1055,11 +1187,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		return valueElem;
 	}
+	
 	/**
-	 * @param dataCriteriaElem
-	 * @param dataCriteriaXMLProcessor
-	 * @param attributeQDMNode
-	 * @param templateNode
+	 * Adds the target site or priority code or route code element.
+	 *
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @param templateNode the template node
 	 */
 	private void addTargetSiteOrPriorityCodeOrRouteCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			Node attributeQDMNode, Node templateNode) {
@@ -1131,12 +1266,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	}
 	
 	/**
-	 * Method to generate HQMF XML for date time attributes
-	 * @param childNode
-	 * @param dataCriteriaElem
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param attributeQDMNode
+	 * Method to generate HQMF XML for date time attributes.
+	 *
+	 * @param childNode the child node
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
 	 */
 	private void generateDateTimeAttributes(Node childNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
@@ -1267,8 +1403,10 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * Add comment before specific Node.
-	 * @param xmlProcessor
-	 * @param commentText
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @param commentText the comment text
+	 * @param insertBeforeNode the insert before node
 	 */
 	private void addCommentNode(XmlProcessor xmlProcessor, String commentText, Node insertBeforeNode) {
 		Comment comment = xmlProcessor.getOriginalDoc().createComment(commentText);
@@ -1279,7 +1417,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	/**
 	 * Creates the code for datatype.
 	 *
-	 * @param childNode the child node
+	 * @param templateNode the template node
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the element
 	 */
@@ -1319,6 +1457,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		return codeElement;
 	}
 	
+	/**
+	 * Gets the unit string.
+	 *
+	 * @param unitString the unit string
+	 * @return the unit string
+	 */
 	private String getUnitString(String unitString){
 		String returnString = unitString;
 		

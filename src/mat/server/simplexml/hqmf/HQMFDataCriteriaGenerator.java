@@ -499,7 +499,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				valueElem.setAttribute("valueSet", qdmOidValue);
 				displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			}
-			if(displayNameElem.hasAttribute(VALUE)){			
+			if(displayNameElem.hasAttribute(VALUE)){
 				valueElem.appendChild(displayNameElem);
 			}
 			dataCriteriaElem.appendChild(valueElem);
@@ -662,29 +662,35 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName + "/child::node()");
 		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
-			String tagToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue();
-			Node  attributedToBeChangedInNode = null;
-			attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
-					+ subTemplateName+"//"+tagToBeModified);
-			String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
-			if(VALUE_SET.equals(attrMode)){
-				if(attributedToBeChangedInNode.hasAttributes()){
-					((Element)attributedToBeChangedInNode).removeAttribute("flavorId");
-					((Element)attributedToBeChangedInNode).removeAttribute("xsi:type");
+			String[] tagToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
+			for (String changeAttribute : tagToBeModified) {
+				Node  attributedToBeChangedInNode = null;
+				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+						+ subTemplateName+"//"+changeAttribute);
+				if(changeAttribute.equalsIgnoreCase(ID)){
+					attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+				} else if(changeAttribute.equalsIgnoreCase(CODE)){
+					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
+					if(VALUE_SET.equals(attrMode)){
+						if(attributedToBeChangedInNode.hasAttributes()){
+							((Element)attributedToBeChangedInNode).removeAttribute("flavorId");
+							((Element)attributedToBeChangedInNode).removeAttribute("xsi:type");
+						}
+						if(attributedToBeChangedInNode.hasChildNodes()){
+							((Element)attributedToBeChangedInNode).removeChild(attributedToBeChangedInNode.getFirstChild());
+						}
+						checkIfSelectedModeIsValueSet(templateXMLProcessor, attrNode, false, subTemplateNode, (Element)attributedToBeChangedInNode);
+					} else if(CHECK_IF_PRESENT.equals(attrMode)){
+						if(attributedToBeChangedInNode.hasAttributes()){
+							((Element)attributedToBeChangedInNode).removeAttribute("valueSet");
+						}
+						if(attributedToBeChangedInNode.hasChildNodes()){
+							((Element)attributedToBeChangedInNode).removeChild(attributedToBeChangedInNode.getFirstChild());
+						}
+						checkIfSelectedModeIsPresent(templateXMLProcessor, attrNode, subTemplateNode, (Element)attributedToBeChangedInNode);
+						((Element)attributedToBeChangedInNode).removeAttribute("xsi:type");
+					}
 				}
-				if(attributedToBeChangedInNode.hasChildNodes()){
-					((Element)attributedToBeChangedInNode).removeChild(attributedToBeChangedInNode.getFirstChild());
-				}
-				checkIfSelectedModeIsValueSet(templateXMLProcessor, attrNode, false, subTemplateNode, (Element)attributedToBeChangedInNode);
-			} else if(CHECK_IF_PRESENT.equals(attrMode)){
-				if(attributedToBeChangedInNode.hasAttributes()){
-					((Element)attributedToBeChangedInNode).removeAttribute("valueSet");
-				}
-				if(attributedToBeChangedInNode.hasChildNodes()){
-					((Element)attributedToBeChangedInNode).removeChild(attributedToBeChangedInNode.getFirstChild());
-				}
-				checkIfSelectedModeIsPresent(templateXMLProcessor, attrNode, subTemplateNode, (Element)attributedToBeChangedInNode);
-				((Element)attributedToBeChangedInNode).removeAttribute("xsi:type");
 			}
 			for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 				Node childNode = subTemplateNodeChilds.item(i);
@@ -1210,11 +1216,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if ((nodeList != null) && (nodeList.getLength() > 0)) {
 				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
 			} else {
-				//Check if participation Node exists for communication data type. Add EffectiveTime tag before that.
-				String dataType = childNode.getAttributes().getNamedItem("datatype")
-						.getNodeValue();
-				if(dataType.contains("facility")){
-					NodeList nodeListParticipation = dataCriteriaElem.getElementsByTagName("code");
+				
+				if(attrName.contains("facility")){
+					NodeList nodeListParticipation =  dataCriteriaElem.getElementsByTagName("role");
+					if ((nodeListParticipation != null) && (nodeListParticipation.getLength() > 0)) {
+						nodeListParticipation.item(0).getFirstChild().getParentNode().appendChild(effectiveTimeNode);
+					}
 				} else {
 					NodeList nodeListParticipation = dataCriteriaElem.getElementsByTagName("participation");
 					if ((nodeListParticipation != null) && (nodeListParticipation.getLength() > 0)) {

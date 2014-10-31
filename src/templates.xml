@@ -155,8 +155,8 @@
     
     <!-- facility -->
     <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location">facility location</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility">facility location arrival datetime</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility">facility location departure datetime</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location arrival datetime</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location departure datetime</template>
     
     <!-- misc -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</template>
@@ -467,15 +467,27 @@
     </role>
 </participation>
  </provider-char>
- <facility-location changeAttribute="code">
+ <facility-location changeAttribute="id,code">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
         <templateId>
             <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
         </templateId>
+        <id root="$UUID"/>
         <code/>
     </role>
 </participation>
  </facility-location>
+ 
+ <facility-location-ArrDeparture changeAttribute="id">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+        <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
+        </templateId>
+        <id root="$UUID"/>
+    </role>
+</participation>
+ </facility-location-ArrDeparture>
     </subtemplates>
 </templates>

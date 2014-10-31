@@ -172,10 +172,13 @@ public interface Generator {
 	public static final String DOSE = "dose";
 	
 	/** The Constant DOSE_QUANTITY. */
-	public static final String DOSE_QUANTITY = "doseQuantity";
+	public static final String LENGTH_OF_STAY = "length of stay";
 	
 	/** The Constant TRANSLATION. */
 	public static final String TRANSLATION = "translation";
+	
+	/** The Constant NULL_FLAVOR. */
+	public static final String NULL_FLAVOR ="nullFlavor";
 	
 	
 	/**

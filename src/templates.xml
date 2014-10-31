@@ -435,7 +435,7 @@
 	</outboundRelationship>
  </laboratory-test>
 
- <substance-participation changeAttribute="code, displayName">
+ <substance-participation changeAttribute="code,displayName">
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">

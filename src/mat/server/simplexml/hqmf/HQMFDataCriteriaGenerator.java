@@ -1231,7 +1231,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			} else if (insertAfterNodeName != null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
 				if (outBoundElement != null) {
-					outBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
 				} else {
 					dataCriteriaElem.appendChild(targetSiteCodeElement);
 				}
@@ -1246,6 +1246,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				if (outBoundElement != null) {
 					Node parentOfOutBoundElement = outBoundElement.getParentNode();
 					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					dataCriteriaElem.appendChild(targetSiteCodeElement);
+				}
+			} else if (insertAfterNodeName != null) {
+				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
+				if (outBoundElement != null) {
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
 				} else {
 					dataCriteriaElem.appendChild(targetSiteCodeElement);
 				}

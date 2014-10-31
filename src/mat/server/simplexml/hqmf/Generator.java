@@ -1,7 +1,6 @@
 package mat.server.simplexml.hqmf;
 
 import mat.model.clause.MeasureExport;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -137,6 +136,12 @@ public interface Generator {
 	/** The Constant FACILITY_LOCATION_DEPARTURE_DATETIME. */
 	public static final String FACILITY_LOCATION_DEPARTURE_DATETIME = "facility location departure datetime";
 	
+	/** The Constant ADMISSION_DATETIME. */
+	public static final String ADMISSION_DATETIME = "admission datetime";
+	
+	/** The Constant DEPARTURE_DATETIME. */
+	public static final String DISCHARGE_DATETIME = "discharge datetime";
+	
 	/** The Constant ATTRIBUTE_MODE. */
 	public static final String ATTRIBUTE_MODE = "attributeMode";
 	
@@ -168,7 +173,7 @@ public interface Generator {
 	
 	/** The Constant DOSE_QUANTITY. */
 	public static final String DOSE_QUANTITY = "doseQuantity";
-		
+	
 	/** The Constant TRANSLATION. */
 	public static final String TRANSLATION = "translation";
 	

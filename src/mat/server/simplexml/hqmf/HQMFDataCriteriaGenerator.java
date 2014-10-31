@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -783,60 +781,60 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		Node parentNode = participationElem.getParentNode();
 		Element doseQuantityTag = dataCriteriaElem.getOwnerDocument().createElement(DOSE_QUANTITY);
 		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
-           if(CHECK_IF_PRESENT.equals(attrMode)){
-				doseQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-			}  else if(VALUE_SET.equals(attrMode)){
-				doseQuantityTag.setAttribute(FLAVOR_ID, "UNK");
-				Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
-				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
-				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-						.createElement(DISPLAY_NAME);
-				displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
-						+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
-				translationNode.appendChild(displayNameElem);
-				doseQuantityTag.appendChild(translationNode);
-			} else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
-				if(attrMode.equals(Generator.EQUAL_TO)){
-					doseQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-					if(unitAttrib!=null){
-						doseQuantityTag.setAttribute("unit", unitAttrib.getNodeValue());	
-					}
-				} else if(attrMode.startsWith(Generator.LESS_THAN)){
-					Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
-				    if(attrMode.equals(Generator.LESS_THAN)){
-						uncertainRangeNode.setAttribute("highClosed", "false");
-					}
-				    Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
-				    lowNode.setAttribute("nullFlavor", "NINF");
-				    Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				    highNode.setAttribute("xsi:type", "PQ");
-				    highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-				    if(unitAttrib!=null){
-				    	highNode.setAttribute("unit", unitAttrib.getNodeValue());	
-					}
-				    uncertainRangeNode.appendChild(lowNode);
-				    uncertainRangeNode.appendChild(highNode);
-				    doseQuantityTag.appendChild(uncertainRangeNode);
-				    
-				} else if(attrMode.startsWith(Generator.GREATER_THAN)){
-					Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
-				    if(attrMode.equals(Generator.GREATER_THAN)){
-						uncertainRangeNode.setAttribute("lowClosed", "false");
-					}
-				    Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
-				    lowNode.setAttribute("nullFlavor", "NINF");
-				    Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				    highNode.setAttribute("xsi:type", "PQ");
-				    highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-				    if(unitAttrib!=null){
-				    	highNode.setAttribute("unit", unitAttrib.getNodeValue());	
-					}
-				    uncertainRangeNode.appendChild(lowNode);
-				    uncertainRangeNode.appendChild(highNode);
-				    doseQuantityTag.appendChild(uncertainRangeNode);
+		if(CHECK_IF_PRESENT.equals(attrMode)){
+			doseQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+		}  else if(VALUE_SET.equals(attrMode)){
+			doseQuantityTag.setAttribute(FLAVOR_ID, "UNK");
+			Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
+			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
+			translationNode.appendChild(displayNameElem);
+			doseQuantityTag.appendChild(translationNode);
+		} else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
+			if(attrMode.equals(Generator.EQUAL_TO)){
+				doseQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				if(unitAttrib!=null){
+					doseQuantityTag.setAttribute("unit", unitAttrib.getNodeValue());
 				}
+			} else if(attrMode.startsWith(Generator.LESS_THAN)){
+				Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+				if(attrMode.equals(Generator.LESS_THAN)){
+					uncertainRangeNode.setAttribute("highClosed", "false");
+				}
+				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+				lowNode.setAttribute("nullFlavor", "NINF");
+				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				highNode.setAttribute("xsi:type", "PQ");
+				highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				if(unitAttrib!=null){
+					highNode.setAttribute("unit", unitAttrib.getNodeValue());
+				}
+				uncertainRangeNode.appendChild(lowNode);
+				uncertainRangeNode.appendChild(highNode);
+				doseQuantityTag.appendChild(uncertainRangeNode);
+				
+			} else if(attrMode.startsWith(Generator.GREATER_THAN)){
+				Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
+				if(attrMode.equals(Generator.GREATER_THAN)){
+					uncertainRangeNode.setAttribute("lowClosed", "false");
+				}
+				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+				lowNode.setAttribute("nullFlavor", "NINF");
+				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				highNode.setAttribute("xsi:type", "PQ");
+				highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				if(unitAttrib!=null){
+					highNode.setAttribute("unit", unitAttrib.getNodeValue());
+				}
+				uncertainRangeNode.appendChild(lowNode);
+				uncertainRangeNode.appendChild(highNode);
+				doseQuantityTag.appendChild(uncertainRangeNode);
 			}
-           parentNode.insertBefore(doseQuantityTag, participationElem);
+		}
+		parentNode.insertBefore(doseQuantityTag, participationElem);
 		
 	}
 	
@@ -996,7 +994,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				} else if("method".equalsIgnoreCase(attrName)){
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}
-				
+				return;
 			}
 		}
 		if (attrName.equalsIgnoreCase(FACILITY_LOCATION)) {

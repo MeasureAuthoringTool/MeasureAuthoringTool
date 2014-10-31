@@ -283,7 +283,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute[@mode = 'Check if Present' or @mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than')]"
 				+ "[@name != 'negation rationale' and @name != '"+START_DATETIME+"' and @name !='"+STOP_DATETIME+"' " +"" +
 				"and @name != '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' and @name != '"+FACILITY_LOCATION_DEPARTURE_DATETIME
-				+"' and  @name != '"+FACILITY_LOCATION+"']";
+				+"' and  @name != '"+FACILITY_LOCATION+"' and @name != '"+ADMISSION_DATETIME
+				+"' and @name != '"+DISCHARGE_DATETIME
+				+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -325,7 +327,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		
 		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute"
 				+ "[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME +"' or @name = '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' or @name = '"+FACILITY_LOCATION_DEPARTURE_DATETIME
-				+"' or @name = '"+FACILITY_LOCATION+"']"
+				+"' or @name = '"+FACILITY_LOCATION+"' or @name ='"+ADMISSION_DATETIME+"' or @name ='"+DISCHARGE_DATETIME+"']"
 				+ "[@mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than') or @mode='Check if Present']";
 		
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
@@ -744,7 +746,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		if(NEGATION_RATIONALE.equals(attributeName)){
 			generateNegationRationalEntries(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}else if(START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)){
+		}else if(START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)
+				|| ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
+				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)){
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}else if(FACILITY_LOCATION_ARRIVAL_DATETIME.equalsIgnoreCase(attributeName)
@@ -1300,9 +1304,13 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String attrDate = (String) attributeQDMNode.getUserData(ATTRIBUTE_DATE);
 		
 		String timeTagName = "";
-		if(attrName.equals(START_DATETIME) || attrName.equalsIgnoreCase(FACILITY_LOCATION_ARRIVAL_DATETIME)){
+		if (attrName.equals(START_DATETIME)
+				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_ARRIVAL_DATETIME)
+				|| ADMISSION_DATETIME.equalsIgnoreCase(attrName)) {
 			timeTagName = LOW;
-		}else if(attrName.equals(STOP_DATETIME) || attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)){
+		} else if (attrName.equals(STOP_DATETIME)
+				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)
+				|| attrName.equalsIgnoreCase(DISCHARGE_DATETIME)) {
 			timeTagName = HIGH;
 		}
 		

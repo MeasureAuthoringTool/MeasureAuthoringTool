@@ -118,6 +118,8 @@ public interface Generator {
 	/** The Constant ANATOMICAL_LOCATION_SITE. */
 	public static final String ANATOMICAL_LOCATION_SITE = "Anatomical Location Site";
 	
+	/** The Constant ANATOMICAL_APPROACH_SITE. */
+	public static final String ANATOMICAL_APPROACH_SITE = "Anatomical Approach Site";
 	/** The Constant ORDINALITY. */
 	public static final String ORDINALITY = "Ordinality";
 	

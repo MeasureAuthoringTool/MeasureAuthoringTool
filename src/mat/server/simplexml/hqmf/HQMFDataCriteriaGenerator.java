@@ -1000,17 +1000,20 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			if(templateNode == null) {
 				return;
 			} else {
-				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)) {
+				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)
+						|| ORDINALITY.equalsIgnoreCase(attrName)
+						|| ROUTE.equalsIgnoreCase(attrName)
+						|| "method".equalsIgnoreCase(attrName)) {
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
 					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,null);
-				} else if(ORDINALITY.equalsIgnoreCase(attrName)){
+				} /*else if(ORDINALITY.equalsIgnoreCase(attrName)){
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}else if (ROUTE.equalsIgnoreCase(attrName)){
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if("method".equalsIgnoreCase(attrName)){
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				}
+				}*/
 				return;
 			}
 		}

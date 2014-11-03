@@ -39,9 +39,9 @@
     <template oid="2.16.840.1.113883.10.20.28.3.19" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addValueTag="true" addCodeTag="true" includeSubTemplate="status-resolved">diagnosis, resolved</template>
     
     <!-- diagnostic study -->
-    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true">diagnostic study, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true">diagnostic study, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">diagnostic study, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse reaction" includeSubTemplate="diagnosticStudy-AdverseEvent">diagnostic study, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="diagnosticStudy-Intolerance">diagnostic study, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set">diagnostic study, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">diagnostic study, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">diagnostic study, recommended</template>    
     
@@ -494,5 +494,37 @@
     </role>
 </participation>
  </facility-location-ArrDeparture>
+ 
+ <diagnosticStudy-AdverseEvent changeAttribute="id,code,displayName">
+ <outboundRelationship typeCode="CAUS">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" />
+		<code valueSet="$QDMElementValueSetOID">
+		 <displayName value="$valueSetName"/>
+        </code>
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+ </diagnosticStudy-AdverseEvent>
+ 
+ <diagnosticStudy-Intolerance changeAttribute="id,code,displayName">
+ <outboundRelationship typeCode="CAUS" inversionInd="true">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" />
+		<code valueSet="$QDMElementValueSetOID">
+		 <displayName value="$valueSetName"/>
+        </code>
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+ </diagnosticStudy-Intolerance>
     </subtemplates>
 </templates>

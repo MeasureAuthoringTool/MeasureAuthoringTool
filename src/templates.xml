@@ -47,9 +47,9 @@
     
     <!-- encounter -->
     <template oid="2.16.840.1.113883.10.20.28.3.26" class="ENC" mood="EVN" status="ACTIVE" isEncounter="true" addValueTag="false" addCodeTag="true" >encounter, active</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">encounter, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">encounter, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">encounter, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true">encounter, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true">encounter, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true">encounter, recommended</template>
     
     <!-- functional status -->
     <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" isFunctional = "true" addValueTag="false" addCodeTag="true">functional status, order</template>

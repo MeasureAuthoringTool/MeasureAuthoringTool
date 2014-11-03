@@ -565,8 +565,11 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isEncounter = templateNode.getAttributes().getNamedItem("isEncounter") != null;
 		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
 		boolean isLaboratoryTest = ("Laboratory Test, Order".equals(dataType) || "Laboratory Test, Performed".equals(dataType) || "Laboratory Test, Recommended".equals(dataType));
+		boolean isDiagnostic = templateNode.getAttributes().getNamedItem("isDiagnostic")!=null;
+		boolean isRiskCategory = templateNode.getAttributes().getNamedItem("isRiskCategory")!=null;
 		
-		if (isPart || isFunctional || isLaboratoryTest || isEncounter)  {
+		if (isPart || isFunctional || isLaboratoryTest || isEncounter || isDiagnostic
+				|| isRiskCategory)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -838,14 +841,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				if(attrMode.equals(Generator.GREATER_THAN)){
 					uncertainRangeNode.setAttribute("lowClosed", "false");
 				}
-				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
-				lowNode.setAttribute("nullFlavor", "NINF");
-				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				highNode.setAttribute("xsi:type", "PQ");
-				highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				lowNode.setAttribute("xsi:type", "PQ");
+				lowNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 				if(unitAttrib!=null){
-					highNode.setAttribute("unit", unitAttrib.getNodeValue());
+					lowNode.setAttribute("unit", unitAttrib.getNodeValue());
 				}
+				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				highNode.setAttribute("nullFlavor", "NINF");
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);
 				targetQuantityTag.appendChild(uncertainRangeNode);

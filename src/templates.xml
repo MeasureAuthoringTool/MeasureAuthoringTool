@@ -41,9 +41,9 @@
     <!-- diagnostic study -->
     <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse reaction" includeSubTemplate="diagnosticStudy-AdverseEvent">diagnostic study, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="diagnosticStudy-Intolerance">diagnostic study, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set">diagnostic study, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">diagnostic study, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">diagnostic study, recommended</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set" isDiagnostic="true">diagnostic study, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" isDiagnostic="true">diagnostic study, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" isDiagnostic="true">diagnostic study, recommended</template>    
     
     <!-- encounter -->
     <template oid="2.16.840.1.113883.10.20.28.3.26" class="ENC" mood="EVN" status="ACTIVE" isEncounter="true" addValueTag="false" addCodeTag="true" >encounter, active</template>

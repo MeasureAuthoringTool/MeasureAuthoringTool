@@ -556,23 +556,24 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private void addCodeElementToDataCriteriaElement(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, String dataType,
 			String qdmOidValue, String qdmName, String qdmTaxonomy, Element dataCriteriaElem) {
 		//Participant data type check in templates.xml.
-		boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;
+		/*boolean isPart = templateNode.getAttributes().getNamedItem("isPart") != null;*/
+		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
+		/*boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;*/
+		//Encounter Active data type - contains code tag with valueSetId attribute and no title and value set tag.
+		/*boolean isEncounter = templateNode.getAttributes().getNamedItem("isEncounter") != null;*/
+		//Procedure ,Order data type - contains code tag with valueSet attribute and no title and value set tag.
+		/*boolean isProcedureOrder = templateNode.getAttributes().getNamedItem("isProcedure") != null;*/
+		
+		/*boolean isLaboratoryTest = ("Laboratory Test, Order".equals(dataType) || "Laboratory Test, Performed".equals(dataType) || "Laboratory Test, Recommended".equals(dataType));
+		boolean isDiagnostic = templateNode.getAttributes().getNamedItem("isDiagnostic")!=null;
+		boolean isRiskCategory = templateNode.getAttributes().getNamedItem("isRiskCategory")!=null;*/
+		
 		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
-		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
-		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
-		//Encounter Active data type - contains code tag with valueSetId attribute and no title and value set tag.
-		boolean isEncounter = templateNode.getAttributes().getNamedItem("isEncounter") != null;
-		//Procedure ,Order data type - contains code tag with valueSet attribute and no title and value set tag.
-		boolean isProcedureOrder = templateNode.getAttributes().getNamedItem("isProcedure") != null;
+		boolean isAddValueSetInCodeTrue =templateNode.getAttributes().getNamedItem("addValueSetInCode")!=null;
 		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
-		boolean isLaboratoryTest = ("Laboratory Test, Order".equals(dataType) || "Laboratory Test, Performed".equals(dataType) || "Laboratory Test, Recommended".equals(dataType));
-		boolean isDiagnostic = templateNode.getAttributes().getNamedItem("isDiagnostic")!=null;
-		boolean isRiskCategory = templateNode.getAttributes().getNamedItem("isRiskCategory")!=null;
 		
-		if (isPart || isFunctional || isLaboratoryTest || isEncounter || isProcedureOrder
-				|| isDiagnostic
-				|| isRiskCategory)  {
+		if (isAddValueSetInCodeTrue)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
 			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
@@ -602,10 +603,6 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
-			/*Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(TITLE);
-			titleElem.setAttribute(VALUE, dataType);
-			dataCriteriaElem.appendChild(titleElem);*/
 		} else if(isIntervention){
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
@@ -615,20 +612,12 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
-			/*Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(TITLE);
-			titleElem.setAttribute(VALUE, dataType);
-			dataCriteriaElem.appendChild(titleElem);*/
 		}else {
 			Element codeElement = createCodeForDatatype(templateNode,
 					dataCriteriaXMLProcessor);
 			if (codeElement != null) {
 				dataCriteriaElem.appendChild(codeElement);
 			}
-			/*Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(TITLE);
-			titleElem.setAttribute(VALUE, dataType);
-			dataCriteriaElem.appendChild(titleElem);*/
 		}
 	}
 	

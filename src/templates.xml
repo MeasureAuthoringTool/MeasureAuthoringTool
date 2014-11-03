@@ -101,11 +101,11 @@
     <template oid="2.16.840.1.113883.10.20.28.3.63" class="OBS" mood="INT" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, recommended</template>
     
     <!-- procedure -->
-    <template oid="2.16.840.1.113883.10.20.28.3.64" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">procedure, adverse event</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.65" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">procedure, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" addValueTag="true" addCodeTag="true">procedure, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.64" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.65" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" isProcedure="true">procedure, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true">procedure, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" addValueTag="true" addCodeTag="true">procedure, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" isProcedure="true">procedure, recommended</template>
     
     <!-- risk category -->
     <template oid="2.16.840.1.113883.10.20.28.3.72" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" isRiskCategory="true">risk category assessment</template>
@@ -494,37 +494,22 @@
     </role>
 </participation>
  </facility-location-ArrDeparture>
- 
- <diagnosticStudy-AdverseEvent changeAttribute="id,code,displayName">
- <outboundRelationship typeCode="CAUS">
-	<observationCriteria classCode="OBS" moodCode="EVN">
+
+ <procedure changeAttribute="id,code,displayName,title">
+ <outboundRelationship typeCode="CAUS"
+	inversionInd="true">
+	<procedureCriteria moodCode="EVN">
 		<templateId>
-			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
+			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
 		</templateId>
 		<id root="$UUID" />
 		<code valueSet="$QDMElementValueSetOID">
-		 <displayName value="$valueSetName"/>
-        </code>
-		<title value="Diagnostic Study, Performed" />
+			<displayName value="$valueSetName" />
+		</code>
+		<title value="$valuseSetDatatype" />
 		<statusCode code="completed" />
-	</observationCriteria>
+	</procedureCriteria>
 </outboundRelationship>
- </diagnosticStudy-AdverseEvent>
- 
- <diagnosticStudy-Intolerance changeAttribute="id,code,displayName">
- <outboundRelationship typeCode="CAUS" inversionInd="true">
-	<observationCriteria classCode="OBS" moodCode="EVN">
-		<templateId>
-			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
-		</templateId>
-		<id root="$UUID" />
-		<code valueSet="$QDMElementValueSetOID">
-		 <displayName value="$valueSetName"/>
-        </code>
-		<title value="Diagnostic Study, Performed" />
-		<statusCode code="completed" />
-	</observationCriteria>
-</outboundRelationship>
- </diagnosticStudy-Intolerance>
+ </procedure>
     </subtemplates>
 </templates>

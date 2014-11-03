@@ -561,14 +561,17 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isFunctional = templateNode.getAttributes().getNamedItem("isFunctional") != null;
-		//Functional status data type - contains code tag with valueSetId attribute and no title and value set tag.
+		//Encounter Active data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isEncounter = templateNode.getAttributes().getNamedItem("isEncounter") != null;
+		//Procedure ,Order data type - contains code tag with valueSet attribute and no title and value set tag.
+		boolean isProcedureOrder = templateNode.getAttributes().getNamedItem("isProcedure") != null;
 		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
 		boolean isLaboratoryTest = ("Laboratory Test, Order".equals(dataType) || "Laboratory Test, Performed".equals(dataType) || "Laboratory Test, Recommended".equals(dataType));
 		boolean isDiagnostic = templateNode.getAttributes().getNamedItem("isDiagnostic")!=null;
 		boolean isRiskCategory = templateNode.getAttributes().getNamedItem("isRiskCategory")!=null;
 		
-		if (isPart || isFunctional || isLaboratoryTest || isEncounter || isDiagnostic
+		if (isPart || isFunctional || isLaboratoryTest || isEncounter || isProcedureOrder
+				|| isDiagnostic
 				|| isRiskCategory)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);
@@ -655,15 +658,18 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			
 			for (String changeAttribute : attributeToBeModified) {
 				Node  attributedToBeChangedInNode = null;
-				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
-						+ subTemplateName+"//"+changeAttribute);
-				
+				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc()
+						, "/templates/subtemplates/" + subTemplateName + "//" + changeAttribute);
 				if (changeAttribute.equalsIgnoreCase(ID)) {
-					attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+					attributedToBeChangedInNode.getAttributes().getNamedItem("root").
+					setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSet").setNodeValue(qdmOidValue);
-				} else if(changeAttribute.equalsIgnoreCase(DISPLAY_NAME)){
-					attributedToBeChangedInNode.getAttributes().getNamedItem("value").setNodeValue(qdmName + " " + qdmNameDataType + " value set");
+				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
+					attributedToBeChangedInNode.getAttributes().getNamedItem("value").
+					setNodeValue(qdmName + " " + qdmNameDataType + " value set");
+				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
+					attributedToBeChangedInNode.getAttributes().getNamedItem("value").setNodeValue(qdmNameDataType);
 				}
 			}
 		}

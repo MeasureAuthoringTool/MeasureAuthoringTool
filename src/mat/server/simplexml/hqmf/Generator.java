@@ -149,6 +149,18 @@ public interface Generator {
 	/** The Constant DEPARTURE_DATETIME. */
 	public static final String DISCHARGE_DATETIME = "discharge datetime";
 	
+	/** The Constant REMOVAL_DATETIME. */
+	public static final String REMOVAL_DATETIME = "removal datetime";
+	
+	/** The Constant INCISION_DATETIME. */
+	public static final String INCISION_DATETIME = "incision datetime";
+	
+	/** The Constant SIGNED_DATETIME. */
+	public static final String SIGNED_DATETIME = "signed datetime";
+	
+	/** The Constant ACTIVE_DATETIME. */
+	public static final String ACTIVE_DATETIME = "active datetime";
+	
 	/** The Constant ATTRIBUTE_MODE. */
 	public static final String ATTRIBUTE_MODE = "attributeMode";
 	

@@ -759,7 +759,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)
 				|| ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
-				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)) {
+				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)
+				||REMOVAL_DATETIME.equalsIgnoreCase(attributeName)) {
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (FACILITY_LOCATION_ARRIVAL_DATETIME.equalsIgnoreCase(attributeName)
@@ -1429,7 +1430,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			timeTagName = LOW;
 		} else if (attrName.equals(STOP_DATETIME)
 				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)
-				|| attrName.equalsIgnoreCase(DISCHARGE_DATETIME)) {
+				|| attrName.equalsIgnoreCase(DISCHARGE_DATETIME)
+				|| attrName.equalsIgnoreCase(REMOVAL_DATETIME)) {
 			timeTagName = HIGH;
 		}
 		

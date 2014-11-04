@@ -533,7 +533,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			dataCriteriaElem.appendChild(valueElem);
 		}
 		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
-			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode);
+			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode,attributeQDMNode);
 		}
 		//checkForAttributes
 		if (attributeQDMNode != null) {
@@ -632,7 +632,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
-			Element dataCriteriaElem, Node qdmNode) throws XPathExpressionException {
+			Element dataCriteriaElem, Node qdmNode , Node attributeQDMNode) throws XPathExpressionException {
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
 		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName);
@@ -643,8 +643,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
-			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
-			
+			String[] attributeToBeModified = subTemplateNode.getAttributes().
+					getNamedItem("changeAttribute").getNodeValue().split(",");
 			for (String changeAttribute : attributeToBeModified) {
 				Node  attributedToBeChangedInNode = null;
 				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc()
@@ -652,6 +652,9 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				if (changeAttribute.equalsIgnoreCase(ID)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("root").
 					setNodeValue(UUIDUtilClient.uuid());
+					String extension = (String) attributeQDMNode.getUserData(ATTRIBUTE_UUID);
+					attributedToBeChangedInNode.getAttributes().getNamedItem("extension").
+					setNodeValue(extension);
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSet").setNodeValue(qdmOidValue);
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
@@ -876,7 +879,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 			return;
 		}
 		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
-			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode);
+			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode,attributeQDMNode);
 		}
 		generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
@@ -1008,7 +1011,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 						|| "method".equalsIgnoreCase(attrName)) {
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
-					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,null);
+					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,qdmNode,attributeQDMNode);
 				} /*else if(ORDINALITY.equalsIgnoreCase(attrName)){
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				}else if (ROUTE.equalsIgnoreCase(attrName)){
@@ -1227,7 +1230,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		String insertAfterNodeName = null;
 		if (templateNode.getAttributes().getNamedItem("insertBeforeNode") != null) {
 			insertBeforeNodeName = templateNode.getAttributes().getNamedItem("insertBeforeNode").getNodeValue();
-		} else if(templateNode.getAttributes().getNamedItem("insertAfterNode") != null){
+		} else if (templateNode.getAttributes().getNamedItem("insertAfterNode") != null) {
 			insertAfterNodeName = templateNode.getAttributes().getNamedItem("insertAfterNode").getNodeValue();
 		}
 		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {

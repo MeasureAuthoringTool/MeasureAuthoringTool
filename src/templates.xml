@@ -318,7 +318,7 @@
 				<templateId>
 					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
 				</templateId>
-				<id root="$UUID"/>
+				<id root="$UUID" extension="$extensionUUID"/>
 				<code valueSet="{$QDMElementValueSetOID}">
 				    <displayName value="$displaynamevalue"/>
 				</code>
@@ -429,7 +429,7 @@
 			<templateId>
 				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
 			</templateId>
-			<id root="$UUID" />
+			<id root="$UUID" extension="$extensionUUID"/>
 			<code valueSet="$QDMElementValueSetOID" >
 			    <displayName value="$displaynamevalue"/>
 			</code>
@@ -478,7 +478,7 @@
         <templateId>
             <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
         </templateId>
-        <id root="$UUID"/>
+        <id root="$UUID" extension="$extensionUUID"/>
         <code/>
     </role>
 </participation>
@@ -490,7 +490,7 @@
         <templateId>
             <item root="2.16.840.1.113883.10.20.28.3.92" extension="2014-11-24"/>
         </templateId>
-        <id root="$UUID"/>
+        <id root="$UUID" extension="$extensionUUID"/>
     </role>
 </participation>
  </facility-location-ArrDeparture>
@@ -502,7 +502,7 @@
 		<templateId>
 			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
 		</templateId>
-		<id root="$UUID" />
+		<id root="$UUID" extension="$extensionUUID" />
 		<code valueSet="$QDMElementValueSetOID">
 			<displayName value="$valueSetName" />
 		</code>

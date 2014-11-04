@@ -183,8 +183,8 @@
     <template target="methodCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">method-check if present</template>
     <template target="approachSiteCode" childTarget="item" insertAfterNode="statusCode">anatomical approach site-value set</template>
     <template target="approachSiteCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">anatomical approach site-check if present</template>
-    <template target="doseQuantity" flavorId="ANY.NONNULL" insertBeforeNode="participation">dose</template>
-    <template target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertBeforeNode="participation">length of stay</template>
+    <template target="doseQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">dose</template>
+    <template target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">length of stay</template>
     
     <subtemplates>
 

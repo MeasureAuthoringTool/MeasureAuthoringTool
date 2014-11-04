@@ -698,7 +698,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 						+ subTemplateName+"//"+changeAttribute);
 				if(changeAttribute.equalsIgnoreCase(ID)){
-					attributedToBeChangedInNode.getAttributes().getNamedItem("root").setNodeValue(UUIDUtilClient.uuid());
+					String rootId = attrNode.getAttributes().getNamedItem("attrUUID").getNodeValue();
+					attributedToBeChangedInNode.getAttributes().getNamedItem("root").
+					setNodeValue(rootId);
+					attributedToBeChangedInNode.getAttributes().getNamedItem("extension").
+					setNodeValue(UUIDUtilClient.uuid());
 				} else if(changeAttribute.equalsIgnoreCase(CODE)){
 					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
 					if(VALUE_SET.equals(attrMode)){

@@ -762,7 +762,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 			
-		}else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode) || attributeMode.startsWith(LESS_THAN) || attributeMode.startsWith(GREATER_THAN) || EQUAL_TO.equals(attributeMode)){
+		}else if (attributeName.equalsIgnoreCase(REFILLS)) {
+			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
+		} else if(VALUE_SET.equals(attributeMode) || CHECK_IF_PRESENT.equals(attributeMode) || attributeMode.startsWith(LESS_THAN) || attributeMode.startsWith(GREATER_THAN) || EQUAL_TO.equals(attributeMode)){
 			//handle "Value Set", "Check If Present" and comparison(less than, greater than, equals) mode
 			generateOtherAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
@@ -1030,10 +1032,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			return;
 		}
 		
-		if (attrName.equalsIgnoreCase(REFILLS)) {
-			generateRepeatNumber(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
-			return;
-		}
 		Element outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(OUTBOUND_RELATIONSHIP);
 		outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
@@ -1103,11 +1101,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * Refills Attribute tags.
 	 * @param templateNode
 	 * @param dataCriteriaXMLProcessor
-	 * @param templateXMLProcessor
 	 * @param dataCriteriaElem
 	 * @param attributeQDMNode
 	 */
-	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
+	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()

@@ -28,7 +28,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		String dataCriteria = "";
 		dataCriteria = getHQMFXmlString(me);
-		dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);
+		/*dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);*/
 		return dataCriteria;
 	}
 	
@@ -1100,6 +1100,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
+	 * Refills Attribute tags.
 	 * @param templateNode
 	 * @param dataCriteriaXMLProcessor
 	 * @param templateXMLProcessor
@@ -1481,14 +1482,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param xmlString - xml String.
 	 * @return String.
 	 */
-	private String removeXmlTagNamespaceAndPreamble(String xmlString) {
+	/*private String removeXmlTagNamespaceAndPreamble(String xmlString) {
 		xmlString = xmlString.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim().
-				replaceAll("(<\\?[^<]*\\?>)?", "")./* remove preamble */
-				replaceAll("xmlns.*?(\"|\').*?(\"|\')", "") /* remove xmlns declaration */
-				.replaceAll("(<)(\\w+:)(.*?>)", "$1$3") /* remove opening tag prefix */
-				.replaceAll("(</)(\\w+:)(.*?>)", "$1$3"); /* remove closing tags prefix */
+				replaceAll("(<\\?[^<]*\\?>)?", ""). remove preamble
+				replaceAll("xmlns.*?(\"|\').*?(\"|\')", "")  remove xmlns declaration
+				.replaceAll("(<)(\\w+:)(.*?>)", "$1$3")  remove opening tag prefix
+				.replaceAll("(</)(\\w+:)(.*?>)", "$1$3");  remove closing tags prefix
 		return xmlString;
-	}
+	}*/
 	/**
 	 * Adds the data criteria comment.
 	 *

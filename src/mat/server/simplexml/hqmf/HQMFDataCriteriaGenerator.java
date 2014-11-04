@@ -17,7 +17,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception{
-			
+		
 		HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
 		hqmfDataCriteriaElementGenerator.generate(me);
 		
@@ -25,7 +25,19 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		hqmfClauseLogicGenerator.generate(me);
 		
 		XmlProcessor dataCriteriaXMLProcessor = me.getXmlPrcessor();
-		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
+		return removeXmlTagNamespaceAndPreamble(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}
-
+	
+	/**
+	 * @param xmlString
+	 * @return
+	 */
+	private String removeXmlTagNamespaceAndPreamble(String xmlString) {
+		xmlString = xmlString.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim().
+				replaceAll("(<\\?[^<]*\\?>)?", "")./* remove preamble */
+				replaceAll("xmlns.*?(\"|\').*?(\"|\')", "") /* remove xmlns declaration */
+				.replaceAll("(<)(\\w+:)(.*?>)", "$1$3") /* remove opening tag prefix */
+				.replaceAll("(</)(\\w+:)(.*?>)", "$1$3"); /* remove closing tags prefix */
+		return xmlString;
+	}
 }

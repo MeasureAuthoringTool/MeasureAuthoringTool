@@ -185,6 +185,7 @@
     <template target="approachSiteCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">anatomical approach site-check if present</template>
     <template target="doseQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">dose</template>
     <template target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">length of stay</template>
+    <template class="OBS" mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</template>
     
     <subtemplates>
 

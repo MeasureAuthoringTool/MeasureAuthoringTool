@@ -161,6 +161,10 @@ public interface Generator {
 	/** The Constant ACTIVE_DATETIME. */
 	public static final String ACTIVE_DATETIME = "active datetime";
 	
+	public static final String TIME = "time";
+	
+	public static final String DATE = "date";
+	
 	/** The Constant ATTRIBUTE_MODE. */
 	public static final String ATTRIBUTE_MODE = "attributeMode";
 	

@@ -138,7 +138,7 @@ public interface Generator {
 	/** The Constant FACILITY_LOCATION_DEPARTURE_DATETIME. */
 	public static final String FACILITY_LOCATION_DEPARTURE_DATETIME = "facility location departure datetime";
 	
-	/** The Constant FACILITY_LOCATION. */
+	/** The Constant REFILLS. */
 	public static final String REFILLS = "refills";
 	/** The Constant ADMISSION_DATETIME. */
 	public static final String ADMISSION_DATETIME = "admission datetime";

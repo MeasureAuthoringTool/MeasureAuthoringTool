@@ -784,12 +784,6 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
-		Node insertBeforeNode = templateNode.getAttributes().getNamedItem("insertBeforeNode");
-		Node participationElem = null;
-		if(insertBeforeNode!=null){
-			participationElem = dataCriteriaElem.getElementsByTagName(insertBeforeNode.getNodeValue()).item(0);
-		}
-		Node parentNode = participationElem.getParentNode();
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
 		Element targetQuantityTag = null;
 		if(targetNode!=null){
@@ -836,7 +830,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				if(attrMode.equals(Generator.GREATER_THAN)){
 					uncertainRangeNode.setAttribute("lowClosed", "false");
 				}
-				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
 				lowNode.setAttribute("xsi:type", "PQ");
 				lowNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 				if(unitAttrib!=null){
@@ -849,7 +843,17 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				targetQuantityTag.appendChild(uncertainRangeNode);
 			}
 		}
-		parentNode.insertBefore(targetQuantityTag, participationElem);
+		String insertAfterNodeName = templateNode.getAttributes().getNamedItem("insertAfterNode").getNodeValue();
+		if (insertAfterNodeName != null) {
+			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
+			if (outBoundElement != null) {
+				outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
+			} else {
+				dataCriteriaElem.appendChild(targetQuantityTag);
+			}
+		} else {
+			dataCriteriaElem.appendChild(targetQuantityTag);
+		}
 		
 	}
 	

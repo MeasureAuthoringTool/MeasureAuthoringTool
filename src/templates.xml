@@ -24,13 +24,13 @@
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToProvider" addValueTag="false">communication: from provider to provider</template>
 
     <!-- device -->
-    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addCodeTag="true" addValueTag="true">device, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Adverse Reaction" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, adverse event</template>
     <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
-    <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addCodeTag="true" addValueTag="true">device, allergy</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.13" class="OBS" mood="EVN" status="COMPLETED" code="360030002" codeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true">device, applied</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addCodeTag="true" addValueTag="true">device, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.15" class="OBS" mood="RQO" status="ACTIVE" addCodeTag="true" addValueTag="true">device, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.16" class="OBS" mood="INT" status="ACTIVE" addCodeTag="true" addValueTag="true">device, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="device-allergy">device, allergy</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.13" class="PROC" mood="EVN" status="COMPLETED" code="360030002" codeSystem="2.16.840.1.113883.6.96" codeDisplayname="Application of Device" addCodeTag="true" addValueTag="false" includeSubTemplate="device-allergy">device, applied</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Decreased Tolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.15" class="SPLY" mood="RQO" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.16" class="SPLY" mood="INT" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, recommended</template>
     
     <!-- diagnosis -->
     <template oid="2.16.840.1.113883.10.20.28.3.1" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" includeSubTemplate="status-active" addValueTag="true" addCodeTag="true">diagnosis, active</template>
@@ -511,5 +511,25 @@
 	</procedureCriteria>
 </outboundRelationship>
  </procedure>
+ 
+ <device-adverseEvent changeAttribute="code">
+	<participation typeCode="PRD">
+		<role classCode="MANU">
+			<playingDevice classCode="DEV" determinerCode="KIND">
+				<code valueSet="$QDMElementValueSetOID" />
+			</playingDevice>
+		</role>
+	</participation>
+</device-adverseEvent>
+ 
+ <device-allergy changeAttribute="code">
+	<participation typeCode="DEV">
+		<role classCode="MANU">
+			<playingDevice classCode="DEV" determinerCode="KIND">
+				<code valueSet="$QDMElementValueSetOID" />
+			</playingDevice>
+		</role>
+	</participation>
+</device-allergy>
     </subtemplates>
 </templates>

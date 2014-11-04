@@ -847,7 +847,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					lowNode.setAttribute("unit", unitAttrib.getNodeValue());
 				}
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				highNode.setAttribute("nullFlavor", "NINF");
+				highNode.setAttribute("nullFlavor", "PINF");
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);
 				targetQuantityTag.appendChild(uncertainRangeNode);

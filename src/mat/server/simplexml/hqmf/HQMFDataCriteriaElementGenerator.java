@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -653,11 +651,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				attributedToBeChangedInNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc()
 						, "/templates/subtemplates/" + subTemplateName + "//" + changeAttribute);
 				if (changeAttribute.equalsIgnoreCase(ID)) {
+					String rootId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					attributedToBeChangedInNode.getAttributes().getNamedItem("root").
-					setNodeValue(UUIDUtilClient.uuid());
-					String extension = (String) attributeQDMNode.getUserData(ATTRIBUTE_UUID);
+					setNodeValue(rootId);
 					attributedToBeChangedInNode.getAttributes().getNamedItem("extension").
-					setNodeValue(extension);
+					setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSet").setNodeValue(qdmOidValue);
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
@@ -1031,6 +1029,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			}
 			return;
 		}
+		
+		if (attrName.equalsIgnoreCase(REFILLS)) {
+			generateRepeatNumber(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
+			return;
+		}
 		Element outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(OUTBOUND_RELATIONSHIP);
 		outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
@@ -1096,6 +1099,54 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 	}
 	
+	/**
+	 * @param templateNode
+	 * @param dataCriteriaXMLProcessor
+	 * @param templateXMLProcessor
+	 * @param dataCriteriaElem
+	 * @param attributeQDMNode
+	 */
+	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
+			Element dataCriteriaElem, Node attributeQDMNode) {
+		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()
+				.createElement("repeatNumber");
+		if (CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)) {
+			repeatNumberElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+			dataCriteriaElem.appendChild(repeatNumberElement);
+		}  else if (EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)) {
+			if (EQUAL_TO.equals(attrMode)) {
+				Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(LOW);
+				lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				
+				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(HIGH);
+				highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				repeatNumberElement.appendChild(lowElem);
+				repeatNumberElement.appendChild(highElem);
+				dataCriteriaElem.appendChild(repeatNumberElement);
+			} else if(attrMode.startsWith(GREATER_THAN)) {
+				if (attrMode.equals(GREATER_THAN)) {
+					repeatNumberElement.setAttribute("lowClosed", "false");
+				}
+				Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(LOW);
+				lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				repeatNumberElement.appendChild(lowElem);
+				dataCriteriaElem.appendChild(repeatNumberElement);
+			}else if(attrMode.startsWith(LESS_THAN)){
+				if(attrMode.equals(LESS_THAN)){
+					repeatNumberElement.setAttribute("highClosed", "false");
+				}
+				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(HIGH);
+				highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				repeatNumberElement.appendChild(highElem);
+				dataCriteriaElem.appendChild(repeatNumberElement);
+			}
+		}
+	}
 	/**
 	 * Check if selected mode is value set.
 	 *

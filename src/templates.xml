@@ -298,7 +298,7 @@
 	<transfer changeAttribute="code">
 		<participation typeCode="ORG">
 			<role classCode="LOCE">
-				<code xsi:type="CD" valueSet="$valueset" />
+				<code xsi:type="CD" valueSet="$valueset"  valueSetVersion="$version"/>
 			</role>
 		</participation>
 	</transfer>
@@ -306,7 +306,7 @@
 	<intervention-adverseEvent changeAttribute="code,displayName">
 	    <outboundRelationship typeCode="CAUS" inversionInd="true">
 			<procedureCriteria classCode="PROC" moodCode="EVN">
-				<code valueSet="$QDMElementValueSetOID">
+				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
 				    <displayName value="$displaynamevalue"/>
 				</code>
 			</procedureCriteria>
@@ -320,7 +320,7 @@
 					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="$extensionUUID"/>
-				<code valueSet="{$QDMElementValueSetOID}">
+				<code valueSet="{$QDMElementValueSetOID}" valueSetVersion="$version">
 				    <displayName value="$displaynamevalue"/>
 				</code>
 				<title value="Intervention, Performed"/>
@@ -333,7 +333,7 @@
 		<participation typeCode="CSM">
 			<role classCode="MANU">
 				<playingMaterial classCode="MMAT" determinerCode="KIND">
-					<code valueSet="$valueSet">
+					<code valueSet="$valueSet" valueSetVersion="$version">
 					    <displayName value="$displaynamevalue"/>
 					</code>				    
 				</playingMaterial>
@@ -345,7 +345,7 @@
 		<participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueset">
+		<code valueSet="$valueset" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>    	
 		</playingMaterial>
@@ -357,7 +357,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID">
+		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingEntity>
@@ -369,7 +369,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet">
+		<code valueSet="$valueSet" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>    
 		</playingEntity>
@@ -381,7 +381,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet">
+		<code valueSet="$valueSet" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>    
 		</playingMaterial>
@@ -393,7 +393,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" >
+		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingMaterial>
@@ -405,7 +405,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet">
+		<code valueSet="$valueSet" valueSetVersion="$version">
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingMaterial>
@@ -431,7 +431,7 @@
 				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
 			</templateId>
 			<id root="$UUID" extension="$extensionUUID"/>
-			<code valueSet="$QDMElementValueSetOID" >
+			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
 			    <displayName value="$displaynamevalue"/>
 			</code>
 			<title value="Laboratory Test, Performed" />
@@ -444,7 +444,7 @@
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" >
+        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
             <displayName value="$displaynamevalue"/>
         </code>    
     </playingMaterial>
@@ -455,7 +455,7 @@
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID">
+        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
             <displayName value="$valueSetName"/>
         </code>
     </playingMaterial>
@@ -466,7 +466,7 @@
  <participation>
     <role classCode="ASSIGNED">
         <playingDevice classCode="DEV" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID">
+        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
             <displayName value="$valueSetName"/>
         </code>
     </playingDevice>
@@ -504,7 +504,7 @@
 			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
 		</templateId>
 		<id root="$UUID" extension="$extensionUUID" />
-		<code valueSet="$QDMElementValueSetOID">
+		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
 			<displayName value="$valueSetName" />
 		</code>
 		<title value="$valuseSetDatatype" />
@@ -517,7 +517,7 @@
 	<participation typeCode="PRD">
 		<role classCode="MANU">
 			<playingDevice classCode="DEV" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID" />
+				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version"/>
 			</playingDevice>
 		</role>
 	</participation>
@@ -527,7 +527,7 @@
 	<participation typeCode="DEV">
 		<role classCode="MANU">
 			<playingDevice classCode="DEV" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID" />
+				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
 			</playingDevice>
 		</role>
 	</participation>

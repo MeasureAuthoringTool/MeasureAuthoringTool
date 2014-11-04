@@ -161,7 +161,7 @@
     <!-- misc -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</template>
     <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency">frequency</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false">incision datetime</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="34896006" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="incision" includeSubTemplate="incision-dateTime">incision datetime</template>
     <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="PAT" codeSystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="103323008" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Provider Preference">provider preference</template>
@@ -532,5 +532,20 @@
 		</role>
 	</participation>
 </device-allergy>
+
+<incision-dateTime changeAttribute="id">
+	<procedureCriteria classCode="PROC" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.89" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID"/>
+		<code code="34896006" codeSystem="2.16.840.1.113883.6.96"
+			codeSystemName="SNOMED CT">
+			<displayName value="incision" />
+		</code>
+		<statusCode code="completed" />
+	</procedureCriteria>
+</incision-dateTime>
+
     </subtemplates>
 </templates>

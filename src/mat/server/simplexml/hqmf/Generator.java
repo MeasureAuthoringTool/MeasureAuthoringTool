@@ -142,7 +142,10 @@ public interface Generator {
 	public static final String REFILLS = "refills";
 	/** The Constant ADMISSION_DATETIME. */
 	public static final String ADMISSION_DATETIME = "admission datetime";
-	
+	/**
+	 * The Constant DISCHARGE_STATUS.
+	 */
+	public static final String DISCHARGE_STATUS ="discharge status";
 	/** The Constant DEPARTURE_DATETIME. */
 	public static final String DISCHARGE_DATETIME = "discharge datetime";
 	

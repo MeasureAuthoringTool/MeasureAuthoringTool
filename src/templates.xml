@@ -29,7 +29,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="device-allergy">device, allergy</template>
     <template oid="2.16.840.1.113883.10.20.28.3.13" class="PROC" mood="EVN" status="COMPLETED" code="360030002" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Application of Device" addCodeTag="true" addValueTag="false" includeSubTemplate="device-allergy">device, applied</template>
     <template oid="2.16.840.1.113883.10.20.28.3.14" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Decreased Tolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.15" class="SPLY" mood="RQO" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.15" class="SPLY" mood="RQO" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy" typeOrder="true" includeOtherSubTemplate="order-dateTime">device, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.16" class="SPLY" mood="INT" status="ACTIVE" addCodeTag="false" addValueTag="false" includeSubTemplate="device-allergy">device, recommended</template>
     
     <!-- diagnosis -->
@@ -41,18 +41,18 @@
     <!-- diagnostic study -->
     <template oid="2.16.840.1.113883.10.20.28.3.20" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse reaction" includeSubTemplate="diagnosticStudy-AdverseEvent">diagnostic study, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.21" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="diagnosticStudy-Intolerance">diagnostic study, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set" addValueSetInCode="true">diagnostic study, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.22" class="OBS" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="VTE Diagnostic Test Grouping Value Set" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">diagnostic study, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.23" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.24" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">diagnostic study, recommended</template>    
     
     <!-- encounter -->
     <template oid="2.16.840.1.113883.10.20.28.3.26" class="ENC" mood="EVN" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true" >encounter, active</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true">encounter, order</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true">encounter, performed</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true">encounter, recommended</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.27" class="ENC" mood="RQO" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">encounter, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.5" class="ENC" mood="EVN" status="COMPLETED" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.28" class="ENC" mood="INT" status="ACTIVE" addValueSetInCode="true" addValueTag="false" addCodeTag="true">encounter, recommended</template>
     
     <!-- functional status -->
-    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" addValueSetInCode = "true" addValueTag="false" addCodeTag="true">functional status, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.29" class="OBS" mood="RQO" status="ACTIVE" addValueSetInCode = "true" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">functional status, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.30" class="OBS" mood="EVN" status="COMPLETED" addValueSetInCode = "true" addValueTag="false" addCodeTag="true">functional status, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.31" class="OBS" mood="INT" status="ACTIVE" addValueSetInCode = "true" addValueTag="false" addCodeTag="true">functional status, recommended</template>
     
@@ -74,14 +74,14 @@
     <!-- intervention -->
     <template oid="2.16.840.1.113883.10.20.28.3.33" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-adverseEvent">intervention, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.34" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="intervention-intolerance">intervention, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" >intervention, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.35" class="ACT" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">intervention, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.36" class="ACT" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" >intervention, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.37" class="ACT" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" >intervention, recommended</template>
     
     <!-- laboratory test -->
     <template oid="2.16.840.1.113883.10.20.28.3.39" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" includeSubTemplate="laboratory-test">laboratory test, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.40" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" includeSubTemplate="laboratory-test">laboratory test, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set" addValueSetInCode="true">laboratory test, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.41" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">laboratory test, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.42" class="OBS" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" codeDisplayName="LDL-c LOINC Value Set" addValueSetInCode="true" >laboratory test, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.43" class="OBS" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" codeDisplayName="Pregnancy Test Grouping Value Set" addValueSetInCode="true">laboratory test, recommended</template>
     
@@ -93,17 +93,17 @@
     <template oid="2.16.840.1.113883.10.20.28.3.48" class="SBADM" mood="RQO" status="ACTIVE" code="10183-2" codeSystem="2.16.840.1.113883.6.1" addValueTag="false" addCodeTag="true" includeSubTemplate="medicationDischarge">medication, discharge</template>
     <template oid="2.16.840.1.113883.10.20.28.3.49" class="SPLY" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationDispensed">medication, dispensed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.50" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" includeSubTemplate="medicationIntolerance">medication, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.51" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationOrder">medication, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.51" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="medicationOrder" typeOrder="true" includeOtherSubTemplate="order-dateTime">medication, order</template>
     
    <!-- physical exam -->
-    <template oid="2.16.840.1.113883.10.20.28.3.61" class="OBS" mood="RQO" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.61" class="OBS" mood="RQO" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">physical exam, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.62" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.63" class="OBS" mood="INT" status="ACTIVE" valueType="CD" code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="physical examination" addValueTag="true" addCodeTag="true">physical exam, recommended</template>
     
     <!-- procedure -->
     <template oid="2.16.840.1.113883.10.20.28.3.64" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.65" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Decreased tolerance" addValueTag="true" addCodeTag="true" includeSubTemplate="procedure">procedure, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.66" class="PROC" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">procedure, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, performed</template>
     <template oid="2.16.840.1.113883.10.20.28.3.68" class="PROC" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="true" addValueSetInCode="true">procedure, recommended</template>
     
@@ -115,7 +115,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.46.74" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" valueCode="282100009" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Adverse Reaction to Substance" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, adverse event</template>
     <template oid="2.16.840.1.113883.10.20.28.3.75" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" codeDisplayName="Assertion" valueCode="419199007" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, allergy</template>
     <template oid="2.16.840.1.113883.10.20.28.3.76" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="102460003" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" addValueTag="true" addCodeTag="true" includeSubTemplate="substance-participation">substance, intolerance</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-order">substance, order</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.77" class="SBADM" mood="RQO" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-order" typeOrder="true" includeOtherSubTemplate="order-dateTime">substance, order</template>
     <template oid="2.16.840.1.113883.10.20.28.3.78" class="SBADM" mood="INT" status="ACTIVE" addValueTag="false" addCodeTag="false" includeSubTemplate="substance-participation">substance, recommended</template>
     
     <!-- symptom -->
@@ -552,5 +552,15 @@
 </outboundRelationship>
 </incision-dateTime>
 
+<order-dateTime changeAttribute="id">
+<participation typeCode="AUT">
+   <time/>               
+    <role classCode="ROL">
+       <id>
+          <item root="$UUID" extension="$extensionUUID"/>
+       </id>
+    </role>                            
+</participation>
+</order-dateTime>
     </subtemplates>
 </templates>

@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
@@ -547,10 +548,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/**
 	 * Add Code Element To data Criteria Element based on condition.
+	 *
 	 * @param templateNode - Node
 	 * @param dataCriteriaXMLProcessor - XmlProcessor
 	 * @param dataType - String
 	 * @param qdmOidValue - String
+	 * @param valueSetVersion the value set version
 	 * @param qdmName - String
 	 * @param qdmTaxonomy - String
 	 * @param dataCriteriaElem - Element
@@ -632,6 +635,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param templateXMLProcessor -XmlProcessor for Template Xml.
 	 * @param dataCriteriaElem - Element
 	 * @param qdmNode the qdm node
+	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
@@ -801,6 +805,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param attributeQDMNode the attribute qdm node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateDoseTypeAttributes(Node qdmNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
@@ -919,6 +924,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 	}
 	
+	/**
+	 * Generate incision date time type attributes.
+	 *
+	 * @param qdmNode the qdm node
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param attributeQDMNode the attribute qdm node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, 
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -1146,10 +1161,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/**
 	 * Refills Attribute tags.
-	 * @param templateNode
-	 * @param dataCriteriaXMLProcessor
-	 * @param dataCriteriaElem
-	 * @param attributeQDMNode
+	 *
+	 * @param templateNode the template node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param attributeQDMNode the attribute qdm node
 	 */
 	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode) {
@@ -1195,10 +1211,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/**
 	 * Discharge Status Attribute tags.
-	 * @param templateNode
-	 * @param dataCriteriaXMLProcessor
-	 * @param dataCriteriaElem
-	 * @param attributeQDMNode
+	 *
+	 * @param templateNode the template node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param attributeQDMNode the attribute qdm node
 	 */
 	private void generateDischargeStatus(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode) {
@@ -1547,19 +1564,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if(effectiveTimeNode.hasChildNodes()){
 			NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");
 			if ((nodeList != null) && (nodeList.getLength() > 0)) {
-				//for Incision Datetime Attribute effective Time is Added inside
-				if(attrName.equalsIgnoreCase(INCISION_DATETIME)){
-					Node effectiveTimeParentNode =  dataCriteriaElem.getElementsByTagName("procedureCriteria").item(0);
-					effectiveTimeParentNode.appendChild(effectiveTimeNode);
-				} else {
 				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
-				}
 			} else {
 				
-				if(attrName.contains("facility")){
+				if (attrName.contains("facility")) {
 					NodeList nodeListParticipation =  dataCriteriaElem.getElementsByTagName("role");
 					if ((nodeListParticipation != null) && (nodeListParticipation.getLength() > 0)) {
 						nodeListParticipation.item(0).getFirstChild().getParentNode().appendChild(effectiveTimeNode);
+					}
+				} else if(attrName.equalsIgnoreCase(INCISION_DATETIME)) { //for Incision Datetime Attribute effective Time is Added inside
+					NodeList nodeListProcedureCriteria =  dataCriteriaElem.getElementsByTagName("procedureCriteria");
+					if ((nodeListProcedureCriteria != null) && (nodeListProcedureCriteria.getLength() > 0)) {
+						nodeListProcedureCriteria.item(0).getFirstChild().getParentNode().appendChild(effectiveTimeNode);
 					}
 				} else {
 					NodeList nodeListParticipation = dataCriteriaElem.getElementsByTagName("participation");
@@ -1575,7 +1591,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/**
 	 * This method removes top xml tag and xmlns from data critiera xml.
-	 * @param xmlString - xml String.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return String.
 	 */
 	/*private String removeXmlTagNamespaceAndPreamble(String xmlString) {

@@ -708,7 +708,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					childNodes.getAttributes().getNamedItem("root").
 					setNodeValue(rootId);
 					childNodes.getAttributes().getNamedItem("extension").
-					setNodeValue((String) attrNode.getUserData(ATTRIBUTE_NAME));
+					setNodeValue(StringUtils.deleteWhitespace((String) attrNode.getUserData(ATTRIBUTE_NAME)));
 				} else if(changeAttribute.equalsIgnoreCase(CODE)){
 					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
 					if(VALUE_SET.equals(attrMode)){

@@ -538,6 +538,7 @@
 </device-allergy>
 
 <incision-dateTime changeAttribute="id">
+<outboundRelationship typeCode="CAUS">
 	<procedureCriteria classCode="PROC" moodCode="EVN">
 		<templateId>
 			<item root="2.16.840.1.113883.10.20.28.3.89" extension="2014-11-24"/>
@@ -549,6 +550,7 @@
 		</code>
 		<statusCode code="completed" />
 	</procedureCriteria>
+  </outboundRelationship>
 </incision-dateTime>
 
     </subtemplates>

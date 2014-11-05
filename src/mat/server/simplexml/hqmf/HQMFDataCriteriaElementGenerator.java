@@ -779,7 +779,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(DISCHARGE_STATUS)) {
 			generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
-		} else if (VALUE_SET.equals(attributeMode)
+		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
+			generateIncisionDateTimeTypeAttributes(qdmNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		}else if (VALUE_SET.equals(attributeMode)
 				|| CHECK_IF_PRESENT.equals(attributeMode)
 				|| attributeMode.startsWith(LESS_THAN)
 				|| attributeMode.startsWith(GREATER_THAN)
@@ -841,6 +844,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					uncertainRangeNode.setAttribute("highClosed", "false");
 				}
 				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
+				if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
+					lowNode.setAttribute("xsi:type", "PQ");
+				}
 				lowNode.setAttribute("nullFlavor", "NINF");
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
 				highNode.setAttribute("xsi:type", "PQ");
@@ -848,6 +854,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				if(unitAttrib!=null){
 					highNode.setAttribute("unit", unitAttrib.getNodeValue());
 				}
+				
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);
 				targetQuantityTag.appendChild(uncertainRangeNode);
@@ -864,6 +871,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					lowNode.setAttribute("unit", unitAttrib.getNodeValue());
 				}
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
+				if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
+					highNode.setAttribute("xsi:type", "PQ");
+				}
 				highNode.setAttribute("nullFlavor", "PINF");
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);
@@ -904,6 +914,22 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
 			appendSubTemplateInFacilityAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
+		}
+		generateDateTimeAttributes(qdmNode, dataCriteriaElem,
+				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+	}
+	
+	private void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, 
+			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
+		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
+				+ attributeName.toLowerCase() + "']");
+		if(templateNode == null){
+			return;
+		}
+		if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
+			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode,attributeQDMNode);
 		}
 		generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
@@ -1444,7 +1470,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| ADMISSION_DATETIME.equalsIgnoreCase(attrName)
 				|| ACTIVE_DATETIME.equalsIgnoreCase(attrName)
 				|| DATE.equalsIgnoreCase(attrName)
-				|| TIME.equalsIgnoreCase(attrName)) {
+				|| TIME.equalsIgnoreCase(attrName)
+				|| INCISION_DATETIME.equalsIgnoreCase(attrName)) {
 			timeTagName = LOW;
 		} else if (attrName.equals(STOP_DATETIME)
 				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)
@@ -1520,7 +1547,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if(effectiveTimeNode.hasChildNodes()){
 			NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");
 			if ((nodeList != null) && (nodeList.getLength() > 0)) {
+				//for Incision Datetime Attribute effective Time is Added inside
+				if(attrName.equalsIgnoreCase(INCISION_DATETIME)){
+					Node effectiveTimeParentNode =  dataCriteriaElem.getElementsByTagName("procedureCriteria").item(0);
+					effectiveTimeParentNode.appendChild(effectiveTimeNode);
+				} else {
 				dataCriteriaElem.insertBefore(effectiveTimeNode, nodeList.item(0));
+				}
 			} else {
 				
 				if(attrName.contains("facility")){

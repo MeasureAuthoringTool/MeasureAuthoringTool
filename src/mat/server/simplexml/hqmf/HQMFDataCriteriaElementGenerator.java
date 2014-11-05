@@ -668,7 +668,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					setNodeValue(qdmName + " " + qdmNameDataType + " value set");
 				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("value").setNodeValue(qdmNameDataType);
-				} 
+				}
 			}
 		}
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
@@ -806,6 +806,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Node attrOID = attributeQDMNode.getAttributes().getNamedItem(OID);
+		Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
@@ -821,6 +822,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
 			Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
+			translationNode.setAttribute("valueSetVersion", attrVersion.getNodeValue());
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
@@ -1115,7 +1117,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		dataCriteriaElem.appendChild(outboundRelationshipElem);
 		
 	}
-		
+	
 	/**
 	 * Refills Attribute tags.
 	 * @param templateNode
@@ -1183,11 +1185,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}  else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 			String attributeValueSetName = attributeQDMNode.getAttributes()
 					.getNamedItem(NAME).getNodeValue();
+			String attributeValueSetVersion = attributeQDMNode.getAttributes()
+					.getNamedItem("version").getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes()
 					.getNamedItem(OID).getNodeValue();
 			String attributeTaxonomy = attributeQDMNode.getAttributes()
 					.getNamedItem(TAXONOMY).getNodeValue();
 			dischargeDispositionElement.setAttribute("valueSet", attributeOID);
+			dischargeDispositionElement.setAttribute("valueSetVersion", attributeValueSetVersion);
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
@@ -1339,9 +1344,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
 					.getNodeValue();
+			String version = attributeQDMNode.getAttributes().getNamedItem("version")
+					.getNodeValue();
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			valueElem.setAttribute("valueSet", qdmOidValue);
+			valueElem.setAttribute("valueSetVersion", version);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
@@ -1390,7 +1398,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		} else if (templateNode.getAttributes().getNamedItem("addValueSet") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
 					.getNodeValue();
+			String version = attributeQDMNode.getAttributes().getNamedItem("version")
+					.getNodeValue();
 			targetSiteCodeElement.setAttribute("valueSet", qdmOidValue);
+			targetSiteCodeElement.setAttribute("valueSetVersion", version);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()

@@ -517,40 +517,39 @@
 </outboundRelationship>
  </procedure>
  
- <device-adverseEvent changeAttribute="code">
-	<participation typeCode="PRD">
-		<role classCode="MANU">
-			<playingDevice classCode="DEV" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version"/>
-			</playingDevice>
-		</role>
-	</participation>
+<device-adverseEvent changeAttribute="code">
+<participation typeCode="PRD">
+	<role classCode="MANU">
+		<playingDevice classCode="DEV" determinerCode="KIND">
+			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+		</playingDevice>
+	</role>
+</participation>	
 </device-adverseEvent>
  
- <device-allergy changeAttribute="code">
-	<participation typeCode="DEV">
-		<role classCode="MANU">
-			<playingDevice classCode="DEV" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
-			</playingDevice>
-		</role>
-	</participation>
+<device-allergy changeAttribute="code">
+<participation typeCode="DEV">
+	<role classCode="MANU">
+		<playingDevice classCode="DEV" determinerCode="KIND">
+			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+		</playingDevice>
+	</role>
+</participation>	
 </device-allergy>
 
 <incision-dateTime changeAttribute="id">
-<outboundRelationship typeCode="CAUS">
-	<procedureCriteria classCode="PROC" moodCode="EVN">
-		<templateId>
-			<item root="2.16.840.1.113883.10.20.28.3.89" extension="2014-11-24"/>
-		</templateId>
-		<id root="$UUID" extension="$extensionUUID"/>
-		<code code="34896006" codeSystem="2.16.840.1.113883.6.96"
-			codeSystemName="SNOMED CT">
-			<displayName value="incision" />
-		</code>
-		<statusCode code="completed" />
-	</procedureCriteria>
-  </outboundRelationship>
+<outboundRelationship typeCode="REFR">
+   <procedureCriteria classCode="PROC" moodCode="EVN">
+      <templateId>
+         <item root="2.16.840.1.113883.10.20.28.3.89" extension="2014-11-24" />
+      </templateId>
+	  <id root="$UUID" extension="$extensionUUID" />
+	  <code code="34896006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+	     <displayName value="incision" />
+	  </code>
+      <statusCode code="completed" />
+   </procedureCriteria>
+</outboundRelationship>
 </incision-dateTime>
 
     </subtemplates>

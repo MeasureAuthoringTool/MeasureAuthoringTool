@@ -165,7 +165,8 @@
     <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="PAT" codeSystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.87" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="103323008" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Provider Preference">provider preference</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.90" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="228815006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="incident radiation dose" >radiation duration</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.107" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="228815006" codeSystem="2.16.840.1.113883.6.96">radiation duration</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.106" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="228815006" codeSystem="2.16.840.1.113883.6.96">radiation dosage</template>
     <template oid="2.16.840.1.113883.10.20.28.3.91" class="OBS" mood="EVN" type="MFST" status="COMPLETED" inv="true" code="263851003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Reaction" valueType="CD">reaction</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">reason</template>
     <template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</template>
@@ -553,8 +554,7 @@
 </incision-dateTime>
 
 <order-dateTime changeAttribute="id">
-<participation typeCode="AUT">
-   <time/>               
+<participation typeCode="AUT">          
     <role classCode="ROL">
        <id>
           <item root="$UUID" extension="$extensionUUID"/>
@@ -562,5 +562,33 @@
     </role>                            
 </participation>
 </order-dateTime>
+
+<diagnosticStudy-AdverseEvent changeAttribute="id,code">
+<outboundRelationship typeCode="CAUS">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version"/>
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</diagnosticStudy-AdverseEvent >
+
+<diagnosticStudy-Intolerance  changeAttribute="id,code"> 
+<outboundRelationship typeCode="CAUS" inversionInd="true">
+	<observationCriteria classCode="OBS" moodCode="EVN">
+		<templateId>
+			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24" />
+		</templateId>
+		<id root="$UUID" extension="$extensionUUID" />
+		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+		<title value="Diagnostic Study, Performed" />
+		<statusCode code="completed" />
+	</observationCriteria>
+</outboundRelationship>
+</diagnosticStudy-Intolerance>
     </subtemplates>
 </templates>

@@ -51,10 +51,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private String getHQMFXmlString(MeasureExport me) {
 		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
-		me.setXmlPrcessor(dataCriteriaXMLProcessor);
+		me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
 		
 		String simpleXMLStr = me.getSimpleXML();
 		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
+		me.setSimpleXMLProcessor(simpleXmlprocessor);
 		
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);

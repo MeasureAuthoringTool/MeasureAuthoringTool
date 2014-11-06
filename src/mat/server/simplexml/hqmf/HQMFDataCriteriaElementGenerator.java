@@ -10,6 +10,8 @@ import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
@@ -25,6 +27,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
+	
+	private static final Log logger = LogFactory.getLog(HQMFDataCriteriaElementGenerator.class);
 	
 	/**
 	 * Generate hqm for measure.

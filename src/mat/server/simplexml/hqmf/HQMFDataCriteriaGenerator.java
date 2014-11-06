@@ -24,7 +24,7 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		HQMFClauseLogicGenerator hqmfClauseLogicGenerator = new HQMFClauseLogicGenerator();
 		hqmfClauseLogicGenerator.generate(me);
 		
-		XmlProcessor dataCriteriaXMLProcessor = me.getXmlPrcessor();
+		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removeXmlTagNamespaceAndPreamble(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}
 	

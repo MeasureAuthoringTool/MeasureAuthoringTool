@@ -203,6 +203,9 @@ public interface Generator {
 	/** The Constant NULL_FLAVOR. */
 	public static final String NULL_FLAVOR ="nullFlavor";
 	
+	public static final String RADIATION_DURATION = "radiation duration";
+	
+	public static final String RADIATION_DOSAGE = "radiation dosage";
 	
 	/**
 	 * Generate.

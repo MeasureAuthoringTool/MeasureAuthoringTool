@@ -410,7 +410,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		String xPathForAttributeUse = "/measure/subTreeLookUp/subTree//elementRef/attribute"
 				+ "[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME +"' or @name = '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' or @name = '"+FACILITY_LOCATION_DEPARTURE_DATETIME
-				+"' or @name = '"+FACILITY_LOCATION+"' or @name ='"+ADMISSION_DATETIME+"' or @name ='"+DISCHARGE_DATETIME+"']"
+				+"' or @name = '"+FACILITY_LOCATION+"' or @name ='"+ADMISSION_DATETIME+"' or @name ='"+DISCHARGE_DATETIME+"'" +
+						"or @name ='"+ACTIVE_DATETIME+"' or @name ='"+INCISION_DATETIME+"' or @name ='"+DATE+"' or @name ='"+TIME+"'" +
+								"or @name ='"+REMOVAL_DATETIME+"' or @name ='"+SIGNED_DATETIME+"']"
 				+ "[@mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than') or @mode='Check if Present']";
 		
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
@@ -926,6 +928,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ subTemplateName);
 		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName + "/child::node()");
+		boolean isOrder = templateNode.getAttributes().getNamedItem("typeOrder").getNodeValue()!=null;
 		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
 			Node  attributedToBeChangedInNode = null;
 			String[] tagToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
@@ -949,7 +952,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
-		generateDateTimeAttributesTag(timeNode, attrNode, dataCriteriaElem, dataCriteriaXMLProcessor);
+		generateDateTimeAttributesTag(timeNode, attrNode, dataCriteriaElem, dataCriteriaXMLProcessor, isOrder);
 	}
 	
 	/**
@@ -975,7 +978,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					simpleXmlprocessor, attributeQDMNode);
 		} else if(SIGNED_DATETIME.equals(attributeName)){
 			Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
-			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor);
+			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, true);
 		}else if(ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
 				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)
 				|| REMOVAL_DATETIME.equalsIgnoreCase(attributeName)
@@ -1185,13 +1188,15 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void generateOrderTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		String attrName = (String)attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ qdmName.toLowerCase() + "']");
 		if(templateNode == null){
 			return;
 		}
-		if(templateNode.getAttributes().getNamedItem("includeOtherSubTemplate") !=null){
+		if(templateNode.getAttributes().getNamedItem("includeOtherSubTemplate") !=null
+				|| attrName.equalsIgnoreCase(SIGNED_DATETIME)){
 			appendSubTemplateWithOrderAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode,attributeQDMNode);
 		} else {
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
@@ -1726,7 +1731,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		Element effectiveTimeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(EFFECTIVE_TIME);
 		effectiveTimeNode.setAttribute(XSI_TYPE, "IVL_TS");
-		generateDateTimeAttributesTag(effectiveTimeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor);
+		generateDateTimeAttributesTag(effectiveTimeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, false);
 	}
 	
 	
@@ -1740,7 +1745,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 */
 	private void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
-			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor) {
+			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, boolean isOrder) {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
@@ -1830,8 +1835,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					||attrName.equalsIgnoreCase(STOP_DATETIME)
 					||attrName.equalsIgnoreCase(SIGNED_DATETIME)){
 				NodeList nodeList = dataCriteriaElem.getElementsByTagName("participation");
-				if ((nodeList != null) && (nodeList.getLength() > 0)) {
-					nodeList.item(0).insertBefore(dateTimeNode, dataCriteriaElem.getElementsByTagName("role").item(0));
+				if ((nodeList != null) && (nodeList.getLength() > 0) && isOrder) {
+					if(nodeList.getLength()>1){
+					nodeList.item(1).insertBefore(dateTimeNode, dataCriteriaElem.getElementsByTagName("role").item(1));
+					} else {
+						nodeList.item(0).insertBefore(dateTimeNode, dataCriteriaElem.getElementsByTagName("role").item(0));
+					}
 				} else {
 					dataCriteriaElem.appendChild(dateTimeNode);
 				}

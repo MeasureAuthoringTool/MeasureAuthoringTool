@@ -29,7 +29,9 @@ public class MeasureExport {
 	private Measure measure;
 	
 	/** XMLProcessor instance to be used for HQMF Export related tasks**/
-	private XmlProcessor xmlPrcessor;
+	private XmlProcessor hqmfXMLProcessor;
+	
+	private XmlProcessor simpleXMLProcessor;
 	
 	/**
 	 * Gets the id.
@@ -188,12 +190,20 @@ public class MeasureExport {
 		  return baos.toByteArray();
 	}
 
-	public XmlProcessor getXmlPrcessor() {
-		return xmlPrcessor;
+	public XmlProcessor getHQMFXmlProcessor() {
+		return hqmfXMLProcessor;
 	}
 
-	public void setXmlPrcessor(XmlProcessor xmlPrcessor) {
-		this.xmlPrcessor = xmlPrcessor;
+	public void setHQMFXmlProcessor(XmlProcessor xmlProcessor) {
+		this.hqmfXMLProcessor = xmlProcessor;
+	}
+
+	public XmlProcessor getSimpleXMLProcessor() {
+		return simpleXMLProcessor;
+	}
+
+	public void setSimpleXMLProcessor(XmlProcessor simpleXMLProcessor) {
+		this.simpleXMLProcessor = simpleXMLProcessor;
 	}
 	  
 	

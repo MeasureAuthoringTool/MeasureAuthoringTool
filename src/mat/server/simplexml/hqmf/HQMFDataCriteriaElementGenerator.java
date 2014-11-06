@@ -2,10 +2,13 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -161,13 +164,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			
 			String xpath = "/measure/elementLookUp/qdm[@datatype != 'attribute'][not(@instance)][@oid = '"+oid+"'][@datatype = '"+datatype+"']";
 			Node nodeToUse = simpleXmlprocessor.findNode(simpleXmlprocessor.getOriginalDoc(), xpath);
-			
+			boolean forceGenerate = true;
 			if(nodeToUse == null){
 				nodeToUse = occurNode.cloneNode(true);
 				nodeToUse.getAttributes().removeNamedItem("instance");
+				forceGenerate = false;
 			}
 			
-			generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, nodeToUse);
+			generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, nodeToUse, forceGenerate);
 			occurrenceMap.put(datatype+"-"+oid, nodeToUse);
 		}
 	}
@@ -205,11 +209,25 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void generateQDMEntry(XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node qdmNode)
 					throws XPathExpressionException {
+		generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, qdmNode, false);
+	}
+	
+	/**
+	 * Generate qdm entry.
+	 *
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param qdmNode the qdm node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateQDMEntry(XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor simpleXmlprocessor, Node qdmNode, boolean forceGenerate)
+					throws XPathExpressionException {
 		String qdmUUID = qdmNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		
 		String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 		NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
-		if(elementRefList.getLength() > 0){
+		if(forceGenerate || elementRefList.getLength() > 0){
 			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor, null);
 		}
 	}

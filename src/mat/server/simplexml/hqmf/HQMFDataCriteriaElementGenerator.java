@@ -1327,7 +1327,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)
 						|| ORDINALITY.equalsIgnoreCase(attrName)
 						|| ROUTE.equalsIgnoreCase(attrName)
-						|| "method".equalsIgnoreCase(attrName)) {
+						|| "method".equalsIgnoreCase(attrName)
+						|| ANATOMICAL_APPROACH_SITE.equalsIgnoreCase(attrName)) {
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
 					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,qdmNode,attributeQDMNode);

@@ -1028,6 +1028,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Node attrOID = attributeQDMNode.getAttributes().getNamedItem(OID);
 		Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");
+		boolean isLengthOfStayValueSet = false;
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
@@ -1039,7 +1040,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
 		if(CHECK_IF_PRESENT.equals(attrMode)){
 			targetQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-		}  else if(VALUE_SET.equals(attrMode) && !(attrName.equalsIgnoreCase(LENGTH_OF_STAY))){
+		}  else if(VALUE_SET.equals(attrMode)){
+			if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
+				isLengthOfStayValueSet = true;
+			} else {
 			targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
 			Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
@@ -1050,6 +1054,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			translationNode.appendChild(displayNameElem);
 			targetQuantityTag.appendChild(translationNode);
+			}
 		} else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
 			if(attrMode.equals(Generator.EQUAL_TO)){
 				targetQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
@@ -1104,10 +1109,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			if (outBoundElement != null) {
 				outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
 			} else {
+				if(!isLengthOfStayValueSet){
 				dataCriteriaElem.appendChild(targetQuantityTag);
+				}
 			}
 		} else {
-			dataCriteriaElem.appendChild(targetQuantityTag);
+			if(!isLengthOfStayValueSet){
+				dataCriteriaElem.appendChild(targetQuantityTag);
+				}
 		}
 		
 	}

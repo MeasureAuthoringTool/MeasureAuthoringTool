@@ -145,14 +145,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		String childName = childNode.getNodeName();
 		
-		switch(childName){
+		/*switch(childName){
 			case "elementRef":
 				generateCritRefElementRef(me, outboundRelElem, childNode,hqmfXmlProcessor);
 				break;
 			default:
 				break;
 		}
-		
+		 */
 	}
 	
 	private void generateCritRefElementRef(MeasureExport me,

@@ -1320,6 +1320,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		boolean isStatus = "status".equalsIgnoreCase(attrName);
 		boolean isResultNotOutBound = ("Diagnostic Study, Performed".equalsIgnoreCase(qdmName) || "Laboratory Test, Performed".equalsIgnoreCase(qdmName)
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName) || "Risk Category Assessment".equalsIgnoreCase(qdmName));
+		boolean isResultValueset = (isResult && attrMode.equalsIgnoreCase(VALUE_SET));
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
@@ -1359,7 +1360,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		Element outboundRelationshipElem = null;
 		Element observationCriteriaElem = null;
-		if(!isResultNotOutBound){ //result attribute with specific Datatypes does'nt add OutBoundRelationShip
+		if(!isResultNotOutBound && !isResultValueset){ //result attribute with specific Datatypes does'nt add OutBoundRelationShip
 			outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(OUTBOUND_RELATIONSHIP);
 			outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
@@ -1426,7 +1427,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(VALUE);
-		if(VALUE_SET.equals(attrMode)){
+		if(VALUE_SET.equals(attrMode) && !isResultValueset){
 			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, isStatus, templateNode,valueElem);
 		} else if(CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)){
 			checkIfSelectedModeIsPresent(dataCriteriaXMLProcessor, attributeQDMNode, templateNode, valueElem);

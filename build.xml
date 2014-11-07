@@ -190,7 +190,7 @@
             destdir="${web.output.dir}/WEB-INF/classes"                     
             fork="true"
             debug="true"
-			
+			source="7"
         />
 
 	</target>

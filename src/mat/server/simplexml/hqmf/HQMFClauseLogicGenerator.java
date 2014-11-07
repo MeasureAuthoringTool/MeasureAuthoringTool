@@ -2,12 +2,9 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,32 +15,32 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class HQMFClauseLogicGenerator implements Generator {
-
-	 Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
-	 private static final Log logger = LogFactory
-				.getLog(HQMFClauseLogicGenerator.class);
-	 
-	 
-	 @Override
-	 public String generate(MeasureExport me) throws Exception {
-		  generateSubTreeXML(me);
-		  return null;
-	 }
-	 
-	 private void generateSubTreeXML(MeasureExport me) throws XPathExpressionException{
-		  String xpath = "/measure/subTreeLookUp/child::node()";
-		  NodeList subTreeNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
-		  
-		  for(int i=0;i<subTreeNodeList.getLength();i++){
-			   Node subTreeNode = subTreeNodeList.item(i);
-			   generateSubTreeXML(me,subTreeNode);
-			   
-		  }
-	 }
-
+	
+	Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
+	private static final Log logger = LogFactory
+			.getLog(HQMFClauseLogicGenerator.class);
+	
+	
+	@Override
+	public String generate(MeasureExport me) throws Exception {
+		//  generateSubTreeXML(me);
+		return null;
+	}
+	
+	private void generateSubTreeXML(MeasureExport me) throws XPathExpressionException{
+		String xpath = "/measure/subTreeLookUp/child::node()";
+		NodeList subTreeNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
+		
+		for(int i=0;i<subTreeNodeList.getLength();i++){
+			Node subTreeNode = subTreeNodeList.item(i);
+			generateSubTreeXML(me,subTreeNode);
+			
+		}
+	}
+	
 	private void generateSubTreeXML(MeasureExport me, Node subTreeNode) throws XPathExpressionException {
 		
-		if(subTreeNode == null || !subTreeNode.hasChildNodes()){
+		if((subTreeNode == null) || !subTreeNode.hasChildNodes()){
 			return;
 		}
 		
@@ -55,7 +52,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
 		
-		switch (firstChildName) {
+		/*switch (firstChildName) {
 			case "setOp":
 				//TODO: do something
 				generateSetOpHQMF(me,firstChild,dataCriteriaSectionElem);
@@ -71,15 +68,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 			default:
 				//Dont do anything
 				break;
-		}
-			
+		}*/
+		
 	}
 	
 	private void generateElementRefHQMF(MeasureExport me, Node firstChild, Node parentNode) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	private void generateSubTreeHQMF(MeasureExport me, Node firstChild, Node parentNode) {
 		// TODO Auto-generated method stub
 		
@@ -89,13 +86,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * This method wil generate HQMF code for setOp (UNION,INTERSECTION)
 	 * @param me
 	 * @param setOpNode
-	 * @throws XPathExpressionException 
+	 * @throws XPathExpressionException
 	 */
 	private void generateSetOpHQMF(MeasureExport me, Node setOpNode, Node parentNode) throws XPathExpressionException {
 		// TODO Auto-generated method stub
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		String setOpType = setOpNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		String conjunctionType = "OR"; 
+		String conjunctionType = "OR";
 		
 		if("UNION".equals(setOpType)){
 			conjunctionType = "OR";
@@ -111,7 +108,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String root = "0";
 		String ext = setOpType;
 		Node parNode = setOpNode.getParentNode();
-		if(parNode != null && "subTree".equals(parNode.getNodeName())){
+		if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
 		}
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
@@ -127,7 +124,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("outBoundRelationship for "+childNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			grouperElem.appendChild(comment);
 			
-			//generate outboundRelationship 
+			//generate outboundRelationship
 			Element outboundRelElem = generateEmptyOutboundElem(hqmfXmlProcessor);
 			Element conjunctionCodeElem = hqmfXmlProcessor.getOriginalDoc().createElement("conjunctionCode");
 			conjunctionCodeElem.setAttribute(CODE, conjunctionType);
@@ -140,7 +137,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 		entryElem.appendChild(grouperElem);
-		parentNode.appendChild(entryElem);	
+		parentNode.appendChild(entryElem);
 		
 	}
 	
@@ -157,11 +154,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 	}
-
+	
 	private void generateCritRefElementRef(MeasureExport me,
 			Element outboundRelElem, Node childNode,
 			XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
-		String ext = getElementRefExt(childNode, me.getSimpleXMLProcessor()); 
+		String ext = getElementRefExt(childNode, me.getSimpleXMLProcessor());
 		String root = childNode.getAttributes().getNamedItem(ID).getNodeValue();
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 		if(idNodeQDM != null){
@@ -204,7 +201,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					extension = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + extension;
 				}
 			}
-		}				
+		}
 		return StringUtils.deleteWhitespace(extension);
 	}
 	

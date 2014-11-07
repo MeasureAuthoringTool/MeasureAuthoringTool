@@ -207,6 +207,8 @@ public interface Generator {
 	
 	public static final String RADIATION_DOSAGE = "radiation dosage";
 	
+	public static final String STATUS_CODE = "statusCode";
+	
 	/**
 	 * Generate.
 	 *

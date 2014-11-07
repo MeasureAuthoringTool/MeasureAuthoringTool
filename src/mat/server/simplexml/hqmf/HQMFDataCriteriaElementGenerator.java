@@ -1409,10 +1409,20 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					codeElem.appendChild(displayNameElem);
 				}
 			}
+			if(!isRadiation){
 			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(TITLE);
 			titleElem.setAttribute(VALUE, attrName);
 			observationCriteriaElem.appendChild(titleElem);
+			}  if(isRadiation){
+				Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(STATUS_CODE);
+				if(templateNode.getAttributes().getNamedItem("statusCode") != null){
+					titleElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem("statusCode").getNodeValue());
+			}
+				observationCriteriaElem.appendChild(titleElem);
+			}
+			
 		}
 		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(VALUE);

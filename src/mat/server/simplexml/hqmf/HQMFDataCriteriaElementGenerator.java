@@ -1318,7 +1318,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		boolean isResult = "result".equalsIgnoreCase(attrName);
 		boolean isStatus = "status".equalsIgnoreCase(attrName);
-		boolean isResultOrStatus = (isResult || isStatus);
 		boolean isResultNotOutBound = ("Diagnostic Study, Performed".equalsIgnoreCase(qdmName) || "Laboratory Test, Performed".equalsIgnoreCase(qdmName)
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName) || "Risk Category Assessment".equalsIgnoreCase(qdmName));
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
@@ -1418,7 +1417,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(VALUE);
 		if(VALUE_SET.equals(attrMode)){
-			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, isResultOrStatus, templateNode,valueElem);
+			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, isStatus, templateNode,valueElem);
 		} else if(CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)){
 			checkIfSelectedModeIsPresent(dataCriteriaXMLProcessor, attributeQDMNode, templateNode, valueElem);
 		}else if(EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)){

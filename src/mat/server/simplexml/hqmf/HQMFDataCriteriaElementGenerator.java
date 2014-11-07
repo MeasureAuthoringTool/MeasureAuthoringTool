@@ -1908,6 +1908,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					NodeList valueNodeList = dataCriteriaElem.getElementsByTagName("value");
 					if ((valueNodeList != null) && (valueNodeList.getLength() > 0)) {
 						dataCriteriaElem.insertBefore(dateTimeNode, valueNodeList.item(0));
+					} else {
+						Node statusCodeNode =  dataCriteriaElem.getElementsByTagName("statusCode").item(0).getNextSibling();
+						if(statusCodeNode!=null){
+							dataCriteriaElem.insertBefore(dateTimeNode, statusCodeNode);
+						}
 					}
 				}
 			} else{

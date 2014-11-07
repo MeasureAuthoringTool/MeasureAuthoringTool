@@ -1322,14 +1322,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
-		boolean isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
-		
+		boolean isRadiation = false;
 		if(templateNode == null){
 			templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 					+ attrName.toLowerCase()+"-" +attrMode.toLowerCase() + "']");
 			if(templateNode == null) {
 				return;
 			} else {
+				if(templateNode.getAttributes().getNamedItem("isRadiation")!=null){
+				   isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
+				}
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)
 						|| ORDINALITY.equalsIgnoreCase(attrName)
 						|| ROUTE.equalsIgnoreCase(attrName)
@@ -1574,7 +1576,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node templateNode, Element valueElem){
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		String nodeName = attributeQDMNode.getNodeName();
-		boolean isRadiation =templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
+		boolean isRadiation = false;
+		if(templateNode.getAttributes().getNamedItem("isRadiation")!=null){
+		   isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
+		}
+		
 		if(nodeName.equals("attribute"))
 		{
 			valueElem.setAttribute(XSI_TYPE, "IVL_PQ");

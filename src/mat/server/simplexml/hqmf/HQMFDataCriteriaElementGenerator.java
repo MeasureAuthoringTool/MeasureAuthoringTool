@@ -1322,6 +1322,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
+		boolean isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
 		
 		if(templateNode == null){
 			templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
@@ -1388,6 +1389,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		idElem.setAttribute("extension", StringUtils.deleteWhitespace(attrName));
 		observationCriteriaElem.appendChild(idElem);
 		Element codeElem = createCodeForDatatype(templateNode, dataCriteriaXMLProcessor);
+		if(isRadiation && codeElem!=null){
+			observationCriteriaElem.appendChild(codeElem);
+		} else {
 		Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);
 		if(templateNode.getAttributes().getNamedItem("displayNameValue") != null){
@@ -1398,6 +1402,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (codeElem != null) {
 			observationCriteriaElem.appendChild(codeElem);
 			codeElem.appendChild(displayNameElem);
+		}
 		}
 		Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(TITLE);
@@ -1569,12 +1574,20 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node templateNode, Element valueElem){
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		String nodeName = attributeQDMNode.getNodeName();
-		
+		boolean isRadiation =templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
 		if(nodeName.equals("attribute"))
 		{
 			valueElem.setAttribute(XSI_TYPE, "IVL_PQ");
 			Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
 			if(EQUAL_TO.equals(attrMode) ){
+				if(isRadiation){ //for radiation dosage and radiation duration
+					valueElem.getAttributes().getNamedItem(XSI_TYPE).setNodeValue("PQ");
+					valueElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+					if (unitAttrib != null) {
+						String unitString = getUnitString(unitAttrib.getNodeValue());
+					    valueElem.setAttribute("unit", unitString);
+					}
+				} else { //for attributes other than radiation duration and radiation dosage
 				Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(LOW);
 				lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
@@ -1591,6 +1604,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				valueElem.appendChild(lowElem);
 				valueElem.appendChild(highElem);
+				}
+				
 			}else if(attrMode.startsWith(GREATER_THAN)){
 				if(attrMode.equals(GREATER_THAN)){
 					valueElem.setAttribute("lowClosed", "false");
@@ -1602,11 +1617,22 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					String unitString = getUnitString(unitAttrib.getNodeValue());
 					lowElem.setAttribute("unit", unitString);
 				}
-				
 				valueElem.appendChild(lowElem);
+				if(isRadiation){//for radiation dosage and radiation duration
+					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(HIGH);
+					highElem.setAttribute(NULL_FLAVOR, "PINF");
+					valueElem.appendChild(highElem);
+				}
 			}else if(attrMode.startsWith(LESS_THAN)){
 				if(attrMode.equals(LESS_THAN)){
 					valueElem.setAttribute("highClosed", "false");
+				}
+				if(isRadiation){//for radiation dosage and radiation duration
+					Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(LOW);
+					highElem.setAttribute(NULL_FLAVOR, "NINF");
+					valueElem.appendChild(highElem);
 				}
 				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(HIGH);
@@ -1615,7 +1641,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					String unitString = getUnitString(unitAttrib.getNodeValue());
 					highElem.setAttribute("unit", unitString);
 				}
-				
 				valueElem.appendChild(highElem);
 			}
 		}
@@ -1848,7 +1873,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						nodeList.item(0).insertBefore(dateTimeNode, dataCriteriaElem.getElementsByTagName("role").item(0));
 					}
 				} else {
-					dataCriteriaElem.appendChild(dateTimeNode);
+					NodeList valueNodeList = dataCriteriaElem.getElementsByTagName("value");
+					if ((valueNodeList != null) && (valueNodeList.getLength() > 0)) {
+						dataCriteriaElem.insertBefore(dateTimeNode, valueNodeList.item(0));
+					}
 				}
 			} else{
 				NodeList nodeList = dataCriteriaElem.getElementsByTagName("value");

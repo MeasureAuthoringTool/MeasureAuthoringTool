@@ -713,6 +713,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			criteriaRefElem.appendChild(idRelElem);
 			outboundRelElem.appendChild(criteriaRefElem);
 			dataCriteriaElem.appendChild(outboundRelElem);
+			Node templateIdNode = dataCriteriaElem.getElementsByTagName("templateId").item(0);
+			
+			dataCriteriaElem.removeChild(templateIdNode);
 		}
 	}
 	
@@ -1411,16 +1414,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 			}
 			if(!isRadiation){
-			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(TITLE);
-			titleElem.setAttribute(VALUE, attrName);
-			observationCriteriaElem.appendChild(titleElem);
+				Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(TITLE);
+				titleElem.setAttribute(VALUE, attrName);
+				observationCriteriaElem.appendChild(titleElem);
 			}  if(isRadiation){
 				Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(STATUS_CODE);
 				if(templateNode.getAttributes().getNamedItem("statusCode") != null){
 					titleElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem("statusCode").getNodeValue());
-			}
+				}
 				observationCriteriaElem.appendChild(titleElem);
 			}
 			

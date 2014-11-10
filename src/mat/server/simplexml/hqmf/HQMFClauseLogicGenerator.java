@@ -130,10 +130,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		//generate outboundRelationship 
 		Element outboundRelElem = generateEmptyOutboundElem(hqmfXmlProcessor);
-		Element conjunctionCodeElem = hqmfXmlProcessor.getOriginalDoc().createElement("conjunctionCode");
-		conjunctionCodeElem.setAttribute(CODE, "OR");
-		
-		outboundRelElem.appendChild(conjunctionCodeElem);
+//		Element conjunctionCodeElem = hqmfXmlProcessor.getOriginalDoc().createElement("conjunctionCode");
+//		conjunctionCodeElem.setAttribute(CODE, "OR");
+//		
+//		outboundRelElem.appendChild(conjunctionCodeElem);
 		generateCritRefForNode(me, outboundRelElem, elementRefNode);		
 		
 		grouperElem.appendChild(outboundRelElem);

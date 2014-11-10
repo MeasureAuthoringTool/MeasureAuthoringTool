@@ -3115,9 +3115,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 					String dateTimeDiffFunction = "@type='DATETIMEDIFF'";
-					//String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
+					//geting list of IDs
+					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
 					//geting Unique Ids only
-					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[not(@id =  preceding:: elementRef/@id)]";
+					//String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[not(@id =  preceding:: elementRef/@id)]";
 					String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//relationalOp";
 					String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+satisfyFunction+"]";
 					String XPATH_FUNCTIONS ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+otherThanSatisfyfunction+"]";
@@ -3160,8 +3161,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							
 						}
 						
-						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !flag; m++) {							
-							String id = nodesSDE_qdmElementId.item(m).getAttributes().getNamedItem("id").getNodeValue();
+						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !flag; m++) {	
+							String id = nodesSDE_qdmElementId.item(m).getNodeValue();
 							String xpathForQdmWithAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"']/attribute";
 							String xpathForQdmWithOutAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"'][not(attribute)]";
 							String XPATH_QDMLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+id+"']";
@@ -3178,7 +3179,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								}
 							}
 							//validation for QDMwithOutAttributeList for the Id							
-							if(qdmWithOutAttributeList.getLength() >0){	
+							if(!flag && qdmWithOutAttributeList.getLength() >0){	
 								String attributeName ="";
 								flag = !validateQdmNode(qdmNode, attributeName);							
 								if(flag){

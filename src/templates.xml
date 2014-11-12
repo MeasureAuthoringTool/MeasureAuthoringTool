@@ -504,7 +504,7 @@
  </facility-location-ArrDeparture>
 
  <procedure changeAttribute="id,code,displayName,title">
- <outboundRelationship typeCode="CAUS"
+ <outboundRelationship classCode="PROC" typeCode="CAUS"
 	inversionInd="true">
 	<procedureCriteria moodCode="EVN">
 		<templateId>

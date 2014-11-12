@@ -183,6 +183,21 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			idElement.setAttribute("extension", StringUtils.deleteWhitespace(initialPopulation.getAttributes().getNamedItem(TYPE).getNodeValue()));
 			criteriaRef.appendChild(idElement);
 			preConditionElem.appendChild(criteriaRef);
+		} else if(scoringType.equalsIgnoreCase("Ratio") &&( nodeType.equalsIgnoreCase("denominator")
+				|| nodeType.equalsIgnoreCase("numerator"))) {
+			String associatedIPUUID = initialPopulation.getAttributes().getNamedItem(UUID).getNodeValue();
+			if(item.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
+				associatedIPUUID = item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+			}
+			Document mainDocument = preConditionElem.getOwnerDocument();
+			Element criteriaRef = mainDocument.createElement("criteriaReference");
+			criteriaRef.setAttribute(CLASS_CODE, "OBS");
+			criteriaRef.setAttribute(MOOD_CODE, "EVN");
+			Element idElement = mainDocument.createElement(ID);
+			idElement.setAttribute(ROOT, associatedIPUUID);
+			idElement.setAttribute("extension", StringUtils.deleteWhitespace("initialPopulation"));
+			criteriaRef.appendChild(idElement);
+			preConditionElem.appendChild(criteriaRef);
 		}
 		
 	}

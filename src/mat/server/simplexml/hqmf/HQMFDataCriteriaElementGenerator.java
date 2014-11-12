@@ -73,7 +73,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private XmlProcessor createDateCriteriaTemplate(MeasureExport me) {
 		XmlProcessor outputProcessor = new XmlProcessor(
-				"<component><dataCriteriaSection></dataCriteriaSection></component>");
+				"<root><component><dataCriteriaSection></dataCriteriaSection></component></root>");
 		
 		Node dataCriteriaElem = outputProcessor.getOriginalDoc()
 				.getElementsByTagName("dataCriteriaSection").item(0);

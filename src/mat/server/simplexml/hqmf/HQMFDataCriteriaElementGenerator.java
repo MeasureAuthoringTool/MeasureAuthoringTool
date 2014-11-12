@@ -1355,7 +1355,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		boolean isResult = "result".equalsIgnoreCase(attrName);
-		boolean isStatus = "status".equalsIgnoreCase(attrName);
+		//boolean isStatus = "status".equalsIgnoreCase(attrName);
 		boolean isResultNotOutBound = isResult && ("Diagnostic Study, Performed".equalsIgnoreCase(qdmName) || "Laboratory Test, Performed".equalsIgnoreCase(qdmName)
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName) || "Risk Category Assessment".equalsIgnoreCase(qdmName));
 		//boolean isResultValueset = (isResult && attrMode.equalsIgnoreCase(VALUE_SET));

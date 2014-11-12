@@ -186,7 +186,7 @@
     <template target="approachSiteCode" flavorId="ANY.NONNULL" insertAfterNode="statusCode">anatomical approach site-check if present</template>
     <template target="doseQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">dose</template>
     <template target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">length of stay</template>
-    <template class="OBS" mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.105" class="OBS" mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</template>
     
     <subtemplates>
 
@@ -299,7 +299,7 @@
 	<transfer changeAttribute="code">
 		<participation typeCode="ORG">
 			<role classCode="LOCE">
-				<code xsi:type="CD" valueSet="$valueset"  valueSetVersion="$version"/>
+				<code xsi:type="CD" valueSet="$valueset"  />
 			</role>
 		</participation>
 	</transfer>
@@ -307,7 +307,7 @@
 	<intervention-adverseEvent changeAttribute="code,displayName">
 	    <outboundRelationship typeCode="CAUS" inversionInd="true">
 			<procedureCriteria classCode="PROC" moodCode="EVN">
-				<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+				<code valueSet="$QDMElementValueSetOID" >
 				    <displayName value="$displaynamevalue"/>
 				</code>
 			</procedureCriteria>
@@ -321,7 +321,7 @@
 					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="$extensionUUID"/>
-				<code valueSet="{$QDMElementValueSetOID}" valueSetVersion="$version">
+				<code valueSet="{$QDMElementValueSetOID}" >
 				    <displayName value="$displaynamevalue"/>
 				</code>
 				<title value="Intervention, Performed"/>
@@ -334,7 +334,7 @@
 		<participation typeCode="CSM">
 			<role classCode="MANU">
 				<playingMaterial classCode="MMAT" determinerCode="KIND">
-					<code valueSet="$valueSet" valueSetVersion="$version">
+					<code valueSet="$valueSet" >
 					    <displayName value="$displaynamevalue"/>
 					</code>				    
 				</playingMaterial>
@@ -346,7 +346,7 @@
 		<participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueset" valueSetVersion="$version">
+		<code valueSet="$valueset" >
 		    <displayName value="$displaynamevalue"/>
 		</code>    	
 		</playingMaterial>
@@ -358,7 +358,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+		<code valueSet="$QDMElementValueSetOID" >
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingEntity>
@@ -370,7 +370,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" valueSetVersion="$version">
+		<code valueSet="$valueSet" >
 		    <displayName value="$displaynamevalue"/>
 		</code>    
 		</playingEntity>
@@ -382,7 +382,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" valueSetVersion="$version">
+		<code valueSet="$valueSet" >
 		    <displayName value="$displaynamevalue"/>
 		</code>    
 		</playingMaterial>
@@ -394,7 +394,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+		<code valueSet="$QDMElementValueSetOID" >
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingMaterial>
@@ -406,7 +406,7 @@
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" valueSetVersion="$version">
+		<code valueSet="$valueSet" >
 		    <displayName value="$displaynamevalue"/>
 		</code>
 		</playingMaterial>
@@ -414,11 +414,13 @@
 		</participation>
 	</medicationIntolerance>
 	
-	<medicationOrder>
+	<medicationOrder changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="2.16.840.1.113883.3.464.1003.196.12.1205"/>
+		<code valueSet="$valueSet" >
+		    <displayName value="$displaynamevalue"/>
+		</code>
 		</playingMaterial>
 		</role>
 		</participation>
@@ -432,7 +434,7 @@
 				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
 			</templateId>
 			<id root="$UUID" extension="$extensionUUID"/>
-			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+			<code valueSet="$QDMElementValueSetOID" >
 			    <displayName value="$displaynamevalue"/>
 			</code>
 			<title value="Laboratory Test, Performed" />
@@ -445,7 +447,7 @@
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+        <code valueSet="$QDMElementValueSetOID" >
             <displayName value="$displaynamevalue"/>
         </code>    
     </playingMaterial>
@@ -456,7 +458,7 @@
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+        <code valueSet="$QDMElementValueSetOID" >
             <displayName value="$valueSetName"/>
         </code>
     </playingMaterial>
@@ -467,7 +469,7 @@
  <participation>
     <role classCode="ASSIGNED">
         <playingDevice classCode="DEV" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+        <code valueSet="$QDMElementValueSetOID" >
             <displayName value="$valueSetName"/>
         </code>
     </playingDevice>
@@ -509,7 +511,7 @@
 			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
 		</templateId>
 		<id root="$UUID" extension="$extensionUUID" />
-		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version">
+		<code valueSet="$QDMElementValueSetOID" >
 			<displayName value="$valueSetName" />
 		</code>
 		<title value="$valuseSetDatatype" />
@@ -522,7 +524,7 @@
 <participation typeCode="PRD">
 	<role classCode="MANU">
 		<playingDevice classCode="DEV" determinerCode="KIND">
-			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+			<code valueSet="$QDMElementValueSetOID"  />
 		</playingDevice>
 	</role>
 </participation>	
@@ -532,7 +534,7 @@
 <participation typeCode="DEV">
 	<role classCode="MANU">
 		<playingDevice classCode="DEV" determinerCode="KIND">
-			<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+			<code valueSet="$QDMElementValueSetOID"  />
 		</playingDevice>
 	</role>
 </participation>	
@@ -570,7 +572,7 @@
 			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24"/>
 		</templateId>
 		<id root="$UUID" extension="$extensionUUID" />
-		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version"/>
+		<code valueSet="$QDMElementValueSetOID" />
 		<title value="Diagnostic Study, Performed" />
 		<statusCode code="completed" />
 	</observationCriteria>
@@ -584,7 +586,7 @@
 			<item root="2.16.840.1.113883.10.20.28.3.23" extension="2014-11-24" />
 		</templateId>
 		<id root="$UUID" extension="$extensionUUID" />
-		<code valueSet="$QDMElementValueSetOID" valueSetVersion="$version" />
+		<code valueSet="$QDMElementValueSetOID"  />
 		<title value="Diagnostic Study, Performed" />
 		<statusCode code="completed" />
 	</observationCriteria>

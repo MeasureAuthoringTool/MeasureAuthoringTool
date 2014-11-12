@@ -369,8 +369,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ "[@name != 'negation rationale' and @name != '"+START_DATETIME+"' and @name !='"+STOP_DATETIME+"' " +"" +
 				"and @name != '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' and @name != '"+FACILITY_LOCATION_DEPARTURE_DATETIME
 				+"' and  @name != '"+FACILITY_LOCATION+"' and @name != '"+ADMISSION_DATETIME
-				+"' and @name != '"+DISCHARGE_DATETIME
-				+"']";
+				+"' and @name != '"+DISCHARGE_DATETIME +"' and @name != '"+ACTIVE_DATETIME+"' and @name != '"+INCISION_DATETIME+"' and @name != '"+DATE
+				+"' and @name != '"+TIME+"' and @name != '"+REMOVAL_DATETIME+"' and @name != '"+SIGNED_DATETIME+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -714,7 +714,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			outboundRelElem.appendChild(criteriaRefElem);
 			dataCriteriaElem.appendChild(outboundRelElem);
 			Node templateIdNode = dataCriteriaElem.getElementsByTagName("templateId").item(0);
-			
 			dataCriteriaElem.removeChild(templateIdNode);
 		}
 	}
@@ -819,6 +818,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				.getNodeValue();
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
+		boolean addVersionToValueTag = false;
+		if("1.0".equals(version)) {
+			if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
+				version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+				addVersionToValueTag = true;
+			} else {
+				addVersionToValueTag = false;
+			}
+		} else {
+			addVersionToValueTag = true;
+		}
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
@@ -836,7 +846,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSet").setNodeValue(qdmOidValue);
-					attributedToBeChangedInNode.getAttributes().getNamedItem("valueSetVersion").setNodeValue(version);
+					if(addVersionToValueTag){
+						Attr attrNode = attributedToBeChangedInNode.getOwnerDocument().createAttribute("valueSetVersion");
+						attrNode.setNodeValue(version);
+						attributedToBeChangedInNode.getAttributes().setNamedItem(attrNode);
+					}
+					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("value").
 					setNodeValue(qdmName + " " + qdmNameDataType + " value set");
@@ -1055,7 +1070,21 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
 				Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
 				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
-				translationNode.setAttribute("valueSetVersion", attrVersion.getNodeValue());
+				String version = attrVersion.getNodeValue();
+				boolean addVersionToValueTag = false;
+				if("1.0".equals(version)) {
+					if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
+						version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+						addVersionToValueTag = true;
+					} else {
+						addVersionToValueTag = false;
+					}
+				} else {
+					addVersionToValueTag = true;
+				}
+				if(addVersionToValueTag) {
+					translationNode.setAttribute("valueSetVersion", version);
+				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
 				displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
@@ -1546,8 +1575,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				.getNamedItem(OID).getNodeValue();
 		String attributeTaxonomy = attributeQDMNode.getAttributes()
 				.getNamedItem(TAXONOMY).getNodeValue();
-		String valueSetVersion = attributeQDMNode.getAttributes()
-				.getNamedItem("version").getNodeValue();
 		if(templateNode.getAttributes().getNamedItem("valueType") !=null) {
 			valueElem.setAttribute(XSI_TYPE, templateNode.getAttributes().getNamedItem("valueType").getNodeValue());
 		}
@@ -1916,6 +1943,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						Node statusCodeNode =  dataCriteriaElem.getElementsByTagName("statusCode").item(0).getNextSibling();
 						if(statusCodeNode!=null){
 							dataCriteriaElem.insertBefore(dateTimeNode, statusCodeNode);
+						} else {
+							dataCriteriaElem.appendChild(dateTimeNode);
 						}
 					}
 				}

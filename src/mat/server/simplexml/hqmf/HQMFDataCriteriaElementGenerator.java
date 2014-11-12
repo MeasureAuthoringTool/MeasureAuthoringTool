@@ -1369,9 +1369,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			if(templateNode == null) {
 				return;
 			} else {
-				if(templateNode.getAttributes().getNamedItem("isRadiation")!=null){
-					isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
-				}
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)
 						|| ORDINALITY.equalsIgnoreCase(attrName)
 						|| ROUTE.equalsIgnoreCase(attrName)
@@ -1389,6 +1386,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}*/
 				return;
 			}
+		}//flag to add statusCode for Radiation Dosage and Radiation Duration attributes
+		if(templateNode.getAttributes().getNamedItem("isRadiation")!=null){
+			isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
 		}
 		if (attrName.equalsIgnoreCase(FACILITY_LOCATION)) {
 			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
@@ -1453,15 +1453,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						.createElement(TITLE);
 				titleElem.setAttribute(VALUE, attrName);
 				observationCriteriaElem.appendChild(titleElem);
-			}  if(isRadiation){
-				Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+			}  if(isRadiation){//statusCode is added for Radiation Duration and Dosage
+				Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(STATUS_CODE);
-				if(templateNode.getAttributes().getNamedItem("statusCode") != null){
-					titleElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem("statusCode").getNodeValue());
+				if(templateNode.getAttributes().getNamedItem("status") != null){
+					statusCodeElem.setAttribute(CODE, templateNode.getAttributes().getNamedItem("status").getNodeValue());
 				}
-				observationCriteriaElem.appendChild(titleElem);
+				observationCriteriaElem.appendChild(statusCodeElem);
 			}
-			
 		}
 		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(VALUE);

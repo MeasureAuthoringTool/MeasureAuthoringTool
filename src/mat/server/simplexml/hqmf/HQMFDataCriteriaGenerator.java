@@ -16,14 +16,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	 * @throws Exception the exception
 	 */
 	@Override
-	public String generate(MeasureExport me) throws Exception{
+	public String generate(MeasureExport me) throws Exception {
 		
 		HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
 		hqmfDataCriteriaElementGenerator.generate(me);
 		
 		HQMFClauseLogicGenerator hqmfClauseLogicGenerator = new HQMFClauseLogicGenerator();
 		hqmfClauseLogicGenerator.generate(me);
-		
+		HQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new HQMFPopulationLogicGenerator();
+		hqmfPopulationLogicGenerator.generate(me);
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removeXmlTagNamespaceAndPreamble(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}
@@ -38,6 +39,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 				replaceAll("xmlns.*?(\"|\').*?(\"|\')", "") /* remove xmlns declaration */
 				.replaceAll("(<)(\\w+:)(.*?>)", "$1$3") /* remove opening tag prefix */
 				.replaceAll("(</)(\\w+:)(.*?>)", "$1$3"); /* remove closing tags prefix */
+		xmlString = xmlString.replaceAll("<root>", "").replaceAll("</root>","");
+		
 		return xmlString;
 	}
 }

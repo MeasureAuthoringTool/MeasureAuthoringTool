@@ -913,7 +913,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						if(attributedToBeChangedInNode.hasChildNodes()){
 							((Element)attributedToBeChangedInNode).removeChild(attributedToBeChangedInNode.getFirstChild());
 						}
-						checkIfSelectedModeIsValueSet(templateXMLProcessor, attrNode, false, subTemplateNode, (Element)attributedToBeChangedInNode);
+						checkIfSelectedModeIsValueSet(templateXMLProcessor, attrNode, subTemplateNode, (Element)attributedToBeChangedInNode);
 					} else if(CHECK_IF_PRESENT.equals(attrMode)){
 						if(attributedToBeChangedInNode.hasAttributes()){
 							((Element)attributedToBeChangedInNode).removeAttribute("valueSet");
@@ -1465,7 +1465,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(VALUE);
 		if(VALUE_SET.equals(attrMode)){
-			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, isStatus, templateNode,valueElem);
+			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, templateNode,valueElem);
 		} else if(CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)){
 			checkIfSelectedModeIsPresent(dataCriteriaXMLProcessor, attributeQDMNode, templateNode, valueElem);
 		}else if(EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)){
@@ -1572,7 +1572,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode, boolean isResultOrStatus,
+	private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem) {
 		String attributeValueSetName = attributeQDMNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
@@ -1586,13 +1586,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		valueElem.setAttribute("valueSet", attributeOID);
 		addValueSetVersion(attributeQDMNode, valueElem);
-		if(!isResultOrStatus){
-			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+		Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
-			
-			valueElem.appendChild(valueDisplayNameElem);
-		}
+		valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+		valueElem.appendChild(valueDisplayNameElem);
 		
 		return valueElem;
 	}

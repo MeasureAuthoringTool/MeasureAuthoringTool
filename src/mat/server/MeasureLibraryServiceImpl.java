@@ -1947,6 +1947,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = null;
 		if (model.getId() != null) {
+			setMeasureCreated(true);
 			measure = getService().getById(model.getId());
 			/*if ((measure.getMeasureStatus() != null) && !measure.getMeasureStatus().
 					equalsIgnoreCase(model.getMeasureStatus())) {

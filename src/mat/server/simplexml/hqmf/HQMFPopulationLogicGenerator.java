@@ -8,6 +8,7 @@ import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -92,12 +93,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					case "measurePopulationExclusions" :
 						// top Logical Op is OR
 						generatePopulationTypeCriteria(groupingChildList.item(i)
-								, populationCriteriaComponentElement , me,"measurePopulationExclusion","MSRPOPLEX","or");
+								, populationCriteriaComponentElement , me,"measurePopulationExclusionCriteria","MSRPOPLEX","or");
 						break;
 					case "measureObservation" :
 						//No top Logical Op.
 						break;
-					case "stratification" :
+					case "stratum" :
 						//No top Logical Op.
 						break;
 					default:
@@ -132,23 +133,19 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		initialPopCriteriaElement.setAttribute(MOOD_CODE, "EVN");
 		Element idElement = doc.createElement(ID);
 		idElement.setAttribute(ROOT, item.getAttributes().getNamedItem(UUID).getNodeValue());
-		idElement.setAttribute("extension", UUIDUtilClient.uuid());
+		idElement.setAttribute("extension", StringUtils.deleteWhitespace(item.getAttributes().getNamedItem(TYPE).getNodeValue()));
 		initialPopCriteriaElement.appendChild(idElement);
 		Element codeElem = doc.createElement(CODE);
 		codeElem.setAttribute(CODE, criteriaTagCodeName);
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
 		codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
 		Element displayNameElement = doc.createElement(DISPLAY_NAME);
-		displayNameElement.setAttribute(VALUE, item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+		displayNameElement.setAttribute(VALUE, item.getAttributes().getNamedItem(TYPE).getNodeValue());
 		codeElem.appendChild(displayNameElement);
 		initialPopCriteriaElement.appendChild(codeElem);
 		Element preConditionElem = doc.createElement("precondition");
 		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
-		Element logicalOpElement = generateLogicalOperator(doc , topLogicalOpName);
-		if (logicalOpElement != null) {
-			generatePopulationLogic(logicalOpElement, item.getChildNodes().item(0), me);
-			preConditionElem.appendChild(logicalOpElement);
-		}
+		generatePopulationLogic(preConditionElem, item.getChildNodes().item(0), me);
 		initialPopCriteriaElement.appendChild(preConditionElem);
 		componentElement.appendChild(initialPopCriteriaElement);
 		populationCriteriaElement.appendChild(componentElement);
@@ -161,23 +158,22 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 */
 	private Element generateLogicalOperator(Document doc , String type) {
 		Element logicalOpElement = null;
-		Element idElement = doc.createElement(ID);
 		switch (type) {
 			case "and":
 				logicalOpElement = doc.createElement("allTrue");
-				logicalOpElement.appendChild(idElement);
+				
 				break;
 			case "or":
 				logicalOpElement = doc.createElement("atLeastOneTrue");
-				logicalOpElement.appendChild(idElement);
+				
 				break;
 			case "andnot":
 				logicalOpElement = doc.createElement("allFalse");
-				logicalOpElement.appendChild(idElement);
+				
 				break;
 			case "ornot":
 				logicalOpElement = doc.createElement("atLeastOneFalse");
-				logicalOpElement.appendChild(idElement);
+				
 				break;
 			default:
 				//do nothing
@@ -187,23 +183,23 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	}
 	/**
 	 * Method to generate tags for logic used inside population.
-	 * @param topLevelLogicalOp - Element.
+	 * @param topLevelPreConditionElement - Element.
 	 * @param item - Node.
 	 * @param me - MeasureExport.
 	 * @throws XPathExpressionException - Exception.
 	 */
-	private void generatePopulationLogic(Element topLevelLogicalOp, Node item, MeasureExport me) throws XPathExpressionException {
+	private void generatePopulationLogic(Element topLevelPreConditionElement, Node item, MeasureExport me) throws XPathExpressionException {
 		for (int i = 0; i < item.getChildNodes().getLength(); i++) {
 			Node childNode = item.getChildNodes().item(i);
 			String nodeType = childNode.getAttributes().getNamedItem(TYPE).getNodeValue();
-			Element preConditionElement = topLevelLogicalOp.getOwnerDocument().createElement("preCondition");
+			Element preConditionElement = topLevelPreConditionElement.getOwnerDocument().createElement("precondition");
 			preConditionElement.setAttribute(TYPE_CODE, "PRCN");
 			switch(nodeType) {
 				case "subTree":
-					generateCritRefSubTreeRef(me, preConditionElement, childNode, me.getHQMFXmlProcessor());
+					generateCritRefSubTreeRef(me, topLevelPreConditionElement, childNode, me.getHQMFXmlProcessor());
 					break;
 				case "and":
-					Element logicalOpNode = generateLogicalOperator(topLevelLogicalOp.getOwnerDocument(), nodeType);
+					Element logicalOpNode = generateLogicalOperator(topLevelPreConditionElement.getOwnerDocument(), nodeType);
 					preConditionElement.appendChild(logicalOpNode);
 					if (childNode.getChildNodes().getLength() > 0) {
 						generatePopulationLogic(logicalOpNode, childNode , me);
@@ -212,7 +208,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					break;
 			}
 			if (preConditionElement.hasChildNodes()) {
-				topLevelLogicalOp.appendChild(preConditionElement);
+				topLevelPreConditionElement.appendChild(preConditionElement);
 			}
 		}
 	}
@@ -226,10 +222,16 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		Node componentElement = outputProcessor.getOriginalDoc().createElement("component");
 		Node popCriteriaElem = outputProcessor.getOriginalDoc()
 				.createElement("populationCriteriaSection");
+		Element templateId = outputProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
+		popCriteriaElem.appendChild(templateId);
+		Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
+		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.1");
+		/*itemChild.setAttribute("extension", UUIDUtilClient.uuid());*/
+		templateId.appendChild(itemChild);
 		Element idElement = outputProcessor.getOriginalDoc()
 				.createElement(ID);
-		idElement.setAttribute(ROOT, "2.16.840.1.113883.3.100.1");
-		idElement.setAttribute("extension", "Population" + sequenceNumber);
+		idElement.setAttribute(ROOT, UUIDUtilClient.uuid());
+		idElement.setAttribute("extension", "PopulationCriteria" + sequenceNumber);
 		popCriteriaElem.appendChild(idElement);
 		Element codeElem = outputProcessor.getOriginalDoc()
 				.createElement(CODE);
@@ -238,12 +240,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		popCriteriaElem.appendChild(codeElem);
 		Element titleElem = outputProcessor.getOriginalDoc()
 				.createElement(TITLE);
-		titleElem.setAttribute(VALUE, "Population Criteria Section for Grouping " + sequenceNumber);
+		titleElem.setAttribute(VALUE, "Population Criteria Section.");
 		popCriteriaElem.appendChild(titleElem);
 		// creating text for PopulationCriteria
 		Element textElem = outputProcessor.getOriginalDoc()
 				.createElement("text");
-		textElem.setAttribute(VALUE, "Population Criteria text");
+		textElem.setAttribute(VALUE, "Population Criteria text.");
 		popCriteriaElem.appendChild(textElem);
 		componentElement.appendChild(popCriteriaElem);
 		outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
@@ -297,7 +299,6 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			measureGroupingMap.put(measureGroupingSequence, childNodeList);
 		}
 	}
-	
 	
 	private Node createSupplementalDateCriteriaSection(String sequenceNumber, XmlProcessor outputProcessor){
 		

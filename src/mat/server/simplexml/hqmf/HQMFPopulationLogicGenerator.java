@@ -243,7 +243,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	private void generatePopulationLogic(Element topLevelPreConditionElement, Node item, MeasureExport me) throws XPathExpressionException {
 		for (int i = 0; i < item.getChildNodes().getLength(); i++) {
 			Node childNode = item.getChildNodes().item(i);
-			String nodeType = childNode.getAttributes().getNamedItem(TYPE).getNodeValue();
+			String nodeType = null;
+			if (childNode.getAttributes().getNamedItem(TYPE) != null) {
+				nodeType = childNode.getAttributes().getNamedItem(TYPE).getNodeValue();
+			} else {
+				nodeType = childNode.getNodeName();
+			}
 			Element preConditionElement = topLevelPreConditionElement.getOwnerDocument().createElement("precondition");
 			preConditionElement.setAttribute(TYPE_CODE, "PRCN");
 			switch(nodeType) {
@@ -252,6 +257,9 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					break;
 				case "comment":
 					// skipping comment node as of now.
+					break;
+				case "itemCount":
+					// skipping itemCount node as of now.
 					break;
 				case "and":
 				case "or":

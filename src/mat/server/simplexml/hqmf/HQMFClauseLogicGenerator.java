@@ -473,34 +473,35 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
 		Node subTreeNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
-		
-		Node firstChild = subTreeNode.getFirstChild();
-		String firstChildName = firstChild.getNodeName();
-		
-		String ext = firstChild.getAttributes().getNamedItem("displayName").getNodeValue();
-		if("elementRef".equals(firstChildName)){
-			ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
-		}
-		
-		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
-		if(idNodeQDM != null){
-			Node parent = idNodeQDM.getParentNode();
-			if(parent != null){
-				NamedNodeMap attribMap = parent.getAttributes();
-				String classCode = attribMap.getNamedItem(CLASS_CODE).getNodeValue();
-				String moodCode = attribMap.getNamedItem(MOOD_CODE).getNodeValue();
-				
-				//create criteriaRef
-				Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
-				criteriaReference.setAttribute(CLASS_CODE, classCode);
-				criteriaReference.setAttribute(MOOD_CODE, moodCode);
-				
-				Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
-				id.setAttribute(ROOT, root);
-				id.setAttribute("extension", ext);
-				
-				criteriaReference.appendChild(id);
-				outboundRelElem.appendChild(criteriaReference);
+		if(subTreeNode != null ) {
+			Node firstChild = subTreeNode.getFirstChild();
+			String firstChildName = firstChild.getNodeName();
+			
+			String ext = firstChild.getAttributes().getNamedItem("displayName").getNodeValue();
+			if("elementRef".equals(firstChildName)){
+				ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
+			}
+			
+			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+			if(idNodeQDM != null){
+				Node parent = idNodeQDM.getParentNode();
+				if(parent != null){
+					NamedNodeMap attribMap = parent.getAttributes();
+					String classCode = attribMap.getNamedItem(CLASS_CODE).getNodeValue();
+					String moodCode = attribMap.getNamedItem(MOOD_CODE).getNodeValue();
+					
+					//create criteriaRef
+					Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+					criteriaReference.setAttribute(CLASS_CODE, classCode);
+					criteriaReference.setAttribute(MOOD_CODE, moodCode);
+					
+					Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
+					id.setAttribute(ROOT, root);
+					id.setAttribute("extension", ext);
+					
+					criteriaReference.appendChild(id);
+					outboundRelElem.appendChild(criteriaReference);
+				}
 			}
 		}
 	}

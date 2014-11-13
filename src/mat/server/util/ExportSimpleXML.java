@@ -60,13 +60,11 @@ public class ExportSimpleXML {
 	
 	/**
 	 * Export.
-	 * 
-	 * @param measureXMLObject
-	 *            the measure xml object
-	 * @param message
-	 *            the message
+	 *
+	 * @param measureXMLObject            the measure xml object
+	 * @param message            the message
 	 * @param measureDAO TODO
-	 * @param organizationDAO
+	 * @param organizationDAO the organization dao
 	 * @return the string
 	 */
 	public static String export(MeasureXML measureXMLObject, List<String> message, MeasureDAO measureDAO, OrganizationDAO organizationDAO) {
@@ -126,10 +124,9 @@ public class ExportSimpleXML {
 	/**
 	 * This will work with the existing Measure XML & assume that it is correct
 	 * and validated to generate the exported XML.
-	 * 
-	 * @param measureXMLDocument
-	 *            the measure xml document
-	 * @param organizationDAO
+	 *
+	 * @param measureXMLDocument            the measure xml document
+	 * @param organizationDAO the organization dao
 	 * @param measureDAO TODO
 	 * @param measure_Id TODO
 	 * @return the string
@@ -148,15 +145,13 @@ public class ExportSimpleXML {
 	//This will walk through the original Measure XML and generate the Measure Export XML.
 	/**
 	 * Traverse xml.
-	 * 
-	 * @param originalDoc
-	 *            the original doc
-	 * @param organizationDAO
+	 *
+	 * @param originalDoc            the original doc
+	 * @param organizationDAO the organization dao
 	 * @param MeasureDAO TODO
 	 * @param measure_Id TODO
 	 * @return the string
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
+	 * @throws XPathExpressionException             the x path expression exception
 	 */
 	private static String traverseXML(Document originalDoc, OrganizationDAO organizationDAO,
 			MeasureDAO MeasureDAO, String measure_Id) throws XPathExpressionException {
@@ -276,6 +271,13 @@ public class ExportSimpleXML {
 	}
 	
 	
+	/**
+	 * Update steward and developers id with oid.
+	 *
+	 * @param originalDoc the original doc
+	 * @param organizationDAO the organization dao
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static void updateStewardAndDevelopersIdWithOID(Document originalDoc, OrganizationDAO organizationDAO) throws XPathExpressionException{
 		String XPATH_EXPRESSION_STEWARD = "/measure//measureDetails//steward";
 		String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
@@ -724,12 +726,15 @@ public class ExportSimpleXML {
 		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
-		
+	
 		NodeList logicalNode = newClauseNode.getChildNodes();
 		
 		for(int i = 0; i<logicalNode.getLength();i++){
 			Node innerNode = logicalNode.item(i);
-			
+			if(newClauseNode.getAttributes().getNamedItem("displayName").
+					getNodeValue().contains("stratum")){
+				newClauseNode.removeChild(innerNode);
+			} else {
 			NodeList innerNodeChildren = innerNode.getChildNodes();
 			int length =  innerNodeChildren.getLength();
 			for(int j = length - 1; j>-1; j--){
@@ -737,6 +742,7 @@ public class ExportSimpleXML {
 				innerNode.removeChild(child);
 			}
 		}
+	}
 		groupNode.appendChild(newClauseNode);
 	}
 	
@@ -797,25 +803,64 @@ public class ExportSimpleXML {
 		
 	}
 	
-	
+	/**
+	 * Gets the used clause ids.
+	 *
+	 * @param originalDoc the original doc
+	 * @return the used clause ids
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {
 		List<String> usedClauseIds = new ArrayList<String>();
 		
-		NodeList groupedClauseIdsNodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group/packageClause/@uuid",
+		NodeList measureGrpupingNodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/ group/packageClause" +
+					"[not(@uuid = preceding:: group/packageClause/@uuid)]",
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
-		for(int i=0;i<groupedClauseIdsNodeList.getLength();i++){
-			Node groupedClauseIdAttributeNode = groupedClauseIdsNodeList.item(i);
-			usedClauseIds.add(groupedClauseIdAttributeNode.getNodeValue());
+		for(int i=0;i<measureGrpupingNodeList.getLength();i++){
+			Node childNode = measureGrpupingNodeList.item(i);
+			String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String type = childNode.getAttributes().getNamedItem("type").getNodeValue();
+			if(type.equals("stratification")){
+				List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, originalDoc);
+				usedClauseIds.addAll(stratificationClausesIDlist);
+			} else {
+			    usedClauseIds.add(uuid);
+			}
 		}
 		_logger.info("usedClauseIds:"+usedClauseIds);
 		return usedClauseIds;
 	}
 	
+     /**
+      * Gets the stratification clasues id list.
+      *
+      * @param uuid the uuid
+      * @param originalDoc the original doc
+      * @return the stratification clasues id list
+      */
+     private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) {
+		
+		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" +
+				"[@uuid='"+uuid+"']/clause/@uuid";
+		List<String> clauseList = new ArrayList<String>();
+		try {
+			NodeList stratificationClausesNodeList = (NodeList)xPath.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES,
+					originalDoc,XPathConstants.NODESET);
+			for(int i=0;i<stratificationClausesNodeList.getLength();i++){
+				clauseList.add(stratificationClausesNodeList.item(i).getNodeValue());
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return clauseList;
+	}
+	
 	/**
 	 * Gets the used subtree ref ids.
-	 * @param usedClauseIds 
 	 *
+	 * @param usedClauseIds the used clause ids
 	 * @param originalDoc the original doc
 	 * @return the used subtree ref ids
 	 * @throws XPathExpressionException the x path expression exception
@@ -1011,6 +1056,15 @@ public class ExportSimpleXML {
 		return usedQDMIds;
 	}
 	
+	/**
+	 * Gets the XML document.
+	 *
+	 * @param measureXMLObject the measure xml object
+	 * @return the XML document
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static Document getXMLDocument(MeasureXML measureXMLObject) throws ParserConfigurationException, SAXException, IOException{
 		//Create Document object
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

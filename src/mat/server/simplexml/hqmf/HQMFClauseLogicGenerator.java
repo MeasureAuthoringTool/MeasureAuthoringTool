@@ -2,10 +2,13 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -310,8 +313,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 										rhsNode, temporallyRelatedInfoNode);
 								break;
 							case "relationalOp":
-								generateCritRefRelOp(me, dataCriteriaSectionElem, hqmfXmlProcessor,
-										rhsNode, temporallyRelatedInfoNode);
+								generateRelOpHQMF(me,rhsNode,temporallyRelatedInfoNode);
 								break;
 							default:
 								//Dont do anything

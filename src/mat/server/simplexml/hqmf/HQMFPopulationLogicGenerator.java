@@ -1,6 +1,8 @@
 package mat.server.simplexml.hqmf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -9,16 +11,33 @@ import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HQMFPopulationLogicGenerator.
+ */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
+	
+	/** The clause logic map. */
 	private Map<String, String> clauseLogicMap = new HashMap<String, String>();
+	
+	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+	
+	/** The scoring type. */
 	private String scoringType;
+	
+	/** The initial population. */
 	private Node initialPopulation;
+	
+	/* (non-Javadoc)
+	 * @see mat.server.simplexml.hqmf.HQMFClauseLogicGenerator#generate(mat.model.clause.MeasureExport)
+	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		/**1. Fetch all Clause Logic HQMF in MAP.
@@ -43,7 +62,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		 **/
 		getMeasureScoringType(me);
 		generateClauseLogicMap(me);
-		getAllMeasureGroupings(me);
+		getAllMeasureGroupings(me); 
 		generatePopulationCriteria(me);
 		return null;
 	}
@@ -110,6 +129,8 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 						break;
 				}
 			}
+			//for creating SupplementalDataElements Criteria Section
+			populationCriteriaComponentElement.getFirstChild().appendChild(createSupplementalDateCriteriaSection(me));
 		}
 		
 	}
@@ -155,11 +176,13 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		componentElement.appendChild(initialPopCriteriaElement);
 		populationCriteriaElement.appendChild(componentElement);
 	}
+	
 	/**
 	 * Associate IP with Deno in Proportion Measures, With MeasurePopulation
 	 *  In Continous Variable and based on association in Ratio Measures with Deno and NUm.
-	 * @param preConditionElem
-	 * @param item
+	 *
+	 * @param preConditionElem the pre condition elem
+	 * @param item the item
 	 */
 	private void checkScoringTypeToAssociateIP(Element preConditionElem, Node item) {
 		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
@@ -285,7 +308,11 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @return - Node.
 	 */
 	private Node createPopulationCriteriaSection(String sequenceNumber, XmlProcessor outputProcessor) {
-		Node componentElement = outputProcessor.getOriginalDoc().createElement("component");
+		Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
+		Attr nameSpaceAttr = outputProcessor.getOriginalDoc()
+				.createAttribute("xmlns:xsi");
+		nameSpaceAttr.setNodeValue(nameSpace);
+		componentElement.setAttributeNodeNS(nameSpaceAttr);
 		Node popCriteriaElem = outputProcessor.getOriginalDoc()
 				.createElement("populationCriteriaSection");
 		Element templateId = outputProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
@@ -317,9 +344,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
 		return componentElement;
 	}
+	
 	/**
 	 * Get Measure Scoring type.
+	 *
 	 * @param me - MeasureExport
+	 * @return the measure scoring type
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getMeasureScoringType(MeasureExport me) throws XPathExpressionException {
@@ -353,7 +383,9 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	
 	/**
 	 * Method to populate all measure groupings in measureGroupingMap.
+	 *
 	 * @param me - MeasureExport
+	 * @return the all measure groupings
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getAllMeasureGroupings(MeasureExport me) throws XPathExpressionException {
@@ -366,14 +398,22 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		}
 	}
 	
-	private Node createSupplementalDateCriteriaSection(String sequenceNumber, XmlProcessor outputProcessor){
-		
-		Node componentElement = outputProcessor.getOriginalDoc().createElement("component");
+	/**
+	 * Creates the supplemental date criteria section.
+	 *
+	 * @param me the me
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private Node createSupplementalDateCriteriaSection(MeasureExport me) throws XPathExpressionException{
+		XmlProcessor outputProcessor = me.getHQMFXmlProcessor();
+		Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
+		componentElement.setAttribute(TYPE_CODE, "COMP");
 		Node stratCriteriaElem = outputProcessor.getOriginalDoc()
 				.createElement("stratifierCriteria");
 		Element idElement = outputProcessor.getOriginalDoc()
 				.createElement(ID);
-		idElement.setAttribute(ROOT, "FF3FEB80-1663-11E4-2165-09173F13E4C5");
+		idElement.setAttribute(ROOT, UUIDUtilClient.uuid());
 		idElement.setAttribute("identifierName", "Stratifiers");
 		stratCriteriaElem.appendChild(idElement);
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -381,8 +421,105 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		codeElem.setAttribute(CODE, "STRAT");
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
 		stratCriteriaElem.appendChild(codeElem);
+		createPreConditionWithCriteriaRef(me, stratCriteriaElem);
+		createMeasureAttributeComponent(me, stratCriteriaElem);
 		componentElement.appendChild(stratCriteriaElem);
-		outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
 		return componentElement;
 	}
+	
+	/**
+	 * Creates the measure attribute component.
+	 *
+	 * @param me the me
+	 * @param parentElem the parent elem
+	 */
+	private void createMeasureAttributeComponent(MeasureExport me, Node parentElem) {
+		XmlProcessor outputProcessor = me.getHQMFXmlProcessor();
+		Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
+		componentElement.setAttribute(TYPE_CODE, "COMP");
+		Node measureAttributeElem = outputProcessor.getOriginalDoc()
+				.createElement("measureAttribute");
+		Element codeElement = outputProcessor.getOriginalDoc()
+				.createElement(CODE);
+		codeElement.setAttribute(CODE, "SDE");
+		codeElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+		Element displayNameElem = outputProcessor.getOriginalDoc()
+				.createElement("displayName");
+		displayNameElem.setAttribute(VALUE, "Supplemental Data Element");
+		codeElement.appendChild(displayNameElem);
+		Element valueElem = outputProcessor.getOriginalDoc()
+				.createElement("value");
+		valueElem.setAttribute(XSI_TYPE, "ED");
+		valueElem.setAttribute("mediaType", "text/plain");
+		valueElem.setAttribute(VALUE, "Supplemental Data Elements");
+		measureAttributeElem.appendChild(codeElement);
+		measureAttributeElem.appendChild(valueElem);
+		componentElement.appendChild(measureAttributeElem);
+		parentElem.appendChild(componentElement);
+	}	
+	
+	/**
+	 * Creates the pre condition with criteria ref.
+	 *
+	 * @param me the me
+	 * @param parentElem the parent elem
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void createPreConditionWithCriteriaRef(MeasureExport me, Node parentElem) throws XPathExpressionException{
+		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
+		NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+				xpathForOtherSupplementalQDMs);
+		if(supplementalDataElements==null ||
+				supplementalDataElements.getLength()<1){
+			return;
+		}
+		List<String> supplementalElemenRefIds = new ArrayList<String>();
+		for(int i=0; i<supplementalDataElements.getLength();i++){
+			supplementalElemenRefIds.add(supplementalDataElements.item(i).getNodeValue());
+		}
+		
+		String uuidXPathString = "";
+		for (String uuidString: supplementalElemenRefIds) {
+			uuidXPathString += "@uuid = '" + uuidString + "' or";
+		}
+		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
+		String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+uuidXPathString+"]";
+		NodeList supplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+				xpathforOtherSupplementalDataElements);
+		if(supplementalQDMNodeList.getLength()<1){
+			return;
+		}
+		
+		for(int i=0;i<supplementalQDMNodeList.getLength();i++){
+			Node qdmNode = supplementalQDMNodeList.item(i);
+			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
+			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
+		   createPreConditionTag(me.getHQMFXmlProcessor(), parentElem, qdmUUID, qdmExtension);
+		}
+
+	}
+
+	/**
+	 * Creates the pre condition tag.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param parentElem the parent elem
+	 * @param id the id
+	 * @param extension the extension
+	 */
+	private void createPreConditionTag(XmlProcessor hqmfXmlProcessor,
+			Node parentElem, String id, String extension) {
+		Element preConditionElem = hqmfXmlProcessor.getOriginalDoc().createElement("precondition");
+		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
+		Element criteriaRefElem = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+		Element criteriaRefIDElem = hqmfXmlProcessor.getOriginalDoc().createElement("id");
+		criteriaRefIDElem.setAttribute("root", id);
+		criteriaRefIDElem.setAttribute("extension", extension);
+		criteriaRefElem.appendChild(criteriaRefIDElem);
+		preConditionElem.appendChild(criteriaRefElem);
+		parentElem.appendChild(preConditionElem);
+	}
+	
 }

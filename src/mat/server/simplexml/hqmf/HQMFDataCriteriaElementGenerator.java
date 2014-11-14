@@ -1,6 +1,8 @@
 package mat.server.simplexml.hqmf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 import mat.model.clause.MeasureExport;
@@ -25,6 +27,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(HQMFDataCriteriaElementGenerator.class);
 	
 	/**
@@ -118,8 +121,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
 		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
 		String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
+		String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
+		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		
-		try {
+		try {			
 			
 			NodeList occurQdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForOccurQDMNoAttribs);
 			generateOccurrenceQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, occurQdmNoAttributeNodeList);
@@ -131,12 +136,92 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
 			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmAttributeNodeList);
+			//generating QMD Entries for default Supplemental Data Elements
+			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
+			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
+			
+			//generating QMD Entries for other Supplemental Data Elements
+			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+					xpathForOtherSupplementalQDMs);
+			generateOtherSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, supplementalDataElements);
+			
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 	}
 	
+
+	/**
+	 * Generate supplemental data qdm entries.
+	 *
+	 * @param me the me
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param supplementalDataElements the supplemental data elements
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateOtherSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, 
+			NodeList supplementalDataElements ) throws XPathExpressionException{
+		if (supplementalDataElements == null || 
+				supplementalDataElements.getLength()<1) {
+			return;
+		}
+		List<String> supplementalElemenRefIds = new ArrayList<String>();
+		for(int i=0; i<supplementalDataElements.getLength();i++){
+			supplementalElemenRefIds.add(supplementalDataElements.item(i).getNodeValue());
+		}
+		
+		String uuidXPathString = "";
+		for (String uuidString: supplementalElemenRefIds) {
+			uuidXPathString += "@uuid = '" + uuidString + "' or";
+		}
+		
+		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
+        String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+uuidXPathString+"][@suppDataElement != 'true']";
+		NodeList otherSupplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+				xpathforOtherSupplementalDataElements);
+		
+		for(int j=0; j<otherSupplementalQDMNodeList.getLength(); j++){
+			Node qdmNode = otherSupplementalQDMNodeList.item(j);
+			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
+			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
+		    String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
+			                            qdmUUID+"'][@extension='"+qdmExtension+"']";
+		    Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(), 
+		    		xpathForQDMEntry);
+//		    String hqmfXmlString = dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(),true);
+//		    System.out.println(hqmfXmlString);
+		    if (qmdEntryIDNode==null) {
+		    	createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor(), null);
+		    }   
+		}
+	}
+	
+	
+	/**
+	 * Generate default supplemental data qdm entries.
+	 *
+	 * @param simpleXmlprocessor the simple xmlprocessor
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param supplementalQDMNodeList the supplemental qdm node list
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateSupplementalDataQDMEntries(XmlProcessor simpleXmlprocessor, XmlProcessor dataCriteriaXMLProcessor,
+			NodeList supplementalQDMNodeList) throws XPathExpressionException{
+		
+		if (supplementalQDMNodeList == null) {
+			return;
+		}
+		
+		for (int i = 0; i < supplementalQDMNodeList.getLength(); i++) {
+			Node qdmNode = supplementalQDMNodeList.item(i);
+			//generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, qdmNode);
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor, null);
+		}
+	}
+
 	/**
 	 * This method will populate a map of all reference elements for the Occurrence elements.
 	 *
@@ -220,6 +305,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param qdmNode the qdm node
+	 * @param forceGenerate the force generate
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateQDMEntry(XmlProcessor dataCriteriaXMLProcessor,
@@ -655,8 +741,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	/**
 	 * Method to add valueSetVersion attribute in value element tag.
-	 * @param valueSetVersion
-	 * @param valueElem
+	 *
+	 * @param qdmNode the qdm node
+	 * @param valueElem the value elem
 	 */
 	private void addValueSetVersion(Node qdmNode, Element valueElem) {
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
@@ -727,11 +814,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 *
 	 * @param templateNode - Node
 	 * @param dataCriteriaXMLProcessor - XmlProcessor
-	 * @param dataType - String
-	 * @param qdmOidValue - String
-	 * @param valueSetVersion the value set version
-	 * @param qdmName - String
-	 * @param qdmTaxonomy - String
+	 * @param qdmNode the qdm node
 	 * @param dataCriteriaElem - Element
 	 */
 	private void addCodeElementToDataCriteriaElement(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, Node qdmNode, Element dataCriteriaElem) {
@@ -1562,12 +1645,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			dataCriteriaElem.appendChild(dischargeDispositionElement);
 		}
 	}
+	
 	/**
 	 * Check if selected mode is value set.
 	 *
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param attributeQDMNode the attribute qdm node
-	 * @param isResultOrStatus the is result or status
 	 * @param templateNode the template node
 	 * @param valueElem the value elem
 	 * @return the element
@@ -1835,10 +1918,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * Generate date time attributes tag.
 	 *
 	 * @param dateTimeNode the effective time node
-	 * @param timeTagName the time tag name
 	 * @param attributeQDMNode the attribute qdm node
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param isOrder the is order
 	 */
 	private void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, boolean isOrder) {

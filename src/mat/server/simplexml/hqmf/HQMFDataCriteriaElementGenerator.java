@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -2156,7 +2159,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}else if(unitString.equals("second") || unitString.equals("seconds")){
 			returnString = "s";
 		}else if(unitString.equals("bpm")){
-			returnString = "{H.B}";
+			returnString = "{H.B}/min";
 		}else if(unitString.equals("mmHG")){
 			returnString = "mm[Hg]";
 		}else if(unitString.equals("mEq")){
@@ -2168,7 +2171,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}else if(unitString.equals("WBC/hpf")){
 			returnString = "{WBC}/[HPF]";
 		}else if(unitString.equals("CFU/mL")){
-			returnString = "{CFU}/mL";
+			returnString = "[CFU]/mL";
 		}else if(unitString.equals("per mm3")){
 			returnString = "/mm3";
 		}else if(unitString.equals("copies/mL")){

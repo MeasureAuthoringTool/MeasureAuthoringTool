@@ -126,6 +126,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
 		String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
+		String xpathForMeasureGroupingItemCount = "/measure/measureGrouping//itemCount/elementRef/@id";
 		
 		try {			
 			
@@ -139,21 +140,53 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
 			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmAttributeNodeList);
-			//generating QMD Entries for default Supplemental Data Elements
+			//generating QDM Entries for default Supplemental Data Elements
 			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
 			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
 			
-			//generating QMD Entries for other Supplemental Data Elements
+			//generating QDM Entries for other Supplemental Data Elements
 			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
 					xpathForOtherSupplementalQDMs);
 			generateOtherSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, supplementalDataElements);
 			
+			//generating QDM entries for measureGrouping ItemCountlist
+			NodeList measureGroupingItemCountList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForMeasureGroupingItemCount);
+			generateMeasureGrpItemCountQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingItemCountList);
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 	}
 	
+
+	/**
+	 * Generate measure grp item count qdm entries.
+	 *
+	 * @param me the me
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param measureGroupingItemCountList the measure grouping item count list
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateMeasureGrpItemCountQDMEntries(MeasureExport me,
+			XmlProcessor dataCriteriaXMLProcessor,
+			NodeList measureGroupingItemCountList) throws XPathExpressionException {
+		
+		if(measureGroupingItemCountList==null  || 
+				measureGroupingItemCountList.getLength()<1){
+			return;
+		}
+		List<String> itemCountIDList = new ArrayList<String>();
+		for(int i=0; i<measureGroupingItemCountList.getLength();i++){
+			if(!itemCountIDList.contains(measureGroupingItemCountList.item(i).getNodeValue())){
+				itemCountIDList.add(measureGroupingItemCountList.item(i).getNodeValue());
+			}
+		}
+		String xpathforElementLookUpElements="/measure/elementLookUp/qdm["+getUUIDString(itemCountIDList)+"]";
+		
+		NodeList measureGroupingElementRefNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+				xpathforElementLookUpElements);
+		generateSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingElementRefNodeList);
+	}
 
 	/**
 	 * Generate supplemental data qdm entries.
@@ -174,18 +207,26 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			supplementalElemenRefIds.add(supplementalDataElements.item(i).getNodeValue());
 		}
 		
-		String uuidXPathString = "";
-		for (String uuidString: supplementalElemenRefIds) {
-			uuidXPathString += "@uuid = '" + uuidString + "' or";
-		}
-		
-		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
-        String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+uuidXPathString+"][@suppDataElement != 'true']";
+        String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+getUUIDString(supplementalElemenRefIds)+"][@suppDataElement != 'true']";
 		NodeList otherSupplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
 				xpathforOtherSupplementalDataElements);
 		
-		for(int j=0; j<otherSupplementalQDMNodeList.getLength(); j++){
-			Node qdmNode = otherSupplementalQDMNodeList.item(j);
+		generateSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, otherSupplementalQDMNodeList);
+		
+	}
+	
+	/**
+	 * Generate supplemental data qdm entries.
+	 *
+	 * @param me the me
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param qdmNodeList the qdm node list
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, 
+			NodeList qdmNodeList) throws XPathExpressionException{
+		for(int j=0; j<qdmNodeList.getLength(); j++){
+			Node qdmNode = qdmNodeList.item(j);
 			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
 			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
@@ -194,8 +235,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			                            qdmUUID+"'][@extension='"+qdmExtension+"']";
 		    Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(), 
 		    		xpathForQDMEntry);
-//		    String hqmfXmlString = dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(),true);
-//		    System.out.println(hqmfXmlString);
 		    if (qmdEntryIDNode==null) {
 		    	createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor(), null);
 		    }   
@@ -223,6 +262,22 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			//generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, qdmNode);
 			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor, null);
 		}
+	}
+	
+	/**
+	 * Gets the UUID string.
+	 *
+	 * @param uuidList the uuid list
+	 * @return the UUID string
+	 */
+	private String getUUIDString(List<String> uuidList){
+		String uuidXPathString = "";
+		for (String uuidString: uuidList) {
+			uuidXPathString += "@uuid = '" + uuidString + "' or";
+		}
+		
+		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
+		return uuidXPathString;
 	}
 
 	/**

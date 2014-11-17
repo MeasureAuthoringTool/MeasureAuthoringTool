@@ -580,16 +580,35 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @param extension the extension
 	 */
 	private void createPreConditionTag(XmlProcessor hqmfXmlProcessor,
-			Node parentElem, String id, String extension) {
-		Element preConditionElem = hqmfXmlProcessor.getOriginalDoc().createElement("precondition");
-		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
-		Element criteriaRefElem = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
-		Element criteriaRefIDElem = hqmfXmlProcessor.getOriginalDoc().createElement("id");
-		criteriaRefIDElem.setAttribute("root", id);
-		criteriaRefIDElem.setAttribute("extension", extension);
-		criteriaRefElem.appendChild(criteriaRefIDElem);
-		preConditionElem.appendChild(criteriaRefElem);
-		parentElem.appendChild(preConditionElem);
+			Node parentElem, String id, String extension)
+			throws XPathExpressionException {
+		Node idNodeQDM = hqmfXmlProcessor.findNode(
+				hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='" + id
+						+ "'][@extension='" + extension + "']");
+		if (idNodeQDM != null) {
+			Node parent = idNodeQDM.getParentNode();
+			if (parent != null) {
+				NamedNodeMap attribMap = parent.getAttributes();
+				String classCode = attribMap.getNamedItem(CLASS_CODE)
+						.getNodeValue();
+				String moodCode = attribMap.getNamedItem(MOOD_CODE)
+						.getNodeValue();
+				Element preConditionElem = hqmfXmlProcessor.getOriginalDoc()
+						.createElement("precondition");
+				preConditionElem.setAttribute(TYPE_CODE, "PRCN");
+				Element criteriaRefElem = hqmfXmlProcessor.getOriginalDoc()
+						.createElement("criteriaReference");
+				criteriaRefElem.setAttribute(CLASS_CODE, classCode);
+				criteriaRefElem.setAttribute(MOOD_CODE, moodCode);
+				Element criteriaRefIDElem = hqmfXmlProcessor.getOriginalDoc()
+						.createElement("id");
+				criteriaRefIDElem.setAttribute("root", id);
+				criteriaRefIDElem.setAttribute("extension", extension);
+				criteriaRefElem.appendChild(criteriaRefIDElem);
+				preConditionElem.appendChild(criteriaRefElem);
+				parentElem.appendChild(preConditionElem);
+			}
+		}
 	}
 	
 }

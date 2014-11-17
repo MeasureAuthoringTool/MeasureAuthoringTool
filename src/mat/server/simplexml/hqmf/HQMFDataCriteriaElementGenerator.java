@@ -151,7 +151,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			
 			//generating QDM entries for measureGrouping ItemCountlist
 			NodeList measureGroupingItemCountList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForMeasureGroupingItemCount);
-			generateMeasureGrpItemCountQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingItemCountList);
+			generateMeasureGrpnItemCountQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingItemCountList);
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -167,7 +167,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param measureGroupingItemCountList the measure grouping item count list
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateMeasureGrpItemCountQDMEntries(MeasureExport me,
+	private void generateMeasureGrpnItemCountQDMEntries(MeasureExport me,
 			XmlProcessor dataCriteriaXMLProcessor,
 			NodeList measureGroupingItemCountList) throws XPathExpressionException {
 		

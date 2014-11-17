@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -229,7 +230,9 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		preConditionElem.setAttribute(TYPE_CODE, "PRCN");*/
 		checkScoringTypeToAssociateIP(initialPopCriteriaElement, item);
 		if (item.getChildNodes() != null) {
-			generatePopulationLogic(initialPopCriteriaElement, item.getChildNodes().item(0), me);
+			for(int i=0;i<item.getChildNodes().getLength();i++){
+			   generatePopulationLogic(initialPopCriteriaElement, item.getChildNodes().item(i), me);
+			}
 		}
 		/*initialPopCriteriaElement.appendChild(preConditionElem);*/
 		componentElement.appendChild(initialPopCriteriaElement);
@@ -323,6 +326,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 */
 	private void generatePopulationLogic(Element populationTypeCriteriaElement
 			, Node item, MeasureExport me) throws XPathExpressionException {
+		
 		if (item.getChildNodes() != null) {
 			for (int i = 0; i < item.getChildNodes().getLength(); i++) {
 				Node childNode = item.getChildNodes().item(i);
@@ -343,7 +347,10 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 						// skipping comment node as of now.
 						break;
 					case "itemCount":
-						// skipping itemCount node as of now.
+						generatePopulationLogic(populationTypeCriteriaElement, childNode , me);
+						break;
+					case "elementRef":
+						generateItemCountElementRef(me, populationTypeCriteriaElement, childNode, me.getHQMFXmlProcessor());
 						break;
 					case "and":
 					case "or":
@@ -364,6 +371,8 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			}
 		}
 	}
+	
+
 	/**
 	 * Method to generate component and populationCriteria default tags.
 	 * @param sequenceNumber - Measure Grouping sequence number.

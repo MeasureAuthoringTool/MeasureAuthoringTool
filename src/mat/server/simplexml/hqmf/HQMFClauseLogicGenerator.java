@@ -18,19 +18,35 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HQMFClauseLogicGenerator.
+ */
 public class HQMFClauseLogicGenerator implements Generator {
 	
+	/** The sub tree node map. */
 	Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(HQMFClauseLogicGenerator.class);
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.server.simplexml.hqmf.Generator#generate(mat.model.clause.MeasureExport)
+	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		generateSubTreeXML(me);
 		return null;
 	}
 	
+	/**
+	 * Generate sub tree xml.
+	 *
+	 * @param me the me
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateSubTreeXML(MeasureExport me) throws XPathExpressionException{
 		String xpath = "/measure/subTreeLookUp/child::node()";
 		NodeList subTreeNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
@@ -42,6 +58,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate sub tree xml.
+	 *
+	 * @param me the me
+	 * @param subTreeNode the sub tree node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateSubTreeXML(MeasureExport me, Node subTreeNode) throws XPathExpressionException {
 		
 		/**
@@ -103,10 +126,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * QDM elementRef inside it.
 	 * Since we have no way of referencing that element using <outBoundRelationShip> directly, we are
 	 * adding it to a default UNION grouper.
-	 * @param me
-	 * @param elementRefNode
-	 * @param parentNode
-	 * @throws XPathExpressionException
+	 *
+	 * @param me the me
+	 * @param elementRefNode the element ref node
+	 * @param parentNode the parent node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateElementRefHQMF(MeasureExport me, Node elementRefNode, Node parentNode) throws XPathExpressionException {
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
@@ -144,10 +168,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * adding it to a default UNION grouper.
 	 * 
 	 * If it isnt generated then we generate it and then add a criteriaRef to it inside a default UNION.
-	 * @param me
-	 * @param subTreeRefNode
-	 * @param parentNode
-	 * @throws XPathExpressionException
+	 *
+	 * @param me the me
+	 * @param subTreeRefNode the sub tree ref node
+	 * @param parentNode the parent node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateSubTreeHQMF(MeasureExport me, Node subTreeRefNode, Node parentNode) throws XPathExpressionException {
 		
@@ -198,10 +223,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * This method wil generate HQMF code for setOp (UNION,INTERSECTION)
-	 * @param me
-	 * @param setOpNode
-	 * @throws XPathExpressionException
+	 * This method wil generate HQMF code for setOp (UNION,INTERSECTION).
+	 *
+	 * @param me the me
+	 * @param setOpNode the set op node
+	 * @param parentNode the parent node
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateSetOpHQMF(MeasureExport me, Node setOpNode, Node parentNode) throws XPathExpressionException {
 		
@@ -275,11 +303,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * 
-	 * @param me
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @throws XPathExpressionException
+	 * Generate rel op hqmf.
+	 *
+	 * @param me the me
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateRelOpHQMF(MeasureExport me, Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
 		
@@ -362,6 +391,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 	}
 
+	/**
+	 * Generate temporal attribute.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param rhsNode the rhs node
+	 * @param temporallyRelatedInfoNode the temporally related info node
+	 * @param entryNode the entry node
+	 * @param isSource the is source
+	 * @return the node
+	 */
 	private Node generateTemporalAttribute(XmlProcessor hqmfXmlProcessor,
 			Node rhsNode, Element temporallyRelatedInfoNode, Node entryNode, boolean isSource) {
 		if(entryNode != null){
@@ -397,6 +436,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return null;
 	}
 	
+	/**
+	 * Creates the base temporal node.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @return the element
+	 */
 	private Element createBaseTemporalNode(Node relOpNode,
 			XmlProcessor hqmfXmlProcessor) {
 		
@@ -468,6 +514,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return temporallyRelatedInfoNode;
 	}
 	
+	/**
+	 * Generate crit ref rel op.
+	 *
+	 * @param me the me
+	 * @param parentNode the parent node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param childNode the child node
+	 * @param outboundRelElem the outbound rel elem
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateCritRefRelOp(MeasureExport me, Node parentNode,
 			XmlProcessor hqmfXmlProcessor, Node childNode,
 			Node outboundRelElem) throws XPathExpressionException {
@@ -475,6 +531,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		generateRelOpHQMF(me, childNode,parentNode);
 	}
 	
+	/**
+	 * Generate crit ref set op.
+	 *
+	 * @param me the me
+	 * @param parentNode the parent node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param childNode the child node
+	 * @param outboundRelElem the outbound rel elem
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateCritRefSetOp(MeasureExport me, Node parentNode,
 			XmlProcessor hqmfXmlProcessor, Node childNode,
 			Node outboundRelElem) throws XPathExpressionException {
@@ -504,6 +570,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate crit ref for node.
+	 *
+	 * @param me the me
+	 * @param outboundRelElem the outbound rel elem
+	 * @param childNode the child node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateCritRefForNode(MeasureExport me, Node outboundRelElem, Node childNode) throws XPathExpressionException {
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		String childName = childNode.getNodeName();
@@ -526,11 +600,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * This method will basically create a <criteriaReference> with classCode='GROUPER' and moodCode='EVN'
 	 * and have the <id> tag pointing to the <grouperCriteria> for the referenced subTree/clause.
-	 * @param me
-	 * @param outboundRelElem
-	 * @param subTreeRefNode
-	 * @param hqmfXmlProcessor
-	 * @throws XPathExpressionException
+	 *
+	 * @param me the me
+	 * @param outboundRelElem the outbound rel elem
+	 * @param subTreeRefNode the sub tree ref node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	protected void generateCritRefSubTreeRef(MeasureExport me, Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
 		
@@ -572,6 +647,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate crit ref element ref.
+	 *
+	 * @param me the me
+	 * @param outboundRelElem the outbound rel elem
+	 * @param elementRefNode the element ref node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private Node generateCritRefElementRef(MeasureExport me,
 			Node outboundRelElem, Node elementRefNode,
 			XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
@@ -604,17 +689,65 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * 
-	 * @param me
-	 * @param outboundRelElem
-	 * @param childNode
-	 * @param hqmfXmlProcessor
+	 * Generate item count element ref.
+	 *
+	 * @param me the me
+	 * @param populationTypeCriteriaElement the population type criteria element
+	 * @param elementRefNode the element ref node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	public void generateItemCountElementRef(MeasureExport me, Element populationTypeCriteriaElement, Node elementRefNode,
+			XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
+		String ext = getElementRefExt(elementRefNode, me.getSimpleXMLProcessor());
+		String root = elementRefNode.getAttributes().getNamedItem(ID).getNodeValue();
+		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+		if(idNodeQDM != null){
+			Node parent = idNodeQDM.getParentNode();
+			if(parent != null){
+				//create component for ItemCount ElmentRef
+				Element  componentElem = hqmfXmlProcessor.getOriginalDoc().createElement("component");
+				componentElem.setAttribute(TYPE_CODE, "COMP");
+				Element  measureAttrElem = hqmfXmlProcessor.getOriginalDoc().createElement("measureAttribute");
+				componentElem.appendChild(measureAttrElem);
+				Element  codeElem = hqmfXmlProcessor.getOriginalDoc().createElement("code");
+				codeElem.setAttribute(CODE, "ITMCNT");
+				codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+				codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
+				Element  displayNameElem = hqmfXmlProcessor.getOriginalDoc().createElement("displayName");
+				displayNameElem.setAttribute(VALUE, "Items to count");
+				codeElem.appendChild(displayNameElem);
+				Element valueElem = hqmfXmlProcessor.getOriginalDoc().createElement(VALUE);
+				valueElem.setAttribute(ROOT, root);
+				valueElem.setAttribute("extension", ext);
+				measureAttrElem.appendChild(codeElem);
+				measureAttrElem.appendChild(valueElem);
+				populationTypeCriteriaElement.appendChild(componentElem);
+			}
+		}
+	}
+	
+	/**
+	 * Generate crit ref rel op.
+	 *
+	 * @param me the me
+	 * @param outboundRelElem the outbound rel elem
+	 * @param childNode the child node
+	 * @param hqmfXmlProcessor the hqmf xml processor
 	 */
 	private void generateCritRefRelOp(MeasureExport me, Element outboundRelElem, Node childNode, XmlProcessor hqmfXmlProcessor) {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	/**
+	 * Gets the element ref ext.
+	 *
+	 * @param elementRefNode the element ref node
+	 * @param simpleXmlProcessor the simple xml processor
+	 * @return the element ref ext
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private String getElementRefExt(Node elementRefNode, XmlProcessor simpleXmlProcessor) throws XPathExpressionException {
 		String extension = "";
 		if(elementRefNode.hasChildNodes()){
@@ -637,6 +770,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return StringUtils.deleteWhitespace(extension);
 	}
 	
+	/**
+	 * Generate empty grouper.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param root the root
+	 * @param ext the ext
+	 * @return the node
+	 */
 	private Node generateEmptyGrouper(XmlProcessor hqmfXmlProcessor,
 			String root, String ext) {
 		Element grouperElem = hqmfXmlProcessor.getOriginalDoc().createElement("grouperCriteria");
@@ -652,6 +793,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return grouperElem;
 	}
 	
+	/**
+	 * Generate empty outbound elem.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @return the element
+	 */
 	private Element generateEmptyOutboundElem(XmlProcessor hqmfXmlProcessor) {
 		Element outboundRelElem = hqmfXmlProcessor.getOriginalDoc().createElement("outboundRelationship");
 		outboundRelElem.setAttribute(TYPE_CODE, "COMP");

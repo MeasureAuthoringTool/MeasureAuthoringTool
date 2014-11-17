@@ -2,13 +2,10 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -151,6 +148,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node parNode = elementRefNode.getParentNode();
 			if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 				idroot = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				// Added logic to show qdm_variable in extension if clause is of qdm variable type.
+				String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
+				if(isQdmVariable.equalsIgnoreCase("true")) {
+					ext = "Qdm_Variable_"+ext;
+				}
 			}
 			((Element)newIdNode).setAttribute(ROOT, idroot);
 			((Element)newIdNode).setAttribute("extension", idExt);
@@ -200,6 +202,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node parNode = subTreeRefNode.getParentNode();
 		if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+			String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
+			if(isQdmVariable.equalsIgnoreCase("true")) {
+				ext = "Qdm_Variable_" + ext;
+			}
 		}
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		
@@ -250,9 +257,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		//creating grouperCriteria element
 		String root = "0";
 		String ext = setOpType;
+		
 		Node parNode = setOpNode.getParentNode();
+		
 		if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+			String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
+			if(isQdmVariable.equalsIgnoreCase("true")) {
+				ext = "Qdm_Variable_"+ext;
+			}
 		}else{
 			root = UUIDUtilClient.uuid();
 		}
@@ -317,7 +331,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(relOpNode.getChildNodes().getLength() == 2){
 			Node lhsNode = relOpNode.getFirstChild();
 			Node rhsNode = relOpNode.getLastChild();
-			
+			Node relOpParentNode = relOpNode.getParentNode();
 			String lhsName = lhsNode.getNodeName();
 			String rhsName = rhsNode.getNodeName();
 			
@@ -326,9 +340,36 @@ public class HQMFClauseLogicGenerator implements Generator {
 				String root = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
 				
 				Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
-				if(idNodeQDM != null){
+				if (idNodeQDM != null) {
 					Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 					Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
+					//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+					if (relOpParentNode != null) {
+						if (relOpParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
+							String isQdmVariable = relOpParentNode.getAttributes()
+									.getNamedItem("qdmVariable").getNodeValue();
+							if ("true".equalsIgnoreCase(isQdmVariable)) {
+								if ((clonedEntryNodeForElementRef.getChildNodes() != null)) {
+									if (clonedEntryNodeForElementRef.getChildNodes().item(0).getChildNodes() != null) {
+										for (int i = 0; i < clonedEntryNodeForElementRef.getChildNodes()
+												.item(0).getChildNodes().getLength(); i++) {
+											Node childNode = clonedEntryNodeForElementRef.getChildNodes()
+													.item(0).getChildNodes().item(i);
+											if (childNode.getNodeName().equalsIgnoreCase(ID)) {
+												String lhsExtn = childNode.getAttributes().
+														getNamedItem("extension").getNodeValue();
+												childNode.getAttributes().getNamedItem("extension").
+												setNodeValue("Qdm_Variable_" + lhsExtn);
+												break;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					//Added logic to show qdm_variable in extension if clause is of qdm variable type.
 					
 					Element temporallyRelatedInfoNode = createBaseTemporalNode(
 							relOpNode, hqmfXmlProcessor);
@@ -354,7 +395,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 									Node criteriaNode = lastChild.getFirstChild();
 									temporallyRelatedInfoNode.appendChild(criteriaNode);
 									NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
-									if(childTemporalNodeList != null && childTemporalNodeList.getLength() > 0){
+									if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
 										Node childTemporalNode = childTemporalNodeList.item(0);
 										Node temporalInfoNode = childTemporalNode.getFirstChild();
 										//find sourceAttribute
@@ -390,7 +431,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
 		}
 	}
-
+	
 	/**
 	 * Generate temporal attribute.
 	 *
@@ -406,11 +447,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(entryNode != null){
 			Element entryElement = (Element)entryNode;
 			NodeList nodeList = entryElement.getElementsByTagName("outboundRelationship");
-			if(nodeList != null && nodeList.getLength() > 0){
+			if((nodeList != null) && (nodeList.getLength() > 0)){
 				Node outBoundNode = nodeList.item(0);
 				Node criteriaNode = outBoundNode.getFirstChild();
 				NodeList idNodeList = ((Element)criteriaNode).getElementsByTagName(ID);
-				if(idNodeList != null && idNodeList.getLength() > 0){
+				if((idNodeList != null) && (idNodeList.getLength() > 0)){
 					Node idNode = idNodeList.item(0);
 					
 					//create sourceAttribute/targetAttribute

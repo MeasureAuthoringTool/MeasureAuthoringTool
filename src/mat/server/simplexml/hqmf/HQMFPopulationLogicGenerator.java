@@ -152,6 +152,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @param item - Node.
 	 * @param populationCriteriaComponentElement - Element.
 	 * @param me - MeasureExport.
+	 * @param groupingSequence - Measure Group Sequence.
 	 * @throws XPathExpressionException - Exception.
 	 */
 	private void generateStratifierCriteria(Node item, Node populationCriteriaComponentElement
@@ -318,10 +319,10 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			case "or":
 				logicalOpElement = doc.createElement("atLeastOneTrue");
 				break;
-			case "andnot":
+			case "andNot":
 				logicalOpElement = doc.createElement("allFalse");
 				break;
-			case "ornot":
+			case "orNot":
 				logicalOpElement = doc.createElement("atLeastOneFalse");
 				break;
 			default:

@@ -257,13 +257,15 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * Associate IP with Deno in Proportion Measures, With MeasurePopulation
 	 *  In Continous Variable and based on association in Ratio Measures with Deno and NUm.
 	 *
-	 * @param preConditionElem the pre condition elem
+	 * @param populationCritieriaElem the pre condition elem
 	 * @param item the item
 	 */
-	private void checkScoringTypeToAssociateIP(Element preConditionElem, Node item) {
+	private void checkScoringTypeToAssociateIP(Element populationCritieriaElem, Node item) {
 		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
+		Document mainDocument = populationCritieriaElem.getOwnerDocument();
+		Element preConditionElem = mainDocument.createElement("precondition");
+		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
 		if (scoringType.equalsIgnoreCase("Proportion") && nodeType.equalsIgnoreCase("denominator")) {
-			Document mainDocument = preConditionElem.getOwnerDocument();
 			Element criteriaRef = mainDocument.createElement("criteriaReference");
 			criteriaRef.setAttribute(CLASS_CODE, "OBS");
 			criteriaRef.setAttribute(MOOD_CODE, "EVN");
@@ -274,8 +276,8 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 							.getNamedItem(TYPE).getNodeValue()));
 			criteriaRef.appendChild(idElement);
 			preConditionElem.appendChild(criteriaRef);
+			populationCritieriaElem.appendChild(preConditionElem);
 		} else if (scoringType.equalsIgnoreCase("Continuous Variable") && nodeType.equalsIgnoreCase("measurePopulation")) {
-			Document mainDocument = preConditionElem.getOwnerDocument();
 			Element criteriaRef = mainDocument.createElement("criteriaReference");
 			criteriaRef.setAttribute(CLASS_CODE, "OBS");
 			criteriaRef.setAttribute(MOOD_CODE, "EVN");
@@ -285,13 +287,13 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					initialPopulation.getAttributes().getNamedItem(TYPE).getNodeValue()));
 			criteriaRef.appendChild(idElement);
 			preConditionElem.appendChild(criteriaRef);
+			populationCritieriaElem.appendChild(preConditionElem);
 		} else if (scoringType.equalsIgnoreCase("Ratio") && (nodeType.equalsIgnoreCase("denominator")
 				|| nodeType.equalsIgnoreCase("numerator"))) {
 			String associatedIPUUID = initialPopulation.getAttributes().getNamedItem(UUID).getNodeValue();
 			if (item.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
 				associatedIPUUID = item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
 			}
-			Document mainDocument = preConditionElem.getOwnerDocument();
 			Element criteriaRef = mainDocument.createElement("criteriaReference");
 			criteriaRef.setAttribute(CLASS_CODE, "OBS");
 			criteriaRef.setAttribute(MOOD_CODE, "EVN");
@@ -300,6 +302,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			idElement.setAttribute("extension", StringUtils.deleteWhitespace("initialPopulation"));
 			criteriaRef.appendChild(idElement);
 			preConditionElem.appendChild(criteriaRef);
+			populationCritieriaElem.appendChild(preConditionElem);
 		}
 		
 	}

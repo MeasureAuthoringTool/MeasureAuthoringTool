@@ -769,6 +769,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				displayNameElem.setAttribute(VALUE, "Items to count");
 				codeElem.appendChild(displayNameElem);
 				Element valueElem = hqmfXmlProcessor.getOriginalDoc().createElement(VALUE);
+				valueElem.setAttribute("xsi:type", "II");
 				valueElem.setAttribute(ROOT, root);
 				valueElem.setAttribute("extension", ext);
 				measureAttrElem.appendChild(codeElem);

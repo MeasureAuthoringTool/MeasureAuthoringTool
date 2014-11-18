@@ -340,36 +340,40 @@ public class HQMFClauseLogicGenerator implements Generator {
 				String root = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
 				
 				Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+				
 				if (idNodeQDM != null) {
+					if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())){
+						root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					}
+					ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 					Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 					Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
+					
 					//Added logic to show qdm_variable in extension if clause is of qdm variable type.
 					if (relOpParentNode != null) {
 						if (relOpParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
 							String isQdmVariable = relOpParentNode.getAttributes()
 									.getNamedItem("qdmVariable").getNodeValue();
 							if ("true".equalsIgnoreCase(isQdmVariable)) {
-								if ((clonedEntryNodeForElementRef.getChildNodes() != null)) {
-									if (clonedEntryNodeForElementRef.getChildNodes().item(0).getChildNodes() != null) {
-										for (int i = 0; i < clonedEntryNodeForElementRef.getChildNodes()
-												.item(0).getChildNodes().getLength(); i++) {
-											Node childNode = clonedEntryNodeForElementRef.getChildNodes()
-													.item(0).getChildNodes().item(i);
-											if (childNode.getNodeName().equalsIgnoreCase(ID)) {
-												String lhsExtn = childNode.getAttributes().
-														getNamedItem("extension").getNodeValue();
-												childNode.getAttributes().getNamedItem("extension").
-												setNodeValue("Qdm_Variable_" + lhsExtn);
-												break;
-											}
-										}
-									}
-								}
+								ext = "Qdm_Variable_" + ext;
 							}
 						}
 					}
 					
-					//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+					NodeList childNodeList = clonedEntryNodeForElementRef.getChildNodes();
+					if (childNodeList != null) {
+						NodeList entryChildList = childNodeList.item(0).getChildNodes();
+						if (entryChildList != null) {
+							for (int i = 0; i < entryChildList.getLength(); i++) {
+								Node childNode = entryChildList.item(i);
+								if (childNode.getNodeName().equalsIgnoreCase(ID)) {
+									childNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
+									childNode.getAttributes().getNamedItem("root").setNodeValue(root);
+									break;
+								}
+							}
+						}
+					}
 					
 					Element temporallyRelatedInfoNode = createBaseTemporalNode(
 							relOpNode, hqmfXmlProcessor);
@@ -656,14 +660,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
 		Node subTreeNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 		if(subTreeNode != null ) {
+			String isQdmVariable = subTreeNode.getAttributes()
+					.getNamedItem("qdmVariable").getNodeValue();
 			Node firstChild = subTreeNode.getFirstChild();
 			String firstChildName = firstChild.getNodeName();
 			
-			String ext = firstChild.getAttributes().getNamedItem("displayName").getNodeValue();
+			String ext = StringUtils.deleteWhitespace(firstChild.getAttributes().getNamedItem("displayName").getNodeValue());
+			
+			
 			if("elementRef".equals(firstChildName)){
 				ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
 			}
-			
+			if("true".equalsIgnoreCase(isQdmVariable)){
+				ext = "Qdm_Variable_"+ext;
+			}
 			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 			if(idNodeQDM != null){
 				Node parent = idNodeQDM.getParentNode();

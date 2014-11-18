@@ -67,7 +67,7 @@ public class HumanReadableGenerator {
 	private static Boolean showOnlyVariableName = false;
 	
 	/** The lhs id. */
-	private static List<String> lhsID = new ArrayList<String>();
+	private static List<String> lhsID;
 	
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
@@ -89,7 +89,7 @@ public class HumanReadableGenerator {
 			//System.out.println("Original subXML:" + subXML);
 			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(
 					subXML, measureXML, true);
-			
+			lhsID = new ArrayList<String>();
 			if (populationOrSubtreeXMLProcessor == null) {
 				htmlDocument = createBaseHumanReadableDocument();
 				Element bodyElement = htmlDocument.body();
@@ -884,8 +884,15 @@ public class HumanReadableGenerator {
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
 			// Element ulElement = parentListElement.appendElement(HTML_LI);
-			parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
-					false);
+			Node parentAttrNode = item.getParentNode().getAttributes().getNamedItem("type"); 
+			if( parentAttrNode!=null  && parentAttrNode.getNodeValue()
+					.contains("SATISFIES")){
+				parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
+						true);
+			} else {
+				parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
+						false);
+			}
 			liElement.appendText(" "
 					+ item.getAttributes().getNamedItem("displayName")
 					.getNodeValue().toLowerCase());

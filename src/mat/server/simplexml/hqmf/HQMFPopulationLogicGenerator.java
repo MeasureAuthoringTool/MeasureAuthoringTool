@@ -134,7 +134,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					case "stratum" :
 						//No top Logical Op.
 						generateStratifierCriteria(groupingChildList.item(i)
-								, populationCriteriaComponentElement, me);
+								, populationCriteriaComponentElement, me, key);
 						break;
 					default:
 						//do nothing.
@@ -155,33 +155,46 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @throws XPathExpressionException - Exception.
 	 */
 	private void generateStratifierCriteria(Node item, Node populationCriteriaComponentElement
-			, MeasureExport me) throws XPathExpressionException {
+			, MeasureExport me, String groupingSequence) throws XPathExpressionException {
 		Document doc = populationCriteriaComponentElement.getOwnerDocument();
 		Element populationCriteriaElement = (Element) populationCriteriaComponentElement.getFirstChild();
-		Node stratifierCriteraNode = doc.getElementsByTagName("stratifierCriteria").item(0);
+		Node stratifierCriteraNode = null;
+		// Code to identify correct PopulationCriteria/StratificationCriteria Node based on Grouping Key.
+		NodeList idNodeList = me.getHQMFXmlProcessor().findNodeList(doc, "//component/populationCriteriaSection/child::id");
+		for (int i = 0; i < idNodeList.getLength(); i++) {
+			String extension = idNodeList.item(i).getAttributes().getNamedItem("extension").getNodeValue();
+			String extensionToBeCompared = "PopulationCriteria" + groupingSequence;
+			if (extensionToBeCompared.equalsIgnoreCase(extension)) {
+				Node populationCriteria = idNodeList.item(i).getParentNode();
+				Node lastChild = populationCriteria.getLastChild();
+				if ((lastChild.getChildNodes() != null)
+						&& lastChild.getChildNodes().item(0).getNodeName().equalsIgnoreCase("stratifierCriteria")) {
+					stratifierCriteraNode = lastChild.getChildNodes().item(0);
+				}
+			}
+		}
 		Element componentElement = null;
 		Element stratCriteriaElement = null;
 		if (stratifierCriteraNode == null) {
 			componentElement = doc.createElement("component");
 			componentElement.setAttribute(TYPE_CODE, "COMP");
 			stratCriteriaElement = doc.createElement("stratifierCriteria");
-			/*stratCriteriaElement.setAttribute(CLASS_CODE, "OBS");
-			stratCriteriaElement.setAttribute(MOOD_CODE, "EVN");
-			 */Element idElement = doc.createElement(ID);
-			 idElement.setAttribute(ROOT, item.getAttributes().getNamedItem(UUID).getNodeValue());
-			 idElement.setAttribute("identifierName", "Stratifiers");
-			 stratCriteriaElement.appendChild(idElement);
-			 Element codeElem = doc.createElement(CODE);
-			 codeElem.setAttribute(CODE, "STRAT");
-			 codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
-			 codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
-			 Element displayNameElement = doc.createElement(DISPLAY_NAME);
-			 displayNameElement.setAttribute(VALUE, "Stratification");
-			 codeElem.appendChild(displayNameElement);
-			 stratCriteriaElement.appendChild(codeElem);
-			 componentElement.appendChild(stratCriteriaElement);
-			 populationCriteriaElement.appendChild(componentElement);
+			Element idElement = doc.createElement(ID);
+			idElement.setAttribute(ROOT, item.getAttributes().getNamedItem(UUID).getNodeValue());
+			idElement.setAttribute("identifierName", "Stratifiers");
+			stratCriteriaElement.appendChild(idElement);
+			Element codeElem = doc.createElement(CODE);
+			codeElem.setAttribute(CODE, "STRAT");
+			codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
+			codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
+			Element displayNameElement = doc.createElement(DISPLAY_NAME);
+			displayNameElement.setAttribute(VALUE, "Stratification");
+			codeElem.appendChild(displayNameElement);
+			stratCriteriaElement.appendChild(codeElem);
+			componentElement.appendChild(stratCriteriaElement);
+			populationCriteriaElement.appendChild(componentElement);
 		} else {
+			
 			stratCriteriaElement = (Element) stratifierCriteraNode;
 			componentElement = (Element) stratCriteriaElement.getParentNode();
 		}
@@ -231,7 +244,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		checkScoringTypeToAssociateIP(initialPopCriteriaElement, item);
 		if (item.getChildNodes() != null) {
 			for(int i=0;i<item.getChildNodes().getLength();i++){
-			   generatePopulationLogic(initialPopCriteriaElement, item.getChildNodes().item(i), me);
+				generatePopulationLogic(initialPopCriteriaElement, item.getChildNodes().item(i), me);
 			}
 		}
 		/*initialPopCriteriaElement.appendChild(preConditionElem);*/
@@ -372,7 +385,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		}
 	}
 	
-
+	
 	/**
 	 * Method to generate component and populationCriteria default tags.
 	 * @param sequenceNumber - Measure Grouping sequence number.
@@ -581,10 +594,10 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 */
 	private void createPreConditionTag(XmlProcessor hqmfXmlProcessor,
 			Node parentElem, String id, String extension)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(
 				hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='" + id
-						+ "'][@extension='" + extension + "']");
+				+ "'][@extension='" + extension + "']");
 		if (idNodeQDM != null) {
 			Node parent = idNodeQDM.getParentNode();
 			if (parent != null) {

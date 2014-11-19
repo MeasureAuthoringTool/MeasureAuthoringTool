@@ -87,42 +87,54 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 								, "initialPopulationCriteria", "IPOP", null);
 						break;
 					case "denominator" :
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "denominatorCriteria", "DENOM", null);
+						}
 						break;
 					case "denominatorExclusions" :
 						// top Logical Op is OR
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "denominatorExclusionCriteria", "DENEX", null);
+						}
 						break;
 					case "denominatorExceptions" :
 						// top Logical Op is OR
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "denominatorExceptionCriteria", "DENEXCEP", null);
+						}
 						break;
 					case "numerator" :
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "numeratorCriteria", "NUMER", null);
+						}
 						break;
 					case "numeratorExclusions" :
 						// top Logical Op is OR
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "numeratorExclusionCriteria", "NUMEX", null);
+						}
 						break;
 					case "measurePopulation" :
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generatePopulationTypeCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement , me
 								, "measurePopulationCriteria", "MSRPOPL", null);
+						}
 						break;
 					case "measurePopulationExclusions" :
 						//If measurePopulationExclusions has no logic added
 						//then it should not be included in populationCriteria as per Stan.
-						if (groupingChildList.item(i).getChildNodes().item(0).hasChildNodes()) {
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 							generatePopulationTypeCriteria(groupingChildList.item(i)
 									, populationCriteriaComponentElement , me
 									, "measurePopulationExclusionCriteria", "MSRPOPLEX", null);
@@ -133,8 +145,10 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 						break;
 					case "stratum" :
 						//No top Logical Op.
+						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 						generateStratifierCriteria(groupingChildList.item(i)
 								, populationCriteriaComponentElement, me, key);
+						}
 						break;
 					default:
 						//do nothing.
@@ -438,6 +452,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * Get Measure Scoring type.
 	 *
 	 * @param me - MeasureExport
+	 * @return the measure scoring type
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getMeasureScoringType(MeasureExport me) throws XPathExpressionException {
@@ -468,10 +483,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			clauseLogicMap.put(uuid, displayName);
 		}
 	}
+	
 	/**
 	 * Method to populate all measure groupings in measureGroupingMap.
 	 *
 	 * @param me - MeasureExport
+	 * @return the all measure groupings
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getAllMeasureGroupings(MeasureExport me) throws XPathExpressionException {
@@ -545,6 +562,108 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		componentElement.appendChild(measureAttributeElem);
 		parentElem.appendChild(componentElement);
 	}
+	
+	/**
+	 * Gets the required clauses.
+	 *
+	 * @param type the type
+	 * @return the required clauses
+	 */
+	private static List<String> getRequiredClauses(String type){
+		List<String> list = new ArrayList<String>();
+		if("Cohort".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+		}else if("Continuous Variable".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("measurePopulation");
+			list.add("measureObservation");
+		}else if("Proportion".equalsIgnoreCase(type) || 
+				"Ratio".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("denominator");
+			list.add("numerator");
+		}
+		return list;
+	}
+	
+	/**
+	 * Check for required clause by scoring.
+	 *
+	 * @param me the me
+	 * @param popType the pop type
+	 * @param node the node
+	 * @return true, if successful
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static boolean checkForRequiredClauseByScoring(MeasureExport me, String popType, Node node) throws XPathExpressionException{
+		boolean isRequiredClause = false; 
+		Node scoringType = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(),
+				"/measure/measureDetails/scoring");
+		List<String> clauseList = new ArrayList<String>();
+		clauseList = getRequiredClauses(scoringType.getTextContent());
+		if(clauseList.contains(popType)){
+		   isRequiredClause = true;
+		} else {
+			isRequiredClause = checkForPackageClauseLogic(node, popType);
+		}
+		return isRequiredClause;
+	}
+	
+	
+	/**
+	 * Check for package clause logic.
+	 *
+	 * @param node the node
+	 * @param popType the pop type
+	 * @return true, if successful
+	 */
+	private static boolean checkForPackageClauseLogic(Node node,
+			String popType) {
+		switch(popType) {
+		   
+		case "measurePopulation":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+		case "numerator":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+		case "denominator":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+		
+		case "denominatorExclusions":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+		case "numeratorExclusions":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+			break;
+			
+		case "measureObservation":
+			if(node.hasChildNodes())
+				   return true;
+			break;
+		case "stratum":
+			if(node.hasChildNodes())
+				   return true;
+			break;
+			
+		case "denominatorExceptions":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+			break;
+		case "measurePopulationExclusions":
+			if(node.getChildNodes().item(0).hasChildNodes())
+				   return true;
+			break;
+			
+		default:   //do Nothing
+			break;
+		 
+		}
+		return false;
+	}
+
 	/**
 	 * Creates the pre condition with criteria ref.
 	 *
@@ -595,6 +714,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @param parentElem the parent elem
 	 * @param id the id
 	 * @param extension the extension
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createPreConditionTag(XmlProcessor hqmfXmlProcessor,
 			Node parentElem, String id, String extension)

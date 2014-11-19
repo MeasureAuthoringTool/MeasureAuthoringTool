@@ -436,12 +436,12 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		popCriteriaElem.appendChild(codeElem);
 		Element titleElem = outputProcessor.getOriginalDoc()
 				.createElement(TITLE);
-		titleElem.setAttribute(VALUE, "Population Criteria Section.");
+		titleElem.setAttribute(VALUE, "Population Criteria Section");
 		popCriteriaElem.appendChild(titleElem);
 		// creating text for PopulationCriteria
 		Element textElem = outputProcessor.getOriginalDoc()
 				.createElement("text");
-		textElem.setAttribute(VALUE, "Population Criteria text.");
+		textElem.setAttribute(VALUE, "Population Criteria text");
 		popCriteriaElem.appendChild(textElem);
 		componentElement.appendChild(popCriteriaElem);
 		outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);

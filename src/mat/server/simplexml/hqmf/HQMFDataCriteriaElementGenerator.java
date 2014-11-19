@@ -689,14 +689,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor
 				.getOriginalDoc().getElementsByTagName("dataCriteriaSection")
 				.item(0);
+		Element componentElem = (Element) dataCriteriaXMLProcessor
+				.getOriginalDoc().getElementsByTagName("component")
+				.item(0);
 		Attr nameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createAttribute("xmlns:xsi");
 		nameSpaceAttr.setNodeValue(nameSpace);
-		dataCriteriaSectionElem.setAttributeNodeNS(nameSpaceAttr);
+		componentElem.setAttributeNodeNS(nameSpaceAttr);
 		//xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1"
 		Attr qdmNameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:qdm");
 		qdmNameSpaceAttr.setNodeValue("urn:hhs-qdm:hqmf-r2-extensions:v1");
-		dataCriteriaSectionElem.setAttributeNodeNS(qdmNameSpaceAttr); 
+		componentElem.setAttributeNodeNS(qdmNameSpaceAttr); 
 		// creating Entry Tag
 		Element entryElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("entry");

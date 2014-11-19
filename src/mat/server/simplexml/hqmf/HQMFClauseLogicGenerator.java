@@ -2,10 +2,13 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -423,7 +426,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 								break;
 						}
 					}
-					clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+					NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
+					if(outBoundList != null && outBoundList.getLength() > 0){
+						Node outBound = outBoundList.item(0);
+						clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+					}else{
+						clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+					}
 					
 					//create comment node
 					Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());

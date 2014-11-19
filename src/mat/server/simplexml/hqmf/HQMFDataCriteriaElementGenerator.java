@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,7 +86,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.2");
-		itemChild.setAttribute("extension", VERSIONID);
+		/*	itemChild.setAttribute("extension", VERSIONID);*/
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -128,7 +125,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		String xpathForMeasureGroupingItemCount = "/measure/measureGrouping//itemCount/elementRef/@id";
 		
-		try {			
+		try {
 			
 			NodeList occurQdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForOccurQDMNoAttribs);
 			generateOccurrenceQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, occurQdmNoAttributeNodeList);
@@ -145,7 +142,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
 			
 			//generating QDM Entries for other Supplemental Data Elements
-			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 					xpathForOtherSupplementalQDMs);
 			generateOtherSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, supplementalDataElements);
 			
@@ -158,7 +155,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 	}
 	
-
+	
 	/**
 	 * Generate measure grp item count qdm entries.
 	 *
@@ -171,8 +168,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor,
 			NodeList measureGroupingItemCountList) throws XPathExpressionException {
 		
-		if(measureGroupingItemCountList==null  || 
-				measureGroupingItemCountList.getLength()<1){
+		if((measureGroupingItemCountList==null)  ||
+				(measureGroupingItemCountList.getLength()<1)){
 			return;
 		}
 		List<String> itemCountIDList = new ArrayList<String>();
@@ -183,11 +180,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		String xpathforElementLookUpElements="/measure/elementLookUp/qdm["+getUUIDString(itemCountIDList)+"]";
 		
-		NodeList measureGroupingElementRefNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+		NodeList measureGroupingElementRefNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathforElementLookUpElements);
 		generateSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingElementRefNodeList);
 	}
-
+	
 	/**
 	 * Generate supplemental data qdm entries.
 	 *
@@ -196,10 +193,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param supplementalDataElements the supplemental data elements
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateOtherSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, 
+	private void generateOtherSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
 			NodeList supplementalDataElements ) throws XPathExpressionException{
-		if (supplementalDataElements == null || 
-				supplementalDataElements.getLength()<1) {
+		if ((supplementalDataElements == null) ||
+				(supplementalDataElements.getLength()<1)) {
 			return;
 		}
 		List<String> supplementalElemenRefIds = new ArrayList<String>();
@@ -207,8 +204,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			supplementalElemenRefIds.add(supplementalDataElements.item(i).getNodeValue());
 		}
 		
-        String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+getUUIDString(supplementalElemenRefIds)+"][@suppDataElement != 'true']";
-		NodeList otherSupplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), 
+		String xpathforOtherSupplementalDataElements="/measure/elementLookUp/qdm["+getUUIDString(supplementalElemenRefIds)+"][@suppDataElement != 'true']";
+		NodeList otherSupplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathforOtherSupplementalDataElements);
 		
 		generateSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, otherSupplementalQDMNodeList);
@@ -223,7 +220,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param qdmNodeList the qdm node list
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, 
+	private void generateSupplementalDataQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
 			NodeList qdmNodeList) throws XPathExpressionException{
 		for(int j=0; j<qdmNodeList.getLength(); j++){
 			Node qdmNode = qdmNodeList.item(j);
@@ -231,13 +228,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
-		    String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
-			                            qdmUUID+"'][@extension='"+qdmExtension+"']";
-		    Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(), 
-		    		xpathForQDMEntry);
-		    if (qmdEntryIDNode==null) {
-		    	createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor(), null);
-		    }   
+			String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
+					qdmUUID+"'][@extension='"+qdmExtension+"']";
+			Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(),
+					xpathForQDMEntry);
+			if (qmdEntryIDNode==null) {
+				createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor(), null);
+			}
 		}
 	}
 	
@@ -279,7 +276,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
 		return uuidXPathString;
 	}
-
+	
 	/**
 	 * This method will populate a map of all reference elements for the Occurrence elements.
 	 *
@@ -699,7 +696,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		//xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1"
 		Attr qdmNameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:qdm");
 		qdmNameSpaceAttr.setNodeValue("urn:hhs-qdm:hqmf-r2-extensions:v1");
-		componentElem.setAttributeNodeNS(qdmNameSpaceAttr); 
+		componentElem.setAttributeNodeNS(qdmNameSpaceAttr);
 		// creating Entry Tag
 		Element entryElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("entry");
@@ -1146,9 +1143,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| SIGNED_DATETIME.equals(attributeName)) {
 			generateOrderTypeAttributes(qdmNode, dataCriteriaElem, dataCriteriaXMLProcessor,
 					simpleXmlprocessor, attributeQDMNode);
-//		} else if(SIGNED_DATETIME.equals(attributeName)){
-//			Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
-//			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, true);
+			//		} else if(SIGNED_DATETIME.equals(attributeName)){
+			//			Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
+			//			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, true);
 		}else if(ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
 				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)
 				|| REMOVAL_DATETIME.equalsIgnoreCase(attributeName)
@@ -1731,7 +1728,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		valueElem.setAttribute("valueSet", attributeOID);
 		addValueSetVersion(attributeQDMNode, valueElem);
 		Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-					.createElement(DISPLAY_NAME);
+				.createElement(DISPLAY_NAME);
 		valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
 		valueElem.appendChild(valueDisplayNameElem);
 		

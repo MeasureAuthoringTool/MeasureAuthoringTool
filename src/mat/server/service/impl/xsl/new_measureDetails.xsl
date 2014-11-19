@@ -10,7 +10,7 @@
 
 	<xsl:template match="/">
 		<QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xmlns="urn:hl7-org:v3" xmlns:qdm="urn:hl7-org:qdm">
+			xmlns="urn:hl7-org:v3" xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1">
 			<xsl:apply-templates select="measure" />
 		</QualityMeasureDocument>
 	</xsl:template>

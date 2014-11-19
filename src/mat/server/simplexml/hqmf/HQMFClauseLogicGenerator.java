@@ -2,10 +2,13 @@ package mat.server.simplexml.hqmf;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -408,114 +411,134 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(relOpNode.getChildNodes().getLength() == 2){
 			Node lhsNode = relOpNode.getFirstChild();
 			Node rhsNode = relOpNode.getLastChild();
-			Node relOpParentNode = relOpNode.getParentNode();
-			String lhsName = lhsNode.getNodeName();
-			String rhsName = rhsNode.getNodeName();
+			String lhsName = lhsNode.getNodeName();			
 			
 			if("elementRef".equals(lhsName)){
-				String ext = getElementRefExt(lhsNode, me.getSimpleXMLProcessor());
-				String root = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
-				
-				Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
-				
-				if (idNodeQDM != null) {
-					if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())){
-						root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
-					}
-					ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
-					Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
-					Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
-					
-					//Added logic to show qdm_variable in extension if clause is of qdm variable type.
-					if (relOpParentNode != null) {
-						if (relOpParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
-							String isQdmVariable = relOpParentNode.getAttributes()
-									.getNamedItem("qdmVariable").getNodeValue();
-							if ("true".equalsIgnoreCase(isQdmVariable)) {
-								ext = "qdm_var_" + ext;
-							}
-						}
-					}
-					
-					NodeList childNodeList = clonedEntryNodeForElementRef.getChildNodes();
-					if (childNodeList != null) {
-						NodeList entryChildList = childNodeList.item(0).getChildNodes();
-						if (entryChildList != null) {
-							for (int i = 0; i < entryChildList.getLength(); i++) {
-								Node childNode = entryChildList.item(i);
-								if (childNode.getNodeName().equalsIgnoreCase(ID)) {
-									childNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
-									childNode.getAttributes().getNamedItem("root").setNodeValue(root);
-									break;
-								}
-							}
-						}
-					}
-					
-					Element temporallyRelatedInfoNode = createBaseTemporalNode(
-							relOpNode, hqmfXmlProcessor);
-					generateTemporalAttribute(hqmfXmlProcessor, lhsNode,
-							temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
-					if("elementRef".equals(rhsName)){
-						Node entryNode = generateCritRefElementRef(me, temporallyRelatedInfoNode, rhsNode, me.getHQMFXmlProcessor());
-						generateTemporalAttribute(hqmfXmlProcessor, rhsNode,
-								temporallyRelatedInfoNode, entryNode, false);
-					}else if("subTreeRef".equals(rhsName)){
-						generateCritRefForNode(me, temporallyRelatedInfoNode, rhsNode);
-					}else{
-						switch (rhsName) {
-							case "setOp":
-								generateCritRefSetOp(me, dataCriteriaSectionElem, hqmfXmlProcessor,
-										rhsNode, temporallyRelatedInfoNode);
-								break;
-							case "relationalOp":
-								generateRelOpHQMF(me,rhsNode,temporallyRelatedInfoNode);
-								Node lastChild = temporallyRelatedInfoNode.getLastChild();
-								if(lastChild.getNodeName().equals("entry")){
-									temporallyRelatedInfoNode.removeChild(lastChild);
-									Node criteriaNode = lastChild.getFirstChild();
-									temporallyRelatedInfoNode.appendChild(criteriaNode);
-									NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
-									if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
-										Node childTemporalNode = childTemporalNodeList.item(0);
-										Node temporalInfoNode = childTemporalNode.getFirstChild();
-										//find sourceAttribute
-										NodeList childs = temporalInfoNode.getChildNodes();
-										for(int c=0;c<childs.getLength();c++){
-											Node child = childs.item(c);
-											String childName = child.getNodeName();
-											System.out.println("childName:"+childName);
-											if("qdm:sourceAttribute".equals(childName)){
-												Node cloneAttNode = child.cloneNode(true);
-												temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
-												hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "qdm", "targetAttribute");
-												break;
-											}
-										}
-									}
-								}
-								break;
-							default:
-								//Dont do anything
-								break;
-						}
-					}
-					NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
-					if((outBoundList != null) && (outBoundList.getLength() > 0)){
-						Node outBound = outBoundList.item(0);
-						clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
-					}else{
-						clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
-					}
-					
-					//create comment node
-					Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
-					dataCriteriaSectionElem.appendChild(comment);
-					dataCriteriaSectionElem.appendChild(clonedEntryNodeForElementRef);
-				}
+				getrelOpQDMLHS(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			}
 		}else{
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
+		}
+	}
+
+	/**
+	 * @param me
+	 * @param relOpNode
+	 * @param dataCriteriaSectionElem
+	 * @param hqmfXmlProcessor
+	 * @param lhsNode
+	 * @param rhsNode
+	 * @param relOpParentNode
+	 * @param rhsName
+	 * @throws XPathExpressionException
+	 */
+	private void getrelOpQDMLHS(MeasureExport me, Node relOpNode,
+			Node dataCriteriaSectionElem, 
+			Node lhsNode, Node rhsNode)
+			throws XPathExpressionException {
+		
+		String ext = getElementRefExt(lhsNode, me.getSimpleXMLProcessor());
+		String root = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
+		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
+		String rhsName = rhsNode.getNodeName();
+		Node relOpParentNode = relOpNode.getParentNode();
+		
+		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+		
+		if (idNodeQDM != null) {
+			if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())){
+				root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			}
+			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
+			Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
+			
+			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+			if (relOpParentNode != null) {
+				if (relOpParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
+					String isQdmVariable = relOpParentNode.getAttributes()
+							.getNamedItem("qdmVariable").getNodeValue();
+					if ("true".equalsIgnoreCase(isQdmVariable)) {
+						ext = "qdm_var_" + ext;
+					}
+				}
+			}
+			
+			NodeList childNodeList = clonedEntryNodeForElementRef.getChildNodes();
+			if (childNodeList != null) {
+				NodeList entryChildList = childNodeList.item(0).getChildNodes();
+				if (entryChildList != null) {
+					for (int i = 0; i < entryChildList.getLength(); i++) {
+						Node childNode = entryChildList.item(i);
+						if (childNode.getNodeName().equalsIgnoreCase(ID)) {
+							childNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
+							childNode.getAttributes().getNamedItem("root").setNodeValue(root);
+							break;
+						}
+					}
+				}
+			}
+			
+			Element temporallyRelatedInfoNode = createBaseTemporalNode(
+					relOpNode, hqmfXmlProcessor);
+			generateTemporalAttribute(hqmfXmlProcessor, lhsNode,
+					temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
+			if("elementRef".equals(rhsName)){
+				Node entryNode = generateCritRefElementRef(me, temporallyRelatedInfoNode, rhsNode, me.getHQMFXmlProcessor());
+				generateTemporalAttribute(hqmfXmlProcessor, rhsNode,
+						temporallyRelatedInfoNode, entryNode, false);
+			}else if("subTreeRef".equals(rhsName)){
+				generateCritRefForNode(me, temporallyRelatedInfoNode, rhsNode);
+			}else{
+				switch (rhsName) {
+					case "setOp":
+						generateCritRefSetOp(me, dataCriteriaSectionElem, hqmfXmlProcessor,
+								rhsNode, temporallyRelatedInfoNode);
+						break;
+					case "relationalOp":
+						generateRelOpHQMF(me,rhsNode,temporallyRelatedInfoNode);
+						Node lastChild = temporallyRelatedInfoNode.getLastChild();
+						if(lastChild.getNodeName().equals("entry")){
+							temporallyRelatedInfoNode.removeChild(lastChild);
+							Node criteriaNode = lastChild.getFirstChild();
+							temporallyRelatedInfoNode.appendChild(criteriaNode);
+							NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
+							if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
+								Node childTemporalNode = childTemporalNodeList.item(0);
+								Node temporalInfoNode = childTemporalNode.getFirstChild();
+								//find sourceAttribute
+								NodeList childs = temporalInfoNode.getChildNodes();
+								for(int c=0;c<childs.getLength();c++){
+									Node child = childs.item(c);
+									String childName = child.getNodeName();
+									System.out.println("childName:"+childName);
+									if("qdm:sourceAttribute".equals(childName)){
+										Node cloneAttNode = child.cloneNode(true);
+										temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
+										hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "qdm", "targetAttribute");
+										break;
+									}
+								}
+							}
+						}
+						break;
+					default:
+						//Dont do anything
+						break;
+				}
+			}
+			NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
+			if((outBoundList != null) && (outBoundList.getLength() > 0)){
+				Node outBound = outBoundList.item(0);
+				clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+			}else{
+				clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+			}
+			
+			//create comment node
+			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			dataCriteriaSectionElem.appendChild(comment);
+			dataCriteriaSectionElem.appendChild(clonedEntryNodeForElementRef);
 		}
 	}
 	

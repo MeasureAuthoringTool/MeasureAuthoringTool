@@ -683,7 +683,7 @@ public class XmlTreePresenter {
 	 * @param xml - String.
 	 * @param sortedClauseMap the sorted clause map
 	 */
-	protected void updateSubTreeElementsMap(String xml, LinkedHashMap<String, String> sortedClauseMap) {
+	protected void updateSubTreeElementsMap(String xml, LinkedHashMap<String, String> sortedClauseMap) {		
 		
 		if(PopulationWorkSpaceConstants.subTreeLookUpName == null){
 			PopulationWorkSpaceConstants.subTreeLookUpName = new LinkedHashMap<String, String>();
@@ -691,6 +691,9 @@ public class XmlTreePresenter {
 		if(PopulationWorkSpaceConstants.subTreeLookUpNode == null){
 			PopulationWorkSpaceConstants.subTreeLookUpNode = new LinkedHashMap<String, Node>();
 		}
+		//after saving Clause workspace, creating new subTreeLookUpNode to fix the clause duplicate issue
+		PopulationWorkSpaceConstants.subTreeLookUpNode = new LinkedHashMap<String, Node>();
+		
 		PopulationWorkSpaceConstants.subTreeLookUpName = sortedClauseMap;
 		Document document = XMLParser.parse(xml);
 		
@@ -707,7 +710,7 @@ public class XmlTreePresenter {
 					if (uuid.equalsIgnoreCase(entry1.getKey())) {
 						PopulationWorkSpaceConstants.subTreeLookUpNode.put(
 								entry1.getValue() + "~" + entry1.getKey(),
-								nodeList.item(i));
+								nodeList.item(i));						
 						break;
 					}
 					

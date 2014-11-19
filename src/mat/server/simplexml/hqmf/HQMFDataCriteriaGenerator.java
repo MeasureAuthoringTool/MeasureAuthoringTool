@@ -36,14 +36,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	private String removeXmlTagNamespaceAndPreamble(String xmlString) {
 		xmlString = xmlString.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim()
 				.replaceAll("(<\\?[^<]*\\?>)?", "");/* remove preamble */
-				
-				
+								
 		xmlString = xmlString.replaceAll("<root>", "").replaceAll("</root>","");
-				
-		int indx = xmlString.indexOf("<dataCriteriaSection");
-		if(indx > -1){
+		
+		String componentTag = "<component";
+		int indx = xmlString.indexOf(componentTag);
+		while(indx > -1){
 			int indx2 = xmlString.indexOf(">", indx);
-			xmlString = xmlString.substring(0, indx+"<dataCriteriaSection".length()) + xmlString.substring(indx2);
+			xmlString = xmlString.substring(0, indx+componentTag.length()) + xmlString.substring(indx2);
+			indx = xmlString.indexOf(componentTag,indx2);
 		}
 		
 		return xmlString;

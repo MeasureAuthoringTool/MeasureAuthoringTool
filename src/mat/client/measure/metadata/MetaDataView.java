@@ -1083,7 +1083,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			}
 		};
 		
-		cellTable.addColumn(vsacDataType, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
+		cellTable.addColumn(vsacDataType, SafeHtmlUtils.fromSafeConstant("<span title='Datatype'>" + "Datatype"
 				+ "</span>"));
 		
 		cellTable.setWidth("100%");

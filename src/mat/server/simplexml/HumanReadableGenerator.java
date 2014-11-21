@@ -71,6 +71,7 @@ public class HumanReadableGenerator {
 	
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
+
 	
 	/**
 	 * Generate html for population or subtree.
@@ -884,9 +885,8 @@ public class HumanReadableGenerator {
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
 			// Element ulElement = parentListElement.appendElement(HTML_LI);
-			Node parentAttrNode = item.getParentNode().getAttributes().getNamedItem("type"); 
-			if( parentAttrNode!=null  && parentAttrNode.getNodeValue()
-					.contains("SATISFIES")){
+			//Node parentAttrNode = item.getParentNode().getAttributes().getNamedItem("type"); 
+			if( checkForSatisfiesParentNode(item)){
 				parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
 						true);
 			} else {
@@ -918,6 +918,7 @@ public class HumanReadableGenerator {
 	 * @param list the list
 	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
 	 * @param parentNode the parent node
+	 * @return true, if successful
 	 */
 	private static boolean displayNone(Element list,
 			XmlProcessor populationOrSubtreeXMLProcessor, Node parentNode) {
@@ -2289,6 +2290,37 @@ public class HumanReadableGenerator {
 			return date;
 		}
 		return dateString;
+	}
+	
+	
+	/**
+	 * Check for satisfies parent node.
+	 *
+	 * @param item the item
+	 * @return true, if successful
+	 */
+	private static boolean checkForSatisfiesParentNode(Node item){
+		String nodeName = item.getNodeName();
+		switch(nodeName){
+		case "functionalOp":
+			if (item.getParentNode().getAttributes().getNamedItem("type") != null
+			&& item.getParentNode().getAttributes()
+					.getNamedItem("type").getNodeValue()
+					.contains("SATISFIES")) {
+				return true;
+			}
+			break;
+		case "relationOp":
+			return checkForSatisfiesParentNode(item.getParentNode()); 
+		case "setOp":
+			return checkForSatisfiesParentNode(item.getParentNode());
+		case "subTree":
+			return false;
+			default://do nothing
+				break;		
+		}
+	
+		return checkForSatisfiesParentNode(item.getParentNode());
 	}
 	
 }

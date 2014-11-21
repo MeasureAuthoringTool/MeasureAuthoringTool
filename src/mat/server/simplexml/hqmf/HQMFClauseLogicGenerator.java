@@ -406,7 +406,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateRelOpHQMF(MeasureExport me, Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
+	private Node generateRelOpHQMF(MeasureExport me, Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
 		
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		
@@ -416,11 +416,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String lhsName = lhsNode.getNodeName();			
 			
 			if("elementRef".equals(lhsName)){
-				getrelOpQDMLHS(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				return getrelOpQDMLHS(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			}
 		}else{
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
 		}
+		return null;
 	}
 
 	/**
@@ -434,7 +435,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param rhsName
 	 * @throws XPathExpressionException
 	 */
-	private void getrelOpQDMLHS(MeasureExport me, Node relOpNode,
+	private Node getrelOpQDMLHS(MeasureExport me, Node relOpNode,
 			Node dataCriteriaSectionElem, 
 			Node lhsNode, Node rhsNode)
 			throws XPathExpressionException {
@@ -532,20 +533,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 				Node outBound = outBoundList.item(0);
 				clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				NodeList participationList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("participation");
-				if((participationList != null) && (participationList.getLength() > 0)){
-					Node participation = participationList.item(0);
-					clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, participation);
-				}else{
-					clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
-				}
+				clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
 			}
 			
 			//create comment node
 			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			dataCriteriaSectionElem.appendChild(comment);
 			dataCriteriaSectionElem.appendChild(clonedEntryNodeForElementRef);
+			return clonedEntryNodeForElementRef;
 		}
+		return null;
 	}
 	
 	/**
@@ -731,7 +728,36 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private void generateCritRefRelOp(MeasureExport me, Node parentNode,
 			XmlProcessor hqmfXmlProcessor, Node childNode,
 			Node outboundRelElem) throws XPathExpressionException {
-		generateRelOpHQMF(me, childNode,outboundRelElem);
+		Node relOpEntryNode = generateRelOpHQMF(me, childNode,parentNode);
+		
+		if(relOpEntryNode != null){
+			Node critNode = relOpEntryNode.getFirstChild();
+			NodeList nodeList = ((Element)critNode).getElementsByTagName(ID);
+			if(nodeList != null && nodeList.getLength() > 0){
+				Node idNode = nodeList.item(0);
+				NamedNodeMap idAttribMap = idNode.getAttributes();
+				String idRoot = idAttribMap.getNamedItem(ROOT).getNodeValue();
+				String idExt = idAttribMap.getNamedItem("extension").getNodeValue();
+				
+				Node parent = idNode.getParentNode();
+				
+				NamedNodeMap attribMap = parent.getAttributes();
+				String classCode = attribMap.getNamedItem(CLASS_CODE).getNodeValue();
+				String moodCode = attribMap.getNamedItem(MOOD_CODE).getNodeValue();
+				
+				//create criteriaRef
+				Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+				criteriaReference.setAttribute(CLASS_CODE, classCode);
+				criteriaReference.setAttribute(MOOD_CODE, moodCode);
+				
+				Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
+				id.setAttribute(ROOT, idRoot);
+				id.setAttribute("extension", idExt);
+				
+				criteriaReference.appendChild(id);
+				outboundRelElem.appendChild(criteriaReference);
+			}
+		}
 	}
 	
 	/**

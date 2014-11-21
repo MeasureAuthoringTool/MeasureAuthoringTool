@@ -526,12 +526,19 @@ public class HQMFClauseLogicGenerator implements Generator {
 						break;
 				}
 			}
+			
 			NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
 			if((outBoundList != null) && (outBoundList.getLength() > 0)){
 				Node outBound = outBoundList.item(0);
 				clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+				NodeList participationList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("participation");
+				if((participationList != null) && (participationList.getLength() > 0)){
+					Node participation = participationList.item(0);
+					clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, participation);
+				}else{
+					clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+				}
 			}
 			
 			//create comment node

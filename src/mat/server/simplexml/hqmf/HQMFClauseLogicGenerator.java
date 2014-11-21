@@ -1,6 +1,8 @@
 package mat.server.simplexml.hqmf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -481,12 +483,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			Element temporallyRelatedInfoNode = createBaseTemporalNode(
 					relOpNode, hqmfXmlProcessor);
-			generateTemporalAttribute(hqmfXmlProcessor, lhsNode,
-					temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
+			generateTemporalAttribute(hqmfXmlProcessor, lhsNode,temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
 			if("elementRef".equals(rhsName)){
 				Node entryNode = generateCritRefElementRef(me, temporallyRelatedInfoNode, rhsNode, me.getHQMFXmlProcessor());
-				generateTemporalAttribute(hqmfXmlProcessor, rhsNode,
-						temporallyRelatedInfoNode, entryNode, false);
+				generateTemporalAttribute(hqmfXmlProcessor, rhsNode,temporallyRelatedInfoNode, entryNode, false);
 			}else if("subTreeRef".equals(rhsName)){
 				generateCritRefForNode(me, temporallyRelatedInfoNode, rhsNode);
 			}else{
@@ -511,7 +511,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 								for(int c=0;c<childs.getLength();c++){
 									Node child = childs.item(c);
 									String childName = child.getNodeName();
-									System.out.println("childName:"+childName);
 									if("qdm:sourceAttribute".equals(childName)){
 										Node cloneAttNode = child.cloneNode(true);
 										temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
@@ -556,32 +555,79 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node rhsNode, Element temporallyRelatedInfoNode, Node entryNode, boolean isSource) {
 		if(entryNode != null){
 			Element entryElement = (Element)entryNode;
-			NodeList nodeList = entryElement.getElementsByTagName("outboundRelationship");
-			if((nodeList != null) && (nodeList.getLength() > 0)){
-				Node outBoundNode = nodeList.item(0);
-				Node criteriaNode = outBoundNode.getFirstChild();
-				NodeList idNodeList = ((Element)criteriaNode).getElementsByTagName(ID);
-				if((idNodeList != null) && (idNodeList.getLength() > 0)){
-					Node idNode = idNodeList.item(0);
-					
-					//create sourceAttribute/targetAttribute
-					String attribName = "qdm:sourceAttribute";
-					if(!isSource){
-						attribName = "qdm:targetAttribute";
-					}
-					Element attribute = hqmfXmlProcessor.getOriginalDoc().createElement(attribName);
-					String value = rhsNode.getFirstChild().getAttributes().getNamedItem("name").getNodeValue();
-					attribute.setAttribute("name", value);
-					attribute.setAttribute("bound", "effectiveTime.low");
-					
-					Element qdmId = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:id");
-					qdmId.setAttribute(ROOT, idNode.getAttributes().getNamedItem(ROOT).getNodeValue());
-					qdmId.setAttribute("extension", idNode.getAttributes().getNamedItem("extension").getNodeValue());
-					
-					attribute.appendChild(qdmId);
-					temporallyRelatedInfoNode.getFirstChild().appendChild(attribute);
-					return attribute;
+			
+			if(!rhsNode.hasChildNodes()){
+				return null;
+			}else{
+				Node child = rhsNode.getFirstChild();
+				if(!"attribute".equals(child.getNodeName())){
+					return null;
 				}
+				
+				String value = child.getAttributes().getNamedItem("name").getNodeValue();
+				List<String> validAttribNames = new ArrayList<String>();
+				validAttribNames.add("incision datetime");
+				validAttribNames.add("facility location arrival datetime");
+				validAttribNames.add("facility location departure datetime");
+				validAttribNames.add("signed datetime");
+				validAttribNames.add("start datetime");
+				validAttribNames.add("stop datetime");
+				if(!validAttribNames.contains(value)){
+					return null;
+				}
+				if("start datetime".equals(value) || "stop datetime".equals(value)){
+					String dataType = rhsNode.getAttributes().getNamedItem("displayName").getNodeValue();
+					if(!dataType.endsWith("Order")){
+						return null;
+					}
+				}
+				
+				//create sourceAttribute/targetAttribute
+				String attribName = "qdm:sourceAttribute";
+				if(!isSource){
+					attribName = "qdm:targetAttribute";
+				}
+				Element attribute = hqmfXmlProcessor.getOriginalDoc().createElement(attribName);
+				attribute.setAttribute("name", value);
+				attribute.setAttribute("bound", "effectiveTime.low");
+				
+				if("incision datetime".equals(value)){
+					NodeList nodeList = entryElement.getElementsByTagName("outboundRelationship");
+					if((nodeList != null) && (nodeList.getLength() > 0)){
+						//Always get the last outBoundRelationShip tag, because this is the one 
+						//which will represent the 
+						Node outBoundNode = nodeList.item(nodeList.getLength()-1);
+						Node criteriaNode = outBoundNode.getFirstChild();
+						
+						NodeList idNodeList = ((Element)criteriaNode).getElementsByTagName(ID);
+						if((idNodeList != null) && (idNodeList.getLength() > 0)){
+							Node idNode = idNodeList.item(0);
+							Element qdmId = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:id");
+							qdmId.setAttribute(ROOT, idNode.getAttributes().getNamedItem(ROOT).getNodeValue());
+							qdmId.setAttribute("extension", idNode.getAttributes().getNamedItem("extension").getNodeValue());
+							attribute.appendChild(qdmId);
+						}
+					}
+				}else{
+					NodeList nodeList = entryElement.getElementsByTagName("participation");
+					if((nodeList != null) && (nodeList.getLength() > 0)){
+						//Always get the last outBoundRelationShip tag, because this is the one 
+						//which will represent the 
+						Node participationNode = nodeList.item(nodeList.getLength()-1);
+						Node roleNode = ((Element)participationNode).getElementsByTagName("role").item(0);
+						NodeList idNodeList = ((Element)roleNode).getElementsByTagName(ID);
+						if((idNodeList != null) && (idNodeList.getLength() > 0)){
+							Node idNode = idNodeList.item(0);
+							Node itemNode = idNode.getFirstChild();
+							Element qdmId = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:id");
+							qdmId.setAttribute(ROOT, itemNode.getAttributes().getNamedItem(ROOT).getNodeValue());
+							qdmId.setAttribute("extension", itemNode.getAttributes().getNamedItem("extension").getNodeValue());
+							attribute.appendChild(qdmId);
+						}
+					}
+				}				
+				temporallyRelatedInfoNode.getFirstChild().appendChild(attribute);
+				return attribute;
 			}
 		}
 		return null;
@@ -678,8 +724,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private void generateCritRefRelOp(MeasureExport me, Node parentNode,
 			XmlProcessor hqmfXmlProcessor, Node childNode,
 			Node outboundRelElem) throws XPathExpressionException {
-		//TODO: Finish this method
-		generateRelOpHQMF(me, childNode,parentNode);
+		generateRelOpHQMF(me, childNode,outboundRelElem);
 	}
 	
 	/**
@@ -962,4 +1007,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		outboundRelElem.setAttribute(TYPE_CODE, "COMP");
 		return outboundRelElem;
 	}
+	
+
 }

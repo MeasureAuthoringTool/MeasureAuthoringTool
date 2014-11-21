@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1009,6 +1012,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+			clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 	}
@@ -1071,6 +1075,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+			clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 	}
@@ -1115,6 +1120,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+			clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
@@ -2236,5 +2242,27 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		return returnString;
 	}
 	
-	
+	private void clean(Node node)
+	{
+	  NodeList childNodes = node.getChildNodes();
+
+	  for (int n = childNodes.getLength() - 1; n >= 0; n--)
+	  {
+	     Node child = childNodes.item(n);
+	     short nodeType = child.getNodeType();
+
+	     if (nodeType == Node.ELEMENT_NODE)
+	        clean(child);
+	     else if (nodeType == Node.TEXT_NODE)
+	     {
+	        String trimmedNodeVal = child.getNodeValue().trim();
+	        if (trimmedNodeVal.length() == 0)
+	           node.removeChild(child);
+	        else
+	           child.setNodeValue(trimmedNodeVal);
+	     }
+	     else if (nodeType == Node.COMMENT_NODE)
+	        node.removeChild(child);
+	  }
+	}
 }

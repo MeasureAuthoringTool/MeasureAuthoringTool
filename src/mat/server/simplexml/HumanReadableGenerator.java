@@ -884,9 +884,8 @@ public class HumanReadableGenerator {
 			XmlProcessor populationOrSubtreeXMLProcessor) {
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
-			// Element ulElement = parentListElement.appendElement(HTML_LI);
-			//Node parentAttrNode = item.getParentNode().getAttributes().getNamedItem("type"); 
-			if( checkForSatisfiesParentNode(item)){
+			// Element ulElement = parentListElement.appendElement(HTML_LI); 
+			if( checkForSatisfiesParentNode(item.getParentNode())){
 				parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
 						true);
 			} else {
@@ -2303,14 +2302,14 @@ public class HumanReadableGenerator {
 		String nodeName = item.getNodeName();
 		switch(nodeName){
 		case "functionalOp":
-			if (item.getParentNode().getAttributes().getNamedItem("type") != null
-			&& item.getParentNode().getAttributes()
+			if (item.getAttributes().getNamedItem("type") != null
+			&& item.getAttributes()
 					.getNamedItem("type").getNodeValue()
 					.contains("SATISFIES")) {
 				return true;
 			}
 			break;
-		case "relationOp":
+		case "relationalOp":
 			return checkForSatisfiesParentNode(item.getParentNode()); 
 		case "setOp":
 			return checkForSatisfiesParentNode(item.getParentNode());

@@ -593,8 +593,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 				Element attribute = hqmfXmlProcessor.getOriginalDoc().createElement(attribName);
 				attribute.setAttribute("name", value);
-				attribute.setAttribute("bound", "effectiveTime.low");
-				
+				String boundValue = "effectiveTime.low";
+								
 				if("incision datetime".equals(value)){
 					NodeList nodeList = entryElement.getElementsByTagName("outboundRelationship");
 					if((nodeList != null) && (nodeList.getLength() > 0)){
@@ -627,9 +627,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 							qdmId.setAttribute(ROOT, itemNode.getAttributes().getNamedItem(ROOT).getNodeValue());
 							qdmId.setAttribute("extension", itemNode.getAttributes().getNamedItem("extension").getNodeValue());
 							attribute.appendChild(qdmId);
+							
+							if("start datetime".equals(value)){
+								boundValue = "time.low";
+							}else if("stop datetime".equals(value) || "signed datetime".equals(value)){
+								boundValue = "time.high";
+							}else if("facility location departure datetime".equals(value)){
+								boundValue = "effectiveTime.high"; 
+							}
 						}
 					}
-				}				
+				}
+				attribute.setAttribute("bound", boundValue);
 				temporallyRelatedInfoNode.getFirstChild().appendChild(attribute);
 				return attribute;
 			}
@@ -918,6 +927,22 @@ public class HQMFClauseLogicGenerator implements Generator {
 				outboundRelElem.appendChild(criteriaReference);
 				//return <entry> element
 				return parent.getParentNode();
+			}
+		}else{
+			//check if this is a measurement period
+			String displayName = elementRefNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			if("Measurement Period : Timing Element".equals(displayName)){
+				//create criteriaRef
+				Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+				criteriaReference.setAttribute(CLASS_CODE, "OBS");
+				criteriaReference.setAttribute(MOOD_CODE, "EVN");
+				
+				Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
+				id.setAttribute(ROOT, elementRefNode.getAttributes().getNamedItem(ID).getNodeValue());
+				id.setAttribute("extension", "measureperiod");
+				
+				criteriaReference.appendChild(id);
+				outboundRelElem.appendChild(criteriaReference);
 			}
 		}
 		return null;

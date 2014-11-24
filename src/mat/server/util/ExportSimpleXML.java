@@ -729,12 +729,15 @@ public class ExportSimpleXML {
 	
 		NodeList logicalNode = newClauseNode.getChildNodes();
 		
-		for(int i = 0; i<logicalNode.getLength();i++){
+//		for(int i = 0; i<logicalNode.getLength();i++){
+		for(int i = logicalNode.getLength()-1; i>-1; i--){
 			Node innerNode = logicalNode.item(i);
 			if(newClauseNode.getAttributes().getNamedItem("displayName").
 					getNodeValue().contains("stratum")){
 				newClauseNode.removeChild(innerNode);
-			} else {
+			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
+				newClauseNode.removeChild(innerNode);
+			}else {
 			NodeList innerNodeChildren = innerNode.getChildNodes();
 			int length =  innerNodeChildren.getLength();
 			for(int j = length - 1; j>-1; j--){

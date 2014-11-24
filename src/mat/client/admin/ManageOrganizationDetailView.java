@@ -117,7 +117,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		oid.setMaxLength(50);
 		// rootOid.setMaxLength(50);
 		title.setMaxLength(32);
-		organization.setMaxLength(80);
+		organization.setMaxLength(150);
 	}
 	
 	/* (non-Javadoc)

@@ -39,11 +39,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -395,9 +392,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private String stewardValue;
 	
 	/** The calender year. */
-	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calender Year", "Calender Year", 1);
+	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calendar Year", "Calendar Year", 1);
 	
-
+	
 	/**
 	 * Instantiates a new meta data view.
 	 */
@@ -450,7 +447,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				
 			}
 		};
-			
+		
 		authorListBox.setVisibleItemCount(5);
 		authorListBox.addChangeHandler(changeHandler);
 		authorListBox.getElement().setId("authorListBox_ListBox");
@@ -547,27 +544,27 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		NQFIDInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
-//		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
-//		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
-//		Label fromLabel = new Label("From");
-//		fromLabel.addStyleName("firstLabel");
-//		measurePeriodPanel.add(fromLabel);
-//		measurePeriodPanel.add(measurePeriodFromInput);
-//		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
-//		Label toLabel = new Label("To");
-//		toLabel.addStyleName("secondLabel");
-//		measurePeriodPanel.add(toLabel);
-//		measurePeriodPanel.add(measurePeriodToInput);
-//		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
-//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
-//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
-//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
-//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
-//		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
-//		measurePeriodFromInputLabel.setStyleName("bold");
-//		fPanel.add(measurePeriodFromInputLabel);
-//		fPanel.add(measurePeriodPanel);
-//		fPanel.add(new SpacerWidget());
+		//		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
+		//		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
+		//		Label fromLabel = new Label("From");
+		//		fromLabel.addStyleName("firstLabel");
+		//		measurePeriodPanel.add(fromLabel);
+		//		measurePeriodPanel.add(measurePeriodFromInput);
+		//		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
+		//		Label toLabel = new Label("To");
+		//		toLabel.addStyleName("secondLabel");
+		//		measurePeriodPanel.add(toLabel);
+		//		measurePeriodPanel.add(measurePeriodToInput);
+		//		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
+		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
+		//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+		//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
+		//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
+		//		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
+		//		measurePeriodFromInputLabel.setStyleName("bold");
+		//		fPanel.add(measurePeriodFromInputLabel);
+		//		fPanel.add(measurePeriodPanel);
+		//		fPanel.add(new SpacerWidget());
 		VerticalPanel measurementPeriodPanel = new VerticalPanel();
 		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
 		measurementPeriodPanel.setStyleName("valueSetSearchPanel");
@@ -601,8 +598,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodToInput.getDateBox().setWidth("127px");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
-//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
-//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
+		//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		measurePeriodFromInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override

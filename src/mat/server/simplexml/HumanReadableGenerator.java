@@ -1607,11 +1607,12 @@ public class HumanReadableGenerator {
 		// dont have 'Timing Element', 'Patient Characteristic Expired' and
 		// 'Patient Characteristic Birthdate' Default QDM data type and are not
 		// supplement data elems
+		String xpathForQDMElements = "/measure/elementLookUp/qdm[@datatype != 'Timing Element' and @oid!='"
+				+ ConstantMessages.BIRTHDATE_OID + "' " + "and @oid!='"
+				+ ConstantMessages.EXPIRED_OID + "']";
 		NodeList qdmElements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
-				"/measure/elementLookUp/qdm[@datatype != 'Timing Element' and @oid!='"
-						+ ConstantMessages.BIRTHDATE_OID + "' " + "and @oid!='"
-						+ ConstantMessages.EXPIRED_OID + "']");
+				xpathForQDMElements);
 		
 		Map<String, Node> qdmMap = new HashMap<String, Node>();
 		Map<String, Node> attributeMap = new HashMap<String, Node>();
@@ -1630,7 +1631,8 @@ public class HumanReadableGenerator {
 					.getNodeValue();
 			
 			if ("attribute".equals(datatype)) {
-				attributeMap.put(oid + datatype, qdmNode);
+				//attributeMap.put(oid + datatype, qdmNode);
+				attributeMap.put(datatype + ":" + name + "~" + oid, qdmNode);
 			} else if ("true".equals(suppDataElement)) {
 				int isUsedInLogic = simpleXMLProcessor.getNodeCount(
 						simpleXMLProcessor.getOriginalDoc(),

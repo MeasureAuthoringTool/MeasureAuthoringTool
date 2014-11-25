@@ -407,20 +407,105 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateRelOpHQMF(MeasureExport me, Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
-		
-		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
-		
+					
 		if(relOpNode.getChildNodes().getLength() == 2){
 			Node lhsNode = relOpNode.getFirstChild();
 			Node rhsNode = relOpNode.getLastChild();
 			String lhsName = lhsNode.getNodeName();			
 			
 			if("elementRef".equals(lhsName)){
-				return getrelOpQDMLHS(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				return getrelOpLHSQDM(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+			}else if("relationalOp".equals(lhsName)){
+				return getrelOpLHSRelOp(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+			}else if("setOp".equals(lhsName)){
+				return getrelOpLHSSetOp(me, relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			}
 		}else{
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
 		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param me
+	 * @param relOpNode
+	 * @param dataCriteriaSectionElem
+	 * @param lhsNode
+	 * @param rhsNode
+	 * @return
+	 */
+	private Node getrelOpLHSSetOp(MeasureExport me, Node relOpNode,
+			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) {
+		
+		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
+		
+		try{
+			Node setOpEntryNode = generateSetOpHQMF(me, lhsNode, dataCriteriaSectionElem);
+			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			
+			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
+			
+			NodeList outBoundList = ((Element)setOpEntryNode.getFirstChild()).getElementsByTagName("outboundRelationship");
+			if((outBoundList != null) && (outBoundList.getLength() > 0)){
+				Node outBound = outBoundList.item(0);
+				setOpEntryNode.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+			}else{
+				setOpEntryNode.getFirstChild().appendChild(temporallyRelatedInfoNode);
+			}
+			
+			//create comment node
+			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			dataCriteriaSectionElem.appendChild(comment);
+			dataCriteriaSectionElem.appendChild(setOpEntryNode);
+			return setOpEntryNode;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param me
+	 * @param relOpNode
+	 * @param dataCriteriaSectionElem
+	 * @param lhsNode
+	 * @param rhsNode
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private Node getrelOpLHSRelOp(MeasureExport me, Node relOpNode,
+			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) throws XPathExpressionException {
+		
+		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
+						
+		try{
+			Node relOpEntryNode = generateRelOpHQMF(me, lhsNode, dataCriteriaSectionElem);
+			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			
+			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
+			
+			NodeList outBoundList = ((Element)relOpEntryNode.getFirstChild()).getElementsByTagName("outboundRelationship");
+			if((outBoundList != null) && (outBoundList.getLength() > 0)){
+				Node outBound = outBoundList.item(0);
+				relOpEntryNode.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+			}else{
+				relOpEntryNode.getFirstChild().appendChild(temporallyRelatedInfoNode);
+			}
+			
+			//create comment node
+			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			dataCriteriaSectionElem.appendChild(comment);
+			dataCriteriaSectionElem.appendChild(relOpEntryNode);
+			return relOpEntryNode;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
@@ -435,7 +520,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param rhsName
 	 * @throws XPathExpressionException
 	 */
-	private Node getrelOpQDMLHS(MeasureExport me, Node relOpNode,
+	private Node getrelOpLHSQDM(MeasureExport me, Node relOpNode,
 			Node dataCriteriaSectionElem, 
 			Node lhsNode, Node rhsNode)
 			throws XPathExpressionException {
@@ -443,7 +528,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String ext = getElementRefExt(lhsNode, me.getSimpleXMLProcessor());
 		String root = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
-		String rhsName = rhsNode.getNodeName();
 		Node relOpParentNode = relOpNode.getParentNode();
 		
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
@@ -482,51 +566,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 			}
 			
-			Element temporallyRelatedInfoNode = createBaseTemporalNode(
-					relOpNode, hqmfXmlProcessor);
+			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
 			generateTemporalAttribute(hqmfXmlProcessor, lhsNode,temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
-			if("elementRef".equals(rhsName)){
-				Node entryNode = generateCritRefElementRef(me, temporallyRelatedInfoNode, rhsNode, me.getHQMFXmlProcessor());
-				generateTemporalAttribute(hqmfXmlProcessor, rhsNode,temporallyRelatedInfoNode, entryNode, false);
-			}else if("subTreeRef".equals(rhsName)){
-				generateCritRefForNode(me, temporallyRelatedInfoNode, rhsNode);
-			}else{
-				switch (rhsName) {
-					case "setOp":
-						generateCritRefSetOp(me, dataCriteriaSectionElem, hqmfXmlProcessor,
-								rhsNode, temporallyRelatedInfoNode);
-						break;
-					case "relationalOp":
-						generateRelOpHQMF(me,rhsNode,temporallyRelatedInfoNode);
-						Node lastChild = temporallyRelatedInfoNode.getLastChild();
-						if(lastChild.getNodeName().equals("entry")){
-							temporallyRelatedInfoNode.removeChild(lastChild);
-							Node criteriaNode = lastChild.getFirstChild();
-							temporallyRelatedInfoNode.appendChild(criteriaNode);
-							NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
-							if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
-								Node childTemporalNode = childTemporalNodeList.item(0);
-								Node temporalInfoNode = childTemporalNode.getFirstChild();
-								//find sourceAttribute
-								NodeList childs = temporalInfoNode.getChildNodes();
-								for(int c=0;c<childs.getLength();c++){
-									Node child = childs.item(c);
-									String childName = child.getNodeName();
-									if("qdm:sourceAttribute".equals(childName)){
-										Node cloneAttNode = child.cloneNode(true);
-										temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
-										hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "qdm", "targetAttribute");
-										break;
-									}
-								}
-							}
-						}
-						break;
-					default:
-						//Dont do anything
-						break;
-				}
-			}
+			
+			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			
 			NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
 			if((outBoundList != null) && (outBoundList.getLength() > 0)){
@@ -543,6 +586,56 @@ public class HQMFClauseLogicGenerator implements Generator {
 			return clonedEntryNodeForElementRef;
 		}
 		return null;
+	}
+
+	private void handleRelOpRHS(MeasureExport me, Node dataCriteriaSectionElem,
+			Node rhsNode, Element temporallyRelatedInfoNode) throws XPathExpressionException {
+		
+		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
+		String rhsName = rhsNode.getNodeName();
+		
+		if("elementRef".equals(rhsName)){
+			Node entryNode = generateCritRefElementRef(me, temporallyRelatedInfoNode, rhsNode, me.getHQMFXmlProcessor());
+			generateTemporalAttribute(hqmfXmlProcessor, rhsNode,temporallyRelatedInfoNode, entryNode, false);
+		}else if("subTreeRef".equals(rhsName)){
+			generateCritRefForNode(me, temporallyRelatedInfoNode, rhsNode);
+		}else{
+			switch (rhsName) {
+				case "setOp":
+					generateCritRefSetOp(me, dataCriteriaSectionElem, hqmfXmlProcessor,
+							rhsNode, temporallyRelatedInfoNode);
+					break;
+				case "relationalOp":
+					generateRelOpHQMF(me,rhsNode,temporallyRelatedInfoNode);
+					Node lastChild = temporallyRelatedInfoNode.getLastChild();
+					if(lastChild.getNodeName().equals("entry")){
+						temporallyRelatedInfoNode.removeChild(lastChild);
+						Node criteriaNode = lastChild.getFirstChild();
+						temporallyRelatedInfoNode.appendChild(criteriaNode);
+						NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
+						if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
+							Node childTemporalNode = childTemporalNodeList.item(0);
+							Node temporalInfoNode = childTemporalNode.getFirstChild();
+							//find sourceAttribute
+							NodeList childs = temporalInfoNode.getChildNodes();
+							for(int c=0;c<childs.getLength();c++){
+								Node child = childs.item(c);
+								String childName = child.getNodeName();
+								if("qdm:sourceAttribute".equals(childName)){
+									Node cloneAttNode = child.cloneNode(true);
+									temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
+									hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "qdm", "targetAttribute");
+									break;
+								}
+							}
+						}
+					}
+					break;
+				default:
+					//Dont do anything
+					break;
+			}
+		}
 	}
 	
 	/**
@@ -987,20 +1080,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 		}
 	}
-	
-	/**
-	 * Generate crit ref rel op.
-	 *
-	 * @param me the me
-	 * @param outboundRelElem the outbound rel elem
-	 * @param childNode the child node
-	 * @param hqmfXmlProcessor the hqmf xml processor
-	 */
-	private void generateCritRefRelOp(MeasureExport me, Element outboundRelElem, Node childNode, XmlProcessor hqmfXmlProcessor) {
-		// TODO Auto-generated method stub
 		
-	}
-	
 	/**
 	 * Gets the element ref ext.
 	 *

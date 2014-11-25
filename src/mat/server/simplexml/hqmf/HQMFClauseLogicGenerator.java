@@ -219,7 +219,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 		if(idNodeQDM != null){
 			Node entryElem = idNodeQDM.getParentNode().getParentNode().cloneNode(true);
-			Node newIdNode = ((Element)entryElem.getFirstChild()).getElementsByTagName(ID).item(0);
+			Node newIdNode = getTagFromEntry(entryElem, ID);
+			//Node newIdNode = ((Element)entryElem.getFirstChild()).getElementsByTagName(ID).item(0);
+			
+			if(newIdNode == null){
+				return;
+			}
 			
 			/**
 			 * Create a dummy grouper for UNION with the id@root = uuid of the subTree
@@ -446,12 +451,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			
-			NodeList outBoundList = ((Element)setOpEntryNode.getFirstChild()).getElementsByTagName("outboundRelationship");
+			Node firstChild = setOpEntryNode.getFirstChild();
+			if("localVariableName".equals(firstChild.getNodeName())){
+				firstChild = firstChild.getNextSibling();
+			}
+			NodeList outBoundList = ((Element)firstChild).getElementsByTagName("outboundRelationship");
 			if((outBoundList != null) && (outBoundList.getLength() > 0)){
 				Node outBound = outBoundList.item(0);
-				setOpEntryNode.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				setOpEntryNode.getFirstChild().appendChild(temporallyRelatedInfoNode);
+				firstChild.appendChild(temporallyRelatedInfoNode);
 			}
 			
 			//create comment node
@@ -488,12 +497,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			
-			NodeList outBoundList = ((Element)relOpEntryNode.getFirstChild()).getElementsByTagName("outboundRelationship");
+			Node firstChild = relOpEntryNode.getFirstChild();
+			if("localVariableName".equals(firstChild.getNodeName())){
+				firstChild = firstChild.getNextSibling();
+			}
+			NodeList outBoundList = ((Element)firstChild).getElementsByTagName("outboundRelationship");
 			if((outBoundList != null) && (outBoundList.getLength() > 0)){
 				Node outBound = outBoundList.item(0);
-				relOpEntryNode.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				relOpEntryNode.getFirstChild().appendChild(temporallyRelatedInfoNode);
+				firstChild.appendChild(temporallyRelatedInfoNode);
 			}
 			
 			//create comment node
@@ -571,12 +584,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			handleRelOpRHS(me, dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			
-			NodeList outBoundList = ((Element)clonedEntryNodeForElementRef.getFirstChild()).getElementsByTagName("outboundRelationship");
+			Node firstChild = clonedEntryNodeForElementRef.getFirstChild();
+			if("localVariableName".equals(firstChild.getNodeName())){
+				firstChild = firstChild.getNextSibling();
+			}
+			NodeList outBoundList = ((Element)firstChild).getElementsByTagName("outboundRelationship");
 			if((outBoundList != null) && (outBoundList.getLength() > 0)){
 				Node outBound = outBoundList.item(0);
-				clonedEntryNodeForElementRef.getFirstChild().insertBefore(temporallyRelatedInfoNode, outBound);
+				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				clonedEntryNodeForElementRef.getFirstChild().appendChild(temporallyRelatedInfoNode);
+				firstChild.appendChild(temporallyRelatedInfoNode);
 			}
 			
 			//create comment node
@@ -610,7 +627,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 					Node lastChild = temporallyRelatedInfoNode.getLastChild();
 					if(lastChild.getNodeName().equals("entry")){
 						temporallyRelatedInfoNode.removeChild(lastChild);
-						Node criteriaNode = lastChild.getFirstChild();
+						
+						Node fChild = lastChild.getFirstChild();
+						if("localVariableName".equals(fChild.getNodeName())){
+							fChild = fChild.getNextSibling();
+						}
+						
+						Node criteriaNode = fChild;
 						temporallyRelatedInfoNode.appendChild(criteriaNode);
 						NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
 						if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
@@ -833,10 +856,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node relOpEntryNode = generateRelOpHQMF(me, childNode,parentNode);
 		
 		if(relOpEntryNode != null){
-			Node critNode = relOpEntryNode.getFirstChild();
-			NodeList nodeList = ((Element)critNode).getElementsByTagName(ID);
-			if(nodeList != null && nodeList.getLength() > 0){
-				Node idNode = nodeList.item(0);
+			Node idNode = getTagFromEntry(relOpEntryNode, ID);
+			//Node critNode = relOpEntryNode.getFirstChild();
+			//NodeList nodeList = ((Element)critNode).getElementsByTagName(ID);
+			//if(nodeList != null && nodeList.getLength() > 0){
+			if(idNode != null){
+				//Node idNode = nodeList.item(0);
 				NamedNodeMap idAttribMap = idNode.getAttributes();
 				String idRoot = idAttribMap.getNamedItem(ROOT).getNodeValue();
 				String idExt = idAttribMap.getNamedItem("extension").getNodeValue();
@@ -1146,5 +1171,24 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return outboundRelElem;
 	}
 	
+	private Node getTagFromEntry(Node entryElem, String tagName) {
+		
+		String entryElemName = entryElem.getNodeName();
+		if("entry".equals(entryElemName)){
+			Node firstChild = entryElem.getFirstChild();
+			if("localVariableName".equals(firstChild.getNodeName())){
+				NodeList nodeList = ((Element)firstChild.getNextSibling()).getElementsByTagName(tagName);
+				if(nodeList != null && nodeList.getLength() > 0){
+					return nodeList.item(0);
+				}
+			}else{
+				NodeList nodeList = ((Element)firstChild).getElementsByTagName(tagName);
+				if(nodeList != null && nodeList.getLength() > 0){
+					return nodeList.item(0);
+				}
+			}
+		}
+		return null;
+	}
 
 }

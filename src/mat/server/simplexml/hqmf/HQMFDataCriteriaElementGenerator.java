@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -667,10 +664,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				.getNamedItem(TAXONOMY).getNodeValue();
 		String entryCommentText = dataType;
 		// Local variable changes.
-		//String qdmLocalVariableName = (qdmName + "_" + StringUtils.deleteWhitespace(dataType) + "_" + UUIDUtilClient.uuid());
 		String qdmLocalVariableName = qdmName + "_" + dataType;
+		String localVariableName = qdmLocalVariableName;
 		if(qdmNode.getAttributes().getNamedItem("instance") != null){
 			qdmLocalVariableName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + qdmLocalVariableName;
+			localVariableName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + "of" + localVariableName;
 		}
 		qdmLocalVariableName = StringUtils.deleteWhitespace(qdmLocalVariableName);
 		if(attributeQDMNode != null){
@@ -679,12 +677,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			}
 			if(attributeQDMNode.getUserData(ATTRIBUTE_NAME) != null){
 				entryCommentText = entryCommentText+ " - " +attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+				localVariableName = localVariableName + "_" +attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 			}
 			if(attributeQDMNode.getUserData(ATTRIBUTE_MODE) != null){
 				entryCommentText = entryCommentText+ " With " +attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+				localVariableName = localVariableName + "_" +attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 			}
 		}
-		
+		localVariableName = StringUtils.deleteWhitespace(localVariableName);
 		
 		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor
 				.getOriginalDoc().getElementsByTagName("dataCriteriaSection")
@@ -704,7 +704,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element entryElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("entry");
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
-		
+		//Local Variable Name Tag - Inside Entry tag.
+		Element localVarElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement("localVariableName");
+		localVarElem.setAttribute(VALUE, localVariableName + "_" + UUIDUtilClient.uuid(5));
+		entryElem.appendChild(localVarElem);
 		Element dataCriteriaElem = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement(actNodeStr);
 		entryElem.appendChild(dataCriteriaElem);
@@ -2244,25 +2247,27 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	private void clean(Node node)
 	{
-	  NodeList childNodes = node.getChildNodes();
-
-	  for (int n = childNodes.getLength() - 1; n >= 0; n--)
-	  {
-	     Node child = childNodes.item(n);
-	     short nodeType = child.getNodeType();
-
-	     if (nodeType == Node.ELEMENT_NODE)
-	        clean(child);
-	     else if (nodeType == Node.TEXT_NODE)
-	     {
-	        String trimmedNodeVal = child.getNodeValue().trim();
-	        if (trimmedNodeVal.length() == 0)
-	           node.removeChild(child);
-	        else
-	           child.setNodeValue(trimmedNodeVal);
-	     }
-	     else if (nodeType == Node.COMMENT_NODE)
-	        node.removeChild(child);
-	  }
+		NodeList childNodes = node.getChildNodes();
+		
+		for (int n = childNodes.getLength() - 1; n >= 0; n--)
+		{
+			Node child = childNodes.item(n);
+			short nodeType = child.getNodeType();
+			
+			if (nodeType == Node.ELEMENT_NODE) {
+				clean(child);
+			} else if (nodeType == Node.TEXT_NODE)
+			{
+				String trimmedNodeVal = child.getNodeValue().trim();
+				if (trimmedNodeVal.length() == 0) {
+					node.removeChild(child);
+				} else {
+					child.setNodeValue(trimmedNodeVal);
+				}
+			}
+			else if (nodeType == Node.COMMENT_NODE) {
+				node.removeChild(child);
+			}
+		}
 	}
 }

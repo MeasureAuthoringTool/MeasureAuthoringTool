@@ -6,6 +6,7 @@ import java.util.List;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
+import mat.model.RiskAdjustmentDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -38,7 +39,15 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	
 	/** The to compare supp data elements. */
 	private List<QualityDataSetDTO> toCompareSuppDataElements;
+	//riskAdj
+	/** The risk adj clauses. */
+	private List<RiskAdjustmentDTO> riskAdjClauses = new ArrayList<RiskAdjustmentDTO>();
 	
+	/** The risk adj vars. */
+	private List<RiskAdjustmentDTO> riskAdjVars = new ArrayList<RiskAdjustmentDTO>();
+	
+	/** The to compare risk adj vars. */
+	private List<RiskAdjustmentDTO> toCompareRiskAdjVars;
 
 	/**
 	 * Gets the package name.
@@ -194,39 +203,37 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	}
 	
 	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((toCompareRiskAdjVars == null) ? 0 : toCompareRiskAdjVars
+						.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		
 		MeasurePackageDetail other = (MeasurePackageDetail) obj;
-		
-		if (toComparePackageClauses == null) {
-			if (other.toComparePackageClauses != null) {
+		if (toCompareRiskAdjVars == null) {
+			if (other.toCompareRiskAdjVars != null)
 				return false;
-			}
-		} else if (!isEqual(toComparePackageClauses, other.toComparePackageClauses)) {
+		} else if (!toCompareRiskAdjVars.equals(other.toCompareRiskAdjVars))
 			return false;
-		}
-		
-		if (toCompareSuppDataElements == null) {
-			if (other.toCompareSuppDataElements != null) {
-				return false;
-			}
-		} else if (!isEqual(toCompareSuppDataElements, other.toCompareSuppDataElements)) {
-			return false;
-		}
-		
 		return true;
-		
 	}
 	
 	/**
@@ -289,6 +296,60 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	public void setToCompareSuppDataElements(
 			List<QualityDataSetDTO> toCompareSuppDataElements) {
 		this.toCompareSuppDataElements = toCompareSuppDataElements;
+	}
+
+	/**
+	 * Gets the risk adj clauses.
+	 *
+	 * @return the risk adj clauses
+	 */
+	public List<RiskAdjustmentDTO> getRiskAdjClauses() {
+		return riskAdjClauses;
+	}
+
+	/**
+	 * Sets the risk adj clauses.
+	 *
+	 * @param riskAdjClauses the new risk adj clauses
+	 */
+	public void setRiskAdjClauses(List<RiskAdjustmentDTO> riskAdjClauses) {
+		this.riskAdjClauses = riskAdjClauses;
+	}
+
+	/**
+	 * Gets the risk adj vars.
+	 *
+	 * @return the risk adj vars
+	 */
+	public List<RiskAdjustmentDTO> getRiskAdjVars() {
+		return riskAdjVars;
+	}
+
+	/**
+	 * Sets the risk adj vars.
+	 *
+	 * @param riskAdjVars the new risk adj vars
+	 */
+	public void setRiskAdjVars(List<RiskAdjustmentDTO> riskAdjVars) {
+		this.riskAdjVars = riskAdjVars;
+	}
+
+	/**
+	 * Gets the to compare risk adj vars.
+	 *
+	 * @return the to compare risk adj vars
+	 */
+	public List<RiskAdjustmentDTO> getToCompareRiskAdjVars() {
+		return toCompareRiskAdjVars;
+	}
+
+	/**
+	 * Sets the to compare risk adj vars.
+	 *
+	 * @param toCompareRiskAdjVars the new to compare risk adj vars
+	 */
+	public void setToCompareRiskAdjVars(List<RiskAdjustmentDTO> toCompareRiskAdjVars) {
+		this.toCompareRiskAdjVars = toCompareRiskAdjVars;
 	}
 
 }

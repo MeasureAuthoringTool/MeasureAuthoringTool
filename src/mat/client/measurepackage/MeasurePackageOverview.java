@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.model.QualityDataSetDTO;
+import mat.model.RiskAdjustmentDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageOverview.
  */
@@ -24,6 +26,11 @@ public class MeasurePackageOverview implements IsSerializable{
 	/** The supp data elements. */
 	private List<QualityDataSetDTO> suppDataElements = new ArrayList<QualityDataSetDTO>();
 	
+	/** The master clause list. */
+	private List<RiskAdjustmentDTO> allClauseList = new ArrayList<RiskAdjustmentDTO>();
+	
+	/** The risk adj list. */
+	private List<RiskAdjustmentDTO> riskAdjList = new ArrayList<RiskAdjustmentDTO>();
 	/**
 	 * Gets the clauses.
 	 * 
@@ -98,6 +105,42 @@ public class MeasurePackageOverview implements IsSerializable{
 	 */
 	public void setSuppDataElements(List<QualityDataSetDTO> suppDataElements) {
 		this.suppDataElements = suppDataElements;
+	}
+
+	/**
+	 * Gets the master clause list.
+	 *
+	 * @return the master clause list
+	 */
+	public List<RiskAdjustmentDTO> getMasterClauseList() {
+		return allClauseList;
+	}
+
+	/**
+	 * Sets the master clause list.
+	 *
+	 * @param masterClauseList the new master clause list
+	 */
+	public void setMasterClauseList(List<RiskAdjustmentDTO> masterClauseList) {
+		this.allClauseList = masterClauseList;
+	}
+
+	/**
+	 * Gets the risk adj list.
+	 *
+	 * @return the risk adj list
+	 */
+	public List<RiskAdjustmentDTO> getRiskAdjList() {
+		return riskAdjList;
+	}
+
+	/**
+	 * Sets the risk adj list.
+	 *
+	 * @param riskAdjList the new risk adj list
+	 */
+	public void setRiskAdjList(List<RiskAdjustmentDTO> riskAdjList) {
+		this.riskAdjList = riskAdjList;
 	}	
 	
 	

@@ -2030,6 +2030,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
 			// Object to XML for supplementalDataElements
 			ByteArrayOutputStream streamSuppDataEle = XmlProcessor.convertQDMOToSuppleDataXML(wrapper);
+			//Object to xml for RiskAdjustment
+			//ByteArrayOutputStream streamRiskAdjVar = XmlProcessor.convertclauseToRiskAdjVarXML(riskAdjWrapper);
 			// Remove <?xml> and then replace.
 			String filteredString = removePatternFromXMLString(
 					streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)), "<measure>", "");
@@ -2044,8 +2046,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureXmlModel.setXml(result);
 			// Add Supplemental data to supplementalDataElements
 			result = callAppendNode(measureXmlModel, filteredStringSupp, "elementRef", "/measure/supplementalDataElements");
-			measureXmlModel.setXml(result);
-			
+			measureXmlModel.setXml(result);			
 			XmlProcessor processor1 = new XmlProcessor(measureXmlModel.getXml());
 			measureXmlModel.setXml(processor1.checkForStratificationAndAdd());
 		}

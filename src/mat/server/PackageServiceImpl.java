@@ -6,6 +6,7 @@ import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.measurepackage.service.PackageService;
 import mat.server.service.PackagerService;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PackageServiceImpl.
  */
@@ -66,6 +67,15 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	@Override
 	public void saveQDMData(MeasurePackageDetail detail) {
 		getPackagerService().saveQDMData(detail);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.service.PackageService#saveRiskVariables(mat.client.measurepackage.MeasurePackageDetail)
+	 */
+	@Override
+	public void saveRiskVariables(MeasurePackageDetail currentDetail) {
+		getPackagerService().saveRiskAdjVariables(currentDetail);
+		
 	}
 	
 	

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QualityDataModelWrapper.
  */
@@ -12,7 +13,9 @@ public class QualityDataModelWrapper implements IsSerializable{
 	
 	/** The quality data dto list. */
 	private List<QualityDataSetDTO> qualityDataDTOList;
-
+	
+	/** The risk adj var dto list. */
+	private List<RiskAdjustmentDTO> riskAdjVarDTOList;
 	/**
 	 * Gets the quality data dto.
 	 * 
@@ -30,6 +33,24 @@ public class QualityDataModelWrapper implements IsSerializable{
 	 */
 	public void setQualityDataDTO(List<QualityDataSetDTO> qualityDataDTOList) {
 		this.qualityDataDTOList = qualityDataDTOList;
+	}
+
+	/**
+	 * Gets the risk adj var dto list.
+	 *
+	 * @return the risk adj var dto list
+	 */
+	public List<RiskAdjustmentDTO> getRiskAdjVarDTO() {
+		return riskAdjVarDTOList;
+	}
+
+	/**
+	 * Sets the risk adj var dto list.
+	 *
+	 * @param riskAdjVarDTOList the new risk adj var dto list
+	 */
+	public void setRiskAdjVarDTO(List<RiskAdjustmentDTO> riskAdjVarDTOList) {
+		this.riskAdjVarDTOList = riskAdjVarDTOList;
 	}
 
 }

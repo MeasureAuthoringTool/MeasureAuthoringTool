@@ -6,6 +6,7 @@ import mat.client.shared.MatException;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface PackageService.
  */
@@ -23,11 +24,10 @@ public interface PackageService extends RemoteService {
 	
 	/**
 	 * Save.
-	 * 
-	 * @param detail
-	 *            the detail
-	 * @throws MatException
-	 *             the mat exception
+	 *
+	 * @param detail            the detail
+	 * @return the measure package save result
+	 * @throws MatException             the mat exception
 	 */
 	public MeasurePackageSaveResult save(MeasurePackageDetail detail) throws MatException;
 	
@@ -48,4 +48,11 @@ public interface PackageService extends RemoteService {
 	 *             the mat exception
 	 */
 	public void saveQDMData(MeasurePackageDetail detail) throws MatException;
+
+	/**
+	 * Save risk variables.
+	 *
+	 * @param currentDetail the current detail
+	 */
+	void saveRiskVariables(MeasurePackageDetail currentDetail);
 }

@@ -4,6 +4,7 @@ import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface PackageServiceAsync.
  */
@@ -47,4 +48,13 @@ public interface PackageServiceAsync {
 	 *            the callback
 	 */
 	public void delete(MeasurePackageDetail pkg, AsyncCallback<Void> callback);
+
+	/**
+	 * Save risk variables.
+	 *
+	 * @param currentDetail the current detail
+	 * @param asyncCallback the async callback
+	 */
+	public void saveRiskVariables(MeasurePackageDetail currentDetail,
+			AsyncCallback<Void> asyncCallback);
 }

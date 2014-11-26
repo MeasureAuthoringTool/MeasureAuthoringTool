@@ -128,6 +128,9 @@ public class MessageDelegate {
 	/** The Constant SUPP_DATA_SAVED. */
 	public static final String SUPP_DATA_SAVED = "Supplemental data elements have been saved.";
 	
+	/** The Constant RISK_ADJ_SAVED. */
+	public static final String RISK_ADJ_SAVED = "Risk Adjustment Variables have been saved.";
+	
 	/** The Constant TEMP_EMAIL_SENT. */
 	public static final String TEMP_EMAIL_SENT = "Temporary Password E-mail has been sent.";
 	
@@ -1746,6 +1749,14 @@ public class MessageDelegate {
 		return SUPP_DATA_SAVED;
 	}
 	
+	/**
+	 * Gets the risk adj saved message.
+	 *
+	 * @return the risk adj saved message
+	 */
+	public String getRiskAdjSavedMessage() {
+		return RISK_ADJ_SAVED;
+	}
 	/**
 	 * Gets the system error message.
 	 * 

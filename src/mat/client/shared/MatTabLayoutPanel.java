@@ -562,11 +562,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		MeasurePackageDetail pageData = new MeasurePackageDetail();
 		measurePackagePresenter.updateDetailsFromView(pageData);
 		measurePackagePresenter.updateSuppDataDetailsFromView(pageData);
+		measurePackagePresenter.updateRiskAdjFromView(pageData);
 		MeasurePackageDetail dbData = measurePackagePresenter.getCurrentDetail();
 		pageData.setToComparePackageClauses(pageData.getPackageClauses());
 		dbData.setToComparePackageClauses(measurePackagePresenter.getDbPackageClauses());
 		pageData.setToCompareSuppDataElements(pageData.getSuppDataElements());
 		dbData.setToCompareSuppDataElements(measurePackagePresenter.getDbSuppDataElements());
+		pageData.setToCompareRiskAdjVars(pageData.getRiskAdjVars());
+		dbData.setToCompareRiskAdjVars(measurePackagePresenter.getDbRiskAdjVars());
 		return pageData.equals(dbData);
 	}
 	

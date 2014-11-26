@@ -31,6 +31,7 @@ import javax.xml.xpath.XPathFactory;
 
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.RiskAdjustmentDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 
@@ -91,6 +92,9 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_SD_ELEMENTS. */
 	private static final String XPATH_MEASURE_SD_ELEMENTS = "/measure/supplementalDataElements";
 	
+	/** The Constant XPATH_MEASURE_RAV_ELEMENTS. */
+	private static final String XPATH_MEASURE_RAV_ELEMENTS = "/measure/riskAdjustmentVariables";
+	
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
@@ -123,6 +127,12 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
+	
+	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE. */
+	private static final String XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE = "/measure/subTreeLookUp/subTree[@qdmVariable='false']";
+	
+	/** The Constant XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE. */
+	private static final String XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/subTreeRef";
 	
 	/** The Constant XPATH_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
@@ -599,6 +609,50 @@ public class XmlProcessor {
 	}
 	
 	/**
+	 * Gets the risk adj variables for measure packager.
+	 *
+	 * @return the risk adj variables for measure packager
+	 */
+	public Map<String, ArrayList<RiskAdjustmentDTO>> getRiskAdjVariablesForMeasurePackager(){
+		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
+		List<RiskAdjustmentDTO> subTreeList = new ArrayList<RiskAdjustmentDTO>();
+		ArrayList<RiskAdjustmentDTO> masterList = new ArrayList<RiskAdjustmentDTO>();
+		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		if (originalDoc == null) {
+			return riskMap;
+		}
+		try{
+		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
+			Node newNode = nodesSubTreeLookUpAll.item(i);					
+			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
+			masterList.add(riskDTO);
+		}
+		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
+			Node newNode = riskAdjustmentVarNodeList.item(j);					
+			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+			riskDTO.setName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+			riskAdkVariableList.add(riskDTO);
+		}
+		
+		masterList.removeAll(riskAdkVariableList);
+		//subTreeList.addAll(masterList);
+		riskMap.put("MASTER", masterList);
+		riskMap.put("RISKADJ", riskAdkVariableList);
+		//riskMap.put("SUBTREEREF", subTreeList);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return riskMap;
+	}
+	/**
 	 * Sort sde and qd ms for measure packager.
 	 * 
 	 * @return the map
@@ -1036,7 +1090,7 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createSupplementalDataElementNode(
-			Node measureStratificationsNode) throws XPathExpressionException {
+		Node measureStratificationsNode) throws XPathExpressionException {
 		Node supplementaDataElementsElement = findNode(originalDoc,
 				XPATH_MEASURE_SD_ELEMENTS);
 		if (supplementaDataElementsElement == null) {
@@ -1045,7 +1099,7 @@ public class XmlProcessor {
 			((Element) measureStratificationsNode.getParentNode())
 			.insertBefore(supplementaDataElementsElement,
 					measureStratificationsNode.getNextSibling());
-		}
+		}	
 		// Create elementLookUp node
 		if (findNode(originalDoc, XPATH_MEASURE_ELEMENT_LOOKUP) == null) {
 			Element elementLookUpElement = originalDoc
@@ -1094,6 +1148,18 @@ public class XmlProcessor {
 			.insertBefore(measureGroupingElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
+		
+		Node riskAdjustmentVariablesElement = findNode(originalDoc,
+				XPATH_MEASURE_RAV_ELEMENTS);
+		if (riskAdjustmentVariablesElement == null) {
+			riskAdjustmentVariablesElement = originalDoc
+					.createElement("riskAdjustmentVariables");
+			((Element) supplementaDataElementsElement.getParentNode())
+			.insertBefore(riskAdjustmentVariablesElement,
+					supplementaDataElementsElement.getNextSibling());
+		}
+		
+		System.out.println("Original Doc: "+originalDoc.toString());
 	}
 
 	/**
@@ -1413,6 +1479,47 @@ public class XmlProcessor {
 	}
 	
 	/**
+	 * Convertclause to risk adj var xml.
+	 *
+	 * @param qualityDataSetDTO the quality data set dto
+	 * @return the org.apache.commons.io.output. byte array output stream
+	 */
+	public static org.apache.commons.io.output.ByteArrayOutputStream convertclauseToRiskAdjVarXML(QualityDataModelWrapper qualityDataSetDTO){
+
+		LOG.info("In MeasureLibraryServiceImpl.convertclauseToRiskAdjVarXML()");
+		Mapping mapping = new Mapping();
+		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader()
+			.getResourceAsURL("SubTreeToRiskAdjustmentVarMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
+					stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(qualityDataSetDTO);
+			LOG.debug("Marshalling of SubTreeToRiskAdjustmentVarMapping is successful in convertclauseToRiskAdjVarXML()"
+					+ stream.toString());
+		}catch(IOException e) {
+				LOG.info("Failed to load SubTreeToRiskAdjustmentVarMapping.xml in convertclauseToRiskAdjVarXML()"
+						+ e, e);
+		}catch(MappingException e){
+				LOG.info("Mapping Failed in convertclauseToRiskAdjVarXML()"
+						+ e, e);
+		}catch(MarshalException e) {
+				LOG.info("Unmarshalling Failed in convertclauseToRiskAdjVarXML()"
+						+ e, e);
+		}catch(ValidationException e) {
+				LOG.info("Validation Exception in convertclauseToRiskAdjVarXML()"
+						+ e, e);
+		}catch(Exception e) {
+				LOG.info("Other Exception in convertclauseToRiskAdjVarXML()"
+						+ e, e);
+		}
+		LOG.info("Exiting MeasureLibraryServiceImpl.convertclauseToRiskAdjVarXML()");
+		return stream;
+	
+		
+	}
+	/**
 	 * Method to create XML from QualityDataModelWrapper object for
 	 * supplementalDataElement .
 	 * 
@@ -1586,7 +1693,7 @@ public class XmlProcessor {
 	/**
 	 * Convert xml document to string.
 	 *
-	 * @param document the document
+	 * @param node the node
 	 * @param isFormatted TODO
 	 * @return the string
 	 */

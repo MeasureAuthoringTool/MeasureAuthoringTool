@@ -4,6 +4,7 @@ import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface PackagerService.
  */
@@ -20,9 +21,9 @@ public interface PackagerService {
 	
 	/**
 	 * Save.
-	 * 
-	 * @param detail
-	 *            the detail
+	 *
+	 * @param detail            the detail
+	 * @return the measure package save result
 	 */
 	public MeasurePackageSaveResult save(MeasurePackageDetail detail);
 	
@@ -41,4 +42,11 @@ public interface PackagerService {
 	 *            the detail
 	 */
 	public void saveQDMData(MeasurePackageDetail detail);
+
+	/**
+	 * Save risk variables.
+	 *
+	 * @param detail the detail
+	 */
+	void saveRiskAdjVariables(MeasurePackageDetail detail);
 }

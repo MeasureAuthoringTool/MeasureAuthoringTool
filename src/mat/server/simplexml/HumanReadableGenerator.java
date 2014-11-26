@@ -1704,18 +1704,22 @@ public class HumanReadableGenerator {
 			for (String qdmString : qdmItemList) {
 				mainListElement.appendElement(HTML_LI).appendText(qdmString);
 			}
-			
+			List<String> attrNameList = new ArrayList<String>();
 			for (Node qdm : attributeMap.values()) {
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
-				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor
+				String uuid = qdmAttribs.getNamedItem("uuid").getNodeValue();
+				NodeList nodeList = simpleXMLProcessor.findNodeList(simpleXMLProcessor
 						.getOriginalDoc(), "//attribute[@qdmUUID=\""
 								+ qdmAttribs.getNamedItem("uuid").getNodeValue()
 								+ "\"][@name != \"negation rationale\"]");
 				String name = "";
-				if (node != null) {
-					name = node.getAttributes().getNamedItem("name")
+				if (nodeList != null) {
+					for(int i=0;i<nodeList.getLength();i++){
+					name = nodeList.item(i).getAttributes().getNamedItem("name")
 							.getNodeValue();
 					name = StringUtils.capitalize(name);
+					String attrUUID_NAME = uuid + "~" +name;
+					if(!attrNameList.contains(attrUUID_NAME)){
 					Element listItem = mainListElement.appendElement(HTML_LI);
 					listItem.appendText(" Attribute: "
 							+ "\""
@@ -1729,7 +1733,10 @@ public class HumanReadableGenerator {
 							.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
 							+ ")\"");
-				}
+					attrNameList.add(uuid+"~"+name);
+					}
+					}
+				}	
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");

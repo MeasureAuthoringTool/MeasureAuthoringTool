@@ -170,6 +170,8 @@ public class ExportSimpleXML {
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
 		
+		usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
+		
 		formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
@@ -191,6 +193,29 @@ public class ExportSimpleXML {
 	}
 	
 	
+	/**
+	 * Gets the used sub ref from risk adjustment variables.
+	 *
+	 * @param usedSubTreeIds the used sub tree ids
+	 * @param originalDoc the original doc
+	 * @return the used sub ref from risk adjustment variables
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static List<String> getUsedSubRefFromRiskAdjustmentVariables(
+			List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException {
+		
+		List<String> subTreeRefIdsInRAVList = new ArrayList<String>();
+		String xpathforSubTreeInRAV = "/measure/riskAdjustmentVariables/subTreeRef/@id";
+		NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate(xpathforSubTreeInRAV,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i=0;i<subTreeRefIdsNodeList.getLength();i++){
+			subTreeRefIdsInRAVList.add(subTreeRefIdsNodeList.item(i).getNodeValue());
+		}
+		usedSubTreeIds.removeAll(subTreeRefIdsInRAVList);
+		subTreeRefIdsInRAVList.addAll(usedSubTreeIds);
+		return subTreeRefIdsInRAVList;
+	}
+
 	/**
 	 * Format attribute date in qdm attribute.
 	 *

@@ -3106,7 +3106,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			//start clause validation
 			Map<String , List<String>> usedSubtreeRefIdsMap = getUsedSubtreeRefIds(xmlProcessor,measureGroupingIDList);
 			//List<String> usedSubTreeIds = checkUnUsedSubTreeRef(xmlProcessor, usedSubtreeRefIds);
-			List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIdsMap);
+			List<String> usedSubTreeIds = checkUnUsedSubTreeRef(xmlProcessor, usedSubtreeRefIdsMap);
 			//to get all Operators for validaiton during Package timing for Removed Operators
 			List<String> operatorTypeList = getAllOperatorsTypeList();
 			
@@ -3266,14 +3266,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return usedSubtreeRefId;
 	}
+	
 	/**
 	 * Gets the filtered sub tree ids.
 	 *
+	 * @param xmlProcessor the xml processor
 	 * @param usedSubTreeIdsMap the used sub tree ids map
 	 * @return the filtered sub tree ids
 	 */
 	private List<String> checkUnUsedSubTreeRef(
-			Map<String, List<String>> usedSubTreeIdsMap) {
+			XmlProcessor xmlProcessor, Map<String, List<String>> usedSubTreeIdsMap) {
 		
 		List<String> subTreeIdsAtPop = new ArrayList<String>();
 		List<String> subTreeIdsAtMO = new ArrayList<String>();
@@ -3281,14 +3283,47 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		subTreeIdsAtPop.addAll(usedSubTreeIdsMap.get("subTreeIDAtPop"));
 		subTreeIdsAtMO.addAll(usedSubTreeIdsMap.get("subTreeIDAtMO"));
 		subTreeIdsAtStrat.addAll(usedSubTreeIdsMap.get("subTreeIDAtStrat"));
-		
+		List<String> subTreeIdsAtRAV = getUsedRiskAdjustmentVariables(xmlProcessor);
 		subTreeIdsAtPop.removeAll(subTreeIdsAtMO);
 		subTreeIdsAtMO.addAll(subTreeIdsAtPop);
 		
 		subTreeIdsAtMO.removeAll(subTreeIdsAtStrat);
 		subTreeIdsAtStrat.addAll(subTreeIdsAtMO);
 		
-		return subTreeIdsAtStrat;
+		//to get Used SubTreeRef form Risk Adjustment Variables
+		subTreeIdsAtStrat.removeAll(subTreeIdsAtRAV);
+		subTreeIdsAtRAV.addAll(subTreeIdsAtStrat);
+		
+		return subTreeIdsAtRAV;
+	}
+	
+	
+	/**
+	 * Gets the used risk adjustment variables.
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @return the used risk adjustment variables
+	 */
+	private List<String> getUsedRiskAdjustmentVariables(XmlProcessor xmlProcessor){
+		List<String> subTreeRefRAVList = new ArrayList<String>();
+		
+		String xpathforRiskAdjustmentVariables = "/measure/riskAdjustmentVariables/subTreeRef";
+		try {
+			NodeList subTreeRefIdsNodeListRAV = (NodeList) xPath.evaluate(xpathforRiskAdjustmentVariables,
+					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+			for(int i=0;i<subTreeRefIdsNodeListRAV.getLength();i++){
+				Node childNode = subTreeRefIdsNodeListRAV.item(i);
+				subTreeRefRAVList.add(childNode.getAttributes().
+						getNamedItem("id").getNodeValue());
+			}
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return subTreeRefRAVList;
 	}
 	
 	

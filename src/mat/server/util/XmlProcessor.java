@@ -129,7 +129,7 @@ public class XmlProcessor {
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
 	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE. */
-	private static final String XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE = "/measure/subTreeLookUp/subTree[@qdmVariable='false']";
+	private static final String XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE = "/measure/subTreeLookUp/subTree";
 	
 	/** The Constant XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE. */
 	private static final String XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/subTreeRef";
@@ -615,7 +615,7 @@ public class XmlProcessor {
 	 */
 	public Map<String, ArrayList<RiskAdjustmentDTO>> getRiskAdjVariablesForMeasurePackager(){
 		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
-		List<RiskAdjustmentDTO> subTreeList = new ArrayList<RiskAdjustmentDTO>();
+		ArrayList<RiskAdjustmentDTO> subTreeList = new ArrayList<RiskAdjustmentDTO>();
 		ArrayList<RiskAdjustmentDTO> masterList = new ArrayList<RiskAdjustmentDTO>();
 		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -623,15 +623,7 @@ public class XmlProcessor {
 			return riskMap;
 		}
 		try{
-		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
-			Node newNode = nodesSubTreeLookUpAll.item(i);					
-			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
-			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
-			masterList.add(riskDTO);
-		}
+		
 		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
@@ -641,12 +633,32 @@ public class XmlProcessor {
 			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
 			riskAdkVariableList.add(riskDTO);
 		}
+		String uuidXPathString = "";
+		for(int m=0;m<riskAdkVariableList.size();m++){
+			uuidXPathString += "@uuid != '"+riskAdkVariableList.
+					get(m).getUuid() + "' and";
+		}
+		String xpathStringForSubTree = "";
+		if(!uuidXPathString.isEmpty()){
+			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
+			xpathStringForSubTree= XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE+"["+uuidXPathString +"]" +
+				"[@qdmVariable='false']";
+		} else {
+			xpathStringForSubTree= XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE +
+				"[@qdmVariable='false']";
+		}
+		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForSubTree,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
+			Node newNode = nodesSubTreeLookUpAll.item(i);					
+			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
+			subTreeList.add(riskDTO);
+		}
 		
-		masterList.removeAll(riskAdkVariableList);
-		//subTreeList.addAll(masterList);
-		riskMap.put("MASTER", masterList);
 		riskMap.put("RISKADJ", riskAdkVariableList);
-		//riskMap.put("SUBTREEREF", subTreeList);
+		riskMap.put("SUBTREEREF", subTreeList);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}

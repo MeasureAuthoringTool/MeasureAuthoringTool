@@ -27,7 +27,7 @@ public class MeasurePackageOverview implements IsSerializable{
 	private List<QualityDataSetDTO> suppDataElements = new ArrayList<QualityDataSetDTO>();
 	
 	/** The master clause list. */
-	private List<RiskAdjustmentDTO> allClauseList = new ArrayList<RiskAdjustmentDTO>();
+	private List<RiskAdjustmentDTO> subTreeClauseList = new ArrayList<RiskAdjustmentDTO>();
 	
 	/** The risk adj list. */
 	private List<RiskAdjustmentDTO> riskAdjList = new ArrayList<RiskAdjustmentDTO>();
@@ -112,8 +112,8 @@ public class MeasurePackageOverview implements IsSerializable{
 	 *
 	 * @return the master clause list
 	 */
-	public List<RiskAdjustmentDTO> getMasterClauseList() {
-		return allClauseList;
+	public List<RiskAdjustmentDTO> getSubTreeClauseList() {
+		return subTreeClauseList;
 	}
 
 	/**
@@ -121,8 +121,8 @@ public class MeasurePackageOverview implements IsSerializable{
 	 *
 	 * @param masterClauseList the new master clause list
 	 */
-	public void setMasterClauseList(List<RiskAdjustmentDTO> masterClauseList) {
-		this.allClauseList = masterClauseList;
+	public void setSubTreeClauseList(List<RiskAdjustmentDTO> subTreeClauseList) {
+		this.subTreeClauseList = subTreeClauseList;
 	}
 
 	/**

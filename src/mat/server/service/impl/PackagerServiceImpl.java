@@ -235,7 +235,7 @@ public class PackagerServiceImpl implements PackagerService {
 		Map<String, ArrayList<RiskAdjustmentDTO>> clauseMap = getAllClauseList(measureId);
 		overview.setQdmElements(finalMap.get("QDM"));
 		overview.setSuppDataElements(finalMap.get("SDE"));
-		overview.setMasterClauseList(clauseMap.get("MASTER"));
+		overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
 		overview.setRiskAdjList(clauseMap.get("RISKADJ"));
 		if (isGroupRemoved) {
 			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));

@@ -334,7 +334,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 *
 		 * @param riskAdjClauseList the new risk adj clause list
 		 */
-		void setRiskAdjClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
+		void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
 		
 		/**
 		 * Gets the risk adj clauses.
@@ -356,6 +356,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the risk adj success message display
 		 */
 		SuccessMessageDisplayInterface getRiskAdjSuccessMessageDisplay();
+		void setSubTreeInRiskAdjVarList(
+				List<RiskAdjustmentDTO> riskAdjClauseList);
 	}
 	
 	/** The vsacapi service async. */
@@ -627,6 +629,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasurePackageWarningMsg().clear();
 		view.getMeasureErrorMessageDisplay().clear();
 		view.getSaveErrorMessageDisplay().clear();
+		view.getRiskAdjSuccessMessageDisplay().clear();
 		
 	}
 	/**
@@ -818,8 +821,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		packageOverview = result;
 		List <MeasurePackageClauseDetail> clauseList = new ArrayList<MeasurePackageClauseDetail>(result.getClauses());
 		view.setClauses(clauseList);
-		//RiskAdjVariables		
-		view.setRiskAdjClauseList(result.getMasterClauseList());
+		//SubTree Clauses		
+		view.setSubTreeClauseList(result.getSubTreeClauseList());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(result.getPackages());
@@ -959,6 +962,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 		view.setQDMElements(packageOverview.getQdmElements());
+		view.setSubTreeInRiskAdjVarList(packageOverview.getRiskAdjList());
+		view.setSubTreeClauseList(packageOverview.getSubTreeClauseList());
 		dbPackageClauses.clear();
 		dbPackageClauses.addAll(currentDetail.getPackageClauses());
 		dbSuppDataElements.clear();

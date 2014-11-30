@@ -58,6 +58,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+// TODO: Auto-generated Javadoc
 //import mat.model.RiskAdjustment;
 
 // TODO: Auto-generated Javadoc
@@ -246,7 +247,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private SingleSelectionModel<RiskAdjustmentDTO> riskAdjVarSelModel = new SingleSelectionModel<RiskAdjustmentDTO>();
 	
 	/** The risk adj population list. */
-	private List<RiskAdjustmentDTO> riskAdjClausePopulationList = new ArrayList<RiskAdjustmentDTO>();
+	private List<RiskAdjustmentDTO> subTreePopulationList = new ArrayList<RiskAdjustmentDTO>();
 	
 	/** The risk adj list prov. */
 	private ListDataProvider<RiskAdjustmentDTO> riskAdjClauseListProv;
@@ -314,16 +315,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if ((riskAdjClausePopulationList.size() > 0)
+				if ((subTreePopulationList.size() > 0)
 						&& (riskAdjClauseSelModel.getSelectedObject() != null)) {
 					riskAdjVarPopulationList.add(riskAdjClauseSelModel.getSelectedObject());
-					riskAdjClausePopulationList.remove(riskAdjClauseSelModel.getSelectedObject());
-					Collections.sort(riskAdjClausePopulationList , new RiskAdjustmentDTO.Comparator());
+					subTreePopulationList.remove(riskAdjClauseSelModel.getSelectedObject());
+					Collections.sort(subTreePopulationList , new RiskAdjustmentDTO.Comparator());
 					Collections.sort(riskAdjVarPopulationList, new RiskAdjustmentDTO.Comparator());
 					rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getRiskAdjCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}				
 			}
@@ -333,14 +334,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			public void onClick(ClickEvent event) {
 				if ((riskAdjVarPopulationList.size() > 0)
 						&& (riskAdjVarSelModel.getSelectedObject() != null)) {
-					riskAdjClausePopulationList.add(riskAdjVarSelModel.getSelectedObject());
+					subTreePopulationList.add(riskAdjVarSelModel.getSelectedObject());
 					riskAdjVarPopulationList.remove(riskAdjVarSelModel.getSelectedObject());
 					Collections.sort(riskAdjVarPopulationList , new RiskAdjustmentDTO.Comparator());
-					Collections.sort(riskAdjClausePopulationList, new RiskAdjustmentDTO.Comparator());
+					Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());
 					rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getRiskAdjCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}
 			
@@ -350,16 +351,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addAllRiskAdjRight.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				if (riskAdjClausePopulationList.size() != 0) {
-					riskAdjVarPopulationList.addAll(riskAdjClausePopulationList);
-					riskAdjClausePopulationList.removeAll(riskAdjClausePopulationList);
+				if (subTreePopulationList.size() != 0) {
+					riskAdjVarPopulationList.addAll(subTreePopulationList);
+					subTreePopulationList.removeAll(subTreePopulationList);
 					Collections.sort(riskAdjVarPopulationList , new RiskAdjustmentDTO.Comparator());
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
 					rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getRiskAdjCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}				
 			}
@@ -368,15 +369,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			@Override
 			public void onClick(ClickEvent event) {
 				if (riskAdjVarPopulationList.size() != 0) {
-					riskAdjClausePopulationList.addAll(riskAdjVarPopulationList);
+					subTreePopulationList.addAll(riskAdjVarPopulationList);
 					riskAdjVarPopulationList.removeAll(riskAdjVarPopulationList);
-					Collections.sort(riskAdjClausePopulationList , new RiskAdjustmentDTO.Comparator());
+					Collections.sort(subTreePopulationList , new RiskAdjustmentDTO.Comparator());
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
 					rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getRiskAdjCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}			
 			}
@@ -489,7 +490,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		leftRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");
 		leftRiskAdjPanel.setSize("320px", "200px");
 		leftRiskAdjPanel.setAlwaysShowScrollBars(true);
-		leftRiskAdjPanel.add(getRiskAdjCellList());		
+		leftRiskAdjPanel.add(getSubTreeClauseCellList());		
 		riskSPanel.add(leftRiskAdjPanel);		
 		
 		Widget riskAdjVarLabel = LabelBuilder.buildLabel(supDataCellList,"Risk Adjustment Variables");
@@ -619,7 +620,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 *
 	 * @return the risk adj cell list
 	 */
-	private CellList<RiskAdjustmentDTO> getRiskAdjCellList(){
+	private CellList<RiskAdjustmentDTO> getSubTreeClauseCellList(){
 		riskAdjClauseCellList = new CellList<RiskAdjustmentDTO>(new RiskAdjustmentCell());
 		riskAdjClauseCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		riskAdjClauseSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -634,7 +635,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				}
 			}
 		});
-		riskAdjClauseListProv = new ListDataProvider<RiskAdjustmentDTO>(riskAdjClausePopulationList);
+		riskAdjClauseListProv = new ListDataProvider<RiskAdjustmentDTO>(subTreePopulationList);
 		riskAdjClauseListProv.addDataDisplay(riskAdjClauseCellList);
 		
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -978,7 +979,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final List<RiskAdjustmentDTO> getRiskAdjClauses(){
-		return riskAdjClausePopulationList;
+		return subTreePopulationList;
 	}
 	
 	/* (non-Javadoc)
@@ -1338,13 +1339,27 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setRiskAdjClauseList(java.util.List)
 	 */
 	@Override
-	public void setRiskAdjClauseList(List<RiskAdjustmentDTO> riskAdjClauseList) {
-	    riskAdjClausePopulationList.clear();
-		riskAdjClausePopulationList.addAll(riskAdjClauseList);
-		Collections.sort(riskAdjClausePopulationList, new RiskAdjustmentDTO.Comparator());
+	public void setSubTreeClauseList(List<RiskAdjustmentDTO> subTreeClauseList) {
+	    subTreePopulationList.clear();
+		subTreePopulationList.addAll(subTreeClauseList);
+		Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());
 		leftRiskAdjPanel.clear();
-		leftRiskAdjPanel.add(getRiskAdjCellList());
+		leftRiskAdjPanel.add(getSubTreeClauseCellList());
 		riskAdjClauseSelModel.clear();
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setSubTreeInRiskAdjVarList(java.util.List)
+	 */
+	@Override
+	public void setSubTreeInRiskAdjVarList(List<RiskAdjustmentDTO> riskAdjClauseList) {
+	    riskAdjVarPopulationList.clear();
+	    riskAdjVarPopulationList.addAll(riskAdjClauseList);
+		Collections.sort(riskAdjVarPopulationList, new RiskAdjustmentDTO.Comparator());
+		rightRiskAdjPanel.clear();
+		rightRiskAdjPanel.add(getRiskAdjVarCellList());
+		riskAdjVarSelModel.clear();
 		
 	}
 	

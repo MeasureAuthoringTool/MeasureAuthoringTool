@@ -1870,10 +1870,16 @@ public class HumanReadableGenerator {
 	}
 	
 	
+	/**
+	 * Generate risk adjustment variables.
+	 *
+	 * @param humanReadableHTMLDocument the human readable html document
+	 * @param simpleXMLProcessor the simple xml processor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static void generateRiskAdjustmentVariables(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) 
 					throws XPathExpressionException {
-		// TODO Auto-generated method stub
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
 		.append("<h3><a name=\"d1e767\" href=\"#toc\">Risk Adjustment Variables</a></h3>");

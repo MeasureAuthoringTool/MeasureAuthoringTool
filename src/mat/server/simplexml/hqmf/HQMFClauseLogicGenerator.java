@@ -54,6 +54,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		NodeList subTreeNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 		for(int i=0;i<subTreeNodeList.getLength();i++){
 			Node subTreeNode = subTreeNodeList.item(i);
+			String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			System.out.println("Calling generateSubTreeXML for:"+clauseName);
 			generateSubTreeXML(me,subTreeNode);
 		}
 		String xpathOccurrence = "/measure/subTreeLookUp/subTree[(@instance)]";
@@ -158,6 +160,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String subTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		System.out.println("subTreeNodeMap:"+subTreeNodeMap);
 		
 		/**
 		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
@@ -171,6 +174,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node firstChild = subTreeNode.getFirstChild();
 		String firstChildName = firstChild.getNodeName();
 		logger.info("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName+"'.");
+		System.out.println("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName);
 		
 		XmlProcessor hqmfXmlProcessor = me.getHQMFXmlProcessor();
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
@@ -1057,7 +1061,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				generateCritRefElementRef(me, outboundRelElem, childNode,hqmfXmlProcessor);
 				break;
 			case "subTreeRef":
-				generateCritRefSubTreeRef(me, outboundRelElem, childNode, hqmfXmlProcessor);
+				generateCritRefSubTreeRef(me, outboundRelElem, childNode, hqmfXmlProcessor, true);
 				break;
 				
 			default:
@@ -1065,7 +1069,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 	}
-	
 	
 	/**
 	 * This method will basically create a <criteriaReference> with classCode='GROUPER' and moodCode='EVN'
@@ -1078,6 +1081,22 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	protected void generateCritRefSubTreeRef(MeasureExport me, Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
+		generateCritRefSubTreeRef(me,outboundRelElem, subTreeRefNode, hqmfXmlProcessor, false);
+	}
+	
+	
+	/**
+	 * This method will basically create a <criteriaReference> with classCode='GROUPER' and moodCode='EVN'
+	 * and have the <id> tag pointing to the <grouperCriteria> for the referenced subTree/clause.
+	 *
+	 * @param me the me
+	 * @param outboundRelElem the outbound rel elem
+	 * @param subTreeRefNode the sub tree ref node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param checkExisting check in the map if already existing
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	protected void generateCritRefSubTreeRef(MeasureExport me, Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor, boolean checkExisting) throws XPathExpressionException {
 		
 		String subTreeUUID = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
 		String root = subTreeUUID;
@@ -1105,7 +1124,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			 * If it is not generated yet, then generate it by
 			 * calling the 'generateSubTreeXML' method.
 			 */
-			if(!subTreeNodeMap.containsKey(subTreeUUID)){
+			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
 				generateSubTreeXML(me, subTreeNode);
 			}
 			

@@ -228,10 +228,26 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 		if (getClass() != obj.getClass())
 			return false;
 		MeasurePackageDetail other = (MeasurePackageDetail) obj;
+		if (toComparePackageClauses == null) {
+			if (other.toComparePackageClauses != null) {
+				return false;
+			}
+		} else if (!isEqual(toComparePackageClauses, other.toComparePackageClauses)) {
+			return false;
+		}
+		
+		if (toCompareSuppDataElements == null) {
+			if (other.toCompareSuppDataElements != null) {
+				return false;
+			}
+		} else if (!isEqual(toCompareSuppDataElements, other.toCompareSuppDataElements)) {
+			return false;
+		}
+		
 		if (toCompareRiskAdjVars == null) {
 			if (other.toCompareRiskAdjVars != null)
 				return false;
-		} else if (!toCompareRiskAdjVars.equals(other.toCompareRiskAdjVars))
+		} else if (!isEqual(toCompareRiskAdjVars,other.toCompareRiskAdjVars))
 			return false;
 		return true;
 	}
@@ -269,6 +285,12 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 			} else if (listA.get(i) instanceof QualityDataSetDTO) {
 				 QualityDataSetDTO val1 = (QualityDataSetDTO) listA.get(i);
 				 QualityDataSetDTO val2 = (QualityDataSetDTO) listB.get(i);
+				if (val1.compare(val1, val2) != 0) {
+					return false;
+				}
+			} else if (listA.get(i) instanceof RiskAdjustmentDTO) {
+				RiskAdjustmentDTO val1 = (RiskAdjustmentDTO) listA.get(i);
+				 RiskAdjustmentDTO val2 = (RiskAdjustmentDTO) listB.get(i);
 				if (val1.compare(val1, val2) != 0) {
 					return false;
 				}

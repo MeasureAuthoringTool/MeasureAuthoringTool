@@ -736,7 +736,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addRiskAdjRight.setTitle("Add Clause to Risk Adjustment Variables");
 		addRiskAdjRight.getElement().setAttribute("alt", "Add Clause to Risk Adjustment Variables");
 		addRiskAdjLeft.setTitle("Remove Clause Element from Risk Adjustment Variables");
-		addRiskAdjLeft.getElement().setAttribute("alt", "Remove Clause Element from Risk Adjustment Variables");
+		addRiskAdjLeft.getElement().setAttribute("alt", "Remove Clause from Risk Adjustment Variables");
 		addAllRiskAdjRight.setTitle("Add all Clauses to Risk Adjustment Variables");
 		addAllRiskAdjRight.getElement().setAttribute("alt", "Add all Clauses to Risk Adjustment Variables");
 		addAllRiskAdjLeft.setTitle("Remove all Clauses from Risk Adjustment Variables");

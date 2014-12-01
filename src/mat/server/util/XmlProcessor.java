@@ -629,7 +629,7 @@ public class XmlProcessor {
 		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
 			Node newNode = riskAdjustmentVarNodeList.item(j);					
 			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
-			riskDTO.setName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
 			riskAdkVariableList.add(riskDTO);
 		}

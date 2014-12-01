@@ -14,7 +14,7 @@
 						<bind-xml name="id" node="attribute" />
 					</field>
 					<field name="name" type="java.lang.String">
-						<bind-xml name="name" node="attribute" />
+						<bind-xml name="displayName" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

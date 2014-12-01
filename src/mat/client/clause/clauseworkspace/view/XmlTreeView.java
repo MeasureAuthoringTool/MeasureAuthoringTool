@@ -217,6 +217,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The success message display. */
 	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
 	
+	private boolean isClauseWorkSpace = false;
+	
 	/** The add comment panel. */
 	VerticalPanel addCommentPanel;
 	/**
@@ -395,6 +397,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.add(bottomSavePanel);
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
+		isClauseWorkSpace = false;
 	}
 	
 	/**
@@ -564,6 +567,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.add(bottomSavePanel);
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
+		isClauseWorkSpace = true;
 	}
 	
 	/**
@@ -1594,9 +1598,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
 							case CellTreeNode.SET_OP_NODE:
 								if(selectedNode.getName().contains("SATISFIES")){
-									if(selectedNode.getChilds()!=null && selectedNode.getChilds().size()>=1){
+									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
 										canPaste = true;
-										}
+									}
 								}
 								else if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
 									canPaste = true;
@@ -1993,12 +1997,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if(!isValid) {
 					setValid(!(inValideNodesList.size() == 0));
 				}
-				
-				if (!isMeasureObservations
-						&& subTreeCellTreeNode.getName().contains("DATETIMEDIFF")) {
-					setValid(true);
-					isDateTimeDiffNotInMO = true;
-					setValidHumanReadable(false);
+				if(!isClauseWorkSpace) { // Check for measure Ob and datetimediff is to be performed on Population workspace only.
+					if (!isMeasureObservations
+							&& subTreeCellTreeNode.getName().contains("DATETIMEDIFF")) {
+						setValid(true);
+						isDateTimeDiffNotInMO = true;
+						setValidHumanReadable(false);
+					}
 				}
 				break;
 		}

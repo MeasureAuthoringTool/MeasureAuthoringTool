@@ -943,7 +943,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		createNew.setEnabled(b);
 		packageMeasure.setEnabled(b);
 		packageMeasureAndExport.setEnabled(b);
-		addQDMElementsToMeasure.setEnabled(b);
+		addQDMElementsToMeasure.setEnabled(b);		
 		packageGroupingWidget.getSaveGrouping().setEnabled(b);
 		addAllQDMLeft.setEnabled(b);
 		addAllQDMRight.setEnabled(b);
@@ -953,6 +953,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		packageGroupingWidget.getAddClauseLeft().setEnabled(b);
 		packageGroupingWidget.getAddAllClauseRight().setEnabled(b);
 		packageGroupingWidget.getAddAllClauseLeft().setEnabled(b);
+		addRiskAdjVariablesToMeasure.setEnabled(b);
+		addRiskAdjRight.setEnabled(b);
+		addRiskAdjLeft.setEnabled(b);
+		addAllRiskAdjRight.setEnabled(b);
+		addAllRiskAdjLeft.setEnabled(b);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setQDMElements(java.util.List)

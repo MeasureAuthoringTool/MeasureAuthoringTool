@@ -801,6 +801,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
 		currentDetail.setToCompareSuppDataElements(dbSuppDataElements);
+		currentDetail.setToCompareRiskAdjVars(dbRiskAdjVars);
 		
 	}
 	
@@ -968,6 +969,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		dbPackageClauses.addAll(currentDetail.getPackageClauses());
 		dbSuppDataElements.clear();
 		dbSuppDataElements.addAll(packageOverview.getSuppDataElements());
+		dbRiskAdjVars.clear();
+		dbRiskAdjVars.addAll(packageOverview.getRiskAdjList());
 		
 	}
 	

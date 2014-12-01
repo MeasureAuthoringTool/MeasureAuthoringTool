@@ -71,5 +71,18 @@ public class RiskAdjustmentDTO implements IsSerializable {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+	
+	
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o1
+	 * @param o2 the o2
+	 * @return the int
+	 */
+	public int compare(RiskAdjustmentDTO o1, RiskAdjustmentDTO o2) {
+		int num = o1.getUuid().compareTo(o2.getUuid());
+		return num;
+	}
 
 }

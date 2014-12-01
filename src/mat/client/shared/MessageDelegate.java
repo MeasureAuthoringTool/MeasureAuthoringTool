@@ -126,7 +126,7 @@ public class MessageDelegate {
 	public static final String SEC_QUESTIONS_UPDATED = "Your security questions have been updated.";
 	
 	/** The Constant SUPP_DATA_SAVED. */
-	public static final String SUPP_DATA_SAVED = "Supplemental data elements have been saved.";
+	public static final String SUPP_DATA_SAVED = "Supplemental Data Elements have been saved.";
 	
 	/** The Constant RISK_ADJ_SAVED. */
 	public static final String RISK_ADJ_SAVED = "Risk Adjustment Variables have been saved.";

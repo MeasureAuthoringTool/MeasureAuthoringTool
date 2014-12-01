@@ -9,8 +9,6 @@
         <act a_id="ACT">actCriteria</act>
         <act a_id="SPLY">supplyCriteria</act>
     </acts>
-  
-    
     <!-- care goal -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">care goal</template>
     
@@ -620,4 +618,282 @@
 </radiation-dosage>
 
     </subtemplates>
+     <attributeMappings>
+        <!-- static attribute mappings -->
+        <attributeMapping qdmAttribute="Active Datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Admission Datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Anatomical Approach Site" dotNotation="approachSiteCode"/>
+        <attributeMapping qdmAttribute="Anatomical Location Site" dotNotation="targetSiteCode"/>
+        <attributeMapping qdmAttribute="Cause" dotNotation="causeOf.observation.value"/>
+        <attributeMapping qdmAttribute="Cumulative Medication Duration" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Date" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Discharge Datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Discharge Status" dotNotation="dischargeDispositionCode"/>
+        <attributeMapping qdmAttribute="Dose" dotNotation="doseQuantity"/>
+        <attributeMapping qdmAttribute="Facility Location" dotNotation="location.serviceProvider.code"/>
+        <attributeMapping qdmAttribute="Facility Location Arrival Datetime" dotNotation="location.serviceProvider.effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Facility Location Departure Datetime" dotNotation="location.serviceProvider.effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Frequency" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Incision Datetime" dotNotation="reference.procedure.effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Laterality" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Length Of Stay" dotNotation="lengthOfStayQuantity"/>
+        <attributeMapping qdmAttribute="Method" dotNotation="methodCode"/>
+        <attributeMapping qdmAttribute="Ordinality" dotNotation="priorityCode"/>
+        <attributeMapping qdmAttribute="Patient Preference" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="Provider Preference" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="Reaction" dotNotation="manifestation.observation.value"/>
+        <attributeMapping qdmAttribute="Reason" dotNotation="reason.observation.value"/>
+        <attributeMapping qdmAttribute="Refills" dotNotation="repeatNumber"/>
+        <attributeMapping qdmAttribute="Related To" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Removal Datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Route" dotNotation="routeCode"/>
+        <attributeMapping qdmAttribute="Severity" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Signed Datetime" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Status" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Target Outcome" dotNotation="goal.observation.value"/>
+        <attributeMapping qdmAttribute="Time" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Radiation Dosage" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Radiation Duration" dotNotation="reference.observation.value"/>
+
+        <!-- datatype dependent .notation mappings-->
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="care goal" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient care experience" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="provider care experience" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="communication: from patient to provider" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="communication: from provider to patient" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="communication: from provider to provider" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, applied" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnosis, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnosis, family history" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnosis, inactive" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnosis, resolved" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnostic study, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnostic study, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnostic study, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnostic study, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="encounter, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="encounter, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="encounter, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="functional status, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="functional status, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic birthdate" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic ethnicity" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic expired" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic payer" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic race" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic sex" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="patient characteristic clinical trial participant" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="provider characteristic" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="intervention, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="intervention, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="intervention, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="intervention, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="laboratory test, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="laboratory test, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="laboratory test, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="laboratory test, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, administered" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, adverse effects" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, discharge" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, dispensed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="physical exam, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="physical exam, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="procedure, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="procedure, intolerance" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="procedure, performed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="procedure, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="risk category assessment" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="substance, administered" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="substance, adverse event" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="substance, allergy" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="substance, recommended" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="symptom, active" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="symptom, assessed" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="symptom, inactive" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="symptom, resolved" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="transfer from" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="transfer to" dotNotation="effectiveTime.low"/>
+        
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="device, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="diagnostic study, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="encounter, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="functional status, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="intervention, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="laboratory test, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="medication, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="physical exam, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="procedure, order" dotNotation="author.time.low"/>
+        <attributeMapping qdmAttribute="Start Datetime" datatypes="substance, order" dotNotation="author.time.low"/>
+       
+       
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="care goal" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient care experience" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="provider care experience" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="communication: from patient to provider" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="communication: from provider to patient" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="communication: from provider to provider" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, applied" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnosis, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnosis, family history" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnosis, inactive" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnosis, resolved" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnostic study, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnostic study, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnostic study, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnostic study, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="encounter, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="encounter, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="encounter, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="functional status, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="functional status, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic birthdate" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic ethnicity" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic expired" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic payer" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic race" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic sex" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="patient characteristic clinical trial participant" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="provider characteristic" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="intervention, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="intervention, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="intervention, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="intervention, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="laboratory test, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="laboratory test, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="laboratory test, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="laboratory test, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, administered" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, adverse effects" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, discharge" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, dispensed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="physical exam, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="physical exam, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="procedure, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="procedure, intolerance" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="procedure, performed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="procedure, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="risk category assessment" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="substance, administered" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="substance, adverse event" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="substance, allergy" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="substance, recommended" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="symptom, active" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="symptom, assessed" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="symptom, inactive" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="symptom, resolved" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="transfer from" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="transfer to" dotNotation="effectiveTime.high"/>
+        
+         <attributeMapping qdmAttribute="Stop Datetime" datatypes="device, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="diagnostic study, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="encounter, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="functional status, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="intervention, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="laboratory test, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="medication, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="physical exam, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="procedure, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="Stop Datetime" datatypes="substance, order" dotNotation="author.time.high"/>
+        
+    
+        <attributeMapping qdmAttribute="Result" datatypes="care goal" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient care experience" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="provider care experience" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="communication: from patient to provider" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="communication: from provider to patient" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="communication: from provider to provider" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="device, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="device, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="device, applied" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="device, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="device, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnosis, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnosis, family history" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnosis, inactive" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnosis, resolved" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnostic study, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnostic study, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnostic study, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnostic study, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="encounter, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="encounter, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="encounter, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="functional status, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="functional status, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic birthdate" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic ethnicity" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic expired" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic payer" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic race" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic sex" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="patient characteristic clinical trial participant" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="provider characteristic" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="intervention, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="intervention, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="intervention, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="intervention, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="laboratory test, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="laboratory test, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="laboratory test, performed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="laboratory test, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, administered" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, adverse effects" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, discharge" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, dispensed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="physical exam, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="physical exam, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="procedure, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="procedure, intolerance" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="procedure, performed" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="procedure, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="risk category assessment" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="substance, administered" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="substance, adverse event" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="substance, allergy" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="substance, recommended" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="symptom, active" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="symptom, assessed" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="symptom, inactive" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="symptom, resolved" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="transfer from" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="transfer to" dotNotation="value"/>
+        
+         <attributeMapping qdmAttribute="Result" datatypes="device, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="diagnostic study, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="encounter, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="functional status, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="intervention, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="laboratory test, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="medication, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="physical exam, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="procedure, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="Result" datatypes="substance, order" dotNotation="value"/>
+    </attributeMappings>
+    
+    <!-- TODO: Provide Aggregate codes - in base standard -->
+    <aggregates>
+        <aggregate simpleXMLCode="MAX" HQMFCode="MAX"/>
+        <aggregate simpleXMLCode="MIN" HQMFCode="MIN"/>
+        <aggregate simpleXMLCode="AVG" HQMFCode="AVERAGE"/>
+        <aggregate simpleXMLCode="SUM" HQMFCode="SUM"/>
+        <aggregate simpleXMLCode="COUNT" HQMFCode="COUNT"/>
+        <aggregate simpleXMLCode="MEDIAN" HQMFCode="MEDIAN"/>
+    </aggregates>
 </templates>

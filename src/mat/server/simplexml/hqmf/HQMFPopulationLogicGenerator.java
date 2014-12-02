@@ -61,6 +61,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
                  7. Based on top AND/OR/ANDNOT/ORNOT generate "AllTrue", "AllFalse", "AtLeastOneTrue" tag. Generate id empty tag inside it.
                  8. Generate precondition tag typeCode="PRCN" for all children inside top Logical Op and add criteriaRef to it with id and extension.
 		 **/
+		measureExport = me;
 		getMeasureScoringType(me);
 		generateClauseLogicMap(me);
 		getAllMeasureGroupings(me);
@@ -372,7 +373,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 				preConditionElement.setAttribute(TYPE_CODE, "PRCN");
 				switch(nodeType) {
 					case "subTree":
-						generateCritRefSubTreeRef(me, preConditionElement, childNode, me.getHQMFXmlProcessor());
+						generateCritRefSubTreeRef( preConditionElement, childNode, me.getHQMFXmlProcessor());
 						break;
 					case "comment":
 						// skipping comment node as of now.

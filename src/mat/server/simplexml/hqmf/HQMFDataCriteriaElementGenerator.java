@@ -47,6 +47,20 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
+	 * @param qdmNode
+	 * @param excerptElement
+	 * @param dataCriteriaXMLProcessor
+	 * @param simpleXmlprocessor
+	 * @param attributeQDMNode
+	 * @throws XPathExpressionException
+	 */
+	public void generateAttributeTagForFunctionalOp(Node qdmNode, Element excerptElement
+			, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor
+			, Node attributeQDMNode) throws XPathExpressionException{
+		createDataCriteriaForAttributes(qdmNode, excerptElement, dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+	}
+	
+	/**
 	 * Gets the HQMF xml string.
 	 * 
 	 * @param me
@@ -1298,13 +1312,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		String insertAfterNodeName = templateNode.getAttributes().getNamedItem("insertAfterNode").getNodeValue();
 		if (insertAfterNodeName != null) {
-			Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
-			if (outBoundElement != null) {
-				outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
-			} else {
-				if(!isLengthOfStayValueSet){
-					dataCriteriaElem.appendChild(targetQuantityTag);
+			if(dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0) != null) {
+				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
+				if (outBoundElement != null) {
+					outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
+				} else {
+					if(!isLengthOfStayValueSet){
+						dataCriteriaElem.appendChild(targetQuantityTag);
+					}
 				}
+			} else {
+				dataCriteriaElem.appendChild(targetQuantityTag);
 			}
 		} else {
 			if(!isLengthOfStayValueSet){

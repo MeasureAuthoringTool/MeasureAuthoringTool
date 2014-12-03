@@ -1007,8 +1007,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 						attributeElement.setAttribute("comparisonValue", attributeMap.getNamedItem("quantity").getNodeValue());
 						attributeNode = attributeElement;
 						Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
-						HQMFDataCriteriaElementGenerator criteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
-						criteriaElementGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
+						HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
+						attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
 								, measureExport.getSimpleXMLProcessor(), attributeNode);
 						Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
 						qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
@@ -1289,7 +1289,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String firstChildName = firstChild.getNodeName();
 			
 			String ext = StringUtils.deleteWhitespace(firstChild.getAttributes().getNamedItem("displayName").getNodeValue());
-			
+			String occText = null;
+			// Handled Occurrence Of QDM Variable.
+			if(subTreeNode.getAttributes().getNamedItem("instanceOf") != null){
+				occText = "occ"+subTreeNode.getAttributes().getNamedItem("instance").getNodeValue()+"of_";
+			}
 			
 			if("elementRef".equals(firstChildName)){
 				ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
@@ -1298,8 +1302,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 					ext = StringUtils.deleteWhitespace(firstChild.getFirstChild().getAttributes().getNamedItem("displayName").getNodeValue());
 				}
 			}
+			
+			
 			if("true".equalsIgnoreCase(isQdmVariable)){
-				ext = "qdm_var_"+ext;
+				if (occText != null) {
+					ext = occText + "qdm_var_"+ext;
+				} else {
+					ext = "qdm_var_"+ext;
+				}
+				
 			}
 			
 			/**

@@ -46,19 +46,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		return dataCriteria;
 	}
 	
-	/**
-	 * @param qdmNode
-	 * @param excerptElement
-	 * @param dataCriteriaXMLProcessor
-	 * @param simpleXmlprocessor
-	 * @param attributeQDMNode
-	 * @throws XPathExpressionException
-	 */
-	public void generateAttributeTagForFunctionalOp(Node qdmNode, Element excerptElement
-			, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor
-			, Node attributeQDMNode) throws XPathExpressionException{
-		createDataCriteriaForAttributes(qdmNode, excerptElement, dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-	}
+	
 	
 	/**
 	 * Gets the HQMF xml string.
@@ -823,7 +811,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param qdmNode the qdm node
 	 * @param valueElem the value elem
 	 */
-	private void addValueSetVersion(Node qdmNode, Element valueElem) {
+	protected void addValueSetVersion(Node qdmNode, Element valueElem) {
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
 		if("1.0".equals(valueSetVersion)) {
@@ -2179,7 +2167,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @return the element
 	 */
-	private Element createCodeForDatatype(Node templateNode,
+	protected Element createCodeForDatatype(Node templateNode,
 			XmlProcessor dataCriteriaXMLProcessor) {
 		Node codeAttr = templateNode.getAttributes().getNamedItem(CODE);
 		Node codeSystemAttr = templateNode.getAttributes().getNamedItem(
@@ -2221,7 +2209,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param unitString the unit string
 	 * @return the unit string
 	 */
-	private String getUnitString(String unitString){
+	protected String getUnitString(String unitString){
 		String returnString = unitString;
 		
 		if(unitString.equals("years") || unitString.equals("year")){
@@ -2263,7 +2251,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		return returnString;
 	}
 	
-	private void clean(Node node)
+	protected void clean(Node node)
 	{
 		NodeList childNodes = node.getChildNodes();
 		

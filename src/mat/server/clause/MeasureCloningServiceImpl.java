@@ -44,6 +44,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureCloningServiceImpl.
  */
@@ -98,8 +99,20 @@ implements MeasureCloningService {
 	/** The Constant MEASURE_SCORING. */
 	private static final String MEASURE_SCORING = "scoring";
 	
+	/** The Constant MEASUREMENT_PERIOD. */
+	private static final String MEASUREMENT_PERIOD = "period";
+	
+	/** The Constant START_DATE. */
+	private static final String START_DATE = "startDate";
+	
+	/** The Constant STOP_DATE. */
+	private static final String STOP_DATE = "stopDate";
+	
 	/** The Constant SUPPLEMENTAL_DATA_ELEMENTS. */
 	private static final String SUPPLEMENTAL_DATA_ELEMENTS = "supplementalDataElements";
+	
+	/** The Constant Risk_ADJUSTMENT_VARIABLES. */
+	private static final String Risk_ADJUSTMENT_VARIABLES = "riskAdjustmentVariables";
 	
 	/** The Constant VERSION_ZERO. */
 	private static final String VERSION_ZERO = "0.0";
@@ -182,6 +195,7 @@ implements MeasureCloningService {
 			// Create the measureGrouping tag
 			clearChildNodes(MEASURE_GROUPING);
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
+			clearChildNodes(Risk_ADJUSTMENT_VARIABLES);
 			// create the default 4 CMS supplemental QDM
 			QualityDataModelWrapper wrapper = measureXmlDAO
 					.createSupplimentalQDM(clonedMeasure.getId(), TRUE,
@@ -342,8 +356,9 @@ implements MeasureCloningService {
 		Node versionNode = clonedDoc.createElement(VERSION);
 		versionNode.setTextContent(MeasureUtility.getVersionText(String.valueOf(clonedMeasure.getVersionNumber()),
 				clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft()));
-		Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
+		//Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
 		/*statusNode.setTextContent(clonedMeasure.getMeasureStatus());*/
+		Node measurementPeriodNode = createMeasurementPeriodNode();
 		Node measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
 		String measureScoring = clonedMeasure.getMeasureScoring();
 		ElementImpl element = (ElementImpl) measureScoringNode;
@@ -355,10 +370,30 @@ implements MeasureCloningService {
 		parentNode.appendChild(shortTitleNode);
 		parentNode.appendChild(guidNode);
 		parentNode.appendChild(versionNode);
-		parentNode.appendChild(statusNode);
+		parentNode.appendChild(measurementPeriodNode);
+		//parentNode.appendChild(statusNode);
 		parentNode.appendChild(measureScoringNode);
 	}
 	
+	/**
+	 * Creates the measurement period node.
+	 *
+	 * @return the node
+	 */
+	private Node createMeasurementPeriodNode() {
+		Node measurementPeriodNode = clonedDoc.createElement(MEASUREMENT_PERIOD);
+		ElementImpl element = (ElementImpl) measurementPeriodNode;
+		element.setAttribute("calenderYear","true");
+		element.setAttribute("uuid",UUID.randomUUID().toString());
+		Node startDateNode = clonedDoc.createElement(START_DATE);
+		startDateNode.setTextContent("01/01/20XX");
+		Node stopDateNode = clonedDoc.createElement(STOP_DATE);
+		stopDateNode.setTextContent("12/31/20XX");
+		measurementPeriodNode.appendChild(startDateNode);
+		measurementPeriodNode.appendChild(stopDateNode);
+		return measurementPeriodNode;
+	}
+
 	/**
 	 * Creates the new measure details for draft.
 	 */

@@ -756,13 +756,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 		
 		if (idNodeQDM != null) {
+			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())){
 				root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			} else if ((relOpParentNode != null) && "functionalOp".equals(relOpParentNode.getNodeName())
 					&& ("subTree".equalsIgnoreCase(relOpParentNode.getParentNode().getNodeName()))) {
 				root = relOpParentNode.getParentNode().getAttributes().getNamedItem("uuid").getNodeValue();
+				if (relOpParentNode.getParentNode().getAttributes().getNamedItem("qdmVariable") != null) {
+					String isQdmVariable = relOpParentNode.getParentNode().getAttributes()
+							.getNamedItem("qdmVariable").getNodeValue();
+					if ("true".equalsIgnoreCase(isQdmVariable)) {
+						ext = "qdm_var_" + ext;
+					}
+				}
 			}
-			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 			Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
 			NodeList idChildNodeList = ((Element)clonedEntryNodeForElementRef).getElementsByTagName(ID);
@@ -975,7 +982,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private Element generateExcerptEntryForFunctionalNode(Node relOpParentNode, Node lhsNode, XmlProcessor hqmfXmlProcessor, Node clonedEntryNodeForElementRef) throws XPathExpressionException {
 		Element excerptElement = hqmfXmlProcessor.getOriginalDoc().createElement("excerpt");
 		NodeList entryChildNodes = clonedEntryNodeForElementRef.getChildNodes();
-		String functionalOpName = relOpParentNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		String functionalOpName = relOpParentNode.getAttributes().getNamedItem("type").getNodeValue();
 		
 		if(FUNCTIONAL_OPS_NON_SUBSET.containsKey(functionalOpName.toUpperCase())) {
 			Element sequenceElement = hqmfXmlProcessor.getOriginalDoc().createElement("sequenceNumber");
@@ -1286,6 +1293,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			if("elementRef".equals(firstChildName)){
 				ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
+			} else if("functionalOp".equals(firstChildName)){
+				if(firstChild.getFirstChild() != null) {
+					ext = StringUtils.deleteWhitespace(firstChild.getFirstChild().getAttributes().getNamedItem("displayName").getNodeValue());
+				}
 			}
 			if("true".equalsIgnoreCase(isQdmVariable)){
 				ext = "qdm_var_"+ext;

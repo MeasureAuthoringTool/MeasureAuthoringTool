@@ -16,6 +16,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.ShowMorePagerPanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -197,10 +198,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			new SingleSelectionModel<QualityDataSetDTO>();
 	
 	/** The left pager panel. */
-	private ScrollPanel leftPagerPanel = new ScrollPanel();	
+	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel();	
 	
 	/** The right pager panel. */
-	private ScrollPanel rightPagerPanel = new ScrollPanel();
+	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
 	
 	
 	//RiskAdjustment UI Components
@@ -232,10 +233,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private PrimaryButton addRiskAdjVariablesToMeasure = new PrimaryButton("Save Risk Adjustment Variables", "primaryButton");
 	
 	/** The left risk adj panel. */
-	private ScrollPanel leftRiskAdjPanel = new ScrollPanel();
+	private ShowMorePagerPanel leftRiskAdjPanel = new ShowMorePagerPanel();
 	
 	/** The right risk adj panel. */
-	private ScrollPanel rightRiskAdjPanel = new ScrollPanel();
+	private ShowMorePagerPanel rightRiskAdjPanel = new ShowMorePagerPanel();
 	
 	/** The Risk adj cell list. */
 	private CellList<RiskAdjustmentDTO> riskAdjClauseCellList;
@@ -321,11 +322,13 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					subTreePopulationList.remove(riskAdjClauseSelModel.getSelectedObject());
 					Collections.sort(subTreePopulationList , new RiskAdjustmentDTO.Comparator());
 					Collections.sort(riskAdjVarPopulationList, new RiskAdjustmentDTO.Comparator());
-					rightRiskAdjPanel.clear();
+					/*rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getSubTreeClauseCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());*/
 					riskAdjClauseSelModel.clear();
+					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
+					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 				}				
 			}
 		});
@@ -338,11 +341,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					riskAdjVarPopulationList.remove(riskAdjVarSelModel.getSelectedObject());
 					Collections.sort(riskAdjVarPopulationList , new RiskAdjustmentDTO.Comparator());
 					Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());
-					rightRiskAdjPanel.clear();
+					/*rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getSubTreeClauseCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());*/
+					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
+					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
+					
 				}
 			
 				
@@ -357,10 +363,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					Collections.sort(riskAdjVarPopulationList , new RiskAdjustmentDTO.Comparator());
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
-					rightRiskAdjPanel.clear();
+					/*rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getSubTreeClauseCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());*/
+					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
+					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}				
 			}
@@ -374,10 +382,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					Collections.sort(subTreePopulationList , new RiskAdjustmentDTO.Comparator());
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
-					rightRiskAdjPanel.clear();
+					/*rightRiskAdjPanel.clear();
 					rightRiskAdjPanel.add(getRiskAdjVarCellList());
 					leftRiskAdjPanel.clear();
-					leftRiskAdjPanel.add(getSubTreeClauseCellList());
+					leftRiskAdjPanel.add(getSubTreeClauseCellList());*/
+					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
+					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}			
 			}
@@ -399,10 +409,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					qdmPopulationList.remove(qdmSelModel.getSelectedObject());
 					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
 					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
-					rightPagerPanel.clear();
-					rightPagerPanel.add(getSupCellList());
-					leftPagerPanel.clear();
-					leftPagerPanel.add(getQdmCellList());
+//					rightPagerPanel.clear();
+//					rightPagerPanel.add(getSupCellList());
+//					leftPagerPanel.clear();
+//					leftPagerPanel.add(getQdmCellList());
+					rightPagerPanel.setDisplay(getSupCellList());
+					leftPagerPanel.setDisplay(getQdmCellList());
 					qdmSelModel.clear();
 				}
 			}
@@ -416,10 +428,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					supPopulationList.remove(supDataSelModel.getSelectedObject());
 					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
 					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
-					rightPagerPanel.clear();
+					/*rightPagerPanel.clear();
 					rightPagerPanel.add(getSupCellList());
 					leftPagerPanel.clear();
-					leftPagerPanel.add(getQdmCellList());
+					leftPagerPanel.add(getQdmCellList());*/
+					rightPagerPanel.setDisplay(getSupCellList());
+					leftPagerPanel.setDisplay(getQdmCellList());
 					supDataSelModel.clear();
 				}
 			}
@@ -433,10 +447,13 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
 					supDataSelModel.clear();
 					qdmSelModel.clear();
-					rightPagerPanel.clear();
+					/*rightPagerPanel.clear();
 					rightPagerPanel.add(getSupCellList());
 					leftPagerPanel.clear();
 					leftPagerPanel.add(getQdmCellList());
+					*/
+					rightPagerPanel.setDisplay(getSupCellList());
+					leftPagerPanel.setDisplay(getQdmCellList());
 				}
 			}
 		});
@@ -449,10 +466,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					Collections.sort(qdmPopulationList , new QualityDataSetDTO.Comparator());
 					supDataSelModel.clear();
 					qdmSelModel.clear();
-					rightPagerPanel.clear();
+					/*rightPagerPanel.clear();
 					rightPagerPanel.add(getSupCellList());
 					leftPagerPanel.clear();
-					leftPagerPanel.add(getQdmCellList());
+					leftPagerPanel.add(getQdmCellList());*/
+					rightPagerPanel.setDisplay(getSupCellList());
+					leftPagerPanel.setDisplay(getQdmCellList());
 				}
 			}
 		});
@@ -487,19 +506,23 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjustmentsLabel.addStyleName("bold");
 		riskSPanel.add(riskAdjustmentsLabel);
 		
-		leftRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		/*leftRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
+		leftRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
 		leftRiskAdjPanel.setSize("320px", "200px");
-		leftRiskAdjPanel.setAlwaysShowScrollBars(true);
-		leftRiskAdjPanel.add(getSubTreeClauseCellList());		
+		/*leftRiskAdjPanel.setAlwaysShowScrollBars(true);
+		leftRiskAdjPanel.add(getSubTreeClauseCellList());	*/
+		leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 		riskSPanel.add(leftRiskAdjPanel);		
 		
 		Widget riskAdjVarLabel = LabelBuilder.buildLabel(supDataCellList,"Risk Adjustment Variables");
 		riskAdjVarLabel.addStyleName("bold");		
 		
-		rightRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		/*rightRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
+		rightRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
 		rightRiskAdjPanel.setSize("320px", "200px");
-		rightRiskAdjPanel.setAlwaysShowScrollBars(true);
-		rightRiskAdjPanel.add(getRiskAdjVarCellList());
+		/*rightRiskAdjPanel.setAlwaysShowScrollBars(true);
+		rightRiskAdjPanel.add(getRiskAdjVarCellList());*/
+		rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
 		riskVPanel.add(riskAdjVarLabel);
 		riskVPanel.add(rightRiskAdjPanel);
 		riskPanel.add(riskVPanel);
@@ -547,23 +570,22 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		qdmElementsLabel.addStyleName("bold");
 		sPanel.add(qdmElementsLabel);
 		
-		leftPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setSize("320px", "200px");
-		leftPagerPanel.setAlwaysShowScrollBars(true);
-		leftPagerPanel.add(getQdmCellList());
-		
+		/*leftPagerPanel.setAlwaysShowScrollBars(true);
+		leftPagerPanel.add(getQdmCellList());*/
+		leftPagerPanel.setDisplay(getQdmCellList());
 		sPanel.add(leftPagerPanel);
-		
-		
 		
 		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
 		
-		
-		rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		/*rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
+		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
 		rightPagerPanel.setSize("320px", "200px");
-		rightPagerPanel.setAlwaysShowScrollBars(true);
-		rightPagerPanel.add(getSupCellList());
+		/*rightPagerPanel.setAlwaysShowScrollBars(true);
+		rightPagerPanel.add(getSupCellList());*/
+		rightPagerPanel.setDisplay(getSupCellList());
 		vPanel.add(suppElementsLabel);
 		vPanel.add(rightPagerPanel);
 		suppElementsPanel.add(vPanel);
@@ -921,8 +943,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		supPopulationList.clear();
 		supPopulationList.addAll(clauses);
 		Collections.sort(supPopulationList, new QualityDataSetDTO.Comparator());
-		rightPagerPanel.clear();
-		rightPagerPanel.add(getSupCellList());
+		/*rightPagerPanel.clear();
+		rightPagerPanel.add(getSupCellList());*/
+		rightPagerPanel.setDisplay(getSupCellList());
 		supDataSelModel.clear();
 	}
 	/* (non-Javadoc)
@@ -967,8 +990,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		qdmPopulationList.clear();
 		qdmPopulationList.addAll(clauses);
 		Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
-		leftPagerPanel.clear();
-		leftPagerPanel.add(getQdmCellList());
+		/*leftPagerPanel.clear();
+		leftPagerPanel.add(getQdmCellList());*/
+		leftPagerPanel.setDisplay(getQdmCellList());
 		qdmSelModel.clear();
 	}
 	/* (non-Javadoc)
@@ -1348,8 +1372,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	    subTreePopulationList.clear();
 		subTreePopulationList.addAll(subTreeClauseList);
 		Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());
-		leftRiskAdjPanel.clear();
-		leftRiskAdjPanel.add(getSubTreeClauseCellList());
+		/*leftRiskAdjPanel.clear();
+		leftRiskAdjPanel.add(getSubTreeClauseCellList());*/
+		leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 		riskAdjClauseSelModel.clear();
 		
 	}
@@ -1362,8 +1387,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	    riskAdjVarPopulationList.clear();
 	    riskAdjVarPopulationList.addAll(riskAdjClauseList);
 		Collections.sort(riskAdjVarPopulationList, new RiskAdjustmentDTO.Comparator());
-		rightRiskAdjPanel.clear();
-		rightRiskAdjPanel.add(getRiskAdjVarCellList());
+		/*rightRiskAdjPanel.clear();
+		rightRiskAdjPanel.add(getRiskAdjVarCellList());*/
+		rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
 		riskAdjVarSelModel.clear();
 		
 	}

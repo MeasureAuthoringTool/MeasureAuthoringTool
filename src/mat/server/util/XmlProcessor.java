@@ -120,6 +120,7 @@ public class XmlProcessor {
 	private static final String XPATH_MEASURE_MEASURE_DETAILS_GUID = "/measure/measureDetails/guid";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE. */
+	
 	private static final String XPATH_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_SCORING. */
@@ -127,12 +128,6 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
-	
-	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE. */
-	private static final String XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE = "/measure/subTreeLookUp/subTree";
-	
-	/** The Constant XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE. */
-	private static final String XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/subTreeRef";
 	
 	/** The Constant XPATH_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
@@ -220,10 +215,7 @@ public class XmlProcessor {
 	private static final String AND = "and";
 	
 	/** The Constant OR. */
-	private static final String OR_STRING = "or";
-	
-	/** The Constant INSTANCE. */
-	private static final String INSTANCE = "instance";
+	private static final String OR_STRING = "or";	
 	
 	/** The Constant UUID. */
 	private static final String UUID_STRING = "uuid";
@@ -607,225 +599,6 @@ public class XmlProcessor {
 		}
 		return transform(originalDoc);
 	}
-	
-	/**
-	 * Gets the risk adj variables for measure packager.
-	 *
-	 * @return the risk adj variables for measure packager
-	 */
-	public Map<String, ArrayList<RiskAdjustmentDTO>> getRiskAdjVariablesForMeasurePackager(){
-		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
-		ArrayList<RiskAdjustmentDTO> subTreeList = new ArrayList<RiskAdjustmentDTO>();
-		ArrayList<RiskAdjustmentDTO> masterList = new ArrayList<RiskAdjustmentDTO>();
-		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (originalDoc == null) {
-			return riskMap;
-		}
-		try{
-		
-		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
-			Node newNode = riskAdjustmentVarNodeList.item(j);					
-			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
-			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
-			riskAdkVariableList.add(riskDTO);
-		}
-		String uuidXPathString = "";
-		for(int m=0;m<riskAdkVariableList.size();m++){
-			uuidXPathString += "@uuid != '"+riskAdkVariableList.
-					get(m).getUuid() + "' and";
-		}
-		String xpathStringForSubTree = "";
-		if(!uuidXPathString.isEmpty()){
-			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
-			xpathStringForSubTree= XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE+"["+uuidXPathString +"]" +
-				"[@qdmVariable='false']";
-		} else {
-			xpathStringForSubTree= XPATH_MEASURE_SUBTREE_LOOKUP_CLAUSE +
-				"[@qdmVariable='false']";
-		}
-		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForSubTree,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
-			Node newNode = nodesSubTreeLookUpAll.item(i);					
-			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
-			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
-			subTreeList.add(riskDTO);
-		}
-		
-		riskMap.put("RISKADJ", riskAdkVariableList);
-		riskMap.put("SUBTREEREF", subTreeList);
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		return riskMap;
-	}
-	/**
-	 * Sort sde and qd ms for measure packager.
-	 * 
-	 * @return the map
-	 */
-	public Map<String, ArrayList<QualityDataSetDTO>> sortSDEAndQDMsForMeasurePackager() {
-		Map<String, ArrayList<QualityDataSetDTO>> map = new HashMap<String, ArrayList<QualityDataSetDTO>>();
-		ArrayList<QualityDataSetDTO> qdmList = new ArrayList<QualityDataSetDTO>();
-		ArrayList<QualityDataSetDTO> masterList = new ArrayList<QualityDataSetDTO>();
-		ArrayList<QualityDataSetDTO> supplementalDataList = new ArrayList<QualityDataSetDTO>();
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (originalDoc == null) {
-			return map;
-		}
-		try {
-			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_ELEMENT_LOOKUP_QDM,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			// Master List of Element Look Up QDM's. This list is used to
-			// populate QDM properties in SDE and QDM List.
-			for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
-				Node newNode = nodesElementLookUpAll.item(i);
-				QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
-				dataSetDTO.setId(newNode.getAttributes().getNamedItem("id")
-						.getNodeValue().toString());
-				dataSetDTO.setDataType(newNode.getAttributes()
-						.getNamedItem("datatype").getNodeValue().toString());
-				if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
-					dataSetDTO
-					.setOccurrenceText(newNode.getAttributes()
-							.getNamedItem(INSTANCE).getNodeValue()
-							.toString());
-				} else {
-					dataSetDTO.setOccurrenceText("");
-				}
-				dataSetDTO.setCodeListName(newNode.getAttributes()
-						.getNamedItem("name").getNodeValue().toString());
-				dataSetDTO.setOid(newNode.getAttributes().getNamedItem("oid")
-						.getNodeValue().toString());
-				dataSetDTO.setTaxonomy(newNode.getAttributes()
-						.getNamedItem("taxonomy").getNodeValue().toString());
-				dataSetDTO.setUuid(newNode.getAttributes().getNamedItem(UUID_STRING)
-						.getNodeValue().toString());
-				dataSetDTO.setVersion(newNode.getAttributes()
-						.getNamedItem("version").getNodeValue().toString());
-				if ((newNode.getAttributes().getNamedItem("suppDataElement")
-						.getNodeValue().toString()).equalsIgnoreCase("true")) {
-					dataSetDTO.setSuppDataElement(true);
-				} else {
-					dataSetDTO.setSuppDataElement(false);
-				}
-				masterList.add(dataSetDTO);
-			}
-			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
-					XPATH_SD_ELEMENTS_ELEMENTREF,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			// If SupplementDataElement contains elementRef, intersection of QDM
-			// and SupplementDataElement is evaluated.
-			if (nodesSupplementalData.getLength() > 0) {
-				StringBuilder expression = new StringBuilder(
-						XPATH_MEASURE_ELEMENT_LOOKUP_QDM.concat("["));
-				// populate supplementDataElement List and create XPATH
-				// expression to find intersection of QDM and SDE.
-				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
-					Node newNode = nodesSupplementalData.item(i);
-					String nodeID = newNode.getAttributes().getNamedItem("id")
-							.getNodeValue();
-					expression = expression.append("@uuid!= '").append(nodeID)
-							.append("'").append(" and ");
-					for (QualityDataSetDTO dataSetDTO : masterList) {
-						if (dataSetDTO.getUuid().equalsIgnoreCase(nodeID)) {
-							supplementalDataList.add(dataSetDTO);
-							break;
-						}
-					}
-				}
-				String xpathUniqueQDM = expression.toString();
-				// Final XPath Expression.
-				xpathUniqueQDM = xpathUniqueQDM.substring(0,
-						xpathUniqueQDM.lastIndexOf(" and")).concat("]");
-				XPathExpression expr = xPath.compile(xpathUniqueQDM);
-				// Intersection List of QDM and SDE. Elements which are
-				// referenced in SDE are filtered out.
-				NodeList nodesFinal = (NodeList) expr.evaluate(
-						originalDoc.getDocumentElement(),
-						XPathConstants.NODESET);
-				// populate QDM List
-				for (int i = 0; i < nodesFinal.getLength(); i++) {
-					Node newNode = nodesFinal.item(i);
-					String nodeID = newNode.getAttributes()
-							.getNamedItem(UUID_STRING).getNodeValue();
-					String dataType = newNode.getAttributes()
-							.getNamedItem("datatype").getNodeValue();
-					String oid = newNode.getAttributes()
-							.getNamedItem("oid").getNodeValue();
-					boolean isOccurrenceText = false;
-					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
-						isOccurrenceText = true;
-					}
-					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
-					if (!isOccurrenceText && (!dataType
-						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) 
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
-						for (QualityDataSetDTO dataSetDTO : masterList) {
-							if (dataSetDTO.getUuid().equalsIgnoreCase(
-									nodeID)
-									&& StringUtils.isBlank(dataSetDTO
-											.getOccurrenceText())) {
-								qdmList.add(dataSetDTO);
-								break;
-							}
-						}
-					}
-				}
-			} else {
-				for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
-					Node newNode = nodesElementLookUpAll.item(i);
-					String nodeID = newNode.getAttributes()
-							.getNamedItem(UUID_STRING).getNodeValue();
-					String dataType = newNode.getAttributes()
-							.getNamedItem("datatype").getNodeValue();
-					String oid = newNode.getAttributes()
-							.getNamedItem("oid").getNodeValue();
-					boolean isOccurrenceText = false;
-					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
-						isOccurrenceText = true;
-					}
-					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
-					if (!isOccurrenceText && (!dataType
-						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
-						for (QualityDataSetDTO dataSetDTO : masterList) {
-							if (dataSetDTO.getUuid().equalsIgnoreCase(
-									nodeID)
-									&& StringUtils.isBlank(dataSetDTO
-											.getOccurrenceText())) {
-								qdmList.add(dataSetDTO);
-								break;
-							}
-						}
-					}
-				}
-			}
-			map.put("QDM", qdmList);
-			map.put("SDE", supplementalDataList);
-			map.put("MASTER", masterList);
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		return map;
-	}
-	
 	/**
 	 * This method looks at the Scoring Type for a measure and removes nodes
 	 * based on the value of Scoring Type.

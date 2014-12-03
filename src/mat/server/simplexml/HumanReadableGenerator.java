@@ -1882,7 +1882,7 @@ public class HumanReadableGenerator {
 					throws XPathExpressionException {
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e767\" href=\"#toc\">Risk Adjustment Variables</a></h3>");
+		.append("<h3><a name=\"d1e879\" href=\"#toc\">Risk Adjustment Variables</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);

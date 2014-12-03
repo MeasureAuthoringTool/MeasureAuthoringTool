@@ -755,21 +755,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element excerptElement = null;
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 		
-		if (idNodeQDM != null) {
+		if ((relOpParentNode != null) && (idNodeQDM != null)) {
 			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())){
-				root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			} else if ((relOpParentNode != null) && "functionalOp".equals(relOpParentNode.getNodeName())
-					&& ("subTree".equalsIgnoreCase(relOpParentNode.getParentNode().getNodeName()))) {
-				root = relOpParentNode.getParentNode().getAttributes().getNamedItem("uuid").getNodeValue();
-				if (relOpParentNode.getParentNode().getAttributes().getNamedItem("qdmVariable") != null) {
-					String isQdmVariable = relOpParentNode.getParentNode().getAttributes()
+			Node subTreeParentNode = checkParentSubTree(relOpParentNode);
+			if(subTreeParentNode != null){
+				root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
+					String isQdmVariable = subTreeParentNode.getAttributes()
 							.getNamedItem("qdmVariable").getNodeValue();
 					if ("true".equalsIgnoreCase(isQdmVariable)) {
 						ext = "qdm_var_" + ext;
 					}
 				}
 			}
+			
 			Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 			Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
 			NodeList idChildNodeList = ((Element)clonedEntryNodeForElementRef).getElementsByTagName(ID);
@@ -779,15 +778,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
 			}
 			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
-			if ((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())) {
-				if (relOpParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
-					String isQdmVariable = relOpParentNode.getAttributes()
-							.getNamedItem("qdmVariable").getNodeValue();
-					if ("true".equalsIgnoreCase(isQdmVariable)) {
-						ext = "qdm_var_" + ext;
-					}
-				}
-			} else if ((relOpParentNode != null) && "functionalOp".equals(relOpParentNode.getNodeName())) {
+			if ("functionalOp".equals(relOpParentNode.getNodeName())) {
 				excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode, hqmfXmlProcessor, clonedEntryNodeForElementRef);
 			}
 			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
@@ -820,8 +811,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		return null;
 	}
-	
-	
 	
 	private void handleRelOpRHS( Node dataCriteriaSectionElem,
 			Node rhsNode, Element temporallyRelatedInfoNode) throws XPathExpressionException {
@@ -1526,6 +1515,27 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Check If the parentNode is a "subTree" node.
+	 * Or else, if parent is a 'functionalOp' then recursively check if the parentNode's parent
+	 * is a 'subTree'.
+	 * If yes, then return true.
+	 * @param parentNode
+	 * @return boolean
+	 */
+	private Node checkParentSubTree(Node parentNode) {
+		Node returnNode = null;
+		if(parentNode != null){
+			String parentName = parentNode.getNodeName();
+			if("subTree".equals(parentName)){
+				returnNode = parentNode;
+			}else if("functionalOp".equals(parentName)){
+				returnNode = checkParentSubTree(parentNode.getParentNode());
+			}
+		}
+		return returnNode;
 	}
 	
 }

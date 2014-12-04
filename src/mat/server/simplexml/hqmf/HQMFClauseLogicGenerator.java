@@ -1038,11 +1038,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 								Node qdmNode = node.cloneNode(true);
 								Node attributeNode = lhsNode.getFirstChild().cloneNode(true);
 								attributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
-								attributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+								attributeNode.setUserData(ATTRIBUTE_MODE,attributeMap.getNamedItem("operatorType").getNodeValue(), null);
 								attributeNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
 								Element attributeElement = (Element)attributeNode;
+								
 								attributeElement.setAttribute("mode", attributeMap.getNamedItem("operatorType").getNodeValue());
-								attributeElement.setAttribute("comparisonValue", attributeMap.getNamedItem("quantity").getNodeValue());
+								if(attributeElement.getAttributes().getNamedItem("attrDate") != null){
+									attributeNode.setUserData(ATTRIBUTE_DATE, attributeMap.getNamedItem("quantity").getNodeValue(),null);
+								} else {
+									attributeElement.setAttribute("comparisonValue", attributeMap.getNamedItem("quantity").getNodeValue());
+								}
 								if(attributeMap.getNamedItem("unit") != null){
 									attributeElement.setAttribute("unit", attributeMap.getNamedItem("unit").getNodeValue());
 								} else {

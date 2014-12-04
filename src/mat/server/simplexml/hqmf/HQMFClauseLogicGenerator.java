@@ -92,6 +92,72 @@ public class HQMFClauseLogicGenerator implements Generator {
 			generateOccHQMF(subTreeNode);
 		}
 	}
+		
+	/**
+	 * Generate sub tree xml.
+	 * @param subTreeNode the sub tree node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateSubTreeXML( Node subTreeNode) throws XPathExpressionException {
+		
+		/**
+		 * If this is an empty or NULL clause, return right now.
+		 */
+		if((subTreeNode == null) || !subTreeNode.hasChildNodes()){
+			return;
+		}
+		
+		String subTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
+		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		System.out.println("subTreeNodeMap:"+subTreeNodeMap);
+		
+		/**
+		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
+		 */
+		if(subTreeNodeMap.containsKey(subTreeUUID)){
+			logger.info("HQMF for Clause "+clauseName + " is already generated. Skipping.");
+			return;
+		}
+		
+		//get the first child of the subTreeNode
+		Node firstChild = subTreeNode.getFirstChild();
+		String firstChildName = firstChild.getNodeName();
+		logger.info("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName+"'.");
+		System.out.println("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName);
+		
+		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
+		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
+		
+		//generate comment
+		Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
+		dataCriteriaSectionElem.appendChild(comment);
+		
+		switch (firstChildName) {
+			case "setOp":
+				generateSetOpHQMF(firstChild,dataCriteriaSectionElem);
+				break;
+			case "elementRef":
+				generateElementRefHQMF(firstChild,dataCriteriaSectionElem);
+				break;
+			case "subTreeRef":
+				generateSubTreeHQMF(firstChild,dataCriteriaSectionElem);
+				break;
+			case "relationalOp":
+				generateRelOpHQMF(firstChild, dataCriteriaSectionElem);
+			case "functionalOp":
+				generateFunctionalOpHQMF(firstChild,dataCriteriaSectionElem);
+				break;
+			default:
+				//Dont do anything
+				break;
+		}
+		
+		/**
+		 * The clause is generated now. Make an entry in the 'subTreeNodeMap' to keep track of its generation.
+		 */
+		subTreeNodeMap.put(subTreeUUID, subTreeNode);
+		
+	}
 	
 	/**
 	 * @param me
@@ -167,72 +233,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 			entryElem.appendChild(parentNode);
 			dataCriteriaSectionElem.appendChild(entryElem);
 		}
-	}
-	
-	/**
-	 * Generate sub tree xml.
-	 * @param subTreeNode the sub tree node
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private void generateSubTreeXML( Node subTreeNode) throws XPathExpressionException {
-		
-		/**
-		 * If this is an empty or NULL clause, return right now.
-		 */
-		if((subTreeNode == null) || !subTreeNode.hasChildNodes()){
-			return;
-		}
-		
-		String subTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
-		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		System.out.println("subTreeNodeMap:"+subTreeNodeMap);
-		
-		/**
-		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
-		 */
-		if(subTreeNodeMap.containsKey(subTreeUUID)){
-			logger.info("HQMF for Clause "+clauseName + " is already generated. Skipping.");
-			return;
-		}
-		
-		//get the first child of the subTreeNode
-		Node firstChild = subTreeNode.getFirstChild();
-		String firstChildName = firstChild.getNodeName();
-		logger.info("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName+"'.");
-		System.out.println("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName);
-		
-		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
-		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
-		
-		//generate comment
-		Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
-		dataCriteriaSectionElem.appendChild(comment);
-		
-		switch (firstChildName) {
-			case "setOp":
-				generateSetOpHQMF(firstChild,dataCriteriaSectionElem);
-				break;
-			case "elementRef":
-				generateElementRefHQMF(firstChild,dataCriteriaSectionElem);
-				break;
-			case "subTreeRef":
-				generateSubTreeHQMF(firstChild,dataCriteriaSectionElem);
-				break;
-			case "relationalOp":
-				generateRelOpHQMF(firstChild, dataCriteriaSectionElem);
-			case "functionalOp":
-				generateFunctionalOpHQMF(firstChild,dataCriteriaSectionElem);
-				break;
-			default:
-				//Dont do anything
-				break;
-		}
-		
-		/**
-		 * The clause is generated now. Make an entry in the 'subTreeNodeMap' to keep track of its generation.
-		 */
-		subTreeNodeMap.put(subTreeUUID, subTreeNode);
-		
 	}
 	
 	/**
@@ -413,10 +413,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		//creating grouperCriteria element
 		String root = "0";
 		String ext = setOpType;
-		
-		//Node parNode = setOpNode.getParentNode();
-		
-		Node subTreeParentNode = checkParentSubTree(setOpNode);
+			
+		Node subTreeParentNode = checkIfSubTree(setOpNode.getParentNode());
 		if (subTreeParentNode != null) {
 			root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
@@ -429,16 +427,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		} else {
 			root = UUIDUtilClient.uuid();
 		}
-		/*if((parNode != null) && "subTree".equals(parNode.getNodeName())){
-			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
-			String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
-			if(isQdmVariable.equalsIgnoreCase("true")) {
-				ext = "qdm_var_"+ext;
-			}
-		}else{
-			root = UUIDUtilClient.uuid();
-		}*/
+		
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		
 		NodeList childNodes = setOpNode.getChildNodes();
@@ -768,7 +757,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		if ((relOpParentNode != null) && (idNodeQDM != null)) {
 			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			Node subTreeParentNode = checkParentSubTree(relOpParentNode);
+			Node subTreeParentNode = checkIfSubTree(relOpParentNode);
 			if(subTreeParentNode != null){
 				root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 				if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
@@ -1650,14 +1639,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param parentNode
 	 * @return boolean
 	 */
-	private Node checkParentSubTree(Node parentNode) {
+	private Node checkIfSubTree(Node parentNode) {
 		Node returnNode = null;
 		if(parentNode != null){
 			String parentName = parentNode.getNodeName();
 			if("subTree".equals(parentName)){
 				returnNode = parentNode;
 			}else if("functionalOp".equals(parentName)){
-				returnNode = checkParentSubTree(parentNode.getParentNode());
+				returnNode = checkIfSubTree(parentNode.getParentNode());
 			}
 		}
 		return returnNode;

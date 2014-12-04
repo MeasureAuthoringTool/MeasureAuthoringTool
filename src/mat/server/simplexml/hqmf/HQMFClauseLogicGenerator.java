@@ -1002,12 +1002,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 				excerptElement.appendChild(qdmSubSetElement);
 				excerptElement.appendChild(criteriaElement);
 			} else {
+				Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
 				if (attributeMap.getNamedItem("operatorType") != null) {
 					String lhsNodeType = lhsNode.getNodeName();
 					if ("elementRef".equalsIgnoreCase(lhsNodeType)) {
-						Node qdmNode = lhsNode.cloneNode(true);
-						if(qdmNode.hasChildNodes()){
-							Node attributeNode = qdmNode.getFirstChild().cloneNode(true);
+						String qdmUUID = lhsNode.getAttributes().getNamedItem("id").getNodeValue();
+						String xPath = "/measure/elementLookUp/qdm[@uuid ='"+qdmUUID+"']";
+						Node node = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xPath);
+						if(node != null && lhsNode.hasChildNodes()){
+							Node qdmNode = node.cloneNode(true);
+							Node attributeNode = lhsNode.getFirstChild().cloneNode(true);
 							attributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
 							attributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
 							attributeNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
@@ -1022,7 +1026,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 								}
 							}
 							attributeNode = attributeElement;
-							Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
+							
 							HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
 							attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
 									, measureExport.getSimpleXMLProcessor(), attributeNode);
@@ -1035,10 +1039,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 								excerptElement.appendChild(subSetCodeElement);
 							}
 							excerptElement.appendChild(qdmSubSetElement);
-							excerptElement.appendChild(criteriaElement);
+							
 						}
 					}
 				}
+				excerptElement.appendChild(criteriaElement);
 			}
 		}
 		

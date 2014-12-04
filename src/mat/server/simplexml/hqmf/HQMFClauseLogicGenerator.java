@@ -575,16 +575,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 					Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
 					handleRelOpRHS( dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 					
-					Node firstChld = clonedEntryNodeForSubTree.getFirstChild();
-					if("localVariableName".equals(firstChld.getNodeName())){
-						firstChld = firstChld.getNextSibling();
+					Node firstNode = clonedEntryNodeForSubTree.getFirstChild();
+					if("localVariableName".equals(firstNode.getNodeName())){
+						firstNode = firstNode.getNextSibling();
 					}
-					NodeList outBoundList = ((Element)firstChld).getElementsByTagName("outboundRelationship");
+					NodeList outBoundList = ((Element)firstNode).getElementsByTagName("outboundRelationship");
 					if((outBoundList != null) && (outBoundList.getLength() > 0)){
 						Node outBound = outBoundList.item(0);
-						firstChld.insertBefore(temporallyRelatedInfoNode, outBound);
+						firstNode.insertBefore(temporallyRelatedInfoNode, outBound);
 					}else{
-						firstChld.appendChild(temporallyRelatedInfoNode);
+						firstNode.appendChild(temporallyRelatedInfoNode);
 					}
 					
 					//create comment node

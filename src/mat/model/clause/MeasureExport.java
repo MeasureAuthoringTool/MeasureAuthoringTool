@@ -33,6 +33,8 @@ public class MeasureExport {
 	
 	private XmlProcessor simpleXMLProcessor;
 	
+	private XmlProcessor humanReadableProcessor;
+	
 	/**
 	 * Gets the id.
 	 * 
@@ -204,6 +206,14 @@ public class MeasureExport {
 
 	public void setSimpleXMLProcessor(XmlProcessor simpleXMLProcessor) {
 		this.simpleXMLProcessor = simpleXMLProcessor;
+	}
+
+	public XmlProcessor getHumanReadableProcessor() {
+		return humanReadableProcessor;
+	}
+
+	public void setHumanReadableProcessor(XmlProcessor humanReadableProcessor) {
+		this.humanReadableProcessor = humanReadableProcessor;
 	}
 	  
 	

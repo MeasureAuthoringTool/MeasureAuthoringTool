@@ -1898,7 +1898,7 @@ public class HumanReadableGenerator {
 				String xpathforSubTree = "/measure/subTreeLookUp/subTree[@uuid='"+ uuid +"']";
 				Node subTreeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), 
 						xpathforSubTree);
-				parseChild(subTreeNode, mainListElement, subTreeNode.getParentNode(), simpleXMLProcessor, false);
+				parseChild(subTreeNode.getFirstChild(), mainListElement, subTreeNode.getParentNode(), simpleXMLProcessor, false);
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");

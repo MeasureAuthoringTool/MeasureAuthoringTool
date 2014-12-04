@@ -170,7 +170,9 @@ public class ExportSimpleXML {
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
 		
-		usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
+	/*	usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
+		
+		usedSubTreeIds = checkUnUsedSubTreeRef(usedSubTreeIds, originalDoc);*/
 		
 		formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
 		//this will remove unUsed SubTrees From SubTreeLookUp
@@ -973,6 +975,8 @@ public class ExportSimpleXML {
 		}
 		usedSubTreeRefIdsStrat.addAll(usedQDMOccuranceRefs);
 		
+		//to get the UsedSubTreeIds from RiskAdjustment Variables from MeasurePackager Tab
+		usedSubTreeRefIdsStrat = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeRefIdsStrat, originalDoc);
 		return usedSubTreeRefIdsStrat;
 	}
 	

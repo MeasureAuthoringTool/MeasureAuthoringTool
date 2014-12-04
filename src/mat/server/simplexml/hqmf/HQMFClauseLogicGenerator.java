@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -578,8 +581,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 					handleRelOpRHS( dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 					
 					Node firstChld = clonedEntryNodeForSubTree.getFirstChild();
-					if("localVariableName".equals(firstChild.getNodeName())){
-						firstChld = firstChild.getNextSibling();
+					if("localVariableName".equals(firstChld.getNodeName())){
+						firstChld = firstChld.getNextSibling();
 					}
 					NodeList outBoundList = ((Element)firstChld).getElementsByTagName("outboundRelationship");
 					if((outBoundList != null) && (outBoundList.getLength() > 0)){

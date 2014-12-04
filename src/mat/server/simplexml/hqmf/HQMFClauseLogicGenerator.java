@@ -56,7 +56,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		FUNCTIONAL_OPS_SUBSET.put("MAX", "QDM_MAX");
 		FUNCTIONAL_OPS_SUBSET.put("SUM", "QDM_SUM");
 		FUNCTIONAL_OPS_SUBSET.put("MEDIAN", "QDM_MEDIAN");
-		FUNCTIONAL_OPS_SUBSET.put("AVERAGE", "QDM_AVERAGE");
+		FUNCTIONAL_OPS_SUBSET.put("AVG", "QDM_AVERAGE");
 		
 	}
 	/* (non-Javadoc)
@@ -170,8 +170,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	
 	/**
 	 * Generate sub tree xml.
-	 *
-	 * @param me the me
 	 * @param subTreeNode the sub tree node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -237,7 +235,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param me
 	 * @param functionalNode
 	 * @param dataCriteriaSectionElem
 	 * @throws XPathExpressionException
@@ -248,7 +245,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String firstChildName = firstChildNode.getNodeName();
 			switch (firstChildName) {
 				case "setOp":
-					/*generateSetOpHQMF(me,firstChildNode,dataCriteriaSectionElem);*/
+					/*generateSetOpHQMF(firstChildNode, dataCriteriaSectionElem);*/
 					break;
 				case "elementRef":
 					/*generateElementRefHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
@@ -257,9 +254,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 					/*generateSubTreeHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
 					break;
 				case "relationalOp":
-					generateRelOpHQMF( firstChildNode, dataCriteriaSectionElem);
+					generateRelOpHQMF(firstChildNode, dataCriteriaSectionElem);
+					break;
 				case "functionalOp":
-					/*generateFunctionalOpHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
+					//findFunctionalOpChild(firstChildNode, dataCriteriaSectionElem);
 					break;
 				default:
 					//Dont do anything
@@ -268,19 +266,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 	}
-	
 	/**
 	 * This will take care of the use case where a user can create a Clause with only one
 	 * QDM elementRef inside it.
 	 * Since we have no way of referencing that element using <outBoundRelationShip> directly, we are
 	 * adding it to a default UNION grouper.
-	 *
-	 * @param me the me
 	 * @param elementRefNode the element ref node
 	 * @param parentNode the parent node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateElementRefHQMF( Node elementRefNode, Node parentNode) throws XPathExpressionException {
+	private void generateElementRefHQMF(Node elementRefNode, Node parentNode) throws XPathExpressionException {
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		
 		String ext = getElementRefExt(elementRefNode, measureExport.getSimpleXMLProcessor());
@@ -971,10 +966,21 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		return null;
 	}
-	private Element generateExcerptEntryForFunctionalNode(Node relOpParentNode, Node lhsNode, XmlProcessor hqmfXmlProcessor, Node clonedEntryNodeForElementRef) throws XPathExpressionException {
+	/**
+	 * Generate Excerpt for Functional Op used with timing/Relationship.
+	 * @param functionalOpNode
+	 * @param lhsNode
+	 * @param hqmfXmlProcessor
+	 * @param clonedEntryNodeForElementRef
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private Element generateExcerptEntryForFunctionalNode(Node functionalOpNode, Node lhsNode,
+			XmlProcessor hqmfXmlProcessor, Node clonedEntryNodeForElementRef)
+					throws XPathExpressionException {
 		Element excerptElement = hqmfXmlProcessor.getOriginalDoc().createElement("excerpt");
 		NodeList entryChildNodes = clonedEntryNodeForElementRef.getChildNodes();
-		String functionalOpName = relOpParentNode.getAttributes().getNamedItem("type").getNodeValue();
+		String functionalOpName = functionalOpNode.getAttributes().getNamedItem("type").getNodeValue();
 		
 		if(FUNCTIONAL_OPS_NON_SUBSET.containsKey(functionalOpName.toUpperCase())) {
 			Element sequenceElement = hqmfXmlProcessor.getOriginalDoc().createElement("sequenceNumber");
@@ -982,42 +988,100 @@ public class HQMFClauseLogicGenerator implements Generator {
 			excerptElement.appendChild(sequenceElement);
 			excerptElement.appendChild(generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes));
 			
-		} else if(FUNCTIONAL_OPS_SUBSET.containsKey(functionalOpName.toUpperCase())) {
-			NamedNodeMap attributeMap = relOpParentNode.getAttributes();
-			if(attributeMap.getNamedItem("operatorType") != null){
-				String lhsNodeType = lhsNode.getNodeName();
-				if("elementRef".equalsIgnoreCase(lhsNodeType)){
-					Node qdmNode = lhsNode.cloneNode(true);
-					if(qdmNode.hasChildNodes()){
-						Node attributeNode = qdmNode.getFirstChild().cloneNode(true);
-						attributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
-						attributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
-						attributeNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
-						Element attributeElement = (Element)attributeNode;
-						attributeElement.setAttribute("mode", attributeMap.getNamedItem("operatorType").getNodeValue());
-						attributeElement.setAttribute("unit", attributeMap.getNamedItem("unit").getNodeValue());
-						attributeElement.setAttribute("comparisonValue", attributeMap.getNamedItem("quantity").getNodeValue());
-						attributeNode = attributeElement;
-						Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
-						HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
-						attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
-								, measureExport.getSimpleXMLProcessor(), attributeNode);
-						Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
-						qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
-						
-						if("count".equalsIgnoreCase(functionalOpName) || "sum".equalsIgnoreCase(functionalOpName)){
-							Element subSetCodeElement = hqmfXmlProcessor.getOriginalDoc().createElement("subsetCode");
-							subSetCodeElement.setAttribute(CODE, "SUM");
-							excerptElement.appendChild(subSetCodeElement);
+		} else if (FUNCTIONAL_OPS_SUBSET.containsKey(functionalOpName.toUpperCase())) {
+			NamedNodeMap attributeMap = functionalOpNode.getAttributes();
+			if ("count".equalsIgnoreCase(functionalOpName)) {
+				Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
+				createRepeatNumberTagForCountFuncttion(hqmfXmlProcessor, attributeMap, criteriaElement);
+				Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
+				qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
+				Element subSetCodeElement = hqmfXmlProcessor.getOriginalDoc().createElement("subsetCode");
+				subSetCodeElement.setAttribute(CODE, "SUM");
+				
+				excerptElement.appendChild(subSetCodeElement);
+				excerptElement.appendChild(qdmSubSetElement);
+				excerptElement.appendChild(criteriaElement);
+			} else {
+				if (attributeMap.getNamedItem("operatorType") != null) {
+					String lhsNodeType = lhsNode.getNodeName();
+					if ("elementRef".equalsIgnoreCase(lhsNodeType)) {
+						Node qdmNode = lhsNode.cloneNode(true);
+						if(qdmNode.hasChildNodes()){
+							Node attributeNode = qdmNode.getFirstChild().cloneNode(true);
+							attributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
+							attributeNode.setUserData(ATTRIBUTE_MODE, attributeNode.getAttributes().getNamedItem("mode").getNodeValue(), null);
+							attributeNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem("attrUUID").getNodeValue(), null);
+							Element attributeElement = (Element)attributeNode;
+							attributeElement.setAttribute("mode", attributeMap.getNamedItem("operatorType").getNodeValue());
+							attributeElement.setAttribute("comparisonValue", attributeMap.getNamedItem("quantity").getNodeValue());
+							if(attributeMap.getNamedItem("unit") != null){
+								attributeElement.setAttribute("unit", attributeMap.getNamedItem("unit").getNodeValue());
+							} else {
+								if(attributeElement.getAttributes().getNamedItem("unit") != null){
+									attributeElement.removeAttribute("unit");
+								}
+							}
+							attributeNode = attributeElement;
+							Element criteriaElement = generateCriteriaElementForExcerpt(hqmfXmlProcessor, entryChildNodes);
+							HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
+							attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
+									, measureExport.getSimpleXMLProcessor(), attributeNode);
+							Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
+							qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
+							
+							if("sum".equalsIgnoreCase(functionalOpName)){
+								Element subSetCodeElement = hqmfXmlProcessor.getOriginalDoc().createElement("subsetCode");
+								subSetCodeElement.setAttribute(CODE, "SUM");
+								excerptElement.appendChild(subSetCodeElement);
+							}
+							excerptElement.appendChild(qdmSubSetElement);
+							excerptElement.appendChild(criteriaElement);
 						}
-						excerptElement.appendChild(qdmSubSetElement);
-						excerptElement.appendChild(criteriaElement);
 					}
 				}
 			}
 		}
 		
 		return excerptElement;
+	}
+	
+	/**
+	 * Generates RepeatNumber tags for Count Function.
+	 * @param hqmfXmlProcessor - XmlProcessor.
+	 * @param attributeMap - NamedNodeMap.
+	 * @param criteriaElement - Element.
+	 */
+	private void createRepeatNumberTagForCountFuncttion(XmlProcessor hqmfXmlProcessor, NamedNodeMap attributeMap,
+			Element criteriaElement) {
+		Element repeatNumberElement = hqmfXmlProcessor.getOriginalDoc().createElement("repeatNumber");
+		Element lowNode = hqmfXmlProcessor.getOriginalDoc().createElement("low");
+		Element highNode = hqmfXmlProcessor.getOriginalDoc().createElement("high");
+		if (attributeMap.getNamedItem("operatorType") != null) {
+			String operatorType = attributeMap.getNamedItem("operatorType").getNodeValue();
+			String quantity = attributeMap.getNamedItem("quantity").getNodeValue();
+			if (operatorType.startsWith("Greater Than")) {
+				lowNode.setAttribute("value", quantity);
+				highNode.setAttribute(NULL_FLAVOR, "PINF");
+				if ("Greater Than or Equal To".equals(operatorType)) {
+					repeatNumberElement.setAttribute("lowClosed", "true");
+				}
+			} else if ("Equal To".equals(operatorType)) {
+				repeatNumberElement.setAttribute("lowClosed", "true");
+				repeatNumberElement.setAttribute("highClosed", "true");
+				lowNode.setAttribute("value", quantity);
+				highNode.setAttribute("value", quantity);
+			} else if (operatorType.startsWith("Less Than")) {
+				repeatNumberElement.setAttribute("lowClosed", "true");
+				lowNode.setAttribute("value", "0");
+				highNode.setAttribute("value", quantity);
+				if ("Less Than or Equal To".equals(operatorType)) {
+					repeatNumberElement.setAttribute("highClosed", "true");
+				}
+			}
+			repeatNumberElement.appendChild(lowNode);
+			repeatNumberElement.appendChild(highNode);
+			criteriaElement.appendChild(repeatNumberElement);
+		}
 	}
 	
 	/**

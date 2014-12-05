@@ -316,7 +316,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			} else {
 				//if the the parentNode for ElementRef is other than SubTreeNode
 				Element excerptElement = null;
-				Node subTreeParentNode = checkParentSubTree(parNode);
+				Node subTreeParentNode = checkIfSubTree(parNode);
 				if(subTreeParentNode != null){
 					root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {

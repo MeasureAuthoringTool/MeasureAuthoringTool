@@ -173,6 +173,9 @@ public class HQMFGenerator implements Generator {
 			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("content");
 			((Element)narrativeListNode).setAttribute("styleCode", "Bold");
 			narrativeListNode.setTextContent(humanReadableNode.getTextContent());
+		}else if("i".equals(nodeName)){
+			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("caption");
+			narrativeListNode.setTextContent(humanReadableNode.getTextContent());
 		}
 		
 		return narrativeListNode;

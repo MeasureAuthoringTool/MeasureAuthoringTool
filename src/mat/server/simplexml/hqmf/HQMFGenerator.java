@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,6 +25,8 @@ public class HQMFGenerator implements Generator {
 		String hqmfXML = "";
 		try{
 			String eMeasureDetailsXML = new HQMFMeasureDetailsGenerator().generate(me);
+			// Inline comments are added after the end of last componentOf tag. This is removed in this method
+			eMeasureDetailsXML = replaceInlineCommentFromEnd(eMeasureDetailsXML);
 			hqmfXML += eMeasureDetailsXML;
 			
 			String dataCriteriaXML = new HQMFDataCriteriaGenerator().generate(me);
@@ -44,26 +44,37 @@ public class HQMFGenerator implements Generator {
 		}
 		return hqmfXML;
 	}
-
+	/**
+	 *  Inline comments are added after the end of last componentOf tag. This is removed in this method
+	 * @param eMeasureDetailsXML - String eMeasureDetailsXML.
+	 * @return  String eMeasureDetailsXML.
+	 */
+	private String replaceInlineCommentFromEnd(String eMeasureDetailsXML) {
+		int indexOfComponentOf = eMeasureDetailsXML.lastIndexOf("</componentOf>");
+		eMeasureDetailsXML = eMeasureDetailsXML.substring(0, indexOfComponentOf);
+		eMeasureDetailsXML = eMeasureDetailsXML.concat("</componentOf></QualityMeasureDocument>");
+		return eMeasureDetailsXML;
+	}
+	
 	private void generateNarrative(MeasureExport me) {
 		String humanReadableHTML = HumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
-		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());		
+		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());
 		XmlProcessor humanReadableProcessor = new XmlProcessor(humanReadableHTML);
-					
+		
 		try{
 			Node mainNode = humanReadableProcessor.getOriginalDoc().getFirstChild();
 			XmlProcessor.clean(mainNode);
 			generateDataCritNarrative(me, humanReadableProcessor);
 			generatePopulationCritNarrative(me, humanReadableProcessor);
-		
+			
 		}  catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void generateDataCritNarrative(MeasureExport me,
 			XmlProcessor humanReadableProcessor)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		
 		//Get narrative for Data Criteria (QDM Variable) section
 		Node dataCritQDMVarNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (QDM Variables)");
@@ -110,10 +121,10 @@ public class HQMFGenerator implements Generator {
 		xmlNode.appendChild(itemNode);
 		popCritTextNode.appendChild(xmlNode);
 	}
-
+	
 	private Node generateNarrativeItem(MeasureExport me,
 			XmlProcessor humanReadableProcessor, String searchText)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		Node dataCritItemNode = me.getHQMFXmlProcessor().getOriginalDoc().createElement("item");
 		Node dataCritContentNode = me.getHQMFXmlProcessor().getOriginalDoc().createElement("content");
 		((Element)dataCritContentNode).setAttribute("styleCode", "Bold");
@@ -123,9 +134,9 @@ public class HQMFGenerator implements Generator {
 		Node elementsNode = humanReadableProcessor.findNode(humanReadableProcessor.getOriginalDoc(), "/body/h3[a[text()='"+searchText+"']]");
 		Node divNode = elementsNode.getNextSibling();
 		
-		if(divNode != null && "div".equals(divNode.getNodeName())){
+		if((divNode != null) && "div".equals(divNode.getNodeName())){
 			if(divNode.hasChildNodes()){
-				Node ulNode = divNode.getFirstChild();								
+				Node ulNode = divNode.getFirstChild();
 				Node narrativeListNode = getNarrativeListNode(ulNode, me.getHQMFXmlProcessor());
 				if(narrativeListNode != null){
 					dataCritItemNode.appendChild(narrativeListNode);
@@ -180,7 +191,7 @@ public class HQMFGenerator implements Generator {
 		
 		return narrativeListNode;
 	}
-
+	
 	private String appendToHQMF(String dataCriteriaXML, String hqmfXML) {
 		int indexOfEnd = hqmfXML.indexOf("</QualityMeasureDocument>");
 		if(indexOfEnd > -1){

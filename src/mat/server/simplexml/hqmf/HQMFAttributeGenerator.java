@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -1075,7 +1077,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
-			clean(nodeToAttach);
+			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 	}
@@ -1148,7 +1150,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
-			clean(nodeToAttach);
+			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 	}
@@ -1192,7 +1194,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
-			clean(nodeToAttach);
+			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);

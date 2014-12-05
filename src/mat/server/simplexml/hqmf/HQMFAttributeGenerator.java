@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -42,9 +40,9 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				|| SIGNED_DATETIME.equals(attributeName)) {
 			generateOrderTypeAttributes(qdmNode, dataCriteriaElem, dataCriteriaXMLProcessor,
 					simpleXmlprocessor, attributeQDMNode);
-			//		} else if(SIGNED_DATETIME.equals(attributeName)){
-			//			Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
-			//			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, true);
+		} else if(SIGNED_DATETIME.equals(attributeName)){
+			Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
+			generateDateTimeAttributesTag(timeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, true);
 		}else if(ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
 				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)
 				|| REMOVAL_DATETIME.equalsIgnoreCase(attributeName)

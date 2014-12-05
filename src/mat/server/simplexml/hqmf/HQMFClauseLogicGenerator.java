@@ -254,7 +254,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					}
 					break;
 				case "elementRef":
-					/*generateElementRefHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
+					generateElementRefHQMF(firstChildNode,dataCriteriaSectionElem);
 					break;
 				case "subTreeRef":
 					/*generateSubTreeHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
@@ -299,7 +299,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			/**
 			 * Create a dummy grouper for UNION with the id@root = uuid of the subTree
 			 * and id@extension = id of elementRef
-			 */
+			 **/
 			String idroot = "0";
 			String idExt = elementRefNode.getAttributes().getNamedItem("id").getNodeValue();
 			Node parNode = elementRefNode.getParentNode();
@@ -310,10 +310,55 @@ public class HQMFClauseLogicGenerator implements Generator {
 				if(isQdmVariable.equalsIgnoreCase("true")) {
 					idExt = "qdm_var_"+idExt;
 				}
+				((Element)newIdNode).setAttribute(ROOT, idroot);
+				((Element)newIdNode).setAttribute("extension", idExt);
+				parentNode.appendChild(entryElem);
+			} else {
+				//if the the parentNode for ElementRef is other than SubTreeNode
+				Element excerptElement = null;
+				Node subTreeParentNode = checkParentSubTree(parNode);
+				if(subTreeParentNode != null){
+					root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
+						String isQdmVariable = subTreeParentNode.getAttributes()
+								.getNamedItem("qdmVariable").getNodeValue();
+						if ("true".equalsIgnoreCase(isQdmVariable)) {
+							ext = "qdm_var_" + ext;
+						}
+					}
+				}
+				
+				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
+				Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
+				NodeList idChildNodeList = ((Element)clonedEntryNodeForElementRef).getElementsByTagName(ID);
+				if((idChildNodeList != null) && (idChildNodeList.getLength() > 0)){
+					Node idChildNode = idChildNodeList.item(0);
+					idChildNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
+					idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
+				}
+				
+				Node firstChild = clonedEntryNodeForElementRef.getFirstChild();
+				if("localVariableName".equals(firstChild.getNodeName())){
+					firstChild = firstChild.getNextSibling();
+				}
+				//Added logic to show qdm_variable in extension if clause is of qdm variable type.
+				if ("functionalOp".equals(parNode.getNodeName())) {
+					excerptElement = generateExcerptEntryForFunctionalNode(parNode, elementRefNode, hqmfXmlProcessor, clonedEntryNodeForElementRef);
+				}
+				
+				if(excerptElement != null){
+					Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+parNode.getAttributes().getNamedItem("displayName").getNodeValue());
+					firstChild.appendChild(comment);
+					firstChild.appendChild(excerptElement);
+				}
+				//create comment node
+				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+elementRefNode.getAttributes().getNamedItem("displayName").getNodeValue());
+				parentNode.appendChild(comment);
+				parentNode.appendChild(clonedEntryNodeForElementRef);
+//				clonedEntryNodeForElementRef.appendChild(excerptElement);
+				
 			}
-			((Element)newIdNode).setAttribute(ROOT, idroot);
-			((Element)newIdNode).setAttribute("extension", idExt);
-			parentNode.appendChild(entryElem);
+			
 		}
 		
 	}
@@ -1402,7 +1447,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 				ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
 			} else if("functionalOp".equals(firstChildName)){
 				if(firstChild.getFirstChild() != null) {
-					ext = StringUtils.deleteWhitespace(firstChild.getFirstChild().getAttributes().getNamedItem("displayName").getNodeValue());
+					ext = StringUtils.deleteWhitespace(firstChild.getFirstChild().getAttributes()
+							.getNamedItem("displayName").getNodeValue().replaceAll(":", "_"));
 				}
 			}
 			

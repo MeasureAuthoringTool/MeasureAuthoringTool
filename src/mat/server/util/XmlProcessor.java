@@ -30,9 +30,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.RiskAdjustmentDTO;
-import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
@@ -1506,5 +1503,36 @@ public class XmlProcessor {
 		}
 		LOG.info("Document object to ByteArray transformation complete");
 		return out.toString();
+	}
+	
+	/**
+	 * Utility method to go through the Node and its children (upto nth level) 
+	 * and remove all TEXT nodes.
+	 * @param node
+	 */
+	public static void clean(Node node)
+	{
+		NodeList childNodes = node.getChildNodes();
+		
+		for (int n = childNodes.getLength() - 1; n >= 0; n--)
+		{
+			Node child = childNodes.item(n);
+			short nodeType = child.getNodeType();
+			
+			if (nodeType == Node.ELEMENT_NODE) {
+				clean(child);
+			} else if (nodeType == Node.TEXT_NODE)
+			{
+				String trimmedNodeVal = child.getNodeValue().trim();
+				if (trimmedNodeVal.length() == 0) {
+					node.removeChild(child);
+				} else {
+					child.setNodeValue(trimmedNodeVal);
+				}
+			}
+			else if (nodeType == Node.COMMENT_NODE) {
+				node.removeChild(child);
+			}
+		}
 	}
 }

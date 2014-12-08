@@ -279,10 +279,11 @@
 				<code code="STRAT" codeSystem="2.16.840.1.113883.5.4">
 					<displayName value="Stratification" />
 				</code>
-				<value xsi:type="ED" mediaType="text/plain" value="None" />
-				<!-- <value xsi:type="ED" mediaType="text/plain"> <xsl:call-template 
-					name="trim"> <xsl:with-param name="textString" select="stratification"/> 
-					</xsl:call-template> </value> -->
+				<value xsi:type="ED" mediaType="text/plain"> 
+					<xsl:call-template name="trim"> 
+						<xsl:with-param name="textString" select="stratification"/> 
+					</xsl:call-template> 
+				</value> 
 			</measureAttribute>
 		</subjectOf>
 
@@ -292,10 +293,11 @@
 				<code code="MSRADJ" codeSystem="2.16.840.1.113883.5.4">
 					<displayName value="Risk Adjustment" />
 				</code>
-				<value xsi:type="ED" mediaType="text/plain" value="None" />
-				<!-- <value xsi:type="ED" mediaType="text/plain"> <xsl:call-template 
-					name="trim"> <xsl:with-param name="textString" select="riskAdjustment"/> 
-					</xsl:call-template> </value> -->
+				<value xsi:type="ED" mediaType="text/plain"> 
+					<xsl:call-template name="trim"> 
+						<xsl:with-param name="textString" select="riskAdjustment"/> 
+					</xsl:call-template> 
+				</value> 
 			</measureAttribute>
 		</subjectOf>
 
@@ -306,9 +308,11 @@
 					<displayName value="Rate Aggregation" />
 				</code>
 				<value xsi:type="ED" mediaType="text/plain" value="None" />
-				<!-- <value xsi:type="ED" mediaType="text/plain"> <xsl:call-template 
-					name="trim"> <xsl:with-param name="textString" select="aggregation"/> </xsl:call-template> 
-					</value> -->
+				<value xsi:type="ED" mediaType="text/plain"> 
+					<xsl:call-template name="trim"> 
+						<xsl:with-param name="textString" select="aggregation"/> 
+					</xsl:call-template> 
+				</value> 
 			</measureAttribute>
 		</subjectOf>
 

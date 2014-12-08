@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,6 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
@@ -25,6 +27,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -510,7 +513,7 @@ public class ExportSimpleXML {
 	}
 	
 	/**
-	 * Removes the un wanted qd ms.
+	 * Removes un-wanted qdms, except 'Measurement Period', 'Expired', 'Birthdate' QDM elements.
 	 * 
 	 * @param usedQDMIds
 	 *            the used qdm ids
@@ -520,7 +523,10 @@ public class ExportSimpleXML {
 	 *             the x path expression exception
 	 */
 	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {
-		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm/@uuid", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@name != 'Measurement Period']"
+				+ "[@name != 'Expired']"
+				+ "[@name != 'Birthdate']/@uuid", 
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMIDs.getLength();i++){
 			Node idNode = allQDMIDs.item(i);

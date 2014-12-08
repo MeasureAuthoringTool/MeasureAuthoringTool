@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -296,8 +299,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * This will take care of the use case where a user can create a Clause with only one
 	 * QDM elementRef inside it.
-	 * Since we have no way of referencing that element using <outBoundRelationShip> directly, we are
-	 * adding it to a default UNION grouper.
+	 * We will make a copy of the original entry for QDM and update the id@root and id@extension  
+	 * for it. This will server as an entry for the Clause.
 	 * @param elementRefNode the element ref node
 	 * @param parentNode the parent node
 	 * @throws XPathExpressionException the x path expression exception
@@ -311,16 +314,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(idNodeQDM != null){
 			Node entryElem = idNodeQDM.getParentNode().getParentNode().cloneNode(true);
 			Node newIdNode = getTagFromEntry(entryElem, ID);
-			//Node newIdNode = ((Element)entryElem.getFirstChild()).getElementsByTagName(ID).item(0);
-			
+						
 			if(newIdNode == null){
 				return;
 			}
 			
-			/**
-			 * Create a dummy grouper for UNION with the id@root = uuid of the subTree
-			 * and id@extension = id of elementRef
-			 **/
 			String idroot = "0";
 			String idExt = elementRefNode.getAttributes().getNamedItem("id").getNodeValue();
 			Node parNode = elementRefNode.getParentNode();

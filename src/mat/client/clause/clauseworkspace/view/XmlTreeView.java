@@ -977,10 +977,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							String subStringText = commentAreaUpdatedText.substring(0,
 									maxLength);
 							CommentAreaTextBox.this.setValue(subStringText);
+							setCursorPos(maxLength);
 						} else {
 							CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
+							setCursorPos(pos);
 						}
-						setCursorPos(pos);
+						
 						setDirty(true);
 						onTextAreaContentChanged(remainingCharsLabel);
 					}

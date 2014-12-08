@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -92,7 +89,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			generateOccHQMF(subTreeNode);
 		}
 	}
-		
+	
 	/**
 	 * Generate sub tree xml.
 	 * @param subTreeNode the sub tree node
@@ -256,14 +253,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 				case "elementRef":
 					generateElementRefHQMF(firstChildNode,dataCriteriaSectionElem);
 					break;
-				case "subTreeRef":
-					/*generateSubTreeHQMF(me, firstChildNode,dataCriteriaSectionElem);*/
-					break;
 				case "relationalOp":
 					generateRelOpHQMF(firstChildNode, dataCriteriaSectionElem);
 					break;
 				case "functionalOp":
 					//findFunctionalOpChild(firstChildNode, dataCriteriaSectionElem);
+					break;
+				case "subTreeRef":
+					generateSubTreeHQMFInFunctionalOf(firstChildNode, dataCriteriaSectionElem);
+					
 					break;
 				default:
 					//Dont do anything
@@ -272,6 +270,29 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 	}
+	/**
+	 * Method to generate HQMF for function Ops with first child as subTreeRef. In this case grouperCriteria will be generated for
+	 * SubTreeRef with Excerpt entry inside it for functional Op.
+	 * @param firstChildNode - SubTreeRef Node.
+	 * @param dataCriteriaSectionElem - Data Criteria Element.
+	 * @throws XPathExpressionException
+	 */
+	private void generateSubTreeHQMFInFunctionalOf(Node firstChildNode, Element dataCriteriaSectionElem) throws XPathExpressionException {
+		Node parentNode = firstChildNode.getParentNode();
+		Element root = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("temp");
+		generateSubTreeHQMF(firstChildNode, root);
+		Element entryElement = (Element) root.getFirstChild();
+		Element excerpt = generateExcerptEntryForFunctionalNode(parentNode, null, measureExport.getHQMFXmlProcessor(), entryElement);
+		if(excerpt != null) {
+			//create comment node
+			Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().
+					createComment("entry for " + parentNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			entryElement.appendChild(comment);
+			entryElement.appendChild(excerpt);
+		}
+		dataCriteriaSectionElem.appendChild(entryElement);
+	}
+	
 	/**
 	 * This will take care of the use case where a user can create a Clause with only one
 	 * QDM elementRef inside it.
@@ -355,7 +376,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+elementRefNode.getAttributes().getNamedItem("displayName").getNodeValue());
 				parentNode.appendChild(comment);
 				parentNode.appendChild(clonedEntryNodeForElementRef);
-//				clonedEntryNodeForElementRef.appendChild(excerptElement);
+				//				clonedEntryNodeForElementRef.appendChild(excerptElement);
 				
 			}
 			
@@ -400,7 +421,19 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String root = "0";
 		String ext = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
-		Node parNode = subTreeRefNode.getParentNode();
+		/*Node parNode = subTreeRefNode.getParentNode();*/
+		Node parNode = checkIfSubTree(subTreeRefNode.getParentNode());
+		if(parNode != null){
+			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			if (parNode.getAttributes().getNamedItem("qdmVariable") != null) {
+				String isQdmVariable = parNode.getAttributes()
+						.getNamedItem("qdmVariable").getNodeValue();
+				if ("true".equalsIgnoreCase(isQdmVariable)) {
+					ext = "qdm_var_" + ext;
+				}
+			}
+		}
+		/*
 		if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
@@ -408,7 +441,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(isQdmVariable.equalsIgnoreCase("true")) {
 				ext = "qdm_var_" + ext;
 			}
-		}
+		}*/
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		
 		//generate comment
@@ -458,7 +491,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		//creating grouperCriteria element
 		String root = "0";
 		String ext = setOpType;
-			
+		
 		Node subTreeParentNode = checkIfSubTree(setOpNode.getParentNode());
 		if (subTreeParentNode != null) {
 			root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
@@ -509,6 +542,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 						generateFunctionalOpHQMF(childNode, outboundRelElem);
 						
 						break;
+						
 					default:
 						//Dont do anything
 						break;
@@ -1703,12 +1737,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * It will perform the task of prepping the Simple XML for the clause generation process.
 	 * It will do the following,
 	 * 
-	 * 1) Look for <functionalOp type="AGE AT"...../> and 
+	 * 1) Look for <functionalOp type="AGE AT"...../> and
 	 *    replace it with <relationalOp type="SBS" ..../>
-	 *    The first child of this new relationalOp will be the elementRef 
+	 *    The first child of this new relationalOp will be the elementRef
 	 *    for Birthdate QDM element.
-	 *    The 2nd child will be the first child of the original 
-	 *    <functionalOp type="AGE AT"...../>. 
+	 *    The 2nd child will be the first child of the original
+	 *    <functionalOp type="AGE AT"...../>.
 	 */
 	private void prepHQMF(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
@@ -1717,7 +1751,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 		try {
 			NodeList ageAtNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
-			if(ageAtNodeList != null && ageAtNodeList.getLength() > 0){
+			if((ageAtNodeList != null) && (ageAtNodeList.getLength() > 0)){
 				logger.info(".......found "+ageAtNodeList.getLength()+" AGE AT functionalOps");
 				
 				for(int i=0;i<ageAtNodeList.getLength();i++){
@@ -1734,7 +1768,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 						Node attrib = attribMap.item(j);
 						newRelationalOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
 					}
-												
+					
 					//find <qdm> for Birthdate QDM element in elementLookUp
 					String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
 					Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);

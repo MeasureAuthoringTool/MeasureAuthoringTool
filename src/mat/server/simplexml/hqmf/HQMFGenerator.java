@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,7 +38,7 @@ public class HQMFGenerator implements Generator {
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
 			generateNarrative(me);
-			hqmfXML = me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true);
+			hqmfXML = removeXmlTagNamespace(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true));
 			
 		} catch(Exception e){
 			LOG.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
@@ -190,6 +192,22 @@ public class HQMFGenerator implements Generator {
 		}
 		
 		return narrativeListNode;
+	}
+	
+	/**
+	 * @param xmlString
+	 * @return
+	 */
+	private String removeXmlTagNamespace(String xmlString) {
+		
+		String componentTag = "<component";
+		int indx = xmlString.indexOf(componentTag);
+		while(indx > -1){
+			int indx2 = xmlString.indexOf(">", indx);
+			xmlString = xmlString.substring(0, indx+componentTag.length()) + xmlString.substring(indx2);
+			indx = xmlString.indexOf(componentTag,indx2);
+		}
+		return xmlString;
 	}
 	
 	private String appendToHQMF(String dataCriteriaXML, String hqmfXML) {

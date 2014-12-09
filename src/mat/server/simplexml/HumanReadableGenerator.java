@@ -1502,7 +1502,7 @@ public class HumanReadableGenerator {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator
 					.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
-			
+			lhsID = new ArrayList<String>();
 			if (simpleXMLProcessor == null) {
 				org.jsoup.nodes.Document htmlDocument = createBaseHumanReadableDocument();
 				Element bodyElement = htmlDocument.body();

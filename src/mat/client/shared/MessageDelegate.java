@@ -481,7 +481,7 @@ public class MessageDelegate {
 	private final String INVALID_LOGIC_POPULATION_WORK_SPACE = "Measure Logic is incomplete.Please validate your measure logic in both Population Workspace and Clause Workspace.";
 	
 	/** The invalidlogic clause work space. */
-	private final String INVALIDLOGIC_CLAUSE_WORK_SPACE = "Clause logic is incomplete.Please validate your Clause logic.";
+	private final String INVALIDLOGIC_CLAUSE_WORK_SPACE = "Clause logic is incomplete.Please validate your clause logic.";
 	/**
 	 * Gets the ratio too few populations.
 	 *

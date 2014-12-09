@@ -199,14 +199,7 @@ public class HQMFGenerator implements Generator {
 	 * @return
 	 */
 	private String removeXmlTagNamespace(String xmlString) {
-		
-		String componentTag = "<component";
-		int indx = xmlString.indexOf(componentTag);
-		while(indx > -1){
-			int indx2 = xmlString.indexOf(">", indx);
-			xmlString = xmlString.substring(0, indx+componentTag.length()) + xmlString.substring(indx2);
-			indx = xmlString.indexOf(componentTag,indx2);
-		}
+		xmlString = xmlString.replaceAll(" xmlns=\"\"", "");
 		return xmlString;
 	}
 	

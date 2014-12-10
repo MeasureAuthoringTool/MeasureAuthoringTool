@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -569,7 +566,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * This method is used to create a <templateId> tag for SATISFIES ALL/SATISFIES ANY 
+	 * This method is used to create a <templateId> tag for SATISFIES ALL/SATISFIES ANY
 	 * functionalOps.
 	 * These are functionalOp's but are converted to setOps and treated as Groupers.
 	 * @param hqmfXmlProcessor
@@ -596,7 +593,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		return templateIdNode;
 	}
-
+	
 	/**
 	 * Generate rel op hqmf.
 	 *
@@ -767,13 +764,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) {
 		
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
-		Node relOpParentNode = relOpNode.getParentNode();
+		//Node relOpParentNode = relOpNode.getParentNode();
 		
 		try{
 			Node setOpEntryNode = generateSetOpHQMF(lhsNode, dataCriteriaSectionElem);
 			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
-			
-			if((relOpParentNode != null) && "subTree".equals(relOpParentNode.getNodeName())) {
+			Node relOpParentNode = checkIfSubTree(relOpNode.getParentNode());
+			if((relOpParentNode != null)) {
 				NodeList idChildNodeList = ((Element)setOpEntryNode).getElementsByTagName(ID);
 				if((idChildNodeList != null) && (idChildNodeList.getLength() > 0)){
 					Node idChildNode = idChildNodeList.item(0);

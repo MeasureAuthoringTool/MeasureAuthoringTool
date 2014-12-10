@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
+
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -1498,6 +1501,7 @@ public class HumanReadableGenerator {
 	public static String generateHTMLForMeasure(String measureId,
 			String simpleXmlStr) {
 		String humanReadableHTML = "";
+		lhsID = new ArrayList<String>();
 		try {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator
 					.generateHeaderHTMLForMeasure(simpleXmlStr);

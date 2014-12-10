@@ -72,7 +72,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
 	}
 	
-	
 	/**
 	 * Creates the date criteria template.
 	 * 
@@ -2214,7 +2213,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * It will perform the task of prepping the Simple XML for the clause generation process.
 	 * It will do the following,
 	 * 
-	 * 1) Look for <functionalOp type="AGE AT"...../> and
+	 * 1) Call prepForAGE_AT(MeasureExport me) which will,
+	 *    Look for <functionalOp type="AGE AT"...../> and
 	 *    replace it with <relationalOp type="SBS" ..../>
 	 *    The first child of this new relationalOp will be the elementRef
 	 *    for Birthdate QDM element.
@@ -2222,9 +2222,28 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 *    <functionalOp type="AGE AT"...../>.
 	 */
 	private void prepHQMF(MeasureExport me) {
+		logger.info("Prepping for HQMF Clause generation..............");
+		prepForAGE_AT(me);
+		prepForSatisfiesAll_Any(me);
+		logger.info("Done prepping for HQMF Clause generation.");
+	}
+	
+	/**
+	 * This method will be called by prepHQMF(MeasureExport me) method to prep 
+	 * functionalOp for AGE AT functions. This methiod will do the following, 
+	 * 
+	 *    Look for <functionalOp type="AGE AT"...../> and
+	 *    replace it with <relationalOp type="SBS" ..../>
+	 *    The first child of this new relationalOp will be the elementRef
+	 *    for Birthdate QDM element.
+	 *    The 2nd child will be the first child of the original
+	 *    <functionalOp type="AGE AT"...../>.
+	 * @param me
+	 */
+	
+	private void prepForAGE_AT(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
-		logger.info("Prepping for HQMF Clause generation.");
-		logger.info("........finding AGE AT functional operators");
+		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
 		String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 		try {
 			NodeList ageAtNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
@@ -2245,6 +2264,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						Node attrib = attribMap.item(j);
 						newRelationalOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
 					}
+					
+					//set the type attribute to SBS
+					newRelationalOp.getAttributes().getNamedItem("type").setNodeValue("SBS");
 					
 					//find <qdm> for Birthdate QDM element in elementLookUp
 					String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
@@ -2269,6 +2291,56 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 			}
 		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This method will be called by prepHQMF(MeasureExport me) method to prep 
+	 * functionalOp for SATISFIES ALL/SATISFIES ANY functions. 
+	 * This methiod will do the following, 
+	 * 
+	 * This method will look for all functionalOp's with names, 
+	 * SATISFIES ALL/SATISFIES ANY renames the <functionalOp> tag with 
+	 * <setOp> tag.
+	 *  
+	 * @param me
+	 */
+	private void prepForSatisfiesAll_Any(MeasureExport me) {
+		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
+		logger.info("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
+		String xPathForSatisfiesAllAny = "/measure/subTreeLookUp//functionalOp[@type='SATISFIES ALL' or @type='SATISFIES ANY']";
+		try {
+			NodeList satisfiesNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
+			if((satisfiesNodeList != null) && (satisfiesNodeList.getLength() > 0)){
+				logger.info(".......found "+satisfiesNodeList.getLength()+" Satisfies All/Satisfies Any functionalOps");
+				
+				for(int i=0;i<satisfiesNodeList.getLength();i++){
+					Node satisfiesFuncNode = satisfiesNodeList.item(i);
+					logger.info("Changing functionaOp "+satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue() + " to relationalOp node.");
+										
+					NamedNodeMap attribMap = satisfiesFuncNode.getAttributes();
+					Element newSetOp = xmlProcessor.getOriginalDoc().createElement("setOp");
+					
+					for(int j=0;j<attribMap.getLength();j++){
+						Node attrib = attribMap.item(j);
+						newSetOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
+					}
+									
+					NodeList childNodeList = satisfiesFuncNode.getChildNodes();
+					for(int j=0;j<childNodeList.getLength();j++){
+						Node childNode = childNodeList.item(j).cloneNode(true);
+						newSetOp.appendChild(childNode);
+					}
+					
+					Node parentNode = satisfiesFuncNode.getParentNode();
+					parentNode.insertBefore(newSetOp, satisfiesFuncNode);
+					parentNode.removeChild(satisfiesFuncNode);
+					logger.info("Change done.");
+				}
+			}
+		}catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

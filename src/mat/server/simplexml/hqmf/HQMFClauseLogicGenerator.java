@@ -472,12 +472,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private Node generateSetOpHQMF( Node setOpNode, Node parentNode) throws XPathExpressionException {
 		
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
-		String setOpType = setOpNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		String setOpType = setOpNode.getAttributes().getNamedItem("type").getNodeValue();
 		String conjunctionType = "OR";
 		
-		if("UNION".equals(setOpType)){
+		if("union".equals(setOpType) || "SATISFIES ANY".equals(setOpType)){
 			conjunctionType = "OR";
-		}else{
+		}else if("intersection".equals(setOpType) || "SATISFIES ALL".equals(setOpType)){
 			conjunctionType = "AND";
 		}
 		
@@ -504,6 +504,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
+		Node templateIdNode = getTemplateIdForSatisfies(hqmfXmlProcessor, setOpType);
+		if(templateIdNode != null){
+			grouperElem.insertBefore(templateIdNode, grouperElem.getFirstChild());
+		}
 		
 		NodeList childNodes = setOpNode.getChildNodes();
 		for(int i=0;i<childNodes.getLength();i++){
@@ -560,6 +564,36 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		return entryElem;
 	}
+	
+	/**
+	 * This method is used to create a <templateId> tag for SATISFIES ALL/SATISFIES ANY 
+	 * functionalOps.
+	 * These are functionalOp's but are converted to setOps and treated as Groupers.
+	 * @param hqmfXmlProcessor
+	 * @param grouperElem
+	 */
+	private Node getTemplateIdForSatisfies(XmlProcessor hqmfXmlProcessor,
+			String type) {
+		Node templateIdNode = null;
+		
+		if("SATISFIES ALL".equals(type) || "SATISFIES ANY".equals(type)){
+			templateIdNode = hqmfXmlProcessor.getOriginalDoc().createElement("templateId");
+			Element itemNode = hqmfXmlProcessor.getOriginalDoc().createElement("item");
+			
+			//initialize rootOID with the OID for SATISFIES ALL
+			String rootOID = "2.16.840.1.113883.10.20.28.3.109";
+			//if we are dealing with SATISFIES ANY change the OID
+			if("SATISFIES ANY".equals(type)){
+				rootOID = "2.16.840.1.113883.10.20.28.3.108";
+			}
+			itemNode.setAttribute(ROOT, rootOID);
+			
+			templateIdNode.appendChild(itemNode);
+		}
+		
+		return templateIdNode;
+	}
+
 	/**
 	 * Generate rel op hqmf.
 	 *
@@ -1448,22 +1482,25 @@ public class HQMFClauseLogicGenerator implements Generator {
 		for(int j=0;j<childList.getLength();j++){
 			Node child = childList.item(j);
 			if("grouperCriteria".equals(child.getNodeName())){
-				Node idChild = child.getFirstChild();
-				NamedNodeMap attribMap = idChild.getAttributes();
-				String idRoot = attribMap.getNamedItem(ROOT).getNodeValue();
-				String idExt = attribMap.getNamedItem("extension").getNodeValue();
-				
-				//create criteriaRef
-				Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
-				criteriaReference.setAttribute(CLASS_CODE, "GROUPER");
-				criteriaReference.setAttribute(MOOD_CODE, "EVN");
-				
-				Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
-				id.setAttribute(ROOT, idRoot);
-				id.setAttribute("extension", idExt);
-				
-				criteriaReference.appendChild(id);
-				outboundRelElem.appendChild(criteriaReference);
+				NodeList idChildList = ((Element)child).getElementsByTagName(ID);
+				if(idChildList.getLength() > 0){
+					Node idChild = idChildList.item(0);
+					NamedNodeMap attribMap = idChild.getAttributes();
+					String idRoot = attribMap.getNamedItem(ROOT).getNodeValue();
+					String idExt = attribMap.getNamedItem("extension").getNodeValue();
+					
+					//create criteriaRef
+					Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+					criteriaReference.setAttribute(CLASS_CODE, "GROUPER");
+					criteriaReference.setAttribute(MOOD_CODE, "EVN");
+					
+					Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
+					id.setAttribute(ROOT, idRoot);
+					id.setAttribute("extension", idExt);
+					
+					criteriaReference.appendChild(id);
+					outboundRelElem.appendChild(criteriaReference);
+				}
 			}
 		}
 	}

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
@@ -56,12 +58,56 @@ public class HQMFClauseLogicGenerator implements Generator {
 		FUNCTIONAL_OPS_SUBSET.put("AVG", "QDM_AVERAGE");
 		
 	}
+
+	/** The Constant populations. */
+	private static final List<String> populations = new ArrayList<String>();  
+	
+	/** The sub tree node in mo map. */
+	Map<String, Node> subTreeNodeInMOMap = new HashMap<String,Node>();
+	
+	/** The sub tree node in pop map. */
+	Map<String, Node> subTreeNodeInPOPMap = new HashMap<String,Node>();
+	
+	
+	/** The Constant FUNCTIONAL_OP_RULES_IN_POP. */
+	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_POP = new HashMap<String, List<String>>();
+	
+	/** The Constant FUNCTIONAL_OP_RULES_IN_MO. */
+	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_MO = new HashMap<String, List<String>>();
+	
+	static {
+		FUNCTIONAL_OP_RULES_IN_POP.put("MEDIAN", getFunctionalOpFirstChild("MEDIAN"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("AVG", getFunctionalOpFirstChild("AVG"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("MAX", getFunctionalOpFirstChild("MAX"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("MIN", getFunctionalOpFirstChild("MIN"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("SUM", getFunctionalOpFirstChild("SUM"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("COUNT", getFunctionalOpFirstChild("COUNT"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("FIRST", getFunctionalOpFirstChild("FIRST"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("SECOND", getFunctionalOpFirstChild("SECOND"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("THIRD", getFunctionalOpFirstChild("THIRD"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("FOURTH", getFunctionalOpFirstChild("FOURTH"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("FIFTH", getFunctionalOpFirstChild("FIFTH"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("MOST RECENT", getFunctionalOpFirstChild("MOST RECENT"));
+		FUNCTIONAL_OP_RULES_IN_POP.put("AGE AT", getFunctionalOpFirstChild("AGE AT"));
+		
+		/* Rules for Functions in Measure Observations*/
+		FUNCTIONAL_OP_RULES_IN_MO.put("MEDIAN", getFunctionalOpFirstChildInMO("MEDIAN"));
+		FUNCTIONAL_OP_RULES_IN_MO.put("AVERAGE", getFunctionalOpFirstChildInMO("AVERAGE"));
+		FUNCTIONAL_OP_RULES_IN_MO.put("MIN", getFunctionalOpFirstChildInMO("MIN"));
+		FUNCTIONAL_OP_RULES_IN_MO.put("SUM", getFunctionalOpFirstChildInMO("SUM"));
+		FUNCTIONAL_OP_RULES_IN_MO.put("COUNT", getFunctionalOpFirstChildInMO("COUNT"));
+		FUNCTIONAL_OP_RULES_IN_MO.put("DATETIMEDIFF", getFunctionalOpFirstChildInMO("DATETIMEDIFF"));
+		
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.simplexml.hqmf.Generator#generate(mat.model.clause.MeasureExport)
 	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		measureExport = me;
+		//creating Map for Populations and Measure Observations.
+		createUsedSubTreeRefMap();
 		generateSubTreeXML();
 		return null;
 	}
@@ -78,8 +124,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 		for(int i=0;i<subTreeNodeList.getLength();i++){
 			Node subTreeNode = subTreeNodeList.item(i);
 			String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			String uuid = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			System.out.println("Calling generateSubTreeXML for:"+clauseName);
-			generateSubTreeXML(subTreeNode);
+			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
+					|| subTreeNodeInPOPMap.containsKey(uuid)){
+				generateSubTreeXML(subTreeNode);
+			}	
 		}
 		String xpathOccurrence = "/measure/subTreeLookUp/subTree[(@instance)]";
 		NodeList occurrenceSubTreeNodeList = measureExport.getSimpleXMLProcessor().findNodeList(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpathOccurrence);
@@ -246,8 +296,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				case "setOp":
 					String functionOpType = functionalNode.getAttributes().getNamedItem("type").getNodeValue();
 					if (FUNCTIONAL_OPS_NON_SUBSET.containsKey(functionOpType.toUpperCase())
-							|| "count".equalsIgnoreCase(functionOpType)
-							|| "Most Recent".equalsIgnoreCase(functionOpType)) {
+							|| FUNCTIONAL_OPS_SUBSET.containsKey(functionOpType.toUpperCase())) {
 						node = generateSetOpHQMF(firstChildNode, dataCriteriaSectionElem);
 					}
 					break;
@@ -282,6 +331,17 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node parentNode = firstChildNode.getParentNode();
 		
 		//temp node.
+		String subTreeUUID = firstChildNode.getAttributes().getNamedItem("id").getNodeValue();
+		String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
+		Node subTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
+		String firstChildNameOfSubTree = subTreeNode.getFirstChild().getNodeName();
+		if("functionalOp".equals(firstChildNameOfSubTree)){
+			String firstChildNodeName = parentNode.getAttributes().getNamedItem("type").getNodeValue();
+			if(!"SATISFIES ALL".equals(firstChildNodeName)||!"SATISFIES ANY".equals(firstChildNodeName)
+					|| !"AGE AT".equals(firstChildNodeName)){
+				return null;
+			}
+		}
 		Element root = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("temp");
 		generateSubTreeHQMF(firstChildNode, root);
 		Element entryElement = (Element) root.getFirstChild();
@@ -1361,6 +1421,25 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return excerptElement;
 	}
 	/**
+	 * Check if parent sub tree.
+	 *
+	 * @param parentNode the parent node
+	 * @return the node
+	 */
+	private Node checkIfParentSubTree(Node parentNode){
+		Node returnNode = null;
+		if(parentNode!=null){
+			String parentName = parentNode.getNodeName();
+			if("subTree".equals(parentName)){
+				returnNode = parentNode;
+			} else {
+				returnNode = checkIfParentSubTree(parentNode.getParentNode());
+			}
+		}
+		
+		return returnNode;
+	}
+	/**
 	 * Generates RepeatNumber tags for Count Function.
 	 * @param hqmfXmlProcessor - XmlProcessor.
 	 * @param attributeMap - NamedNodeMap.
@@ -1948,4 +2027,267 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return returnNode;
 	}
 	
+	/**
+	 * Gets the populations.
+	 *
+	 * @return the populations
+	 */
+	public static List<String> getPopulations() {
+		populations.add("initialPopulation");
+		populations.add("measurePopulation");
+		populations.add("measurePopulationExclusions");
+		populations.add("numerators");
+		populations.add("denominators");
+		populations.add("denominatorExclusions");
+		populations.add("denominatorExceptions");
+		populations.add("stratum");
+		populations.add("numeratorExclusions");
+		populations.add("denominatorExceptions");
+		return populations;
+	}
+	
+	/**
+	 * Gets the firt child list.
+	 *
+	 * @param function the function
+	 * @return the firt child list
+	 */
+	public static List<String> getFunctionalOpFirstChild(String function){
+		List<String> childList =new ArrayList<String>();
+		if("AGE AT".equals(function)){
+			childList.add("subTreeRef");
+			childList.add("relationalOp");
+			childList.add("functionalOp");
+			childList.add("elementRef");
+		} else {
+			childList.add("elementRef");
+			childList.add("setOP");
+			childList.add("subTreeRef");
+			childList.add("relationalOp");
+		}
+		return childList;
+	}
+	
+	/**
+	 * Gets the aggregate and instance function childs.
+	 *
+	 * @param typeChild the type child
+	 * @return the aggregate and instance function childs
+	 */
+	public static List<String> getAggregateAndInstanceFunctionChilds(String typeChild){
+		List<String> aggregateList = new ArrayList<String>();
+		aggregateList.add("FIRST");
+		aggregateList.add("SECOND");
+		aggregateList.add("THIRD");
+		aggregateList.add("FOURTH");
+		aggregateList.add("FIFTH");
+		aggregateList.add("MOST RECENT");
+		if("AGGREGATE".equals(typeChild)){
+			aggregateList.add("DATETIMEDIFF");
+		}
+		return aggregateList;
+	}
+	
+	/**
+	 * Gets the functional op first child in mo.
+	 *
+	 * @param function the function
+	 * @return the functional op first child in mo
+	 */
+	public static List<String> getFunctionalOpFirstChildInMO(String function){
+		List<String> childList  = new ArrayList<String>();
+		if("DATETIMEDIFF".equals(function)){
+			childList.add("elementRef");
+			childList.add("subTreeRef");
+			childList.add("relationalOp");
+			childList.addAll(getAggregateAndInstanceFunctionChilds("INSTANCE"));
+		} else {
+			childList.addAll(getFunctionalOpFirstChild(function));
+			childList.addAll(getAggregateAndInstanceFunctionChilds("AGGREGATE"));
+		}
+		
+		return childList;
+	}
+	
+	
+     /**
+      * Check for used Used sub tree ref Node map in Populations and Meausre Observations.
+      */
+     private void createUsedSubTreeRefMap(){
+		
+		XmlProcessor simpleXmlProcessor = measureExport.getSimpleXMLProcessor();
+		String typeXpathString ="";
+		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
+		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
+		for(String typeString : getPopulations()){
+			typeXpathString += "@type = '"+typeString + "' or";
+		}
+		typeXpathString = typeXpathString.substring(0,typeXpathString.lastIndexOf(" or"));
+		String xpathForSubTreeInPOPClause = "/measure/measureGrouping//clause["+typeXpathString+"]//subTreeRef/@id";
+		String xpathForSubTreeInMOClause = "/measure/measureGrouping//clause[@type='measureObservation']//subTreeRef/@id";
+		try {
+			
+			//creating used Subtree Red Map in Populations
+			NodeList populationsSubTreeNode = simpleXmlProcessor.findNodeList(simpleXmlProcessor.getOriginalDoc(), xpathForSubTreeInPOPClause);
+			for(int i=0;i<populationsSubTreeNode.getLength();i++){
+				String uuid = populationsSubTreeNode.item(i).getNodeValue();
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, simpleXmlProcessor);
+				if(!usedSubTreeRefIdsPop.contains(uuid)){
+					usedSubTreeRefIdsPop.add(uuid);
+				}
+			}
+			usedSubTreeRefIdsPop = checkUnUsedSubTreeRef(simpleXmlProcessor, usedSubTreeRefIdsPop);
+			for(String uuid: usedSubTreeRefIdsPop){
+				Node subTreeNode = createUsedSubTreeRefMap(simpleXmlProcessor, uuid);
+				subTreeNodeInPOPMap.put(uuid, subTreeNode);
+			}
+			
+			//creating used Subtree Red Map in Measure Observations 
+			NodeList measureObsSubTreeNode = simpleXmlProcessor.findNodeList(simpleXmlProcessor.getOriginalDoc(), xpathForSubTreeInMOClause);
+			for(int i=0;i<measureObsSubTreeNode.getLength();i++){
+				String uuid = measureObsSubTreeNode.item(i).getNodeValue();
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, simpleXmlProcessor);
+				if(!usedSubTreeRefIdsMO.contains(uuid)){
+					usedSubTreeRefIdsMO.add(uuid);
+				}
+			}
+			usedSubTreeRefIdsMO = checkUnUsedSubTreeRef(simpleXmlProcessor, usedSubTreeRefIdsMO);
+			for(String uuid: usedSubTreeRefIdsMO){
+				Node subTreeNode = createUsedSubTreeRefMap(simpleXmlProcessor, uuid);
+				subTreeNodeInMOMap.put(uuid, subTreeNode);
+			}
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+     
+     /**
+      * Creates the used sub tree ref map.
+      *
+      * @param simpleXmlProcessor the simple xml processor
+      * @param uuid the uuid
+      * @return the node
+      */
+     private Node createUsedSubTreeRefMap(XmlProcessor simpleXmlProcessor, String uuid) {	 
+    		 String xpathforUsedSubTreeMap ="/measure/subTreeLookUp/subTree[@uuid='"+uuid+"']";
+    		 Node subTreeNode = null;
+    		 try {
+				 subTreeNode = simpleXmlProcessor.findNode(simpleXmlProcessor.getOriginalDoc(), xpathforUsedSubTreeMap);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		return subTreeNode;
+	}
+
+	/**
+	 * Check un used sub tree ref.
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @param usedSubTreeRefIds the used sub tree ref ids
+	 * @return the list
+	 */
+	private  List<String> checkUnUsedSubTreeRef(XmlProcessor xmlProcessor, List<String> usedSubTreeRefIds){
+ 		
+ 		List<String> allSubTreeRefIds = new ArrayList<String>();
+ 		NodeList subTreeRefIdsNodeList;
+ 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+ 		try {
+ 			subTreeRefIdsNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), 
+ 					"/measure//subTreeRef/@id");
+ 			
+ 			for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
+ 				Node SubTreeRefIdAttributeNode = subTreeRefIdsNodeList.item(i);
+ 				if (!allSubTreeRefIds.contains(SubTreeRefIdAttributeNode
+ 						.getNodeValue())) {
+ 					allSubTreeRefIds.add(SubTreeRefIdAttributeNode.getNodeValue());
+ 				}
+ 			}
+ 			allSubTreeRefIds.removeAll(usedSubTreeRefIds);
+ 			
+ 			for (int i = 0; i < usedSubTreeRefIds.size(); i++) {
+ 				for (int j = 0; j < allSubTreeRefIds.size(); j++) {
+ 					Node usedSubTreeRefNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"
+ 									+ usedSubTreeRefIds.get(i)
+ 									+ "']//subTreeRef[@id='"
+ 									+ allSubTreeRefIds.get(j) + "']");
+ 					if (usedSubTreeRefNode != null) {
+ 						
+ 						String subTreeUUID = usedSubTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
+ 						String XPATH_IS_INSTANCE_OF = "//subTree [boolean(@instanceOf)]/@uuid ='"
+ 								+ subTreeUUID +"'";
+ 						boolean isOccurrenceNode = (Boolean) xPath.evaluate(XPATH_IS_INSTANCE_OF, xmlProcessor.getOriginalDoc(), XPathConstants.BOOLEAN);
+ 						if(isOccurrenceNode) {
+ 							String XPATH_PARENT_UUID = "//subTree [@uuid ='"+subTreeUUID +"']/@instanceOf";
+ 							String parentUUID = (String) xPath.evaluate(XPATH_PARENT_UUID, xmlProcessor.getOriginalDoc(), XPathConstants.STRING);
+ 							if (!usedSubTreeRefIds.contains(parentUUID)) {
+ 								usedSubTreeRefIds.add(parentUUID);
+ 							}
+ 							
+ 						}
+ 						if (!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))) {
+ 							
+ 							
+ 							usedSubTreeRefIds.add(allSubTreeRefIds.get(j));
+ 						}
+ 					}
+ 				}
+ 				
+ 			}
+ 		} catch (XPathExpressionException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+ 		return usedSubTreeRefIds;
+ 	}
+     
+     /**
+      * Validate sub tree ref in pop.
+      *
+      * @param subTreeNode the sub tree node
+      * @param functionalOpNode the functional op node
+      * @return true, if successful
+      */
+     public boolean validateSubTreeRefInPOP(Node subTreeNode, Node functionalOpNode){
+ 		if(subTreeNodeInPOPMap.get(subTreeNode.getAttributes()
+ 				.getNamedItem("uuid").getNodeValue())!=null){
+ 			String firstChildName = functionalOpNode.getFirstChild().getNodeName();
+ 			String functionalOpType = functionalOpNode.getAttributes().getNamedItem("type").getNodeValue();
+ 			List<String> childsList = FUNCTIONAL_OP_RULES_IN_POP.get(functionalOpType);
+ 			if(childsList.contains(firstChildName)){
+ 				return true;
+ 			} 
+ 		}
+ 		return false;
+ 	}
+     
+     
+     /**
+      * Check if qdm var instance is present.
+      *
+      * @param usedSubtreeRefId the used subtree ref id
+      * @param xmlProcessor the xml processor
+      * @return the string
+      */
+     private String checkIfQDMVarInstanceIsPresent(String usedSubtreeRefId,
+ 			XmlProcessor xmlProcessor){
+ 		
+ 		String XPATH_INSTANCE_QDM_VAR = "/measure/subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']/@instance";
+ 		String XPATH_INSTANCE_OF_QDM_VAR = "/measure/subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']/@instanceOf";
+ 		try {
+ 			Node nodesSDE_SubTree = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_INSTANCE_QDM_VAR);
+ 			if(nodesSDE_SubTree!=null){
+ 				Node nodesSDE_SubTreeInstance = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_INSTANCE_OF_QDM_VAR);
+ 				usedSubtreeRefId = nodesSDE_SubTreeInstance.getNodeValue();
+ 			}
+ 			
+ 		} catch (XPathExpressionException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+ 		
+ 		
+ 		return usedSubtreeRefId;
+ 	}
 }

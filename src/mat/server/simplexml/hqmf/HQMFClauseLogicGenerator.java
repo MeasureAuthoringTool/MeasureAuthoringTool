@@ -492,7 +492,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		//creating grouperCriteria element
 		String root = "0";
-		String ext = setOpType;
+		String ext = setOpType.toUpperCase();
 		
 		Node subTreeParentNode = checkIfSubTree(setOpNode.getParentNode());
 		if (subTreeParentNode != null) {

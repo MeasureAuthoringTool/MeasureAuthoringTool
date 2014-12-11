@@ -28,6 +28,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/** The sub tree node map. */
 	Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
 	
+	/** The measure export. */
 	MeasureExport measureExport;
 	
 	/** The Constant logger. */
@@ -115,7 +116,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate sub tree xml.
 	 *
-	 * @param me the me
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateSubTreeXML() throws XPathExpressionException {
@@ -207,9 +207,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param me
-	 * @param subTreeNode
-	 * @throws XPathExpressionException
+	 * Generate occ hqmf.
+	 *
+	 * @param subTreeNode the sub tree node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateOccHQMF( Node subTreeNode) throws XPathExpressionException {
 		/**
@@ -283,9 +284,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param functionalNode
-	 * @param dataCriteriaSectionElem
-	 * @throws XPathExpressionException
+	 * Generate functional op hqmf.
+	 *
+	 * @param functionalNode the functional node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateFunctionalOpHQMF(Node functionalNode, Element dataCriteriaSectionElem) throws XPathExpressionException {
 		Node node = null;
@@ -320,12 +324,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return node;
 		
 	}
+	
 	/**
 	 * Method to generate HQMF for function Ops with first child as subTreeRef. In this case grouperCriteria will be generated for
 	 * SubTreeRef with Excerpt entry inside it for functional Op.
+	 *
 	 * @param firstChildNode - SubTreeRef Node.
 	 * @param dataCriteriaSectionElem - Data Criteria Element.
-	 * @throws XPathExpressionException
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateSubTreeHQMFInFunctionalOp(Node firstChildNode, Element dataCriteriaSectionElem) throws XPathExpressionException {
 		Node parentNode = firstChildNode.getParentNode();
@@ -362,8 +369,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * QDM elementRef inside it.
 	 * We will make a copy of the original entry for QDM and update the id@root and id@extension
 	 * for it. This will server as an entry for the Clause.
+	 *
 	 * @param elementRefNode the element ref node
 	 * @param parentNode the parent node
+	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateElementRefHQMF(Node elementRefNode, Node parentNode) throws XPathExpressionException {
@@ -455,7 +464,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * 
 	 * If it isnt generated then we generate it and then add a criteriaRef to it inside a default UNION.
 	 *
-	 * @param me the me
 	 * @param subTreeRefNode the sub tree ref node
 	 * @param parentNode the parent node
 	 * @throws XPathExpressionException the x path expression exception
@@ -528,7 +536,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * This method wil generate HQMF code for setOp (UNION,INTERSECTION).
 	 *
-	 * @param me the me
 	 * @param setOpNode the set op node
 	 * @param parentNode the parent node
 	 * @return the node
@@ -631,6 +638,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
+	 * Generate crit ref functional op.
+	 *
 	 * @param childNode -Node
 	 * @param outboundRelElem - outBoundElement
 	 * @throws XPathExpressionException -Exception
@@ -664,12 +673,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 		}
 	}
+	
 	/**
 	 * This method is used to create a <templateId> tag for SATISFIES ALL/SATISFIES ANY
 	 * functionalOps.
 	 * These are functionalOp's but are converted to setOps and treated as Groupers.
-	 * @param hqmfXmlProcessor
-	 * @param grouperElem
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param type the type
+	 * @return the template id for satisfies
 	 */
 	private Node getTemplateIdForSatisfies(XmlProcessor hqmfXmlProcessor,
 			String type) {
@@ -696,9 +708,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate rel op hqmf.
 	 *
-	 * @param me the me
 	 * @param relOpNode the rel op node
 	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateRelOpHQMF( Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
@@ -756,12 +768,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @param lhsNode
-	 * @param rhsNode
-	 * @return
-	 * @throws XPathExpressionException
+	 * Gets the functional op lhs.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param lhsNode the lhs node
+	 * @param rhsNode the rhs node
+	 * @return the functional op lhs
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node getFunctionalOpLHS(Node relOpNode, Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode)
 			throws XPathExpressionException {
@@ -795,11 +809,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @param lhsNode
-	 * @param rhsNode
-	 * @return
+	 * Gets the rel op lhs subtree.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param lhsNode the lhs node
+	 * @param rhsNode the rhs node
+	 * @return the rel op lhs subtree
 	 */
 	private Node getrelOpLHSSubtree( Node relOpNode,
 			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) {
@@ -906,13 +922,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * 
-	 * @param me
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @param lhsNode
-	 * @param rhsNode
-	 * @return
+	 * Gets the rel op lhs set op.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param lhsNode the lhs node
+	 * @param rhsNode the rhs node
+	 * @return the rel op lhs set op
 	 */
 	private Node getrelOpLHSSetOp(Node relOpNode,
 			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) {
@@ -976,14 +992,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * 
-	 * @param me
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @param lhsNode
-	 * @param rhsNode
-	 * @return
-	 * @throws XPathExpressionException
+	 * Gets the rel op lhs rel op.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param lhsNode the lhs node
+	 * @param rhsNode the rhs node
+	 * @return the rel op lhs rel op
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node getrelOpLHSRelOp( Node relOpNode,
 			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) throws XPathExpressionException {
@@ -1050,15 +1066,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param me
-	 * @param relOpNode
-	 * @param dataCriteriaSectionElem
-	 * @param hqmfXmlProcessor
-	 * @param lhsNode
-	 * @param rhsNode
-	 * @param relOpParentNode
-	 * @param rhsName
-	 * @throws XPathExpressionException
+	 * Gets the rel op lhsqdm.
+	 *
+	 * @param relOpNode the rel op node
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param lhsNode the lhs node
+	 * @param rhsNode the rhs node
+	 * @return the rel op lhsqdm
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node getrelOpLHSQDM(Node relOpNode,
 			Node dataCriteriaSectionElem,
@@ -1133,6 +1148,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return null;
 	}
 	
+	/**
+	 * Handle rel op rhs.
+	 *
+	 * @param dataCriteriaSectionElem the data criteria section elem
+	 * @param rhsNode the rhs node
+	 * @param temporallyRelatedInfoNode the temporally related info node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void handleRelOpRHS( Node dataCriteriaSectionElem,
 			Node rhsNode, Element temporallyRelatedInfoNode) throws XPathExpressionException {
 		
@@ -1314,14 +1337,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		return null;
 	}
+	
 	/**
 	 * Generate Excerpt for Functional Op used with timing/Relationship.
-	 * @param functionalOpNode
-	 * @param lhsNode
-	 * @param hqmfXmlProcessor
-	 * @param clonedNodeToAppendExcerpt
-	 * @return
-	 * @throws XPathExpressionException
+	 *
+	 * @param functionalOpNode the functional op node
+	 * @param lhsNode the lhs node
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param clonedNodeToAppendExcerpt the cloned node to append excerpt
+	 * @return the element
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Element generateExcerptEntryForFunctionalNode(Node functionalOpNode, Node lhsNode,
 			XmlProcessor hqmfXmlProcessor, Node clonedNodeToAppendExcerpt)
@@ -1479,9 +1504,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * @param hqmfXmlProcessor
-	 * @param excerptElement
-	 * @param entryChildNodes
+	 * Generate criteria element for excerpt.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param entryChildNodes the entry child nodes
+	 * @return the element
 	 */
 	private Element generateCriteriaElementForExcerpt(XmlProcessor hqmfXmlProcessor, NodeList entryChildNodes) {
 		Element criteriaElement = null;
@@ -1509,10 +1536,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		return criteriaElement;
 	}
+	
 	/**
-	 * @param hqmfXmlProcessor
-	 * @param clonedNodeToAppendExcerpt
-	 * @return
+	 * Generate criteria element for set op excerpt.
+	 *
+	 * @param hqmfXmlProcessor the hqmf xml processor
+	 * @param clonedNodeToAppendExcerpt the cloned node to append excerpt
+	 * @return the element
 	 */
 	private Element generateCriteriaElementForSetOpExcerpt(XmlProcessor hqmfXmlProcessor, Node clonedNodeToAppendExcerpt) {
 		Element criteriaElement = null;
@@ -1609,7 +1639,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate crit ref rel op.
 	 *
-	 * @param me the me
 	 * @param parentNode the parent node
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @param childNode the child node
@@ -1656,7 +1685,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate crit ref set op.
 	 *
-	 * @param me the me
 	 * @param parentNode the parent node
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @param childNode the child node
@@ -1698,7 +1726,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate crit ref for node.
 	 *
-	 * @param me the me
 	 * @param outboundRelElem the outbound rel elem
 	 * @param childNode the child node
 	 * @throws XPathExpressionException the x path expression exception
@@ -1725,7 +1752,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * This method will basically create a <criteriaReference> with classCode='GROUPER' and moodCode='EVN'
 	 * and have the <id> tag pointing to the <grouperCriteria> for the referenced subTree/clause.
 	 *
-	 * @param me the me
 	 * @param outboundRelElem the outbound rel elem
 	 * @param subTreeRefNode the sub tree ref node
 	 * @param hqmfXmlProcessor the hqmf xml processor
@@ -1740,7 +1766,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * This method will basically create a <criteriaReference> with classCode='GROUPER' and moodCode='EVN'
 	 * and have the <id> tag pointing to the <grouperCriteria> for the referenced subTree/clause.
 	 *
-	 * @param me the me
 	 * @param outboundRelElem the outbound rel elem
 	 * @param subTreeRefNode the sub tree ref node
 	 * @param hqmfXmlProcessor the hqmf xml processor
@@ -1827,7 +1852,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Generate crit ref element ref.
 	 *
-	 * @param me the me
 	 * @param outboundRelElem the outbound rel elem
 	 * @param elementRefNode the element ref node
 	 * @param hqmfXmlProcessor the hqmf xml processor
@@ -1986,6 +2010,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return outboundRelElem;
 	}
 	
+	/**
+	 * Gets the tag from entry.
+	 *
+	 * @param entryElem the entry elem
+	 * @param tagName the tag name
+	 * @return the tag from entry
+	 */
 	private Node getTagFromEntry(Node entryElem, String tagName) {
 		
 		String entryElemName = entryElem.getNodeName();
@@ -2011,7 +2042,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * Or else, if parent is a 'functionalOp' then recursively check if the parentNode's parent
 	 * is a 'subTree'.
 	 * If yes, then return true.
-	 * @param parentNode
+	 *
+	 * @param parentNode the parent node
 	 * @return boolean
 	 */
 	private Node checkIfSubTree(Node parentNode) {

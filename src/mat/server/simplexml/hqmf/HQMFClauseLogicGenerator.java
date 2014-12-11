@@ -280,6 +280,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 */
 	private Node generateSubTreeHQMFInFunctionalOp(Node firstChildNode, Element dataCriteriaSectionElem) throws XPathExpressionException {
 		Node parentNode = firstChildNode.getParentNode();
+		
 		//temp node.
 		Element root = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("temp");
 		generateSubTreeHQMF(firstChildNode, root);
@@ -544,30 +545,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 								childNode, outboundRelElem);
 						break;
 					case "functionalOp":
-						Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
-						Node entryNode = generateFunctionalOpHQMF(childNode, dataCriteriaSectionElem);
-						if ((entryNode != null) && entryNode.getNodeName().equals("entry")) {
-							Node fChild = entryNode.getFirstChild();
-							if ("localVariableName".equals(fChild.getNodeName())) {
-								fChild = fChild.getNextSibling();
-							}
-							//create criteriaRef
-							Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
-							criteriaReference.setAttribute(CLASS_CODE, fChild.getAttributes().getNamedItem(CLASS_CODE).getNodeValue());
-							criteriaReference.setAttribute(MOOD_CODE, fChild.getAttributes().getNamedItem(MOOD_CODE).getNodeValue());
-							NodeList childNodeList = fChild.getChildNodes();
-							for(int j =0; j< childNodeList.getLength();j++) {
-								Node entryChildNodes = childNodeList.item(j);
-								if(entryChildNodes.getNodeName().equalsIgnoreCase(ID)){
-									Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
-									id.setAttribute(ROOT, entryChildNodes.getAttributes().getNamedItem(ROOT).getNodeValue());
-									id.setAttribute("extension", entryChildNodes.getAttributes().getNamedItem("extension").getNodeValue());
-									criteriaReference.appendChild(id);
-									outboundRelElem.appendChild(criteriaReference);
-									break;
-								}
-							}
-						}
+						generateCritRefFunctionalOp(childNode, outboundRelElem);
 						break;
 						
 					default:
@@ -592,6 +570,40 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return entryElem;
 	}
 	
+	/**
+	 * @param childNode -Node
+	 * @param outboundRelElem - outBoundElement
+	 * @throws XPathExpressionException -Exception
+	 */
+	private void generateCritRefFunctionalOp(Node childNode, Element outboundRelElem)
+			throws XPathExpressionException {
+		Element dataCriteriaSectionElem = (Element) measureExport.getHQMFXmlProcessor().
+				getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
+		Node entryNode = generateFunctionalOpHQMF(childNode, dataCriteriaSectionElem);
+		if ((entryNode != null) && entryNode.getNodeName().equals("entry")) {
+			Node fChild = entryNode.getFirstChild();
+			if ("localVariableName".equals(fChild.getNodeName())) {
+				fChild = fChild.getNextSibling();
+			}
+			//create criteriaRef
+			Element criteriaReference = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("criteriaReference");
+			criteriaReference.setAttribute(CLASS_CODE, fChild.getAttributes().getNamedItem(CLASS_CODE).getNodeValue());
+			criteriaReference.setAttribute(MOOD_CODE, fChild.getAttributes().getNamedItem(MOOD_CODE).getNodeValue());
+			NodeList childNodeList = fChild.getChildNodes();
+			for (int j = 0; j < childNodeList.getLength(); j++) {
+				Node entryChildNodes = childNodeList.item(j);
+				if (entryChildNodes.getNodeName().equalsIgnoreCase(ID)) {
+					Element id = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("id");
+					id.setAttribute(ROOT, entryChildNodes.getAttributes().getNamedItem(ROOT).getNodeValue());
+					id.setAttribute("extension", entryChildNodes.getAttributes()
+							.getNamedItem("extension").getNodeValue());
+					criteriaReference.appendChild(id);
+					outboundRelElem.appendChild(criteriaReference);
+					break;
+				}
+			}
+		}
+	}
 	/**
 	 * This method is used to create a <templateId> tag for SATISFIES ALL/SATISFIES ANY
 	 * functionalOps.
@@ -1296,19 +1308,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 								HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
 								attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
 										, measureExport.getSimpleXMLProcessor(), attributeNode);
-								Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
-								qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
 								
-								if("sum".equalsIgnoreCase(functionalOpName)){
-									Element subSetCodeElement = hqmfXmlProcessor.getOriginalDoc().createElement("subsetCode");
-									subSetCodeElement.setAttribute(CODE, "SUM");
-									excerptElement.appendChild(subSetCodeElement);
-								}
-								excerptElement.appendChild(qdmSubSetElement);
 								
 							}
 						}
 					}
+					Element qdmSubSetElement = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:subsetCode");
+					qdmSubSetElement.setAttribute(CODE, FUNCTIONAL_OPS_SUBSET.get(functionalOpName.toUpperCase()));
+					
+					if("sum".equalsIgnoreCase(functionalOpName)){
+						Element subSetCodeElement = hqmfXmlProcessor.getOriginalDoc().createElement("subsetCode");
+						subSetCodeElement.setAttribute(CODE, "SUM");
+						excerptElement.appendChild(subSetCodeElement);
+					}
+					excerptElement.appendChild(qdmSubSetElement);
 					excerptElement.appendChild(criteriaElement);
 				}
 			}

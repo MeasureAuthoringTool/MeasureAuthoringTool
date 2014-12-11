@@ -15,6 +15,7 @@
 			UPDATE OPERATOR SET SHORT_NAME = 'EAEORECW' WHERE LONG_NAME = 'Ends After Or Concurrent With End Of';
 			UPDATE OPERATOR SET SHORT_NAME = 'EBSORECWS' WHERE LONG_NAME = 'Ends Before Or Concurrent With Start Of';
 			UPDATE OPERATOR SET SHORT_NAME = 'EASORECWS' WHERE LONG_NAME = 'Ends After Or Concurrent With Start Of';
+			UPDATE OPERATOR SET SHORT_NAME = 'Overlap' WHERE LONG_NAME = 'Overlaps';
 
 		</sql>
 	</changeSet>

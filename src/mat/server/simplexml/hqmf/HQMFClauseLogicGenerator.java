@@ -709,7 +709,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 		dataCriteriaSectionElem.appendChild(comment);
 		if(entryNode != null) {
-			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+			//Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+			Element temporallyRelatedInfoNode = null;
+			if(!"FULFILLS".equalsIgnoreCase(relOpNode.getAttributes().getNamedItem("type").getNodeValue())) {
+				temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+			} else {
+				temporallyRelatedInfoNode = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("outboundRelationship");
+				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
+			}
 			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			Node firstChild = entryNode.getFirstChild();
 			if("localVariableName".equals(firstChild.getNodeName())){
@@ -793,7 +800,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 						idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
 					}
 					
-					Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+					//Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+					Element temporallyRelatedInfoNode = null;
+					if(!"FULFILLS".equalsIgnoreCase(relOpNode.getAttributes().getNamedItem("type").getNodeValue())) {
+						temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+					} else {
+						temporallyRelatedInfoNode = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("outboundRelationship");
+						temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
+					}
 					handleRelOpRHS( dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 					
 					Node firstNode = clonedEntryNodeForSubTree.getFirstChild();
@@ -848,7 +862,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		try{
 			Node setOpEntryNode = generateSetOpHQMF(lhsNode, dataCriteriaSectionElem);
-			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			//Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
 			Node relOpParentNode = checkIfSubTree(relOpNode.getParentNode());
 			if((relOpParentNode != null)) {
 				NodeList idChildNodeList = ((Element)setOpEntryNode).getElementsByTagName(ID);
@@ -867,7 +881,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 					idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
 				}
 			}
-			
+			Element temporallyRelatedInfoNode = null;
+			if(!"FULFILLS".equalsIgnoreCase(relOpNode.getAttributes().getNamedItem("type").getNodeValue())) {
+				temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			} else {
+				temporallyRelatedInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement("outboundRelationship");
+				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
+			}
 			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
 			
 			Node firstChild = setOpEntryNode.getFirstChild();
@@ -913,7 +933,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		try{
 			Node relOpEntryNode = generateRelOpHQMF( lhsNode, dataCriteriaSectionElem);
-			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			/*Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);*/
 			
 			
 			Node relOpParentNode = checkIfSubTree(relOpNode.getParentNode());
@@ -934,6 +954,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 					idChildNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
 					idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
 				}
+			}
+			Element temporallyRelatedInfoNode = null;
+			if(!"FULFILLS".equalsIgnoreCase(relOpNode.getAttributes().getNamedItem("type").getNodeValue())) {
+				temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+			} else {
+				temporallyRelatedInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement("outboundRelationship");
+				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
 			}
 			
 			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
@@ -1011,11 +1038,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if ("functionalOp".equals(relOpParentNode.getNodeName())) {
 				excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode, hqmfXmlProcessor, clonedEntryNodeForElementRef);
 			}
-			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
-			generateTemporalAttribute(hqmfXmlProcessor, lhsNode,temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
-			
+			Element temporallyRelatedInfoNode = null;
+			if(!"FULFILLS".equalsIgnoreCase(relOpNode.getAttributes().getNamedItem("type").getNodeValue())) {
+				temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, hqmfXmlProcessor);
+				generateTemporalAttribute(hqmfXmlProcessor, lhsNode,temporallyRelatedInfoNode, clonedEntryNodeForElementRef, true);
+			} else {
+				temporallyRelatedInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement("outboundRelationship");
+				temporallyRelatedInfoNode.setAttribute(TYPE_CODE, "FLFS");
+			}
 			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
-			
 			Node firstChild = clonedEntryNodeForElementRef.getFirstChild();
 			if("localVariableName".equals(firstChild.getNodeName())){
 				firstChild = firstChild.getNextSibling();

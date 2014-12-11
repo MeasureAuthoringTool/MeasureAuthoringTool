@@ -675,7 +675,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}else if("subTreeRef".equals(lhsName)){
 				return getrelOpLHSSubtree(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			} else if("functionalOp".equalsIgnoreCase(lhsName)) {
-				//Node entryNode = generateFunctionalOpHQMF(lhsNode, (Element)dataCriteriaSectionElem);
+				return getFunctionalOpLHS(relOpNode, dataCriteriaSectionElem, lhsNode, rhsNode);
 			}
 		}else{
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
@@ -683,6 +683,45 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return null;
 	}
 	
+	/**
+	 * @param relOpNode
+	 * @param dataCriteriaSectionElem
+	 * @param lhsNode
+	 * @param rhsNode
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private Node getFunctionalOpLHS(Node relOpNode, Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode)
+			throws XPathExpressionException {
+		Node entryNode = generateFunctionalOpHQMF(lhsNode, (Element)dataCriteriaSectionElem);
+		Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
+		dataCriteriaSectionElem.appendChild(comment);
+		if(entryNode != null) {
+			Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
+			handleRelOpRHS(dataCriteriaSectionElem, rhsNode, temporallyRelatedInfoNode);
+			Node firstChild = entryNode.getFirstChild();
+			if("localVariableName".equals(firstChild.getNodeName())){
+				firstChild = firstChild.getNextSibling();
+			}
+			NodeList outBoundList = ((Element)firstChild).getElementsByTagName("outboundRelationship");
+			if((outBoundList != null) && (outBoundList.getLength() > 0)){
+				Node outBound = outBoundList.item(0);
+				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
+			}else{
+				firstChild.appendChild(temporallyRelatedInfoNode);
+			}
+			dataCriteriaSectionElem.appendChild(entryNode);
+		}
+		return entryNode;
+	}
+	
+	/**
+	 * @param relOpNode
+	 * @param dataCriteriaSectionElem
+	 * @param lhsNode
+	 * @param rhsNode
+	 * @return
+	 */
 	private Node getrelOpLHSSubtree( Node relOpNode,
 			Node dataCriteriaSectionElem, Node lhsNode, Node rhsNode) {
 		

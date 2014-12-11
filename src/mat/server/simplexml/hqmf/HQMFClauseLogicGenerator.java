@@ -153,6 +153,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 			return;
 		}
 		
+		/**
+		 * If this is a Occurance clause then we need to find the base clause and generate HQMF for the base clause.
+		 * Then we need to generate Occurance HQMF for the occurance clause.
+		 */
+		if(subTreeNode.getAttributes().getNamedItem("instanceOf") != null){
+			String baseClauseUUID = subTreeNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
+			String xpath = "/measure/subTreeLookUp/subTree[@uuid = '"+baseClauseUUID+"']";
+			Node baseSubTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
+			generateSubTreeXML(baseSubTreeNode);
+			generateOccHQMF(subTreeNode);			
+		}
+		
 		String subTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
 		System.out.println("subTreeNodeMap:"+subTreeNodeMap);
@@ -220,8 +232,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 			return;
 		}
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
+		String occSubTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
 		String qdmVariableSubTreeUUID = subTreeNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		
+		/**
+		 * Check the 'subTreeNodeMap' to make sure the occ clause isnt already generated.
+		 */
+		if(subTreeNodeMap.containsKey(occSubTreeUUID)){
+			logger.info("HQMF for Occ Clause "+clauseName + " is already generated. Skipping.");
+			return;
+		}
+		
 		if(!subTreeNodeMap.containsKey(qdmVariableSubTreeUUID)){
 			logger.info("HQMF for Clause "+clauseName + " is not already generated. Skipping.");
 			return;
@@ -280,6 +302,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 			parentNode.appendChild(outboundRelElem);
 			entryElem.appendChild(parentNode);
 			dataCriteriaSectionElem.appendChild(entryElem);
+			
+			/**
+			 * The occ clause is generated now. Make an entry in the 'subTreeNodeMap' to keep track of its generation.
+			 */
+			subTreeNodeMap.put(occSubTreeUUID, subTreeNode);
 		}
 	}
 	
@@ -1824,8 +1851,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
 				generateSubTreeXML( subTreeNode);
 			}
-			
+			System.out.println("Finding entry for ");
+			System.out.println("root="+root);
+			System.out.println("ext="+ext);
 			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+			System.out.println("idNodeQDM == null:"+(idNodeQDM == null));
 			if(idNodeQDM != null){
 				Node parent = idNodeQDM.getParentNode();
 				if(parent != null){

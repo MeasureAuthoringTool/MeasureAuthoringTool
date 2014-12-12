@@ -113,7 +113,7 @@ public class HQMFGenerator implements Generator {
 		XmlProcessor hqmfProcessor = me.getHQMFXmlProcessor();
 		String xPathForPopCriteriaSection = "//populationCriteriaSection/text";
 		Node popCritTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForPopCriteriaSection);
-		
+				
 		Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
 		Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
 		Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");
@@ -122,6 +122,21 @@ public class HQMFGenerator implements Generator {
 		itemNode.appendChild(listNode);
 		xmlNode.appendChild(itemNode);
 		popCritTextNode.appendChild(xmlNode);
+		
+		String xPathForMsrObsNarrative = xPathForPopCriteriaSection+"//item[starts-with(content/text(), 'Measure Observation')]";
+		Node msrObsNarrativeNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
+		if(msrObsNarrativeNode != null){
+			String xPathForMeasureObservation = "//measureObservationSection/text";
+			Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);
+			if(msrObsTextNode != null){
+				Node msrObsNarrativeParentNode = msrObsNarrativeNode.getParentNode();
+				msrObsNarrativeParentNode.removeChild(msrObsNarrativeNode);
+				Node msrObsXMLNode = hqmfProcessor.getOriginalDoc().createElement("xml");
+				msrObsXMLNode.appendChild(msrObsNarrativeNode);
+				msrObsTextNode.appendChild(msrObsXMLNode);
+			}
+		}
+		
 	}
 	
 	private Node generateNarrativeItem(MeasureExport me,
@@ -149,8 +164,7 @@ public class HQMFGenerator implements Generator {
 		return dataCritItemNode;
 	}
 	
-	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor) {
-		
+	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor) {		
 		Node narrativeListNode = null;
 		String nodeName = humanReadableNode.getNodeName();
 		if(humanReadableNode.getNodeType() == humanReadableNode.TEXT_NODE){

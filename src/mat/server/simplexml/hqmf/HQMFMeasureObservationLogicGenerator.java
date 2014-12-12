@@ -25,16 +25,16 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	
-	/**
-	 * Array of Functional Ops that can be used in Measure Observation.
-	 */
-	private static final Map<String, String> FUNCTIONAL_OPS = new HashMap<String, String>();
+	
 	/** The scoring type. */
 	private String scoringType;
 	
 	/** The initial population. */
 	private Node initialPopulation;
-	
+	/**
+	 * Array of Functional Ops that can be used in Measure Observation.
+	 */
+	private static final Map<String, String> FUNCTIONAL_OPS = new HashMap<String, String>();
 	static {
 		FUNCTIONAL_OPS.put("MAX", "MAX");
 		FUNCTIONAL_OPS.put("MIN", "MIN");
@@ -103,9 +103,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @param item - Node
 	 * @param measureObservationSecElement - Element
 	 * @param me - MeasureExport
-	 * @param criteriaTagName - String.
-	 * @param criteriaTagCodeName - String code value.
-	 * @param topLogicalOpName - top Logical op type.
 	 * @throws XPathExpressionException - Exception
 	 */
 	private void generateMeasureObDefinition(Node item, Node measureObservationSecElement
@@ -148,6 +145,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) {
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
 		if (FUNCTIONAL_OPS.containsKey(clauseNodeName)) {
+			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
+			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
+			itemElement.setAttribute(CODE, FUNCTIONAL_OPS.get(clauseNodeName));
+			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+			methodCodeElement.appendChild(itemElement);
+			measureObDefinitionElement.appendChild(methodCodeElement);
 			NodeList childNodeList = clauseNodes.getChildNodes();
 			for (int i = 0; i < childNodeList.getLength(); i++) {
 				Node childNode = childNodeList.item(i);
@@ -155,9 +158,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				switch(childNodeName) {
 					case "setOp":
 						break;
-					case "relOp":
+					case "relationalOp":
 						break;
 					case "functionalOp":
+						findFunctionalOpChildrenType(childNode);
 						break;
 					case "elementRef":
 						break;
@@ -174,50 +178,89 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			}
 		}
 	}
+	private void findFunctionalOpChildrenType(Node childNode) {
+		if(childNode.getChildNodes() != null){
+			NodeList nodeList = childNode.getChildNodes();
+			if (nodeList.getLength() > 1) {
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					String nodeType = nodeList.item(i).getNodeName();
+					for(int j = i+1 ; j < nodeList.getLength();j++) {
+						String nextNodeType = nodeList.item(j).getNodeName();
+						switch(nodeType) {
+							case "elementRef":
+								if (nodeType.equalsIgnoreCase(nextNodeType)) {
+									System.out.println("create join...");
+								}
+								break;
+							default:
+								break;
+						}
+					}
+				}
+			} else {
+				String nodeType = nodeList.item(0).getNodeName();
+				switch(nodeType) {
+					case "elementRef":
+						System.out.println(" Use value expression.. ");
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
 	/**
 	 * Method to generate component and MeasureObservationSection default tags.
 	 * @param outputProcessor - XmlProcessor.
 	 * @return - Node.
+	 * @throws XPathExpressionException
 	 */
-	private Node createMeasureObservationSection(XmlProcessor outputProcessor) {
-		Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
-		Attr nameSpaceAttr = outputProcessor.getOriginalDoc()
-				.createAttribute("xmlns:xsi");
-		nameSpaceAttr.setNodeValue(nameSpace);
-		componentElement.setAttributeNodeNS(nameSpaceAttr);
+	private Node createMeasureObservationSection(XmlProcessor outputProcessor) throws XPathExpressionException {
 		
-		Node measureObSectionElem = outputProcessor.getOriginalDoc()
-				.createElement("measureObservationSection");
+		Node measureObservationSection = outputProcessor.findNode(outputProcessor.getOriginalDoc(), "//component/measureObservationSection");
 		
-		Element templateId = outputProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
-		measureObSectionElem.appendChild(templateId);
-		
-		Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
-		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.4");
-		
-		templateId.appendChild(itemChild);
-		Element idElement = outputProcessor.getOriginalDoc()
-				.createElement(ID);
-		idElement.setAttribute(ROOT, UUIDUtilClient.uuid());
-		idElement.setAttribute("extension", "MeasureObservations");
-		measureObSectionElem.appendChild(idElement);
-		Element codeElem = outputProcessor.getOriginalDoc()
-				.createElement(CODE);
-		codeElem.setAttribute(CODE, "57027-5");
-		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.6.1");
-		measureObSectionElem.appendChild(codeElem);
-		Element titleElem = outputProcessor.getOriginalDoc()
-				.createElement(TITLE);
-		titleElem.setAttribute(VALUE, "Measure Observation Section");
-		measureObSectionElem.appendChild(titleElem);
-		// creating text for PopulationCriteria
-		Element textElem = outputProcessor.getOriginalDoc()
-				.createElement("text");
-		textElem.setAttribute(VALUE, "Measure Observation text");
-		measureObSectionElem.appendChild(textElem);
-		componentElement.appendChild(measureObSectionElem);
-		outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
-		return componentElement;
+		if(measureObservationSection == null) {
+			Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
+			Attr nameSpaceAttr = outputProcessor.getOriginalDoc()
+					.createAttribute("xmlns:xsi");
+			nameSpaceAttr.setNodeValue(nameSpace);
+			componentElement.setAttributeNodeNS(nameSpaceAttr);
+			
+			Node measureObSectionElem = outputProcessor.getOriginalDoc()
+					.createElement("measureObservationSection");
+			
+			Element templateId = outputProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
+			measureObSectionElem.appendChild(templateId);
+			
+			Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
+			itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.4");
+			
+			templateId.appendChild(itemChild);
+			Element idElement = outputProcessor.getOriginalDoc()
+					.createElement(ID);
+			idElement.setAttribute(ROOT, UUIDUtilClient.uuid());
+			idElement.setAttribute("extension", "MeasureObservations");
+			measureObSectionElem.appendChild(idElement);
+			Element codeElem = outputProcessor.getOriginalDoc()
+					.createElement(CODE);
+			codeElem.setAttribute(CODE, "57027-5");
+			codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.6.1");
+			measureObSectionElem.appendChild(codeElem);
+			Element titleElem = outputProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, "Measure Observation Section");
+			measureObSectionElem.appendChild(titleElem);
+			// creating text for PopulationCriteria
+			Element textElem = outputProcessor.getOriginalDoc()
+					.createElement("text");
+			textElem.setAttribute(VALUE, "Measure Observation text");
+			measureObSectionElem.appendChild(textElem);
+			componentElement.appendChild(measureObSectionElem);
+			outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
+			return componentElement;
+		} else {
+			return measureObservationSection;
+		}
 	}
 	
 	/**

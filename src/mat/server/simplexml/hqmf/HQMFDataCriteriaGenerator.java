@@ -25,6 +25,8 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		hqmfClauseLogicGenerator.generate(me);
 		HQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new HQMFPopulationLogicGenerator();
 		hqmfPopulationLogicGenerator.generate(me);
+		HQMFMeasureObservationLogicGenerator hqmfMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
+		hqmfMeasureObservationLogicGenerator.generate(me);
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removePreambleAndRootTags(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}

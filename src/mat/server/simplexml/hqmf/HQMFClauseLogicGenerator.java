@@ -63,6 +63,18 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/** The Constant populations. */
 	private static final List<String> populations = new ArrayList<String>();  
 	
+	static{
+		populations.add("initialPopulation");
+		populations.add("denominator");
+		populations.add("denominatorExclusions");
+		populations.add("denominatorExceptions");
+		populations.add("numerator");
+		populations.add("numeratorExclusions");
+		populations.add("measurePopulation");
+		populations.add("measurePopulationExclusions");
+		populations.add("stratum");
+	}
+	
 	/** The sub tree node in mo map. */
 	Map<String, Node> subTreeNodeInMOMap = new HashMap<String,Node>();
 	
@@ -98,8 +110,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		FUNCTIONAL_OP_RULES_IN_MO.put("SUM", getFunctionalOpFirstChildInMO("SUM"));
 		FUNCTIONAL_OP_RULES_IN_MO.put("COUNT", getFunctionalOpFirstChildInMO("COUNT"));
 		FUNCTIONAL_OP_RULES_IN_MO.put("DATETIMEDIFF", getFunctionalOpFirstChildInMO("DATETIMEDIFF"));
-		
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.server.simplexml.hqmf.Generator#generate(mat.model.clause.MeasureExport)
@@ -2090,25 +2102,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Gets the populations.
-	 *
-	 * @return the populations
-	 */
-	public static List<String> getPopulations() {
-		populations.add("initialPopulation");
-		populations.add("measurePopulation");
-		populations.add("measurePopulationExclusions");
-		populations.add("numerators");
-		populations.add("denominators");
-		populations.add("denominatorExclusions");
-		populations.add("denominatorExceptions");
-		populations.add("stratum");
-		populations.add("numeratorExclusions");
-		populations.add("denominatorExceptions");
-		return populations;
-	}
-	
-	/**
 	 * Gets the firt child list.
 	 *
 	 * @param function the function
@@ -2181,7 +2174,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String typeXpathString ="";
 		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
 		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
-		for(String typeString : getPopulations()){
+		for(String typeString : populations){
 			typeXpathString += "@type = '"+typeString + "' or";
 		}
 		typeXpathString = typeXpathString.substring(0,typeXpathString.lastIndexOf(" or"));

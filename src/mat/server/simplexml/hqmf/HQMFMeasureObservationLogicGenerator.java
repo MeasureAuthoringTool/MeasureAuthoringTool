@@ -74,7 +74,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {
 			xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute='"
-					+ attributeName + "'  and @datatypes = '" + dataTypeName + "']";
+					+ attributeName + "'  and @datatypes = '" + dataTypeName.toLowerCase() + "']";
 			attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		}
 		return attributeMappingNode.getAttributes().getNamedItem("dotNotation").getNodeValue();
@@ -88,7 +88,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateMeasureObSection
 	(MeasureExport me) throws XPathExpressionException {
 		for (String key : measureGroupingMap.keySet()) {
-			
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				String popType = groupingChildList.item(i).getAttributes().getNamedItem(TYPE).getNodeValue();
@@ -196,20 +195,33 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			if(qdmNode.getAttributes().getNamedItem("instance") != null){
 				ext = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + ext;
 			}
+			String qdmAttributeName="";
 			ext = StringUtils.deleteWhitespace(ext);
 			String root = node.getAttributes().getNamedItem(ID).getNodeValue();
 			if(node.hasChildNodes()) {
 				ext = node.getFirstChild().getAttributes().getNamedItem("attrUUID").getNodeValue();
+				qdmAttributeName = node.getFirstChild().getAttributes().getNamedItem("name").getNodeValue();
 			}
 			Node idNodeQDM = me.getHQMFXmlProcessor().findNode(me.getHQMFXmlProcessor().getOriginalDoc()
 					, "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 			if(idNodeQDM != null){
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 				String localVariableName = entryNodeForElementRef.getFirstChild().getAttributes().getNamedItem("value").getNodeValue();
+				String attributeMapping = "";
+				//if the parent of elementRef is setOp then we'll not be generating attribute Mapping for that particular QDM 
+				//in value Expression
+				if(qdmAttributeName.length()!=0 && !node.getParentNode().getNodeName().equals("setOp")){
+					attributeMapping = getQdmAttributeMapppingDotNotation(qdmAttributeName, dataType);
+				}
 				if(expressionValue.length() ==0) {
 					expressionValue = localVariableName;
 				} else {
 					expressionValue = expressionValue + " - " + localVariableName;
+				}
+				
+				//appending attributeMapping for expressionValue
+				if(attributeMapping.length()!=0){
+					expressionValue = expressionValue+"."+attributeMapping;
 				}
 				
 			} else {
@@ -288,7 +300,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);
 			return componentElement;
 		} else {
-			return measureObservationSection;
+			return measureObservationSection.getParentNode();
 		}
 	}
 	

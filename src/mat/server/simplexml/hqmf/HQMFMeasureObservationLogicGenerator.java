@@ -28,15 +28,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
 	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
-	
+	/** The elementRefList. */
 	private List<Node> elementRefList;// = new ArrayList<Node>();
-	
-	/** The scoring type. */
+	/** The MeasureExport object. */
+	private MeasureExport me;
+	/** The Measure Scoring type. */
 	private String scoringType;
-	
-	/** The initial population. */
-	private Node initialPopulation;
-	MeasureExport me;
 	/**
 	 * Array of Functional Ops that can be used in Measure Observation.
 	 */
@@ -115,7 +112,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateMeasureObDefinition(Node item, Node measureObservationSecElement
 			, MeasureExport me) throws XPathExpressionException {
 		Document doc = measureObservationSecElement.getOwnerDocument();
-		Comment comment = doc.createComment("Definition for "+item.getAttributes().getNamedItem("displayName").getNodeValue());
+		Comment comment = doc.createComment("Definition for "
+				+ item.getAttributes().getNamedItem("displayName").getNodeValue());
 		
 		Element definitionElement = doc.createElement("definition");
 		Element measureObDefinitionElement = doc.createElement("measureObservationDefinition");
@@ -125,7 +123,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		codeElem.setAttribute(CODE, "AGGREGATE");
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 		measureObDefinitionElement.appendChild(codeElem);
-		generateLogicForMeasureObservation(item,measureObDefinitionElement);
+		generateLogicForMeasureObservation(item, measureObDefinitionElement);
 		definitionElement.appendChild(measureObDefinitionElement);
 		Element measurObSectionElement = (Element) measureObservationSecElement.getFirstChild();
 		measurObSectionElement.appendChild(comment);
@@ -135,9 +133,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/**
 	 * @param item - Node
 	 * @param measureObDefinitionElement - Element
-	 * @throws XPathExpressionException
+	 * @throws XPathExpressionException -Exception.
 	 */
-	private void generateLogicForMeasureObservation(Node item, Element measureObDefinitionElement) throws XPathExpressionException {
+	private void generateLogicForMeasureObservation(Node item, Element measureObDefinitionElement)
+			throws XPathExpressionException {
 		if ((item != null) && (item.getChildNodes() != null)) {
 			NodeList childNodes = item.getChildNodes();
 			for (int i = 0; i < childNodes.getLength(); i++) {
@@ -151,9 +150,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		}
 	}
 	/**
-	 * @param clauseNodes
-	 * @param measureObDefinitionElement
-	 * @throws XPathExpressionException
+	 * Method to generate Clause Logic used inside MeasureObservation.
+	 * @param clauseNodes -Node
+	 * @param measureObDefinitionElement -Element
+	 * @throws XPathExpressionException -Exception.
 	 */
 	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) throws XPathExpressionException {
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
@@ -162,7 +162,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
 			String preConditionJoinExpressionValue = null;
 			if (elementRefList.size() > 0) {
-				preConditionJoinExpressionValue = generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, clauseNodes);
+				preConditionJoinExpressionValue = generateValueAndExpressionTag(elementRefList
+						, measureObDefinitionElement, clauseNodes);
 			}
 			if (FUNCTIONAL_OPS.get(clauseNodeName) != null) {
 				Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
@@ -172,7 +173,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				methodCodeElement.appendChild(itemElement);
 				measureObDefinitionElement.appendChild(methodCodeElement);
 			}
-			
 			if ((preConditionJoinExpressionValue != null)
 					&& (preConditionJoinExpressionValue.length() > 0)) {
 				Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
@@ -180,7 +180,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");
 				joinElement.setAttribute(CLASS_CODE, "OBS");
 				joinElement.setAttribute(MOOD_CODE, "DEF");
-				
 				Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
 				valueElement.setAttribute(XSI_TYPE, "ED");
 				Element valueExpressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
@@ -189,64 +188,67 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				joinElement.appendChild(valueElement);
 				preConditionElement.appendChild(joinElement);
 				measureObDefinitionElement.appendChild(preConditionElement);
-				
 			}
 		}
 	}
 	/**
-	 * @param elementRefList
-	 * @param measureObDefinitionElement
-	 * @param clauseNodes
-	 * @throws XPathExpressionException
+	 * Method to Generate Value/Expression tags.This method also returns preCondition Expression value.
+	 * @param elementRefList -List
+	 * @param measureObDefinitionElement -Element
+	 * @param clauseNodes -Node
+	 * @throws XPathExpressionException Exception
+	 * @return String -String.
 	 */
-	private String generateValueAndExpressionTag(List<Node> elementRefList, Element measureObDefinitionElement, Node clauseNodes) throws XPathExpressionException {
+	private String generateValueAndExpressionTag(List<Node> elementRefList
+			, Element measureObDefinitionElement, Node clauseNodes) throws XPathExpressionException {
 		Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
 		valueElement.setAttribute(XSI_TYPE, "PQ");
 		Element expressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
 		String expressionValue = new String();
 		String preConditionJoinExpressionValue = new String();
-		for(Node node: elementRefList){
+		for (Node node: elementRefList) {
 			String qdmUUID = node.getAttributes().getNamedItem("id").getNodeValue();
-			String xPath = "/measure/elementLookUp/qdm[@uuid ='"+qdmUUID+"']";
+			String xPath = "/measure/elementLookUp/qdm[@uuid ='" + qdmUUID + "']";
 			Node qdmNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xPath);
 			String dataType = qdmNode.getAttributes().getNamedItem("datatype")
 					.getNodeValue();
 			String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 			String ext = qdmName + "_" + dataType;
-			if(qdmNode.getAttributes().getNamedItem("instance") != null){
-				ext = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + ext;
+			if (qdmNode.getAttributes().getNamedItem("instance") != null) {
+				ext = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + "_" + ext;
 			}
-			String qdmAttributeName="";
+			String qdmAttributeName = "";
 			ext = StringUtils.deleteWhitespace(ext);
 			String root = node.getAttributes().getNamedItem(ID).getNodeValue();
-			if(node.hasChildNodes()) {
+			if (node.hasChildNodes())  {
 				ext = node.getFirstChild().getAttributes().getNamedItem("attrUUID").getNodeValue();
 				qdmAttributeName = node.getFirstChild().getAttributes().getNamedItem("name").getNodeValue();
 			}
 			Node idNodeQDM = me.getHQMFXmlProcessor().findNode(me.getHQMFXmlProcessor().getOriginalDoc()
-					, "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+					, "//entry/*/id[@root='" + root + "'][@extension='" + ext + "']");
 			if (idNodeQDM != null) {
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
-				String localVariableName = entryNodeForElementRef.getFirstChild().getAttributes().getNamedItem("value").getNodeValue();
+				String localVariableName = entryNodeForElementRef.getFirstChild().getAttributes()
+						.getNamedItem("value").getNodeValue();
 				String attributeMapping = "";
-				//if the parent of elementRef is setOp then we'll not be generating attribute Mapping for that particular QDM 
+				//if the parent of elementRef is setOp then we'll not
+				//be generating attribute Mapping for that particular QDM
 				//in value Expression
-				if(qdmAttributeName.length()!=0 && !node.getParentNode().getNodeName().equals("setOp")){
+				if ((qdmAttributeName.length() != 0)
+						&& !node.getParentNode().getNodeName().equals("setOp")) {
 					attributeMapping = getQdmAttributeMapppingDotNotation(qdmAttributeName, dataType);
 				}
-				if(expressionValue.length() ==0) {
+				if (expressionValue.length() == 0) {
 					expressionValue = localVariableName;
 					preConditionJoinExpressionValue = localVariableName + ".getPatient().id";
 				} else {
-					expressionValue+= " - " + localVariableName;
-					preConditionJoinExpressionValue+= " == " + localVariableName + ".getPatient().id";
+					expressionValue += " - " + localVariableName;
+					preConditionJoinExpressionValue += " == " + localVariableName + ".getPatient().id";
 				}
-				
 				//appending attributeMapping for expressionValue
-				if(attributeMapping.length()!=0){
-					expressionValue+= "."+attributeMapping;
+				if (attributeMapping.length() != 0) {
+					expressionValue += "." + attributeMapping;
 				}
-				
 			} else {
 				// add check for measurement period.
 			}
@@ -256,18 +258,32 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		measureObDefinitionElement.appendChild(valueElement);
 		return preConditionJoinExpressionValue;
 	}
+	/**
+	 * Method to find all QDM's used in a clause.
+	 * @param childNode - Node
+	 * @param elementRefList - List
+	 * @return List of QDm Node
+	 */
 	private List<Node> findAllElementRefsUsed(Node childNode, List<Node> elementRefList) {
-		//elementRefList = new ArrayList<Node>();
-		if(childNode.hasChildNodes()) {
+		if (childNode.hasChildNodes()) {
 			NodeList childNodeList = childNode.getChildNodes();
-			for(int i=0; i< childNodeList.getLength();i++){
+			for (int i = 0; i < childNodeList.getLength(); i++) {
 				Node node = childNodeList.item(i);
-				if(node.getNodeName().equalsIgnoreCase("elementRef")){
-					System.out.println("Size of elementRefList ====== "+ elementRefList.size());
+				if (node.getNodeName().equalsIgnoreCase("elementRef")) {
+					System.out.println("Size of elementRefList ====== " + elementRefList.size());
 					elementRefList.add(node);
+				} else if (node.getNodeName().equalsIgnoreCase("subTreeRef")) {
+					Node subTreeRefNodeLogic = clauseLogicMap.get(node.getAttributes()
+							.getNamedItem("id").getNodeValue());
+					if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("elementRef")) {
+						System.out.println("Size of elementRefList ====== " + elementRefList.size());
+						elementRefList.add(subTreeRefNodeLogic);
+					} else {
+						findAllElementRefsUsed(subTreeRefNodeLogic, elementRefList);
+					}
 				}
-				if(node.hasChildNodes()){
-					findAllElementRefsUsed(node,elementRefList);
+				if (node.hasChildNodes()) {
+					findAllElementRefsUsed(node, elementRefList);
 				}
 			}
 		}
@@ -331,7 +347,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * Get Measure Scoring type.
 	 *
 	 * @param me - MeasureExport
-	 * @return the measure scoring type
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getMeasureScoringType(MeasureExport me) throws XPathExpressionException {
@@ -360,7 +375,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * Method to populate all measure groupings in measureGroupingMap.
 	 *
 	 * @param me - MeasureExport
-	 * @return the all measure groupings
 	 * @throws XPathExpressionException - {@link Exception}
 	 */
 	private void getAllMeasureGroupings(MeasureExport me) throws XPathExpressionException {

@@ -1,6 +1,8 @@
 package mat.server.simplexml.hqmf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -8,7 +10,9 @@ import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,12 +29,14 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	
+	private List<Node> elementRefList;// = new ArrayList<Node>();
 	
 	/** The scoring type. */
 	private String scoringType;
 	
 	/** The initial population. */
 	private Node initialPopulation;
+	MeasureExport me;
 	/**
 	 * Array of Functional Ops that can be used in Measure Observation.
 	 */
@@ -42,7 +48,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		FUNCTIONAL_OPS.put("AVG", "AVERAGE");
 		FUNCTIONAL_OPS.put("COUNT", "COUNT");
 		FUNCTIONAL_OPS.put("MEDIAN", "MEDIAN");
-		FUNCTIONAL_OPS.put("DATETIMEDIFF", "null");
+		FUNCTIONAL_OPS.put("DATETIMEDIFF", null);
 	}
 	
 	/* (non-Javadoc)
@@ -50,6 +56,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
+		this.me = me;
 		getMeasureScoringType(me);
 		generateClauseLogicMap(me);
 		getAllMeasureGroupings(me);
@@ -81,14 +88,14 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateMeasureObSection
 	(MeasureExport me) throws XPathExpressionException {
 		for (String key : measureGroupingMap.keySet()) {
-			Node populationCriteriaComponentElement = createMeasureObservationSection(me.getHQMFXmlProcessor());
+			Node measureObSectionComponentElement = createMeasureObservationSection(me.getHQMFXmlProcessor());
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				String popType = groupingChildList.item(i).getAttributes().getNamedItem(TYPE).getNodeValue();
 				switch(popType) {
 					case "measureObservation" :
 						generateMeasureObDefinition(groupingChildList.item(i)
-								, populationCriteriaComponentElement , me);
+								, measureObSectionComponentElement , me);
 						break;
 					default:
 						//do nothing.
@@ -108,6 +115,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateMeasureObDefinition(Node item, Node measureObservationSecElement
 			, MeasureExport me) throws XPathExpressionException {
 		Document doc = measureObservationSecElement.getOwnerDocument();
+		Comment comment = doc.createComment("Definition for "+item.getAttributes().getNamedItem("displayName").getNodeValue());
+		
 		Element definitionElement = doc.createElement("definition");
 		Element measureObDefinitionElement = doc.createElement("measureObservationDefinition");
 		measureObDefinitionElement.setAttribute(CLASS_CODE, "OBS");
@@ -118,14 +127,17 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		measureObDefinitionElement.appendChild(codeElem);
 		generateLogicForMeasureObservation(item,measureObDefinitionElement);
 		definitionElement.appendChild(measureObDefinitionElement);
-		measureObservationSecElement.appendChild(definitionElement);
+		Element measurObSectionElement = (Element) measureObservationSecElement.getFirstChild();
+		measurObSectionElement.appendChild(comment);
+		measurObSectionElement.appendChild(definitionElement);
 	}
 	
 	/**
 	 * @param item - Node
 	 * @param measureObDefinitionElement - Element
+	 * @throws XPathExpressionException
 	 */
-	private void generateLogicForMeasureObservation(Node item, Element measureObDefinitionElement) {
+	private void generateLogicForMeasureObservation(Node item, Element measureObDefinitionElement) throws XPathExpressionException {
 		if ((item != null) && (item.getChildNodes() != null)) {
 			NodeList childNodes = item.getChildNodes();
 			for (int i = 0; i < childNodes.getLength(); i++) {
@@ -141,73 +153,89 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/**
 	 * @param clauseNodes
 	 * @param measureObDefinitionElement
+	 * @throws XPathExpressionException
 	 */
-	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) {
+	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) throws XPathExpressionException {
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
+		// No Method code for DATETIMEDIFF is added as per stan's examples.
 		if (FUNCTIONAL_OPS.containsKey(clauseNodeName)) {
-			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
-			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
-			itemElement.setAttribute(CODE, FUNCTIONAL_OPS.get(clauseNodeName));
-			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
-			methodCodeElement.appendChild(itemElement);
-			measureObDefinitionElement.appendChild(methodCodeElement);
-			NodeList childNodeList = clauseNodes.getChildNodes();
-			for (int i = 0; i < childNodeList.getLength(); i++) {
-				Node childNode = childNodeList.item(i);
-				String childNodeName = childNode.getNodeName();
-				switch(childNodeName) {
-					case "setOp":
-						break;
-					case "relationalOp":
-						break;
-					case "functionalOp":
-						findFunctionalOpChildrenType(childNode);
-						break;
-					case "elementRef":
-						break;
-					case "subTreeRef":
-						String subTreeUUID = childNode.getAttributes().getNamedItem("id").getNodeValue();
-						Node newClauseNode = clauseLogicMap.get(subTreeUUID);
-						if (newClauseNode != null) {
-							generateClauseLogic(newClauseNode , measureObDefinitionElement);
-						}
-						break;
-					default:
-						break;
-				}
+			if (FUNCTIONAL_OPS.get(clauseNodeName) != null) {
+				Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
+				Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
+				itemElement.setAttribute(CODE, FUNCTIONAL_OPS.get(clauseNodeName));
+				itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+				methodCodeElement.appendChild(itemElement);
+				measureObDefinitionElement.appendChild(methodCodeElement);
+			}
+			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
+			if(elementRefList.size() >0){
+				generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, clauseNodes);
 			}
 		}
 	}
-	private void findFunctionalOpChildrenType(Node childNode) {
-		if(childNode.getChildNodes() != null){
-			NodeList nodeList = childNode.getChildNodes();
-			if (nodeList.getLength() > 1) {
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					String nodeType = nodeList.item(i).getNodeName();
-					for(int j = i+1 ; j < nodeList.getLength();j++) {
-						String nextNodeType = nodeList.item(j).getNodeName();
-						switch(nodeType) {
-							case "elementRef":
-								if (nodeType.equalsIgnoreCase(nextNodeType)) {
-									System.out.println("create join...");
-								}
-								break;
-							default:
-								break;
-						}
-					}
+	/**
+	 * @param elementRefList
+	 * @param measureObDefinitionElement
+	 * @param clauseNodes
+	 * @throws XPathExpressionException
+	 */
+	private void generateValueAndExpressionTag(List<Node> elementRefList, Element measureObDefinitionElement, Node clauseNodes) throws XPathExpressionException {
+		Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+		valueElement.setAttribute(XSI_TYPE, "PQ");
+		Element expressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
+		String expressionValue = new String();
+		for(Node node: elementRefList){
+			String qdmUUID = node.getAttributes().getNamedItem("id").getNodeValue();
+			String xPath = "/measure/elementLookUp/qdm[@uuid ='"+qdmUUID+"']";
+			Node qdmNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xPath);
+			String dataType = qdmNode.getAttributes().getNamedItem("datatype")
+					.getNodeValue();
+			String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
+			String ext = qdmName + "_" + dataType;
+			if(qdmNode.getAttributes().getNamedItem("instance") != null){
+				ext = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + ext;
+			}
+			ext = StringUtils.deleteWhitespace(ext);
+			String root = node.getAttributes().getNamedItem(ID).getNodeValue();
+			if(node.hasChildNodes()) {
+				ext = node.getFirstChild().getAttributes().getNamedItem("attrUUID").getNodeValue();
+			}
+			Node idNodeQDM = me.getHQMFXmlProcessor().findNode(me.getHQMFXmlProcessor().getOriginalDoc()
+					, "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+			if(idNodeQDM != null){
+				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
+				String localVariableName = entryNodeForElementRef.getFirstChild().getAttributes().getNamedItem("value").getNodeValue();
+				if(expressionValue.length() ==0) {
+					expressionValue = localVariableName;
+				} else {
+					expressionValue = expressionValue + " - " + localVariableName;
 				}
+				
 			} else {
-				String nodeType = nodeList.item(0).getNodeName();
-				switch(nodeType) {
-					case "elementRef":
-						System.out.println(" Use value expression.. ");
-						break;
-					default:
-						break;
+				// add check for measurement period.
+			}
+		}
+		expressionElement.setAttribute(VALUE, expressionValue);
+		valueElement.appendChild(expressionElement);
+		measureObDefinitionElement.appendChild(valueElement);
+		
+	}
+	private List<Node> findAllElementRefsUsed(Node childNode, List<Node> elementRefList) {
+		//elementRefList = new ArrayList<Node>();
+		if(childNode.hasChildNodes()) {
+			NodeList childNodeList = childNode.getChildNodes();
+			for(int i=0; i< childNodeList.getLength();i++){
+				Node node = childNodeList.item(i);
+				if(node.getNodeName().equalsIgnoreCase("elementRef")){
+					System.out.println("Size of elementRefList ====== "+ elementRefList.size());
+					elementRefList.add(node);
+				}
+				if(node.hasChildNodes()){
+					findAllElementRefsUsed(node,elementRefList);
 				}
 			}
 		}
+		return elementRefList;
 	}
 	/**
 	 * Method to generate component and MeasureObservationSection default tags.

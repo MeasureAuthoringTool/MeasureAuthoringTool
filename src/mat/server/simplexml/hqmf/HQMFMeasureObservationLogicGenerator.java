@@ -88,12 +88,13 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateMeasureObSection
 	(MeasureExport me) throws XPathExpressionException {
 		for (String key : measureGroupingMap.keySet()) {
-			Node measureObSectionComponentElement = createMeasureObservationSection(me.getHQMFXmlProcessor());
+			
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				String popType = groupingChildList.item(i).getAttributes().getNamedItem(TYPE).getNodeValue();
 				switch(popType) {
 					case "measureObservation" :
+						Node measureObSectionComponentElement = createMeasureObservationSection(me.getHQMFXmlProcessor());
 						generateMeasureObDefinition(groupingChildList.item(i)
 								, measureObSectionComponentElement , me);
 						break;

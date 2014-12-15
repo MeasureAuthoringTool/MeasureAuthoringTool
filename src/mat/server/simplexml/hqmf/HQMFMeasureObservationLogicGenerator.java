@@ -29,7 +29,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	/** The elementRefList. */
-	private List<Node> elementRefList;// = new ArrayList<Node>();
+	private List<Node> elementRefList;
 	/** The MeasureExport object. */
 	private MeasureExport me;
 	/** The Measure Scoring type. */
@@ -61,9 +61,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		return null;
 	}
 	/**
-	 * @param attributeName
-	 * @param dataTypeName
-	 * @throws XPathExpressionException
+	 * Get DotNotation from templates.xml.
+	 * @param attributeName -String
+	 * @param dataTypeName - String
+	 * @throws XPathExpressionException -Exception
+	 * @return String dot notation.
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName) throws XPathExpressionException {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
@@ -78,12 +80,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	}
 	
 	/**
-	 * Method to generate population Criteria.
+	 * Method to generate MeasureObservation Criteria Section.
 	 * @param me - MeasureExport
 	 * @throws XPathExpressionException - Exception
 	 */
-	private void generateMeasureObSection
-	(MeasureExport me) throws XPathExpressionException {
+	private void generateMeasureObSection(MeasureExport me) throws XPathExpressionException {
 		for (String key : measureGroupingMap.keySet()) {
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
@@ -293,28 +294,23 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * Method to generate component and MeasureObservationSection default tags.
 	 * @param outputProcessor - XmlProcessor.
 	 * @return - Node.
-	 * @throws XPathExpressionException
+	 * @throws XPathExpressionException -Exception
 	 */
 	private Node createMeasureObservationSection(XmlProcessor outputProcessor) throws XPathExpressionException {
-		
-		Node measureObservationSection = outputProcessor.findNode(outputProcessor.getOriginalDoc(), "//component/measureObservationSection");
-		
-		if(measureObservationSection == null) {
+		Node measureObservationSection = outputProcessor.findNode(
+				outputProcessor.getOriginalDoc(), "//component/measureObservationSection");
+		if (measureObservationSection == null) {
 			Element componentElement = outputProcessor.getOriginalDoc().createElement("component");
 			Attr nameSpaceAttr = outputProcessor.getOriginalDoc()
 					.createAttribute("xmlns:xsi");
 			nameSpaceAttr.setNodeValue(nameSpace);
 			componentElement.setAttributeNodeNS(nameSpaceAttr);
-			
 			Node measureObSectionElem = outputProcessor.getOriginalDoc()
 					.createElement("measureObservationSection");
-			
 			Element templateId = outputProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
 			measureObSectionElem.appendChild(templateId);
-			
 			Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
 			itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.4");
-			
 			templateId.appendChild(itemChild);
 			Element idElement = outputProcessor.getOriginalDoc()
 					.createElement(ID);

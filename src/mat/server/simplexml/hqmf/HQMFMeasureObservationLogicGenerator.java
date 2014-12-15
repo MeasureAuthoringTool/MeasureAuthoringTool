@@ -159,6 +159,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
 		// No Method code for DATETIMEDIFF is added as per stan's examples.
 		if (FUNCTIONAL_OPS.containsKey(clauseNodeName)) {
+			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
+			String preConditionJoinExpressionValue = null;
+			if (elementRefList.size() > 0) {
+				preConditionJoinExpressionValue = generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, clauseNodes);
+			}
 			if (FUNCTIONAL_OPS.get(clauseNodeName) != null) {
 				Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
 				Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
@@ -167,9 +172,24 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				methodCodeElement.appendChild(itemElement);
 				measureObDefinitionElement.appendChild(methodCodeElement);
 			}
-			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
-			if(elementRefList.size() >0){
-				generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, clauseNodes);
+			
+			if ((preConditionJoinExpressionValue != null)
+					&& (preConditionJoinExpressionValue.length() > 0)) {
+				Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
+				preConditionElement.setAttribute(TYPE_CODE, "PRCN");
+				Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");
+				joinElement.setAttribute(CLASS_CODE, "OBS");
+				joinElement.setAttribute(MOOD_CODE, "DEF");
+				
+				Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+				valueElement.setAttribute(XSI_TYPE, "ED");
+				Element valueExpressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
+				valueExpressionElement.setAttribute(VALUE, preConditionJoinExpressionValue);
+				valueElement.appendChild(valueExpressionElement);
+				joinElement.appendChild(valueElement);
+				preConditionElement.appendChild(joinElement);
+				measureObDefinitionElement.appendChild(preConditionElement);
+				
 			}
 		}
 	}
@@ -179,11 +199,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @param clauseNodes
 	 * @throws XPathExpressionException
 	 */
-	private void generateValueAndExpressionTag(List<Node> elementRefList, Element measureObDefinitionElement, Node clauseNodes) throws XPathExpressionException {
+	private String generateValueAndExpressionTag(List<Node> elementRefList, Element measureObDefinitionElement, Node clauseNodes) throws XPathExpressionException {
 		Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
 		valueElement.setAttribute(XSI_TYPE, "PQ");
 		Element expressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
 		String expressionValue = new String();
+		String preConditionJoinExpressionValue = new String();
 		for(Node node: elementRefList){
 			String qdmUUID = node.getAttributes().getNamedItem("id").getNodeValue();
 			String xPath = "/measure/elementLookUp/qdm[@uuid ='"+qdmUUID+"']";
@@ -204,7 +225,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			}
 			Node idNodeQDM = me.getHQMFXmlProcessor().findNode(me.getHQMFXmlProcessor().getOriginalDoc()
 					, "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
-			if(idNodeQDM != null){
+			if (idNodeQDM != null) {
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 				String localVariableName = entryNodeForElementRef.getFirstChild().getAttributes().getNamedItem("value").getNodeValue();
 				String attributeMapping = "";
@@ -215,13 +236,15 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				}
 				if(expressionValue.length() ==0) {
 					expressionValue = localVariableName;
+					preConditionJoinExpressionValue = localVariableName + ".getPatient().id";
 				} else {
-					expressionValue = expressionValue + " - " + localVariableName;
+					expressionValue+= " - " + localVariableName;
+					preConditionJoinExpressionValue+= " == " + localVariableName + ".getPatient().id";
 				}
 				
 				//appending attributeMapping for expressionValue
 				if(attributeMapping.length()!=0){
-					expressionValue = expressionValue+"."+attributeMapping;
+					expressionValue+= "."+attributeMapping;
 				}
 				
 			} else {
@@ -231,7 +254,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		expressionElement.setAttribute(VALUE, expressionValue);
 		valueElement.appendChild(expressionElement);
 		measureObDefinitionElement.appendChild(valueElement);
-		
+		return preConditionJoinExpressionValue;
 	}
 	private List<Node> findAllElementRefsUsed(Node childNode, List<Node> elementRefList) {
 		//elementRefList = new ArrayList<Node>();

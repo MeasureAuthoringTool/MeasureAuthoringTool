@@ -824,8 +824,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 		dataCriteriaSectionElem.appendChild(comment);
 		if(entryNode != null) {
 			Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
-			Node idNode = findIdNode(entryNode);
+			Node idNode = findNode(entryNode,"ID");
 			if((idNode != null) && (subTreeParentNode != null)) {
+				String idExtension = idNode.getAttributes().getNamedItem("extension").getNodeValue();
+				String idRoot = idNode.getAttributes().getNamedItem("root").getNodeValue();
 				String root = subTreeParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 				String ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem("displayName").getNodeValue());
 				if (subTreeParentNode.getAttributes().getNamedItem("qdmVariable") != null) {
@@ -837,6 +839,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 				idNode.getAttributes().getNamedItem("root").setNodeValue(root);
 				idNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
+				// Updated Excerpt tag idNode root and extension.
+				Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
+						measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/excerpt/*/id[@root='"+idRoot+"'][@extension='"+idExtension+"']");
+				idNodeExcerpt.getAttributes().getNamedItem("root").setNodeValue(root);
+				idNodeExcerpt.getAttributes().getNamedItem("extension").setNodeValue(ext);
+				
 			}
 			
 			//Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
@@ -868,7 +876,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param criteriaNodeInEntry
 	 * @return idNode
 	 */
-	private Node findIdNode(Node criteriaNodeInEntry) {
+	private Node findNode(Node criteriaNodeInEntry, String NodeName) {
 		Node  idNode = null;
 		for (int i = 0; i < criteriaNodeInEntry.getChildNodes().getLength(); i++) {
 			Node childNode = criteriaNodeInEntry.getChildNodes().item(i);
@@ -877,7 +885,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				NodeList criteriaChildNodes = childNode.getChildNodes();
 				for(int j = 0; j < criteriaChildNodes.getLength(); j++){
 					Node criteriaChildNode = criteriaChildNodes.item(j);
-					if(ID.equalsIgnoreCase(criteriaChildNode.getNodeName())) {
+					if(NodeName.equalsIgnoreCase(criteriaChildNode.getNodeName())) {
 						idNode = criteriaChildNode;
 						break;
 					}
@@ -1885,21 +1893,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 									.getNamedItem(ID).getNodeValue();
 						}
 					}
-				} /*else if ("relationalOp".equals(firstChildName)) {
-					Node lhsNode = firstChild.getFirstChild();
-					if ("functionalOp".equals(lhsNode.getNodeValue())) {
-						if (lhsNode.hasChildNodes()) {
-							Node lhsFirstChildNode = lhsNode.getFirstChild();
-							ext = StringUtils.deleteWhitespace(lhsFirstChildNode.getFirstChild().getAttributes()
-									.getNamedItem("displayName").getNodeValue().replaceAll(":", "_"));
-							if (lhsFirstChildNode.getFirstChild().getNodeName()
-									.equalsIgnoreCase("subTreeRef")) {
-								ext = lhsFirstChildNode.getFirstChild().getAttributes()
-										.getNamedItem(ID).getNodeValue();
-							}
-						}
-					}
-				}*/
+				}
 			}
 			
 			

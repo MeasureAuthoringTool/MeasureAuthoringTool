@@ -34,6 +34,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private MeasureExport me;
 	/** The Measure Scoring type. */
 	private String scoringType;
+	/** The denominator. */
+	private Node denominator;
+	/** The numerator. */
+	private Node numerator;
 	/**
 	 * Array of Functional Ops that can be used in Measure Observation.
 	 */
@@ -95,6 +99,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						generateMeasureObDefinition(groupingChildList.item(i)
 								, measureObSectionComponentElement , me);
 						break;
+					case "denominator" :
+						denominator = groupingChildList.item(i);
+						break;
+					case "numerator" :
+						numerator = groupingChildList.item(i);
+						break;
 					default:
 						//do nothing.
 						break;
@@ -125,10 +135,83 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 		measureObDefinitionElement.appendChild(codeElem);
 		generateLogicForMeasureObservation(item, measureObDefinitionElement);
+		checkForScoringTypeForAssociation(item,measureObDefinitionElement);
+		//for Item Count
+		generateItemCountForMrsObs(me, item, measureObDefinitionElement);
 		definitionElement.appendChild(measureObDefinitionElement);
 		Element measurObSectionElement = (Element) measureObservationSecElement.getFirstChild();
 		measurObSectionElement.appendChild(comment);
 		measurObSectionElement.appendChild(definitionElement);
+	}
+	
+	
+	/**
+	 * Generate item count for mrs obs.
+	 *
+	 * @param me the me
+	 * @param item the item
+	 * @param measureObDefinitionElement the measure ob definition element
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateItemCountForMrsObs(MeasureExport me, Node item,
+			Element measureObDefinitionElement) throws XPathExpressionException {
+		if (item.getChildNodes() != null) {
+			for (int i = 0; i < item.getChildNodes().getLength(); i++) {
+				Node childNode = item.getChildNodes().item(i);
+				String nodeType = childNode.getNodeName();
+				switch (nodeType) {
+				case "itemCount":
+					generateItemCountForMrsObs(me, childNode, measureObDefinitionElement);
+					break;
+				case "elementRef":
+					generateItemCountElementRef(me, measureObDefinitionElement, childNode, me.getHQMFXmlProcessor());
+				default:
+					break;
+				}
+			}
+		}
+		
+	}
+	/**
+	 * Check for scoring type for association.
+	 *
+	 * @param item the item
+	 * @param measureObDefinitionElement the measure ob definition element
+	 */
+	private void checkForScoringTypeForAssociation(Node item,
+			Element measureObDefinitionElement) {
+		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
+		String associatedType="";
+		if (nodeType.equalsIgnoreCase("measureObservation")&& (scoringType.equalsIgnoreCase("Ratio") 
+				|| scoringType.equalsIgnoreCase("Continuous Variable"))) {
+			if (item.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
+				Document mainDocument = measureObDefinitionElement.getOwnerDocument();
+				Element componentOfElement = mainDocument.createElement("componentOf");
+				componentOfElement.setAttribute(TYPE_CODE, "COMP");
+			   item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+				Element criteriaRef = mainDocument.createElement("criteriaReference");
+				criteriaRef.setAttribute(CLASS_CODE, "OBS");
+				criteriaRef.setAttribute(MOOD_CODE, "EVN");
+				Element idElement = mainDocument.createElement(ID);
+				idElement.setAttribute(ROOT, item.getAttributes()
+						.getNamedItem("associatedPopulationUUID").getNodeValue());
+				if(item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue().equals(
+						denominator.getAttributes().getNamedItem("uuid").getNodeValue())){
+					associatedType = denominator.getAttributes().getNamedItem("type").getNodeValue();
+				} else if(item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue().equals(
+						numerator.getAttributes().getNamedItem("uuid").getNodeValue())){
+					associatedType = numerator.getAttributes().getNamedItem("type").getNodeValue();
+				}
+				idElement.setAttribute("extension", StringUtils.deleteWhitespace(associatedType));
+				Comment comment = mainDocument.createComment("Measure Observation Associated with "+associatedType);
+				criteriaRef.appendChild(idElement);
+				componentOfElement.appendChild(criteriaRef);
+				measureObDefinitionElement.appendChild(comment);
+				measureObDefinitionElement.appendChild(componentOfElement);
+			}
+			
+		}
+		
 	}
 	
 	/**
@@ -142,14 +225,16 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			NodeList childNodes = item.getChildNodes();
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				Node childNode = childNodes.item(i);
-				String subTreeUUID = childNode.getAttributes().getNamedItem("id").getNodeValue();
-				Node clauseNodes = clauseLogicMap.get(subTreeUUID);
-				if (clauseNodes != null) {
-					generateClauseLogic(clauseNodes , measureObDefinitionElement);
+				if("subTreeRef".equals(childNode.getNodeName())){
+					String subTreeUUID = childNode.getAttributes().getNamedItem("id").getNodeValue();
+					Node clauseNodes = clauseLogicMap.get(subTreeUUID);
+					if (clauseNodes != null) {
+						generateClauseLogic(clauseNodes , measureObDefinitionElement);
+						}
+					}
 				}
 			}
 		}
-	}
 	/**
 	 * Method to generate Clause Logic used inside MeasureObservation.
 	 * @param clauseNodes -Node

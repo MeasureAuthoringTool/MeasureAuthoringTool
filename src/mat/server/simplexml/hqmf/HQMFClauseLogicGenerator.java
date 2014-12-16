@@ -2015,6 +2015,24 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(idNodeQDM != null){
 			Node parent = idNodeQDM.getParentNode();
 			if(parent != null){
+				String classCode = parent.getAttributes().getNamedItem("classCode").getNodeValue();
+				String moodCode = parent.getAttributes().getNamedItem("moodCode").getNodeValue();
+				//item count Criteria Ref for Measure Observations
+				if("measureObservationDefinition".equals(populationTypeCriteriaElement.getNodeName())){
+					Element  componentOfElem = hqmfXmlProcessor.getOriginalDoc().createElement("componentOf");
+					componentOfElem.setAttribute(TYPE_CODE, "COMP");
+					Element criteriaRef = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
+					criteriaRef.setAttribute(CLASS_CODE, classCode);
+					criteriaRef.setAttribute(MOOD_CODE, moodCode);
+					Element idElement = hqmfXmlProcessor.getOriginalDoc().createElement(ID);
+					idElement.setAttribute(ROOT, root);
+					idElement.setAttribute("extension", ext);
+					criteriaRef.appendChild(idElement);
+					componentOfElem.appendChild(criteriaRef);
+					Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Item Count ");
+					populationTypeCriteriaElement.appendChild(comment);
+					populationTypeCriteriaElement.appendChild(componentOfElem);
+				} else { //item count Criteria Ref for Populations
 				//create component for ItemCount ElmentRef
 				Element  componentElem = hqmfXmlProcessor.getOriginalDoc().createElement("component");
 				componentElem.setAttribute(TYPE_CODE, "COMP");
@@ -2034,6 +2052,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				measureAttrElem.appendChild(codeElem);
 				measureAttrElem.appendChild(valueElem);
 				populationTypeCriteriaElement.appendChild(componentElem);
+				}
 			}
 		}
 	}

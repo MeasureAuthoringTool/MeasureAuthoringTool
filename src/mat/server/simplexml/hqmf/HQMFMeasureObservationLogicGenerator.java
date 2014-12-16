@@ -160,13 +160,13 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				Node childNode = item.getChildNodes().item(i);
 				String nodeType = childNode.getNodeName();
 				switch (nodeType) {
-				case "itemCount":
-					generateItemCountForMrsObs(me, childNode, measureObDefinitionElement);
-					break;
-				case "elementRef":
-					generateItemCountElementRef(me, measureObDefinitionElement, childNode, me.getHQMFXmlProcessor());
-				default:
-					break;
+					case "itemCount":
+						generateItemCountForMrsObs(me, childNode, measureObDefinitionElement);
+						break;
+					case "elementRef":
+						generateItemCountElementRef(me, measureObDefinitionElement, childNode, me.getHQMFXmlProcessor());
+					default:
+						break;
 				}
 			}
 		}
@@ -182,13 +182,13 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			Element measureObDefinitionElement) {
 		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
 		String associatedType="";
-		if (nodeType.equalsIgnoreCase("measureObservation")&& (scoringType.equalsIgnoreCase("Ratio") 
+		if (nodeType.equalsIgnoreCase("measureObservation")&& (scoringType.equalsIgnoreCase("Ratio")
 				|| scoringType.equalsIgnoreCase("Continuous Variable"))) {
 			if (item.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
 				Document mainDocument = measureObDefinitionElement.getOwnerDocument();
 				Element componentOfElement = mainDocument.createElement("componentOf");
 				componentOfElement.setAttribute(TYPE_CODE, "COMP");
-			   item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+				item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
 				Element criteriaRef = mainDocument.createElement("criteriaReference");
 				criteriaRef.setAttribute(CLASS_CODE, "OBS");
 				criteriaRef.setAttribute(MOOD_CODE, "EVN");
@@ -230,11 +230,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 					Node clauseNodes = clauseLogicMap.get(subTreeUUID);
 					if (clauseNodes != null) {
 						generateClauseLogic(clauseNodes , measureObDefinitionElement);
-						}
 					}
 				}
 			}
 		}
+	}
 	/**
 	 * Method to generate Clause Logic used inside MeasureObservation.
 	 * @param clauseNodes -Node
@@ -259,7 +259,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				methodCodeElement.appendChild(itemElement);
 				measureObDefinitionElement.appendChild(methodCodeElement);
 			}
-			if ((preConditionJoinExpressionValue != null)
+			//precondition is created if and only if more than 1 qdm is applied.
+			if ((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
 					&& (preConditionJoinExpressionValue.length() > 0)) {
 				Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
 				preConditionElement.setAttribute(TYPE_CODE, "PRCN");

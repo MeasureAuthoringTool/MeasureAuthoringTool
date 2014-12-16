@@ -2246,49 +2246,49 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
 		String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 		try {
-			NodeList ageAtNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
-			if((ageAtNodeList != null) && (ageAtNodeList.getLength() > 0)){
-				logger.info(".......found "+ageAtNodeList.getLength()+" AGE AT functionalOps");
+			Node ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
+			
+			logger.info(".......found AGE AT functionalOps");
+							
+			while(ageAtFuncNode != null){
+				logger.info("Changing "+ageAtFuncNode.toString() + " to relational SBS node.");
+				Node cloneAgeAtRelNode = ageAtFuncNode.cloneNode(true);
 				
-				for(int i=0;i<ageAtNodeList.getLength();i++){
-					Node ageAtFuncNode = ageAtNodeList.item(i);
-					logger.info("Changing "+ageAtFuncNode.toString() + " to relational SBS node.");
-					Node cloneAgeAtRelNode = ageAtFuncNode.cloneNode(true);
-					
-					//hold on to the first child of Age At
-					Node firstChild = cloneAgeAtRelNode.getFirstChild();
-					NamedNodeMap attribMap = cloneAgeAtRelNode.getAttributes();
-					Element newRelationalOp = xmlProcessor.getOriginalDoc().createElement("relationalOp");
-					
-					for(int j=0;j<attribMap.getLength();j++){
-						Node attrib = attribMap.item(j);
-						newRelationalOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
-					}
-					
-					//set the type attribute to SBS
-					newRelationalOp.getAttributes().getNamedItem("type").setNodeValue("SBS");
-					
-					//find <qdm> for Birthdate QDM element in elementLookUp
-					String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
-					Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
-					if(birthDateQDM != null){
-						//create a new <elementRef for birthDateQDM
-						Element birthDateElementRef = xmlProcessor.getOriginalDoc().createElement("elementRef");
-						birthDateElementRef.setAttribute("id", birthDateQDM.getAttributes().getNamedItem("uuid").getNodeValue());
-						birthDateElementRef.setAttribute("type", "qdm");
-						birthDateElementRef.setAttribute("displayName", "Birthdate : Patient Characteristic Birthdate");
-						
-						newRelationalOp.appendChild(birthDateElementRef);
-						newRelationalOp.appendChild(firstChild);
-						
-						Node parentNode = ageAtFuncNode.getParentNode();
-						parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
-						parentNode.removeChild(ageAtFuncNode);
-						logger.info("Change done.");
-					}else{
-						logger.info("Could not find QDM for Birthdate. Change not done.");
-					}
+				//hold on to the first child of Age At
+				Node firstChild = cloneAgeAtRelNode.getFirstChild();
+				//Node firstChild = ageAtFuncNode.getFirstChild();
+				NamedNodeMap attribMap = ageAtFuncNode.getAttributes();
+				Element newRelationalOp = xmlProcessor.getOriginalDoc().createElement("relationalOp");
+				
+				for(int j=0;j<attribMap.getLength();j++){
+					Node attrib = attribMap.item(j);
+					newRelationalOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
 				}
+				
+				//set the type attribute to SBS
+				newRelationalOp.getAttributes().getNamedItem("type").setNodeValue("SBS");
+				
+				//find <qdm> for Birthdate QDM element in elementLookUp
+				String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
+				Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
+				if(birthDateQDM != null){
+					//create a new <elementRef for birthDateQDM
+					Element birthDateElementRef = xmlProcessor.getOriginalDoc().createElement("elementRef");
+					birthDateElementRef.setAttribute("id", birthDateQDM.getAttributes().getNamedItem("uuid").getNodeValue());
+					birthDateElementRef.setAttribute("type", "qdm");
+					birthDateElementRef.setAttribute("displayName", "Birthdate : Patient Characteristic Birthdate");
+					
+					newRelationalOp.appendChild(birthDateElementRef);
+					newRelationalOp.appendChild(firstChild);
+					
+					Node parentNode = ageAtFuncNode.getParentNode();
+					parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
+					parentNode.removeChild(ageAtFuncNode);
+					logger.info("Change done.");
+				}else{
+					logger.info("Could not find QDM for Birthdate. Change not done.");
+				}
+				ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -2312,33 +2312,30 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		logger.info("Prepping for HQMF Clause generation for Satisfies All/Satisfies Any functionalOps.");
 		String xPathForSatisfiesAllAny = "/measure/subTreeLookUp//functionalOp[@type='SATISFIES ALL' or @type='SATISFIES ANY']";
 		try {
-			NodeList satisfiesNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
-			if((satisfiesNodeList != null) && (satisfiesNodeList.getLength() > 0)){
-				logger.info(".......found "+satisfiesNodeList.getLength()+" Satisfies All/Satisfies Any functionalOps");
-				
-				for(int i=0;i<satisfiesNodeList.getLength();i++){
-					Node satisfiesFuncNode = satisfiesNodeList.item(i);
-					logger.info("Changing functionaOp "+satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue() + " to relationalOp node.");
-										
-					NamedNodeMap attribMap = satisfiesFuncNode.getAttributes();
-					Element newSetOp = xmlProcessor.getOriginalDoc().createElement("setOp");
-					
-					for(int j=0;j<attribMap.getLength();j++){
-						Node attrib = attribMap.item(j);
-						newSetOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
-					}
+			Node satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
+			logger.info(".......found Satisfies All/Satisfies Any functionalOps");
+			while(satisfiesFuncNode != null){
+				logger.info("Changing functionaOp "+satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue() + " to relationalOp node.");
 									
-					NodeList childNodeList = satisfiesFuncNode.getChildNodes();
-					for(int j=0;j<childNodeList.getLength();j++){
-						Node childNode = childNodeList.item(j).cloneNode(true);
-						newSetOp.appendChild(childNode);
-					}
-					
-					Node parentNode = satisfiesFuncNode.getParentNode();
-					parentNode.insertBefore(newSetOp, satisfiesFuncNode);
-					parentNode.removeChild(satisfiesFuncNode);
-					logger.info("Change done.");
+				NamedNodeMap attribMap = satisfiesFuncNode.getAttributes();
+				Element newSetOp = xmlProcessor.getOriginalDoc().createElement("setOp");
+				
+				for(int j=0;j<attribMap.getLength();j++){
+					Node attrib = attribMap.item(j);
+					newSetOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
 				}
+								
+				NodeList childNodeList = satisfiesFuncNode.getChildNodes();
+				for(int j=0;j<childNodeList.getLength();j++){
+					Node childNode = childNodeList.item(j).cloneNode(true);
+					newSetOp.appendChild(childNode);
+				}
+				
+				Node parentNode = satisfiesFuncNode.getParentNode();
+				parentNode.insertBefore(newSetOp, satisfiesFuncNode);
+				parentNode.removeChild(satisfiesFuncNode);
+				logger.info("Change done.");
+				satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
 			}
 		}catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block

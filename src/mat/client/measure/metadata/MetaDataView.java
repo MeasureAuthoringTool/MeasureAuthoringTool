@@ -589,7 +589,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		Label fromLabel = new Label("From");
 		fromLabel.addStyleName("firstLabel");
 		measurePeriodPanel.add(fromLabel);
-		measurePeriodFromInput.getElement().setAttribute("id", "measurePeriodFromInput");
+		measurePeriodFromInput.getDateBox().getElement().setAttribute("id", "measurePeriodFromInput");
 		measurePeriodFromInput.getDateBox().setWidth("127px");
 		measurePeriodPanel.add(measurePeriodFromInput);
 		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
@@ -597,7 +597,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		toLabel.addStyleName("secondLabel");
 		measurePeriodPanel.add(toLabel);
 		measurePeriodToInput.getDateBox().setWidth("127px");
-		measurePeriodToInput.getElement().setAttribute("id", "measurePeriodToInput");
+		measurePeriodToInput.getDateBox().getElement().setAttribute("id", "measurePeriodToInput");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
 		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);

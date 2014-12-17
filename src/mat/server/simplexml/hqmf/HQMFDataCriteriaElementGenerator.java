@@ -2223,11 +2223,44 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void prepHQMF(MeasureExport me) {
 		logger.info("Prepping for HQMF Clause generation..............");
+		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
+		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
 	
+	private void prepForUUID(MeasureExport me) {
+		
+		String xPathForFunctionalOp = "/measure/subTreeLookUp//functionalOp";
+		String xPathForRelationalOp = "/measure/subTreeLookUp//relationalOp";
+		String xPathForSetOp = "/measure/subTreeLookUp//setOp";
+		
+		try{
+			NodeList nodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xPathForFunctionalOp);
+			addUUIDToNodes(nodeList);
+			
+			nodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xPathForRelationalOp);
+			addUUIDToNodes(nodeList);
+			
+			nodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(), xPathForSetOp);
+			addUUIDToNodes(nodeList);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void addUUIDToNodes(NodeList nodeList){
+		if(nodeList != null && nodeList.getLength() > 0){
+			for(int i=0;i<nodeList.getLength();i++){
+				Node node = nodeList.item(i);
+				((Element)node).setAttribute("uuid", UUIDUtilClient.uuid());
+			}
+		}
+	}
+
 	/**
 	 * This method will be called by prepHQMF(MeasureExport me) method to prep 
 	 * functionalOp for AGE AT functions. This methiod will do the following, 

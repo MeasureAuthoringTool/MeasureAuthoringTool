@@ -231,20 +231,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 					String subTreeUUID = childNode.getAttributes().getNamedItem("id").getNodeValue();
 					Node clauseNodes = clauseLogicMap.get(subTreeUUID);
 					if (clauseNodes != null) {
-						Node generatedClauseEntryNode = clauseLogicGenerator
-								.generateSubTreeXML(clauseNodes.getParentNode());
-						NodeList localVariableNode = ((Element) (generatedClauseEntryNode))
-								.getElementsByTagName("localVariableName");
-						String localVariableNameValue = findSubTreeDisplayName(clauseNodes.getParentNode());
-						if (localVariableNode != null) {
-							Element localVariableElement = (Element) localVariableNode.item(0);
-							localVariableElement.setAttribute(VALUE, localVariableNameValue);
-						} else {
-							Element localVariableElement = generatedClauseEntryNode.getOwnerDocument().createElement("localVariableName");
-							localVariableElement.setAttribute(VALUE, localVariableNameValue);
-							generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
-						}
-						removeExcerptNodeIfAny(generatedClauseEntryNode);
 						generateClauseLogic(clauseNodes , measureObDefinitionElement);
 					}
 				}
@@ -295,6 +281,20 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
 		// No Method code for DATETIMEDIFF is added as per stan's examples.
 		if (FUNCTIONAL_OPS.containsKey(clauseNodeName)) {
+			Node generatedClauseEntryNode = clauseLogicGenerator
+					.generateSubTreeXML(clauseNodes.getParentNode());
+			NodeList localVariableNode = ((Element) (generatedClauseEntryNode))
+					.getElementsByTagName("localVariableName");
+			String localVariableNameValue = findSubTreeDisplayName(clauseNodes.getParentNode());
+			if (localVariableNode != null) {
+				Element localVariableElement = (Element) localVariableNode.item(0);
+				localVariableElement.setAttribute(VALUE, localVariableNameValue);
+			} else {
+				Element localVariableElement = generatedClauseEntryNode.getOwnerDocument().createElement("localVariableName");
+				localVariableElement.setAttribute(VALUE, localVariableNameValue);
+				generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
+			}
+			removeExcerptNodeIfAny(generatedClauseEntryNode);
 			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
 			String preConditionJoinExpressionValue = null;
 			if (elementRefList.size() > 0) {

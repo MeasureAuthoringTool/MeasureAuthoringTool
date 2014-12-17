@@ -156,13 +156,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param subTreeNode the sub tree node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateSubTreeXML( Node subTreeNode) throws XPathExpressionException {
+	protected Node generateSubTreeXML( Node subTreeNode) throws XPathExpressionException {
 		
 		/**
 		 * If this is an empty or NULL clause, return right now.
 		 */
 		if((subTreeNode == null) || !subTreeNode.hasChildNodes()){
-			return;
+			return null;
 		}
 		
 		/**
@@ -186,7 +186,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		 */
 		if(subTreeNodeMap.containsKey(subTreeUUID)){
 			logger.info("HQMF for Clause "+clauseName + " is already generated. Skipping.");
-			return;
+			return null;
 		}
 		
 		//get the first child of the subTreeNode
@@ -201,22 +201,22 @@ public class HQMFClauseLogicGenerator implements Generator {
 		//generate comment
 		Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
 		dataCriteriaSectionElem.appendChild(comment);
-		
+		Node entryElement = null;
 		switch (firstChildName) {
 			case "setOp":
-				generateSetOpHQMF(firstChild,dataCriteriaSectionElem);
+				entryElement = generateSetOpHQMF(firstChild,dataCriteriaSectionElem);
 				break;
 			case "elementRef":
-				generateElementRefHQMF(firstChild,dataCriteriaSectionElem);
+				entryElement = generateElementRefHQMF(firstChild,dataCriteriaSectionElem);
 				break;
 			case "subTreeRef":
-				generateSubTreeHQMF(firstChild,dataCriteriaSectionElem);
+				entryElement = generateSubTreeHQMF(firstChild,dataCriteriaSectionElem);
 				break;
 			case "relationalOp":
-				generateRelOpHQMF(firstChild, dataCriteriaSectionElem);
+				entryElement = generateRelOpHQMF(firstChild, dataCriteriaSectionElem);
 				break;
 			case "functionalOp":
-				generateFunctionalOpHQMF(firstChild,dataCriteriaSectionElem);
+				entryElement = generateFunctionalOpHQMF(firstChild,dataCriteriaSectionElem);
 				break;
 			default:
 				//Dont do anything
@@ -227,6 +227,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		 * The clause is generated now. Make an entry in the 'subTreeNodeMap' to keep track of its generation.
 		 */
 		subTreeNodeMap.put(subTreeUUID, subTreeNode);
+		return entryElement;
 		
 	}
 	
@@ -507,7 +508,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param parentNode the parent node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateSubTreeHQMF(Node subTreeRefNode, Node parentNode) throws XPathExpressionException {
+	private Node generateSubTreeHQMF(Node subTreeRefNode, Node parentNode) throws XPathExpressionException {
 		
 		String subTreeUUID = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
 		
@@ -542,15 +543,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 			}
 		}
-		/*
-		if((parNode != null) && "subTree".equals(parNode.getNodeName())){
-			root = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
-			String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
-			if(isQdmVariable.equalsIgnoreCase("true")) {
-				ext = "qdm_var_" + ext;
-			}
-		}*/
+		
 		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		
 		//generate comment
@@ -569,6 +562,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		entryElem.appendChild(grouperElem);
 		parentNode.appendChild(entryElem);
+		return entryElem;
 		
 	}
 	
@@ -897,6 +891,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		return idNode;
 	}
 	
+	
+	
 	/**
 	 * Gets the rel op lhs subtree.
 	 *
@@ -1192,6 +1188,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 			Node clonedEntryNodeForElementRef = entryNodeForElementRef.cloneNode(true);
+			/*Element localVarName = (Element) ((Element)clonedEntryNodeForElementRef).getElementsByTagName("localVariableName").item(0);
+			localVarName.setAttribute(VALUE,findSubTreeDisplayName(lhsNode));*/
 			NodeList idChildNodeList = ((Element)clonedEntryNodeForElementRef).getElementsByTagName(ID);
 			if((idChildNodeList != null) && (idChildNodeList.getLength() > 0)){
 				Node idChildNode = idChildNodeList.item(0);
@@ -2033,25 +2031,25 @@ public class HQMFClauseLogicGenerator implements Generator {
 					populationTypeCriteriaElement.appendChild(comment);
 					populationTypeCriteriaElement.appendChild(componentOfElem);
 				} else { //item count Criteria Ref for Populations
-				//create component for ItemCount ElmentRef
-				Element  componentElem = hqmfXmlProcessor.getOriginalDoc().createElement("component");
-				componentElem.setAttribute(TYPE_CODE, "COMP");
-				Element  measureAttrElem = hqmfXmlProcessor.getOriginalDoc().createElement("measureAttribute");
-				componentElem.appendChild(measureAttrElem);
-				Element  codeElem = hqmfXmlProcessor.getOriginalDoc().createElement("code");
-				codeElem.setAttribute(CODE, "ITMCNT");
-				codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
-				codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
-				Element  displayNameElem = hqmfXmlProcessor.getOriginalDoc().createElement("displayName");
-				displayNameElem.setAttribute(VALUE, "Items to count");
-				codeElem.appendChild(displayNameElem);
-				Element valueElem = hqmfXmlProcessor.getOriginalDoc().createElement(VALUE);
-				valueElem.setAttribute("xsi:type", "II");
-				valueElem.setAttribute(ROOT, root);
-				valueElem.setAttribute("extension", ext);
-				measureAttrElem.appendChild(codeElem);
-				measureAttrElem.appendChild(valueElem);
-				populationTypeCriteriaElement.appendChild(componentElem);
+					//create component for ItemCount ElmentRef
+					Element  componentElem = hqmfXmlProcessor.getOriginalDoc().createElement("component");
+					componentElem.setAttribute(TYPE_CODE, "COMP");
+					Element  measureAttrElem = hqmfXmlProcessor.getOriginalDoc().createElement("measureAttribute");
+					componentElem.appendChild(measureAttrElem);
+					Element  codeElem = hqmfXmlProcessor.getOriginalDoc().createElement("code");
+					codeElem.setAttribute(CODE, "ITMCNT");
+					codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+					codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
+					Element  displayNameElem = hqmfXmlProcessor.getOriginalDoc().createElement("displayName");
+					displayNameElem.setAttribute(VALUE, "Items to count");
+					codeElem.appendChild(displayNameElem);
+					Element valueElem = hqmfXmlProcessor.getOriginalDoc().createElement(VALUE);
+					valueElem.setAttribute("xsi:type", "II");
+					valueElem.setAttribute(ROOT, root);
+					valueElem.setAttribute("extension", ext);
+					measureAttrElem.appendChild(codeElem);
+					measureAttrElem.appendChild(valueElem);
+					populationTypeCriteriaElement.appendChild(componentElem);
 				}
 			}
 		}
@@ -2414,5 +2412,61 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		
 		return usedSubtreeRefId;
+	}
+	
+	/**
+	 * @return the subTreeNodeMap
+	 */
+	public Map<String, Node> getSubTreeNodeMap() {
+		return subTreeNodeMap;
+	}
+	
+	/**
+	 * @param subTreeNodeMap the subTreeNodeMap to set
+	 */
+	public void setSubTreeNodeMap(Map<String, Node> subTreeNodeMap) {
+		this.subTreeNodeMap = subTreeNodeMap;
+	}
+	
+	/**
+	 * @return the measureExport
+	 */
+	public MeasureExport getMeasureExport() {
+		return measureExport;
+	}
+	
+	/**
+	 * @param measureExport the measureExport to set
+	 */
+	public void setMeasureExport(MeasureExport measureExport) {
+		this.measureExport = measureExport;
+	}
+	
+	/**
+	 * @return the subTreeNodeInMOMap
+	 */
+	public Map<String, Node> getSubTreeNodeInMOMap() {
+		return subTreeNodeInMOMap;
+	}
+	
+	/**
+	 * @param subTreeNodeInMOMap the subTreeNodeInMOMap to set
+	 */
+	public void setSubTreeNodeInMOMap(Map<String, Node> subTreeNodeInMOMap) {
+		this.subTreeNodeInMOMap = subTreeNodeInMOMap;
+	}
+	
+	/**
+	 * @return the subTreeNodeInPOPMap
+	 */
+	public Map<String, Node> getSubTreeNodeInPOPMap() {
+		return subTreeNodeInPOPMap;
+	}
+	
+	/**
+	 * @param subTreeNodeInPOPMap the subTreeNodeInPOPMap to set
+	 */
+	public void setSubTreeNodeInPOPMap(Map<String, Node> subTreeNodeInPOPMap) {
+		this.subTreeNodeInPOPMap = subTreeNodeInPOPMap;
 	}
 }

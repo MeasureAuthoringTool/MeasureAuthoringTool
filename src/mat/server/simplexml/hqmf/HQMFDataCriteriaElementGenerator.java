@@ -2226,7 +2226,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
+		//System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
 	

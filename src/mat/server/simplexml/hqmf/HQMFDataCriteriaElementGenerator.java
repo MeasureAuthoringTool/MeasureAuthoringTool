@@ -846,8 +846,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Element dataCriteriaElem, String occurString) {
 		Node refNode = occurrenceMap.get(occurString);
 		
-		System.out.println("In generateOutboundForOccur()..refNode:"+refNode);
-		System.out.println("----------Occurance map:"+occurrenceMap);
+		logger.info("In generateOutboundForOccur()..refNode:"+refNode);
+		logger.info("----------Occurance map:"+occurrenceMap);
 		
 		if(refNode != null){
 			String refRootValue = refNode.getAttributes().getNamedItem(ID).getNodeValue();
@@ -1425,11 +1425,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 					+ attrName + "']");
-			System.out.println("----------");
-			System.out.println(attributeQDMNode.getNodeName());
-			System.out.println(attributeQDMNode.getAttributes());
-			System.out.println(simpleXmlprocessor.transform(attributeQDMNode));
-			System.out.println("----------");
+			logger.info("----------");
+			logger.info(attributeQDMNode.getNodeName());
+			logger.info(attributeQDMNode.getAttributes());
+			logger.info(simpleXmlprocessor.transform(attributeQDMNode));
+			logger.info("----------");
 			String attributeValueSetName = attributeQDMNode.getAttributes()
 					.getNamedItem(NAME).getNodeValue();
 			String attributeOID = attributeQDMNode.getAttributes()
@@ -2244,8 +2244,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void prepForAGE_AT(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
 		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
-		String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
+				
 		try {
+			
+			//find <qdm> for Birthdate QDM element in elementLookUp
+			String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
+			Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
+			if(birthDateQDM == null){
+				logger.info("**********   Could not find QDM for Birthdate. No changes done for AGE AT. ***************");
+				return;
+			}
+			
+			String xPathForAGE_AT = "/measure/subTreeLookUp//functionalOp[@type='AGE AT']";
 			Node ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			
 			logger.info(".......found AGE AT functionalOps");
@@ -2267,27 +2277,21 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				//set the type attribute to SBS
 				newRelationalOp.getAttributes().getNamedItem("type").setNodeValue("SBS");
+												
+				//create a new <elementRef for birthDateQDM
+				Element birthDateElementRef = xmlProcessor.getOriginalDoc().createElement("elementRef");
+				birthDateElementRef.setAttribute("id", birthDateQDM.getAttributes().getNamedItem("uuid").getNodeValue());
+				birthDateElementRef.setAttribute("type", "qdm");
+				birthDateElementRef.setAttribute("displayName", "Birthdate : Patient Characteristic Birthdate");
 				
-				//find <qdm> for Birthdate QDM element in elementLookUp
-				String xPathForBirthdate = "/measure/elementLookUp/qdm[@name='Birthdate'][@datatype='Patient Characteristic Birthdate']";
-				Node birthDateQDM = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForBirthdate);
-				if(birthDateQDM != null){
-					//create a new <elementRef for birthDateQDM
-					Element birthDateElementRef = xmlProcessor.getOriginalDoc().createElement("elementRef");
-					birthDateElementRef.setAttribute("id", birthDateQDM.getAttributes().getNamedItem("uuid").getNodeValue());
-					birthDateElementRef.setAttribute("type", "qdm");
-					birthDateElementRef.setAttribute("displayName", "Birthdate : Patient Characteristic Birthdate");
-					
-					newRelationalOp.appendChild(birthDateElementRef);
-					newRelationalOp.appendChild(firstChild);
-					
-					Node parentNode = ageAtFuncNode.getParentNode();
-					parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
-					parentNode.removeChild(ageAtFuncNode);
-					logger.info("Change done.");
-				}else{
-					logger.info("Could not find QDM for Birthdate. Change not done.");
-				}
+				newRelationalOp.appendChild(birthDateElementRef);
+				newRelationalOp.appendChild(firstChild);
+				
+				Node parentNode = ageAtFuncNode.getParentNode();
+				parentNode.insertBefore(newRelationalOp, ageAtFuncNode);
+				parentNode.removeChild(ageAtFuncNode);
+				logger.info("Change done.");
+				
 				ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			}
 		} catch (XPathExpressionException e) {

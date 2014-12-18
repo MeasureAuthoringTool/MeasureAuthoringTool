@@ -29,7 +29,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The measure grouping map. */
 	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	/** The elementRefList. */
-	private List<Node> elementRefList;
+	//private List<Node> elementRefList;
 	/** The MeasureExport object. */
 	private MeasureExport me;
 	/** The Measure Scoring type. */
@@ -42,15 +42,25 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/**
 	 * Array of Functional Ops that can be used in Measure Observation.
 	 */
-	private static final Map<String, String> FUNCTIONAL_OPS = new HashMap<String, String>();
+	private static final Map<String, String> FUNCTIONAL_OPS_AGGREGATE = new HashMap<String, String>();
+	private static final Map<String, String> INCLUDED_FUNCTIONAL_NAMES = new HashMap<String, String>();
 	static {
-		FUNCTIONAL_OPS.put("MAX", "MAX");
-		FUNCTIONAL_OPS.put("MIN", "MIN");
-		FUNCTIONAL_OPS.put("SUM", "SUM");
-		FUNCTIONAL_OPS.put("AVG", "AVERAGE");
-		FUNCTIONAL_OPS.put("COUNT", "COUNT");
-		FUNCTIONAL_OPS.put("MEDIAN", "MEDIAN");
-		FUNCTIONAL_OPS.put("DATETIMEDIFF", null);
+		FUNCTIONAL_OPS_AGGREGATE.put("MAX", "MAX");
+		FUNCTIONAL_OPS_AGGREGATE.put("MIN", "MIN");
+		FUNCTIONAL_OPS_AGGREGATE.put("SUM", "SUM");
+		FUNCTIONAL_OPS_AGGREGATE.put("AVG", "AVERAGE");
+		FUNCTIONAL_OPS_AGGREGATE.put("COUNT", "COUNT");
+		FUNCTIONAL_OPS_AGGREGATE.put("MEDIAN", "MEDIAN");
+		FUNCTIONAL_OPS_AGGREGATE.put("DATETIMEDIFF", null);
+		
+		INCLUDED_FUNCTIONAL_NAMES.put("FIRST", "FIRST");
+		INCLUDED_FUNCTIONAL_NAMES.put("SECOND", "SECOND");
+		INCLUDED_FUNCTIONAL_NAMES.put("THIRD", "THIRD");
+		INCLUDED_FUNCTIONAL_NAMES.put("FOURTH", "FOURTH");
+		INCLUDED_FUNCTIONAL_NAMES.put("FIFTH", "FIFTH");
+		INCLUDED_FUNCTIONAL_NAMES.put("MOST RECENT", "MOST RECENT");
+		INCLUDED_FUNCTIONAL_NAMES.put("COUNT", "COUNT");
+		INCLUDED_FUNCTIONAL_NAMES.put("DATETIMEDIFF", "DATETIMEDIFF");
 	}
 	
 	/* (non-Javadoc)
@@ -280,52 +290,200 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) throws XPathExpressionException {
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem("displayName").getNodeValue();
 		// No Method code for DATETIMEDIFF is added as per stan's examples.
-		if (FUNCTIONAL_OPS.containsKey(clauseNodeName)) {
-			Node generatedClauseEntryNode = clauseLogicGenerator
-					.generateSubTreeXML(clauseNodes.getParentNode());
-			NodeList localVariableNode = ((Element) (generatedClauseEntryNode))
-					.getElementsByTagName("localVariableName");
-			String localVariableNameValue = findSubTreeDisplayName(clauseNodes.getParentNode());
-			if (localVariableNode != null) {
-				Element localVariableElement = (Element) localVariableNode.item(0);
-				localVariableElement.setAttribute(VALUE, localVariableNameValue);
-			} else {
-				Element localVariableElement = generatedClauseEntryNode.getOwnerDocument().createElement("localVariableName");
-				localVariableElement.setAttribute(VALUE, localVariableNameValue);
-				generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
-			}
-			removeExcerptNodeIfAny(generatedClauseEntryNode);
-			elementRefList = findAllElementRefsUsed(clauseNodes, new ArrayList<Node>());
-			String preConditionJoinExpressionValue = null;
-			if (elementRefList.size() > 0) {
+		Node firstChildNode = clauseNodes.getFirstChild();
+		String firstChildNodeName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		Node parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
+		List<Node> elementRefList = new ArrayList<Node>();
+		String localVariableName = null;
+		if (FUNCTIONAL_OPS_AGGREGATE.containsKey(clauseNodeName)) {
+			generateMOClauseLogic(firstChildNode, firstChildNodeName, parentSubTreeNode, elementRefList);
+			/*String preConditionJoinExpressionValue = null;
+			if ((elementRefList != null) && (elementRefList.size() > 0)) {
 				preConditionJoinExpressionValue = generateValueAndExpressionTag(elementRefList
 						, measureObDefinitionElement, clauseNodes);
+			}*/
+			generateMethodCode(measureObDefinitionElement, clauseNodeName);
+			//generatePreCondition(measureObDefinitionElement, preConditionJoinExpressionValue, elementRefList);
+		}
+	}
+	/**
+	 * @param firstChildNode
+	 * @param firstChildNodeName
+	 * @param parentSubTreeNode
+	 * @param elementRefList
+	 * @throws XPathExpressionException
+	 */
+	private void generateMOClauseLogic(Node firstChildNode, String firstChildNodeName, Node parentSubTreeNode,
+			List<Node> elementRefList) throws XPathExpressionException {
+		String localVariableName;
+		switch (firstChildNode.getNodeName()) {
+			case "setOp":
+				Node setOpsNode = firstChildNode.cloneNode(true);
+				parentSubTreeNode.appendChild(setOpsNode);
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode);
+				//elementRefList = findAllElementRefsUsed(firstChildNode, new ArrayList<Node>());
+				break;
+			case "relationalOp" :
+				Node relOpsNode = firstChildNode.cloneNode(true);
+				parentSubTreeNode.appendChild(relOpsNode);
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode);
+				elementRefList = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>());
+				break;
+			case "elementRef":
+				elementRefList.add(firstChildNode);
+				break;
+			case "functionalOp":
+				if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
+					
+				}
+				break;
+			case "subTreeRef":
+				Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
+						.getNamedItem("id").getNodeValue());
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefNodeLogic);
+				break;
+			default:
+				break;
+		}
+	}
+	/**
+	 * @param firstChildNode
+	 * @param arrayList
+	 * @return
+	 */
+	private List<Node> findFirstLHSElementRef(Node firstChildNode, ArrayList<Node> arrayList) {
+		if (firstChildNode.hasChildNodes()) {
+			Node lhsNode = firstChildNode.getFirstChild();
+			if (lhsNode.hasChildNodes()) {
+				NodeList childNodeList = lhsNode.getChildNodes();
+				for (int i = 0; i < childNodeList.getLength(); i++) {
+					Node node = childNodeList.item(i);
+					/*if (node.getNodeName().equalsIgnoreCase("elementRef")) {
+						System.out.println("Size of elementRefList ====== " + arrayList.size());
+						arrayList.add(node);
+						break;
+					} else if (node.getNodeName().equalsIgnoreCase("subTreeRef")) {
+						Node subTreeRefNodeLogic = clauseLogicMap.get(node.getAttributes()
+								.getNamedItem("id").getNodeValue());
+						if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("elementRef")) {
+							System.out.println("Size of elementRefList ====== " + arrayList.size());
+							arrayList.add(subTreeRefNodeLogic);
+							break;
+						} else {
+							findFirstLHSElementRef(subTreeRefNodeLogic, arrayList);
+						}
+					} else if (node.getNodeName().equalsIgnoreCase("setOp")) {
+						arrayList = null;
+						break;
+					}*/
+					
+					switch (node.getNodeName()) {
+						case "elementRef":
+							arrayList.add(node);
+							break;
+						case "setOp":
+							break;
+						case "relationalOp":
+							findFirstLHSElementRef(node.getFirstChild(), arrayList);
+							break;
+						case "functionalOp":
+							break;
+						case "subTreeRef":
+							Node subTreeRefNodeLogic = clauseLogicMap.get(node.getAttributes()
+									.getNamedItem("id").getNodeValue());
+							if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("elementRef")) {
+								System.out.println("Size of elementRefList ====== " + arrayList.size());
+								arrayList.add(subTreeRefNodeLogic);
+								break;
+							} else {
+								findFirstLHSElementRef(subTreeRefNodeLogic, arrayList);
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			} else if (lhsNode.getNodeName().equalsIgnoreCase("elementRef")) {
+				arrayList.add(lhsNode);
 			}
-			if (FUNCTIONAL_OPS.get(clauseNodeName) != null) {
-				Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
-				Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
-				itemElement.setAttribute(CODE, FUNCTIONAL_OPS.get(clauseNodeName));
-				itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
-				methodCodeElement.appendChild(itemElement);
-				measureObDefinitionElement.appendChild(methodCodeElement);
+			
+		}
+		return arrayList;
+	}
+	/**
+	 * @param clauseNodes
+	 * @throws XPathExpressionException
+	 */
+	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes) throws XPathExpressionException {
+		Node generatedClauseEntryNode = clauseLogicGenerator
+				.generateSubTreeXML(clauseNodes);
+		String localVariableNameValue = null;
+		if(generatedClauseEntryNode != null){
+			localVariableNameValue = findSubTreeDisplayName(clauseNodes);
+			NodeList localVariableNode = ((Element) (generatedClauseEntryNode))
+					.getElementsByTagName("localVariableName");
+			if (localVariableNode != null) {
+				Element localVariableElement = (Element) localVariableNode.item(0);
+				if (localVariableElement != null) {
+					localVariableElement.setAttribute(VALUE, localVariableNameValue);
+				} else {
+					localVariableElement = generatedClauseEntryNode
+							.getOwnerDocument().createElement("localVariableName");
+					localVariableElement.setAttribute(VALUE, localVariableNameValue);
+					generatedClauseEntryNode.insertBefore(localVariableElement
+							, generatedClauseEntryNode.getFirstChild());
+				}
+			} else {
+				Element localVariableElement = generatedClauseEntryNode
+						.getOwnerDocument().createElement("localVariableName");
+				localVariableElement.setAttribute(VALUE, localVariableNameValue);
+				generatedClauseEntryNode.insertBefore(localVariableElement
+						, generatedClauseEntryNode.getFirstChild());
 			}
-			//precondition is created if and only if more than 1 qdm is applied.
-			if ((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
-					&& (preConditionJoinExpressionValue.length() > 0)) {
-				Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
-				preConditionElement.setAttribute(TYPE_CODE, "PRCN");
-				Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");
-				joinElement.setAttribute(CLASS_CODE, "OBS");
-				joinElement.setAttribute(MOOD_CODE, "DEF");
-				Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
-				valueElement.setAttribute(XSI_TYPE, "ED");
-				Element valueExpressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
-				valueExpressionElement.setAttribute(VALUE, preConditionJoinExpressionValue);
-				valueElement.appendChild(valueExpressionElement);
-				joinElement.appendChild(valueElement);
-				preConditionElement.appendChild(joinElement);
-				measureObDefinitionElement.appendChild(preConditionElement);
+		} else {
+			if (clauseLogicGenerator.subTreeNodeMap.containsKey(
+					clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
+				localVariableNameValue = findSubTreeDisplayName(clauseNodes);
 			}
+		}
+		//removeExcerptNodeIfAny(generatedClauseEntryNode);
+		return localVariableNameValue;
+	}
+	/**
+	 * @param measureObDefinitionElement
+	 * @param preConditionJoinExpressionValue
+	 */
+	private void generatePreCondition(Element measureObDefinitionElement, String preConditionJoinExpressionValue ,List<Node> elementRefList) {
+		//precondition is created if and only if more than 1 qdm is applied.
+		if ((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
+				&& (preConditionJoinExpressionValue.length() > 0)) {
+			Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
+			preConditionElement.setAttribute(TYPE_CODE, "PRCN");
+			Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");
+			joinElement.setAttribute(CLASS_CODE, "OBS");
+			joinElement.setAttribute(MOOD_CODE, "DEF");
+			Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+			valueElement.setAttribute(XSI_TYPE, "ED");
+			Element valueExpressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
+			valueExpressionElement.setAttribute(VALUE, preConditionJoinExpressionValue);
+			valueElement.appendChild(valueExpressionElement);
+			joinElement.appendChild(valueElement);
+			preConditionElement.appendChild(joinElement);
+			measureObDefinitionElement.appendChild(preConditionElement);
+		}
+	}
+	/**
+	 * @param measureObDefinitionElement
+	 * @param clauseNodeName
+	 */
+	private void generateMethodCode(Element measureObDefinitionElement, String clauseNodeName) {
+		if (FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName) != null) {
+			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
+			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
+			itemElement.setAttribute(CODE, FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName));
+			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+			methodCodeElement.appendChild(itemElement);
+			measureObDefinitionElement.appendChild(methodCodeElement);
 		}
 	}
 	/**
@@ -426,6 +584,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		}
 		return elementRefList;
 	}
+	
 	/**
 	 * Method to generate component and MeasureObservationSection default tags.
 	 * @param outputProcessor - XmlProcessor.

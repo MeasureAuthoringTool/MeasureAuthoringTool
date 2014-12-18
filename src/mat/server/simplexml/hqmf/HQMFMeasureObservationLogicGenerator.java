@@ -296,7 +296,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		List<Node> elementRefList = new ArrayList<Node>();
 		String localVariableName = null;
 		if (FUNCTIONAL_OPS_AGGREGATE.containsKey(clauseNodeName)) {
-			generateMOClauseLogic(firstChildNode, firstChildNodeName, parentSubTreeNode, elementRefList);
+			generateMOClauseLogic(firstChildNode, firstChildNodeName, parentSubTreeNode, elementRefList, measureObDefinitionElement);
 			/*String preConditionJoinExpressionValue = null;
 			if ((elementRefList != null) && (elementRefList.size() > 0)) {
 				preConditionJoinExpressionValue = generateValueAndExpressionTag(elementRefList
@@ -314,14 +314,19 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @throws XPathExpressionException
 	 */
 	private void generateMOClauseLogic(Node firstChildNode, String firstChildNodeName, Node parentSubTreeNode,
-			List<Node> elementRefList) throws XPathExpressionException {
+			List<Node> elementRefList, Element measureObDefinitionElement) throws XPathExpressionException {
 		String localVariableName;
 		switch (firstChildNode.getNodeName()) {
 			case "setOp":
 				Node setOpsNode = firstChildNode.cloneNode(true);
 				parentSubTreeNode.appendChild(setOpsNode);
 				localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode);
-				//elementRefList = findAllElementRefsUsed(firstChildNode, new ArrayList<Node>());
+				Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+				valueElement.setAttribute(XSI_TYPE, "PQ");
+				Element expressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
+				expressionElement.setAttribute(VALUE, localVariableName);
+				valueElement.appendChild(expressionElement);
+				measureObDefinitionElement.appendChild(valueElement);
 				break;
 			case "relationalOp" :
 				Node relOpsNode = firstChildNode.cloneNode(true);
@@ -331,6 +336,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				break;
 			case "elementRef":
 				elementRefList.add(firstChildNode);
+				generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode);
 				break;
 			case "functionalOp":
 				if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {

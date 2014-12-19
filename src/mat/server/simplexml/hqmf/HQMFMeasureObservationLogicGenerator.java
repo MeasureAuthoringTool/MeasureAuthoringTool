@@ -312,17 +312,23 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			boolean isClauseLogicGeneratable, String variableName) throws XPathExpressionException {
 		String localVariableName = null;
 		Node firstChildNode = null;
+		Node parentSubTreeNode = null;
 		if(variableName != null) {
 			localVariableName = variableName;
 		}
 		if(isClauseLogicGeneratable) {
 			firstChildNode = clauseNodes.getFirstChild();
+			parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
 		} else {
-			firstChildNode = clauseNodes;
+			if((checkIfSubTree(clauseNodes).getNodeName()).equalsIgnoreCase("subTree")){
+				firstChildNode = clauseNodes.getFirstChild();
+				parentSubTreeNode = clauseNodes.cloneNode(false);
+			} else {
+				firstChildNode = clauseNodes;
+				parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
+			}
 		}
 		String firstChildNodeName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		
-		Node parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
 		
 		switch (firstChildNode.getNodeName()) {
 			case "setOp":
@@ -362,26 +368,49 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				break;
 			case "elementRef":
 				elementRefList.add(firstChildNode);
-				generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
+				generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, localVariableName);
 				break;
 			case "functionalOp":
 				if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
-					//generateClauseLogic
-					// Non date time diff type :
-					// first child - recursivecall - false
+					if (!firstChildNodeName.equalsIgnoreCase("DATETIMEDIFF")) {
+						Node funOpSubTreeClonedNode = parentSubTreeNode.cloneNode(false);
+						funOpSubTreeClonedNode.appendChild(firstChildNode.cloneNode(true));
+						Node funOpSubTreeFirstChildClonedNode = parentSubTreeNode.cloneNode(false);
+						funOpSubTreeFirstChildClonedNode.appendChild(firstChildNode.getFirstChild().cloneNode(true));
+						if (isClauseLogicGeneratable) {
+							localVariableName = generateClauseLogicForChildsInsideFnxOp(funOpSubTreeClonedNode);
+						}
+						generateMOClauseLogic(funOpSubTreeFirstChildClonedNode,
+								elementRefList,measureObDefinitionElement, false,localVariableName);
+					} else {
+						
+					}
 				}
 				break;
 			case "subTreeRef":
 				Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
 						.getNamedItem("id").getNodeValue());
 				Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
-				subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
-				localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode);
-				generateMOClauseLogic(subTreeRefNodeLogic,elementRefList,measureObDefinitionElement, false,localVariableName);
+				subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
+				if (isClauseLogicGeneratable) {
+					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode);
+				}
+				generateMOClauseLogic(subTreeRefParentNode,elementRefList,measureObDefinitionElement, false,localVariableName);
 				break;
 			default:
 				break;
 		}
+	}
+	
+	private Node checkIfSubTree(Node parentNode) {
+		Node returnNode = null;
+		if(parentNode != null){
+			String parentName = parentNode.getNodeName();
+			if("subTree".equals(parentName)){
+				returnNode = parentNode;
+			}
+		}
+		return returnNode;
 	}
 	/**
 	 * @param firstChildNode

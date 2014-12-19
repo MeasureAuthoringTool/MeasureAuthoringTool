@@ -402,6 +402,19 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 					arrayList = (ArrayList<Node>) findFirstLHSElementRef(lhsNode, arrayList);
 					break;
 				case "functionalOp":
+					if (!lhsNode.getAttributes().getNamedItem("displayName")
+							.getNodeValue().equalsIgnoreCase("DATETIMEDIFF")) {
+						if(lhsNode.hasChildNodes()) {
+							arrayList = (ArrayList<Node>) findFirstLHSElementRef(
+									lhsNode, arrayList);
+							break;
+						} else {
+							arrayList = null;
+							break;
+						}
+					} else {
+						// Do something for datetimediff function.
+					}
 					break;
 				case "subTreeRef":
 					Node subTreeRefNodeLogic = clauseLogicMap.get(lhsNode.getAttributes()

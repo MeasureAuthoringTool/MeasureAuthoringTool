@@ -1935,18 +1935,24 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 			if(subTreeNode.getAttributes().getNamedItem("instanceOf") == null) {
 				if("elementRef".equals(firstChildName) ){
-					ext = firstChild.getAttributes().getNamedItem("id").getNodeValue();
+					ext = getElementRefExt(firstChild, measureExport.getSimpleXMLProcessor());
 				} else if("functionalOp".equals(firstChildName)){
 					if(firstChild.getFirstChild() != null) {
-						ext = (StringUtils.deleteWhitespace(firstChild.getFirstChild().getAttributes()
-								.getNamedItem("displayName").getNodeValue() 
-								+ "_" 
-								+ firstChild.getAttributes().getNamedItem("uuid").getNodeValue())
-								.replaceAll(":", "_"));
-						if (firstChild.getFirstChild().getNodeName()
-								.equalsIgnoreCase("subTreeRef")) {
-							ext = firstChild.getFirstChild().getAttributes()
-									.getNamedItem(ID).getNodeValue();
+						Node functionChild = firstChild.getFirstChild();
+						if(functionChild != null) {
+							if (functionChild.getNodeName().equalsIgnoreCase("subTreeRef")) {
+								ext = functionChild.getAttributes()
+										.getNamedItem(ID).getNodeValue();
+							}else if(functionChild.getNodeName().equalsIgnoreCase("elementRef")){
+								ext = getElementRefExt(functionChild, measureExport.getSimpleXMLProcessor());
+							}
+							else{
+								ext = (StringUtils.deleteWhitespace(functionChild.getAttributes()
+										.getNamedItem("displayName").getNodeValue()
+										+ "_"
+										+ firstChild.getAttributes().getNamedItem("uuid").getNodeValue())
+										.replaceAll(":", "_"));
+							}
 						}
 					}
 				}

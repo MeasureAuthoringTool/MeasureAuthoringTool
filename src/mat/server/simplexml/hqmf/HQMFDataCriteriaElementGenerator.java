@@ -736,11 +736,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		boolean appendEntryElem = false;
 		String occurString = dataType + "-" + qdmOidValue;
+		
 		if(qdmNode.getAttributes().getNamedItem("instance") != null){
 			generateOutboundForOccur(templateNode, qdmNode, dataCriteriaElem, occurString);
 			entryCommentText = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + " " + entryCommentText;
 			appendEntryElem = true;
-		}else if(!occurrenceMap.containsKey(occurString)){
+		}else if(!occurrenceMap.containsKey(occurString) || attributeQDMNode != null){
 			
 			String isAddCodeTag = templateNode.getAttributes().getNamedItem("addCodeTag").getNodeValue();
 			if ("true".equalsIgnoreCase(isAddCodeTag)) { // Add Code Element to DataCriteria Element.

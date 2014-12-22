@@ -436,17 +436,25 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 			
 			String idroot = "0";
-			String idExt = elementRefNode.getAttributes().getNamedItem("id").getNodeValue();
 			Node parNode = elementRefNode.getParentNode();
 			if((parNode != null) && "subTree".equals(parNode.getNodeName())){
 				idroot = parNode.getAttributes().getNamedItem("uuid").getNodeValue();
 				// Added logic to show qdm_variable in extension if clause is of qdm variable type.
 				String isQdmVariable = parNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
 				if(isQdmVariable.equalsIgnoreCase("true")) {
-					idExt = "qdm_var_"+idExt;
+					String occText = null;
+					// Handled Occurrence Of QDM Variable.
+					if(parNode.getAttributes().getNamedItem("instanceOf") != null){
+						occText = "occ"+parNode.getAttributes().getNamedItem("instance").getNodeValue()+"of_";
+					}
+					if (occText != null) {
+						ext = occText + "qdm_var_"+ext;
+					} else {
+						ext = "qdm_var_"+ext;
+					}
 				}
 				((Element)newIdNode).setAttribute(ROOT, idroot);
-				((Element)newIdNode).setAttribute("extension", idExt);
+				((Element)newIdNode).setAttribute("extension", ext);
 				parentNode.appendChild(entryElem);
 				node = entryElem;
 			} else {
@@ -459,7 +467,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 						String isQdmVariable = subTreeParentNode.getAttributes()
 								.getNamedItem("qdmVariable").getNodeValue();
 						if ("true".equalsIgnoreCase(isQdmVariable)) {
-							ext = "qdm_var_" + ext;
+							String occText = null;
+							// Handled Occurrence Of QDM Variable.
+							if(subTreeParentNode.getAttributes().getNamedItem("instanceOf") != null){
+								occText = "occ"+subTreeParentNode.getAttributes().getNamedItem("instance").getNodeValue()+"of_";
+							}
+							if (occText != null) {
+								ext = occText + "qdm_var_"+ext;
+							} else {
+								ext = "qdm_var_"+ext;
+							}
 						}
 					}
 				}
@@ -546,6 +563,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 						.getNamedItem("qdmVariable").getNodeValue();
 				if ("true".equalsIgnoreCase(isQdmVariable)) {
 					ext = "qdm_var_" + ext;
+					String occText = null;
+					// Handled Occurrence Of QDM Variable.
+					if(parNode.getAttributes().getNamedItem("instanceOf") != null){
+						occText = "occ"+parNode.getAttributes().getNamedItem("instance").getNodeValue()+"of_";
+					}
+					if (occText != null) {
+						ext = occText + "qdm_var_"+ext;
+					} else {
+						ext = "qdm_var_"+ext;
+					}
 				}
 			}
 		}
@@ -608,7 +635,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 				String isQdmVariable = subTreeParentNode.getAttributes()
 						.getNamedItem("qdmVariable").getNodeValue();
 				if ("true".equalsIgnoreCase(isQdmVariable)) {
-					ext = "qdm_var_" + ext;
+					String occText = null;
+					// Handled Occurrence Of QDM Variable.
+					if(subTreeParentNode.getAttributes().getNamedItem("instanceOf") != null){
+						occText = "occ"+subTreeParentNode.getAttributes().getNamedItem("instance").getNodeValue()+"of_";
+					}
+					if (occText != null) {
+						ext = occText + "qdm_var_"+ext;
+					} else {
+						ext = "qdm_var_"+ext;
+					}
 				}
 			}
 		} else {
@@ -879,6 +915,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 			dataCriteriaSectionElem.appendChild(entryNode);
 		}
+		/*else{
+			Comment commnt = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("CHECK:Could not find an entry for functionalOp:"+lhsNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			dataCriteriaSectionElem.appendChild(commnt);
+		}*/
 		return entryNode;
 	}
 	
@@ -1950,15 +1990,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 								ext = (StringUtils.deleteWhitespace(functionChild.getAttributes()
 										.getNamedItem("displayName").getNodeValue()
 										+ "_"
-										+ firstChild.getAttributes().getNamedItem("uuid").getNodeValue())
+										+ functionChild.getAttributes().getNamedItem("uuid").getNodeValue())
 										.replaceAll(":", "_"));
 							}
 						}
 					}
 				}
 			}
-			
-			
 			if("true".equalsIgnoreCase(isQdmVariable)){
 				if (occText != null) {
 					ext = occText + "qdm_var_"+ext;
@@ -2000,6 +2038,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 					criteriaReference.appendChild(id);
 					outboundRelElem.appendChild(criteriaReference);
 				}
+			}else{
+				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("CHECK:Could not find an entry for subTree:"+"//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+				outboundRelElem.appendChild(comment);
 			}
 		}
 	}

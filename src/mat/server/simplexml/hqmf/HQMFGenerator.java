@@ -38,14 +38,15 @@ public class HQMFGenerator implements Generator {
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
 			generateNarrative(me);
-			hqmfXML = removeXmlTagNamespace(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true));
-			
+			hqmfXML = finalCleanUp(me);
+						
 		} catch(Exception e){
 			LOG.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
 			e.printStackTrace();
 		}
 		return hqmfXML;
 	}
+	
 	/**
 	 *  Inline comments are added after the end of last componentOf tag. This is removed in this method
 	 * @param eMeasureDetailsXML - String eMeasureDetailsXML.
@@ -136,7 +137,6 @@ public class HQMFGenerator implements Generator {
 				msrObsTextNode.appendChild(msrObsXMLNode);
 			}
 		}
-		
 	}
 	
 	private Node generateNarrativeItem(MeasureExport me,
@@ -206,6 +206,11 @@ public class HQMFGenerator implements Generator {
 		}
 		
 		return narrativeListNode;
+	}
+	
+	private String finalCleanUp(MeasureExport me) {
+		HQMFFinalCleanUp.clean(me);
+		return removeXmlTagNamespace(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true));
 	}
 	
 	/**

@@ -912,7 +912,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 				Node outBound = outBoundList.item(0);
 				firstChild.insertBefore(temporallyRelatedInfoNode, outBound);
 			}else{
-				firstChild.appendChild(temporallyRelatedInfoNode);
+				NodeList excerptList = ((Element)firstChild).getElementsByTagName("excerpt");
+				if((excerptList != null) && (excerptList.getLength() > 0)){
+					Node excerptNode = excerptList.item(0);
+					firstChild.insertBefore(temporallyRelatedInfoNode, excerptNode);
+				}else{
+					firstChild.appendChild(temporallyRelatedInfoNode);
+				}
 			}
 			dataCriteriaSectionElem.appendChild(entryNode);
 		}

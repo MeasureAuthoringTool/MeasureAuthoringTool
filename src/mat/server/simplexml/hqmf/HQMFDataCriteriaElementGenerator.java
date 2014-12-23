@@ -1637,7 +1637,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			observationCriteriaElem.appendChild(valueElem);
 			dataCriteriaElem.appendChild(outboundRelationshipElem);
 		} else {
-			dataCriteriaElem.appendChild(valueElem);
+			NodeList outboundRelationshipList = ((Element)dataCriteriaElem).getElementsByTagName("outboundRelationship");
+			if((outboundRelationshipList != null) && (outboundRelationshipList.getLength() > 0)){
+				Node outboundRelationshipNode = outboundRelationshipList.item(0);
+				dataCriteriaElem.insertBefore(valueElem, outboundRelationshipNode);
+			}else{
+				dataCriteriaElem.appendChild(valueElem);
+			}
 		}
 	}
 	

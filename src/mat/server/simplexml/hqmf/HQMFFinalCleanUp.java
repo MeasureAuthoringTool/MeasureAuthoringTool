@@ -46,21 +46,21 @@ public class HQMFFinalCleanUp {
 				String extValue = extNode.getNodeValue();
 				
 				if(extValue.indexOf(">=") > -1){
-					extValue = StringUtils.replace(extValue, ">=", "grtr_thn_eql");
+					extValue = StringUtils.replace(extValue, ">=", "_grtr_thn_eql_");
 					
 				}
 				if(extValue.indexOf(">") > -1){
-					extValue = StringUtils.replace(extValue, ">", "grtr_thn");
+					extValue = StringUtils.replace(extValue, ">", "_grtr_thn_");
 					
 				}
 				if(extValue.indexOf("<=") > -1){
-					extValue = StringUtils.replace(extValue, "<=", "less_thn_eql");
+					extValue = StringUtils.replace(extValue, "<=", "_less_thn_eql_");
 				}
 				if(extValue.indexOf("<") > -1){
-					extValue = StringUtils.replace(extValue, "<", "less_thn");
+					extValue = StringUtils.replace(extValue, "<", "_less_thn_");
 				}
 				if(extValue.indexOf("=") > -1){
-					extValue = StringUtils.replace(extValue, "=", "eql");
+					extValue = StringUtils.replace(extValue, "=", "_eql_");
 				}
 				extNode.setNodeValue(extValue);
 			}

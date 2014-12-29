@@ -143,7 +143,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			System.out.println("Calling generateSubTreeXML for:"+clauseName);
 			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
 					|| subTreeNodeInPOPMap.containsKey(uuid)){
-				generateSubTreeXML(subTreeNode);
+				generateSubTreeXML(subTreeNode, false);
 			}
 		}
 		String xpathOccurrence = "/measure/subTreeLookUp/subTree[(@instance)]";
@@ -159,7 +159,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param subTreeNode the sub tree node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	protected Node generateSubTreeXML( Node subTreeNode) throws XPathExpressionException {
+	protected Node generateSubTreeXML( Node subTreeNode, boolean msrObsDateTimeDiffSubTree) throws XPathExpressionException {
 		
 		/**
 		 * If this is an empty or NULL clause, return right now.
@@ -176,7 +176,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String baseClauseUUID = subTreeNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
 			String xpath = "/measure/subTreeLookUp/subTree[@uuid = '"+baseClauseUUID+"']";
 			Node baseSubTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
-			generateSubTreeXML(baseSubTreeNode);
+			generateSubTreeXML(baseSubTreeNode, false);
 			generateOccHQMF(subTreeNode);
 		}
 		
@@ -187,7 +187,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		/**
 		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
 		 */
-		if(subTreeNodeMap.containsKey(subTreeUUID)){
+		if(subTreeNodeMap.containsKey(subTreeUUID) && !msrObsDateTimeDiffSubTree){
 			logger.info("HQMF for Clause "+clauseName + " is already generated. Skipping.");
 			return null;
 		}
@@ -543,7 +543,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		if(!subTreeNodeMap.containsKey(subTreeUUID)){
 			String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
 			Node subTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
-			generateSubTreeXML( subTreeNode);
+			generateSubTreeXML( subTreeNode, false);
 		}
 		
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
@@ -887,10 +887,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 				idNode.getAttributes().getNamedItem("root").setNodeValue(root);
 				idNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
 				// Updated Excerpt tag idNode root and extension.
+				String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
 				Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
 						measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/excerpt/*/id[@root='"+idRoot+"'][@extension='"+idExtension+"']");
-				idNodeExcerpt.getAttributes().getNamedItem("root").setNodeValue(root);
-				idNodeExcerpt.getAttributes().getNamedItem("extension").setNodeValue(ext);
+				if(idNodeExcerpt!=null){
+					idNodeExcerpt.getAttributes().getNamedItem("root").setNodeValue(root);
+					idNodeExcerpt.getAttributes().getNamedItem("extension").setNodeValue(ext);
+					}
 				
 			}
 			
@@ -1027,7 +1030,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				 * calling the 'generateSubTreeXML' method.
 				 */
 				if(!subTreeNodeMap.containsKey(subTreeUUID)){
-					generateSubTreeXML(subTreeNode);
+					generateSubTreeXML(subTreeNode, false);
 				}
 				
 				Node idNodeQDM = measureExport.getHQMFXmlProcessor().findNode(measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
@@ -1705,7 +1708,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param parentNode the parent node
 	 * @return the node
 	 */
-	private Node checkIfParentSubTree(Node parentNode){
+	protected Node checkIfParentSubTree(Node parentNode){
 		Node returnNode = null;
 		if(parentNode!=null){
 			String parentName = parentNode.getNodeName();
@@ -2087,7 +2090,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			 * calling the 'generateSubTreeXML' method.
 			 */
 			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
-				generateSubTreeXML( subTreeNode);
+				generateSubTreeXML( subTreeNode, false);
 			}
 			System.out.println("Finding entry for ");
 			System.out.println("root="+root);

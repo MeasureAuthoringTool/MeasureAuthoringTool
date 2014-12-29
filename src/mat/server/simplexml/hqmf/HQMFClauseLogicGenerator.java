@@ -478,6 +478,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 								ext = "qdm_var_"+ext;
 							}
 						}
+					}else{
+						root = UUIDUtilClient.uuid();
 					}
 				}
 				

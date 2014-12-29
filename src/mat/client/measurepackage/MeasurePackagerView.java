@@ -48,6 +48,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagin
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -502,9 +503,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskPanel.getElement().setAttribute("id", "RiskFlowPanel");
 		addRiskAdjButtonPanel.addStyleName("column");
 		
-		Widget riskAdjustmentsLabel = LabelBuilder.buildLabel(riskAdjClauseCellList,"Clauses");
-		riskAdjustmentsLabel.addStyleName("bold");
-		riskSPanel.add(riskAdjustmentsLabel);
+//		Widget riskAdjustmentsLabel = LabelBuilder.buildLabel(riskAdjClauseCellList,"Clauses");
+//		riskAdjustmentsLabel.addStyleName("bold");
+		riskSPanel.add(new HTML("<b style='margin-left:15px;'> Clauses </b>"));
 		
 		/*leftRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
 		leftRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
@@ -514,8 +515,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
 		riskSPanel.add(leftRiskAdjPanel);		
 		
-		Widget riskAdjVarLabel = LabelBuilder.buildLabel(supDataCellList,"Risk Adjustment Variables");
-		riskAdjVarLabel.addStyleName("bold");		
+//		Widget riskAdjVarLabel = LabelBuilder.buildLabel(supDataCellList,"Risk Adjustment Variables");
+//		riskAdjVarLabel.addStyleName("bold");		
 		
 		/*rightRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
 		rightRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
@@ -523,7 +524,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		/*rightRiskAdjPanel.setAlwaysShowScrollBars(true);
 		rightRiskAdjPanel.add(getRiskAdjVarCellList());*/
 		rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-		riskVPanel.add(riskAdjVarLabel);
+		riskVPanel.add(new HTML("<b style='margin-left:15px;'> Risk Adjustment Variables </b>"));
 		riskVPanel.add(rightRiskAdjPanel);
 		riskPanel.add(riskVPanel);
 		riskSPanel.add(new SpacerWidget());
@@ -566,9 +567,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
 		
-		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
-		qdmElementsLabel.addStyleName("bold");
-		sPanel.add(qdmElementsLabel);
+//		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
+//		qdmElementsLabel.addStyleName("valueSetHeader");
+		sPanel.add(new HTML("<b style='margin-left:15px;'> QDM Elements </b>"));
 		
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setSize("320px", "200px");
@@ -577,8 +578,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		leftPagerPanel.setDisplay(getQdmCellList());
 		sPanel.add(leftPagerPanel);
 		
-		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
-		suppElementsLabel.addStyleName("bold");
+//		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
+//		suppElementsLabel.addStyleName("bold");
 		
 		/*rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
 		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
@@ -586,7 +587,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		/*rightPagerPanel.setAlwaysShowScrollBars(true);
 		rightPagerPanel.add(getSupCellList());*/
 		rightPagerPanel.setDisplay(getSupCellList());
-		vPanel.add(suppElementsLabel);
+		vPanel.add(new HTML("<b style='margin-left:15px;'> Supplemental Data Elements </b>"));
 		vPanel.add(rightPagerPanel);
 		suppElementsPanel.add(vPanel);
 		sPanel.add(new SpacerWidget());

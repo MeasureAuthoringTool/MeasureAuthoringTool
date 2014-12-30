@@ -595,6 +595,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		grouperElem.appendChild(outboundRelElem);
 		
+		Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement("localVariableName");
+		localVarElem.setAttribute("value", ext);
+		entryElem.appendChild(localVarElem);
+		
 		entryElem.appendChild(grouperElem);
 		parentNode.appendChild(entryElem);
 		return entryElem;
@@ -710,6 +714,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 			grouperElem.appendChild(comment);
 			grouperElem.appendChild(excerptElement);
 		}
+		Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement("localVariableName");
+		localVarElem.setAttribute("value", ext);
+		entryElem.appendChild(localVarElem);
+		
 		entryElem.appendChild(grouperElem);
 		parentNode.appendChild(entryElem);
 		
@@ -951,16 +959,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 						idNode = criteriaChildNode;
 						break;
 					}
-				}
-				
+				}				
 				break;
 			}
 		}
 		return idNode;
 	}
 	
-	
-	
+		
 	/**
 	 * Gets the rel op lhs subtree.
 	 *
@@ -1088,6 +1094,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 
 						criteriaReference.appendChild(id);
 						outboundRelElem.appendChild(criteriaReference);
+						
+						Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement("localVariableName");
+						localVarElem.setAttribute("value", ext);
+						entryElem.appendChild(localVarElem);
+						
 						grouperElem.appendChild(outboundRelElem);
 						entryElem.appendChild(grouperElem);
 						

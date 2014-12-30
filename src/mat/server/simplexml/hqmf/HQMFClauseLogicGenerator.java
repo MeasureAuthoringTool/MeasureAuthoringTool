@@ -478,9 +478,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 								ext = "qdm_var_"+ext;
 							}
 						}
-					}else{
-						root = UUIDUtilClient.uuid();
 					}
+				}else{
+					root = UUIDUtilClient.uuid();
 				}
 				
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();

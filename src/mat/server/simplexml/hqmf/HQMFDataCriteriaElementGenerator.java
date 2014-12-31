@@ -2370,7 +2370,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 								
 				NodeList childNodeList = satisfiesFuncNode.getChildNodes();
-				for(int j=0;j<childNodeList.getLength();j++){
+				/**
+				 * Ignore the first element of SATISFIES ALL/ANY.
+				 * i.e. Start counter at 1 isntead of 0.
+				 */
+				for(int j=1;j<childNodeList.getLength();j++){
 					Node childNode = childNodeList.item(j).cloneNode(true);
 					newSetOp.appendChild(childNode);
 				}

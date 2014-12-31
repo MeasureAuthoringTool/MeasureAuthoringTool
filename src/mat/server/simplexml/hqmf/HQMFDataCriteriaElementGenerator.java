@@ -107,7 +107,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		// creating text for DataCriteria
 		Element textElem = outputProcessor.getOriginalDoc()
 				.createElement("text");
-		textElem.setAttribute(VALUE, "Data Criteria text");
+		//textElem.setAttribute(VALUE, "Data Criteria text");
 		dataCriteriaElem.appendChild(textElem);
 		
 		return outputProcessor;

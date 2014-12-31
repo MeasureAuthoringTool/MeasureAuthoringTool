@@ -818,7 +818,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param valueElem the value elem
 	 */
 	protected void addValueSetVersion(Node qdmNode, Element valueElem) {
-		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+		/**
+		 * This is to be commented until we start getting value set versions from 
+		 * VSAC.
+		 */
+		/*String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
 		if("1.0".equals(valueSetVersion)) {
 			if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
@@ -832,7 +836,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		if(addVersionToValueTag) {
 			valueElem.setAttribute("valueSetVersion", valueSetVersion);
-		}
+		}*/
 	}
 	
 	/**
@@ -1009,7 +1013,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					if(addVersionToValueTag){
 						Attr attrNode = attributedToBeChangedInNode.getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(version);
-						attributedToBeChangedInNode.getAttributes().setNamedItem(attrNode);
+						//commented the line below until we start getting value set version from VSAC.
+						//attributedToBeChangedInNode.getAttributes().setNamedItem(attrNode);
 					}
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
@@ -1247,7 +1252,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					addVersionToValueTag = true;
 				}
 				if(addVersionToValueTag) {
-					translationNode.setAttribute("valueSetVersion", version);
+					//commented this line until we start getting value set version from VSAC.
+					//translationNode.setAttribute("valueSetVersion", version);
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);

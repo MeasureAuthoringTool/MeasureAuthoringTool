@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -782,7 +785,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			// creating text for PopulationCriteria
 			Element textElem = outputProcessor.getOriginalDoc()
 					.createElement("text");
-			textElem.setAttribute(VALUE, "Measure Observation text");
+//			textElem.setAttribute(VALUE, "Measure Observation text");
 			measureObSectionElem.appendChild(textElem);
 			componentElement.appendChild(measureObSectionElem);
 			outputProcessor.getOriginalDoc().getDocumentElement().appendChild(componentElement);

@@ -1855,7 +1855,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			List<String> inValidNodeAtPopulationWorkspace){
 		int nodeType = cellTreeNode.getNodeType();
 		switch(nodeType){
-			
 			case CellTreeNode.LOGICAL_OP_NODE:
 				if(cellTreeNode.getParent().getName()
 						.contains(MEASURE_OBSERVATION)){
@@ -1877,6 +1876,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
+				// Added check for Measure Observation - For DateTimeDiff Fnx.
+				if (cellTreeNode.getParent().getName()
+						.contains(MEASURE_OBSERVATION)) {
+					setMeasureObservations(true);
+				}
 				boolean checkValidation = validateSubTreeRefNode(cellTreeNode);
 				editNode(!checkValidation, cellTreeNode);
 				if (isDateTimeDiffNotInMO) {

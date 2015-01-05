@@ -91,7 +91,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.2");
-		/*	itemChild.setAttribute("extension", VERSIONID);*/
+		itemChild.setAttribute("extension", VERSIONID);
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -2239,7 +2239,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-		//System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
+//		System.out.println("Done prepping for HQMF Clause generation.");
+//		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
 	

@@ -626,7 +626,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
 			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
 			itemElement.setAttribute(CODE, FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName));
-			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
+			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.84");
 			methodCodeElement.appendChild(itemElement);
 			measureObDefinitionElement.appendChild(methodCodeElement);
 		}

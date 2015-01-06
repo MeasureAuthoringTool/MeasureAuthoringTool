@@ -298,7 +298,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		List<Node> elementRefList = new ArrayList<Node>();
 		
 		if (FUNCTIONAL_OPS_AGGREGATE.containsKey(clauseNodeName)) {
-			generateMOClauseLogic(clauseNodes,  elementRefList, measureObDefinitionElement, true,null);
+			if("DATETIMEDIFF".equals(clauseNodeName)){
+				generateMOClauseLogicForDateTimeDiff(clauseNodes, elementRefList, measureObDefinitionElement,
+						true, null);
+			} else {
+				generateMOClauseLogic(clauseNodes,  elementRefList, measureObDefinitionElement, true,null);
+			}
 			generateMethodCode(measureObDefinitionElement, clauseNodeName);
 			//generatePreCondition(measureObDefinitionElement, preConditionJoinExpressionValue, elementRefList);
 		}
@@ -442,11 +447,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		
 		NodeList childNodes = clauseNodes.getChildNodes();
 		if (childNodes.getLength()>=2) { // DATETIMEDIFF SHOULD HAVE TWO OR MORE CHILD.
-			
+			boolean generateValueExpression = false;
+			String localVariableName = null;
+			Node firstChildNode = null;
 			for(int i = 0; i<childNodes.getLength(); i++){
 				//generateMOClauseLogic(childNodes.item(i), elementRefList, measureObDefinitionElement, isClauseLogicGeneratable, null);
-				String localVariableName = null;
-				Node firstChildNode = null;
+				
 				if(variableName != null) {
 					localVariableName = variableName;
 				}
@@ -483,7 +489,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						break;
 					case "elementRef":
 						elementRefList.add(firstChildNode);
-						generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, localVariableName);
+						generateValueExpression = true;
 						break;
 					case "functionalOp":
 						if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
@@ -502,11 +508,18 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
 						subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
 						localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, true);
+						String subTreeDisplayName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+						localVariableName = localVariableName+"_"+StringUtils.deleteWhitespace(subTreeDisplayName);
 						generateMOClauseLogic(subTreeRefNodeLogic,new ArrayList<Node>(), measureObDefinitionElement, false,localVariableName);
 						break;
 					default:
 						break;
 				}
+			}
+			if (generateValueExpression) {
+				String preConditionExpression = generateValueAndExpressionTag(elementRefList,
+						measureObDefinitionElement, firstChildNode, localVariableName);
+				generatePreCondition(measureObDefinitionElement, preConditionExpression, elementRefList);
 			}
 		}
 		
@@ -623,12 +636,25 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 */
 	private void generateMethodCode(Element measureObDefinitionElement, String clauseNodeName) {
 		if (FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName) != null) {
+			NodeList childNodeList = measureObDefinitionElement.getChildNodes();
+			Node preConditionNode = null;
+			for(int i=0; i< childNodeList.getLength();i++){
+				Node childNode = childNodeList.item(i);
+				if(childNode.getNodeName().equalsIgnoreCase("precondition")) {
+					preConditionNode = childNode;
+					break;
+				}
+			}
 			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
 			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
 			itemElement.setAttribute(CODE, FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName));
 			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.84");
 			methodCodeElement.appendChild(itemElement);
-			measureObDefinitionElement.appendChild(methodCodeElement);
+			if(preConditionNode == null) {
+				measureObDefinitionElement.appendChild(methodCodeElement);
+			} else {
+				measureObDefinitionElement.insertBefore(methodCodeElement, preConditionNode);
+			}
 		}
 	}
 	/**

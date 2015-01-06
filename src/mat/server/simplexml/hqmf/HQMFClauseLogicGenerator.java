@@ -373,6 +373,12 @@ public class HQMFClauseLogicGenerator implements Generator {
 					//Dont do anything
 					break;
 			}
+			
+			NamedNodeMap attribMap = functionalNode.getAttributes();
+			String funcDisplayName = StringUtils.deleteWhitespace(attribMap.getNamedItem("displayName").getNodeValue());
+			String relUUID  = attribMap.getNamedItem("uuid").getNodeValue();
+			String localVarName = "localVar_"+funcDisplayName+"_"+relUUID;
+			updateLocalVar(node, localVarName);
 		}
 		return node;
 		
@@ -521,7 +527,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				node = clonedEntryNodeForElementRef;
 				
 			}
-			
+			updateLocalVar(node, ext);
 		}
 		
 		return node;
@@ -808,16 +814,21 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateRelOpHQMF( Node relOpNode, Node dataCriteriaSectionElem) throws XPathExpressionException {
-		
+		Node finalNode = null;
 		if(relOpNode.getChildNodes().getLength() == 2){
 			Node lhsNode = relOpNode.getFirstChild();
 			Node rhsNode = relOpNode.getLastChild();
 			String lhsName = lhsNode.getNodeName();
 			
+			NamedNodeMap attribMap = relOpNode.getAttributes();
+			String relDisplayName = StringUtils.deleteWhitespace(attribMap.getNamedItem("displayName").getNodeValue());
+			String relUUID  = attribMap.getNamedItem("uuid").getNodeValue();
+			String localVarName = "localVar_"+relDisplayName+"_"+relUUID;
+			
 			if("elementRef".equals(lhsName)){
-				return getrelOpLHSQDM(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				finalNode = getrelOpLHSQDM(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			}else if("relationalOp".equals(lhsName)){
-				Node finalNode = getrelOpLHSRelOp(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				finalNode = getrelOpLHSRelOp(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 				Node relOpParentNode = relOpNode.getParentNode();
 				if(relOpParentNode.getNodeName().equalsIgnoreCase("functionalOp")) {
 					Element excerptElement = generateExcerptEntryForFunctionalNode(relOpNode.getParentNode()
@@ -832,9 +843,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 						firstNode.appendChild(excerptElement);
 					}
 				}
-				return finalNode;
+				//return finalNode;
 			}else if("setOp".equals(lhsName)){
-				Node finalNode =  getrelOpLHSSetOp( relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				finalNode =  getrelOpLHSSetOp( relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 				Node relOpParentNode = relOpNode.getParentNode();
 				if(relOpParentNode.getNodeName().equalsIgnoreCase("functionalOp")) {
 					Element excerptElement = generateExcerptEntryForFunctionalNode(relOpNode.getParentNode()
@@ -849,16 +860,17 @@ public class HQMFClauseLogicGenerator implements Generator {
 						firstNode.appendChild(excerptElement);
 					}
 				}
-				return finalNode;
+				//return finalNode;
 			}else if("subTreeRef".equals(lhsName)){
-				return getrelOpLHSSubtree(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
+				finalNode = getrelOpLHSSubtree(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode);
 			} else if("functionalOp".equalsIgnoreCase(lhsName)) {
-				return getFunctionalOpLHS(relOpNode, dataCriteriaSectionElem, lhsNode, rhsNode);
+				finalNode = getFunctionalOpLHS(relOpNode, dataCriteriaSectionElem, lhsNode, rhsNode);
 			}
+			updateLocalVar(finalNode, localVarName);
 		}else{
 			logger.info("Relational Op:"+relOpNode.getAttributes().getNamedItem("displayName").getNodeValue()+" does not have exactly 2 children. Skipping HQMF for it.");
 		}
-		return null;
+		return finalNode;
 	}
 	
 	/**
@@ -1272,6 +1284,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			if((relOpParentNode != null)) {
 				NodeList idChildNodeList = ((Element)relOpEntryNode).getElementsByTagName(ID);
+				
 				if((idChildNodeList != null) && (idChildNodeList.getLength() > 0)){
 					Node idChildNode = idChildNodeList.item(0);
 					String root = relOpParentNode.getAttributes().getNamedItem("uuid").getNodeValue();
@@ -1380,11 +1393,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 			/*Element localVarName = (Element) ((Element)clonedEntryNodeForElementRef).getElementsByTagName("localVariableName").item(0);
 			localVarName.setAttribute(VALUE,findSubTreeDisplayName(lhsNode));*/
 			NodeList idChildNodeList = ((Element)clonedEntryNodeForElementRef).getElementsByTagName(ID);
+			updateLocalVar(clonedEntryNodeForElementRef, ext);
 			if((idChildNodeList != null) && (idChildNodeList.getLength() > 0)){
 				Node idChildNode = idChildNodeList.item(0);
 				idChildNode.getAttributes().getNamedItem("extension").setNodeValue(ext);
 				idChildNode.getAttributes().getNamedItem("root").setNodeValue(root);
 			}
+			
 			//Added logic to show qdm_variable in extension if clause is of qdm variable type.
 			if ("functionalOp".equals(relOpParentNode.getNodeName())) {
 				excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode, hqmfXmlProcessor, clonedEntryNodeForElementRef);
@@ -2585,6 +2600,23 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Utility method which will try to find the tag "localVariableName" and set the given string value to its
+	 * "value" attribute.
+	 * @param node
+	 * @param localVarName
+	 */
+	private void updateLocalVar(Node node, String localVarName) {
+		if(node == null){
+			return;
+		}
+		NodeList localVarNodeList = ((Element)node).getElementsByTagName("localVariableName");
+		if(localVarNodeList != null && localVarNodeList.getLength() > 0){
+			Element localVar = (Element) localVarNodeList.item(0);
+			localVar.setAttribute("value", localVarName);
+		}
 	}
 	
 	

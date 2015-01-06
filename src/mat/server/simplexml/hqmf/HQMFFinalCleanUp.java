@@ -33,7 +33,7 @@ public class HQMFFinalCleanUp {
 		}
 		
 		cleanExtensions(me);
-		
+		cleanLocalVariableNames(me);
 	}
 
 	private static void cleanExtensions(MeasureExport me) {
@@ -45,23 +45,7 @@ public class HQMFFinalCleanUp {
 				Node extNode = extensionsList.item(i);
 				String extValue = extNode.getNodeValue();
 				
-				if(extValue.indexOf(">=") > -1){
-					extValue = StringUtils.replace(extValue, ">=", "grtr_thn_eql_");
-					
-				}
-				if(extValue.indexOf(">") > -1){
-					extValue = StringUtils.replace(extValue, ">", "grtr_thn_");
-					
-				}
-				if(extValue.indexOf("<=") > -1){
-					extValue = StringUtils.replace(extValue, "<=", "less_thn_eql_");
-				}
-				if(extValue.indexOf("<") > -1){
-					extValue = StringUtils.replace(extValue, "<", "less_thn_");
-				}
-				if(extValue.indexOf("=") > -1){
-					extValue = StringUtils.replace(extValue, "=", "eql_");
-				}
+				extValue = getReplaceString(extValue);
 				extNode.setNodeValue(extValue);
 			}
 			
@@ -69,7 +53,46 @@ public class HQMFFinalCleanUp {
 			logger.error("Exception in HQMFFinalCleanUp.cleanExtensions:"+e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	private static void cleanLocalVariableNames(MeasureExport me) {
 		
+		String xPathForLocalVars = "//localVariableName/@value";
+		try {
+			NodeList localVarValuesList = me.getHQMFXmlProcessor().findNodeList(me.getHQMFXmlProcessor().getOriginalDoc(), xPathForLocalVars);
+			for(int i=0;i<localVarValuesList.getLength();i++){
+				Node extNode = localVarValuesList.item(i);
+				String extValue = extNode.getNodeValue();
+				
+				extValue = getReplaceString(extValue);
+				extNode.setNodeValue(extValue);
+			}
+			
+		} catch (XPathExpressionException e) {
+			logger.error("Exception in HQMFFinalCleanUp.cleanExtensions:"+e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	private static String getReplaceString(String extValue) {
+		if(extValue.indexOf(">=") > -1){
+			extValue = StringUtils.replace(extValue, ">=", "grtr_thn_eql_");
+			
+		}
+		if(extValue.indexOf(">") > -1){
+			extValue = StringUtils.replace(extValue, ">", "grtr_thn_");
+			
+		}
+		if(extValue.indexOf("<=") > -1){
+			extValue = StringUtils.replace(extValue, "<=", "less_thn_eql_");
+		}
+		if(extValue.indexOf("<") > -1){
+			extValue = StringUtils.replace(extValue, "<", "less_thn_");
+		}
+		if(extValue.indexOf("=") > -1){
+			extValue = StringUtils.replace(extValue, "=", "eql_");
+		}
+		return extValue;
 	}
 
 }

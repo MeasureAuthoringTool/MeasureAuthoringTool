@@ -489,6 +489,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						break;
 					case "elementRef":
 						elementRefList.add(firstChildNode);
+						
 						generateValueExpression = true;
 						break;
 					case "functionalOp":
@@ -505,12 +506,14 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 					case "subTreeRef":
 						Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
 								.getNamedItem("id").getNodeValue());
-						Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
-						subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
-						localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, true);
-						String subTreeDisplayName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
-						localVariableName = localVariableName+"_"+StringUtils.deleteWhitespace(subTreeDisplayName);
-						generateMOClauseLogic(subTreeRefNodeLogic,new ArrayList<Node>(), measureObDefinitionElement, false,localVariableName);
+						if(!subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("setOp")){
+							Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
+							subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
+							localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, true);
+							String subTreeDisplayName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+							localVariableName = localVariableName+"_"+StringUtils.deleteWhitespace(subTreeDisplayName);
+							generateMOClauseLogic(subTreeRefNodeLogic,new ArrayList<Node>(), measureObDefinitionElement, false,localVariableName);
+						}
 						break;
 					default:
 						break;
@@ -518,7 +521,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			}
 			if (generateValueExpression) {
 				String preConditionExpression = generateValueAndExpressionTag(elementRefList,
-						measureObDefinitionElement, firstChildNode, localVariableName);
+						measureObDefinitionElement, firstChildNode, null);
 				generatePreCondition(measureObDefinitionElement, preConditionExpression, elementRefList);
 			}
 		}

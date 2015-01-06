@@ -622,9 +622,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			joinElement.setAttribute(MOOD_CODE, "DEF");
 			Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
 			valueElement.setAttribute(XSI_TYPE, "ED");
-			Element valueExpressionElement = measureObDefinitionElement.getOwnerDocument().createElement("expression");
-			valueExpressionElement.setAttribute(VALUE, preConditionJoinExpressionValue);
-			valueElement.appendChild(valueExpressionElement);
+			valueElement.setAttribute(VALUE, preConditionJoinExpressionValue);
 			joinElement.appendChild(valueElement);
 			preConditionElement.appendChild(joinElement);
 			measureObDefinitionElement.appendChild(preConditionElement);

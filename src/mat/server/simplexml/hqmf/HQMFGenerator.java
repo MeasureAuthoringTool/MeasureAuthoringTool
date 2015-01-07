@@ -1,11 +1,15 @@
 package mat.server.simplexml.hqmf;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -59,6 +63,11 @@ public class HQMFGenerator implements Generator {
 		return eMeasureDetailsXML;
 	}
 	
+	/**
+	 * Generate narrative.
+	 *
+	 * @param me the me
+	 */
 	private void generateNarrative(MeasureExport me) {
 		String humanReadableHTML = HumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
 		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());
@@ -75,6 +84,13 @@ public class HQMFGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Generate data crit narrative.
+	 *
+	 * @param me the me
+	 * @param humanReadableProcessor the human readable processor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generateDataCritNarrative(MeasureExport me,
 			XmlProcessor humanReadableProcessor)
 					throws XPathExpressionException {
@@ -105,40 +121,58 @@ public class HQMFGenerator implements Generator {
 		dataCritTextNode.appendChild(xmlNode);
 	}
 	
+	/**
+	 * Generate population crit narrative.
+	 *
+	 * @param me the me
+	 * @param humanReadableProcessor the human readable processor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private void generatePopulationCritNarrative(MeasureExport me,
 			XmlProcessor humanReadableProcessor) throws XPathExpressionException {
 		
 		//Get narrative for Population criteria section
-		Node popCritNode = generateNarrativeItem(me, humanReadableProcessor, "Population criteria");
+		//Node popCritNode = generateNarrativeItem(me, humanReadableProcessor, "Population criteria");
 		
 		XmlProcessor hqmfProcessor = me.getHQMFXmlProcessor();
 		String xPathForPopCriteriaSection = "//populationCriteriaSection/text";
-		Node popCritTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForPopCriteriaSection);
-				
-		Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
-		Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
-		Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");
-		
-		listNode.appendChild(popCritNode);
-		itemNode.appendChild(listNode);
-		xmlNode.appendChild(itemNode);
-		popCritTextNode.appendChild(xmlNode);
+		NodeList popCritTextNodeList = hqmfProcessor.findNodeList(hqmfProcessor.getOriginalDoc(), xPathForPopCriteriaSection);
+		for (int i=0; i<popCritTextNodeList.getLength(); i++) {
+			Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
+			Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
+			Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");
+			listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population criteria", i+1));
+			itemNode.appendChild(listNode);
+			xmlNode.appendChild(itemNode);
+			popCritTextNodeList.item(i).appendChild(xmlNode);
+			}
 		
 		String xPathForMsrObsNarrative = xPathForPopCriteriaSection+"//item[starts-with(content/text(), 'Measure Observation')]";
-		Node msrObsNarrativeNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
-		if(msrObsNarrativeNode != null){
+		NodeList msrObsNarrativeNodeList = hqmfProcessor.findNodeList(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
+		if(msrObsNarrativeNodeList != null){
 			String xPathForMeasureObservation = "//measureObservationSection/text";
 			Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);
 			if(msrObsTextNode != null){
-				Node msrObsNarrativeParentNode = msrObsNarrativeNode.getParentNode();
-				msrObsNarrativeParentNode.removeChild(msrObsNarrativeNode);
 				Node msrObsXMLNode = hqmfProcessor.getOriginalDoc().createElement("xml");
-				msrObsXMLNode.appendChild(msrObsNarrativeNode);
-				msrObsTextNode.appendChild(msrObsXMLNode);
+				for(int i=0; i<msrObsNarrativeNodeList.getLength(); i++){
+					Node msrObsNarrativeParentNode = msrObsNarrativeNodeList.item(i).getParentNode();
+					msrObsNarrativeParentNode.removeChild(msrObsNarrativeNodeList.item(i));
+					msrObsXMLNode.appendChild(msrObsNarrativeNodeList.item(i));
+					msrObsTextNode.appendChild(msrObsXMLNode);
+				}
 			}
 		}
 	}
 	
+	/**
+	 * Generate narrative item.
+	 *
+	 * @param me the me
+	 * @param humanReadableProcessor the human readable processor
+	 * @param searchText the search text
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private Node generateNarrativeItem(MeasureExport me,
 			XmlProcessor humanReadableProcessor, String searchText)
 					throws XPathExpressionException {
@@ -150,7 +184,6 @@ public class HQMFGenerator implements Generator {
 		
 		Node elementsNode = humanReadableProcessor.findNode(humanReadableProcessor.getOriginalDoc(), "/body/h3[a[text()='"+searchText+"']]");
 		Node divNode = elementsNode.getNextSibling();
-		
 		if((divNode != null) && "div".equals(divNode.getNodeName())){
 			if(divNode.hasChildNodes()){
 				Node ulNode = divNode.getFirstChild();
@@ -164,6 +197,77 @@ public class HQMFGenerator implements Generator {
 		return dataCritItemNode;
 	}
 	
+	
+	/**
+	 * Generate population criteria narrative item.
+	 *
+	 * @param me the me
+	 * @param humanReadableProcessor the human readable processor
+	 * @param searchText the search text
+	 * @param sequence the sequence
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private Node generatePopulationCriteriaNarrativeItem(MeasureExport me,
+			XmlProcessor humanReadableProcessor, String searchText, int sequence)
+					throws XPathExpressionException {
+		Node dataCritItemNode = me.getHQMFXmlProcessor().getOriginalDoc().createElement("item");
+		Node dataCritContentNode = me.getHQMFXmlProcessor().getOriginalDoc().createElement("content");
+		((Element)dataCritContentNode).setAttribute("styleCode", "Bold");
+		dataCritContentNode.setTextContent(searchText);
+		dataCritItemNode.appendChild(dataCritContentNode);
+		String xpathForPOPNarrative = "/body/div/ul/li[contains(b/text(),'Population Criteria "+sequence+"')]";
+		Node elementsNode = humanReadableProcessor.findNode(humanReadableProcessor.getOriginalDoc(), xpathForPOPNarrative);
+		Node divNode = humanReadableProcessor.getOriginalDoc().createElement("ul");
+		List<Node> popNodeList = new ArrayList<Node>(); 
+		popNodeList = getPopulationNarrative(popNodeList, elementsNode);
+		for(Node popNode : popNodeList ){
+			divNode.appendChild(popNode);
+		}
+//		elementsNode = elementsNode.getNextSibling();
+		Node narrativeListNode = getNarrativeListNode(divNode, me.getHQMFXmlProcessor());
+		if(narrativeListNode != null){
+			dataCritItemNode.appendChild(narrativeListNode);
+		}		
+//		if((divNode != null) && "div".equals(divNode.getNodeName())){
+//			if(divNode.hasChildNodes()){
+//				Node ulNode = divNode.getFirstChild();
+//				Node narrativeListNode = getNarrativeListNode(ulNode, me.getHQMFXmlProcessor());
+//				if(narrativeListNode != null){
+//					dataCritItemNode.appendChild(narrativeListNode);
+//				}
+//			}
+//		}
+		
+		return dataCritItemNode;
+	}
+	
+	/**
+	 * Gets the population narrative.
+	 *
+	 * @param elementsNodeList the elements node list
+	 * @param elementsNode the elements node
+	 * @return the population narrative
+	 */
+	private List<Node> getPopulationNarrative(List<Node> elementsNodeList, Node elementsNode){
+		Node nextSibling = elementsNode.getNextSibling();
+		if(nextSibling!=null && !nextSibling.hasAttributes()){
+		    elementsNodeList.add(nextSibling);
+			elementsNodeList = getPopulationNarrative(elementsNodeList, nextSibling);
+		} else {
+			return elementsNodeList;
+		}
+		return elementsNodeList;
+	}
+	
+	
+	/**
+	 * Gets the narrative list node.
+	 *
+	 * @param humanReadableNode the human readable node
+	 * @param xmlProcessor the xml processor
+	 * @return the narrative list node
+	 */
 	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor) {		
 		Node narrativeListNode = null;
 		String nodeName = humanReadableNode.getNodeName();
@@ -208,20 +312,35 @@ public class HQMFGenerator implements Generator {
 		return narrativeListNode;
 	}
 	
+	/**
+	 * Final clean up.
+	 *
+	 * @param me the me
+	 * @return the string
+	 */
 	private String finalCleanUp(MeasureExport me) {
 		HQMFFinalCleanUp.clean(me);
 		return removeXmlTagNamespace(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true));
 	}
 	
 	/**
-	 * @param xmlString
-	 * @return
+	 * Removes the xml tag namespace.
+	 *
+	 * @param xmlString the xml string
+	 * @return the string
 	 */
 	private String removeXmlTagNamespace(String xmlString) {
 		xmlString = xmlString.replaceAll(" xmlns=\"\"", "");
 		return xmlString;
 	}
 	
+	/**
+	 * Append to hqmf.
+	 *
+	 * @param dataCriteriaXML the data criteria xml
+	 * @param hqmfXML the hqmf xml
+	 * @return the string
+	 */
 	private String appendToHQMF(String dataCriteriaXML, String hqmfXML) {
 		int indexOfEnd = hqmfXML.indexOf("</QualityMeasureDocument>");
 		if(indexOfEnd > -1){

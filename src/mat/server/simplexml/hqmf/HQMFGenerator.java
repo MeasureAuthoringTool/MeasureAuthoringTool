@@ -2,14 +2,10 @@ package mat.server.simplexml.hqmf;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -193,7 +189,6 @@ public class HQMFGenerator implements Generator {
 				}
 			}
 		}
-		
 		return dataCritItemNode;
 	}
 	
@@ -224,21 +219,10 @@ public class HQMFGenerator implements Generator {
 		for(Node popNode : popNodeList ){
 			divNode.appendChild(popNode);
 		}
-//		elementsNode = elementsNode.getNextSibling();
 		Node narrativeListNode = getNarrativeListNode(divNode, me.getHQMFXmlProcessor());
 		if(narrativeListNode != null){
 			dataCritItemNode.appendChild(narrativeListNode);
 		}		
-//		if((divNode != null) && "div".equals(divNode.getNodeName())){
-//			if(divNode.hasChildNodes()){
-//				Node ulNode = divNode.getFirstChild();
-//				Node narrativeListNode = getNarrativeListNode(ulNode, me.getHQMFXmlProcessor());
-//				if(narrativeListNode != null){
-//					dataCritItemNode.appendChild(narrativeListNode);
-//				}
-//			}
-//		}
-		
 		return dataCritItemNode;
 	}
 	
@@ -308,7 +292,6 @@ public class HQMFGenerator implements Generator {
 			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("caption");
 			narrativeListNode.setTextContent(humanReadableNode.getTextContent());
 		}
-		
 		return narrativeListNode;
 	}
 	
@@ -348,5 +331,4 @@ public class HQMFGenerator implements Generator {
 		}
 		return hqmfXML;
 	}
-	
 }

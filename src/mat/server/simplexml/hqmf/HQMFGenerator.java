@@ -133,7 +133,7 @@ public class HQMFGenerator implements Generator {
 		XmlProcessor hqmfProcessor = me.getHQMFXmlProcessor();
 		String xPathForPopCriteriaSection = "//populationCriteriaSection/text";
 		NodeList popCritTextNodeList = hqmfProcessor.findNodeList(hqmfProcessor.getOriginalDoc(), xPathForPopCriteriaSection);
-		for (int i=0; i<popCritTextNodeList.getLength(); i++) {
+		for (int i=popCritTextNodeList.getLength()-1; i>=0; i--) {
 			Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
 			Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
 			Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");

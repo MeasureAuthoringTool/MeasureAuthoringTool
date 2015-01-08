@@ -2,6 +2,7 @@ package mat.server.simplexml.hqmf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.xpath.XPathConstants;
@@ -24,7 +25,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The clause logic map. */
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
 	/** The measure grouping map. */
-	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+	private Map<String, NodeList> measureGroupingMap = new LinkedHashMap<String, NodeList>();
 	/** The elementRefList. */
 	//private List<Node> elementRefList;
 	/** The MeasureExport object. */

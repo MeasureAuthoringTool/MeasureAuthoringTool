@@ -137,7 +137,11 @@ public class HQMFGenerator implements Generator {
 			Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
 			Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
 			Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");
-			listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population criteria", i+1));
+			if(popCritTextNodeList.getLength()>1){
+				listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population criteria", i+1));
+			} else {
+				listNode.appendChild(generateNarrativeItem(me, humanReadableProcessor, "Population criteria"));
+			}
 			itemNode.appendChild(listNode);
 			xmlNode.appendChild(itemNode);
 			popCritTextNodeList.item(i).appendChild(xmlNode);

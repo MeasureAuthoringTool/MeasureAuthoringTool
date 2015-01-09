@@ -57,12 +57,12 @@
         
     <!-- Individual Characteristic -->
     <!-- patient characteristic -->
-    <template oid="2.16.840.1.113883.10.20.28.3.53" class="OBS" mood="EVN" status="COMPLETED" valueSetId ="valueSet" addValueTag="false" addCodeTag="true">patient characteristic</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.53" class="OBS" mood="EVN" status="COMPLETED" valueSetId ="valueSet" addValueTag="false" addCodeTag="true" addExtensionInTemplate="true">patient characteristic</template>
     <template oid="2.16.840.1.113883.10.20.28.3.54" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="21112-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Birth Date" addValueTag="false" addCodeTag="true">patient characteristic birthdate</template>
     <template oid="2.16.840.1.113883.10.20.28.3.56" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="54133-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Ethnicity" addValueTag="true" addCodeTag="true">patient characteristic ethnicity</template>
     <template oid="2.16.840.1.113883.10.20.28.3.57" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="419099009" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Expired">patient characteristic expired</template> 
-    <template oid="2.16.840.1.113883.10.20.28.3.58" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Payer" addValueTag="true" addCodeTag="true">patient characteristic payer</template>    
-    <template oid="2.16.840.1.113883.10.20.28.3.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Race" addValueTag="true" addCodeTag="true">patient characteristic race</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.58" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Payer" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic payer</template>    
+    <template oid="2.16.840.1.113883.10.20.28.3.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Race" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic race</template>
     <template oid="2.16.840.1.113883.10.20.28.3.55" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="263495000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Gender" addValueTag="true" addCodeTag="true">patient characteristic sex</template>    
     <template oid="2.16.840.1.113883.10.20.28.3.6" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">patient characteristic clinical trial participant</template>
     
@@ -158,7 +158,7 @@
     
     <!-- misc -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency">frequency</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency" addExtensionInTemplate="true">frequency</template>
     <template oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="34896006" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="incision" includeSubTemplate="incision-dateTime">incision datetime</template>
     <template oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</template>
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.86" class="OBS" mood="EVN" type="RSON" status="COMPLETED" valueType="CD" code="PAT" codeSystem="2.16.840.1.113883.5.8" displayNameValue="Patient Preference">patient preference</template>
@@ -170,7 +170,7 @@
     <template oid="2.16.840.1.113883.10.20.28.3.88" class="OBS" mood="EVN" type="RSON" status="COMPLETED" code="410666004" codeSystem="2.16.840.1.113883.6.96" valueType="CD">negation rationale</template>
     <template class="OBS" mood="EVN" type="REFR" valueType="CD" code="REL" codeSystem="2.16.840.1.113883.5.107">related to</template>
     <template class="OBS" mood="GOL" type="GOAL" valueType="CD" code="385676005" codeSystem="2.16.840.1.113883.6.96" displayNameValue="Outcome of Action">target outcome</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Result" valueType="CD">result</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.101" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Result" valueType="CD" addExtensionInTemplate="true">result</template>
     <template oid="2.16.840.1.113883.10.20.28.3.93" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="SEV" valueType="CD" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 ActCode" displayNameValue="Severity Observation">severity</template>
     <template target="targetSiteCode" childTarget="item" insertBeforeNode="outboundRelationship">anatomical location site-value set</template>
     <template target="targetSiteCode" flavorId="ANY.NONNULL" insertBeforeNode="outboundRelationship">anatomical location site-check if present</template>
@@ -474,7 +474,22 @@
     </role>
 </participation>
  </provider-char>
+
  <facility-location changeAttribute="id,code">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+     <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92"/>
+        </templateId>
+        <id>
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+        <code/>
+    </role>
+</participation>
+ </facility-location>
+
+ <facility-location-old changeAttribute="id,code">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
         <templateId>
@@ -486,9 +501,22 @@
         <code/>
     </role>
 </participation>
- </facility-location>
+ </facility-location-old>
  
  <facility-location-ArrDeparture changeAttribute="id">
+ <participation typeCode="LOC">
+    <role classCode="SDLOC">
+        <templateId>
+            <item root="2.16.840.1.113883.10.20.28.3.92"/>
+        </templateId>
+        <id >
+            <item root="$UUID" extension="$extensionUUID"/>
+        </id>
+    </role>
+</participation>
+ </facility-location-ArrDeparture>
+ 
+ <facility-location-ArrDeparture-old changeAttribute="id">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
         <templateId>
@@ -499,7 +527,7 @@
         </id>
     </role>
 </participation>
- </facility-location-ArrDeparture>
+ </facility-location-ArrDeparture-old>
 
  <procedure changeAttribute="id,code,displayName,title">
  <outboundRelationship  typeCode="CAUS"

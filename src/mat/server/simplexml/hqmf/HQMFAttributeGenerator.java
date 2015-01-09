@@ -419,13 +419,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
 				} else if(LATERALITY.equalsIgnoreCase(attrName)){
 					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,qdmNode,attributeQDMNode);
-				} /*else if(ORDINALITY.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				}else if (ROUTE.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				} else if("method".equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				}*/
+				}
 				return;
 			}
 		}//flag to add statusCode for Radiation Dosage and Radiation Duration attributes
@@ -465,7 +459,9 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(ITEM);
 				itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
-				itemChild.setAttribute("extension", VERSIONID);
+				if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
+					itemChild.setAttribute("extension", VERSIONID);
+				}
 				templateId.appendChild(itemChild);
 			}
 			

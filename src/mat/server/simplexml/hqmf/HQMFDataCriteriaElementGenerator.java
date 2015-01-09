@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -373,7 +370,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					throws XPathExpressionException {
 		String qdmUUID = qdmNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-			
+		
 		
 		String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 		NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
@@ -726,7 +723,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, oidValue);
-		itemChild.setAttribute("extension", VERSIONID);
+		if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
+			itemChild.setAttribute("extension", VERSIONID);
+		}
 		templateId.appendChild(itemChild);
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ID);
@@ -741,7 +740,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateOutboundForOccur(templateNode, qdmNode, dataCriteriaElem, occurString);
 			entryCommentText = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + " " + entryCommentText;
 			appendEntryElem = true;
-		}else if(!occurrenceMap.containsKey(occurString) || attributeQDMNode != null){
+		}else if(!occurrenceMap.containsKey(occurString) || (attributeQDMNode != null)){
 			
 			String isAddCodeTag = templateNode.getAttributes().getNamedItem("addCodeTag").getNodeValue();
 			if ("true".equalsIgnoreCase(isAddCodeTag)) { // Add Code Element to DataCriteria Element.
@@ -819,7 +818,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	protected void addValueSetVersion(Node qdmNode, Element valueElem) {
 		/**
-		 * This is to be commented until we start getting value set versions from 
+		 * This is to be commented until we start getting value set versions from
 		 * VSAC.
 		 */
 		/*String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
@@ -1520,21 +1519,23 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
-		String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
+		String attribUUID = (String) attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		boolean isResult = "result".equalsIgnoreCase(attrName);
-		//boolean isStatus = "status".equalsIgnoreCase(attrName);
-		boolean isResultNotOutBound = isResult && ("Diagnostic Study, Performed".equalsIgnoreCase(qdmName) || "Laboratory Test, Performed".equalsIgnoreCase(qdmName)
-				|| "Functional Status, Performed".equalsIgnoreCase(qdmName) || "Risk Category Assessment".equalsIgnoreCase(qdmName));
-		//boolean isResultValueset = (isResult && attrMode.equalsIgnoreCase(VALUE_SET));
+		
+		boolean isResultNotOutBound = isResult && ("Diagnostic Study, Performed".equalsIgnoreCase(qdmName)
+				|| "Laboratory Test, Performed".equalsIgnoreCase(qdmName)
+				|| "Functional Status, Performed".equalsIgnoreCase(qdmName)
+				|| "Risk Category Assessment".equalsIgnoreCase(qdmName));
+		
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ attrName.toLowerCase() + "']");
 		boolean isRadiation = false;
-		if(templateNode == null){
+		if (templateNode == null) {
 			templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
-					+ attrName.toLowerCase()+"-" +attrMode.toLowerCase() + "']");
-			if(templateNode == null) {
+					+ attrName.toLowerCase() + "-" + attrMode.toLowerCase() + "']");
+			if (templateNode == null) {
 				return;
 			} else {
 				if (ANATOMICAL_LOCATION_SITE.equalsIgnoreCase(attrName)
@@ -1542,21 +1543,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						|| ROUTE.equalsIgnoreCase(attrName)
 						|| "method".equalsIgnoreCase(attrName)
 						|| ANATOMICAL_APPROACH_SITE.equalsIgnoreCase(attrName)) {
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				} else if(LATERALITY.equalsIgnoreCase(attrName)){
-					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,qdmNode,attributeQDMNode);
-				} /*else if(ORDINALITY.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				}else if (ROUTE.equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				} else if("method".equalsIgnoreCase(attrName)){
-					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem, dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
-				}*/
+					addTargetSiteOrPriorityCodeOrRouteCodeElement(dataCriteriaElem,
+							dataCriteriaXMLProcessor, attributeQDMNode, templateNode);
+				} else if (LATERALITY.equalsIgnoreCase(attrName)) {
+					appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor
+							, templateXMLProcessor, dataCriteriaElem, qdmNode, attributeQDMNode);
+				}
 				return;
 			}
-		}//flag to add statusCode for Radiation Dosage and Radiation Duration attributes
-		if(templateNode.getAttributes().getNamedItem("isRadiation")!=null){
-			isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue()!=null;
+		}
+		//flag to add statusCode for Radiation Dosage and Radiation Duration attributes
+		if (templateNode.getAttributes().getNamedItem("isRadiation") != null) {
+			isRadiation = templateNode.getAttributes().getNamedItem("isRadiation").getNodeValue() != null;
 		}
 		if (attrName.equalsIgnoreCase(FACILITY_LOCATION)) {
 			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
@@ -1566,7 +1564,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		Element outboundRelationshipElem = null;
 		Element observationCriteriaElem = null;
-		if(!isResultNotOutBound){ //result attribute with specific Datatypes does'nt add OutBoundRelationShip
+		if (!isResultNotOutBound) { //result attribute with specific Datatypes does'nt add OutBoundRelationShip
 			outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(OUTBOUND_RELATIONSHIP);
 			outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
@@ -1591,7 +1589,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(ITEM);
 				itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
-				itemChild.setAttribute("extension", VERSIONID);
+				if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
+					itemChild.setAttribute("extension", VERSIONID);
+				}
 				templateId.appendChild(itemChild);
 			}
 			
@@ -1643,7 +1643,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			observationCriteriaElem.appendChild(valueElem);
 			dataCriteriaElem.appendChild(outboundRelationshipElem);
 		} else {
-			NodeList outboundRelationshipList = ((Element)dataCriteriaElem).getElementsByTagName("outboundRelationship");
+			NodeList outboundRelationshipList = dataCriteriaElem.getElementsByTagName("outboundRelationship");
 			if((outboundRelationshipList != null) && (outboundRelationshipList.getLength() > 0)){
 				Node outboundRelationshipNode = outboundRelationshipList.item(0);
 				dataCriteriaElem.insertBefore(valueElem, outboundRelationshipNode);
@@ -2239,8 +2239,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-//		System.out.println("Done prepping for HQMF Clause generation.");
-//		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
+		//		System.out.println("Done prepping for HQMF Clause generation.");
+		//		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
 	
@@ -2267,17 +2267,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	private void addUUIDToNodes(NodeList nodeList){
-		if(nodeList != null && nodeList.getLength() > 0){
+		if((nodeList != null) && (nodeList.getLength() > 0)){
 			for(int i=0;i<nodeList.getLength();i++){
 				Node node = nodeList.item(i);
 				((Element)node).setAttribute("uuid", UUIDUtilClient.uuid());
 			}
 		}
 	}
-
+	
 	/**
-	 * This method will be called by prepHQMF(MeasureExport me) method to prep 
-	 * functionalOp for AGE AT functions. This methiod will do the following, 
+	 * This method will be called by prepHQMF(MeasureExport me) method to prep
+	 * functionalOp for AGE AT functions. This methiod will do the following,
 	 * 
 	 *    Look for <functionalOp type="AGE AT"...../> and
 	 *    replace it with <relationalOp type="SBS" ..../>
@@ -2291,7 +2291,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void prepForAGE_AT(MeasureExport me) {
 		XmlProcessor xmlProcessor = me.getSimpleXMLProcessor();
 		logger.info("Prepping for HQMF Clause generation for AGE AT functionalOps.");
-				
+		
 		try {
 			
 			//find <qdm> for Birthdate QDM element in elementLookUp
@@ -2306,7 +2306,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			
 			logger.info(".......found AGE AT functionalOps");
-							
+			
 			while(ageAtFuncNode != null){
 				logger.info("Changing "+ageAtFuncNode.toString() + " to relational SBS node.");
 				Node cloneAgeAtRelNode = ageAtFuncNode.cloneNode(true);
@@ -2324,7 +2324,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				//set the type attribute to SBS
 				newRelationalOp.getAttributes().getNamedItem("type").setNodeValue("SBS");
-												
+				
 				//create a new <elementRef for birthDateQDM
 				Element birthDateElementRef = xmlProcessor.getOriginalDoc().createElement("elementRef");
 				birthDateElementRef.setAttribute("id", birthDateQDM.getAttributes().getNamedItem("uuid").getNodeValue());
@@ -2348,14 +2348,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
-	 * This method will be called by prepHQMF(MeasureExport me) method to prep 
-	 * functionalOp for SATISFIES ALL/SATISFIES ANY functions. 
-	 * This methiod will do the following, 
+	 * This method will be called by prepHQMF(MeasureExport me) method to prep
+	 * functionalOp for SATISFIES ALL/SATISFIES ANY functions.
+	 * This methiod will do the following,
 	 * 
-	 * This method will look for all functionalOp's with names, 
-	 * SATISFIES ALL/SATISFIES ANY renames the <functionalOp> tag with 
+	 * This method will look for all functionalOp's with names,
+	 * SATISFIES ALL/SATISFIES ANY renames the <functionalOp> tag with
 	 * <setOp> tag.
-	 *  
+	 * 
 	 * @param me
 	 */
 	private void prepForSatisfiesAll_Any(MeasureExport me) {
@@ -2367,7 +2367,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			logger.info(".......found Satisfies All/Satisfies Any functionalOps");
 			while(satisfiesFuncNode != null){
 				logger.info("Changing functionaOp "+satisfiesFuncNode.getAttributes().getNamedItem("displayName").getNodeValue() + " to relationalOp node.");
-									
+				
 				NamedNodeMap attribMap = satisfiesFuncNode.getAttributes();
 				Element newSetOp = xmlProcessor.getOriginalDoc().createElement("setOp");
 				
@@ -2375,7 +2375,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					Node attrib = attribMap.item(j);
 					newSetOp.setAttribute(attrib.getNodeName(), attrib.getNodeValue());
 				}
-								
+				
 				NodeList childNodeList = satisfiesFuncNode.getChildNodes();
 				/**
 				 * Ignore the first element of SATISFIES ALL/ANY.

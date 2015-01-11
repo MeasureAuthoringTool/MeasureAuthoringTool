@@ -6,6 +6,8 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -133,10 +135,14 @@ public class HQMFGenerator implements Generator {
 		XmlProcessor hqmfProcessor = me.getHQMFXmlProcessor();
 		String xPathForPopCriteriaSection = "//populationCriteriaSection/text";
 		NodeList popCritTextNodeList = hqmfProcessor.findNodeList(hqmfProcessor.getOriginalDoc(), xPathForPopCriteriaSection);
+		Node msrObsXMLNode = hqmfProcessor.getOriginalDoc().createElement("xml");
 		for (int i=popCritTextNodeList.getLength()-1; i>=0; i--) {
 			Element xmlNode = hqmfProcessor.getOriginalDoc().createElement("xml");
 			Element itemNode = hqmfProcessor.getOriginalDoc().createElement("item");
 			Element listNode = hqmfProcessor.getOriginalDoc().createElement("list");
+			Element parentNodeElem = (Element)popCritTextNodeList.item(i).getParentNode(); 
+			Node idNode = parentNodeElem.getElementsByTagName("id").item(0);
+			String extension = idNode.getAttributes().getNamedItem("extension").getNodeValue();
 			if(popCritTextNodeList.getLength()>1){
 				listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population criteria", i+1));
 			} else {
@@ -145,23 +151,36 @@ public class HQMFGenerator implements Generator {
 			itemNode.appendChild(listNode);
 			xmlNode.appendChild(itemNode);
 			popCritTextNodeList.item(i).appendChild(xmlNode);
-			}
-		
-		String xPathForMsrObsNarrative = xPathForPopCriteriaSection+"//item[starts-with(content/text(), 'Measure Observation')]";
-		NodeList msrObsNarrativeNodeList = hqmfProcessor.findNodeList(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
-		if(msrObsNarrativeNodeList != null){
-			String xPathForMeasureObservation = "//measureObservationSection/text";
-			Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);
-			if(msrObsTextNode != null){
-				Node msrObsXMLNode = hqmfProcessor.getOriginalDoc().createElement("xml");
-				for(int i=0; i<msrObsNarrativeNodeList.getLength(); i++){
-					Node msrObsNarrativeParentNode = msrObsNarrativeNodeList.item(i).getParentNode();
-					msrObsNarrativeParentNode.removeChild(msrObsNarrativeNodeList.item(i));
-					msrObsXMLNode.appendChild(msrObsNarrativeNodeList.item(i));
-					msrObsTextNode.appendChild(msrObsXMLNode);
-				}
+			generateMsrObsNarrativeItem(extension, hqmfProcessor, msrObsXMLNode);
 			}
 		}
+	
+	
+	/**
+	 * Generate msr obs narrative item.
+	 *
+	 * @param sequence the sequence
+	 * @param hqmfProcessor the hqmf processor
+	 * @param msrObsXMLNode the msr obs xml node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateMsrObsNarrativeItem(String sequence, XmlProcessor hqmfProcessor, Node msrObsXMLNode) throws XPathExpressionException{
+		Node msrObsItemNode = hqmfProcessor.getOriginalDoc().createElement("item");
+		Node msrObsSectionContentNode = hqmfProcessor.getOriginalDoc().createElement("content");
+		msrObsSectionContentNode.setTextContent(sequence);
+		String xPathForMeasureObservation = "//measureObservationSection/text";
+		Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);
+		if (msrObsTextNode != null) {
+			String xPathForMsrObsNarrative = "//populationCriteriaSection/id[@extension='"+sequence
+					+"']/following-sibling::text//item[starts-with(content/text(), 'Measure Observation')]";
+			Node msrObsNarrativeNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
+			Node msrObsNarrativeParentNode = msrObsNarrativeNode.getParentNode();
+			msrObsNarrativeParentNode.removeChild(msrObsNarrativeNode);
+			msrObsItemNode.appendChild(msrObsSectionContentNode);
+			msrObsItemNode.appendChild(msrObsNarrativeNode);
+			msrObsXMLNode.appendChild(msrObsItemNode);
+			msrObsTextNode.appendChild(msrObsXMLNode);
+			}	
 	}
 	
 	/**

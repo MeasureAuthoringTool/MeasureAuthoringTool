@@ -166,7 +166,8 @@ public class HQMFGenerator implements Generator {
 	 */
 	private void generateMsrObsNarrativeItem(String sequence, XmlProcessor hqmfProcessor, Node msrObsXMLNode) throws XPathExpressionException{
 		Node msrObsItemNode = hqmfProcessor.getOriginalDoc().createElement("item");
-		Node msrObsSectionContentNode = hqmfProcessor.getOriginalDoc().createElement("content");
+		Node msrObsSectionContentNode = hqmfProcessor.getOriginalDoc().createElement("content"); 
+		sequence = sequence.replaceAll("Population", "Population ").replaceAll("Criteria", "Criteria ");
 		msrObsSectionContentNode.setTextContent(sequence);
 		String xPathForMeasureObservation = "//measureObservationSection/text";
 		Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);

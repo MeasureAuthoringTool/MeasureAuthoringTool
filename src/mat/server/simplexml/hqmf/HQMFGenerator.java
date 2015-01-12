@@ -167,8 +167,7 @@ public class HQMFGenerator implements Generator {
 	private void generateMsrObsNarrativeItem(String sequence, XmlProcessor hqmfProcessor, Node msrObsXMLNode) throws XPathExpressionException{
 		Node msrObsItemNode = hqmfProcessor.getOriginalDoc().createElement("item");
 		Node msrObsSectionContentNode = hqmfProcessor.getOriginalDoc().createElement("content"); 
-		sequence = sequence.replaceAll("Population", "Population ").replaceAll("Criteria", "Criteria ");
-		msrObsSectionContentNode.setTextContent(sequence);
+		
 		String xPathForMeasureObservation = "//measureObservationSection/text";
 		Node msrObsTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMeasureObservation);
 		if (msrObsTextNode != null) {
@@ -177,6 +176,8 @@ public class HQMFGenerator implements Generator {
 			Node msrObsNarrativeNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForMsrObsNarrative);
 			Node msrObsNarrativeParentNode = msrObsNarrativeNode.getParentNode();
 			msrObsNarrativeParentNode.removeChild(msrObsNarrativeNode);
+			sequence = sequence.replaceAll("Population", "Population ").replaceAll("Criteria", "Criteria ");
+			msrObsSectionContentNode.setTextContent(sequence);
 			msrObsItemNode.appendChild(msrObsSectionContentNode);
 			msrObsItemNode.appendChild(msrObsNarrativeNode);
 			msrObsXMLNode.appendChild(msrObsItemNode);

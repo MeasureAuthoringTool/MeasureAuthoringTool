@@ -362,10 +362,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
 					currentDetails = updatedDetails;
+					currentDetails.setExistingOrg(true);
 				}
 				@Override
 				public void onSuccess(SaveUpdateOrganizationResult result) {
 					currentDetails = updatedDetails;
+					currentDetails.setExistingOrg(true);
 					if (result.isSuccess()) {
 						//displaySearch();
 						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()

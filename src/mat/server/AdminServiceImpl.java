@@ -226,11 +226,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		} else {
 			if (currentModel.isExistingOrg()) {
 				organization = getOrganizationDAO().findByOid(currentModel.getOid());
-				Organization oidToBeSaved = getOrganizationDAO().findByOid(updatedModel.getOid());
-				if ((oidToBeSaved == null) && (organization != null)) {
-					organization.setOrganizationName(updatedModel.getOrganization());
-					organization.setOrganizationOID(updatedModel.getOid());
-				} 
+				organization.setOrganizationName(updatedModel.getOrganization());
+				organization.setOrganizationOID(updatedModel.getOid());
 			} else {
 				organization = new Organization();
 				if (getOrganizationDAO().findByOid(updatedModel.getOid()) != null) {

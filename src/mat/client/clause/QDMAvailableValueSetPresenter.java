@@ -761,6 +761,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	private void updateAppliedQDMList(final MatValueSet matValueSet , final CodeListSearchDTO codeListSearchDTO ,
 			final QualityDataSetDTO qualityDataSetDTO, final String dataType, final Boolean isSpecificOccurrence,
 			final boolean isUSerDefined) {
+		modifyQDMList(qualityDataSetDTO);
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
 		matValueSetTransferObject.setDatatype(dataType);
 		matValueSetTransferObject.setMatValueSet(matValueSet);
@@ -811,6 +812,23 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		});
 	}
 	
+	
+	/**
+	 * Modify qdm list.
+	 *
+	 * @param qualityDataSetDTO the quality data set dto
+	 */
+	private void modifyQDMList(QualityDataSetDTO qualityDataSetDTO){
+		for(int i=0; i<appliedQDMList.size(); i++){
+			if(qualityDataSetDTO.getOid().equals(appliedQDMList.get(i).getOid()) && 
+					qualityDataSetDTO.getOccurrenceText().equals(appliedQDMList.get(i).getOccurrenceText()) && 
+					qualityDataSetDTO.getDataType().equals(appliedQDMList.get(i).getDataType())){
+				appliedQDMList.remove(i);
+				break;
+			}
+		}
+		
+	}
 	/**
 	 * This method updates MeasureXML - ElementLookUpNode,ElementRef's under
 	 * Population Node and Stratification Node, SupplementDataElements. It also

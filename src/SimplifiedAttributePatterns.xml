@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<matattributes>
+    <attribute attribName="Active Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Admission Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Anatomical Approach Site">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Cause">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Cumulative Medication Duration">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Date">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Discharge Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Discharge Status">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Dose">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Facility Location">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Facility Location Arrival Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Facility Location Departure Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Frequency">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Incision Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Laterality">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Length Of Stay">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Method">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Ordinality">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Patient Preference">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Provider Preference">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Reaction">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Reason">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Refills">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Related To">
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Removal Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Route">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Severity">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Signed Datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Start Datetime" datatypes="Non-Order">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Start Datetime" datatypes="Order">
+        <mode mode="IsPresent"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Stop Datetime" datatypes="Non-Order">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Stop Datetime" datatypes="Order">
+        <mode mode="IsPresent"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Status">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Anatomical Location Site">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Target Outcome">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Time">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Radiation Dosage">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Radiation Duration">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="Result" datatypeList="Physical Exam, Performed; Procedure, Performed; Intervention, Performed">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Result" datatypeList="Diagnostic Study, Performed; Functional Status, Performed; Laboratory Test, Performed; Risk Category Assessment">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Health Record Field">
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Recorder">
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="Source">
+        <mode mode="ValueSet"/>
+    </attribute>
+    <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Non-Order">
+
+        <datatype>care goal</datatype>
+        <datatype>patient care experience</datatype>
+        <datatype>provider care experience</datatype>
+        <datatype>communication: from patient to provider</datatype>
+        <datatype>communication: from provider to patient</datatype>
+        <datatype>communication: from provider to provider</datatype>
+        <datatype>device, adverse event</datatype>
+        <datatype>device, allergy</datatype>
+        <datatype>device, applied</datatype>
+        <datatype>device, intolerance</datatype>
+        <datatype>device, recommended</datatype>
+        <datatype>diagnosis, active</datatype>
+        <datatype>diagnosis, family history</datatype>
+        <datatype>diagnosis, inactive</datatype>
+        <datatype>diagnosis, resolved</datatype>
+        <datatype>diagnostic study, adverse event</datatype>
+        <datatype>diagnostic study, intolerance</datatype>
+        <datatype>diagnostic study, performed</datatype>
+        <datatype>diagnostic study, recommended</datatype>
+        <datatype>encounter, active</datatype>
+        <datatype>encounter, performed</datatype>
+        <datatype>encounter, recommended</datatype>
+        <datatype>functional status, performed</datatype>
+        <datatype>functional status, recommended</datatype>
+        <datatype>patient characteristic</datatype>
+        <datatype>patient characteristic birthdate</datatype>
+        <datatype>patient characteristic ethnicity</datatype>
+        <datatype>patient characteristic expired</datatype>
+        <datatype>patient characteristic payer</datatype>
+        <datatype>patient characteristic race</datatype>
+        <datatype>patient characteristic sex</datatype>
+        <datatype>patient characteristic clinical trial participant</datatype>
+        <datatype>provider characteristic</datatype>
+        <datatype>intervention, adverse event</datatype>
+        <datatype>intervention, intolerance</datatype>
+        <datatype>intervention, performed</datatype>
+        <datatype>intervention, recommended</datatype>
+        <datatype>laboratory test, adverse event</datatype>
+        <datatype>laboratory test, intolerance</datatype>
+        <datatype>laboratory test, performed</datatype>
+        <datatype>laboratory test, recommended</datatype>
+        <datatype>medication, active</datatype>
+        <datatype>medication, administered</datatype>
+        <datatype>medication, adverse effects</datatype>
+        <datatype>medication, allergy</datatype>
+        <datatype>medication, discharge</datatype>
+        <datatype>medication, dispensed</datatype>
+        <datatype>medication, intolerance</datatype>
+        <datatype>physical exam, performed</datatype>
+        <datatype>physical exam, recommended</datatype>
+        <datatype>procedure, adverse event</datatype>
+        <datatype>procedure, intolerance</datatype>
+        <datatype>procedure, performed</datatype>
+        <datatype>procedure, recommended</datatype>
+        <datatype>risk category assessment</datatype>
+        <datatype>substance, administered</datatype>
+        <datatype>substance, adverse event</datatype>
+        <datatype>substance, allergy</datatype>
+        <datatype>substance, intolerance</datatype>
+        <datatype>substance, recommended</datatype>
+        <datatype>symptom, active</datatype>
+        <datatype>symptom, assessed</datatype>
+        <datatype>symptom, inactive</datatype>
+        <datatype>symptom, resolved</datatype>
+        <datatype>transfer from</datatype>
+        <datatype>transfer to</datatype>
+    </datatypes>
+    <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Order">
+        <datatype>device, order</datatype>
+        <datatype>diagnostic study, order</datatype>
+        <datatype>encounter, order</datatype>
+        <datatype>functional status, order</datatype>
+        <datatype>intervention, order</datatype>
+        <datatype>laboratory test, order</datatype>
+        <datatype>medication, order</datatype>
+        <datatype>physical exam, order</datatype>
+        <datatype>procedure, order</datatype>
+        <datatype>substance, order</datatype>
+    </datatypes>
+</matattributes>

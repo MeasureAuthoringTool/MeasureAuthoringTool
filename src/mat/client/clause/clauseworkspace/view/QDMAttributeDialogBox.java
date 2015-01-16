@@ -13,6 +13,7 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.JSONAttributeModeUtility;
 import mat.model.clause.QDSAttributes;
 import mat.shared.ConstantMessages;
 
@@ -135,6 +136,8 @@ public class QDMAttributeDialogBox {
 	
 	/** The Constant ATTRIBUTE_DATE. */
 	private static final String ATTRIBUTE_DATE = "attrDate"; 
+	
+	private static ListBox modeListBox  = new ListBox(false);
 	
 	
 	/**
@@ -273,29 +276,9 @@ public class QDMAttributeDialogBox {
 		dialogContents.setCellHorizontalAlignment(attributeLabel, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(attributeListBox, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(attributeListBox);
-		
-		final ListBox modeListBox = new ListBox(false);
-		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
-		modeListBox.setVisibleItemCount(1);
-		modeListBox.setWidth("200px");
-		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
-		for (String modeName : mode) {
-			String modeValue = (modeName.startsWith("--")) ? modeName
-					.substring(2).trim() : modeName;
-					modeListBox.addItem(modeName, modeValue);
-		}
-		setToolTipForEachElementInListbox(modeListBox);
-		if(modeListBox.getSelectedIndex() > -1){
-			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
-			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
-					.getOptions();
 
-			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
-			modeListBox.setTitle(optionElement.getTitle());
-		}
-
-		modeListBox.setEnabled(false);
 		
+		//for ModeList in Attribute Workflow
 		
 		Label opearorLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Mode");
 		dialogContents.add(opearorLabel);
@@ -361,6 +344,14 @@ public class QDMAttributeDialogBox {
 					modeListBox.setEnabled(false);
 				}
 				else{
+					SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
+					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+							.getOptions();
+
+					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+					//attributeListBox.setTitle(optionElement.getTitle());
+					modfiyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
+					
 					modeListBox.setEnabled(true);
 					qdmAttributeDate.setValue("");
 					quantityTextBox.setValue("");
@@ -600,6 +591,31 @@ public class QDMAttributeDialogBox {
 		buttonPanel.setCellHorizontalAlignment(cancelButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		dialogContents.add(buttonPanel);
 		qdmAttributeDialogBox.center();
+	}
+	
+	private static void modfiyModeList(List<String> modeList){
+		ListBox newModeList = new ListBox(false);
+		modeListBox = newModeList;
+		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
+		modeListBox.setVisibleItemCount(1);
+		modeListBox.setWidth("200px");
+		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
+		for (String modeName : modeList) {
+			String modeValue = (modeName.startsWith("--")) ? modeName
+					.substring(2).trim() : modeName;
+					modeListBox.addItem(modeName, modeValue);
+		}
+		setToolTipForEachElementInListbox(modeListBox);
+		if(modeListBox.getSelectedIndex() > -1){
+			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+
+			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+			modeListBox.setTitle(optionElement.getTitle());
+		}
+
+		modeListBox.setEnabled(false);
 	}
 	
 	/**

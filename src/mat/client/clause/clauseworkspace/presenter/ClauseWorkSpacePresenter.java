@@ -18,6 +18,7 @@ import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+import mat.client.shared.JSONAttributeModeUtility;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -55,6 +56,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
 		MatContext.get().getAllOperators();
+		JSONAttributeModeUtility.getAllAttrModeList();
 		loadAllUnits();
 		
 	}

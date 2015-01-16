@@ -63,4 +63,12 @@ public interface QDSAttributesServiceAsync {
 	 * @return the datatype list
 	 */
 	void getDatatypeList(List<String> dataTypeList, AsyncCallback<Map<String, List<String>>> asyncCallback);
+	
+	/**
+	 * Gets the JSON object from xml.
+	 *
+	 * @param asyncCallback the async callback
+	 * @return the JSON object from xml
+	 */
+	void getJSONObjectFromXML( AsyncCallback<String> asyncCallback);
 }

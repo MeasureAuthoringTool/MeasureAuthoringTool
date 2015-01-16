@@ -6,6 +6,7 @@ import java.util.Map;
 import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -56,5 +57,12 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return the datatype list
 	 */
 	Map<String, List<String>>getDatatypeList(List<String> dataTypeList);
+	
+	/**
+	 * Gets the JSON object from xml.
+	 *
+	 * @return the JSON object from xml
+	 */
+	String getJSONObjectFromXML();
 }
 

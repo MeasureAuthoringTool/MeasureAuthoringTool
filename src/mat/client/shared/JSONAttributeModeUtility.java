@@ -99,6 +99,15 @@ public class JSONAttributeModeUtility {
 							modeList.add(modeName);
 						}
 
+					} else if(attrJSONObject.get("mode").isObject()!=null){
+						JSONObject modeObject = (JSONObject)attrJSONObject.get("mode")
+								.isObject();
+						JSONString modeStrObject = modeObject.get(
+								"@mode").isString();
+						String modeName = modeStrObject.toString();
+						modeName = modeName.replace("\"", "");
+						modeName = getAttrMode(modeName);
+						modeList.add(modeName);
 					}
 				}
 				

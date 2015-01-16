@@ -594,8 +594,7 @@ public class QDMAttributeDialogBox {
 	}
 	
 	private static void modfiyModeList(List<String> modeList){
-		ListBox newModeList = new ListBox(false);
-		modeListBox = newModeList;
+		modeListBox.clear();
 		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
 		modeListBox.setVisibleItemCount(1);
 		modeListBox.setWidth("200px");
@@ -614,10 +613,9 @@ public class QDMAttributeDialogBox {
 			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 			modeListBox.setTitle(optionElement.getTitle());
 		}
-
 		modeListBox.setEnabled(false);
 	}
-	
+
 	/**
 	 * Save to model.
 	 *

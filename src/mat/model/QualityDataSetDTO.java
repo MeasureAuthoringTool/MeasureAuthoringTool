@@ -44,12 +44,17 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	/** The is used. */
 	private boolean isUsed;
-
+	
 	/** QDM is not available in VSAC. */
 	private boolean notFoundInVSAC;
 	
 	/** The occurrence text. */
 	private String occurrenceText;
+	
+	/**
+	 * The Specific Occurrence Boolean.
+	 */
+	private boolean specificOccurrence;
 	
 	/** The oid. */
 	private String oid;
@@ -71,8 +76,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
-
-
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -420,6 +425,24 @@ public class QualityDataSetDTO implements IsSerializable {
 	public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
 		int num = o1.getUuid().compareTo(o2.getUuid());
 		return num;
+	}
+	
+	
+	
+	/**
+	 * @return the specificOccurrence
+	 */
+	public boolean isSpecificOccurrence() {
+		return specificOccurrence;
+	}
+	
+	
+	
+	/**
+	 * @param specificOccurrence the specificOccurrence to set
+	 */
+	public void setSpecificOccurrence(boolean specificOccurrence) {
+		this.specificOccurrence = specificOccurrence;
 	}
 	
 	

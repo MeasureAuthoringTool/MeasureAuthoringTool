@@ -874,6 +874,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
 							MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
+				//modifyValueSetDTO = modifyWithDTO;
 			}
 			
 			@Override

@@ -445,7 +445,7 @@ public class DateBoxWithCalendar extends Composite{
 	 * 
 	 * @return true, if is date valid
 	 */
-	private boolean isDateValid() {
+	public boolean isDateValid() {
 		Date testDate = new Date();
 		String value = dateBox.getValue();
 		if((value != null) && (value.length() > 0)) {
@@ -462,6 +462,32 @@ public class DateBoxWithCalendar extends Composite{
 		return true;
 	}
 
+	/**
+	 * Get the date as java.util.date.
+	 * 
+	 * @return Date, if is date not valid return null
+	 */
+	public Date getDate() {
+		Date testDate = new Date();
+		String value = dateBox.getValue();
+		if((value != null) && (value.length() > 0)) {
+			if(value.length() != 10) {
+				return null;
+			}
+			else {
+				int result = df.parse(value, 0, testDate);
+				if((result == 0) || !df.format(testDate).equals(value)) {
+					return null;
+				}
+			}
+		}
+		return testDate;
+	}
+	
+	
+	
+	
+	
 	/**
 	 * Checks if is enabled.
 	 * 

@@ -1,16 +1,15 @@
 package mat.client.measure.metadata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
@@ -35,7 +34,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
-import mat.model.Organization;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
@@ -1627,14 +1625,39 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	private boolean checkIfCalenderYear(){
 		boolean isCalender = false;
+		boolean isFromDateValid = true;
+		boolean isToDateValid = true;
 		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE)){
 			if(!metaDataDisplay.getMeasurementFromPeriod().isEmpty() && 
 					!metaDataDisplay.getMeasurementToPeriod().isEmpty()){
-				metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
-				metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
-				isCalender = true;
-			}
-			else {
+				// MAT5069 - user can enter date in text box now, so validate "from" box
+				if (!metaDataDisplay.getMeasurementFromPeriodInputBox().isDateValid()) {
+					metaDataDisplay.getCalenderYear().setFocus(true);
+					metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
+					isFromDateValid = false;
+					isCalender = false;
+				}
+				// MAT5069 - user can enter date in text box now, so validate "to" box
+				if (!metaDataDisplay.getMeasurementToPeriodInputBox().isDateValid()) {
+					metaDataDisplay.getCalenderYear().setFocus(true);
+					metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
+					isToDateValid = false;
+					isCalender = false;
+				}
+				// MAT5069 - Make sure that the Start Period >= From Period
+				if (isFromDateValid && isToDateValid) {
+					if (periodDatesValid(metaDataDisplay.getMeasurementFromPeriodInputBox(), metaDataDisplay.getMeasurementToPeriodInputBox())) {
+						metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+						metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
+						isCalender = true;
+					} else {
+						metaDataDisplay.getCalenderYear().setFocus(true);
+						metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
+						metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
+						isCalender = false;
+					}	
+				}
+			} else {
 				metaDataDisplay.getCalenderYear().setFocus(true);
 				metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
 				metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
@@ -1648,12 +1671,37 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 	
 	/**
+	 * checks that the to date >= from date in Measurement Period
+	 */
+	private boolean periodDatesValid(DateBoxWithCalendar fromDateBox, DateBoxWithCalendar toDateBox){
+		boolean valid = true;
+		
+		Date fromDate = fromDateBox.getDate();
+		Date toDate = toDateBox.getDate();
+
+		if (fromDate == null || toDate == null) {
+			return false;
+		}
+		
+		// check to see if the dates are the same day or not, assume both are in the same time zone
+		if (fromDate.compareTo(toDate) > 0) {
+			return false;
+		}
+		
+		return valid;
+	}
+
+
+	
+	/**
 	 * Removes the measurement period style.
 	 */
 	private void removeMeasurementPeriodStyle(){
 		metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
 		metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
 	}
+	
+	
 	
 	/**
 	 * Update model details from view.

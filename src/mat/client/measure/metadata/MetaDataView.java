@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -28,6 +29,7 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -41,8 +43,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -602,23 +602,23 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
 		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
 		//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
-		measurePeriodFromInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				formatDateValue(event,measurePeriodFromInput.getDateBox(), "");
-			}
-		});
-		
-		measurePeriodToInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				formatDateValue(event,measurePeriodToInput.getDateBox(), "");
-			}
-		});
-		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
-		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
+//		measurePeriodFromInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
+//			
+//			@Override
+//			public void onKeyUp(KeyUpEvent event) {
+//				formatDateValue(event,measurePeriodFromInput.getDateBox(), "");
+//			}
+//		});
+//		
+//		measurePeriodToInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
+//			
+//			@Override
+//			public void onKeyUp(KeyUpEvent event) {
+//				formatDateValue(event,measurePeriodToInput.getDateBox(), "");
+//			}
+//		});
+//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
+//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
 		Grid queryGrid = new Grid(3, 1);
 		queryGrid.setWidget(0, 0, calenderYearDatePanel);
 		queryGrid.setWidget(1, 0, new SpacerWidget());
@@ -2782,17 +2782,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return calenderYear;
 	}
 	
-	/**
-	 * Format date value.
-	 *
-	 * @param event the event
-	 * @param dateBox the date box
-	 * @param availableDateId the available date id
-	 */
-	private void formatDateValue(KeyUpEvent event, TextBox dateBox, String availableDateId) {
-		if(!event.isAnyModifierKeyDown()) {
-			dateBox.setValue("");
-			dateBox.setCursorPos(0);
-		}
-	}
+//	/**
+//	 * Format date value.
+//	 *
+//	 * @param event the event
+//	 * @param dateBox the date box
+//	 * @param availableDateId the available date id
+//	 */
+//	private void formatDateValue(KeyUpEvent event, TextBox dateBox, String availableDateId) {
+//		if(!event.isAnyModifierKeyDown()) {
+//			dateBox.setValue("");
+//			dateBox.setCursorPos(0);
+//		}
+//	}
 }

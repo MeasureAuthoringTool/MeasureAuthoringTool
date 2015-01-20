@@ -1218,7 +1218,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
 				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
 				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-					if (dataSetDTO.getOccurrenceText() != null
+					if ((dataSetDTO.getOccurrenceText() != null)
 							&& StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())
 							&& StringUtils.isNotEmpty(dataSetDTO.getOccurrenceText())) {
 						dataSetDTO.setSpecificOccurrence(true);
@@ -2850,7 +2850,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String oid = new String();
 				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
 					instance = instance.concat(modifyWithDTO.getOccurrenceText() + " of ");
-					newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
+					if (newNode.getAttributes().getNamedItem("instance") != null) {
+						newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
+					} else {
+						Attr instanceAttr = newNode.getOwnerDocument().createAttribute("instance");
+						instanceAttr.setValue(instance);
+						((Element) newNode).setAttributeNode(instanceAttr);
+					}
 				}
 				name = modifyWithDTO.getCodeListName();
 				dataType = modifyWithDTO.getDataType();

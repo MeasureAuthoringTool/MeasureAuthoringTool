@@ -1795,6 +1795,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
 				char occTxt = (char) occurrenceCount;
 				qds.setOccurrenceText("Occurrence" + " " + occTxt);
+				qds.setSpecificOccurrence(true);
 				if (dataType != null) {
 					DataType dt = dataTypeDAO.find(dataType);
 					qds.setDataType(dt.getDescription());

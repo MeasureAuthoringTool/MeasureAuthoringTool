@@ -23,7 +23,6 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -271,7 +270,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			.getMeasureService();
 	
 	/** The modify value set dto. {@link QualityDataSetDTO} instance. */
-	private final QualityDataSetDTO modifyValueSetDTO;
+	private QualityDataSetDTO modifyValueSetDTO;
 	
 	/**
 	 * The qds applied list presenter display. {@link QDSAppliedListPresenter}
@@ -888,6 +887,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					searchDisplay.getUserDefinedInput().setText("");
 					searchDisplay.getAllDataTypeInput().setSelectedIndex(0);
 				}
+				modifyValueSetDTO = modifyWithDTO;
 			}
 		});
 	}

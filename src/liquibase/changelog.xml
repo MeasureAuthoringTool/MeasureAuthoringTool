@@ -167,4 +167,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-50_delete_method_attr_Prodecure_Intolerance_dataType.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-54_US5194_20141124.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_55_Change_Timing_ShortNames.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-58_rename_ECWSO_SCWEO.xml"/>
 	</databaseChangeLog>

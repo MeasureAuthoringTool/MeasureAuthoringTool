@@ -468,20 +468,20 @@ public class DateBoxWithCalendar extends Composite{
 	 * @return Date, if is date not valid return null
 	 */
 	public Date getDate() {
-		Date testDate = new Date();
+		Date date = new Date();
 		String value = dateBox.getValue();
 		if((value != null) && (value.length() > 0)) {
 			if(value.length() != 10) {
 				return null;
 			}
 			else {
-				int result = df.parse(value, 0, testDate);
-				if((result == 0) || !df.format(testDate).equals(value)) {
+				int result = df.parse(value, 0, date);
+				if((result == 0) || !df.format(date).equals(value)) {
 					return null;
 				}
 			}
 		}
-		return testDate;
+		return date;
 	}
 	
 	

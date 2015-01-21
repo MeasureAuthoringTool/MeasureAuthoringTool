@@ -16,6 +16,7 @@ import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.ReadOnlyHelper;
@@ -356,6 +357,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		SuccessMessageDisplayInterface getRiskAdjSuccessMessageDisplay();
 		void setSubTreeInRiskAdjVarList(
 				List<RiskAdjustmentDTO> riskAdjClauseList);
+		InProgressMessageDisplay getInProgressMessageDisplay();
 	}
 	
 	/** The vsacapi service async. */
@@ -392,9 +394,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				clearMessages();				
+				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				isMeasurePackageExportSuccess = false;
+				/*((Button)(view.getPackageMeasureButton())).setText("Package In Progress");
+				((Button)(view.getPackageMeasureButton())).setTitle("Package In Progress");*/
+				view.getInProgressMessageDisplay().setMessage(" Loading Please Wait...");
 				validateGroup();
 			}
 		});
@@ -536,6 +541,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 				.setEnabled(true);
 				view.getPackageErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 			}
 			
 			@Override
@@ -1051,6 +1059,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 			}
 			
 			@Override
@@ -1063,9 +1074,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 					Mat.hideLoadingMessage();
 					view.getMeasurePackageWarningMsg().
 					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and Clause Workspace.");
-					
+					/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+					((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+					view.getInProgressMessageDisplay().clear();
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
 				}
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
 			}
 			
 		});
@@ -1084,6 +1097,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 			}
 			
 			/**
@@ -1105,10 +1121,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 								.getMessageDelegate()
 								.getValueSetDateInvalidMessage();
 						view.getErrorMessageDisplay().setMessage(message);
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+						/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+						((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+						view.getInProgressMessageDisplay().clear();
 					}
 				}
 				
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				
 			}
 		});
 		
@@ -1126,6 +1146,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 			}
 			
 			@Override
@@ -1153,6 +1176,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 			}
 			
 			@Override
@@ -1181,6 +1208,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();
+				/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+				((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+				view.getInProgressMessageDisplay().clear();
 				((Button) view.getPackageMeasureButton())
 				.setEnabled(true);
 				view.getPackageErrorMessageDisplay().setMessage(
@@ -1189,7 +1219,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(final ValidateMeasureResult result) {
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				/*((Button) view.getPackageMeasureButton()).setEnabled(true);*/
 				Mat.hideLoadingMessage();
 				if (updateVsacResult != null) {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
@@ -1200,6 +1230,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 								view.getMeasurePackageSuccessMsg()
 								.setAmberMessage(MatContext.get().getMessageDelegate()
 										.getPackageSuccessAmberMessage());
+								((Button) view.getPackageMeasureButton()).setEnabled(true);
+								view.getInProgressMessageDisplay().clear();
+								/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+								((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
 							}
 							
 						} else {
@@ -1209,6 +1243,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 								view.getMeasurePackageSuccessMsg()
 								.setMessage(MatContext.get().getMessageDelegate()
 										.getPackageSuccessMessage());
+								((Button) view.getPackageMeasureButton()).setEnabled(true);
+								/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+								((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+								view.getInProgressMessageDisplay().clear();
 							}
 						}
 						
@@ -1221,15 +1259,27 @@ public class MeasurePackagePresenter implements MatPresenter {
 								view.getMeasurePackageWarningMsg()
 								.setMessage(MatContext.get().getMessageDelegate()
 										.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+								((Button) view.getPackageMeasureButton()).setEnabled(true);
+								/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+								((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+								view.getInProgressMessageDisplay().clear();
 							}
 						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
 							view.getMeasureErrorMessageDisplay()
 							.setMessage(MatContext.get().getMessageDelegate()
 									.getMEASURE_PACKAGE_VSAC_TIMEOUT());
+							((Button) view.getPackageMeasureButton()).setEnabled(true);
+							/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+							((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+							view.getInProgressMessageDisplay().clear();
 						}
 					} else {
 						view.getMeasureErrorMessageDisplay()
 						.setMessages(result.getValidationMessages());
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+						/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+						((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+						view.getInProgressMessageDisplay().clear();
 					}
 				} else {
 					if (result.isValid()) {
@@ -1240,10 +1290,18 @@ public class MeasurePackagePresenter implements MatPresenter {
 							view.getMeasurePackageSuccessMsg()
 							.setMessage(MatContext.get().getMessageDelegate()
 									.getPackageSuccessMessage());
+							((Button) view.getPackageMeasureButton()).setEnabled(true);
+							/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+							((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+							view.getInProgressMessageDisplay().clear();
 						}
 					} else {
 						view.getMeasureErrorMessageDisplay()
 						.setMessages(result.getValidationMessages());
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+						/*((Button)(view.getPackageMeasureButton())).setText("Create Measure Package");
+						((Button)(view.getPackageMeasureButton())).setTitle("Create Measure Package");*/
+						view.getInProgressMessageDisplay().clear();
 					}
 				}
 			}

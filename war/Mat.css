@@ -1513,6 +1513,28 @@ padding: 2px;
  text-align: left;
 }
 
+.inprogress-alert {
+ /*background: #FFC url("images/alert.png") no-repeat 6px 20%;
+ background-image: url('images/alert.png');*/
+  background: no-repeat scroll 6px 50% #FFC;
+  border: 1px solid #ffff00;
+  display: block;
+  font-weight: bold;
+  margin: 2px auto 14px;
+  padding: 6px 6px 6px 30px;
+  text-align: left;
+}
+
+/* .warningMessage {
+    background: no-repeat scroll 6px 50% #EEC99E;
+    border: 1px solid #D28021;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+} */
 
 /*For boxed page navigation */
 .page-numbers {

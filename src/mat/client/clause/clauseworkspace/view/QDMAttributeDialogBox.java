@@ -279,7 +279,22 @@ public class QDMAttributeDialogBox {
 
 		
 		//for ModeList in Attribute Workflow
-		
+		modeListBox.clear();
+		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
+		modeListBox.setVisibleItemCount(1);
+		modeListBox.setWidth("200px");
+		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
+		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
+				.getExtraInformation(ATTRIBUTES);
+		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
+				.size();
+		String attributeName = "";
+		if(rows > 0){
+			CellTreeNode attributeNode = attributeNodeList.get(0);
+			attributeName = (String)attributeNode.getExtraInformation(NAME);
+			}
+		List<String> modeList = JSONAttributeModeUtility.getAttrModeList(attributeName);
+		modifyModeList(modeList);
 		Label opearorLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Mode");
 		dialogContents.add(opearorLabel);
 		dialogContents.setCellHorizontalAlignment(opearorLabel, HasHorizontalAlignment.ALIGN_LEFT);
@@ -289,15 +304,9 @@ public class QDMAttributeDialogBox {
 		final VerticalPanel dialogContents1 = new VerticalPanel();
 		dialogContents1.getElement().setId("qdmAttributeDialog_dialogContents1");
 		dialogContents.add(dialogContents1);
-		
-		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
-		.getExtraInformation(ATTRIBUTES);
-		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
-		.size();
 		if(rows > 0){
 			CellTreeNode attributeNode = attributeNodeList.get(0);
 			setExistingAttributeInPopup(attributeNode,attributeListBox,modeListBox,dialogContents1);
-			
 		}
 		if(checkForRemovedDataType){
 			attributeListBox.clear();
@@ -350,8 +359,7 @@ public class QDMAttributeDialogBox {
 
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					//attributeListBox.setTitle(optionElement.getTitle());
-					modfiyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
-					
+					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
 					modeListBox.setEnabled(true);
 					qdmAttributeDate.setValue("");
 					quantityTextBox.setValue("");
@@ -593,11 +601,8 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.center();
 	}
 	
-	private static void modfiyModeList(List<String> modeList){
+	private static void modifyModeList(List<String> modeList){
 		modeListBox.clear();
-		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
-		modeListBox.setVisibleItemCount(1);
-		modeListBox.setWidth("200px");
 		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
 		for (String modeName : modeList) {
 			String modeValue = (modeName.startsWith("--")) ? modeName

@@ -25,6 +25,29 @@ public class JSONAttributeModeUtility {
 	
 	/** The json object. */
 	private static JSONObject jsonObject;
+	
+    public static JSONObject getJsonObject() {
+		return jsonObject;
+	}
+
+	private static final String GREATER_THAN_OR_EQUAL_TO = "Greater Than Or Equal To";
+	
+	/** The Constant LESS_THAN_OR_EQUAL_TO. */
+	private static final String LESS_THAN_OR_EQUAL_TO = "Less Than Or Equal To";
+	
+	/** The Constant EQUAL_TO. */
+	private static final String EQUAL_TO = "Equal To";
+	
+	/** The Constant GREATER_THAN. */
+	private static final String GREATER_THAN = "Greater Than";
+	
+	/** The Constant LESS_THAN. */
+	private static final String LESS_THAN = "Less Than";
+	
+    private static final String VALUE_SET = "Value Set";
+	
+	/** The Constant CHECK_IF_PRESENT. */
+	private static final String CHECK_IF_PRESENT = "Check if Present";
 
 	/**
 	 * Gets the all attr mode list.
@@ -117,6 +140,16 @@ public class JSONAttributeModeUtility {
 		return modeList;
 	}
 	
+	public static boolean validateQDMAttribute(String attrName, String attrMode){
+		List<String> modeList = getAttrModeList(attrName);
+	    for(int i =0; i<modeList.size(); i++){
+	    	if(modeList.get(i).equals(attrMode)){
+	    		return true;
+	    	}
+	    }
+		return false;
+	}
+	
 	/**
 	 * Gets the attr mode.
 	 *
@@ -157,19 +190,19 @@ public class JSONAttributeModeUtility {
 	private static  String getAttrMode(String mode){
 		String attrMode="";
 		if(mode.equals("IsPresent")){
-			attrMode = "CHECK IF PRESENT";
+			attrMode = CHECK_IF_PRESENT;
 		} else if(mode.equals("ValueSet")){
-			attrMode = "VALUE SET";
+			attrMode = VALUE_SET;
 		} else if(mode.equals("Equals")){
-			attrMode = "EQUAL TO";
+			attrMode = EQUAL_TO;
 		} else if(mode.equals("GreaterThan")){
-			attrMode = "GREATER THAN";
+			attrMode = GREATER_THAN;
 		} else if(mode.equals("GreaterThanEqualTo")){
-			attrMode = "GREATER THAN OR EQUAL TO";
+			attrMode = GREATER_THAN_OR_EQUAL_TO;
 		} else if(mode.equals("LessThan")){
-			attrMode = "LESS THAN";
+			attrMode = LESS_THAN;
 		} else if(mode.equals("LessThanEqualTo")){
-			attrMode = "LESS THAN OR EQUAL TO";
+			attrMode = LESS_THAN_OR_EQUAL_TO;
 		}
 		
 		return attrMode;

@@ -1583,8 +1583,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getErrorMessageDisplay().clear();
 		metaDataDisplay.getSuccessMessageDisplay().clear();
 		metaDataDisplay.getSaveBtn().setFocus(true);
-		updateModelDetailsFromView();
 		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear()) {
+			updateModelDetailsFromView();
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
 			MatContext.get().getMeasureService().saveMeasureDetails(currentMeasureDetail,

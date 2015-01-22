@@ -367,6 +367,9 @@ public class MessageDelegate {
 	/** The measure package failed vsac timeout. */
 	private final String MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT = "Measure Package Failed. VSAC request timed out.Please contact Help Desk.";
 	
+	/** The Measure Period has invalid "TO" and/or "FROM" period dates. */
+	public final String MEASURE_PERIOD_DATES_ERROR = "Please enter an valid measurement period date.";
+	
 	/** The measure selection error. */
 	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
 	
@@ -1197,6 +1200,16 @@ public class MessageDelegate {
 	public String getMEASURE_PACKAGE_VSAC_TIMEOUT() {
 		return MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT;
 	}
+	
+	/**
+	 * Gets the measure package failed due to invalid period dates message.
+	 * 
+	 * @return String the MEASURE_PERIOD_DATES_ERROR
+	 */
+	public String getMEASURE_PERIOD_DATES_ERROR() {
+		return MEASURE_PERIOD_DATES_ERROR;
+	}
+
 	
 	/**
 	 * Gets the measure deletion invalid pwd.

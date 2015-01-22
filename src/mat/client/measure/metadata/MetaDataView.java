@@ -2764,6 +2764,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			measurePeriodFromInput.setValue("");
 			measurePeriodToInput.setValue("");
+			errorMessages.clear();
 			if (calenderYear.getValue().equals(Boolean.FALSE)) {
 				measurePeriodFromInput.setEnabled(true);
 				measurePeriodToInput.setEnabled(true);

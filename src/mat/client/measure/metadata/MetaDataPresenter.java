@@ -43,6 +43,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -1082,6 +1084,22 @@ public class MetaDataPresenter  implements MatPresenter {
 			}
 		});*/
 		
+		metaDataDisplay.getMeasurementFromPeriodInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				metaDataDisplay.getErrorMessageDisplay().clear();
+			}
+		});
+		
+		metaDataDisplay.getMeasurementToPeriodInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				metaDataDisplay.getErrorMessageDisplay().clear();
+			}
+		});
+		
 		metaDataDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -1403,7 +1421,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Prepopulate fields.
 	 */
 	private void prepopulateFields() {
-		removeMeasurementPeriodStyle();
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.getSetName().setValue(currentMeasureDetail.getGroupName());
@@ -1442,8 +1459,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		//currentMeasureDetail.setCalenderYear(metaDataDisplay.getCalenderYear().getValue());
 		metaDataDisplay.getCalenderYear().setValue(currentMeasureDetail.isCalenderYear());
 		if (metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE)) {
-		metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(currentMeasureDetail.getMeasFromPeriod());
-		metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
+			metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(currentMeasureDetail.getMeasFromPeriod());
+			metaDataDisplay.getMeasurementToPeriodInputBox().setValue(currentMeasureDetail.getMeasToPeriod());
 		} else {
 			metaDataDisplay.getMeasurementFromPeriodInputBox().setValue(null);
 			metaDataDisplay.getMeasurementToPeriodInputBox().setValue(null);
@@ -1632,41 +1649,33 @@ public class MetaDataPresenter  implements MatPresenter {
 					!metaDataDisplay.getMeasurementToPeriod().isEmpty()){
 				// MAT5069 - user can enter date in text box now, so validate "from" box
 				if (!metaDataDisplay.getMeasurementFromPeriodInputBox().isDateValid()) {
-					metaDataDisplay.getCalenderYear().setFocus(true);
-					metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
 					isFromDateValid = false;
 					isCalender = false;
 				}
-				// MAT5069 - user can enter date in text box now, so validate "to" box
 				if (!metaDataDisplay.getMeasurementToPeriodInputBox().isDateValid()) {
-					metaDataDisplay.getCalenderYear().setFocus(true);
-					metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
 					isToDateValid = false;
 					isCalender = false;
 				}
 				// MAT5069 - Make sure that the Start Period >= From Period
 				if (isFromDateValid && isToDateValid) {
 					if (periodDatesValid(metaDataDisplay.getMeasurementFromPeriodInputBox(), metaDataDisplay.getMeasurementToPeriodInputBox())) {
-						metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
-						metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
 						isCalender = true;
 					} else {
-						metaDataDisplay.getCalenderYear().setFocus(true);
-						metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
-						metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
 						isCalender = false;
 					}	
 				}
 			} else {
-				metaDataDisplay.getCalenderYear().setFocus(true);
-				metaDataDisplay.getMeasurementFromPeriodInputBox().setStyleName("gwt-TextBoxRed");
-				metaDataDisplay.getMeasurementToPeriodInputBox().setStyleName("gwt-TextBoxRed");
 				isCalender = false;
 			}
 		} else {
 			isCalender = true;
 		}
-		
+		// if error, put up error message
+		if (!isCalender) {
+			Mat.hideLoadingMessage();
+			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
+			metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
+		}
 		return isCalender;
 	}
 	
@@ -1692,17 +1701,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 
 
-	
-	/**
-	 * Removes the measurement period style.
-	 */
-	private void removeMeasurementPeriodStyle(){
-		metaDataDisplay.getMeasurementFromPeriodInputBox().removeStyleName("gwt-TextBoxRed");
-		metaDataDisplay.getMeasurementToPeriodInputBox().removeStyleName("gwt-TextBoxRed");
-	}
-	
-	
-	
+		
 	/**
 	 * Update model details from view.
 	 */
@@ -1719,7 +1718,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the meta data display
 	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay) {
-		removeMeasurementPeriodStyle();
 		currentMeasureDetail.setName(metaDataDisplay.getMeasureName().getText());
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());

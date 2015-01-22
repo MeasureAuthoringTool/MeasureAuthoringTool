@@ -26,10 +26,7 @@ public class JSONAttributeModeUtility {
 	/** The json object. */
 	private static JSONObject jsonObject;
 	
-    public static JSONObject getJsonObject() {
-		return jsonObject;
-	}
-
+	/** The Constant GREATER_THAN_OR_EQUAL_TO. */
 	private static final String GREATER_THAN_OR_EQUAL_TO = "Greater Than Or Equal To";
 	
 	/** The Constant LESS_THAN_OR_EQUAL_TO. */
@@ -44,6 +41,7 @@ public class JSONAttributeModeUtility {
 	/** The Constant LESS_THAN. */
 	private static final String LESS_THAN = "Less Than";
 	
+    /** The Constant VALUE_SET. */
     private static final String VALUE_SET = "Value Set";
 	
 	/** The Constant CHECK_IF_PRESENT. */
@@ -140,6 +138,13 @@ public class JSONAttributeModeUtility {
 		return modeList;
 	}
 	
+	/**
+	 * Validate qdm attribute.
+	 *
+	 * @param attrName the attr name
+	 * @param attrMode the attr mode
+	 * @return true, if successful
+	 */
 	public static boolean validateQDMAttribute(String attrName, String attrMode){
 		List<String> modeList = getAttrModeList(attrName);
 	    for(int i =0; i<modeList.size(); i++){
@@ -220,4 +225,13 @@ public class JSONAttributeModeUtility {
 		}
 		return qdsAttributesService;
 	}
+	
+	 /**
+ 	 * Gets the json object.
+ 	 *
+ 	 * @return the json object
+ 	 */
+ 	public static JSONObject getJsonObject() {
+			return jsonObject;
+		}
 }

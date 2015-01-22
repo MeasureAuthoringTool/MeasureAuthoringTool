@@ -213,11 +213,6 @@
     </attribute>
     <attribute attribName="Time">
         <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
     </attribute>
     <attribute attribName="Radiation Dosage">
         <mode mode="IsPresent"/>

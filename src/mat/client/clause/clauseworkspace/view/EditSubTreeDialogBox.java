@@ -279,51 +279,53 @@ public class EditSubTreeDialogBox {
 			public void onClick(ClickEvent event) {
 				
 				if (!isClauseNameAdded()) {
-				dialogBox.hide();
-				validationMessagePanel.removeStyleName("alertMessage");
-				dialogContents.remove(validationMessagePanel);
-				String clauseName = subTreeName.getText().trim();
-				boolean isValidClauseName = true;
-				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
-				for(int i = 0; i< clauseName.length(); i++){
-					if(!Character.isLetter(clauseName.charAt(i)) && !Character.isDigit(clauseName.charAt(i)) && clauseName.charAt(i) != '_'
-							&& clauseName.charAt(i) != ' '){
-						isValidClauseName = false;
-						break;
+					dialogBox.hide();
+					validationMessagePanel.removeStyleName("alertMessage");
+					dialogContents.remove(validationMessagePanel);
+					String clauseNameWithSpaces = subTreeName.getText().trim();
+					String clauseName = clauseNameWithSpaces.replaceAll("( )+", " ");
+					subTreeName.setText(clauseName);
+					boolean isValidClauseName = true;
+					int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
+					for(int i = 0; i< clauseName.length(); i++){
+						if(!Character.isLetter(clauseName.charAt(i)) && !Character.isDigit(clauseName.charAt(i)) && clauseName.charAt(i) != '_'
+								&& clauseName.charAt(i) != ' '){
+							isValidClauseName = false;
+							break;
+						}
 					}
-				}
-				if(!isValidClauseName){
-					validationMessagePanel.add(warningIcon);
-					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed Characters: Alphanumeric, White space, Underscore");
-					validationMessagePanel.setStyleName("alertMessage");
-					validationMessagePanel.add(messageLabel);
-					dialogContents.insert(validationMessagePanel, 0);
-					dialogBox.setPopupPosition(365, 215);
-					dialogBox.show();
-				}
-				else{
-					if(numberOfClause >0){
-						isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(),xmlTreeDisplay);
-					}
-					if(!isClausePresent){
-						xmlTreeDisplay.addNode(subTreeName.getText()
-								, subTreeName.getText()
-								, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
-						xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
-						xmlTreeDisplay.setDirty(true);
-						setClauseNameAdded(true);
-					}else{
+					if(!isValidClauseName){
 						validationMessagePanel.add(warningIcon);
-						messageLabel.setText("Clause name already exists");
+						messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed Characters: Alphanumeric, White space, Underscore");
 						validationMessagePanel.setStyleName("alertMessage");
 						validationMessagePanel.add(messageLabel);
 						dialogContents.insert(validationMessagePanel, 0);
 						dialogBox.setPopupPosition(365, 215);
 						dialogBox.show();
 					}
-				}
+					else{
+						if(numberOfClause >0){
+							isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(),xmlTreeDisplay);
+						}
+						if(!isClausePresent){
+							xmlTreeDisplay.addNode(subTreeName.getText()
+									, subTreeName.getText()
+									, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+							xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
+							xmlTreeDisplay.setDirty(true);
+							setClauseNameAdded(true);
+						}else{
+							validationMessagePanel.add(warningIcon);
+							messageLabel.setText("Clause name already exists");
+							validationMessagePanel.setStyleName("alertMessage");
+							validationMessagePanel.add(messageLabel);
+							dialogContents.insert(validationMessagePanel, 0);
+							dialogBox.setPopupPosition(365, 215);
+							dialogBox.show();
+						}
+					}
+				} // end !isClauseNameAdded() 
 			}
-	}
 		});
 		
 		save.getElement().setId("save_Button");
@@ -334,7 +336,7 @@ public class EditSubTreeDialogBox {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-			String clauseName = subTreeName.getText().trim();
+  				String clauseName = subTreeName.getText().trim();
 				if(clauseName == null || "".equals(clauseName.trim()) || !Character.isLetter(clauseName.charAt(0))){
 					subTreeName.setText("");
 					save.setEnabled(false);

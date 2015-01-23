@@ -8,11 +8,15 @@
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
     <xsl:preserve-space elements="content" />
    <xsl:template match="/">
-       <xsl:variable name="qdmVersionNumber" select="'4.1.2'">
-      </xsl:variable>
+       <xsl:variable name="qdmVersionNumber" select="'4.1.2'"/>
         <xsl:comment> 
-           **************** QDM Version Used: QDM <xsl:value-of select="$qdmVersionNumber"/> *******************  
+           ******************* 
+           QDM Version Used: QDM <xsl:value-of select="$qdmVersionNumber"/> 
+           *******************  
         </xsl:comment>
+         <xsl:text>
+         
+         </xsl:text>
        <QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns="urn:hl7-org:v3" xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1">
             <xsl:apply-templates select="measure" />

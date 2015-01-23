@@ -8,7 +8,7 @@
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
     <xsl:preserve-space elements="content" />
    <xsl:template match="/">
-       <xsl:variable name="qdmVersionNumber" select="'4.2.1'">
+       <xsl:variable name="qdmVersionNumber" select="'4.1.2'">
       </xsl:variable>
         <xsl:comment> 
            **************** QDM Version Used: QDM <xsl:value-of select="$qdmVersionNumber"/> *******************  

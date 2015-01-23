@@ -117,7 +117,10 @@ public class EditSubTreeDialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogContents.remove(validationMessagePanel);
-				String clauseName = subTreeName.getText().trim();
+				String clauseNameWithSpaces = subTreeName.getText().trim();
+				String clauseName = clauseNameWithSpaces.replaceAll("( )+", " ");
+				subTreeName.setText(clauseName);
+
 				boolean isValidClauseName = true;
 				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
 				for(int i = 0; i< clauseName.length(); i++){

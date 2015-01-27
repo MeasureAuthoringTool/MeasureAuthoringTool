@@ -337,7 +337,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				// take the spaces out of the xml for displayNme xml attribute
-				String myXml = clauseNameNormalizeSpaces(measureXmlModel, nodeUUID, nodeName);
+				String myXml = clauseNameNormalizeSpaces(measureXmlModel, nodeName);
 				measureXmlModel.setXml(myXml);
 				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
 						, measureXmlModel.getParentNode());
@@ -3923,13 +3923,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param xmlModel the xml model
 	 * @return 
 	 */
-	private String clauseNameNormalizeSpaces (MeasureXmlModel measureXmlModel, String nodeUUID, String nodeName ) throws XPathExpressionException {
+	private String clauseNameNormalizeSpaces (MeasureXmlModel measureXmlModel, String nodeName ) throws XPathExpressionException {
 		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
 		Node node = xmlProcessor.getOriginalDoc().getElementsByTagName("subTree").item(0);
 		if (node != null) {
 			node.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
 		}
-		return xmlProcessor.getOriginalXml();
+		return xmlProcessor.transform(node);
 
 	}
 	

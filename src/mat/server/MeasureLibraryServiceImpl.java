@@ -324,7 +324,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
+	public SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeNameWithSpaces, String nodeUUID) {
+		
+		// change multiple spaces into one space for the nodeName
+		String nodeName = nodeNameWithSpaces.replaceAll("( )+", " ");
+		
 		logger.info("Inside saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 		SortedClauseMapResult clauseMapResult = new SortedClauseMapResult();
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
@@ -332,6 +336,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
+				// take the spaces out of the xml for displayNme xml attribute
+				String myXml = clauseNameNormalizeSpaces(measureXmlModel, nodeUUID, nodeName);
+				measureXmlModel.setXml(myXml);
 				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
 						, measureXmlModel.getParentNode());
 				// Add subTreeLookUp node if not available in MeasureXml.
@@ -3907,6 +3914,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return usedAuthorList;
 	}
+	
+	
+	
+	/**
+	 * Takes the spaces out of the clauseName (attribute displayName in XML).
+	 *
+	 * @param xmlModel the xml model
+	 * @return 
+	 */
+	private String clauseNameNormalizeSpaces (MeasureXmlModel measureXmlModel, String nodeUUID, String nodeName ) throws XPathExpressionException {
+		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
+		Node node = xmlProcessor.getOriginalDoc().getElementsByTagName("subTree").item(0);
+		if (node != null) {
+			node.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
+		}
+		return xmlProcessor.getOriginalXml();
+
+	}
+	
 	
 	/**
 	 * Gets the steward id.

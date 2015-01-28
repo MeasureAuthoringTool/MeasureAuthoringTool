@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -82,6 +84,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -337,8 +340,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				// take the spaces out of the xml for displayNme xml attribute
-				String myXml = clauseNameNormalizeSpaces(measureXmlModel, nodeName);
-				measureXmlModel.setXml(myXml);
+				String normalisedXml = XmlProcessor.normalizeNodeForSpaces(measureXmlModel.getXml(), "//subTree/@displayName");
+				measureXmlModel.setXml(normalisedXml);
+				
 				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
 						, measureXmlModel.getParentNode());
 				// Add subTreeLookUp node if not available in MeasureXml.
@@ -3913,24 +3917,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		return usedAuthorList;
-	}
-	
-	
-	
-	/**
-	 * Takes the spaces out of the clauseName (attribute displayName in XML).
-	 *
-	 * @param xmlModel the xml model
-	 * @return 
-	 */
-	private String clauseNameNormalizeSpaces (MeasureXmlModel measureXmlModel, String nodeName ) throws XPathExpressionException {
-		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
-		Node node = xmlProcessor.getOriginalDoc().getElementsByTagName("subTree").item(0);
-		if (node != null) {
-			node.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
-		}
-		return xmlProcessor.transform(node);
-
 	}
 	
 	

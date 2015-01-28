@@ -1506,6 +1506,24 @@ public class XmlProcessor {
 	}
 	
 	/**
+	 * Takes the spaces out of the clauseName (attribute displayName in XML).
+	 *
+	 * @param xmlModel the xml model
+	 * @return 
+	 */
+	public static String normalizeNodeForSpaces (String xmlString, String xPathString) throws XPathExpressionException {
+		XmlProcessor xmlProcessor = new XmlProcessor(xmlString);
+		Node node = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathString);
+		if (node != null) {
+			String oldValue = node.getNodeValue();
+			// normalilze by changing multiple spaces into one space
+			String newValue = oldValue.replaceAll("( )+", " ");
+			node.setNodeValue(newValue);
+		}
+		return xmlProcessor.transform(xmlProcessor.getOriginalDoc());	
+	}
+
+	/**
 	 * Utility method to go through the Node and its children (upto nth level) 
 	 * and remove all TEXT nodes.
 	 * @param node

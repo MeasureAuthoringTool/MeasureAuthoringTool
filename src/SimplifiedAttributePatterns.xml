@@ -144,7 +144,9 @@
         <mode mode="LessThanEqualTo"/>
     </attribute>
     <attribute attribName="Related To">
-        <mode mode="IsPresent"/> <!-- added: 1/22/2015 4:23 P.M. -->
+       <!--  <mode mode="IsPresent"/> -->
+         <mode mode="ValueSet"/>
+         <!-- added: 1/22/2015 4:23 P.M. -->
         <!--<mode mode="LessThanEqualTo"/> removed: 1/22/2015 4:23 P.M. -->
     </attribute>
     <attribute attribName="Removal Datetime">

@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.clause.QDSAttributesService;
 import mat.dao.DataTypeDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -24,7 +23,6 @@ import mat.server.util.ResourceLoader;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 // TODO: Auto-generated Javadoc
@@ -33,12 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @SuppressWarnings("serial")
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
-		implements QDSAttributesService {
-
+implements QDSAttributesService {
+	
 	/** The q ds attributes dao. */
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,7 +54,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 		// Collections.sort(attrs, attributeComparator);
 		return attrs;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,6 +62,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 	 * mat.client.clause.QDSAttributesService#getAllAttributesByDataType(java
 	 * .lang.String)
 	 */
+	@Override
 	public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName) {
 		List<QDSAttributes> attrs = getDAO().findByDataTypeName(dataTypeName,
 				context);
@@ -72,7 +71,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 		attrs.addAll(attrs1);
 		return attrs;
 	}
-
+	
 	/** The attribute comparator. */
 	private Comparator<QDSAttributes> attributeComparator = new Comparator<QDSAttributes>() {
 		@Override
@@ -81,7 +80,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 					.compareTo(arg1.getName().toLowerCase());
 		}
 	};
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,7 +90,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 	public List<QDSAttributes> getAllDataFlowAttributeName() {
 		return getDAO().getAllDataFlowAttributeName();
 	}
-
+	
 	/**
 	 * Gets the dao.
 	 * 
@@ -100,7 +99,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 	public QDSAttributesDAO getDAO() {
 		return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,7 +117,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 		}
 		return checkIfDataTypeIsPresent;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,10 +126,10 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 	 */
 	@Override
 	public Map<String, List<String>> getDatatypeList(List<String> dataTypeList) {
-
+		
 		DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
 		Map<String, List<String>> dataTypeListMap = new HashMap<String, List<String>>();
-
+		
 		for (String dataType : dataTypeList) {
 			DataType qdmDataType = dataTypeDAO.findByDataTypeName(dataType);
 			if (qdmDataType != null) {
@@ -138,11 +137,11 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 				dataTypeListMap.put(dataType, qdsAttributeList);
 			}
 		}
-
+		
 		return dataTypeListMap;
-
+		
 	}
-
+	
 	/**
 	 * Gets the all qdm attributesby data type.
 	 * 
@@ -158,11 +157,12 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 		}
 		return qdsAttributes;
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSAttributesService#getJSONObjectFromXML()
 	 */
+	@Override
 	public String getJSONObjectFromXML() {
 		String result = null;
 		try {
@@ -173,14 +173,13 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 			JSON json = xmlSerializer.read(result);
 			JSONObject jsonObject = JSONObject.fromObject(json.toString());
 			result = jsonObject.toString(4);
-
 		} catch (Exception e) {
 			e.printStackTrace();
-
+			
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Convert xml to string.
 	 *
@@ -202,7 +201,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 			}
 			fr = new FileReader(xmlFile);
 			BufferedReader br = new BufferedReader(fr);
-
+			
 			try {
 				while ((line = br.readLine()) != null) {
 					sb.append(line.trim());
@@ -215,5 +214,5 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 		}
 		return sb.toString();
 	}
-
+	
 }

@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-
 import mat.client.ImageResources;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -12,11 +11,10 @@ import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.JSONAttributeModeUtility;
+import mat.client.shared.LabelBuilder;
 import mat.model.clause.QDSAttributes;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.OptionElement;
@@ -135,7 +133,7 @@ public class QDMAttributeDialogBox {
 	private static DateBoxWithCalendar  qdmAttributeDate = new DateBoxWithCalendar();
 	
 	/** The Constant ATTRIBUTE_DATE. */
-	private static final String ATTRIBUTE_DATE = "attrDate"; 
+	private static final String ATTRIBUTE_DATE = "attrDate";
 	
 	private static ListBox modeListBox  = new ListBox(false);
 	
@@ -197,7 +195,7 @@ public class QDMAttributeDialogBox {
 		if (qdmNode.getAttributes().getNamedItem(INSTANCE) != null) {
 			isOccuranceQDM = true;
 		}
-			
+		
 		// unitNames.addAll(getUnitNameList());
 		unitNames.add("");
 		unitNames.addAll(PopulationWorkSpaceConstants.units);
@@ -205,7 +203,7 @@ public class QDMAttributeDialogBox {
 		List<String> mode = getModeList();
 		if(qdmDataType.equalsIgnoreCase("Patient characteristic Birthdate") || qdmDataType.equalsIgnoreCase("Patient characteristic Expired")){
 			Node oid = qdmNode.getAttributes().getNamedItem("oid");
-			 String  oidValue = oid.getNodeValue().trim();
+			String  oidValue = oid.getNodeValue().trim();
 			if(oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)){
 				findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
 						xmlTreeDisplay, cellTreeNode);
@@ -214,8 +212,8 @@ public class QDMAttributeDialogBox {
 						xmlTreeDisplay, cellTreeNode, true);
 			}
 		}else{
-		findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
-				xmlTreeDisplay, cellTreeNode);
+			findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
+					xmlTreeDisplay, cellTreeNode);
 		}
 		// buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay,
 		// cellTreeNode);
@@ -230,17 +228,17 @@ public class QDMAttributeDialogBox {
 	 * @param cellTreeNode            the cell tree node
 	 * @param checkForRemovedDataType the check for removed data type
 	 */
-	private static void buildAndDisplayDialogBox(String qdmDataType,
+	private static void buildAndDisplayDialogBox(final String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
 			final CellTreeNode cellTreeNode, boolean checkForRemovedDataType) {
 		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false, true);
-	
+		
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
 		qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
-	
+		
 		
 		// Create a table to layout the content
 		final HorizontalPanel hPanel = new HorizontalPanel();
@@ -265,7 +263,7 @@ public class QDMAttributeDialogBox {
 			SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 					.getOptions();
-
+			
 			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 			attributeListBox.setTitle(optionElement.getTitle());
 		}
@@ -276,7 +274,7 @@ public class QDMAttributeDialogBox {
 		dialogContents.setCellHorizontalAlignment(attributeLabel, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(attributeListBox, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(attributeListBox);
-
+		
 		
 		//for ModeList in Attribute Workflow
 		modeListBox.clear();
@@ -292,8 +290,8 @@ public class QDMAttributeDialogBox {
 		if(rows > 0){
 			CellTreeNode attributeNode = attributeNodeList.get(0);
 			attributeName = (String)attributeNode.getExtraInformation(NAME);
-			}
-		List<String> modeList = JSONAttributeModeUtility.getAttrModeList(attributeName);
+		}
+		List<String> modeList = JSONAttributeModeUtility.getAttrModeList(attributeName, qdmDataType);
 		modifyModeList(modeList);
 		Label opearorLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Mode");
 		dialogContents.add(opearorLabel);
@@ -314,7 +312,7 @@ public class QDMAttributeDialogBox {
 			modeListBox.clear();
 			modeListBox.setEnabled(false);
 			unitsListBox.clear();
-			unitsListBox.setEnabled(false);	
+			unitsListBox.setEnabled(false);
 			quantityTextBox.setValue("");
 			quantityTextBox.setEnabled(false);
 			qdmAttributeDate.setValue("");
@@ -334,7 +332,7 @@ public class QDMAttributeDialogBox {
 					SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
 					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 							.getOptions();
-
+					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					attributeListBox.setTitle(optionElement.getTitle());
 				}
@@ -346,7 +344,7 @@ public class QDMAttributeDialogBox {
 						SelectElement selectElement = SelectElement.as(modeListBox.getElement());
 						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 								.getOptions();
-
+						
 						OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 						modeListBox.setTitle(optionElement.getTitle());
 					}
@@ -356,10 +354,10 @@ public class QDMAttributeDialogBox {
 					SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
 					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 							.getOptions();
-
+					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					//attributeListBox.setTitle(optionElement.getTitle());
-					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
+					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle(),qdmDataType));
 					modeListBox.setEnabled(true);
 					qdmAttributeDate.setValue("");
 					quantityTextBox.setValue("");
@@ -373,7 +371,7 @@ public class QDMAttributeDialogBox {
 			}
 		});
 		
-
+		
 		modeListBox.addChangeHandler(new ChangeHandler() {
 			
 			@Override
@@ -385,7 +383,7 @@ public class QDMAttributeDialogBox {
 					SelectElement selectElement = SelectElement.as(modeListBox.getElement());
 					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 							.getOptions();
-
+					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					modeListBox.setTitle(optionElement.getTitle());
 				}
@@ -414,7 +412,7 @@ public class QDMAttributeDialogBox {
 								SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
 								com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 										.getOptions();
-			
+								
 								OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 								qdmListBox.setTitle(optionElement.getTitle());
 							}
@@ -484,13 +482,13 @@ public class QDMAttributeDialogBox {
 					unitsListBox.getElement().setId("qdmAttributeDialog_unitsListBox");
 					unitsListBox.setVisibleItemCount(1);
 					unitsListBox.setWidth("200px");
-	
+					
 					Label unitsLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Units");
 					dialogContents1.add(unitsLabel);
 					dialogContents1.setCellHorizontalAlignment(unitsLabel, HasHorizontalAlignment.ALIGN_LEFT);
 					dialogContents1.setCellHorizontalAlignment(unitsListBox, HasHorizontalAlignment.ALIGN_LEFT);
 					dialogContents1.add(unitsListBox);
-							
+					
 					for (String unitName : unitNames) {
 						unitsListBox.addItem(unitName);
 					}
@@ -499,7 +497,7 @@ public class QDMAttributeDialogBox {
 						SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
 						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 								.getOptions();
-
+						
 						OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 						unitsListBox.setTitle(optionElement.getTitle());
 					}
@@ -511,7 +509,7 @@ public class QDMAttributeDialogBox {
 								SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
 								com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 										.getOptions();
-
+								
 								OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 								unitsListBox.setTitle(optionElement.getTitle());
 							}
@@ -527,28 +525,28 @@ public class QDMAttributeDialogBox {
 		Button okButton = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-
+				
 				if(attributeListBox.getSelectedIndex() > 0){
-					 if(!isValidMode(modeListBox)){
+					if(!isValidMode(modeListBox)){
 						hPanel.clear();
 						getWidget(hPanel,"Please select Mode");
 						
 					}
 					else if(modeListBox.getSelectedIndex() > 2){
 						String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-							if(!isValidQuantity(quantityTextBox, attributeListBox)){
-								hPanel.clear();
-								getWidget(hPanel,"Please enter Quantity");
-							} else if(!isValidDate(qdmAttributeDate, attributeListBox)){
-								hPanel.clear();
-								getWidget(hPanel,"Please enter Date");
-							}
-							else{
-								saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox,qdmAttributeDate);
-								xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
-								xmlTreeDisplay.setDirty(true);
-								qdmAttributeDialogBox.hide();
-							}
+						if(!isValidQuantity(quantityTextBox, attributeListBox)){
+							hPanel.clear();
+							getWidget(hPanel,"Please enter Quantity");
+						} else if(!isValidDate(qdmAttributeDate, attributeListBox)){
+							hPanel.clear();
+							getWidget(hPanel,"Please enter Date");
+						}
+						else{
+							saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox,qdmAttributeDate);
+							xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+							xmlTreeDisplay.setDirty(true);
+							qdmAttributeDialogBox.hide();
+						}
 					}
 					else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
 						if(qdmListBox.getSelectedIndex() == -1){
@@ -589,7 +587,7 @@ public class QDMAttributeDialogBox {
 			}
 		});
 		cancelButton.getElement().setId("qdmAttributeDialog_cancelButton");
-
+		
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.getElement().setId("qdmAttributeDialog_buttonPanel");
 		buttonPanel.setSpacing(10);
@@ -614,13 +612,13 @@ public class QDMAttributeDialogBox {
 			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 					.getOptions();
-
+			
 			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 			modeListBox.setTitle(optionElement.getTitle());
 		}
 		modeListBox.setEnabled(false);
 	}
-
+	
 	/**
 	 * Save to model.
 	 *
@@ -645,30 +643,30 @@ public class QDMAttributeDialogBox {
 		CellTreeNode attributeNode = new CellTreeNodeImpl();
 		attributeNode.setName(ATTRIBUTE);
 		attributeNode.setNodeType(CellTreeNode.ATTRIBUTE_NODE);
-	
+		
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		attributeNode.setExtraInformation(NAME, attributeName);
-	
+		
 		String modeName = modeListBox.getValue(modeListBox.getSelectedIndex());
-			
+		
 		if (CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)) {
-				attributeNode.setExtraInformation(MODE, modeName);
-				if (VALUE_SET.equals(modeName)) {
-					String uuid = qdmListBox.getValue(qdmListBox.getSelectedIndex());
-					attributeNode.setExtraInformation(QDM_UUID, uuid);
-				}
+			attributeNode.setExtraInformation(MODE, modeName);
+			if (VALUE_SET.equals(modeName)) {
+				String uuid = qdmListBox.getValue(qdmListBox.getSelectedIndex());
+				attributeNode.setExtraInformation(QDM_UUID, uuid);
+			}
 		} else if(attributeName.contains("date")){
 			attributeNode.setExtraInformation(MODE, modeName);
-			attributeNode.setExtraInformation(ATTRIBUTE_DATE,qdmAttributeDate.getValue());	
+			attributeNode.setExtraInformation(ATTRIBUTE_DATE,qdmAttributeDate.getValue());
 			
-	} else {
-		attributeNode.setExtraInformation(MODE, modeName);
-		attributeNode.setExtraInformation(COMPARISON_VALUE,quantityTextBox.getText());	
-		String unitName = unitsListBox.getItemText(unitsListBox.getSelectedIndex());
-		if (unitName.trim().length() > 0) {
-			attributeNode.setExtraInformation(UNIT, unitName);
+		} else {
+			attributeNode.setExtraInformation(MODE, modeName);
+			attributeNode.setExtraInformation(COMPARISON_VALUE,quantityTextBox.getText());
+			String unitName = unitsListBox.getItemText(unitsListBox.getSelectedIndex());
+			if (unitName.trim().length() > 0) {
+				attributeNode.setExtraInformation(UNIT, unitName);
+			}
 		}
-}
 		attributeList.add(attributeNode);
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES,
 				attributeList);
@@ -692,7 +690,7 @@ public class QDMAttributeDialogBox {
 		// Set the attribute name
 		String attributeName = (String) attributeNode.getExtraInformation(NAME);
 		attributeListBox.setEnabled(true);
-        setEnabled(attributeListBox);
+		setEnabled(attributeListBox);
 		for (int j = 0; j < attributeListBox.getItemCount(); j++) {
 			if (attributeListBox.getItemText(j).equals(attributeName)) {
 				attributeListBox.setSelectedIndex(j);
@@ -704,7 +702,7 @@ public class QDMAttributeDialogBox {
 			SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 					.getOptions();
-
+			
 			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 			attributeListBox.setTitle(optionElement.getTitle());
 		}
@@ -722,14 +720,14 @@ public class QDMAttributeDialogBox {
 			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 					.getOptions();
-
+			
 			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 			modeListBox.setTitle(optionElement.getTitle());
 		}
 		if (!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)) {
 			if (VALUE_SET.equalsIgnoreCase(modeName)) {
 				qdmListBox = createQdmListBox();
-						
+				
 				String qdmId = (String) attributeNode
 						.getExtraInformation(QDM_UUID);
 				if (PopulationWorkSpaceConstants.getElementLookUpName().containsKey(qdmId)) {
@@ -756,7 +754,7 @@ public class QDMAttributeDialogBox {
 							SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
 							com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 									.getOptions();
-		
+							
 							OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 							qdmListBox.setTitle(optionElement.getTitle());
 						}
@@ -789,7 +787,7 @@ public class QDMAttributeDialogBox {
 					
 					@Override
 					public void onClick(ClickEvent event) {
-						qdmAttributeDate.removeStyleName("gwt-TextBoxRed");	
+						qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 					}
 				};
 				qdmAttributeDate.getDateBox().addKeyDownHandler(keyDownHandler);
@@ -849,7 +847,7 @@ public class QDMAttributeDialogBox {
 					SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
 					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 							.getOptions();
-
+					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					unitsListBox.setTitle(optionElement.getTitle());
 				}
@@ -861,7 +859,7 @@ public class QDMAttributeDialogBox {
 							SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
 							com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 									.getOptions();
-
+							
 							OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 							unitsListBox.setTitle(optionElement.getTitle());
 						}
@@ -874,7 +872,7 @@ public class QDMAttributeDialogBox {
 				dialogContents1.add(unitsListBox);
 			}
 		}
-	setEnabled(attributeListBox);
+		setEnabled(attributeListBox);
 	}
 	
 	/**
@@ -1090,11 +1088,11 @@ public class QDMAttributeDialogBox {
 	 * @param attributeListBox the attribute list box
 	 * @return true, if is valid quantity
 	 */
-	private static boolean isValidQuantity(TextBox quantityTextBox, 
+	private static boolean isValidQuantity(TextBox quantityTextBox,
 			ListBox attributeListBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		boolean isValid = true;
-		if(quantityTextBox.getValue().equals("") && 
+		if(quantityTextBox.getValue().equals("") &&
 				!attributeName.contains("date")){
 			quantityTextBox.setStyleName("gwt-TextBoxRed");
 			qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
@@ -1110,11 +1108,11 @@ public class QDMAttributeDialogBox {
 	 * @param attributeListBox the attribute list box
 	 * @return true, if is valid date
 	 */
-	private static boolean isValidDate(DateBoxWithCalendar qdmAttributeDate, 
+	private static boolean isValidDate(DateBoxWithCalendar qdmAttributeDate,
 			ListBox attributeListBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		boolean isValid = true;
-		if(qdmAttributeDate.getValue().equals("") && 
+		if(qdmAttributeDate.getValue().equals("") &&
 				attributeName.contains("date")){
 			qdmAttributeDate.setStyleName("gwt-TextBoxRed");
 			quantityTextBox.removeStyleName("gwt-TextBoxRed");
@@ -1184,7 +1182,7 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDate.removeStyleName("gwt-TextBoxRed");
 		quantityTextBox.removeStyleName("gwt-TextBoxRed");
 		if(attributeName.contains("date")){
-			qdmAttributeDate.setEnabled(true);			
+			qdmAttributeDate.setEnabled(true);
 			unitsListBox.setEnabled(false);
 			quantityTextBox.setEnabled(false);
 		} else {

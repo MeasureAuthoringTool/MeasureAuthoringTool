@@ -237,7 +237,7 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    <attribute attribName="Result" datatypeList="Physical Exam, Performed; Procedure, Performed; Intervention, Performed">
+    <!-- <attribute attribName="Result" datatypeList="Physical Exam, Performed; Procedure, Performed; Intervention, Performed">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/>
         <mode mode="GreaterThan"/>
@@ -245,7 +245,7 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
         <mode mode="ValueSet"/>
-    </attribute>
+    </attribute> Commented as below is representing same mode list.-->
     <attribute attribName="Result" datatypeList="Diagnostic Study, Performed; Functional Status, Performed; Laboratory Test, Performed; Risk Category Assessment">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/>

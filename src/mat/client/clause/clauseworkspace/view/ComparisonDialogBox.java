@@ -1,6 +1,7 @@
 package mat.client.clause.clauseworkspace.view;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,18 @@ public class ComparisonDialogBox {
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false,true);
 	
+	public static List<String> filterFunctionList = new ArrayList<String>();
+	
+	static{
+		filterFunctionList.add("FIRST");
+		filterFunctionList.add("SECOND");
+		filterFunctionList.add("THIRD");
+		filterFunctionList.add("FOURTH");
+		filterFunctionList.add("FIFTH");
+		filterFunctionList.add("MOST RECENT");
+		filterFunctionList.add("SATISFIES ALL");
+		filterFunctionList.add("SATISFIES ANY");
+	}
 	
 	/**
 	 * Show comparison dialog box.
@@ -106,6 +119,7 @@ public class ComparisonDialogBox {
 			labelForListBox = "Timing";
 		} else {
 			keys = MatContext.get().functions;
+			keys = filterFunctions(cellTreeNode.getParent(), keys);
 			labelForListBox = "Functions";
 		}
 		
@@ -116,8 +130,9 @@ public class ComparisonDialogBox {
 		for (int i = 0; i < keys.size(); i++) {
 			if(!(labelForListBox.equalsIgnoreCase("Functions")
 					&& ((keys.get(i).equals("SATISFIES ALL") 
-							|| keys.get(i).equals("SATISFIES ANY")))))
+							|| keys.get(i).equals("SATISFIES ANY"))))){
 				listAllTimeOrFunction.addItem(keys.get(i));
+			}
 			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
 				listAllTimeOrFunction.setSelectedIndex(i);
 			}
@@ -452,6 +467,41 @@ public class ComparisonDialogBox {
 		hPanel.add(msgPanel);
 		setFocus(hPanel);
 		return hPanel;
+	}
+
+	/**
+	 * Timings, Relationships (Fulfills), Union/Intersection, Satisfies All/Any should have a restricted list of functions to use as children. 
+	 * Only allow: First - Fifth, Most Recent, Satisfies All/Any.
+	 * @param allFunctionsList
+	 * @return
+	 */
+	public static List<String> filterFunctions(final CellTreeNode cellTreeNode, List<String> allFunctionsList) {
+		
+		System.out.println("filtyerFunctions....");
+		List<String> returnList = new ArrayList<String>(filterFunctionList);
+//		returnList.add("FIRST");
+//		returnList.add("SECOND");
+//		returnList.add("THIRD");
+//		returnList.add("FOURTH");
+//		returnList.add("FIFTH");
+//		returnList.add("MOST RECENT");
+//		returnList.add("SATISFIES ALL");
+//		returnList.add("SATISFIES ANY");
+		
+		int nodeType = cellTreeNode.getNodeType();
+		System.out.println("nodeType:"+nodeType);
+		String nodeText = cellTreeNode.getLabel();
+		System.out.println("nodeText:"+nodeText);
+		
+		if(nodeType == CellTreeNode.FUNCTIONS_NODE && (!("SATISFIES ALL".equals(nodeText)) && !("SATISFIES ANY".equals(nodeText)) )){
+			returnList = allFunctionsList;
+		}else if(nodeType != CellTreeNode.TIMING_NODE && nodeType != CellTreeNode.SET_OP_NODE && 
+				nodeType != CellTreeNode.RELATIONSHIP_NODE && nodeType != CellTreeNode.FUNCTIONS_NODE) {
+			returnList = allFunctionsList;
+		}
+		
+		System.out.println("returnList:"+returnList);
+		return returnList;
 	}
 	
 }

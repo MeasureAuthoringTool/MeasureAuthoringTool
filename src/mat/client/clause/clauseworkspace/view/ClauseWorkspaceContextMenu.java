@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -12,6 +13,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.event.ClauseSpecificOccurenceEvent;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
@@ -411,7 +413,8 @@ public class ClauseWorkspaceContextMenu {
 				, timingSubTreeMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsSubTreeMenuBar = new MenuBar(true);
 		subMenuBar.addItem("Functions", functionsSubTreeMenuBar); //functions menu 2nd level
-		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+		List<String> functionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
+		createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
 				, functionsSubTreeMenuBar); // functions sub menus 3rd level
 		MenuBar relSubTreeMenuBar2 = new MenuBar(true);
 		subMenuBar.addItem("Relationship", relSubTreeMenuBar2); //functions menu 2nd level
@@ -622,13 +625,23 @@ public class ClauseWorkspaceContextMenu {
 					addMenuLHS.setEnabled(false);
 				}
 			}
-			if((xmlTreeDisplay.getCopiedNode() != null)
-					&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) &&
-					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && (xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
-				pasteMenu.setEnabled(true);
-			} else {
-				pasteMenu.setEnabled(false);
-			}
+			if(xmlTreeDisplay.getCopiedNode() != null){
+					if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) &&
+					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && 
+					(xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
+						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+							String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
+							if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+								pasteMenu.setEnabled(false);
+							}
+						}else{
+							pasteMenu.setEnabled(true);
+						}
+					}else {
+						pasteMenu.setEnabled(false);
+					}
+			} 
+		
 			/*
 			 * POC Global Copy Paste.
 			 * if((copiedNode != null)
@@ -652,7 +665,8 @@ public class ClauseWorkspaceContextMenu {
 			createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timing); // Timing sub menus 3rd level
 			MenuBar functions = new MenuBar(true);
 			subMenuBar.addItem("Functions", functions); //functions menu 2nd level
-			createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+			List<String> functionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
+			createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
 					, functions); // functions sub menus 3rd level
 			createAddClauseMenuItem(subMenuBar);
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
@@ -725,7 +739,8 @@ public class ClauseWorkspaceContextMenu {
 				CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsSetOpMenuBar = new MenuBar(true);
 		subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
-		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+		List<String> functionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
+		createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
 				, functionsSetOpMenuBar); // functions sub menus 3rd level
 		MenuBar relSetOpMenuBar = new MenuBar(true);
 		subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
@@ -737,9 +752,16 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-			pasteMenu.setEnabled(true);
+		if (xmlTreeDisplay.getCopiedNode() != null){
+			if (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) {
+				pasteMenu.setEnabled(true);
+			}
+			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+				String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
+				if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+					pasteMenu.setEnabled(false);
+				}
+			}
 		}
 		/*
 		 * POC Global Copy Paste.
@@ -767,6 +789,7 @@ public class ClauseWorkspaceContextMenu {
 		}
 		checkIsParentSatisfy();
 	}
+	
 	
 	/**
 	 * Creates the add clause menu item.
@@ -874,11 +897,21 @@ public class ClauseWorkspaceContextMenu {
 			pasteMenu.setEnabled(true);
 			pasteFromClipboardMenu.setEnabled(true);
 		}*/
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-			pasteMenu.setEnabled(true);
+		if (xmlTreeDisplay.getCopiedNode() != null){
+			
+				if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)						
+						&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+								|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+					pasteMenu.setEnabled(true);
+				}
+				
+				if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+					String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
+					if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+						pasteMenu.setEnabled(false);
+					}
+				}					
+			
 		}
 		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 			deleteMenu.setEnabled(true);
@@ -993,7 +1026,8 @@ public class ClauseWorkspaceContextMenu {
 		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true);
 		menuBar.addItem("Functions", functionsMenuBar); //functions menu 2nd level
-		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar); // functions sub menus 3rd level
+		List<String> functionList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
+		createAddMenus(functionList, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar); // functions sub menus 3rd level
 		if(addClauseMenuItem){
 			createAddClauseMenuItem(menuBar);
 		}

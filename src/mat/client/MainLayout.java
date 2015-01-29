@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class MainLayout {
 	
 	/** The active umls image. */
-	private static Image activeUmlsImage;You have successfully logged into the MAT
+	private static Image activeUmlsImage;
 	
 	/** The alert image. */
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());

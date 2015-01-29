@@ -340,8 +340,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				// take the spaces out of the xml for displayNme xml attribute
-				String normalisedXml = XmlProcessor.normalizeNodeForSpaces(measureXmlModel.getXml(), "//subTree/@displayName");
-				measureXmlModel.setXml(normalisedXml);
+				String normalizedXml = XmlProcessor.normalizeNodeForSpaces(measureXmlModel.getXml(), "//subTree/@displayName");
+				measureXmlModel.setXml(normalizedXml);
 				
 				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
 						, measureXmlModel.getParentNode());

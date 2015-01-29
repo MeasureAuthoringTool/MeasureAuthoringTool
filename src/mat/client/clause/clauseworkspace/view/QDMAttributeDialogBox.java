@@ -583,6 +583,7 @@ public class QDMAttributeDialogBox {
 		Button cancelButton = new Button("Cancel", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				modeListBox.removeStyleName("gwt-TextBoxRed");
 				qdmAttributeDialogBox.hide();
 			}
 		});

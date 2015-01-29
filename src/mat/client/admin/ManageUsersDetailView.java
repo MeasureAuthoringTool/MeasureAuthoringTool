@@ -200,7 +200,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		rightPanel.add(roleRadioPanel);
 		rightPanel.add(new SpacerWidget());
 		
-		rightPanel.add(LabelBuilder.buildRequiredLabel(organizationListBox, organizationLabel));
+		rightPanel.add(LabelBuilder.buildLabel(organizationListBox, organizationLabel));
 		rightPanel.add(organizationListBox);
 		rightPanel.add(new SpacerWidget());
 		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -228,7 +228,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("OrganizationOidUpdated"),
 				"OrganizationOidUpdated");
 		rightPanel.add(invisibleLabel);
-		rightPanel.add(LabelBuilder.buildRequiredLabel(oid, oidLabel));
+		rightPanel.add(LabelBuilder.buildLabel(oid, oidLabel));
 		rightPanel.add(oid);
 		rightPanel.add(new SpacerWidget());
 		

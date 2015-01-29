@@ -105,7 +105,7 @@ public class QDMAttributeDialogBox {
 	private static final String QDM_ATTRIBUTES_TITLE = "Edit Attribute";
 	
 	/** The Constant SELECT. */
-	private static final String SELECT = "Select";
+	private static final String SELECT = "--Select--";
 	
 	/** The Constant UUID. */
 	private static final String UUID = "uuid";

@@ -241,6 +241,29 @@ implements ManageUsersPresenter.DetailDisplay {
 		revokedStatus.addStyleName("block");
 		rightPanel.add(activeStatus);
 		rightPanel.add(revokedStatus);
+		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()) {
+					organizationListBox.setEnabled(true);
+					oid.setEnabled(true);
+				}
+			}
+		});
+		
+		revokedStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				// TODO Auto-generated method stub
+				if(event.getValue()) {
+					organizationListBox.setEnabled(false);
+					organizationListBox.setValue("");
+					oid.setValue("");
+					oid.setEnabled(false);
+				}
+			}
+		});
 		rightPanel.add(new SpacerWidget());
 		
 		rightPanel.add(resetPassword);

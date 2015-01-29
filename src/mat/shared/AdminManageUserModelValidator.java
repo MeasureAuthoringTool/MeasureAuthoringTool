@@ -53,10 +53,14 @@ public class AdminManageUserModelValidator {
 		}
 		
 		if("".equals(model.getOrganizationId().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
+			if(model.isActive()) {
+				message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
+			}
 		}
 		if("".equals(model.getOid().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getOIDRequiredMessage());
+			if(model.isActive()) {
+				message.add(MatContext.get().getMessageDelegate().getOIDRequiredMessage());
+			}
 		}
 		/*if("".equals(model.getRootOid().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());

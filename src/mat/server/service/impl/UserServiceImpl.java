@@ -779,8 +779,14 @@ public class UserServiceImpl implements UserService {
 		//user.setOrgOID(model.getOid());
 		//user.setRootOID(model.getRootOid());
 		//user.setOrganizationName(model.getOrganization());
-		Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
-		user.setOrganization(organization);
+		
+		if(model.isActive()){
+			Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
+			user.setOrganization(organization);
+		} else if(!model.isActive()){
+			Organization organizationRevoked = organizationDAO.find(Long.parseLong("1"));// 1 org id in db has blank organization name and oid.
+			user.setOrganization(organizationRevoked);
+		}
 		
 		if(model.isActive() && (user.getActivationDate() == null)) {
 			user.setTerminationDate(null);

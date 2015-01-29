@@ -702,12 +702,22 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
-		detailDisplay.getOrganizationListBox().setValue(currentDetails.getOrganizationId());
+		
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {
 			detailDisplay.getIsRevoked().setValue(true);
+			detailDisplay.getOrganizationListBox().setValue("");
+			detailDisplay.getOrganizationListBox().setEnabled(false);
+			detailDisplay.getOid().setValue("");
+			detailDisplay.getOid().setTitle("");
+			detailDisplay.getOid().setEnabled(false);
 		} else { // added else to fix default Revoked radio check in Mozilla (User Story 755)
 			detailDisplay.getIsRevoked().setValue(false);
+			detailDisplay.getOrganizationListBox().setEnabled(true);
+			detailDisplay.getOrganizationListBox().setValue(currentDetails.getOrganizationId());
+			detailDisplay.getOid().setEnabled(true);
+			detailDisplay.getOid().setValue(currentDetails.getOid());
+			detailDisplay.getOid().setTitle(currentDetails.getOid());
 		}
 		
 		detailDisplay.setUserLocked(currentDetails.isLocked());
@@ -721,8 +731,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.setUserIsActiveEditable(currentDetails.isCurrentUserCanChangeAccountStatus());
 		detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
 		detailDisplay.getRole().setValue(currentDetails.getRole());
-		detailDisplay.getOid().setValue(currentDetails.getOid());
-		detailDisplay.getOid().setTitle(currentDetails.getOid());
+		/*detailDisplay.getOid().setValue(currentDetails.getOid());
+		detailDisplay.getOid().setTitle(currentDetails.getOid());*/
 		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 	}
 	

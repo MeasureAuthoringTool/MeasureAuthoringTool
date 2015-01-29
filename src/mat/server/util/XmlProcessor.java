@@ -1516,7 +1516,7 @@ public class XmlProcessor {
 		Node node = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathString);
 		if (node != null) {
 			String oldValue = node.getNodeValue();
-			// normalilze by changing multiple spaces into one space
+			// Normalize by changing multiple spaces into one space
 			String newValue = oldValue.replaceAll("( )+", " ");
 			node.setNodeValue(newValue);
 		}

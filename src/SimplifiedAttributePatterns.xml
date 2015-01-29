@@ -267,7 +267,7 @@
         <mode mode="ValueSet"/>
     </attribute>
     <attribute attribName="negation rationale">
-        <mode mode="ValueSet"/>
+        <mode mode="IsPresent"/>
     </attribute>
     
     <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Non-Order">

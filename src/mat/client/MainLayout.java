@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class MainLayout {
 	
 	/** The active umls image. */
-	private static Image activeUmlsImage;
+	private static Image activeUmlsImage;You have successfully logged into the MAT
 	
 	/** The alert image. */
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
@@ -441,7 +441,7 @@ public abstract class MainLayout {
 	 * @return the welcome user panel
 	 */
 	public HorizontalFlowPanel getWelcomeUserPanel(String userFirstName) {
-		welcomeUserLabel = new HTML("<h9><b>Welcome "+ userFirstName+"</b></h9>");
+		welcomeUserLabel = new HTML("<h9><b>Welcome, "+ userFirstName+"</b></h9>");
 		welcomeUserLabel.getElement().setId("welcomeUserLabel_HTML");
 		welcomeUserLabel.getElement().setAttribute("tabIndex", "0");
 		welcomeUserLabel.setStylePrimaryName("htmlDescription");

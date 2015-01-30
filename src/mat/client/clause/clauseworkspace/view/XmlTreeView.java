@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -23,7 +24,9 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -1601,11 +1604,28 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							case CellTreeNode.SET_OP_NODE:
 								if(selectedNode.getName().contains("SATISFIES")){
 									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
-										canPaste = true;
+										if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+											String funcName = copiedNode.getLabel();
+											if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+												canPaste = false;
+											}else{
+												canPaste = true;
+											}
+										}else{
+											canPaste = true;
+										}
 									}
 								}
-								else if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
-									canPaste = true;
+								else{ 
+									if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
+										canPaste = true;
+									}
+									if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+										String funcName = copiedNode.getLabel();
+										if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+											canPaste = false;
+										}
+									}
 								}
 								break;
 							case CellTreeNode.TIMING_NODE:
@@ -1613,6 +1633,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 										&& ((selectedNode.getChilds() == null)
 												|| (selectedNode.getChilds().size() < 2))) {
 									canPaste = true;
+								}
+								if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+									String funcName = copiedNode.getLabel();
+									if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+										canPaste = false;
+									}
 								}
 								break;
 							case CellTreeNode.CLAUSE_NODE:

@@ -68,12 +68,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public static interface MetaDataDetailDisplay {
 		
-		/**
-		 * Gets the measure name.
-		 * 
-		 * @return the measure name
-		 */
-		public Label getMeasureName();
 		
 		/**
 		 * Gets the short name.
@@ -1424,7 +1418,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.getSetName().setValue(currentMeasureDetail.getGroupName());
-		metaDataDisplay.getMeasureName().setText(currentMeasureDetail.getName());
 		metaDataDisplay.getShortName().setText(currentMeasureDetail.getShortName());
 		metaDataDisplay.getMeasureScoring().setText(currentMeasureDetail.getMeasScoring());
 		metaDataDisplay.getClinicalRecommendation().setValue(currentMeasureDetail.getClinicalRecomms());
@@ -1718,7 +1711,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the meta data display
 	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay) {
-		currentMeasureDetail.setName(metaDataDisplay.getMeasureName().getText());
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());
 		currentMeasureDetail.setClinicalRecomms(metaDataDisplay.getClinicalRecommendation().getValue());

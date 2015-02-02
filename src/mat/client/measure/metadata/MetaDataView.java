@@ -94,10 +94,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
-	
-	/** The name input. */
-	protected Label nameInput = new Label();
-	
+		
 	/** The abbr input. */
 	protected Label abbrInput = new Label();
 	
@@ -465,12 +462,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(errorMessages);
 		
 		
-		Label nameInputLabel = (Label) LabelBuilder.buildLabel(nameInput, "eMeasure Title");
-		nameInputLabel.setStyleName("bold");
-		fPanel.add(nameInputLabel);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setAttribute("id", "emeasureTitlePanel");
-		hp.add(nameInput);
 		hp.add(deleteMeasure);
 		deleteMeasure.getElement().setId("deleteMeasure_Button");
 		fPanel.add(hp);
@@ -1869,14 +1862,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public Widget asComponentMeasuresWidget() {
 		return horzComponentMeasurePanel;
 		//return mainPanel;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureName()
-	 */
-	@Override
-	public Label getMeasureName() {
-		return nameInput;
 	}
 	
 	/* (non-Javadoc)

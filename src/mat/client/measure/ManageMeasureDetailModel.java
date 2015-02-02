@@ -1438,13 +1438,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 			return false;
 		}
 		
-		if (trimToNull(name) == null) {
-			if (trimToNull(other.name) != null) {
-				return false;
-			}
-		} else if (!trimToNull(name).equals(trimToNull(other.name))) {
-			return false;
-		}
+//		if (trimToNull(name) == null) {
+//			if (trimToNull(other.name) != null) {
+//				return false;
+//			}
+//		} else if (!trimToNull(name).equals(trimToNull(other.name))) {
+//			return false;
+//		}
 		if (trimToNull(nqfId) == null) {
 			if (trimToNull(other.nqfId) != null) {
 				return false;

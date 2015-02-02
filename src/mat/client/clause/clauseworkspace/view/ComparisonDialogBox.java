@@ -477,23 +477,19 @@ public class ComparisonDialogBox {
 	 */
 	public static List<String> filterFunctions(final CellTreeNode cellTreeNode, List<String> allFunctionsList) {
 		
-		System.out.println("filtyerFunctions....");
+		System.out.println("filterFunctions....");
 		List<String> returnList = new ArrayList<String>(filterFunctionList);
-//		returnList.add("FIRST");
-//		returnList.add("SECOND");
-//		returnList.add("THIRD");
-//		returnList.add("FOURTH");
-//		returnList.add("FIFTH");
-//		returnList.add("MOST RECENT");
-//		returnList.add("SATISFIES ALL");
-//		returnList.add("SATISFIES ANY");
 		
 		int nodeType = cellTreeNode.getNodeType();
 		System.out.println("nodeType:"+nodeType);
 		String nodeText = cellTreeNode.getLabel();
 		System.out.println("nodeText:"+nodeText);
 		
-		if(nodeType == CellTreeNode.FUNCTIONS_NODE && (!("SATISFIES ALL".equals(nodeText)) && !("SATISFIES ANY".equals(nodeText)) )){
+		if(nodeType == CellTreeNode.FUNCTIONS_NODE 
+				&& (!("SATISFIES ALL".equals(nodeText)) 
+						&& !("SATISFIES ANY".equals(nodeText)) 
+						&& !("AGE AT".equals(nodeText)) 
+						&& !("DATETIMEDIFF".equals(nodeText)))){
 			returnList = allFunctionsList;
 		}else if(nodeType != CellTreeNode.TIMING_NODE && nodeType != CellTreeNode.SET_OP_NODE && 
 				nodeType != CellTreeNode.RELATIONSHIP_NODE && nodeType != CellTreeNode.FUNCTIONS_NODE) {

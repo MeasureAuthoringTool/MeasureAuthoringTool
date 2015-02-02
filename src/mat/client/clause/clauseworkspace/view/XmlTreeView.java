@@ -1602,7 +1602,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								break;
 							case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
 							case CellTreeNode.SET_OP_NODE:
-								if(selectedNode.getName().contains("SATISFIES")){
+								if(selectedNode.getName().contains("SATISFIES") || selectedNode.getName().equals("AGE AT") || selectedNode.getName().equals("DATETIMEDIFF")){
 									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
 										if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 											String funcName = copiedNode.getLabel();

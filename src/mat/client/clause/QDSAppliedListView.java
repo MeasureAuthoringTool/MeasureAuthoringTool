@@ -1,10 +1,10 @@
 package mat.client.clause;
 
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -15,7 +15,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -73,6 +72,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private Button removeButton = new Button("Remove");
 	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel;
+	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
 	/** The update vsac button. */
 	private Button updateVsacButton = new Button("Update from VSAC");
 	/**
@@ -90,9 +90,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		/*
 		 * mainPanelNormal.add(pagerPanel); vp.add(new SpacerWidget());
 		 */
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(errorMessagePanel);
-		verticalPanel.add(successMessagePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(mainPanelNormal);
 		verticalPanel.add(new SpacerWidget());
@@ -114,8 +111,13 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		buttonLayout.add(removeButton);
 		buttonLayout.add(modify);
 		buttonLayout.add(updateVsacButton);
+		verticalPanel.add(inProgressMessageDisplay);
+		verticalPanel.add(errorMessagePanel);
+		verticalPanel.add(successMessagePanel);
+		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(buttonLayout);
 		verticalPanel.add(new SpacerWidget());
+		
 		mainPanel.add(verticalPanel);
 		containerPanel.getElement().setAttribute("id", "subQDMAPPliedListContainerPanel");
 		containerPanel.add(mainPanel);
@@ -187,8 +189,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					title = title.append("Datatype : ").append(object.getDataType());
-					return getDataTypeColumnToolTip(object.getDataType(), title, object.getHasModifiedAtVSAC(), 
-                             object.isDataTypeHasRemoved());
+					return getDataTypeColumnToolTip(object.getDataType(), title, object.getHasModifiedAtVSAC(),
+							object.isDataTypeHasRemoved());
 				}
 			};
 			table.addColumn(dataTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Datatype\">" + "Datatype"
@@ -502,6 +504,19 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 */
 	public SuccessMessageDisplay getSuccessMessagePanel() {
 		return successMessagePanel;
+	}
+	/**
+	 * @return the inProgressMessageDisplay
+	 */
+	@Override
+	public InProgressMessageDisplay getInProgressMessageDisplay() {
+		return inProgressMessageDisplay;
+	}
+	/**
+	 * @param inProgressMessageDisplay the inProgressMessageDisplay to set
+	 */
+	public void setInProgressMessageDisplay(InProgressMessageDisplay inProgressMessageDisplay) {
+		this.inProgressMessageDisplay = inProgressMessageDisplay;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getUpdateVsacButton()

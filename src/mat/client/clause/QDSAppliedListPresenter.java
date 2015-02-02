@@ -8,13 +8,13 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -104,6 +104,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		 *            {@link QualityDataSetDTO}
 		 */
 		void setAppliedQDMList(List<QualityDataSetDTO> appliedQDMList);
+		
+		InProgressMessageDisplay getInProgressMessageDisplay();
 	}
 	/**
 	 * List of all Applied QDM's.
@@ -143,6 +145,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
+				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
 				if (searchDisplay.getSelectedElementToRemove() != null) {
 					service.getAppliedQDMFromMeasureXml(MatContext.get()
 							.getCurrentMeasureId(), false,
@@ -150,6 +153,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 						
 						@Override
 						public void onFailure(final Throwable caught) {
+							searchDisplay.getInProgressMessageDisplay().clear();
 							Window.alert(MatContext.get()
 									.getMessageDelegate()
 									.getGenericErrorMessage());
@@ -212,6 +216,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
+				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
 				updateVSACValueSets();
 			}
 		});
@@ -343,7 +348,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public final void resetQDSFields() {
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		searchDisplay.getErrorMessageDisplay().clear();
-		
+		searchDisplay.getInProgressMessageDisplay().clear();
 	}
 	
 	/**
@@ -357,6 +362,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
+				searchDisplay.getInProgressMessageDisplay().clear();
 				Window.alert(MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 				
@@ -392,18 +398,20 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * Service Call to updateVsacValueSet.
 	 */
 	private void updateVSACValueSets() {
-		showSearchingBusy(true);
+		//showSearchingBusy(true);
 		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
+				searchDisplay.getInProgressMessageDisplay().clear();
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				showSearchingBusy(false);
+				//showSearchingBusy(false);
 			}
 			
 			@Override
 			public void onSuccess(final VsacApiResult result) {
-				showSearchingBusy(false);
+				//showSearchingBusy(false);
+				searchDisplay.getInProgressMessageDisplay().clear();
 				if (result.isSuccess()) {
 					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
 							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
@@ -411,7 +419,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					appliedListModel.setAppliedQDMs(result.getUpdatedQualityDataDTOLIst());
 					searchDisplay.buildCellTable(appliedListModel);
-					searchDisplay.setAppliedQDMList((ArrayList<QualityDataSetDTO>) result.getUpdatedQualityDataDTOLIst());
+					searchDisplay.setAppliedQDMList(result.getUpdatedQualityDataDTOLIst());
 				} else {
 					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
 				}

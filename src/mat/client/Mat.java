@@ -10,7 +10,6 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.login.service.SessionManagementService;
-//import mat.client.measure.AdminManageMeasureSearchView;
 import mat.client.measure.ManageMeasureDetailView;
 import mat.client.measure.ManageMeasureDraftView;
 import mat.client.measure.ManageMeasureExportView;
@@ -31,7 +30,6 @@ import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginView;
@@ -64,6 +62,7 @@ import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
+//import mat.client.measure.AdminManageMeasureSearchView;
 
 
 // TODO: Auto-generated Javadoc
@@ -486,7 +485,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			/*codeListController = new CodeListController();
 			title = ClientConstants.TITLE_VALUE_SET_LIB;
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
-			*/
+			 */
 			measureLibrary = buildMeasureLibraryWidget(false);
 			title = ClientConstants.TITLE_MEASURE_LIB;
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
@@ -510,8 +509,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_ADMIN;
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
 			
-//			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
-//			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+			//			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
+			//			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			/**
 			 * Commented Value Set Owner ship tab as part of MAT-2452 : Remove Value Set Ownership tab.
 			 * **/
@@ -524,7 +523,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
-			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));			
+			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			
 		}
 		else {
@@ -535,6 +534,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		mainTabLayout.setHeight("100%");
 		
 		Anchor signout = new Anchor(ClientConstants.ANCHOR_SIGN_OUT);
+		signout.setTitle("Sign Out");
+		signout.getElement().setAttribute("id", "Anchor_signOut");
 		signout.addClickHandler(new MATClickHandler() {
 			
 			@SuppressWarnings("rawtypes")

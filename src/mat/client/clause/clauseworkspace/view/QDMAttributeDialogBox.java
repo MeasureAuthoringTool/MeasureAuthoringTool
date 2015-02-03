@@ -525,54 +525,51 @@ public class QDMAttributeDialogBox {
 		Button okButton = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				
-				if(attributeListBox.getSelectedIndex() > 0){
-					if(!isValidMode(modeListBox)){
+				if (attributeListBox.getSelectedIndex() > 0) {
+					if (!isValidMode(modeListBox)) {
 						hPanel.clear();
-						getWidget(hPanel,"Please select Mode");
-						
-					}
-					else if(modeListBox.getSelectedIndex() > 2){
-						String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-						if(!isValidQuantity(quantityTextBox, attributeListBox)){
-							hPanel.clear();
-							getWidget(hPanel,"Please enter Quantity");
-						} else if(!isValidDate(qdmAttributeDate, attributeListBox)){
-							hPanel.clear();
-							getWidget(hPanel,"Please enter Date");
-						}
-						else{
-							saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox,qdmAttributeDate);
-							xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
-							xmlTreeDisplay.setDirty(true);
-							qdmAttributeDialogBox.hide();
-						}
-					}
-					else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
-						if(qdmListBox.getSelectedIndex() == -1){
+						getWidget(hPanel , "Please select Mode");
+					} else if (modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")) {
+						if (qdmListBox.getSelectedIndex() == -1) {
 							hPanel.clear();
 							qdmListBox.setStyleName("gwt-TextBoxRed");
-							getWidget(hPanel,"Please select Value Set");
-						}
-						else{
-							saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox,qdmAttributeDate);
-							xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+							getWidget(hPanel, "Please select Value Set");
+						} else {
+							saveToModel(xmlTreeDisplay, attributeListBox, modeListBox
+									, qdmListBox, quantityTextBox, unitsListBox, qdmAttributeDate);
+							xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
 							xmlTreeDisplay.setDirty(true);
 							qdmAttributeDialogBox.hide();
 						}
-					}
-					else{
-						saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox,qdmAttributeDate);
-						xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+					} //else if ((modeListBox.getSelectedIndex() < 7)  && (modeListBox.getSelectedIndex() >1)) {
+					else if(!modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")
+							&& !modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Check if Present")){
+						/*String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());*/
+						if (!isValidQuantity(quantityTextBox, attributeListBox)) {
+							hPanel.clear();
+							getWidget(hPanel, "Please enter Quantity");
+						} else if (!isValidDate(qdmAttributeDate, attributeListBox)) {
+							hPanel.clear();
+							getWidget(hPanel, "Please enter Date");
+						} else {
+							saveToModel(xmlTreeDisplay, attributeListBox, modeListBox
+									, qdmListBox, quantityTextBox, unitsListBox, qdmAttributeDate);
+							xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
+							xmlTreeDisplay.setDirty(true);
+							qdmAttributeDialogBox.hide();
+						}
+					} else {
+						saveToModel(xmlTreeDisplay, attributeListBox, modeListBox
+								, qdmListBox, quantityTextBox, unitsListBox, qdmAttributeDate);
+						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
 						xmlTreeDisplay.setDirty(true);
 						qdmAttributeDialogBox.hide();
 					}
-				}
-				else{
+				} else {
 					List<CellTreeNode> attributeList = new ArrayList<CellTreeNode>();
 					xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES,
 							attributeList);
-					xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+					xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
 					xmlTreeDisplay.setDirty(true);
 					qdmAttributeDialogBox.hide();
 				}
@@ -1093,7 +1090,7 @@ public class QDMAttributeDialogBox {
 			ListBox attributeListBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		boolean isValid = true;
-		if(quantityTextBox.getValue().equals("") &&
+		if(quantityTextBox.isEnabled() && quantityTextBox.getValue().equals("") &&
 				!attributeName.contains("date")){
 			quantityTextBox.setStyleName("gwt-TextBoxRed");
 			qdmAttributeDate.removeStyleName("gwt-TextBoxRed");

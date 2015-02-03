@@ -57,6 +57,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -97,6 +98,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	/** The abbr input. */
 	protected Label abbrInput = new Label();
+	
+	/** The disclosure panel for read only measure details. */
+	private DisclosurePanel disclosurePanelDisplayOnly = new DisclosurePanel("");
 	
 	/** The meas scoring input. */
 	protected Label measScoringInput = new Label();
@@ -466,22 +470,56 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		hp.getElement().setAttribute("id", "emeasureTitlePanel");
 		hp.add(deleteMeasure);
 		deleteMeasure.getElement().setId("deleteMeasure_Button");
+		hp.setStylePrimaryName("floatRightButtonPanel");
 		fPanel.add(hp);
 		fPanel.add(new SpacerWidget());
+		
+		
+		// create a panel to display read-only data in disclosrePanel
+		VerticalPanel displayOnlyPanel = new VerticalPanel();
+		displayOnlyPanel.getElement().setId("mainPanel_VerticalPanel");
+		displayOnlyPanel.setSize("500px", "100px");
 		
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
 		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
 		measScoringInputLabel.setStyleName("bold");
-		fPanel.add(measScoringInputLabel);
-		fPanel.add(measScoringInput);
+		displayOnlyPanel.add(measScoringInputLabel);
+		displayOnlyPanel.add(measScoringInput);
 		measScoringInput.getElement().setId("measScoringInput_Label");
-		fPanel.add(new SpacerWidget());
+		displayOnlyPanel.add(new SpacerWidget());
 		
 		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
 		abbrInputLabel.setStyleName("bold");
-		fPanel.add(abbrInputLabel);
-		fPanel.add(abbrInput);
+		displayOnlyPanel.add(abbrInputLabel);
+		displayOnlyPanel.add(abbrInput);
 		abbrInput.getElement().setId("abbrInput_Label");
+		displayOnlyPanel.add(new SpacerWidget());	
+		
+		Label finalizedDateLabel = (Label) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
+		finalizedDateLabel.setStyleName("bold");
+		displayOnlyPanel.add(finalizedDateLabel);
+		displayOnlyPanel.add(finalizedDate);
+		finalizedDate.getElement().setId("finalizedDate_Label");
+		displayOnlyPanel.add(new SpacerWidget());
+		
+		Label eMeasureIdentifierLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
+		eMeasureIdentifierLabel.setStyleName("bold");
+		displayOnlyPanel.add(eMeasureIdentifierLabel);
+		displayOnlyPanel.add(eMeasureIdentifier);
+		eMeasureIdentifier.getElement().setId("eMeasureIdentifier_Label");
+		displayOnlyPanel.add(new SpacerWidget());
+		
+		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
+		versionInputLabel.setStyleName("bold");
+		displayOnlyPanel.add(versionInputLabel);
+		displayOnlyPanel.add(versionInput);
+		versionInput.getElement().setId("versionInput_Label");
+		displayOnlyPanel.add(new SpacerWidget());
+		
+		disclosurePanelDisplayOnly.add(displayOnlyPanel);
+		disclosurePanelDisplayOnly.setOpen(false);
+
+		fPanel.add(disclosurePanelDisplayOnly);
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
@@ -502,26 +540,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generateeMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		fPanel.add(new SpacerWidget());
 		
-		Label finalizedDateLabel = (Label) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
-		finalizedDateLabel.setStyleName("bold");
-		fPanel.add(finalizedDateLabel);
-		fPanel.add(finalizedDate);
-		finalizedDate.getElement().setId("finalizedDate_Label");
-		fPanel.add(new SpacerWidget());
-		
-		Label eMeasureIdentifierLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
-		eMeasureIdentifierLabel.setStyleName("bold");
-		fPanel.add(eMeasureIdentifierLabel);
-		fPanel.add(eMeasureIdentifier);
-		eMeasureIdentifier.getElement().setId("eMeasureIdentifier_Label");
-		fPanel.add(new SpacerWidget());
-		
-		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
-		versionInputLabel.setStyleName("bold");
-		fPanel.add(versionInputLabel);
-		fPanel.add(versionInput);
-		versionInput.getElement().setId("versionInput_Label");
-		fPanel.add(new SpacerWidget());
 		// MAT 2995 : Commented Measure Status Field from Measure Detail View.
 		/*fPanel.add(LabelBuilder.buildLabel(objectStatusInput, "Measure Status"));
 		fPanel.add(objectStatusInput);

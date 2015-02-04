@@ -631,7 +631,8 @@ public class ClauseWorkspaceContextMenu {
 					(xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 							String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
-							if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+							List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+							if(!allowedFunctionsList.contains(funcName)){
 								pasteMenu.setEnabled(false);
 							}else{
 								pasteMenu.setEnabled(true);
@@ -676,15 +677,15 @@ public class ClauseWorkspaceContextMenu {
 			
 			System.out.println("selected node:"+xmlTreeDisplay.getSelectedNode().getName());
 			System.out.println("paste menu enabled1?"+pasteMenu.isEnabled());
-			if(xmlTreeDisplay.getCopiedNode() != null 
-					&& (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("AGE AT") 
-						||  xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("DATETIMEDIFF") ) ){
+			if(xmlTreeDisplay.getCopiedNode() != null){
 				
 				if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) ) {
 					if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 						String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
 						System.out.println("copied function name:"+funcName);
-						if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+						List<String> allowedFunctionsList = ComparisonDialogBox.
+								getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+						if(!allowedFunctionsList.contains(funcName)){
 							pasteMenu.setEnabled(false);
 						}else{
 							pasteMenu.setEnabled(true);
@@ -702,15 +703,7 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
-		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) 
-				&& ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") 
-				&& ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY") 
-				&& ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("AGE AT") 
-				&& ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("DATETIMEDIFF") ) {
-			pasteMenu.setEnabled(true);
-		}
+	
 		System.out.println("paste menu enabled3?"+pasteMenu.isEnabled());
 		/*
 		 * POC Global Copy Paste.
@@ -788,7 +781,8 @@ public class ClauseWorkspaceContextMenu {
 			}
 			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 				String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
-				if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+				List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+				if(!allowedFunctionsList.contains(funcName)){
 					pasteMenu.setEnabled(false);
 				}
 			}
@@ -937,7 +931,8 @@ public class ClauseWorkspaceContextMenu {
 				
 				if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 					String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
-					if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+					List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+					if(!allowedFunctionsList.contains(funcName)){
 						pasteMenu.setEnabled(false);
 					}
 				}					

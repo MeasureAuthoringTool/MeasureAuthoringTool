@@ -1602,11 +1602,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								break;
 							case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
 							case CellTreeNode.SET_OP_NODE:
-								if(selectedNode.getName().contains("SATISFIES") || selectedNode.getName().equals("AGE AT") || selectedNode.getName().equals("DATETIMEDIFF")){
+								if(selectedNode.getName().contains("SATISFIES")){
 									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
 										if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 											String funcName = copiedNode.getLabel();
-											if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+											List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
+											if(!allowedFunctionsList.contains(funcName)){
 												canPaste = false;
 											}else{
 												canPaste = true;
@@ -1615,14 +1616,27 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 											canPaste = true;
 										}
 									}
-								}
-								else{ 
+								}else if(selectedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+									if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+										String funcName = copiedNode.getLabel();
+										List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
+										if(!allowedFunctionsList.contains(funcName)){
+											canPaste = false;
+										}else{
+											canPaste = true;
+										}
+									}else{
+										canPaste = true;
+									}
+								}else{
+									
 									if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
 										canPaste = true;
 									}
 									if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 										String funcName = copiedNode.getLabel();
-										if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+										List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
+										if(!allowedFunctionsList.contains(funcName)){
 											canPaste = false;
 										}
 									}
@@ -1636,7 +1650,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								}
 								if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 									String funcName = copiedNode.getLabel();
-									if(!ComparisonDialogBox.filterFunctionList.contains(funcName)){
+									List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
+									if(!allowedFunctionsList.contains(funcName)){
 										canPaste = false;
 									}
 								}

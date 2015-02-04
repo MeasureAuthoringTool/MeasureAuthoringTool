@@ -43,7 +43,9 @@ public class ComparisonDialogBox {
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false,true);
 	
-	public static List<String> filterFunctionList = new ArrayList<String>();
+	private static List<String> filterFunctionList = new ArrayList<String>();
+	private static List<String> subSetFunctionsList = new ArrayList<String>();
+	private static List<String> aggregateFunctionsList = new ArrayList<String>();
 	
 	static{
 		filterFunctionList.add("FIRST");
@@ -54,6 +56,20 @@ public class ComparisonDialogBox {
 		filterFunctionList.add("MOST RECENT");
 		filterFunctionList.add("SATISFIES ALL");
 		filterFunctionList.add("SATISFIES ANY");
+		
+		subSetFunctionsList.add("FIRST");
+		subSetFunctionsList.add("SECOND");
+		subSetFunctionsList.add("THIRD");
+		subSetFunctionsList.add("FOURTH");
+		subSetFunctionsList.add("FIFTH");
+		subSetFunctionsList.add("MOST RECENT");
+		
+		aggregateFunctionsList.add("MIN");
+		aggregateFunctionsList.add("MAX");
+		aggregateFunctionsList.add("MEDIAN");
+		aggregateFunctionsList.add("AVG");
+		aggregateFunctionsList.add("COUNT");
+		aggregateFunctionsList.add("SUM");
 	}
 	
 	/**
@@ -485,18 +501,38 @@ public class ComparisonDialogBox {
 		String nodeText = cellTreeNode.getLabel();
 		System.out.println("nodeText:"+nodeText);
 		
-		if(nodeType == CellTreeNode.FUNCTIONS_NODE 
-				&& (!("SATISFIES ALL".equals(nodeText)) 
-						&& !("SATISFIES ANY".equals(nodeText)) 
-						&& !("AGE AT".equals(nodeText)) 
-						&& !("DATETIMEDIFF".equals(nodeText)))){
-			returnList = allFunctionsList;
+		if(nodeType == CellTreeNode.FUNCTIONS_NODE) { 
+			returnList = getAllowedFunctionsList(allFunctionsList, nodeText);
+				
 		}else if(nodeType != CellTreeNode.TIMING_NODE && nodeType != CellTreeNode.SET_OP_NODE && 
 				nodeType != CellTreeNode.RELATIONSHIP_NODE && nodeType != CellTreeNode.FUNCTIONS_NODE) {
 			returnList = allFunctionsList;
 		}
 		
 		System.out.println("returnList:"+returnList);
+		return returnList;
+	}
+
+	public static List<String> getAllowedFunctionsList(List<String> allFunctionsList, String nodeText) {
+		
+		List<String> returnList = new ArrayList<String>(filterFunctionList);
+		
+		if(subSetFunctionsList.contains(nodeText)){
+			returnList.clear();
+			returnList.add("SATISFIES ALL");
+			returnList.add("SATISFIES ANY");
+		}else if(aggregateFunctionsList.contains(nodeText)){
+			returnList.clear();
+			returnList.add("SATISFIES ALL");
+			returnList.add("SATISFIES ANY");
+			returnList.add("DATETIMEDIFF");
+		}else if( (!("SATISFIES ALL".equals(nodeText)) 
+				&& !("SATISFIES ANY".equals(nodeText)) 
+				&& !("AGE AT".equals(nodeText)) 
+				&& !("DATETIMEDIFF".equals(nodeText)) )){
+			
+			returnList = allFunctionsList;
+		}
 		return returnList;
 	}
 	

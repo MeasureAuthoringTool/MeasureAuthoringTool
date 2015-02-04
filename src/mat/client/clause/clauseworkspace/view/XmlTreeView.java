@@ -1618,12 +1618,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									}
 								}else if(selectedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 									if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-										String funcName = copiedNode.getLabel();
-										List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
-										if(!allowedFunctionsList.contains(funcName)){
-											canPaste = false;
+										String selectedFunctionName = selectedNode.getLabel();
+										if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+											if(selectedNode.hasChildren()){
+												canPaste = false;
+											}else{
+												canPaste = true;
+											}																						
 										}else{
-											canPaste = true;
+											String funcName = copiedNode.getLabel();
+											List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
+											if(!allowedFunctionsList.contains(funcName)){
+												canPaste = false;
+											}else{
+												canPaste = true;
+											}
 										}
 									}else{
 										canPaste = true;

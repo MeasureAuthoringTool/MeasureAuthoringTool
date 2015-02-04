@@ -46,7 +46,7 @@ public class ComparisonDialogBox {
 	private static List<String> filterFunctionList = new ArrayList<String>();
 	private static List<String> subSetFunctionsList = new ArrayList<String>();
 	private static List<String> aggregateFunctionsList = new ArrayList<String>();
-	
+		
 	static{
 		filterFunctionList.add("FIRST");
 		filterFunctionList.add("SECOND");
@@ -535,5 +535,14 @@ public class ComparisonDialogBox {
 		}
 		return returnList;
 	}
+	
+	public static List<String> getSubSetFunctionsList() {
+		return subSetFunctionsList;
+	}
+	
+	public static List<String> getAggregateFunctionsList() {
+		return aggregateFunctionsList;
+	}
+
 	
 }

@@ -673,8 +673,16 @@ public class ClauseWorkspaceContextMenu {
 					, functions); // functions sub menus 3rd level
 			createAddClauseMenuItem(subMenuBar);
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-			popupMenuBar.addItem(addMenu);
 			
+			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getLabel();
+			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+					addMenu.setEnabled(false);
+				}
+			}
+			
+			popupMenuBar.addItem(addMenu);
+						
 			System.out.println("selected node:"+xmlTreeDisplay.getSelectedNode().getName());
 			System.out.println("paste menu enabled1?"+pasteMenu.isEnabled());
 			if(xmlTreeDisplay.getCopiedNode() != null){

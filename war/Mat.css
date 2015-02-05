@@ -60,7 +60,15 @@ body#main select, body#main input, body#main textarea {
 
 .rightSideForm{
 	margin-top: 5%;
-	}
+	float : right;
+	margin-right: 5px;
+}
+.rightSideMeasureDetailForm{
+	margin-top: 5%;
+	float : right;
+	margin-right: 5px;
+	padding: 0px 0px 0px 0px;
+}
 .leftSideForm{
     padding-right : 2%;
 	height: 100%;
@@ -2000,6 +2008,15 @@ padding: 2px;
     margin-left: 4px;
     margin-top: 6px;
     padding: 0px 0px 8px 0px;
+}
+.measureDetailRightPanel{
+    background-color: white;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-left: 3px solid #E8EEF7;
+    border-right: 3px solid #E8EEF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 84px;
 }
 .valueSetDetailsPanel{
 	background-color: white;

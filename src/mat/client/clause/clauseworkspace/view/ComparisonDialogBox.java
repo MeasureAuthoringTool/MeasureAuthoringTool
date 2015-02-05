@@ -498,10 +498,12 @@ public class ComparisonDialogBox {
 		
 		int nodeType = cellTreeNode.getNodeType();
 		System.out.println("nodeType:"+nodeType);
-		String nodeText = cellTreeNode.getLabel();
-		System.out.println("nodeText:"+nodeText);
-		
-		if(nodeType == CellTreeNode.FUNCTIONS_NODE) { 
+				
+		if(nodeType == CellTreeNode.FUNCTIONS_NODE) {
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> map =  (HashMap<String, String>) cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+			String nodeText = map.get(PopulationWorkSpaceConstants.TYPE);
+			System.out.println("nodeText:"+nodeText);
 			returnList = getAllowedFunctionsList(allFunctionsList, nodeText);
 				
 		}else if(nodeType != CellTreeNode.TIMING_NODE && nodeType != CellTreeNode.SET_OP_NODE && 

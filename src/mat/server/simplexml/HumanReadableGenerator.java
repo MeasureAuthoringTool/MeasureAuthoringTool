@@ -386,7 +386,7 @@ public class HumanReadableGenerator {
 			subTreeNodeImportedClone.insertBefore(commentNode,
 					subTreeNodeImportedClone.getFirstChild());
 		}
-		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone,
+		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone.getFirstChild(),
 				subTreeRefNode);
 	}
 	
@@ -2295,8 +2295,8 @@ public class HumanReadableGenerator {
 	}
 	
 	/**
-	 * Because of "QDM Variable with Occurances", we might have some subTree's with subTreeRef's in subTreeLookUp.
-	 * This is because these subTree's aren't directly referred to in the clause logic, but their occurrance(s)
+	 * Because of "QDM Variable with Occurrences", we might have some subTree's with subTreeRef's in subTreeLookUp.
+	 * This is because these subTree's aren't directly referred to in the clause logic, but their occurrence(s)
 	 * are.
 	 * This method will look for subTreeRef's in subTree and resolve them to subTree, so that proper human readable
 	 * is generated.
@@ -2318,7 +2318,7 @@ public class HumanReadableGenerator {
 			if(subTreeNode != null){
 				Node clonedSubTreeNode = subTreeNode.cloneNode(true);
 				Node subTreeRefParentNode = subTreeRefNode.getParentNode();
-				subTreeRefParentNode.replaceChild(clonedSubTreeNode, subTreeRefNode);
+				subTreeRefParentNode.replaceChild(clonedSubTreeNode.getFirstChild(), subTreeRefNode);
 			}
 		}
 	}

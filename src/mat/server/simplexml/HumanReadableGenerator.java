@@ -6,12 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
-
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -74,7 +71,7 @@ public class HumanReadableGenerator {
 	
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
-
+	
 	
 	/**
 	 * Generate html for population or subtree.
@@ -887,7 +884,7 @@ public class HumanReadableGenerator {
 			XmlProcessor populationOrSubtreeXMLProcessor) {
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
-			// Element ulElement = parentListElement.appendElement(HTML_LI); 
+			// Element ulElement = parentListElement.appendElement(HTML_LI);
 			if( checkForSatisfiesParentNode(item.getParentNode())){
 				parseChild(lhs, liElement, item, populationOrSubtreeXMLProcessor,
 						true);
@@ -1551,7 +1548,7 @@ public class HumanReadableGenerator {
 				humanReadableHTMLDocument);
 	}
 	
-
+	
 	/**
 	 * Generate table of contents.
 	 *
@@ -1567,7 +1564,7 @@ public class HumanReadableGenerator {
 		
 		Element populationCriteriaLI = tocULElement.appendElement(HTML_LI);
 		populationCriteriaLI
-		.append("<a href=\"#d1e405\">Population criteria</a>");
+		.append("<a href=\"#d1e405\">Population Criteria</a>");
 		
 		// TODO:code to decide if we need to add 'Measure observations'
 		
@@ -1577,7 +1574,7 @@ public class HumanReadableGenerator {
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
-		.append("<a href=\"#d1e647\">Data criteria (QDM Data Elements)</a>");
+		.append("<a href=\"#d1e647\">Data Criteria (QDM Data Elements)</a>");
 		
 		// TODO:code to decide if we need to add 'Reporting Stratification'
 		
@@ -1607,7 +1604,7 @@ public class HumanReadableGenerator {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
+		.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
@@ -1724,28 +1721,28 @@ public class HumanReadableGenerator {
 				String name = "";
 				if (nodeList != null) {
 					for(int i=0;i<nodeList.getLength();i++){
-					name = nodeList.item(i).getAttributes().getNamedItem("name")
-							.getNodeValue();
-					name = StringUtils.capitalize(name);
-					String attrUUID_NAME = uuid + "~" +name;
-					if(!attrNameList.contains(attrUUID_NAME)){
-					Element listItem = mainListElement.appendElement(HTML_LI);
-					listItem.appendText(" Attribute: "
-							+ "\""
-							+ name
-							+ ": "
-							+ qdmAttribs.getNamedItem("name").getNodeValue()
-							+ "\" using \""
-							+ qdmAttribs.getNamedItem("name").getNodeValue()
-							+ " "
-							+ qdmAttribs.getNamedItem("taxonomy")
-							.getNodeValue() + " Value Set ("
-							+ qdmAttribs.getNamedItem("oid").getNodeValue()
-							+ ")\"");
-					attrNameList.add(uuid+"~"+name);
+						name = nodeList.item(i).getAttributes().getNamedItem("name")
+								.getNodeValue();
+						name = StringUtils.capitalize(name);
+						String attrUUID_NAME = uuid + "~" +name;
+						if(!attrNameList.contains(attrUUID_NAME)){
+							Element listItem = mainListElement.appendElement(HTML_LI);
+							listItem.appendText(" Attribute: "
+									+ "\""
+									+ name
+									+ ": "
+									+ qdmAttribs.getNamedItem("name").getNodeValue()
+									+ "\" using \""
+									+ qdmAttribs.getNamedItem("name").getNodeValue()
+									+ " "
+									+ qdmAttribs.getNamedItem("taxonomy")
+									.getNodeValue() + " Value Set ("
+									+ qdmAttribs.getNamedItem("oid").getNodeValue()
+									+ ")\"");
+							attrNameList.add(uuid+"~"+name);
+						}
 					}
-					}
-				}	
+				}
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");
@@ -1881,7 +1878,7 @@ public class HumanReadableGenerator {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void generateRiskAdjustmentVariables(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) 
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
 					throws XPathExpressionException {
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
@@ -1899,7 +1896,7 @@ public class HumanReadableGenerator {
 				Node childNode = elements.item(i);
 				String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
 				String xpathforSubTree = "/measure/subTreeLookUp/subTree[@uuid='"+ uuid +"']";
-				Node subTreeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), 
+				Node subTreeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
 						xpathforSubTree);
 				parseChild(subTreeNode.getFirstChild(), mainListElement, subTreeNode.getParentNode(), simpleXMLProcessor, false);
 			}
@@ -1968,7 +1965,7 @@ public class HumanReadableGenerator {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e405\" href=\"#toc\">Population criteria</a></h3>");
+		.append("<h3><a name=\"d1e405\" href=\"#toc\">Population Criteria</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
@@ -2355,24 +2352,24 @@ public class HumanReadableGenerator {
 	private static boolean checkForSatisfiesParentNode(Node item){
 		String nodeName = item.getNodeName();
 		switch(nodeName){
-		case "functionalOp":
-			if (item.getAttributes().getNamedItem("type") != null
-			&& item.getAttributes()
-					.getNamedItem("type").getNodeValue()
-					.contains("SATISFIES")) {
-				return true;
-			}
-			break;
-		case "relationalOp":
-			return checkForSatisfiesParentNode(item.getParentNode()); 
-		case "setOp":
-			return checkForSatisfiesParentNode(item.getParentNode());
-		case "subTree":
-			return false;
+			case "functionalOp":
+				if ((item.getAttributes().getNamedItem("type") != null)
+						&& item.getAttributes()
+						.getNamedItem("type").getNodeValue()
+						.contains("SATISFIES")) {
+					return true;
+				}
+				break;
+			case "relationalOp":
+				return checkForSatisfiesParentNode(item.getParentNode());
+			case "setOp":
+				return checkForSatisfiesParentNode(item.getParentNode());
+			case "subTree":
+				return false;
 			default://do nothing
-				break;		
+				break;
 		}
-	
+		
 		return checkForSatisfiesParentNode(item.getParentNode());
 	}
 	

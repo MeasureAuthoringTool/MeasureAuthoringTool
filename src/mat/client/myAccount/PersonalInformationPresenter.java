@@ -18,6 +18,9 @@ import mat.shared.MyAccountModelValidator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
@@ -152,6 +155,17 @@ public class PersonalInformationPresenter implements MatPresenter {
 		PasswordEditInfoWidget getPasswordEditInfoWidget();
 	}
 	
+	/** The submit on enter handler. */
+	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
+		@Override
+		public void onKeyDown(KeyDownEvent event) {
+			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+				savePersonalInformation(display.getPassword().getValue());
+			}
+		}
+	};
+
+	
 	/** The display. */
 	private Display display;
 	
@@ -192,6 +206,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 				display.getPassword().setValue("");
 			}
 		});
+		
+		// if the user enters the "Enter" key on the password field, do a save.
+		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
+
 	
 	}
 	

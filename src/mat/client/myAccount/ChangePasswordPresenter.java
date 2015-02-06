@@ -9,6 +9,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
+import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -18,6 +19,9 @@ import mat.shared.PasswordVerifier;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
@@ -92,8 +96,28 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 * @return the current password
 		 */
 		HasValue<String> getCurrentPassword();
+		
+		/**
+		 * Gets the current password widget.
+		 * 
+		 * @return the current password widget
+		 */
+		ChangePasswordWidget getChangePasswordWidget();
+		
 	}
 	
+	
+	/** The submit on enter handler. */
+	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
+		@Override
+		public void onKeyDown(KeyDownEvent event) {
+			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+				saveChangedPassword(display.getPassword().getValue());
+			}
+		}
+	};
+
+		
 	/** The display. */
 	private final Display display;
 	
@@ -133,6 +157,8 @@ public class ChangePasswordPresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		display.getChangePasswordWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
 	}
 	
 		

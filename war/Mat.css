@@ -1143,6 +1143,10 @@ left:50px;
 .marginLeft20px {
 	margin-left: 20px;
 }
+.marginLeft20pxBold {
+	margin-left: 20px;
+	font-weight: bold;
+}
 .searchResultsContainer {
     margin-left: 1px;
 	overflow: auto;

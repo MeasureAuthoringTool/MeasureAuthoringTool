@@ -501,8 +501,11 @@ public class ComparisonDialogBox {
 				
 		if(nodeType == CellTreeNode.FUNCTIONS_NODE) {
 			@SuppressWarnings("unchecked")
+			String nodeText = cellTreeNode.getName();
 			HashMap<String, String> map =  (HashMap<String, String>) cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-			String nodeText = map.get(PopulationWorkSpaceConstants.TYPE);
+			if(map != null){
+				nodeText = map.get(PopulationWorkSpaceConstants.TYPE);
+			}
 			System.out.println("nodeText:"+nodeText);
 			returnList = getAllowedFunctionsList(allFunctionsList, nodeText);
 				

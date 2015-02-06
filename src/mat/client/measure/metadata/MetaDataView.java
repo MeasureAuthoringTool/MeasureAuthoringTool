@@ -501,57 +501,70 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		topRightSidePanel.setSize("300px", "100px");
 		topRightSidePanel.setStyleName("rightSideForm");
 		
-				
-		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
-		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
-		measScoringInputLabel.setStyleName("bold");
-		
-		
+		// create a panel to display the general info
 		VerticalPanel generalPanel = new VerticalPanel();
-		generalPanel.setSize("250px", "232px");
+		generalPanel.setSize("270px", "232px");
 		generalPanel.setStyleName("measureDetailRightPanel");
+		generalPanel.getElement().setId("generalPanel");
 		
-		
+		// General Information Label
 		Label generalLabel = new Label("General Information");
 		generalLabel.setStyleName("measurementPeriodHeader");
 		generalLabel.getElement().setId("generalInfoHeader_Label");
-		generalLabel.getElement().setAttribute("tabIndex", "0");
-		
+		generalLabel.getElement().setAttribute("tabIndex", "0");		
 		generalPanel.add(generalLabel);
-		
-		generalPanel.getElement().setId("generalPanel");
+
+		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
+		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
+		measScoringInputLabel.getElement().setId("MeasScoringLabel");
+		measScoringInputLabel.setStyleName("marginLeft20pxBold");
 		generalPanel.add(measScoringInputLabel);
 		
+		measScoringInput.setStyleName("marginLeft20px");
+		measScoringInput.setTitle("MeasScoringValue");
+		measScoringInput.getElement().setId("MeasScoringValue");			
 		generalPanel.add(measScoringInput);
-		measScoringInput.getElement().setId("measScoringInput_Label");
 		generalPanel.add(new SpacerWidget());
 		
 		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
-		abbrInputLabel.setStyleName("bold");
+		abbrInputLabel.setStyleName("marginLeft20pxBold");
 		generalPanel.add(abbrInputLabel);
+		
+		abbrInput.getElement().setId("abbrInput");
+		abbrInput.setTitle("abbrInput");
+		abbrInput.setStyleName("marginLeft20px");
 		generalPanel.add(abbrInput);
-		abbrInput.getElement().setId("abbrInput_Label");
-		generalPanel.add(new SpacerWidget());	
+		generalPanel.add(new SpacerWidget());
 		
 		Label finalizedDateLabel = (Label) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
-		finalizedDateLabel.setStyleName("bold");
+		finalizedDateLabel.setStyleName("marginLeft20pxBold");
 		generalPanel.add(finalizedDateLabel);
+		
+		finalizedDate.getElement().setId("finalizedDate");
+		finalizedDate.setTitle("finalizedDate");
+		finalizedDate.setStyleName("marginLeft20px");
 		generalPanel.add(finalizedDate);
-		finalizedDate.getElement().setId("finalizedDate_Label");
 		generalPanel.add(new SpacerWidget());
 		
 		Label eMeasureIdentifierLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
-		eMeasureIdentifierLabel.setStyleName("bold");
+		eMeasureIdentifierLabel.setStyleName("marginLeft20pxBold");
 		generalPanel.add(eMeasureIdentifierLabel);
-		generalPanel.add(eMeasureIdentifier);
-		eMeasureIdentifier.getElement().setId("eMeasureIdentifier_Label");
-		generalPanel.add(new SpacerWidget());
 		
+		eMeasureIdentifier.getElement().setId("eMeasureIdentifier");
+		eMeasureIdentifier.setTitle("eMeasureIdentifier");
+		eMeasureIdentifier.setStyleName("marginLeft20px");
+		generalPanel.add(eMeasureIdentifier);
+		generalPanel.add(new SpacerWidget());
+						
 		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
-		versionInputLabel.setStyleName("bold");
+		versionInputLabel.setStyleName("marginLeft20pxBold");
 		generalPanel.add(versionInputLabel);
+		
+		versionInput.getElement().setId("versionInput");
+		versionInput.setTitle("versionInput");
+		versionInput.setStyleName("versionInput");
+		versionInput.setStyleName("marginLeft20px");
 		generalPanel.add(versionInput);
-		versionInput.getElement().setId("versionInput_Label");
 
 		//measurementPeriod Header
 		topRightSidePanel.add(new SpacerWidget());
@@ -570,8 +583,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
 		//optionLabelWidget.setStyleName("generate-emeasureid-button");
 		eMeasureIdentifierInput.getElement().setId("eMeasureIdentifierInput_TextBox");
-		//horizontalPanel.add(optionLabelWidget);
-		
+		//horizontalPanel.add(optionLabelWidget);		
 		
 		horizontalPanel.add(eMeasureIdentifierInput);
 		horizontalPanel.add(generateeMeasureIDButton);

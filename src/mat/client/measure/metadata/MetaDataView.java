@@ -98,12 +98,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The abbr input. */
 	protected Label abbrInput = new Label();
 		
-	/** The panel for the top left side of screen */
-	VerticalPanel topLeftSidePanel = new VerticalPanel();
-	
-	/** The panel for the top right side of screen */
-	VerticalPanel topRightSidePanel = new VerticalPanel();
-	
 	/** The meas scoring input. */
 	protected Label measScoringInput = new Label();
 	
@@ -468,6 +462,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeListBox.addChangeHandler(changeHandler);
 		measureTypeListBox.getElement().setId("measureTypeListBox_ListBox");
 		
+		
+		/** The panel for the top left side of screen */
+		VerticalPanel topLeftSidePanel = new VerticalPanel();
+		
+		/** The panel for the top right side of screen */
+		VerticalPanel topRightSidePanel = new VerticalPanel();
+		
+
 		topHPanel.getElement().setId("mainPanel_HPanelTop");
 		bottomHPanel.getElement().setId("mainPanel_HPanelBottom");
 		topRightSidePanel.getElement().setId("mainPanel_VTopRight");
@@ -518,36 +520,37 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
 		measScoringInputLabel.getElement().setId("MeasScoringLabel");
 		measScoringInputLabel.setStyleName("marginLeft20pxBold");
+		measScoringInputLabel.setTitle(measScoringInputLabel.getText());
 		generalPanel.add(measScoringInputLabel);
 		
 		measScoringInput.setStyleName("marginLeft20px");
-		measScoringInput.setTitle("MeasScoringValue");
 		measScoringInput.getElement().setId("MeasScoringValue");			
 		generalPanel.add(measScoringInput);
 		generalPanel.add(new SpacerWidget());
 		
 		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
 		abbrInputLabel.setStyleName("marginLeft20pxBold");
+		abbrInputLabel.setTitle(abbrInputLabel.getText());
 		generalPanel.add(abbrInputLabel);
 		
 		abbrInput.getElement().setId("abbrInput");
-		abbrInput.setTitle("abbrInput");
 		abbrInput.setStyleName("marginLeft20px");
 		generalPanel.add(abbrInput);
 		generalPanel.add(new SpacerWidget());
 		
 		Label finalizedDateLabel = (Label) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
 		finalizedDateLabel.setStyleName("marginLeft20pxBold");
+		finalizedDateLabel.setTitle(finalizedDateLabel.getText());
 		generalPanel.add(finalizedDateLabel);
 		
 		finalizedDate.getElement().setId("finalizedDate");
-		finalizedDate.setTitle("finalizedDate");
 		finalizedDate.setStyleName("marginLeft20px");
 		generalPanel.add(finalizedDate);
 		generalPanel.add(new SpacerWidget());
 		
 		Label eMeasureIdentifierLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
 		eMeasureIdentifierLabel.setStyleName("marginLeft20pxBold");
+		eMeasureIdentifierLabel.setTitle(eMeasureIdentifierLabel.getText());
 		generalPanel.add(eMeasureIdentifierLabel);
 		
 		eMeasureIdentifier.getElement().setId("eMeasureIdentifier");

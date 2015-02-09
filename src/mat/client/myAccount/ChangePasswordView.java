@@ -120,8 +120,8 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 	 * @see mat.client.myAccount.ChangePasswordPresenter.Display#getChangePasswordWidget
 	 */
 	@Override
-	public ChangePasswordWidget getChangePasswordWidget() {
-		return passwordWidget;
+	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
+		return passwordEditInfoWidget;
 	}
 
 	

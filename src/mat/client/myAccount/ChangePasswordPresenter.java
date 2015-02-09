@@ -9,9 +9,9 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
 import mat.shared.PasswordVerifier;
@@ -102,7 +102,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 * 
 		 * @return the current password widget
 		 */
-		ChangePasswordWidget getChangePasswordWidget();
+		PasswordEditInfoWidget getPasswordEditInfoWidget();
 		
 	}
 	
@@ -112,7 +112,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				saveChangedPassword(display.getPassword().getValue());
+				saveChangedPassword(display.getCurrentPassword().getValue());
 			}
 		}
 	};
@@ -158,7 +158,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 			}
 		});
 		
-		display.getChangePasswordWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
+		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
 	}
 	
 		

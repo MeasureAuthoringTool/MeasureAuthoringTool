@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
+
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -383,8 +386,12 @@ public class HumanReadableGenerator {
 			subTreeNodeImportedClone.insertBefore(commentNode,
 					subTreeNodeImportedClone.getFirstChild());
 		}
-		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone.getFirstChild(),
-				subTreeRefNode);
+		
+		Node newNode = subTreeNodeImportedClone;
+		if(subTreeNodeImportedClone.hasChildNodes()){
+			newNode = subTreeNodeImportedClone.getFirstChild();
+		}
+		subTreeRefNodeParent.replaceChild(newNode, subTreeRefNode);
 	}
 	
 	/**
@@ -2315,7 +2322,12 @@ public class HumanReadableGenerator {
 			if(subTreeNode != null){
 				Node clonedSubTreeNode = subTreeNode.cloneNode(true);
 				Node subTreeRefParentNode = subTreeRefNode.getParentNode();
-				subTreeRefParentNode.replaceChild(clonedSubTreeNode.getFirstChild(), subTreeRefNode);
+				
+				Node newNode = clonedSubTreeNode;
+				if(clonedSubTreeNode.hasChildNodes()){
+					newNode = clonedSubTreeNode.getFirstChild();
+				}
+				subTreeRefParentNode.replaceChild(newNode, subTreeRefNode);
 			}
 		}
 	}
@@ -2350,6 +2362,9 @@ public class HumanReadableGenerator {
 	 * @return true, if successful
 	 */
 	private static boolean checkForSatisfiesParentNode(Node item){
+		if(item == null){
+			return false;
+		}
 		String nodeName = item.getNodeName();
 		switch(nodeName){
 			case "functionalOp":

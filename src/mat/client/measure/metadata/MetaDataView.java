@@ -554,18 +554,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(eMeasureIdentifierLabel);
 		
 		eMeasureIdentifier.getElement().setId("eMeasureIdentifier");
-		eMeasureIdentifier.setTitle("eMeasureIdentifier");
 		eMeasureIdentifier.setStyleName("marginLeft20px");
 		generalPanel.add(eMeasureIdentifier);
 		generalPanel.add(new SpacerWidget());
 						
 		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
 		versionInputLabel.setStyleName("marginLeft20pxBold");
+		versionInputLabel.setTitle(versionInputLabel.getText());
 		generalPanel.add(versionInputLabel);
 		
 		versionInput.getElement().setId("versionInput");
-		versionInput.setTitle("versionInput");
-		versionInput.setStyleName("versionInput");
 		versionInput.setStyleName("marginLeft20px");
 		generalPanel.add(versionInput);
 

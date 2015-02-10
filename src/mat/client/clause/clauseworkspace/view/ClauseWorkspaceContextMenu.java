@@ -676,8 +676,11 @@ public class ClauseWorkspaceContextMenu {
 			createAddClauseMenuItem(subMenuBar);
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			
+			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getName();
 			HashMap<String, String> attribMap =  (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-			String selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE);
+			if(attribMap != null){
+				selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE);
+			}
 			
 			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){

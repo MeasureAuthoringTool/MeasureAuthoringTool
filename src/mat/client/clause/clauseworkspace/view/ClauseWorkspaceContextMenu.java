@@ -676,7 +676,9 @@ public class ClauseWorkspaceContextMenu {
 			createAddClauseMenuItem(subMenuBar);
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			
-			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getLabel();
+			HashMap<String, String> attribMap =  (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+			String selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE);
+			
 			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
@@ -685,26 +687,45 @@ public class ClauseWorkspaceContextMenu {
 			
 			popupMenuBar.addItem(addMenu);
 						
-			System.out.println("selected node:"+xmlTreeDisplay.getSelectedNode().getName());
-			System.out.println("paste menu enabled1?"+pasteMenu.isEnabled());
 			if(xmlTreeDisplay.getCopiedNode() != null){
-				
-				if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) ) {
-					if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-						@SuppressWarnings("unchecked")
-						HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-						String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
-						List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
-						if(!allowedFunctionsList.contains(copiedFuncName)){
-							pasteMenu.setEnabled(false);
+				if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+					if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+						pasteMenu.setEnabled(false);
+					}else if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) ) {
+						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+							@SuppressWarnings("unchecked")
+							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+							String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
+							if(!allowedFunctionsList.contains(copiedFuncName)){
+								pasteMenu.setEnabled(false);
+							}else{
+								pasteMenu.setEnabled(true);
+							}
 						}else{
 							pasteMenu.setEnabled(true);
 						}
-					}else{
-						pasteMenu.setEnabled(true);
+					}else {
+						pasteMenu.setEnabled(false);
 					}
-				}else {
-					pasteMenu.setEnabled(false);
+				}else{
+					if((xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+							@SuppressWarnings("unchecked")
+							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+							String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
+							if(!allowedFunctionsList.contains(copiedFuncName)){
+								pasteMenu.setEnabled(false);
+							}else{
+								pasteMenu.setEnabled(true);
+							}
+						}else{
+							pasteMenu.setEnabled(true);
+						}
+					}else {
+						pasteMenu.setEnabled(false);
+					}
 				}
 			}
 			System.out.println("paste menu enabled2?"+pasteMenu.isEnabled());
@@ -790,8 +811,10 @@ public class ClauseWorkspaceContextMenu {
 				pasteMenu.setEnabled(true);
 			}
 			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-				String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
-				List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+				HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+				String funcName = map.get(PopulationWorkSpaceConstants.TYPE);
+				
+				List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 				if(!allowedFunctionsList.contains(funcName)){
 					pasteMenu.setEnabled(false);
 				}
@@ -940,13 +963,14 @@ public class ClauseWorkspaceContextMenu {
 				}
 				
 				if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-					String funcName = xmlTreeDisplay.getCopiedNode().getLabel();
-					List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, xmlTreeDisplay.getSelectedNode().getLabel());
+					HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+					String funcName = map.get(PopulationWorkSpaceConstants.TYPE);
+					
+					List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 					if(!allowedFunctionsList.contains(funcName)){
 						pasteMenu.setEnabled(false);
 					}
-				}					
-			
+				}				
 		}
 		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 			deleteMenu.setEnabled(true);

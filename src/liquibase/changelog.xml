@@ -168,4 +168,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-54_US5194_20141124.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_55_Change_Timing_ShortNames.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-58_rename_ECWSO_SCWEO.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint_59_Revoked_User_Org_Change.xml"/>
 	</databaseChangeLog>

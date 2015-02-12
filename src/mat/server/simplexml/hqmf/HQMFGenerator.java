@@ -2,12 +2,13 @@ package mat.server.simplexml.hqmf;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -97,7 +98,7 @@ public class HQMFGenerator implements Generator {
 		Node dataCritQDMVarNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (QDM Variables)");
 		
 		//Get narrative for Data Criteria (QDM Data Elements) section.
-		Node dataCritQDMNode = generateNarrativeItem(me, humanReadableProcessor, "Data criteria (QDM Data Elements)");
+		Node dataCritQDMNode = generateNarrativeItem(me, humanReadableProcessor, "Data Criteria (QDM Data Elements)");
 		
 		//Get narrative for Supplemental Data Elements section
 		Node dataCritSuppNode = generateNarrativeItem(me, humanReadableProcessor, "Supplemental Data Elements");
@@ -144,9 +145,9 @@ public class HQMFGenerator implements Generator {
 			Node idNode = parentNodeElem.getElementsByTagName("id").item(0);
 			String extension = idNode.getAttributes().getNamedItem("extension").getNodeValue();
 			if(popCritTextNodeList.getLength()>1){
-				listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population criteria", i+1));
+				listNode.appendChild(generatePopulationCriteriaNarrativeItem(me, humanReadableProcessor, "Population Criteria", i+1));
 			} else {
-				listNode.appendChild(generateNarrativeItem(me, humanReadableProcessor, "Population criteria"));
+				listNode.appendChild(generateNarrativeItem(me, humanReadableProcessor, "Population Criteria"));
 			}
 			itemNode.appendChild(listNode);
 			xmlNode.appendChild(itemNode);

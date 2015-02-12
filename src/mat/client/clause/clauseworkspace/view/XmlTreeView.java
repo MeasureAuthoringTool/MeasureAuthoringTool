@@ -1618,10 +1618,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 										}
 									}
 								}else if(selectedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-									if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+									
+										String selectedFunctionName = selectedNode.getName();
+										
 										@SuppressWarnings("unchecked")
 										HashMap<String, String> map =  (HashMap<String, String>) selectedNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-										String selectedFunctionName = map.get(PopulationWorkSpaceConstants.TYPE);
+										if(map != null){
+											selectedFunctionName = map.get(PopulationWorkSpaceConstants.TYPE);
+										}
 																				
 										if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) 
 												|| ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
@@ -1630,7 +1634,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 											}else{
 												canPaste = true;
 											}																						
-										}else{
+										}
+										if(canPaste && (copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE)){
 											@SuppressWarnings("unchecked")
 											HashMap<String, String> copiedNodeMap =  (HashMap<String, String>) copiedNode.getExtraInformation(
 													PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
@@ -1643,9 +1648,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 												canPaste = true;
 											}
 										}
-									}else{
-										canPaste = true;
-									}
+									
 								}else{
 									
 									if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {

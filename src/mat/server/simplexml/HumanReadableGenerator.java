@@ -387,11 +387,11 @@ public class HumanReadableGenerator {
 					subTreeNodeImportedClone.getFirstChild());
 		}
 		
-		Node newNode = subTreeNodeImportedClone;
+		/*Node newNode = subTreeNodeImportedClone;
 		if(subTreeNodeImportedClone.hasChildNodes()){
 			newNode = subTreeNodeImportedClone.getFirstChild();
-		}
-		subTreeRefNodeParent.replaceChild(newNode, subTreeRefNode);
+		}*/
+		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone, subTreeRefNode);
 	}
 	
 	/**
@@ -2323,11 +2323,11 @@ public class HumanReadableGenerator {
 				Node clonedSubTreeNode = subTreeNode.cloneNode(true);
 				Node subTreeRefParentNode = subTreeRefNode.getParentNode();
 				
-				Node newNode = clonedSubTreeNode;
+				/*Node newNode = clonedSubTreeNode;
 				if(clonedSubTreeNode.hasChildNodes()){
 					newNode = clonedSubTreeNode.getFirstChild();
-				}
-				subTreeRefParentNode.replaceChild(newNode, subTreeRefNode);
+				}*/
+				subTreeRefParentNode.replaceChild(clonedSubTreeNode, subTreeRefNode);
 			}
 		}
 	}

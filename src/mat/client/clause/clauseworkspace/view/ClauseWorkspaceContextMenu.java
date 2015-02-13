@@ -630,9 +630,13 @@ public class ClauseWorkspaceContextMenu {
 					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && 
 					(xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+							
 							@SuppressWarnings("unchecked")
 							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-							String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							if(map != null){
+								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							}
 							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 							if(!allowedFunctionsList.contains(copiedFuncName)){
 								pasteMenu.setEnabled(false);

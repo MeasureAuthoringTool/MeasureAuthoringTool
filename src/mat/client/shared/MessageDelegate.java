@@ -611,6 +611,9 @@ public class MessageDelegate {
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE ="Invalid clause(s) used in logic.";
+	
+	/** The clause work space invalid nested clause. */
+	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE ="Nesting upto 10 level is allowed in clauses.";
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -1209,7 +1212,7 @@ public class MessageDelegate {
 	public String getMEASURE_PERIOD_DATES_ERROR() {
 		return MEASURE_PERIOD_DATES_ERROR;
 	}
-
+	
 	
 	/**
 	 * Gets the measure deletion invalid pwd.
@@ -2206,6 +2209,13 @@ public class MessageDelegate {
 	 */
 	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE() {
 		return CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE;
+	}
+	
+	/**
+	 * @return the cLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE
+	 */
+	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE() {
+		return CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE;
 	}
 	
 	/**

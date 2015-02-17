@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -33,7 +31,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
@@ -84,7 +81,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -111,6 +107,11 @@ import org.xml.sax.SAXException;
  * The Class MeasureLibraryServiceImpl.
  */
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
+	
+	/**
+	 * Nested Clause allowed depth.
+	 */
+	private static final int NESTED_CLAUSE_DEPTH = 10;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
@@ -3148,6 +3149,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String XPATH_SETOPERATOR ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//setOp";
 					//for DateTimeDiff Validation
 					String XPATH_DATE_TIME_DIFF_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+dateTimeDiffFunction+"]";
+					//for Nested Clause Validation
+					String XPATH_NESTED_SUBTREE_REF ="//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//subTreeRef";
+					
 					/*System.out.println("MEASURE_XML: "+xmlModel.getXml());*/
 					try {
 						
@@ -3164,7 +3168,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								XPathConstants.NODESET);
 						NodeList nodeSDE_dateTimeDiffElement =(NodeList) xPath.evaluate(XPATH_DATE_TIME_DIFF_ELEMENT, xmlProcessor.getOriginalDoc(),
 								XPathConstants.NODESET);
+						NodeList nodeSubTreeRefList = (NodeList) xPath.evaluate(XPATH_NESTED_SUBTREE_REF, xmlProcessor.getOriginalDoc(),
+								XPathConstants.NODESET);
 						
+						// Validation for Nested Clause Logic.
+						/*if (nodeSubTreeRefList.getLength() > NESTED_CLAUSE_DEPTH) {
+							flag = true;
+							break;
+						} else {*/
+						// 1 is counter value for parent clause.
+						int nestedClauseCounter = 1;
+						flag = validateNestedSubTreeRef(nodeSubTreeRefList , nestedClauseCounter
+								, flag , xmlProcessor);
+						
+						//}
 						for (int n = 0; (n <nodesSDE_timingElement.getLength()) && !flag; n++) {
 							
 							Node timingElementchildNode =nodesSDE_timingElement.item(n);
@@ -3256,8 +3273,43 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return flag;
 	}
-	
-	
+	/**
+	 * Method to validate clauses having nesting not more than 10 levels.
+	 * @param nodeSubTreeRefList - NodeList
+	 * @param counter - number of subTreeRef's.
+	 * @param flag - Boolean True/false.
+	 * @param xmlProcessor - XmlProcessor instance.
+	 * @return boolean.
+	 * @throws XPathExpressionException - Exception.
+	 */
+	private boolean validateNestedSubTreeRef(NodeList nodeSubTreeRefList, int counter, boolean flag
+			, XmlProcessor xmlProcessor) throws XPathExpressionException {
+		for (int i = 0; ((i < nodeSubTreeRefList.getLength()) &&  !flag); i++) {
+			int currentCounter = counter;
+			System.out.println("Looping for counter -------" + counter);
+			Node node = nodeSubTreeRefList.item(i);
+			String uuid = node.getAttributes().getNamedItem("id").getNodeValue();
+			String XPATH_NESTED_SUBTREE_REF = null;
+			if (node.getAttributes().getNamedItem("instance") != null) {
+				uuid = node.getAttributes().getNamedItem("instanceOf").getNodeValue();
+			}
+			XPATH_NESTED_SUBTREE_REF  = "//subTreeLookUp/subTree[@uuid='" + uuid + "']//subTreeRef";
+			NodeList subTreeRefNodeList = (NodeList) xPath.evaluate(XPATH_NESTED_SUBTREE_REF, xmlProcessor.getOriginalDoc(),
+					XPathConstants.NODESET);
+			if (subTreeRefNodeList.getLength() > 0) {
+				currentCounter = currentCounter+1 ;
+			}
+			if (currentCounter > NESTED_CLAUSE_DEPTH) {
+				flag = true;
+				System.out.println("Breaking for UUID -------" + uuid);
+				
+				break;
+			} else {
+				flag = validateNestedSubTreeRef(subTreeRefNodeList , currentCounter, flag, xmlProcessor);
+			}
+		}
+		return flag;
+	}
 	/**
 	 * Check if qdm var instance is present.
 	 *

@@ -1634,6 +1634,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 											}else{
 												canPaste = true;
 											}																						
+										}else{
+											canPaste = true;
 										}
 										if(canPaste && (copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE)){
 											@SuppressWarnings("unchecked")

@@ -681,6 +681,7 @@ public class ClauseWorkspaceContextMenu {
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			
 			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getName();
+			@SuppressWarnings("unchecked")
 			HashMap<String, String> attribMap =  (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 			if(attribMap != null){
 				selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE);
@@ -702,7 +703,10 @@ public class ClauseWorkspaceContextMenu {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 							@SuppressWarnings("unchecked")
 							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-							String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+							if(map != null){
+								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							}
 							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 							if(!allowedFunctionsList.contains(copiedFuncName)){
 								pasteMenu.setEnabled(false);
@@ -720,7 +724,10 @@ public class ClauseWorkspaceContextMenu {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 							@SuppressWarnings("unchecked")
 							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-							String copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+							if(map != null){
+								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							}
 							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 							if(!allowedFunctionsList.contains(copiedFuncName)){
 								pasteMenu.setEnabled(false);

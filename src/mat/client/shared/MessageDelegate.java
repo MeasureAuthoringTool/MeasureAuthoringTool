@@ -613,7 +613,7 @@ public class MessageDelegate {
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE ="Invalid clause(s) used in logic.";
 	
 	/** The clause work space invalid nested clause. */
-	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE ="Nesting upto 10 level is allowed in clauses.";
+	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE = "Clause Exceeds Maximum Number of Nested Logic Levels (10).";
 	/**
 	 * Gets the component measures added successfully.
 	 *

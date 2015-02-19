@@ -84,7 +84,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
 
 
 // TODO: Auto-generated Javadoc
@@ -2388,10 +2387,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private boolean validateClauseNodeNesting(CellTreeNode treeNode , List<String> inValidNodeList, int counter) {
 		//List <Node> subTreeRefList = new ArrayList<Node>();
-		Node subTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(treeNode.getName() + "~" + treeNode.getUUID());
+		//Node subTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(treeNode.getName() + "~" + treeNode.getUUID());
 		//findAllSubTreeRefsInNode(subTreeNode, subTreeRefList);
 		//boolean isValidDepth = validateNestedSubTreeDepth(treeNode, subTreeRefList , counter, false);
-		boolean isValidDepth = findChildCount(subTreeNode, 0, false);
+		editNode(true, treeNode);
+		boolean isValidDepth = findChildCount(treeNode, 0, false);
 		if (isValidDepth) {
 			editNode(!isValidDepth, treeNode);
 			if (!inValidNodeList.contains("nestedClauseLogic")) {
@@ -2504,23 +2504,26 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param flag - Boolean
 	 * @return - Boolean
 	 */
-	private boolean findChildCount(Node treeNode, int counter, boolean flag) {
-		int currentCounter = counter;
-		NodeList children = treeNode.getChildNodes();
-		if ((children != null) && (children.getLength() > 0) && !flag) {
-			for (int i = 0; i < children.getLength(); i++) {
-				Node node = children.item(i);
-				if (node.getNodeName().equalsIgnoreCase("subTreeRef")) {
-					NamedNodeMap namedNodeMap = children.item(i).getAttributes();
-					String displayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
-					String uuid = namedNodeMap.getNamedItem("id").getNodeValue();
-					if (namedNodeMap.getNamedItem("instance") != null) {
-						uuid = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
-						displayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+	private boolean findChildCount(CellTreeNode treeNode, int counter, boolean flag) {
+		List<CellTreeNode> children = treeNode.getChilds();
+		if ((children != null) && (children.size() > 0) && !flag) {
+			for (int i = 0; i < children.size(); i++) {
+				int currentCounter = counter;
+				CellTreeNode subTreeCellTreeNode = children.get(i);
+				if (subTreeCellTreeNode.getName().equalsIgnoreCase("subTreeRef")) {
+					String displayName = subTreeCellTreeNode.getName();
+					String uuid = subTreeCellTreeNode.getUUID();
+					Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
+							.get(displayName + "~" + uuid);
+					if (node.getAttributes().getNamedItem("instance") != null) {
+						uuid = node.getAttributes().getNamedItem("instanceOf").getNodeValue();
+						displayName = node.getAttributes().getNamedItem("displayName").getNodeValue();
 					}
 					node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName + "~" + uuid);
+					subTreeCellTreeNode = XmlConversionlHelper
+							.createCellTreeNode(node, displayName);
 				}
-				if (node.hasChildNodes()) {
+				if ((subTreeCellTreeNode.getChilds() != null) && (subTreeCellTreeNode.getChilds().size() >0)) {
 					currentCounter = currentCounter + 1;
 					System.out.println("Current Counter Value ========" + currentCounter);
 				}
@@ -2528,7 +2531,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					flag = true;
 					break;
 				} else {
-					flag = findChildCount(node, currentCounter, flag);
+					flag = findChildCount(subTreeCellTreeNode, currentCounter, flag);
 				}
 			}
 		}

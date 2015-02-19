@@ -2509,7 +2509,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		NodeList children = treeNode.getChildNodes();
 		if ((children != null) && (children.getLength() > 0) && !flag) {
 			for (int i = 0; i < children.getLength(); i++) {
-				System.out.println("Current Counter Value ========" + currentCounter);
 				Node node = children.item(i);
 				if (node.getNodeName().equalsIgnoreCase("subTreeRef")) {
 					NamedNodeMap namedNodeMap = children.item(i).getAttributes();
@@ -2523,6 +2522,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				if (node.hasChildNodes()) {
 					currentCounter = currentCounter + 1;
+					System.out.println("Current Counter Value ========" + currentCounter);
 				}
 				if (currentCounter > 10) {
 					flag = true;
@@ -2532,7 +2532,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		}
-		
 		return flag;
 	}
 	/**

@@ -1962,7 +1962,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				boolean checkValidation = validateSubTreeRefNode(cellTreeNode);
 				//Method to find nesting depth of clauses inside clause.
 				boolean checkNestedValidation = validateClauseNodeNesting(cellTreeNode
-						, inValidNodeAtPopulationWorkspace, 1);
+						, inValidNodeAtPopulationWorkspace, 0);
 				editNode(!checkValidation, cellTreeNode);
 				if (checkNestedValidation) {
 					editNode(false, cellTreeNode);
@@ -2387,11 +2387,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param counter
 	 */
 	private boolean validateClauseNodeNesting(CellTreeNode treeNode , List<String> inValidNodeList, int counter) {
-		List <Node> subTreeRefList = new ArrayList<Node>();
+		//List <Node> subTreeRefList = new ArrayList<Node>();
 		Node subTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(treeNode.getName() + "~" + treeNode.getUUID());
-		findAllSubTreeRefsInNode(subTreeNode, subTreeRefList);
-		boolean isValidDepth = validateNestedSubTreeDepth(treeNode, subTreeRefList , counter, false);
+		//findAllSubTreeRefsInNode(subTreeNode, subTreeRefList);
+		//boolean isValidDepth = validateNestedSubTreeDepth(treeNode, subTreeRefList , counter, false);
+		boolean isValidDepth = findChildCount(subTreeNode, 0, false);
 		if (isValidDepth) {
+			editNode(!isValidDepth, treeNode);
 			if (!inValidNodeList.contains("nestedClauseLogic")) {
 				inValidNodeList.add("nestedClauseLogic");
 			}
@@ -2405,7 +2407,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param counter
 	 * @param isValidDepth
 	 * @return
-	 */
+	 *//*
 	private boolean validateNestedSubTreeDepth(CellTreeNode treeNode,List<Node> subTreeRefList, int counter , boolean isValidDepth) {
 		Node parentNode = null;
 		for (int i = 0; ((i < subTreeRefList.size()) && !isValidDepth); i++) {
@@ -2444,7 +2446,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			
 		}
 		return isValidDepth;
-	}
+	}*/
 	
 	/**
 	 * This method finds CellTreeNode for Node from treeNode.
@@ -2452,7 +2454,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param parentNode - Node - to be located in top Node.
 	 * @return CellTreeNode.
 	 */
-	private CellTreeNode findCellTreeNode(CellTreeNode treeNode, Node parentNode) {
+	/*private CellTreeNode findCellTreeNode(CellTreeNode treeNode, Node parentNode) {
 		String uuid = parentNode.getAttributes().getNamedItem("id").getNodeValue();
 		CellTreeNode node = null;
 		if (treeNode != null) {
@@ -2472,11 +2474,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		return node;
 	}
-	/**
+	 *//**
 	 * This Method finds all the SubTreeRef nodes present in treeNode.
 	 * @param treeNode - Node
 	 * @param subTreeRefNodeList - List of Nodes.
-	 */
+	 *//*
 	private void findAllSubTreeRefsInNode(Node treeNode, List<Node> subTreeRefNodeList){
 		if (treeNode != null) {
 			switch (treeNode.getNodeName()) {
@@ -2493,6 +2495,45 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		}
+	}*/
+	
+	/**
+	 * Method to find out depth of Node.
+	 * @param treeNode - Node
+	 * @param counter - Int
+	 * @param flag - Boolean
+	 * @return - Boolean
+	 */
+	private boolean findChildCount(Node treeNode, int counter, boolean flag) {
+		int currentCounter = counter;
+		NodeList children = treeNode.getChildNodes();
+		if ((children != null) && (children.getLength() > 0) && !flag) {
+			for (int i = 0; i < children.getLength(); i++) {
+				System.out.println("Current Counter Value ========" + currentCounter);
+				Node node = children.item(i);
+				if (node.getNodeName().equalsIgnoreCase("subTreeRef")) {
+					NamedNodeMap namedNodeMap = children.item(i).getAttributes();
+					String displayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					String uuid = namedNodeMap.getNamedItem("id").getNodeValue();
+					if (namedNodeMap.getNamedItem("instance") != null) {
+						uuid = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+						displayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					}
+					node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName + "~" + uuid);
+				}
+				if (node.hasChildNodes()) {
+					currentCounter = currentCounter + 1;
+				}
+				if (currentCounter > 10) {
+					flag = true;
+					break;
+				} else {
+					flag = findChildCount(node, currentCounter, flag);
+				}
+			}
+		}
+		
+		return flag;
 	}
 	/**
 	 * Validate node for old birth date and expired element.

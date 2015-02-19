@@ -3151,7 +3151,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String XPATH_DATE_TIME_DIFF_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+dateTimeDiffFunction+"]";
 					//for Nested Clause Validation
 					String XPATH_NESTED_SUBTREE_REF ="//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//subTreeRef";
-					
+					String XPATH_SUBTREE ="//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']";
 					/*System.out.println("MEASURE_XML: "+xmlModel.getXml());*/
 					try {
 						
@@ -3170,15 +3170,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								XPathConstants.NODESET);
 						NodeList nodeSubTreeRefList = (NodeList) xPath.evaluate(XPATH_NESTED_SUBTREE_REF, xmlProcessor.getOriginalDoc(),
 								XPathConstants.NODESET);
-						
+						Node nodeSubTree =(Node) xPath.evaluate(XPATH_SUBTREE, xmlProcessor.getOriginalDoc(),
+								XPathConstants.NODE);
 						// Validation for Nested Clause Logic.
 						/*if (nodeSubTreeRefList.getLength() > NESTED_CLAUSE_DEPTH) {
 							flag = true;
 							break;
 						} else {*/
 						// 1 is counter value for parent clause.
-						int nestedClauseCounter = 1;
-						flag = validateNestedSubTreeRef(nodeSubTreeRefList , nestedClauseCounter
+						int nestedClauseCounter = 0;
+						flag = validateNestedClauseLogic(nodeSubTree , nestedClauseCounter
 								, flag , xmlProcessor);
 						
 						//}
@@ -3282,7 +3283,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @return boolean.
 	 * @throws XPathExpressionException - Exception.
 	 */
-	private boolean validateNestedSubTreeRef(NodeList nodeSubTreeRefList, int counter, boolean flag
+	/*private boolean validateNestedClauseLogic(NodeList nodeSubTreeRefList, int counter, boolean flag
 			, XmlProcessor xmlProcessor) throws XPathExpressionException {
 		for (int i = 0; ((i < nodeSubTreeRefList.getLength()) &&  !flag); i++) {
 			int currentCounter = counter;
@@ -3305,7 +3306,47 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				break;
 			} else {
-				flag = validateNestedSubTreeRef(subTreeRefNodeList , currentCounter, flag, xmlProcessor);
+				flag = validateNestedClauseLogic(subTreeRefNodeList , currentCounter, flag, xmlProcessor);
+			}
+		}
+		return flag;
+	}*/
+	
+	/**
+	 * Validate Clause should have depth up to 10 Levels.
+	 * @param nodeSubTreeRefList
+	 * @param counter
+	 * @param flag
+	 * @param xmlProcessor
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private boolean validateNestedClauseLogic(Node nodeSubTreeRefList, int counter, boolean flag
+			, XmlProcessor xmlProcessor) throws XPathExpressionException {
+		NodeList children = nodeSubTreeRefList.getChildNodes();
+		for (int i = 0; ((i < children.getLength()) &&  !flag); i++) {
+			int currentCounter = counter;
+			System.out.println("Looping for counter -------" + counter);
+			Node node = children.item(i);
+			//String uuid = node.getAttributes().getNamedItem("id").getNodeValue();
+			if(node.getNodeName().equalsIgnoreCase("subTreeRef")) {
+				String uuid = node.getAttributes().getNamedItem("id").getNodeValue();
+				if (node.getAttributes().getNamedItem("instance") != null) {
+					uuid = node.getAttributes().getNamedItem("instanceOf").getNodeValue();
+				}
+				String XPATH_SUBTREE ="//subTreeLookUp/subTree[@uuid='"+uuid+"']";
+				node =(Node) xPath.evaluate(XPATH_SUBTREE, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODE);
+			}
+			if (node.hasChildNodes()) {
+				currentCounter = currentCounter+1 ;
+			}
+			if (currentCounter > NESTED_CLAUSE_DEPTH) {
+				flag = true;
+				System.out.println("Breaking for Node -------" + node.getAttributes().getNamedItem("displayName").getNodeValue());
+				break;
+			} else {
+				flag = validateNestedClauseLogic(node , currentCounter, flag, xmlProcessor);
 			}
 		}
 		return flag;

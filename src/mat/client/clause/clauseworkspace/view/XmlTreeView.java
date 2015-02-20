@@ -1960,7 +1960,23 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				boolean checkValidation = validateSubTreeRefNode(cellTreeNode);
 				//Method to find nesting depth of clauses inside clause.
-				boolean checkNestedValidation = validateClauseNodeNesting(cellTreeNode
+				Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
+						.get(cellTreeNode.getName() + "~" + cellTreeNode.getUUID());
+				NamedNodeMap namedNodeMap = node.getAttributes();
+				CellTreeNode subTreeCellTreeNode = null;
+				//for validating Occurrence of QDM Variable Clause
+				if (namedNodeMap.getNamedItem("instance") != null) {
+					String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+					String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+							.get(instanceOfDisplayName + "~" + instanceOfUUID);
+					subTreeCellTreeNode = XmlConversionlHelper
+							.createCellTreeNode(occurenceNode, instanceOfDisplayName);
+				} else {
+					subTreeCellTreeNode = XmlConversionlHelper
+							.createCellTreeNode(node, cellTreeNode.getName());
+				}
+				boolean checkNestedValidation = validateClauseNodeNesting(subTreeCellTreeNode
 						, inValidNodeAtPopulationWorkspace, 0);
 				editNode(!checkValidation, cellTreeNode);
 				if (checkNestedValidation) {
@@ -2390,12 +2406,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		//Node subTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(treeNode.getName() + "~" + treeNode.getUUID());
 		//findAllSubTreeRefsInNode(subTreeNode, subTreeRefList);
 		//boolean isValidDepth = validateNestedSubTreeDepth(treeNode, subTreeRefList , counter, false);
-		editNode(true, treeNode);
-		boolean isValidDepth = findChildCount(treeNode, 0, false);
-		if (isValidDepth) {
-			editNode(!isValidDepth, treeNode);
-			if (!inValidNodeList.contains("nestedClauseLogic")) {
-				inValidNodeList.add("nestedClauseLogic");
+		boolean isValidDepth = false;
+		if(treeNode != null) {
+			editNode(true, treeNode);
+			isValidDepth = findChildCount(treeNode, 0, false);
+			if (isValidDepth) {
+				editNode(!isValidDepth, treeNode);
+				if (!inValidNodeList.contains("nestedClauseLogic")) {
+					inValidNodeList.add("nestedClauseLogic");
+				}
 			}
 		}
 		return isValidDepth;
@@ -2523,7 +2542,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					subTreeCellTreeNode = XmlConversionlHelper
 							.createCellTreeNode(node, displayName);
 				}
-				if ((subTreeCellTreeNode.getChilds() != null) && (subTreeCellTreeNode.getChilds().size() >0)) {
+				if ((subTreeCellTreeNode.getChilds() != null) && (subTreeCellTreeNode.getChilds().size() > 0)) {
 					currentCounter = currentCounter + 1;
 					System.out.println("Current Counter Value ========" + currentCounter);
 				}

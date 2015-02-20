@@ -2411,7 +2411,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			editNode(true, treeNode);
 			isValidDepth = findChildCount(treeNode, 0, false);
 			if (isValidDepth) {
-				editNode(!isValidDepth, treeNode);
+				/*editNode(!isValidDepth, treeNode);*/
 				if (!inValidNodeList.contains("nestedClauseLogic")) {
 					inValidNodeList.add("nestedClauseLogic");
 				}
@@ -2525,11 +2525,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private boolean findChildCount(CellTreeNode treeNode, int counter, boolean flag) {
 		List<CellTreeNode> children = treeNode.getChilds();
+		CellTreeNode parentNode = null;
 		if ((children != null) && (children.size() > 0) && !flag) {
 			for (int i = 0; i < children.size(); i++) {
 				int currentCounter = counter;
 				CellTreeNode subTreeCellTreeNode = children.get(i);
-				if (subTreeCellTreeNode.getName().equalsIgnoreCase("subTreeRef")) {
+				if(currentCounter == 1){
+					parentNode = subTreeCellTreeNode;
+				}
+				if (subTreeCellTreeNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) {
 					String displayName = subTreeCellTreeNode.getName();
 					String uuid = subTreeCellTreeNode.getUUID();
 					Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
@@ -2553,6 +2557,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					flag = findChildCount(subTreeCellTreeNode, currentCounter, flag);
 				}
 			}
+		}
+		if(flag && (parentNode != null)) {
+			editNode(false, parentNode);
 		}
 		return flag;
 	}

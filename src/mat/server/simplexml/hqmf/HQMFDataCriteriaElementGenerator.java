@@ -1265,7 +1265,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			if(attrMode.equals(Generator.EQUAL_TO)){
 				targetQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 				if(unitAttrib!=null){
-					targetQuantityTag.setAttribute("unit", unitAttrib.getNodeValue());
+					targetQuantityTag.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 			} else if(attrMode.startsWith(Generator.LESS_THAN)){
 				Element uncertainRangeNode=  dataCriteriaElem.getOwnerDocument().createElement("uncertainRange");
@@ -1281,7 +1281,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				highNode.setAttribute("xsi:type", "PQ");
 				highNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 				if(unitAttrib!=null){
-					highNode.setAttribute("unit", unitAttrib.getNodeValue());
+					highNode.setAttribute("unit",  getUnitString(unitAttrib.getNodeValue()));
 				}
 				
 				uncertainRangeNode.appendChild(lowNode);
@@ -1297,7 +1297,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				lowNode.setAttribute("xsi:type", "PQ");
 				lowNode.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 				if(unitAttrib!=null){
-					lowNode.setAttribute("unit", unitAttrib.getNodeValue());
+					lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
 				if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
@@ -2116,9 +2116,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					if ((valueNodeList != null) && (valueNodeList.getLength() > 0)) {
 						dataCriteriaElem.insertBefore(dateTimeNode, valueNodeList.item(0));
 					} else {
-						Node statusCodeNode =  dataCriteriaElem.getElementsByTagName("statusCode").item(0).getNextSibling();
-						if(statusCodeNode!=null){
-							dataCriteriaElem.insertBefore(dateTimeNode, statusCodeNode);
+						NodeList statusCodeNodeList =  dataCriteriaElem.getElementsByTagName("statusCode");
+						if ((statusCodeNodeList != null) && (statusCodeNodeList.getLength() > 0)) {
+							dataCriteriaElem.insertBefore(dateTimeNode
+									, statusCodeNodeList.item(0).getNextSibling());
 						} else {
 							dataCriteriaElem.appendChild(dateTimeNode);
 						}

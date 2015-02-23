@@ -92,6 +92,11 @@ import com.google.gwt.xml.client.Node;
  */
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler {
 	/**
+	 * Clause valid nested depth.
+	 */
+	public static final int CLAUSE_NESTED_DEPTH = 10;
+	
+	/**
 	 * Comment Area Max Length - Population Work Space.
 	 */
 	private static final int COMMENT_MAX_LENGTH = 250;
@@ -2548,7 +2553,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					currentCounter = currentCounter + 1;
 					System.out.println("Current Counter Value ========" + currentCounter);
 				}
-				if (currentCounter > 10) {
+				if (currentCounter > CLAUSE_NESTED_DEPTH) {
 					flag = true;
 					break;
 				} else {

@@ -2492,8 +2492,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 		return node;
-	}
-	 *//**
+	}*/
+	/**
 	 * This Method finds all the SubTreeRef nodes present in treeNode.
 	 * @param treeNode - Node
 	 * @param subTreeRefNodeList - List of Nodes.
@@ -2525,17 +2525,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private boolean findChildCount(CellTreeNode treeNode, int counter, boolean flag) {
 		List<CellTreeNode> children = treeNode.getChilds();
-		CellTreeNode parentNode = null;
-		if ((children != null) && (children.size() > 0) && !flag) {
-			for (int i = 0; i < children.size(); i++) {
+		CellTreeNode childNode = null;
+		if ((children != null) && (children.size() > 0)) {
+			for (int i = 0; (i < children.size()) && !flag; i++) {
 				int currentCounter = counter;
 				CellTreeNode subTreeCellTreeNode = children.get(i);
-				if(currentCounter == 1){
-					parentNode = subTreeCellTreeNode;
-				}
+				childNode = subTreeCellTreeNode;
+				String uuid = subTreeCellTreeNode.getUUID();
 				if (subTreeCellTreeNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) {
 					String displayName = subTreeCellTreeNode.getName();
-					String uuid = subTreeCellTreeNode.getUUID();
 					Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
 							.get(displayName + "~" + uuid);
 					if (node.getAttributes().getNamedItem("instance") != null) {
@@ -2558,11 +2556,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		}
-		if(flag && (parentNode != null)) {
-			editNode(false, parentNode);
+		if (flag && (childNode != null)) {
+			editNode(!flag, childNode);
 		}
 		return flag;
 	}
+	
 	/**
 	 * Validate node for old birth date and expired element.
 	 *

@@ -149,11 +149,14 @@ public class ComparisonDialogBox {
 							|| keys.get(i).equals("SATISFIES ANY"))))){
 				listAllTimeOrFunction.addItem(keys.get(i));
 			}
-			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
-				listAllTimeOrFunction.setSelectedIndex(i);
-			}
 		}
-		
+		// set the selected index in listbox
+		for (int i = 0; i < listAllTimeOrFunction.getItemCount(); i++) {
+			if (listAllTimeOrFunction.getItemText(i).equalsIgnoreCase(timingOrFuncMethod)) {
+				listAllTimeOrFunction.setSelectedIndex(i);
+			}	
+		}
+				
 		listAllTimeOrFunction.setWidth("150px");
 		hPanel.clear();
 		dialogContents.add(hPanel);

@@ -395,10 +395,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
+				view.getInProgressMessageDisplay().clear();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
 				isMeasurePackageExportSuccess = false;
-				view.getInProgressMessageDisplay().setMessage(" Loading Please Wait...");
 				validateGroup();
 			}
 		});

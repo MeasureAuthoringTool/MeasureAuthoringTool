@@ -1,6 +1,9 @@
 package mat.client;
 
+import mat.client.clause.AppliedQDMPresenter;
 import mat.client.clause.QDMPresenter;
+import mat.client.clause.VSACProfileSelectionPresenter;
+import mat.client.clause.VSACProfileSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.event.MATClickHandler;
@@ -143,13 +146,13 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
-		measureComposerTabLayout.addPresenter(qdmPresenter, "QDM Elements");
+		measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
+		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 //		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
-		
 		measureComposerTabLayout.setHeight("98%");
 		
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
@@ -376,6 +379,14 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		QDMPresenter qdmP = new QDMPresenter();
 		return qdmP;
 		
+	}
+	
+	private MatPresenter buildAppliedQDMPresenter(){
+		VSACProfileSelectionView vascProfileSelectionView = new VSACProfileSelectionView();
+		VSACProfileSelectionPresenter vsacProfileSelectionPresenter = 
+				new VSACProfileSelectionPresenter(vascProfileSelectionView);
+		vsacProfileSelectionPresenter.getWidget();
+		return vsacProfileSelectionPresenter;
 	}
 	
 	/**

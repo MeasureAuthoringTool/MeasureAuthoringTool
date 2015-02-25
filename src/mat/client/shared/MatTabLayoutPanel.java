@@ -341,19 +341,19 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0) {
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2) {
-				int clauseWorkspaceTab = 2;
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
+				int clauseWorkspaceTab = 3;
 				ClauseWorkSpacePresenter clauseWorkspacePresenter = (ClauseWorkSpacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter, selectedIndex);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
-				int populationWorkspaceTab = 3;
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
+				int populationWorkspaceTab = 4;
 				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
-			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
-				int measurePackagerTab = 4;
+			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 5) {
+				int measurePackagerTab = 5;
 				MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) 
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(measurePackagerTab);
 				validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
@@ -363,7 +363,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter) previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-		} else if ((selectedIndex == 3) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
+		} else if ((selectedIndex == 4) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
 			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 		} else if (previousPresenter instanceof XmlTreePresenter) {

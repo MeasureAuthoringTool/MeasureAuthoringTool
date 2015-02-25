@@ -8,17 +8,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.VSACProfileWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,10 +44,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** The Constant PROXY_PORT. */
 	private int PROXY_PORT;
 	
+	/** The server. */
 	private String server;
+	
+	/** The service. */
 	private String service;
+	
+	/** The retierive multi oids service. */
 	private String retieriveMultiOIDSService;
 	
+	/** The profile service. */
+	private String profileService;
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
 	/** The Constant REQUEST_FAILURE_CODE. */
@@ -52,8 +62,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
 	
+	/** The v groovy client. */
 	private VSACGroovyClient vGroovyClient;
 	
+	/**
+	 * Instantiates a new VSACAPI service impl.
+	 */
 	public VSACAPIServiceImpl(){
 		PROXY_HOST = System.getProperty("vsac_proxy_host");
 		if(PROXY_HOST !=null) {
@@ -62,7 +76,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		server = System.getProperty("SERVER_TICKET_URL");
 		service = System.getProperty("SERVICE_URL");
 		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
-		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService);
+		profileService = System.getProperty("PROFILE_SERVICE");
+		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService);
 	}
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
@@ -101,6 +116,44 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return details;
+	}
+	
+	/**
+	 * Convert xml to profile list.
+	 *
+	 * @param xmlPayLoad the xml pay load
+	 * @return the VSAC profile wrapper
+	 */
+	private VSACProfileWrapper convertXmlToProfileList(final String xmlPayLoad){
+		LOGGER.info("Start VSACAPIServiceImpl convertXmlToProfileList");
+		VSACProfileWrapper profileDetails = null;
+		String xml = xmlPayLoad;
+		if ((xml != null) && StringUtils.isNotBlank(xml)) {
+			LOGGER.info("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
+		}
+		try {
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACProfileMapping.xml"));
+			Unmarshaller unmar = new Unmarshaller(mapping);
+			unmar.setClass(VSACProfileWrapper.class);
+			unmar.setWhitespacePreserve(true);
+			profileDetails = (VSACProfileWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			LOGGER.info("unmarshalling complete..RetrieveVSACProfileListResponse"
+					+ profileDetails.getProfileList().get(0).getName());
+			
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				LOGGER.info("Failed to load VSACProfileMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				LOGGER.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				LOGGER.info("Unmarshalling Failed" + e);
+			} else {
+				LOGGER.info("Other Exception" + e);
+			}
+		}
+		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
+		return profileDetails;
 	}
 	
 	
@@ -177,7 +230,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 *            - MatValueSet.
 	 */
 	private void handleVSACGroupedValueSet(final String eightHourTicket, final MatValueSet valueSet) {
-		if (!valueSet.isGrouping()) {
+		if (!valueSet.isGrouping()) { 
 			return;
 		}
 		valueSet.setGroupedValueSet(new ArrayList<MatValueSet>());
@@ -380,9 +433,54 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		}
 		return result;
 	}
+	
+	/**
+	 * Method to retrive All Profile List from VSAC.
+	 *
+	 * @return the all profile list
+	 */
+	@Override
+	public final VsacApiResult getAllProfileList() {
+		VsacApiResult result = new VsacApiResult();
+		LOGGER.info("Start VSACAPIServiceImpl getAllProfileList method :");
+		if (isAlreadySignedIn()) {
+			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
+					UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
+					);
+			VSACResponseResult vsacResponseResult = null;
+			try {
+				vsacResponseResult = vGroovyClient.getProfileList(fiveMinuteServiceTicket);
+			} catch (Exception ex) {
+				LOGGER.info("VSACAPIServiceImpl ProfileList failed in method :: getAllProfileList");
+			}
+			if (vsacResponseResult.getXmlPayLoad() != null) {
+				if (vsacResponseResult.getIsFailResponse()
+						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					LOGGER.info("Profile List reterival failed at VSAC with Failure Reason: "
+							+ vsacResponseResult.getFailReason());
+					result.setSuccess(false);
+					result.setFailureReason(vsacResponseResult.getFailReason());
+					return result;
+				}
+				if ((vsacResponseResult.getXmlPayLoad() != null)
+						&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+					// Caster conversion here.
+					VSACProfileWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
+					result.setVsacProfileResp(wrapper.getProfileList());
+					return result;
+				}
+			}
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("VSACAPIServiceImpl getAllProfileList :: UMLS Login is required");
+		}
+		LOGGER.info("End VSACAPIServiceImpl getAllProfileList method :");
+		return result;
+	}
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
-	 * Skip supplemental Data Elements and Timing elements, Expired, Birthdate and User defined QDM.
+	 * Skip supplemental Data Elements and Timing elements, Expired, Birth date and User defined QDM.
 	 *
 	 * @param measureId
 	 *            - Selected Measure Id.

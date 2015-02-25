@@ -31,18 +31,24 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		if (state <= 0) {
 			state = 0;
 			if (subState == 0) {
-				setPageNames("UNDEFINED", "QDM Elements");
+				setPageNames("UNDEFINED", "Old QDM Elements");
 				buttonPanel.remove(previousButton);
 				buttonPanel.remove(continueButton);
 				buttonPanel.add(continueButton);
 			}
 		} else if (state == 1) {
-			setPageNames("Measure Details", "Clause Workspace");
+			setPageNames("Measure Details", "QDM Elements");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} else if (state == 2) {
+			setPageNames("Old QDM Elements", "Clause Workspace");
+			buttonPanel.remove(previousButton);
+			buttonPanel.remove(continueButton);
+			buttonPanel.add(previousButton);
+			buttonPanel.add(continueButton);
+		} else if (state == 3) {
 			setPageNames("QDM Elements", "Population Workspace");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
@@ -55,22 +61,22 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);//commented to hide the Old Measure Packager from PreviousContinueButtonBar
-		} */else if (state == 3) {
-			state = 3;
+		} */else if (state == 4) {
+			state = 4;
 			setPageNames("Clause Workspace", "Measure Packager");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
-		} else if (state == 4) {
-			state = 4;
+		} else if (state == 5) {
+			state = 5;
 			setPageNames("Population Workspace", "Measure Notes");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
-		} else if (state >= 5) {
-			state = 5;
+		} else if (state >= 6) {
+			state = 6;
 			setPageNames("Measure Packager", "UNDEFINED");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);

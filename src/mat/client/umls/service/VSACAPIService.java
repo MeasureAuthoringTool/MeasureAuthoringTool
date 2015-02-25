@@ -69,5 +69,7 @@ public interface VSACAPIService extends RemoteService {
 	 * @return true, if successful
 	 */
 	boolean validateVsacUser(String userName, String password);
+
+	VsacApiResult getAllProfileList();
 	
 }

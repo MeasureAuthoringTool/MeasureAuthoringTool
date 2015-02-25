@@ -74,4 +74,6 @@ public interface VSACAPIServiceAsync {
 	void validateVsacUser(String userName, String password,
 			AsyncCallback<Boolean> callback);
 	
+	void getAllProfileList(AsyncCallback<VsacApiResult> callback);
+	
 }

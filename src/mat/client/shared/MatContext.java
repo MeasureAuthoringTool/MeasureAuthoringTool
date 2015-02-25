@@ -16,6 +16,7 @@ import mat.client.audit.service.AuditServiceAsync;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
+import mat.client.clause.VSACProfileSelectionView;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
@@ -145,6 +146,8 @@ public class MatContext implements IsSerializable {
 	/** The qds view. */
 	private QDSCodeListSearchView qdsView;
 	
+	private VSACProfileSelectionView vsacProfileView;
+	
 	/** The modify qdm pop up widget. */
 	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
 	
@@ -254,6 +257,10 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setQDSView(QDSCodeListSearchView view){
 		qdsView=view;
+	}
+	
+	public void setVSACProfileView(VSACProfileSelectionView view){
+		vsacProfileView = view;
 	}
 	
 	/**

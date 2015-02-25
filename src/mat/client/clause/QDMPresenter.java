@@ -64,14 +64,14 @@ public class QDMPresenter implements MatPresenter{
 		tabLayout.addPresenter(codeListSearchPresenter,"Create Element");
 		tabLayout.addPresenter(qdsAppliedListPresenter,"Applied Elements");
 		tabLayout.setHeight("98%");
-		MatContext.get().tabRegistry.put("QDM Elements",tabLayout);
+		MatContext.get().tabRegistry.put("Old QDM Elements",tabLayout);
 		MatContext.get().enableRegistry.put(tabLayout,this);
 		tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
 			@SuppressWarnings("rawtypes")
 			public void onSelection(final SelectionEvent event) {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
-				String newToken = "QDM Elements" + index;
+				String newToken = "Old QDM Elements" + index;
 				if(!History.getToken().equals(newToken)){
 					MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
 					String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion();

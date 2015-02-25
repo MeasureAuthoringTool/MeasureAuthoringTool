@@ -2546,12 +2546,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						displayName = node.getAttributes().getNamedItem("displayName").getNodeValue();
 					}
 					node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName + "~" + uuid);
-					subTreeCellTreeNode = XmlConversionlHelper
+					CellTreeNode subTreeReferenceNode  = XmlConversionlHelper
 							.createCellTreeNode(node, displayName);
+					if (subTreeReferenceNode.hasChildren()) {
+						subTreeCellTreeNode =  subTreeReferenceNode.getChilds().get(0);
+					}
 				}
-				if ((subTreeCellTreeNode.getChilds() != null) && (subTreeCellTreeNode.getChilds().size() > 0)) {
+				if ((subTreeCellTreeNode.getChilds() != null) && (subTreeCellTreeNode.getChilds().size() > 0)
+						&& (subTreeCellTreeNode.getNodeType() != CellTreeNode.SUBTREE_NODE)) {
 					currentCounter = currentCounter + 1;
-					System.out.println("Current Counter Value ========" + currentCounter);
+					System.out.println("Current Counter Value ========" + currentCounter + " For Node :: " + subTreeCellTreeNode.getName());
 				}
 				if (currentCounter > CLAUSE_NESTED_DEPTH) {
 					flag = true;

@@ -68,7 +68,7 @@ public class VSACProfileSelectionView implements
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizonalPanel");
 		//hp.setStyleName("marginTop");
-		hp.setWidth("400px");
+		hp.setWidth("420px");
 		hp.add(profileSel);
 		//profileSel.addValueChangeHandler(profileSelChangeHandler);
 		hp.add(vsacProfileListBox);

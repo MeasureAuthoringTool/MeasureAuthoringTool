@@ -978,7 +978,10 @@ public class ClauseWorkspaceContextMenu {
 				
 				if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 					HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-					String funcName = map.get(PopulationWorkSpaceConstants.TYPE);
+					String funcName = xmlTreeDisplay.getCopiedNode().getName();
+					if(map != null){
+						funcName = map.get(PopulationWorkSpaceConstants.TYPE);
+					}
 					
 					List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 					if(!allowedFunctionsList.contains(funcName)){

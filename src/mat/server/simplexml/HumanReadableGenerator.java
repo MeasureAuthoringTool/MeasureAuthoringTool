@@ -6,9 +6,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
+
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -1039,27 +1042,24 @@ public class HumanReadableGenerator {
 						HTML_LI);
 			}
 			
+			boolean isParentheses = false;
+			
 			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
 				NodeList children = childNodes.item(0).getChildNodes();
-				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
-						.item(0))))
-						&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
-								.item(1)))) {
-					newLiElement.appendText(" (");
+				if (checkIfElementRefOrQDMVariable(children.item(0)) && checkIfElementRefOrQDMVariable(children.item(1))) {
+					isParentheses = true;
 				}
+			}
+			
+			if(isParentheses){
+				newLiElement.appendText(" (");
 			}
 			
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			
-			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
-				NodeList children = childNodes.item(0).getChildNodes();
-				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
-						.item(0))))
-						&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
-								.item(1)))) {
-					newLiElement.appendText(") ");
-				}
+			if(isParentheses){
+				newLiElement.appendText(") ");
 			}
 			
 			if (!newLiElement.children().isEmpty()) {
@@ -1078,11 +1078,7 @@ public class HumanReadableGenerator {
 				
 				if (RELATIONAL_OP.equals(childNodes.item(1).getNodeName())) {
 					NodeList children = childNodes.item(1).getChildNodes();
-					if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
-							.item(0))))
-							&& (ELEMENT_REF.equals(children.item(1)
-									.getNodeName()) || checkIfQDMVariable(children
-											.item(1)))) {
+					if(checkIfElementRefOrQDMVariable(children.item(0)) && checkIfElementRefOrQDMVariable(children.item(1))) {					
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
@@ -1125,11 +1121,12 @@ public class HumanReadableGenerator {
 			retValue = true;
 		} else if (RELATIONAL_OP.equals(nodeName)) {
 			NodeList children = node.getChildNodes();
-			if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
-					.item(0))))
-					&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
-							.item(1)))) {
-				retValue = true;
+			retValue = checkIfElementRefOrQDMVariable(children.item(0));
+		} else if(FUNCTIONAL_OP.equals(nodeName)){
+			NodeList children = node.getChildNodes();
+			if(children.getLength() == 1){
+				Node child = children.item(0);
+				retValue = checkIfElementRefOrQDMVariable(child);
 			}
 		}
 		

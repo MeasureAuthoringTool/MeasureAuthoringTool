@@ -3,6 +3,8 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -11,6 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.umls.service.VSACAPIServiceAsync;
@@ -40,7 +43,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the VSAC profile input
 		 */
-		CustomCheckBox getVSACProfileInput();
+		HasValueChangeHandlers<Boolean> getVSACProfileInput();
 
 		/**
 		 * Gets the VSAC profile list box.
@@ -50,9 +53,26 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		ListBoxMVP getVSACProfileListBox();
 
 
+		/**
+		 * Sets the vsac profile selection list.
+		 *
+		 * @param vsacProfileSelectionList the new vsac profile selection list
+		 */
 		void setVsacProfileSelectionList(List<String> vsacProfileSelectionList);
 		
+		/**
+		 * Sets the vsac profile list box.
+		 */
 		void setVSACProfileListBox();
+
+		/**
+		 * Gets the error message display.
+		 *
+		 * @return the error message display
+		 */
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		void resetVSACValueSetWidget();
 	}
 
 	/** The panel. */
@@ -61,6 +81,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 	/** The search display. */
 	SearchDisplay searchDisplay;
 	
+	/** The vsacapi service async. */
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
 
@@ -74,11 +95,19 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		addAllHandlers();
 	}
 	
+	/**
+	 * Adds the all handlers.
+	 */
 	private void addAllHandlers(){
 		searchDisplay.getVSACProfileInput().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if (event.getValue().toString().equals("true")) {
+					if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
+						searchDisplay.getErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+						return;
+					}
 					searchDisplay.getVSACProfileListBox().setEnabled(true);
 					vsacapiServiceAsync.getAllProfileList(new AsyncCallback<VsacApiResult>() {
 						
@@ -96,14 +125,22 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 						}
 					});
 				} else if(event.getValue().toString().equals("false")){
+					searchDisplay.getErrorMessageDisplay().clear();
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
 					searchDisplay.setVSACProfileListBox();
 				}
 				
 			}
 		});
+		
 	}
 	
+	/**
+	 * Gets the profile list.
+	 *
+	 * @param list the list
+	 * @return the profile list
+	 */
 	private List<String> getProfileList(List<VSACProfile> list){
 		List<String> profileList = new ArrayList<String>();
 		for(int i=0; i<list.size(); i++){
@@ -125,7 +162,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		// TODO Auto-generated method stub
+		displaySearch();
 	}
 
 	/* (non-Javadoc)
@@ -142,8 +179,10 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 	 * Display search.
 	 */
 	public void displaySearch(){
-		panel.clear();
-		panel.add(searchDisplay.asWidget());
+		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.resetVSACValueSetWidget();
 	}
+	
+	
 
 }

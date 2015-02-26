@@ -6,12 +6,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
-
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -388,7 +385,8 @@ public class HumanReadableGenerator {
 		}
 		
 		Node newNode = subTreeNodeImportedClone;
-		if(subTreeNodeImportedClone.hasChildNodes()){
+		String qdmVariable = subTreeNodeImportedClone.getAttributes().getNamedItem("qdmVariable").getNodeValue();
+		if (subTreeNodeImportedClone.hasChildNodes() && "false".equalsIgnoreCase(qdmVariable)) {
 			newNode = subTreeNodeImportedClone.getFirstChild();
 		}
 		subTreeRefNodeParent.replaceChild(newNode, subTreeRefNode);
@@ -2324,7 +2322,8 @@ public class HumanReadableGenerator {
 				Node subTreeRefParentNode = subTreeRefNode.getParentNode();
 				
 				Node newNode = clonedSubTreeNode;
-				if(clonedSubTreeNode.hasChildNodes()){
+				String qdmVariable = clonedSubTreeNode.getAttributes().getNamedItem("qdmVariable").getNodeValue();
+				if (clonedSubTreeNode.hasChildNodes() && "false".equalsIgnoreCase(qdmVariable)) {
 					newNode = clonedSubTreeNode.getFirstChild();
 				}
 				subTreeRefParentNode.replaceChild(newNode, subTreeRefNode);

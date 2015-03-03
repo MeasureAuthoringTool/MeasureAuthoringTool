@@ -2209,6 +2209,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						warningMessages.add(MatContext.get().getMessageDelegate().getLHS_RHS_REQUIRED());
 					} else if (element.equalsIgnoreCase("inValidAtSetoperatorAndOrFunction")) {
 						warningMessages.add(MatContext.get().getMessageDelegate().getATLEAST_ONE_CHILD_REQUIRED());
+					} else if (element.equalsIgnoreCase("invalidNeed2Children")) {
+						warningMessages.add(MatContext.get().getMessageDelegate().getAT_LEAST_TWO_CHILDREN_REQUIRED());
+					} else if (element.equalsIgnoreCase("invalidNeed3Children")) {
+						warningMessages.add(MatContext.get().getMessageDelegate().getAT_LEAST_THREE_CHILDREN_REQUIRED());
 					} else if (element.equalsIgnoreCase("invalidClauseLogic")) {
 						warningMessages.add(MatContext.get().getMessageDelegate()
 								.getCLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE());
@@ -2253,6 +2257,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		String patientCharExpired = "Patient characteristic Expired";
 		String satisfiesAll = "SATISFIES ALL";
 		String satisfiesAny = "SATISFIES ANY";
+		String intersection = "INTERSECTION";
+		String union = "Union";
+		String dateTimeDiff = "DateTimeDiff";
 		if (treeNode != null) {
 			String attributeValue = "";
 			CellTreeNode node = treeNode;
@@ -2333,14 +2340,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					break;
 				case CellTreeNode.SET_OP_NODE:
-					if (((node.getChilds() != null) && (node.getChilds().size() >= 1))) {
+					int checkOpChildCount = 0;
+					String invalidKeyForOpMap = null;
+					if ((node.getName().equalsIgnoreCase(intersection)) ||
+						(node.getName().equalsIgnoreCase(union))) {
+						checkOpChildCount = 2;
+						invalidKeyForOpMap = "invalidNeed2Children";
+					}
+					if (((node.getChilds() != null) && (node.getChilds().size() >= checkOpChildCount))) {
 						if (!node.getValidNode()) {
 							editNode(true, node);
 						}
 					} else {
 						editNode(false, node);
-						if (!inValidNodeList.contains("inValidAtSetoperatorAndOrFunction")) {
-							inValidNodeList.add("inValidAtSetoperatorAndOrFunction");
+						if (invalidKeyForOpMap != null && !inValidNodeList.contains(invalidKeyForOpMap)) {
+							inValidNodeList.add(invalidKeyForOpMap);
 						}
 					}
 					break;
@@ -2355,9 +2369,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						funcType = node.getName();
 					}
 					if ((node.getName().equalsIgnoreCase(satisfiesAll))
-							|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+						|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+						checkChildCount = 3;
+						invalidKeyForMap = "invalidNeed3Children";
+					} else if (node.getName().equalsIgnoreCase(dateTimeDiff)) {
 						checkChildCount = 2;
-						invalidKeyForMap = "inValidAtTimingRelationShip";
+						invalidKeyForMap = "invalidNeed2Children";
 					} else if(!MatContext.get().functions.contains(funcType)){
 						invalidKeyForMap = "invalidAtFunction";
 						editNode(false, node);

@@ -209,8 +209,14 @@ public class MessageDelegate {
 	private final String LHS_RHS_REQUIRED = " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	
 	/** The atleast one child required. */
-	private final String ATLEAST_ONE_CHILD_REQUIRED = " Union, Intersection, and Functions must contain at least one child node.";
-	
+	private final String ATLEAST_ONE_CHILD_REQUIRED = " Functions must contain at least one child node.";
+
+	/** The at least three children are required. */
+	private final String AT_LEAST_TWO_CHILDREN_REQUIRED = "Union, Intersection, and Datetimediff must contain at least two or more child nodes.";
+
+	/** The at least three children are required. */
+	private final String AT_LEAST_THREE_CHILDREN_REQUIRED = "Satisfies All and Satisfies Any must contain at least three or more child nodes.";
+
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	
@@ -2101,6 +2107,26 @@ public class MessageDelegate {
 	public String getATLEAST_ONE_CHILD_REQUIRED() {
 		return ATLEAST_ONE_CHILD_REQUIRED;
 	}
+	
+	/**
+	 * Gets the at least two children required.
+	 *
+	 * @return the at LEAST_TWO_CHILDREN_REQUIRED
+	 */
+	public String getAT_LEAST_TWO_CHILDREN_REQUIRED() {
+		return AT_LEAST_TWO_CHILDREN_REQUIRED;
+	}
+
+	
+	/**
+	 * Gets the at least three children required.
+	 *
+	 * @return the at LEAST_THREE_CHILDREN_REQUIRED
+	 */
+	public String getAT_LEAST_THREE_CHILDREN_REQUIRED() {
+		return AT_LEAST_THREE_CHILDREN_REQUIRED;
+	}
+
 	
 	/**
 	 * Gets the population work space measure observation validation error.

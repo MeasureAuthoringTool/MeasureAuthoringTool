@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,10 +27,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.QualityDataModelWrapper;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,7 +61,7 @@ public class XmlProcessor {
 	
 	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
 	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
-
+	
 	/** The Constant PATIENT_CHARACTERISTIC_EXPIRED_OID. */
 	private static final String PATIENT_CHARACTERISTIC_EXPIRED_OID = "419099009";
 	
@@ -134,6 +131,15 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_DENOMINATOR_EXCEPTIONS = "/measure/populations/denominatorExceptions";
+	
+	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR = "/measure/measureDetails/denominatorDescription";
+	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS = "/measure/measureDetails/denominatorExceptionsDescription";
+	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS = "/measure/measureDetails/denominatorExclusionsDescription";
+	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS = "/measure/measureDetails/measurePopulationExclusionsDescription";
+	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS = "/measure/measureDetails/measurePopulationDescription";
+	private static final String XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS = "/measure/measureDetails/measureObservationsDescription";
+	private static final String XPATH_MEASURE_DETAILS_NUMERATOR = "/measure/measureDetails/numeratorDescription";
+	private static final String XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS = "/measure/measureDetails/numeratorExclusionsDescription";
 	
 	/** The Constant XPATH_DENOMINATOR_EXCLUSIONS. */
 	private static final String XPATH_DENOMINATOR_EXCLUSIONS = "/measure/populations/denominatorExclusions";
@@ -212,7 +218,7 @@ public class XmlProcessor {
 	private static final String AND = "and";
 	
 	/** The Constant OR. */
-	private static final String OR_STRING = "or";	
+	private static final String OR_STRING = "or";
 	
 	/** The Constant UUID. */
 	private static final String UUID_STRING = "uuid";
@@ -327,7 +333,7 @@ public class XmlProcessor {
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
-
+		
 	}
 	
 	/**
@@ -497,7 +503,7 @@ public class XmlProcessor {
 		}
 		return null;
 	}
-		
+	
 	/**
 	 * Gets the original xml.
 	 * 
@@ -614,6 +620,10 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
+			
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS);
 			/*xPathList.add(XPATH_MEASURE_OBSERVATIONS);*/
 		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations
@@ -621,6 +631,11 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+			
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
+			
 		} else if (SCORING_TYPE_CONTVAR.equalsIgnoreCase(scoringType)) {
 			// Numerators,Numerator Exclusions, Denominators, Denominator
 			// Exceptions, Denominator Exclusions
@@ -629,6 +644,13 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR);
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
+			
+			xPathList.add(XPATH_MEASURE_DETAILS_NUMERATOR);
+			xPathList.add(XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS);
+			
 		} else if (COHORT.equalsIgnoreCase(scoringType)) {
 			xPathList.add(XPATH_NUMERATORS);
 			xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
@@ -638,6 +660,15 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+			
+			xPathList.add(XPATH_MEASURE_DETAILS_NUMERATOR);
+			xPathList.add(XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
 		}
 		for (String xPathString : xPathList) {
 			Node node = findNode(originalDoc, xPathString);
@@ -872,7 +903,7 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createSupplementalDataElementNode(
-		Node measureStratificationsNode) throws XPathExpressionException {
+			Node measureStratificationsNode) throws XPathExpressionException {
 		Node supplementaDataElementsElement = findNode(originalDoc,
 				XPATH_MEASURE_SD_ELEMENTS);
 		if (supplementaDataElementsElement == null) {
@@ -881,7 +912,7 @@ public class XmlProcessor {
 			((Element) measureStratificationsNode.getParentNode())
 			.insertBefore(supplementaDataElementsElement,
 					measureStratificationsNode.getNextSibling());
-		}	
+		}
 		// Create elementLookUp node
 		if (findNode(originalDoc, XPATH_MEASURE_ELEMENT_LOOKUP) == null) {
 			Element elementLookUpElement = originalDoc
@@ -943,7 +974,7 @@ public class XmlProcessor {
 		
 		System.out.println("Original Doc: "+originalDoc.toString());
 	}
-
+	
 	/**
 	 * Calculates whether we appended a child node or not.
 	 *
@@ -977,7 +1008,7 @@ public class XmlProcessor {
 		}
 		return childAppended;
 	}
-
+	
 	/**
 	 * Retrieves the Score Based nodes.
 	 *
@@ -1241,20 +1272,20 @@ public class XmlProcessor {
 			LOG.debug("Marshalling of QualityDataSetDTO is successful.."
 					+ stream.toString());
 		}catch(IOException e) {
-				LOG.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method"
-						+ e, e);
-			}catch(MappingException e) {
-				LOG.info("Mapping Failed in convertQualityDataDTOToXML method"
-						+ e, e);
-			}catch(MarshalException e) {
-				LOG.info("Unmarshalling Failed in convertQualityDataDTOToXML method"
-						+ e, e);
-			}catch(ValidationException e) {
-				LOG.info("Validation Exception in convertQualityDataDTOToXML method"
-						+ e, e);
-			}catch(Exception e) {
-				LOG.info("Other Exception in convertQualityDataDTOToXML method "
-						+ e, e);
+			LOG.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method"
+					+ e, e);
+		}catch(MappingException e) {
+			LOG.info("Mapping Failed in convertQualityDataDTOToXML method"
+					+ e, e);
+		}catch(MarshalException e) {
+			LOG.info("Unmarshalling Failed in convertQualityDataDTOToXML method"
+					+ e, e);
+		}catch(ValidationException e) {
+			LOG.info("Validation Exception in convertQualityDataDTOToXML method"
+					+ e, e);
+		}catch(Exception e) {
+			LOG.info("Other Exception in convertQualityDataDTOToXML method "
+					+ e, e);
 		}
 		LOG.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		return stream;
@@ -1267,7 +1298,7 @@ public class XmlProcessor {
 	 * @return the org.apache.commons.io.output. byte array output stream
 	 */
 	public static org.apache.commons.io.output.ByteArrayOutputStream convertclauseToRiskAdjVarXML(QualityDataModelWrapper qualityDataSetDTO){
-
+		
 		LOG.info("In MeasureLibraryServiceImpl.convertclauseToRiskAdjVarXML()");
 		Mapping mapping = new Mapping();
 		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
@@ -1281,24 +1312,24 @@ public class XmlProcessor {
 			LOG.debug("Marshalling of SubTreeToRiskAdjustmentVarMapping is successful in convertclauseToRiskAdjVarXML()"
 					+ stream.toString());
 		}catch(IOException e) {
-				LOG.info("Failed to load SubTreeToRiskAdjustmentVarMapping.xml in convertclauseToRiskAdjVarXML()"
-						+ e, e);
+			LOG.info("Failed to load SubTreeToRiskAdjustmentVarMapping.xml in convertclauseToRiskAdjVarXML()"
+					+ e, e);
 		}catch(MappingException e){
-				LOG.info("Mapping Failed in convertclauseToRiskAdjVarXML()"
-						+ e, e);
+			LOG.info("Mapping Failed in convertclauseToRiskAdjVarXML()"
+					+ e, e);
 		}catch(MarshalException e) {
-				LOG.info("Unmarshalling Failed in convertclauseToRiskAdjVarXML()"
-						+ e, e);
+			LOG.info("Unmarshalling Failed in convertclauseToRiskAdjVarXML()"
+					+ e, e);
 		}catch(ValidationException e) {
-				LOG.info("Validation Exception in convertclauseToRiskAdjVarXML()"
-						+ e, e);
+			LOG.info("Validation Exception in convertclauseToRiskAdjVarXML()"
+					+ e, e);
 		}catch(Exception e) {
-				LOG.info("Other Exception in convertclauseToRiskAdjVarXML()"
-						+ e, e);
+			LOG.info("Other Exception in convertclauseToRiskAdjVarXML()"
+					+ e, e);
 		}
 		LOG.info("Exiting MeasureLibraryServiceImpl.convertclauseToRiskAdjVarXML()");
 		return stream;
-	
+		
 		
 	}
 	/**
@@ -1324,20 +1355,20 @@ public class XmlProcessor {
 			LOG.debug("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()"
 					+ stream.toString());
 		}catch(IOException e) {
-				LOG.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()"
-						+ e, e);
+			LOG.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()"
+					+ e, e);
 		}catch(MappingException e){
-				LOG.info("Mapping Failed in convertQDMOToSuppleDataXML()"
-						+ e, e);
+			LOG.info("Mapping Failed in convertQDMOToSuppleDataXML()"
+					+ e, e);
 		}catch(MarshalException e) {
-				LOG.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()"
-						+ e, e);
+			LOG.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()"
+					+ e, e);
 		}catch(ValidationException e) {
-				LOG.info("Validation Exception in convertQDMOToSuppleDataXML()"
-						+ e, e);
+			LOG.info("Validation Exception in convertQDMOToSuppleDataXML()"
+					+ e, e);
 		}catch(Exception e) {
-				LOG.info("Other Exception in convertQDMOToSuppleDataXML()"
-						+ e, e);
+			LOG.info("Other Exception in convertQDMOToSuppleDataXML()"
+					+ e, e);
 		}
 		LOG.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
 		return stream;
@@ -1401,8 +1432,8 @@ public class XmlProcessor {
 		}
 		try {
 			Node strataNode = findNode(originalDoc, XPATH_STRATA);
-			if (strataNode != null && (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
-						.getNodeName().equalsIgnoreCase(STRATIFICATION)))) {
+			if ((strataNode != null) && (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
+					.getNodeName().equalsIgnoreCase(STRATIFICATION)))) {
 				NodeList childs  = strataNode.getChildNodes();
 				Element stratificationEle = originalDoc
 						.createElement(STRATIFICATION);
@@ -1421,7 +1452,7 @@ public class XmlProcessor {
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
-		} 
+		}
 		return transform(originalDoc);
 	}
 	
@@ -1460,7 +1491,7 @@ public class XmlProcessor {
 		}
 		return transform(originalDoc);
 	}
-		
+	
 	/**
 	 * Transform.
 	 * 
@@ -1468,8 +1499,8 @@ public class XmlProcessor {
 	 *            the node
 	 * @return the string
 	 */
-	public String transform(Node node) {		
-		return transform(node,false);		
+	public String transform(Node node) {
+		return transform(node,false);
 	}
 	
 	/**
@@ -1509,7 +1540,7 @@ public class XmlProcessor {
 	 * Takes the spaces out of the clauseName (attribute displayName in XML).
 	 *
 	 * @param xmlModel the xml model
-	 * @return 
+	 * @return
 	 */
 	public static String normalizeNodeForSpaces (String xmlString, String xPathString) throws XPathExpressionException {
 		XmlProcessor xmlProcessor = new XmlProcessor(xmlString);
@@ -1520,11 +1551,11 @@ public class XmlProcessor {
 			String newValue = oldValue.replaceAll("( )+", " ");
 			node.setNodeValue(newValue);
 		}
-		return xmlProcessor.transform(xmlProcessor.getOriginalDoc());	
+		return xmlProcessor.transform(xmlProcessor.getOriginalDoc());
 	}
-
+	
 	/**
-	 * Utility method to go through the Node and its children (upto nth level) 
+	 * Utility method to go through the Node and its children (upto nth level)
 	 * and remove all TEXT nodes.
 	 * @param node
 	 */

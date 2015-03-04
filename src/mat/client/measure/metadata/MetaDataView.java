@@ -3,7 +3,6 @@ package mat.client.measure.metadata;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -29,7 +28,6 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -94,10 +92,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
-		
+	
 	/** The abbr input. */
 	protected Label abbrInput = new Label();
-		
+	
 	/** The meas scoring input. */
 	protected Label measScoringInput = new Label();
 	
@@ -320,7 +318,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The component measures selected list v panel. */
 	HorizontalPanel topHPanel = new HorizontalPanel();
-
+	
 	/** The component measures selected list v panel. */
 	HorizontalPanel bottomHPanel = new HorizontalPanel();
 	
@@ -395,20 +393,19 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The calender year. */
 	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calendar Year", "Calendar Year", 1);
 	
-	
+	private String measureScoringType ;
 	/**
 	 * Instantiates a new meta data view.
 	 */
 	public MetaDataView(){
 		addClickHandlers();
 		searchString.setHeight("20px");
-		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
 		VerticalPanel mainContent = new VerticalPanel();
 		mainContent.getElement().setId("mainContent_VerticalPanel");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.getElement().setId("mainPanel_FlowPanel01");
-		buildForm();
+		/*buildForm();*/
 		topHPanel.setHeight("25%");
 		bottomHPanel.setHeight("75%");
 		mainContent.add(topHPanel);
@@ -428,7 +425,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * 
 	 * @return the widget
 	 */
-	private void buildForm() {
+	@Override
+	public void buildForm() {
+		topHPanel.clear();
+		bottomHPanel.clear();
 		ChangeHandler changeHandler = new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -469,7 +469,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		/** The panel for the top right side of screen */
 		VerticalPanel topRightSidePanel = new VerticalPanel();
 		
-
+		
 		topHPanel.getElement().setId("mainPanel_HPanelTop");
 		bottomHPanel.getElement().setId("mainPanel_HPanelBottom");
 		topRightSidePanel.getElement().setId("mainPanel_VTopRight");
@@ -484,7 +484,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.getElement().setId("fPanel_FlowPanelLeft");
 		fPanel.add(new SpacerWidget());
 		fPanel.add(errorMessages);
-				
+		
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setAttribute("id", "emeasureTitlePanel");
 		hp.add(new SpacerWidget());
@@ -513,9 +513,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		Label generalLabel = new Label("General Information");
 		generalLabel.setStyleName("measurementPeriodHeader");
 		generalLabel.getElement().setId("generalInfoHeader_Label");
-		generalLabel.getElement().setAttribute("tabIndex", "0");		
+		generalLabel.getElement().setAttribute("tabIndex", "0");
 		generalPanel.add(generalLabel);
-
+		
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
 		Label measScoringInputLabel = (Label) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
 		measScoringInputLabel.getElement().setId("MeasScoringLabel");
@@ -524,7 +524,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(measScoringInputLabel);
 		
 		measScoringInput.setStyleName("marginLeft20px");
-		measScoringInput.getElement().setId("MeasScoringValue");			
+		measScoringInput.getElement().setId("MeasScoringValue");
 		generalPanel.add(measScoringInput);
 		generalPanel.add(new SpacerWidget());
 		
@@ -557,7 +557,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		eMeasureIdentifier.setStyleName("marginLeft20px");
 		generalPanel.add(eMeasureIdentifier);
 		generalPanel.add(new SpacerWidget());
-						
+		
 		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
 		versionInputLabel.setStyleName("marginLeft20pxBold");
 		versionInputLabel.setTitle(versionInputLabel.getText());
@@ -566,13 +566,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		versionInput.getElement().setId("versionInput");
 		versionInput.setStyleName("marginLeft20px");
 		generalPanel.add(versionInput);
-
+		
 		//measurementPeriod Header
 		topRightSidePanel.add(new SpacerWidget());
 		topRightSidePanel.add(new SpacerWidget());
 		topRightSidePanel.add(new SpacerWidget());
 		topRightSidePanel.add(generalPanel);
-			
+		
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
@@ -584,7 +584,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
 		//optionLabelWidget.setStyleName("generate-emeasureid-button");
 		eMeasureIdentifierInput.getElement().setId("eMeasureIdentifierInput_TextBox");
-		//horizontalPanel.add(optionLabelWidget);		
+		//horizontalPanel.add(optionLabelWidget);
 		
 		horizontalPanel.add(eMeasureIdentifierInput);
 		horizontalPanel.add(generateeMeasureIDButton);
@@ -609,27 +609,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		NQFIDInput.addKeyDownHandler(keyDownHandler);
 		topLeftSidePanel.add(new SpacerWidget());
 		
-		//		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
-		//		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
-		//		Label fromLabel = new Label("From");
-		//		fromLabel.addStyleName("firstLabel");
-		//		measurePeriodPanel.add(fromLabel);
-		//		measurePeriodPanel.add(measurePeriodFromInput);
-		//		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
-		//		Label toLabel = new Label("To");
-		//		toLabel.addStyleName("secondLabel");
-		//		measurePeriodPanel.add(toLabel);
-		//		measurePeriodPanel.add(measurePeriodToInput);
-		//		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
-		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
-		//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
-		//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
-		//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
-		//		Label measurePeriodFromInputLabel = (Label) LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period");
-		//		measurePeriodFromInputLabel.setStyleName("bold");
-		//		fPanel.add(measurePeriodFromInputLabel);
-		//		fPanel.add(measurePeriodPanel);
-		//		fPanel.add(new SpacerWidget());
 		VerticalPanel measurementPeriodPanel = new VerticalPanel();
 		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
 		measurementPeriodPanel.setStyleName("valueSetSearchPanel");
@@ -666,25 +645,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodToInput.getDateBox().getElement().setAttribute("id", "measurePeriodToInput");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
-		//		measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
-		//		measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
-//		measurePeriodFromInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
-//			
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				formatDateValue(event,measurePeriodFromInput.getDateBox(), "");
-//			}
-//		});
-//		
-//		measurePeriodToInput.getDateBox().addKeyUpHandler(new KeyUpHandler() {
-//			
-//			@Override
-//			public void onKeyUp(KeyUpEvent event) {
-//				formatDateValue(event,measurePeriodToInput.getDateBox(), "");
-//			}
-//		});
-//		measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
-//		measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
+		
 		Grid queryGrid = new Grid(3, 1);
 		queryGrid.setWidget(0, 0, calenderYearDatePanel);
 		queryGrid.setWidget(1, 0, new SpacerWidget());
@@ -699,7 +660,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		stewardTableLabel.setStyleName("measureDetailTableHeader");
 		topLeftSidePanel.add(stewardTableLabel);
 		topLeftSidePanel.add(stewardSPanel);
-				
+		
 		Label authorTableLabel = (Label) LabelBuilder.buildLabel(authorCellTable, "Measure Developer List");
 		authorTableLabel.setStyleName("measureDetailTableHeader");
 		fPanel.add(authorTableLabel);
@@ -766,10 +727,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Label stratificationInputLabel = (Label) LabelBuilder.buildLabel(stratificationInput , "Stratification");
 		stratificationInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(stratificationInputLabel);
-		fPanel.add(stratificationInput);
+		
 		stratificationInput.getElement().setId("stratificationInput_TextAreaWithMaxLength");
 		stratificationInput.addKeyDownHandler(keyDownHandler);
+		fPanel.add(stratificationInputLabel);
+		fPanel.add(stratificationInput);
 		fPanel.add(new SpacerWidget());
 		
 		Label riskAdjInputLabel = (Label) LabelBuilder.buildLabel(riskAdjustmentInput, "Risk Adjustment");
@@ -857,78 +819,89 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		initialPopInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
-		Label denoInputLabel = (Label) LabelBuilder.buildLabel(denominatorInput, "Denominator");
-		denoInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(denoInputLabel);
-		//fPanel.add(new SpacerWidget());
-		fPanel.add(denominatorInput);
-		denominatorInput.getElement().setId("denominatorInput_TextAreaWithMaxLength");
-		denominatorInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
+		if ((measureScoringType != null) && (measureScoringType.equalsIgnoreCase("Ratio")
+				|| measureScoringType.equalsIgnoreCase("Proportion"))) {
+			Label denoInputLabel = (Label) LabelBuilder.buildLabel(denominatorInput, "Denominator");
+			denoInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(denoInputLabel);
+			//fPanel.add(new SpacerWidget());
+			fPanel.add(denominatorInput);
+			denominatorInput.getElement().setId("denominatorInput_TextAreaWithMaxLength");
+			denominatorInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+			
+			Label denoExclInputLabel = (Label) LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions");
+			denoExclInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(denoExclInputLabel);
+			//fPanel.add(new SpacerWidget());
+			fPanel.add(denominatorExclusionsInput);
+			denominatorExclusionsInput.getElement().setId("denominatorExclusionsInput_TextAreaWithMaxLength");
+			denominatorExclusionsInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+			
+			Label numInputLabel = (Label) LabelBuilder.buildLabel(numeratorInput, "Numerator");
+			numInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(numInputLabel);
+			//fPanel.add(new SpacerWidget());
+			fPanel.add(numeratorInput);
+			numeratorInput.getElement().setId("numeratorInput_TextAreaWithMaxLength");
+			numeratorInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+			
+			Label numExclInputLabel = (Label) LabelBuilder.buildLabel(numeratorExclusionsInput, "Numerator Exclusions");
+			numExclInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(numExclInputLabel);
+			//	fPanel.add(new SpacerWidget());
+			fPanel.add(numeratorExclusionsInput);
+			numeratorExclusionsInput.getElement().setId("numeratorExclusionsInput_TextAreaWithMaxLength");
+			numeratorExclusionsInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+			
+		}
 		
-		Label denoExclInputLabel = (Label) LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions");
-		denoExclInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(denoExclInputLabel);
-		//fPanel.add(new SpacerWidget());
-		fPanel.add(denominatorExclusionsInput);
-		denominatorExclusionsInput.getElement().setId("denominatorExclusionsInput_TextAreaWithMaxLength");
-		denominatorExclusionsInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
 		
-		Label numInputLabel = (Label) LabelBuilder.buildLabel(numeratorInput, "Numerator");
-		numInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(numInputLabel);
-		//fPanel.add(new SpacerWidget());
-		fPanel.add(numeratorInput);
-		numeratorInput.getElement().setId("numeratorInput_TextAreaWithMaxLength");
-		numeratorInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
+		if ((measureScoringType != null) && ((measureScoringType.equalsIgnoreCase("Proportion")))) {
+			
+			Label denoExcepInputLabel = (Label) LabelBuilder.buildLabel(denominatorExceptionsInput, "Denominator Exceptions");
+			denoExcepInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(denoExcepInputLabel);
+			//
+			fPanel.add(denominatorExceptionsInput);
+			denominatorExceptionsInput.getElement().setId("denominatorExceptionsInput_TextAreaWithMaxLength");
+			denominatorExceptionsInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+		}
+		if((measureScoringType != null) && measureScoringType.equalsIgnoreCase("Continuous Variable")){
+			Label measurePopInputLabel = (Label) LabelBuilder.buildLabel(measurePopulationInput, "Measure Population");
+			measurePopInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(measurePopInputLabel);
+			//fPanel.add(new SpacerWidget());
+			fPanel.add(measurePopulationInput);
+			measurePopulationInput.getElement().setId("measurePopulationInput_TextAreaWithMaxLength");
+			measurePopulationInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+			
+			Label measurePopExclInputLabel = (Label) LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions");
+			measurePopExclInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(measurePopExclInputLabel);
+			//	fPanel.add(new SpacerWidget());
+			fPanel.add(measurePopulationExclusionsInput);
+			measurePopulationExclusionsInput.getElement().setId("MmeasurePopulationExclusionsInput_TextAreaWithMaxLength");
+			measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+		}
 		
-		Label numExclInputLabel = (Label) LabelBuilder.buildLabel(numeratorExclusionsInput, "Numerator Exclusions");
-		numExclInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(numExclInputLabel);
-		//	fPanel.add(new SpacerWidget());
-		fPanel.add(numeratorExclusionsInput);
-		numeratorExclusionsInput.getElement().setId("numeratorExclusionsInput_TextAreaWithMaxLength");
-		numeratorExclusionsInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
-		
-		Label denoExcepInputLabel = (Label) LabelBuilder.buildLabel(denominatorExceptionsInput, "Denominator Exceptions");
-		denoExcepInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(denoExcepInputLabel);
-		//
-		fPanel.add(denominatorExceptionsInput);
-		denominatorExceptionsInput.getElement().setId("denominatorExceptionsInput_TextAreaWithMaxLength");
-		denominatorExceptionsInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
-		
-		Label measurePopInputLabel = (Label) LabelBuilder.buildLabel(measurePopulationInput, "Measure Population");
-		measurePopInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(measurePopInputLabel);
-		//fPanel.add(new SpacerWidget());
-		fPanel.add(measurePopulationInput);
-		measurePopulationInput.getElement().setId("measurePopulationInput_TextAreaWithMaxLength");
-		measurePopulationInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
-		
-		Label measurePopExclInputLabel = (Label) LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions");
-		measurePopExclInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(measurePopExclInputLabel);
-		//	fPanel.add(new SpacerWidget());
-		fPanel.add(measurePopulationExclusionsInput);
-		measurePopulationExclusionsInput.getElement().setId("MmeasurePopulationExclusionsInput_TextAreaWithMaxLength");
-		measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
-		
-		Label measureObInputLabel = (Label) LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations");
-		measureObInputLabel.setStyleName("measureDetailLabelStyle");
-		fPanel.add(measureObInputLabel);
-		//	fPanel.add(new SpacerWidget());
-		fPanel.add(measureObservationsInput);
-		measureObservationsInput.getElement().setId("measureObservationsInput_TextAreaWithMaxLength");
-		measureObservationsInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
-		
+		if((measureScoringType != null) &&(measureScoringType.equalsIgnoreCase("Continuous Variable")
+				|| measureScoringType.equalsIgnoreCase("Ratio"))){
+			Label measureObInputLabel = (Label) LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations");
+			measureObInputLabel.setStyleName("measureDetailLabelStyle");
+			fPanel.add(measureObInputLabel);
+			//	fPanel.add(new SpacerWidget());
+			fPanel.add(measureObservationsInput);
+			measureObservationsInput.getElement().setId("measureObservationsInput_TextAreaWithMaxLength");
+			measureObservationsInput.addKeyDownHandler(keyDownHandler);
+			fPanel.add(new SpacerWidget());
+		}
 		Label supplementdalDataInputLabel = (Label) LabelBuilder.buildLabel(supplementalDataInput, "Supplemental Data Elements");
 		supplementdalDataInputLabel.setStyleName("measureDetailLabelStyle");
 		fPanel.add(supplementdalDataInputLabel);
@@ -1923,6 +1896,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public Widget asWidget() {
+		
 		return focusPanel;
 		//return mainPanel;
 	}
@@ -2840,17 +2814,21 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return calenderYear;
 	}
 	
-//	/**
-//	 * Format date value.
-//	 *
-//	 * @param event the event
-//	 * @param dateBox the date box
-//	 * @param availableDateId the available date id
-//	 */
-//	private void formatDateValue(KeyUpEvent event, TextBox dateBox, String availableDateId) {
-//		if(!event.isAnyModifierKeyDown()) {
-//			dateBox.setValue("");
-//			dateBox.setCursorPos(0);
-//		}
-//	}
+	
+	/**
+	 * @return the measureScoringType
+	 */
+	public String getMeasureScoringType() {
+		return measureScoringType;
+	}
+	
+	
+	/**
+	 * @param measureScoringType the measureScoringType to set
+	 */
+	@Override
+	public void setMeasureScoringType(String measureScoringType) {
+		this.measureScoringType = measureScoringType;
+	}
+	
 }

@@ -3230,7 +3230,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							
 						}
 						
-						for (int n = 0; (n <nodesSDE_functions.getLength()) && !flag; n++) {
+						for (int n = 0; (n < nodesSDE_functions.getLength()) && !flag; n++) {
 							
 							Node functionsChildNode =nodesSDE_functions.item(n);
 							flag = validateFunctionNode(functionsChildNode, operatorTypeList, flag);
@@ -3240,9 +3240,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							
 						}
 						
-						for (int n = 0; (n <nodeSDE_setoperator.getLength()) && !flag; n++) {
+						for (int n = 0; (n < nodeSDE_setoperator.getLength()) && !flag; n++) {
 							
-							Node setOperatorChildNode =nodeSDE_setoperator.item(n);
+							Node setOperatorChildNode = nodeSDE_setoperator.item(n);
 							flag = validateSetOperatorNode(setOperatorChildNode, flag);
 							if(flag) {
 								break;
@@ -3258,6 +3258,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								flag = true;
 							}
 							
+							Node dateTimeDiffChildNode = nodeSDE_dateTimeDiffElement.item(n);
+							flag = validateDateTimeDiffNode(dateTimeDiffChildNode, flag);
+						
 							if (flag) {
 								break;
 							}
@@ -3717,7 +3720,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private boolean validateSatisfyNode(Node satisfyElementchildNode, boolean flag) {
 		int childCount = satisfyElementchildNode.getChildNodes().getLength();
-		if(childCount < 2){
+		if(childCount < 3){
 			flag = true;
 		}
 		return flag;
@@ -3750,12 +3753,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private boolean validateSetOperatorNode(Node SetOperatorchildNode, boolean flag){
 		int setOperatorChildCount = SetOperatorchildNode.getChildNodes().getLength();
-		if(setOperatorChildCount< 1){
+		if(setOperatorChildCount < 2) {
 			flag = true;
-		}
+		} 
 		return flag;
 		
 	}
+	
+
+	/**
+	 * Validate date and time operators nodes.
+	 *
+	 * @param SetOperatorchildNode the set operatorchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateDateTimeDiffNode(Node dateTimeDiffChildNode, boolean flag){
+		int dateTimeChildCount = dateTimeDiffChildNode.getChildNodes().getLength();
+		if(dateTimeChildCount < 2) {
+			flag = true;
+		} 
+		return flag;
+		
+	}
+
+	
 	
 	
 	/* (non-Javadoc)

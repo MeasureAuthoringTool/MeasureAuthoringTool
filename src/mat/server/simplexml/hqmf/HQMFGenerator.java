@@ -1,5 +1,8 @@
 package mat.server.simplexml.hqmf;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import mat.server.util.XmlProcessor;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -69,8 +73,9 @@ public class HQMFGenerator implements Generator {
 	 */
 	private void generateNarrative(MeasureExport me) {
 		String humanReadableHTML = HumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
+		humanReadableHTML = tidyfyHTML(humanReadableHTML);
 		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());
-		humanReadableHTML = "<body>" + humanReadableHTML.substring(humanReadableHTML.indexOf("<h2><a name=\"toc\">"));
+		
 		XmlProcessor humanReadableProcessor = new XmlProcessor(humanReadableHTML);
 		
 		try{
@@ -84,6 +89,30 @@ public class HQMFGenerator implements Generator {
 		}
 	}
 	
+	private String tidyfyHTML(String humanReadableHTML) {
+		
+		Tidy tidy = new Tidy();
+		tidy.setInputEncoding("UTF-8");		 
+		tidy.setOutputEncoding("UTF-8");		 
+		tidy.setWraplen(Integer.MAX_VALUE);		 
+		tidy.setPrintBodyOnly(false);		 
+		tidy.setXmlOut(true);		
+		 
+		ByteArrayInputStream inputStream;
+		try {
+			inputStream = new ByteArrayInputStream(humanReadableHTML.getBytes("UTF-8"));
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			 
+			tidy.parseDOM(inputStream, outputStream);
+			 
+			humanReadableHTML = outputStream.toString();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return humanReadableHTML;	
+		
+	}
+
 	/**
 	 * Generate data crit narrative.
 	 *

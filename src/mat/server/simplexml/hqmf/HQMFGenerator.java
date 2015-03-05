@@ -70,6 +70,7 @@ public class HQMFGenerator implements Generator {
 	private void generateNarrative(MeasureExport me) {
 		String humanReadableHTML = HumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
 		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());
+		humanReadableHTML = "<body>" + humanReadableHTML.substring(humanReadableHTML.indexOf("<h2><a name=\"toc\">"));
 		XmlProcessor humanReadableProcessor = new XmlProcessor(humanReadableHTML);
 		
 		try{

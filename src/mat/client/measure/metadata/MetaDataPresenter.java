@@ -23,6 +23,7 @@ import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HasVisible;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
@@ -30,11 +31,14 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.TextAreaWithMaxLength;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -48,8 +52,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -657,6 +663,86 @@ public class MetaDataPresenter  implements MatPresenter {
 		void setMeasureScoringType(String measureScoringType);
 		
 		void buildForm();
+		
+		ListBox getAuthorListBox();
+		
+		ListBox getMeasureTypeListBox();
+		
+		Button getGenerateeMeasureIDButton();
+		
+		TextAreaWithMaxLength getTransmissionFormatInput();
+		
+		TextAreaWithMaxLength getDefinitionsInput();
+		
+		TextAreaWithMaxLength getReferenceInput();
+		
+		TextAreaWithMaxLength getImprovementNotationInput();
+		
+		TextAreaWithMaxLength getClinicalStmtInput();
+		
+		TextAreaWithMaxLength getSetNameInput();
+		
+		TextBox getNQFIDInput();
+		
+		TextBox getCodeSystemVersionInput();
+		
+		TextAreaWithMaxLength getSupplementalDataInput();
+		
+		DateBoxWithCalendar getMeasurePeriodToInput();
+		
+		DateBoxWithCalendar getMeasurePeriodFromInput();
+		
+		ListBoxMVP getMeasureTypeInput();
+		
+		TextAreaWithMaxLength getMeasureObservationsInput();
+		
+		TextAreaWithMaxLength getMeasurePopulationExclusionsInput();
+		
+		TextAreaWithMaxLength getMeasurePopulationInput();
+		
+		Label getAbbrInput();
+		
+		Label getMeasScoringInput();
+		
+		TextAreaWithMaxLength getRationaleInput();
+		
+		Label getVersionInput();
+		
+		ListBoxMVP getAuthorInput();
+		
+		TextBox getMeasureStewardOtherInput();
+		
+		TextAreaWithMaxLength getDescriptionInput();
+		
+		TextAreaWithMaxLength getCopyrightInput();
+		
+		TextAreaWithMaxLength getDisclaimerInput();
+		
+		TextAreaWithMaxLength getRiskAdjustmentInput();
+		
+		TextAreaWithMaxLength getRateAggregationInput();
+		
+		TextAreaWithMaxLength getInitialPopInput();
+		
+		TextAreaWithMaxLength getDenominatorInput();
+		
+		TextAreaWithMaxLength getDenominatorExclusionsInput();
+		
+		TextAreaWithMaxLength getNumeratorInput();
+		
+		TextAreaWithMaxLength getNumeratorExclusionsInput();
+		
+		TextAreaWithMaxLength getDenominatorExceptionsInput();
+		
+		TextAreaWithMaxLength getStratificationInput();
+		
+		TextAreaWithMaxLength getGuidanceInput();
+		
+		Button getAddRowButton();
+		
+		void addRow(FlexTable reference);
+		
+		FlexTable getReferenceTable();
 	}
 	
 	/**
@@ -1060,7 +1146,182 @@ public class MetaDataPresenter  implements MatPresenter {
 				generateAndSaveNewEmeasureid();
 			}
 		});
+		
+		metaDataDisplay.getAuthorListBox().addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getMeasureTypeListBox().addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		//getGenerateeMeasureIDButton().addClickHandler(clickHandler);
+		metaDataDisplay.getNQFIDInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDescriptionInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getCopyrightInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDisclaimerInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getStratificationInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getRiskAdjustmentInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getRateAggregationInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getRationaleInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getClinicalStmtInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getImprovementNotationInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getReferenceInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDefinitionsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getGuidanceInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getTransmissionFormatInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getInitialPopInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDenominatorInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDenominatorExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getNumeratorInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getNumeratorExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getDenominatorExceptionsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getMeasurePopulationInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getMeasurePopulationExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getMeasureObservationsInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getSupplementalDataInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		metaDataDisplay.getSetNameInput().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		
+		
+		metaDataDisplay.getAddRowButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				metaDataDisplay.addRow(metaDataDisplay.getReferenceTable());
+				metaDataDisplay.getSaveErrorMsg().clear();
+			}
+		});
+		
 	}
+	
 	
 	/**
 	 * Gets the component measures.
@@ -1294,8 +1555,10 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public void displayDetail() {
 		previousContinueButtons.setVisible(true);
-		prepopulateFields();
 		panel.clear();
+		//metaDataDisplay.buildForm();
+		//panel.add(metaDataDisplay.asWidget());
+		prepopulateFields();
 		if (editable) {
 			if ("0".equals(metaDataDisplay.getEmeasureId().getValue())) {
 				metaDataDisplay.setGenerateEmeasureIdButtonEnabled(true);

@@ -3029,7 +3029,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
-		boolean flag=false;
+		boolean isInvalid = false;
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		
@@ -3098,25 +3098,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODESET);
 				
 				if(populationLogicalOp.getLength()>0){
-					for (int i = 0; (i <populationLogicalOp.getLength()) && !flag; i++) {
+					for (int i = 0; (i <populationLogicalOp.getLength()) && !isInvalid; i++) {
 						Node childNode =populationLogicalOp.item(i);
 						String type = childNode.getParentNode().getAttributes().getNamedItem("type").getNodeValue();
 						if(type.equals("measureObservation")){
-							flag = true;
+							isInvalid = true;
 							break;
 						}
 					}
 				}
 				
-				if((populationQdemElement.getLength()>0) && !flag){
-					flag = true;
+				if((populationQdemElement.getLength()>0) && !isInvalid){
+					isInvalid = true;
 				}
 				
-				if((populationTimingElement.getLength()>0) && !flag){
-					flag = true;
+				if((populationTimingElement.getLength()>0) && !isInvalid){
+					isInvalid = true;
 				}
-				if((populationFunctions.getLength()>0) && !flag){
-					flag = true;
+				if((populationFunctions.getLength()>0) && !isInvalid){
+					isInvalid = true;
 				}
 				
 				
@@ -3134,7 +3134,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			if(usedSubTreeIds.size()>0){
 				
-				for(String usedSubtreeRefId:usedSubTreeIds){
+				for(int k=0; k < usedSubTreeIds.size() && !isInvalid; k++){
+					String usedSubtreeRefId = usedSubTreeIds.get(k);
 					
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
@@ -3179,30 +3180,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						} else {*/
 						// 1 is counter value for parent clause.
 						int nestedClauseCounter = 0;
-						flag = validateNestedClauseLogic(nodeSubTree , nestedClauseCounter
-								, flag , xmlProcessor);
+						isInvalid = validateNestedClauseLogic(nodeSubTree , nestedClauseCounter
+								, isInvalid , xmlProcessor);
 						
 						//}
-						for (int n = 0; (n <nodesSDE_timingElement.getLength()) && !flag; n++) {
+						for (int n = 0; (n <nodesSDE_timingElement.getLength()) && !isInvalid; n++) {
 							
 							Node timingElementchildNode =nodesSDE_timingElement.item(n);
-							flag = validateTimingRelationshipNode(timingElementchildNode, operatorTypeList, flag);
-							if(flag) {
+							isInvalid = validateTimingRelationshipNode(timingElementchildNode, operatorTypeList, isInvalid);
+							if(isInvalid) {
 								break;
 							}
 							
 						}
-						for (int j = 0; (j <nodesSDE_satisfyElement.getLength()) && !flag; j++) {
+						for (int j = 0; (j < nodesSDE_satisfyElement.getLength()) && !isInvalid; j++) {
 							
-							Node satisfyElementchildNode =nodesSDE_satisfyElement.item(j);
-							flag = validateSatisfyNode(satisfyElementchildNode, flag);
-							if(flag) {
+							Node satisfyElementchildNode = nodesSDE_satisfyElement.item(j);
+							isInvalid = validateSatisfyNode(satisfyElementchildNode, isInvalid);
+							if(isInvalid) {
 								break;
 							}
 							
 						}
 						
-						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !flag; m++) {
+						for (int m = 0; (m <nodesSDE_qdmElementId.getLength()) && !isInvalid; m++) {
 							String id = nodesSDE_qdmElementId.item(m).getNodeValue();
 							String xpathForQdmWithAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"']/attribute";
 							String xpathForQdmWithOutAttributeList ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef[@id='"+id+"'][not(attribute)]";
@@ -3214,58 +3215,58 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							//checking for all the Attribute That are used for The Id
 							for(int n=0; n<qdmWithAttributeNodeList.getLength(); n++){
 								String attributeName = qdmWithAttributeNodeList.item(n).getAttributes().getNamedItem("name").getNodeValue();
-								flag = !validateQdmNode(qdmNode, attributeName);
-								if(flag){
+								isInvalid = !validateQdmNode(qdmNode, attributeName);
+								if(isInvalid){
 									break;
 								}
 							}
 							//validation for QDMwithOutAttributeList for the Id
-							if(!flag && (qdmWithOutAttributeList.getLength() >0)){
+							if(!isInvalid && (qdmWithOutAttributeList.getLength() >0)){
 								String attributeName ="";
-								flag = !validateQdmNode(qdmNode, attributeName);
-								if(flag){
+								isInvalid = !validateQdmNode(qdmNode, attributeName);
+								if(isInvalid){
 									break;
 								}
 							}
 							
 						}
 						
-						for (int n = 0; (n < nodesSDE_functions.getLength()) && !flag; n++) {
+						for (int n = 0; (n < nodesSDE_functions.getLength()) && !isInvalid; n++) {
 							
 							Node functionsChildNode =nodesSDE_functions.item(n);
-							flag = validateFunctionNode(functionsChildNode, operatorTypeList, flag);
-							if(flag) {
+							isInvalid = validateFunctionNode(functionsChildNode, operatorTypeList, isInvalid);
+							if(isInvalid) {
 								break;
 							}
 							
 						}
 						
-						for (int n = 0; (n < nodeSDE_setoperator.getLength()) && !flag; n++) {
+						for (int n = 0; (n < nodeSDE_setoperator.getLength()) && !isInvalid; n++) {
 							
 							Node setOperatorChildNode = nodeSDE_setoperator.item(n);
-							flag = validateSetOperatorNode(setOperatorChildNode, flag);
-							if(flag) {
+							isInvalid = validateSetOperatorNode(setOperatorChildNode, isInvalid);
+							if(isInvalid) {
 								break;
 							}
 							
 						}
-						
-						for (int n = 0; (n < nodeSDE_dateTimeDiffElement.getLength())
-								&& !flag; n++) {
-							
-							if(usedSubtreeRefIdsMap.get("subTreeIDAtPop").contains(usedSubtreeRefId) ||
-									usedSubtreeRefIdsMap.get("subTreeIDAtStrat").contains(usedSubtreeRefId)){
-								flag = true;
-							}
-							
-							Node dateTimeDiffChildNode = nodeSDE_dateTimeDiffElement.item(n);
-							flag = validateDateTimeDiffNode(dateTimeDiffChildNode, flag);
-						
-							if (flag) {
-								break;
-							}
-							
-						}
+											
+					    for (int n = 0; (n < nodeSDE_dateTimeDiffElement.getLength()) && !isInvalid; n++) {
+					    	
+					    	if(usedSubtreeRefIdsMap.get("subTreeIDAtPop").contains(usedSubtreeRefId) ||
+							     usedSubtreeRefIdsMap.get("subTreeIDAtStrat").contains(usedSubtreeRefId)){
+							     isInvalid = true;
+							     break;
+					    	}
+					    	
+					       Node dateTimeDiffChildNode = nodeSDE_dateTimeDiffElement.item(n);
+					       if(dateTimeDiffChildNode.getChildNodes().getLength() < 2){
+					        isInvalid = true;
+					        break;
+					       }
+					      
+					       
+					     }
 						
 					} catch (XPathExpressionException e) {
 						
@@ -3275,7 +3276,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 		}
-		return flag;
+		return isInvalid;
 	}
 	/**
 	 * Method to validate clauses having nesting not more than 10 levels.

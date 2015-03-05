@@ -488,63 +488,72 @@
             <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
         </xsl:call-template>
 
+        <xsl:variable name="scoring_value">
+            <xsl:value-of select="scoring"></xsl:value-of>
+        </xsl:variable>
         <!-- Denominator Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Denominator</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="denominatorDescription/text()" />
-            </xsl:with-param>
-            <xsl:with-param name="code">DENOM</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
-        </xsl:call-template>
-
-        <!-- Denominator Exclusions Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Denominator Exclusions</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="denominatorExclusionsDescription/text()" />
-            </xsl:with-param>
-            <xsl:with-param name="code">DENEX</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
-        </xsl:call-template>
-
-        <!-- Numerator Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Numerator</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="numeratorDescription/text()" />
-            </xsl:with-param>
-            <xsl:with-param name="code">NUMER</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
-        </xsl:call-template>
-        <!-- Numerator Exclusions Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Numerator Exclusions</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="numeratorExclusionsDescription/text()" />
-            </xsl:with-param>
-            <xsl:with-param name="code">NUMEX</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
-        </xsl:call-template>
+        <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Proportion'">
+            <xsl:call-template name="subjOfOrigText">
+              
+                <xsl:with-param name="origText">
+                    <xsl:text>Denominator</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="denominatorDescription/text()" />
+                </xsl:with-param>
+                <xsl:with-param name="code">DENOM</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            </xsl:call-template>
+    
+            <!-- Denominator Exclusions Description -->
+            <xsl:call-template name="subjOfOrigText">
+                <xsl:with-param name="origText">
+                    <xsl:text>Denominator Exclusions</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="denominatorExclusionsDescription/text()" />
+                </xsl:with-param>
+                <xsl:with-param name="code">DENEX</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            </xsl:call-template>
+    
+            <!-- Numerator Description -->
+            <xsl:call-template name="subjOfOrigText">
+                <xsl:with-param name="origText">
+                    <xsl:text>Numerator</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="numeratorDescription/text()" />
+                </xsl:with-param>
+                <xsl:with-param name="code">NUMER</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            </xsl:call-template>
+            <!-- Numerator Exclusions Description -->
+            <xsl:call-template name="subjOfOrigText">
+                <xsl:with-param name="origText">
+                    <xsl:text>Numerator Exclusions</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="numeratorExclusionsDescription/text()" />
+                </xsl:with-param>
+                <xsl:with-param name="code">NUMEX</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>  
         <!-- Denominator Exceptions Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Denominator Exceptions</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="denominatorExceptionsDescription/text()" />
-            </xsl:with-param>
-            <xsl:with-param name="code">DENEXCEP</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
-        </xsl:call-template>
+        <xsl:if test="$scoring_value ='Proportion'">
+            <xsl:call-template name="subjOfOrigText">
+                <xsl:with-param name="origText">
+                    <xsl:text>Denominator Exceptions</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="denominatorExceptionsDescription/text()" />
+                </xsl:with-param>
+                <xsl:with-param name="code">DENEXCEP</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="$scoring_value ='Continuous Variable'">
         <!-- Measure Population Description -->
         <xsl:call-template name="subjOfOrigText">
             <xsl:with-param name="origText">
@@ -567,15 +576,18 @@
             <xsl:with-param name="code">MSRPOPLEX</xsl:with-param>
             <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
         </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Continuous Variable'">
         <!-- Measure Observations Description -->
-        <xsl:call-template name="subjOfOrigText">
-            <xsl:with-param name="origText">
-                <xsl:text>Measure Observations</xsl:text>
-            </xsl:with-param>
-            <xsl:with-param name="text">
-                <xsl:value-of select="measureObservationsDescription/text()" />
-            </xsl:with-param>
-        </xsl:call-template>
+            <xsl:call-template name="subjOfOrigText">
+                <xsl:with-param name="origText">
+                    <xsl:text>Measure Observations</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="text">
+                    <xsl:value-of select="measureObservationsDescription/text()" />
+                </xsl:with-param>
+            </xsl:call-template>
+        </xsl:if>
         <!-- supplemental data elements -->
         <xsl:call-template name="subjOfOrigText">
             <xsl:with-param name="origText">

@@ -1556,7 +1556,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	public void displayDetail() {
 		previousContinueButtons.setVisible(true);
 		panel.clear();
-		//metaDataDisplay.buildForm();
+		metaDataDisplay.buildForm();
 		//panel.add(metaDataDisplay.asWidget());
 		prepopulateFields();
 		if (editable) {

@@ -1687,7 +1687,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.setReferenceValues(new ArrayList<String>(), editable);
 		}
 		metaDataDisplay.setAddEditButtonsVisible(editable);
-		ReadOnlyHelper.setReadOnlyForCurrentMeasure(metaDataDisplay.asWidget(),editable);
+		ReadOnlyHelper.setReadOnlyForCurrentMeasure(metaDataDisplay.asWidget(), editable);
 		metaDataDisplay.enableEndorseByRadioButtons(editable);
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
@@ -2081,7 +2081,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				isMeasureDetailsLoaded = false;
 			}
 		}
-		displayDetail();
+		getMeasureDetail();
 		getAppliedQDMList(true);
 		getAllMeasureTypes();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");

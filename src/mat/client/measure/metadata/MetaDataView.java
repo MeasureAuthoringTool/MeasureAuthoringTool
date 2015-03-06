@@ -428,31 +428,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void buildForm() {
 		topHPanel.clear();
 		bottomHPanel.clear();
-		/*ChangeHandler changeHandler = new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				clearErrorMsg();
-				
-			}
-		};
-		KeyDownHandler keyDownHandler = new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				clearErrorMsg();
-				
-			}
-		};
-		
-		ClickHandler clickHandler = new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				clearErrorMsg();
-				
-			}
-		};*/
-		
 		authorListBox.setVisibleItemCount(5);
 		//authorListBox.addChangeHandler(changeHandler);
 		authorListBox.getElement().setId("authorListBox_ListBox");

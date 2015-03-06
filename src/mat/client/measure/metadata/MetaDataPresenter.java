@@ -1556,8 +1556,9 @@ public class MetaDataPresenter  implements MatPresenter {
 	public void displayDetail() {
 		previousContinueButtons.setVisible(true);
 		panel.clear();
-		metaDataDisplay.buildForm();
+		metaDataDisplay.setMeasureScoringType(currentMeasureDetail.getMeasScoring());
 		//panel.add(metaDataDisplay.asWidget());
+		metaDataDisplay.buildForm();
 		prepopulateFields();
 		if (editable) {
 			if ("0".equals(metaDataDisplay.getEmeasureId().getValue())) {
@@ -1599,7 +1600,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getShortName().setTitle(currentMeasureDetail.getShortName());
 		metaDataDisplay.getMeasureScoring().setText(currentMeasureDetail.getMeasScoring());
 		metaDataDisplay.getMeasureScoring().setTitle(currentMeasureDetail.getMeasScoring());
-		metaDataDisplay.setMeasureScoringType(currentMeasureDetail.getMeasScoring());
 		metaDataDisplay.getClinicalRecommendation().setValue(currentMeasureDetail.getClinicalRecomms());
 		metaDataDisplay.getDefinitions().setValue(currentMeasureDetail.getDefinitions());
 		metaDataDisplay.getDescription().setValue(currentMeasureDetail.getDescription());
@@ -2068,7 +2068,10 @@ public class MetaDataPresenter  implements MatPresenter {
 			displayEmpty();
 		} else {
 			panel.clear();
-			metaDataDisplay.buildForm();
+			/*if(currentMeasureDetail != null) {
+				metaDataDisplay.setMeasureScoringType(currentMeasureDetail.getMeasScoring());
+			}
+			metaDataDisplay.buildForm();*/
 			panel.add(metaDataDisplay.asWidget());
 			if (!isMeasureDetailsLoaded) { // this check is made so that when measure is clicked from Measure library, its not called twice.
 				currentMeasureDetail = null;
@@ -2078,6 +2081,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				isMeasureDetailsLoaded = false;
 			}
 		}
+		displayDetail();
 		getAppliedQDMList(true);
 		getAllMeasureTypes();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");
@@ -2096,6 +2100,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		//This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
 		//MatContext.get().getCurrentMeasureInfo().setMeasureId("");
 		panel.clear();
+		
 		clearMessages();
 		
 	}

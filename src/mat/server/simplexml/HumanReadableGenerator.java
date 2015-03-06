@@ -912,10 +912,10 @@ public class HumanReadableGenerator {
 			}
 			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
-				liElement = liElement.appendElement(HTML_UL);
+				Element ulElement = liElement.appendElement(HTML_UL);
 				for (int i = 1; i < childNodes.getLength(); i++) {
 					parseChild(childNodes.item(i),
-							liElement.appendElement(HTML_LI), item,
+							ulElement.appendElement(HTML_LI), item,
 							populationOrSubtreeXMLProcessor, true);
 				}
 			}
@@ -1052,12 +1052,14 @@ public class HumanReadableGenerator {
 				if (checkIfElementRefOrQDMVariable(children.item(0)) && checkIfElementRefOrQDMVariable(children.item(1))) {
 					isParentheses = true;
 				}
+			}else if(FUNCTIONAL_OP.equals(childNodes.item(0).getNodeName())){
+				isParentheses = true;
 			}
 			
 			if(isParentheses){
 				newLiElement.appendText(" (");
 			}
-			
+						
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			

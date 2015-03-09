@@ -65,20 +65,23 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** The v groovy client. */
 	private VSACGroovyClient vGroovyClient;
 	
+	private String versionService;
+	
 	/**
 	 * Instantiates a new VSACAPI service impl.
 	 */
 	public VSACAPIServiceImpl(){
-		PROXY_HOST = System.getProperty("vsac_proxy_host");
-		if(PROXY_HOST !=null) {
-			PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
-		}
-		server = System.getProperty("SERVER_TICKET_URL");
-		service = System.getProperty("SERVICE_URL");
-		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
-		profileService = System.getProperty("PROFILE_SERVICE");
-		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService);
-	}
+		  PROXY_HOST = System.getProperty("vsac_proxy_host");
+		  if(PROXY_HOST !=null) {
+		   PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+		  }
+		  server = System.getProperty("SERVER_TICKET_URL");
+		  service = System.getProperty("SERVICE_URL");
+		  retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
+		  profileService = System.getProperty("PROFILE_SERVICE");
+		  versionService = System.getProperty("VERSION_SERVICE_URL");
+		  vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
+		 }
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.

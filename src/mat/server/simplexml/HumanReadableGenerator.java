@@ -15,6 +15,7 @@ import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -1064,7 +1065,10 @@ public class HumanReadableGenerator {
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			
 			if(isParentheses){
-				newLiElement.appendText(") ");
+				// get the last childNode and put the parenthesis in it
+				Elements elements = newLiElement.getAllElements();
+				Element lastElement = elements.get(elements.size() - 1);
+				lastElement.appendText(") ");
 			}
 			
 			if (!newLiElement.children().isEmpty()) {
@@ -1087,7 +1091,7 @@ public class HumanReadableGenerator {
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
-						newLiElement.appendText(")");
+						newLiElement.appendText(") ");
 						return;
 					}
 				}

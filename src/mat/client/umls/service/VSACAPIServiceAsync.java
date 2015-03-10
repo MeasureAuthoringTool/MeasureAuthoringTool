@@ -76,4 +76,6 @@ public interface VSACAPIServiceAsync {
 	
 	void getAllProfileList(AsyncCallback<VsacApiResult> callback);
 	
+	void getAllVersionListByOID(String oid, AsyncCallback<VsacApiResult> callback);
+	
 }

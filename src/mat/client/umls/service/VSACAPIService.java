@@ -71,5 +71,7 @@ public interface VSACAPIService extends RemoteService {
 	boolean validateVsacUser(String userName, String password);
 
 	VsacApiResult getAllProfileList();
+
+	VsacApiResult getAllVersionListByOID(String oid);
 	
 }

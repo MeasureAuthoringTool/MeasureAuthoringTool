@@ -17,6 +17,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACProfileWrapper;
 import mat.model.VSACValueSetWrapper;
+import mat.model.VSACVersionWrapper;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
@@ -79,7 +80,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		  service = System.getProperty("SERVICE_URL");
 		  retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
 		  profileService = System.getProperty("PROFILE_SERVICE");
-		  versionService = System.getProperty("VERSION_SERVICE_URL");
+		  versionService = System.getProperty("VERSION_SERVICE");
 		  vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
 		 }
 	/**
@@ -157,6 +158,38 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return profileDetails;
+	}
+	
+	private VSACVersionWrapper convertXmlToVersionList(final String xmlPayLoad){
+		LOGGER.info("Start VSACAPIServiceImpl convertXmlToVersionList");
+		VSACVersionWrapper versionDetails = null;
+		String xml = xmlPayLoad;
+		if ((xml != null) && StringUtils.isNotBlank(xml)) {
+			LOGGER.info("xml To reterive RetrieveVSACVersionListResponse tag is not null ");
+		}
+		try {
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACVersionMapping.xml"));
+			Unmarshaller unmar = new Unmarshaller(mapping);
+			unmar.setClass(VSACVersionWrapper.class);
+			unmar.setWhitespacePreserve(true);
+			versionDetails = (VSACVersionWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse"
+					+ versionDetails.getVersionList().get(0).getName());
+			
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				LOGGER.info("Failed to load VSACVersionMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				LOGGER.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				LOGGER.info("Unmarshalling Failed" + e);
+			} else {
+				LOGGER.info("Other Exception" + e);
+			}
+		}
+		LOGGER.info("End VSACAPIServiceImpl convertXmlToVersionList");
+		return versionDetails;
 	}
 	
 	
@@ -481,6 +514,50 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		LOGGER.info("End VSACAPIServiceImpl getAllProfileList method :");
 		return result;
 	}
+	
+	
+	@Override
+	public final VsacApiResult getAllVersionListByOID(String oid) {
+		VsacApiResult result = new VsacApiResult();
+		LOGGER.info("Start VSACAPIServiceImpl getAllProfileList method :");
+		if (isAlreadySignedIn()) {
+			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
+					UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
+					);
+			VSACResponseResult vsacResponseResult = null;
+			try {
+				vsacResponseResult = vGroovyClient.reteriveVersionListForOid(oid, fiveMinuteServiceTicket);
+			} catch (Exception ex) {
+				LOGGER.info("VSACAPIServiceImpl VersionList failed in method :: getAllVersionListByOID");
+			}
+			if (vsacResponseResult.getXmlPayLoad() != null) {
+				if (vsacResponseResult.getIsFailResponse()
+						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					LOGGER.info("Version List reterival failed at VSAC with Failure Reason: "
+							+ vsacResponseResult.getFailReason());
+					result.setSuccess(false);
+					result.setFailureReason(vsacResponseResult.getFailReason());
+					return result;
+				}
+				if ((vsacResponseResult.getXmlPayLoad() != null)
+						&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+					// Caster conversion here.
+				 	VSACVersionWrapper wrapper = convertXmlToVersionList(vsacResponseResult.getXmlPayLoad()); 
+					result.setVsacVersionResp(wrapper.getVersionList());
+					return result;
+				}
+			}
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("VSACAPIServiceImpl getAllVersionListByOID :: UMLS Login is required");
+		}
+		LOGGER.info("End VSACAPIServiceImpl getAllVersionListByOID method :");
+		return result;
+	}
+	
+	
+	
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip supplemental Data Elements and Timing elements, Expired, Birth date and User defined QDM.

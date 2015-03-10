@@ -1065,7 +1065,10 @@ public class HumanReadableGenerator {
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			
 			if(isParentheses){
-				// get the last childNode and put the parenthesis in it
+				/* Find all elements under this element 
+				 * (including self, and children of children),
+				 * and add a parentheses to the last element in the list.
+				*/
 				Elements elements = newLiElement.getAllElements();
 				Element lastElement = elements.get(elements.size() - 1);
 				lastElement.appendText(") ");

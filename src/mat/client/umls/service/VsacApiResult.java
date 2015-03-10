@@ -5,6 +5,7 @@ import java.util.List;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACProfile;
+import mat.model.VSACVersion;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -37,6 +38,8 @@ public class VsacApiResult implements IsSerializable {
 	private List<MatValueSet> vsacResponse;
 	
 	private List<VSACProfile> vsacProfileResp;
+	
+	private List<VSACVersion> vsacVersionResp;
 	
 	/**
 	 * Gets the failure reason.
@@ -129,6 +132,14 @@ public class VsacApiResult implements IsSerializable {
 	 */
 	public void setVsacProfileResp(List<VSACProfile> vsacProfileResp) {
 		this.vsacProfileResp = vsacProfileResp;
+	}
+
+	public List<VSACVersion> getVsacVersionResp() {
+		return vsacVersionResp;
+	}
+
+	public void setVsacVersionResp(List<VSACVersion> vsacVersionResp) {
+		this.vsacVersionResp = vsacVersionResp;
 	}
 	
 }

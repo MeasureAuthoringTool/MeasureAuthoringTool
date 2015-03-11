@@ -77,6 +77,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
 	
+	private String expansionProfile;
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -443,6 +445,18 @@ public class QualityDataSetDTO implements IsSerializable {
 	 */
 	public void setSpecificOccurrence(boolean specificOccurrence) {
 		this.specificOccurrence = specificOccurrence;
+	}
+
+
+
+	public String getExpansionProfile() {
+		return expansionProfile;
+	}
+
+
+
+	public void setExpansionProfile(String expansionProfile) {
+		this.expansionProfile = expansionProfile;
 	}
 	
 	

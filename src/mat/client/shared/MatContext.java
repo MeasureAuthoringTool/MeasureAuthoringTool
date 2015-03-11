@@ -18,6 +18,7 @@ import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.clause.VSACProfileSelectionView;
 import mat.client.codelist.AdminManageCodeListSearchModel;
+import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
@@ -40,10 +41,14 @@ import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
+import mat.model.VSACProfile;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.DOM;
@@ -51,6 +56,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -146,6 +152,7 @@ public class MatContext implements IsSerializable {
 	/** The qds view. */
 	private QDSCodeListSearchView qdsView;
 	
+	/** The vsac profile view. */
 	private VSACProfileSelectionView vsacProfileView;
 	
 	/** The modify qdm pop up widget. */
@@ -203,6 +210,13 @@ public class MatContext implements IsSerializable {
 	/** The removed relationship types. */
 	public Map<String, String> removedRelationshipTypes = new HashMap<String, String>();
 	
+	/** The data type list. */
+	private List<String> dataTypeList = new ArrayList<String>();
+	
+	/** The profile list. */
+	private List<String> profileList = new ArrayList<String>();
+
+
 	/*
 	 * POC Global Copy Paste.
 	 * public CellTreeNode copiedNode;*/
@@ -259,6 +273,11 @@ public class MatContext implements IsSerializable {
 		qdsView=view;
 	}
 	
+	/**
+	 * Sets the VSAC profile view.
+	 *
+	 * @param view the new VSAC profile view
+	 */
 	public void setVSACProfileView(VSACProfileSelectionView view){
 		vsacProfileView = view;
 	}
@@ -1424,6 +1443,114 @@ public class MatContext implements IsSerializable {
 	
 	
 	/**
+	 * Gets the all data type.
+	 *
+	 * @return the all data type
+	 */
+	public void getAllDataType() {
+		
+		listBoxCodeProvider.getAllDataType(
+				new AsyncCallback<List<? extends HasListBox>>() {
+					
+					@Override
+					public void onFailure(final Throwable caught) {
+					}
+					
+					@Override
+					public void onSuccess(
+							final List<? extends HasListBox> result) {
+						Collections.sort(result,
+								new HasListBox.Comparator());
+						setAllDataTypeOptions(result);
+					}
+				});
+	}
+	
+	/**
+	 * Sets the all data type options.
+	 *
+	 * @param texts the new all data type options
+	 */
+	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {
+		setListBoxItems(texts, MatContext.PLEASE_SELECT);
+	}
+	
+	/**
+	 * Sets the list box items.
+	 *
+	 * @param itemList the item list
+	 * @param defaultOption the default option
+	 */
+	private void setListBoxItems(List<? extends HasListBox> itemList, String defaultOption) {
+		dataTypeList.clear();
+		dataTypeList.add(defaultOption);
+		if (itemList != null) {
+			for (HasListBox listBoxContent : itemList) {
+				//MAT-4366
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && 
+						! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")){
+					dataTypeList.add(listBoxContent.getItem());
+				}
+				
+			}
+			
+		}
+	}
+	
+	
+	/**
+	 * Gets the all versions by oid.
+	 *
+	 * @param oid the oid
+	 * @param index the index
+	 * @return the all versions by oid
+	 */
+	public void getAllVersionsByOID(String oid, int index){
+		vsacapiServiceAsync.getAllVersionListByOID(oid, new AsyncCallback<VsacApiResult>() {
+			
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if (result.getVsacProfileResp() != null) {
+
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	/**
+	 * Gets the all profile list.
+	 *
+	 * @return the all profile list
+	 */
+	public void getAllProfileList(){
+		vsacapiServiceAsync
+		.getAllProfileList(new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onSuccess(
+					VsacApiResult result) {
+				if (result.getVsacProfileResp() != null) {
+					profileList.clear();
+//					profileList.add(MatContext.PLEASE_SELECT);
+					profileList = getProfileList(result.getVsacProfileResp());
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+		});
+	}
+	
+	/**
 	 * Sets the modify qdm pop up widget.
 	 * 
 	 * @param modifyQDMPopUpWidget
@@ -1467,6 +1594,16 @@ public class MatContext implements IsSerializable {
 	
 	
 	/**
+	 * Gets the data type list.
+	 *
+	 * @return the data type list
+	 */
+	public List<String> getDataTypeList() {
+		return dataTypeList;
+	}
+	
+	
+	/**
 	 * Sets the uMLS logged in.
 	 * 
 	 * @param isUMLSLoggedIn
@@ -1497,7 +1634,11 @@ public class MatContext implements IsSerializable {
 		allowedPopulationsInPackage.add("numeratorExclusions");
 		return allowedPopulationsInPackage;
 	}
+	
 	/**
+	 * Gets the profile list.
+	 *
+	 * @param list the list
 	 * @return the copiedNode
 	 */
 	/*
@@ -1517,6 +1658,32 @@ public class MatContext implements IsSerializable {
 	 * public void setCopiedNode(CellTreeNode copiedNode) {
 		this.copiedNode = copiedNode;
 	}*/
-	
+	private List<String> getProfileList(List<VSACProfile> list) {
+		List<String> profileList = new ArrayList<String>();
+		for (int i = 0; i < list.size(); i++) {
+			profileList.add(list.get(i).getName());
+		}
+		return profileList;
+	}
+
+
+	/**
+	 * Gets the profile list.
+	 *
+	 * @return the profile list
+	 */
+	public List<String> getProfileList() {
+		return profileList;
+	}
+
+
+	/**
+	 * Sets the profile list.
+	 *
+	 * @param profileList the new profile list
+	 */
+	public void setProfileList(List<String> profileList) {
+		this.profileList = profileList;
+	}
 	
 }

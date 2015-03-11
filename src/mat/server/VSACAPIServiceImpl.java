@@ -527,6 +527,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			VSACResponseResult vsacResponseResult = null;
 			try {
 				vsacResponseResult = vGroovyClient.reteriveVersionListForOid(oid, fiveMinuteServiceTicket);
+				//vsacResponseResult = vGroovyClient.reteriveVersionListForOid(oid, serviceTicket);
 			} catch (Exception ex) {
 				LOGGER.info("VSACAPIServiceImpl VersionList failed in method :: getAllVersionListByOID");
 			}

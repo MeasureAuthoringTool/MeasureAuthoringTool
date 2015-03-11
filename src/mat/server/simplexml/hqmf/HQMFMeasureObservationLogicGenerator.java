@@ -144,6 +144,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		Element measureObDefinitionElement = doc.createElement("measureObservationDefinition");
 		measureObDefinitionElement.setAttribute(CLASS_CODE, "OBS");
 		measureObDefinitionElement.setAttribute(MOOD_CODE, "DEF");
+		Element idElem = doc.createElement(ID);
+		idElem.setAttribute(ROOT, item.getAttributes().getNamedItem("uuid").getNodeValue());
+		idElem.setAttribute("extension", StringUtils.deleteWhitespace(
+				item.getAttributes().getNamedItem("displayName").getNodeValue()));
+		measureObDefinitionElement.appendChild(idElem);
+		
 		Element codeElem = doc.createElement(CODE);
 		codeElem.setAttribute(CODE, "AGGREGATE");
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");

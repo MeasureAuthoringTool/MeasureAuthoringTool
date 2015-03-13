@@ -17,6 +17,8 @@ import mat.client.shared.MatEditTextCell;
 import mat.client.shared.MatSelectionCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
@@ -26,7 +28,6 @@ import mat.shared.UUIDUtilClient;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -48,9 +49,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -75,40 +74,45 @@ public class VSACProfileSelectionView implements
 	 */
 	public static interface Observer {
 
-		
 		/**
 		 * On name edit clicked.
 		 *
-		 * @param result the result
-		 */
-		void onNameEditClicked(QualityDataSetDTO result);
-		
-		/**
-		 * On oid edit clicked.
-		 *
-		 * @param result the result
+		 * @param result            the result
 		 * @param value the value
 		 */
+		void onNameEditClicked(QualityDataSetDTO result, String value);
+
+		/**
+		 * On oid edit clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 * @param value
+		 *            the value
+		 */
 		void onOIDEditClicked(QualityDataSetDTO result, String value);
-		
+
 		/**
 		 * On save clicked.
-		 *
-		 * @param result the result
+		 * 
+		 * @param result
+		 *            the result
 		 */
 		void onSaveClicked(QualityDataSetDTO result);
-		
+
 		/**
 		 * On modify clicked.
-		 *
-		 * @param result the result
+		 * 
+		 * @param result
+		 *            the result
 		 */
 		void onModifyClicked(QualityDataSetDTO result);
-		
+
 		/**
 		 * On delete clicked.
-		 *
-		 * @param result the result
+		 * 
+		 * @param result
+		 *            the result
 		 */
 		void onDeleteClicked(QualityDataSetDTO result);
 	}
@@ -139,24 +143,6 @@ public class VSACProfileSelectionView implements
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 
-	/** The name column. */
-	Column<QualityDataSetDTO, String> nameColumn;
-
-	/** The oid column. */
-	Column<QualityDataSetDTO, String> oidColumn;
-
-	/** The data type column. */
-	Column<QualityDataSetDTO, String> dataTypeColumn;
-
-	/** The expansion column. */
-	Column<QualityDataSetDTO, String> expansionColumn;
-
-	/** The version column. */
-	Column<QualityDataSetDTO, String> versionColumn;
-
-	/** The occur column. */
-	Column<QualityDataSetDTO, Boolean> occurColumn;
-
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 
@@ -164,10 +150,7 @@ public class VSACProfileSelectionView implements
 	private VerticalPanel vCellTablePanel = new VerticalPanel();
 
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 25;
-
-	/** The last selected object. */
-	private QualityDataSetDTO lastSelectedObject;
+	private static final int TABLE_ROW_COUNT = 15;
 
 	/** The table. */
 	private CellTable<QualityDataSetDTO> table;
@@ -177,7 +160,8 @@ public class VSACProfileSelectionView implements
 
 	/** The sort provider. */
 	private ListDataProvider<QualityDataSetDTO> sortProvider;
-	
+
+	/** The list provider. */
 	private ListDataProvider<QualityDataSetDTO> listProvider;
 
 	/** The Constant PLEASE_SELECT. */
@@ -190,20 +174,45 @@ public class VSACProfileSelectionView implements
 	private static final String PLEASE_ENTER_OID = "Enter OID";
 
 	/** The update button. */
-	private Button updateButton = new Button("Update");
-	
+	private Button updateVSACButton = new Button("Update");
+
+	/** The add new button. */
 	private Button addNewButton = new Button("Add New");
-	
+
+	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
-	
+
+	/** The profile list. */
 	private List<String> profileList = new ArrayList<String>();
+
+	/** The success message panel. */
+	private SuccessMessageDisplay successMessagePanel;
+
+	/** The last selected object. */
+	private QualityDataSetDTO lastSelectedObject;
 
 	/**
 	 * Instantiates a new VSAC profile selection view.
 	 */
 	public VSACProfileSelectionView() {
+		successMessagePanel = new SuccessMessageDisplay();
+		successMessagePanel.clear();
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
+		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
+		buttonLayout.setStylePrimaryName("continueButton");
+		addNewButton.setEnabled(!checkForEnable());	
+		updateVSACButton.setEnabled(!checkForEnable());
+		addNewButton.setTitle("Add New");
+		updateVSACButton.setTitle("Update");
+		addNewButton.getElement().setId("modify_Button");
+		addNewButton.setStyleName("rightAlignSecondaryButton");
+		updateVSACButton.setStylePrimaryName("rightAlignSecondaryButton");
+		updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
+		updateVSACButton.getElement().setId("updateVsacButton_Button");
+		buttonLayout.add(addNewButton);
+		buttonLayout.add(updateVSACButton);
 		SimplePanel sp = new SimplePanel();
 		sp.add(errorMessagePanel);
 		sp.setHeight("50px");
@@ -212,7 +221,8 @@ public class VSACProfileSelectionView implements
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizonalPanel");
 		hp.add(profileSel);
-		vsacProfileListBox.setWidth("100px");
+		vsacProfileListBox.setWidth("200px");
+		hp.add(simplePanel);
 		hp.add(vsacProfileListBox);
 		vsacProfileListBox.addItem("--Select--");
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -224,14 +234,16 @@ public class VSACProfileSelectionView implements
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hp);
 		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(buttonLayout);
+		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(vCellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
-		addNewButton.getElement().setId("AddNewQDM_button");
-		verticalPanel.add(addNewButton);
+//		verticalPanel.add(addNewButton);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
+		//updateVSACButtonverticalPanel.add(updateButton);
 		mainPanel.add(verticalPanel);
 		containerPanel.getElement().setAttribute("id",
 				"subQDMAPPliedListContainerPanel");
@@ -255,7 +267,7 @@ public class VSACProfileSelectionView implements
 			table = new CellTable<QualityDataSetDTO>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			sortProvider = new ListDataProvider<QualityDataSetDTO>();
-			//table.setSelectionModel(addSelectionHandlerOnTable(appliedListModel));
+			// table.setSelectionModel(addSelectionHandlerOnTable(appliedListModel));
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			sortProvider.refresh();
@@ -277,12 +289,10 @@ public class VSACProfileSelectionView implements
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"appliedQDMTableSummary",
-							"In the Following Applied QDM Elements table a radio button is positioned to "
-									+ "the left of the table with a select Column header followed by "
-									+ "QDM name in second column, Datatype in third column, OID in "
-									+ "fourth column, Version in fifth column and Effective date in "
-									+ "sixth column. The Applied QDM elements are listed alphabetically"
-									+ " in a table.  ");
+							"In the Following Applied QDM Elements table Name in First Column"
+									+ "OID in Second Column, DataType in Third Column, Expansion Profile in Fourth Column,"
+									+ "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
+									+ "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
 					"appliedQDMTableSummary");
@@ -303,6 +313,13 @@ public class VSACProfileSelectionView implements
 		}
 	}
 
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param table the table
+	 * @param sortHandler the sort handler
+	 * @return the cell table
+	 */
 	private CellTable<QualityDataSetDTO> addColumnToTable(
 			final CellTable<QualityDataSetDTO> table,
 			ListHandler<QualityDataSetDTO> sortHandler) {
@@ -444,8 +461,8 @@ public class VSACProfileSelectionView implements
 				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='Edit/Delete'>"
-					+ "Edit/Delete" + "</span>"));
+			}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
+					+ "Modify" + "</span>"));
 
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
@@ -579,9 +596,9 @@ public class VSACProfileSelectionView implements
 	public void setVSACProfileListBox() {
 		vsacProfileListBox.clear();
 		vsacProfileListBox.addItem("--Select--");
-		for (int i = 0; i < vsacProfileSelectionList.size()
-				&& vsacProfileSelectionList != null; i++) {
-			vsacProfileListBox.addItem(vsacProfileSelectionList.get(i));
+		for (int i = 0; i < profileList.size()
+				&& profileList != null; i++) {
+			vsacProfileListBox.addItem(profileList.get(i));
 		}
 
 	}
@@ -719,7 +736,7 @@ public class VSACProfileSelectionView implements
 
 	/**
 	 * Gets the modify qdm button cell.
-	 *
+	 * 
 	 * @return the modify qdm button cell
 	 */
 	private HasCell<QualityDataSetDTO, SafeHtml> getModifyQDMButtonCell() {
@@ -741,7 +758,7 @@ public class VSACProfileSelectionView implements
 					public void update(int index, QualityDataSetDTO object,
 							SafeHtml value) {
 						if ((object != null)) {
-							  observer.onModifyClicked(object);
+							observer.onModifyClicked(object);
 						}
 					}
 				};
@@ -784,8 +801,9 @@ public class VSACProfileSelectionView implements
 					@Override
 					public void update(int index, QualityDataSetDTO object,
 							SafeHtml value) {
-						if ((object != null)) {
-							 observer.onDeleteClicked(object);
+						if ((object != null) && !object.isUsed()) {
+							lastSelectedObject = object;
+							observer.onDeleteClicked(object);
 						}
 					}
 				};
@@ -814,18 +832,23 @@ public class VSACProfileSelectionView implements
 		return hasCell;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#buildAddNewQDMCellTable()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
+	 * buildAddNewQDMCellTable()
 	 */
 	@Override
-	public void buildAddByModifyQDMCellTable(QDSAppliedListModel qdsAppliedListModel) {
+	public void buildAddByModifyQDMCellTable(
+			QDSAppliedListModel qdsAppliedListModel) {
 		vCellTablePanel.clear();
+		vCellTablePanel.setWidth("100%");
 		cellTable = new CellTable<QualityDataSetDTO>();
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		listProvider = new ListDataProvider<QualityDataSetDTO>();
 		cellTable.redraw();
 		listProvider.refresh();
-		if(qdsAppliedListModel.getAppliedQDMs()!=null){
+		if (qdsAppliedListModel.getAppliedQDMs() != null) {
 			listProvider.getList().addAll(qdsAppliedListModel.getAppliedQDMs());
 		} else {
 			listProvider.getList().add(addNewRow());
@@ -835,12 +858,10 @@ public class VSACProfileSelectionView implements
 		Label invisibleLabel = (Label) LabelBuilder
 				.buildInvisibleLabel(
 						"addAppliedQDMTableSummary",
-						"In the Following Applied QDM Elements table a radio button is positioned to "
-								+ "the left of the table with a select Column header followed by "
-								+ "QDM name in second column, Datatype in third column, OID in "
-								+ "fourth column, Version in fifth column and Effective date in "
-								+ "sixth column. The Applied QDM elements are listed alphabetically"
-								+ " in a table.");
+						"In the Following Add/Modify QDM Elements Name in the First Column"
+								+ "OID in the Second Column, DataType in the Third Column, "
+								+ "Expansion Profile in Fourth Column, Version in Fifth Column,"
+								+ "Specific Occurrence in Sixth Column and Save in Seventh Column.");
 		cellTable.getElement().setAttribute("id", "AddAppliedQDMTable");
 		cellTable.getElement().setAttribute("aria-describedby",
 				"addAppliedQDMTableSummary");
@@ -851,8 +872,9 @@ public class VSACProfileSelectionView implements
 
 	/**
 	 * Adds the new column to table.
-	 *
-	 * @param cellTable the cell table
+	 * 
+	 * @param cellTable
+	 *            the cell table
 	 * @return the cell table
 	 */
 	public CellTable<QualityDataSetDTO> addByModifyColumnToTable(
@@ -880,8 +902,9 @@ public class VSACProfileSelectionView implements
 					public void update(int index, QualityDataSetDTO object,
 							String value) {
 						sortProvider.refresh();
-						if (!object.getCodeListName().equals(PLEASE_ENTER_NAME))
-							observer.onNameEditClicked(object);
+						if (!value.equals(PLEASE_ENTER_NAME))
+							observer.onNameEditClicked(object, value);
+
 					}
 				});
 		cellTable.addColumn(nameColumn, SafeHtmlUtils
@@ -892,8 +915,7 @@ public class VSACProfileSelectionView implements
 				new MatEditTextCell()) {
 			@Override
 			public String getValue(QualityDataSetDTO object) {
-				String str = object.getOid();
-				return str;
+				return object.getOid();
 			}
 		};
 		oidColumn
@@ -908,7 +930,7 @@ public class VSACProfileSelectionView implements
 					}
 				});
 		cellTable.addColumn(oidColumn, SafeHtmlUtils
-				.fromSafeConstant("<span title=\"Select Name\">OID</span>"));
+				.fromSafeConstant("<span title=\"Select OID\">OID</span>"));
 
 		// DataType QDM Elements
 		MatSelectionCell dataTypeSel = new MatSelectionCell(MatContext.get()
@@ -921,12 +943,12 @@ public class VSACProfileSelectionView implements
 			}
 		};
 
-		nameColumn
+		dataTypeColumn
 				.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, String>() {
 					@Override
 					public void update(int index, QualityDataSetDTO object,
 							String value) {
-						sortProvider.refresh();
+						//sortProvider.refresh();
 					}
 				});
 
@@ -935,13 +957,12 @@ public class VSACProfileSelectionView implements
 						dataTypeColumn,
 						SafeHtmlUtils
 								.fromSafeConstant("<span title=\"Select Name\">DataType</span>"));
-		// table.getColumn(table.getColumnIndex(dataTypeColumn)).setCellStyleNames("myCellTable");
+		
 		// Expansion Column
 
 		List<String> expProfileList = new ArrayList<String>();
 		expProfileList.add(MatContext.PLEASE_SELECT);
-		if (profileList != null
-				&& profileList.size() > 0) {
+		if (profileList != null && profileList.size() > 0) {
 			expProfileList.addAll(getProfileList());
 		}
 		MatSelectionCell expansionSelCell = new MatSelectionCell(expProfileList);
@@ -968,24 +989,15 @@ public class VSACProfileSelectionView implements
 
 			@Override
 			public String getValue(QualityDataSetDTO object) {
-				String version;
+				String version = "";
 				if (!object.getOid().equalsIgnoreCase(
 						ConstantMessages.USER_DEFINED_QDM_OID)) {
-					if (object.getVersion().equalsIgnoreCase("1.0")
-							|| object.getVersion().equalsIgnoreCase("1")) {
+					if (object.getVersion()!=null && (object.getVersion().equalsIgnoreCase("1.0")
+							|| object.getVersion().equalsIgnoreCase("1"))) {
 						version = "Most Recent";
-					} else {
-						if (object.getEffectiveDate() == null) {
-							version = object.getVersion();
-						} else {
-							version = "";
-						}
-					}
-				} else {
-					version = "";
-				}
-				
-				
+					} 
+				} 
+
 				return version;
 			}
 		};
@@ -1007,26 +1019,28 @@ public class VSACProfileSelectionView implements
 		cellTable.addColumn(OccurColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title=\"Specific Occurence\">"
 						+ "Specific Occurence" + "</span>"));
-		
-		MatButtonCell saveButtonCell = new MatButtonCell("Click to Save QDM Element","customEditButton");
-		Column<QualityDataSetDTO, String> saveColumn = new Column<QualityDataSetDTO, String>(saveButtonCell) {
-			 
+
+		MatButtonCell saveButtonCell = new MatButtonCell(
+				"Click to Save QDM Element", "customFloppyDiskButton");
+		Column<QualityDataSetDTO, String> saveColumn = new Column<QualityDataSetDTO, String>(
+				saveButtonCell) {
+
 			@Override
 			public String getValue(QualityDataSetDTO object) {
-				// TODO Auto-generated method stub
 				return "Save";
 			}
 		};
-		
-		cellTable.addColumn(saveColumn, SafeHtmlUtils
-				.fromSafeConstant("<span title=\"Save\">" + "Save"
-						+ "</span>"));
 
-		cellTable.setColumnWidth(0, 30.0, Unit.PCT);
-		cellTable.setColumnWidth(1, 25.0, Unit.PCT);
-		cellTable.setColumnWidth(2, 10.0, Unit.PCT);
-		cellTable.setColumnWidth(3, 10.0, Unit.PCT);
-		cellTable.setColumnWidth(4, 10.0, Unit.PCT);
+		cellTable
+				.addColumn(saveColumn, SafeHtmlUtils
+						.fromSafeConstant("<span title=\"Save\">" + "Save"
+								+ "</span>"));
+
+		cellTable.setColumnWidth(0, 25.0, Unit.PCT);
+		cellTable.setColumnWidth(1, 28.0, Unit.PCT);
+		cellTable.setColumnWidth(2, 15.0, Unit.PCT);
+		cellTable.setColumnWidth(3, 15.0, Unit.PCT);
+		cellTable.setColumnWidth(4, 15.0, Unit.PCT);
 		cellTable.setColumnWidth(5, 1.0, Unit.PCT);
 		cellTable.setColumnWidth(6, 1.0, Unit.PCT);
 
@@ -1035,11 +1049,15 @@ public class VSACProfileSelectionView implements
 
 	/**
 	 * Gets the OID column tool tip.
-	 *
-	 * @param columnText the column text
-	 * @param title the title
-	 * @param hasImage the has image
-	 * @param isUserDefined the is user defined
+	 * 
+	 * @param columnText
+	 *            the column text
+	 * @param title
+	 *            the title
+	 * @param hasImage
+	 *            the has image
+	 * @param isUserDefined
+	 *            the is user defined
 	 * @return the OID column tool tip
 	 */
 	private SafeHtml getOIDColumnToolTip(String columnText,
@@ -1072,11 +1090,15 @@ public class VSACProfileSelectionView implements
 
 	/**
 	 * Gets the data type column tool tip.
-	 *
-	 * @param columnText the column text
-	 * @param title the title
-	 * @param hasImage the has image
-	 * @param dataTypeHasRemoved the data type has removed
+	 * 
+	 * @param columnText
+	 *            the column text
+	 * @param title
+	 *            the title
+	 * @param hasImage
+	 *            the has image
+	 * @param dataTypeHasRemoved
+	 *            the data type has removed
 	 * @return the data type column tool tip
 	 */
 	private SafeHtml getDataTypeColumnToolTip(String columnText,
@@ -1108,32 +1130,70 @@ public class VSACProfileSelectionView implements
 		}
 	}
 
+	/**
+	 * Gets the version list.
+	 *
+	 * @return the version list
+	 */
 	public List<String> getVersionList() {
 		return versionList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVersionList(java.util.List)
+	 */
 	@Override
 	public void setVersionList(List<String> versionList) {
 		this.versionList = versionList;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getCellTable()
+	 */
 	@Override
-	public CellTable<QualityDataSetDTO> getCellTable(){
+	public CellTable<QualityDataSetDTO> getCellTable() {
 		return cellTable;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getAddNewQDMButton()
+	 */
 	@Override
 	public HasClickHandlers getAddNewQDMButton() {
 		return addNewButton;
 	}
-	
+
+	/**
+	 * Gets the profile list.
+	 *
+	 * @return the profile list
+	 */
 	public List<String> getProfileList() {
 		return profileList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setProfileList(java.util.List)
+	 */
 	@Override
 	public void setProfileList(List<String> profileList) {
 		this.profileList = profileList;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getApplyToMeasureSuccessMsg()
+	 */
+	@Override
+	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
+		return successMessagePanel;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSelectedElementToRemove()
+	 */
+	@Override
+	public QualityDataSetDTO getSelectedElementToRemove() {
+		return lastSelectedObject;
 	}
 
 }

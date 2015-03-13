@@ -1485,7 +1485,7 @@ public class ClauseWorkspaceContextMenu {
 		//alert("hostname:"+window.location.hostname);
 		//alert("port:"+window.location.port);
 		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/dummy1.html";  
-		alert("dummyURL:"+dummyURL);	
+		//alert("dummyURL:"+dummyURL);	
 		var humanReadableWindow = window.open(dummyURL,"","width=1000,height=700,scrollbars=yes,resizable=yes");
 		
 		if(humanReadableWindow && humanReadableWindow.top){

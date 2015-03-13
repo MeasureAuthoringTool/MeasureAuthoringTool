@@ -274,6 +274,7 @@ public class ClauseWorkspaceContextMenu {
 						MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
 							@Override
 							public void onSuccess(String result) {
+								System.out.println("On Success....showHumanReadableDialogBox:");
 								showHumanReadableDialogBox(result, populationName);
 							}
 							@Override
@@ -1479,13 +1480,34 @@ public class ClauseWorkspaceContextMenu {
 	 * @param populationName the population name
 	 */
 	public native void showHumanReadableDialogBox(String result, String populationName) /*-{
-	var humanReadableWindow = window.open("","","width=1000,height=700,scrollbars=yes,resizable=yes");
-	if(humanReadableWindow && humanReadableWindow.top){
-		//Populate the human readable in the new window.
-		humanReadableWindow.document.write(result);
-		humanReadableWindow.document.title = populationName;
-	}
-}-*/;
+		//alert("Opening window:"+window.location.href);
+		//alert("Protocol:"+window.location.protocol);
+		//alert("hostname:"+window.location.hostname);
+		//alert("port:"+window.location.port);
+		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/dummy1.html";  
+		alert("dummyURL:"+dummyURL);	
+		var humanReadableWindow = window.open(dummyURL,"","width=1000,height=700,scrollbars=yes,resizable=yes");
+		
+		if(humanReadableWindow && humanReadableWindow.top){
+			//Populate the human readable in the new window.
+			humanReadableWindow.document.write(result);
+			humanReadableWindow.document.title = populationName;
+		}
+	}-*/;
+	
+	/*public void showHumanReadableDialogBox(String result, String populationName){
+		DialogBoxWithCloseButton hrDialog = new DialogBoxWithCloseButton(populationName);
+		ScrollPanel hrHTMLPanel = new ScrollPanel();
+		hrHTMLPanel.setAlwaysShowScrollBars(true);
+		hrHTMLPanel.setWidth("70em");
+		HTML html = new HTML(result);
+		hrHTMLPanel.add(html);
+		
+		DOM.setStyleAttribute(hrDialog.getElement(), "width", "900px");
+		DOM.setStyleAttribute(hrDialog.getElement(), "height", "500px");
+		hrDialog.setWidget(hrHTMLPanel);
+		hrDialog.center();
+	}*/
 	
 	/**
 	 * Gets the view human readable menu.

@@ -68,6 +68,17 @@ public class HumanReadableGenerator {
 		"measurePopulation", "measurePopulationExclusions",
 		"measureObservation", "stratum" };
 	
+	/** The Constant subsetFunctions */
+	private static List<String> subSetFunctionsList = new ArrayList<String>();
+	static {
+		subSetFunctionsList.add("FIRST");
+		subSetFunctionsList.add("SECOND");
+		subSetFunctionsList.add("THIRD");
+		subSetFunctionsList.add("FOURTH");
+		subSetFunctionsList.add("FIFTH");
+		subSetFunctionsList.add("MOST RECENT");
+	}
+	
 	/** The show only variable name. */
 	private static Boolean showOnlyVariableName = false;
 	
@@ -527,9 +538,11 @@ public class HumanReadableGenerator {
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-/*		System.out.println("parseChild nodeName: " + nodeName);
+		System.out.println("parseChild nodeName: " + nodeName);
 		System.out.println("Parent List Element: " + parentListElement);
-*/
+
+		
+		
 		if (LOGICAL_OP.equals(nodeName)) {
 			String nodeDisplayName = item.getAttributes()
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
@@ -768,15 +781,17 @@ public class HumanReadableGenerator {
 				}
 			}
 		} else if (FUNCTIONAL_OP.equals(nodeName)) {
+			// check if it is a subset function ie.  FIRST-FIFTH, MOST RECENT
+			boolean isSubsetFunction = isSubsetFunction(item, populationOrSubtreeXMLProcessor);
 			if (LOGICAL_OP.equals(parentNode.getNodeName())
-					|| SET_OP.equals(parentNode.getNodeName())) {
+				|| SET_OP.equals(parentNode.getNodeName())) {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				// liElement.appendText(" "+getNodeText(parentNode,
 				// populationOrSubtreeXMLProcessor));
-				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
+				if (LOGICAL_OP.equals(parentNode.getNodeName()) && !isSubsetFunction) {
 					liElement.appendText(" "
 							+ getNodeText(parentNode,
-									populationOrSubtreeXMLProcessor));
+							populationOrSubtreeXMLProcessor));
 				}
 				if (item.getAttributes().getNamedItem("type").getNodeValue()
 						.contains("SATISFIES")) {
@@ -795,7 +810,7 @@ public class HumanReadableGenerator {
 					} else {
 						if ((childNodes.getLength() > 1)
 								|| childNodes.item(0).getNodeName()
-								.equals(FUNCTIONAL_OP)) {
+								.equals(FUNCTIONAL_OP) && !isSubsetFunction) {
 							liElement = liElement.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
@@ -846,13 +861,13 @@ public class HumanReadableGenerator {
 					} else {
 						Element ulElement = parentListElement;
 						if ( !(childNodes.getLength() == 0) && ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
-								.equals(FUNCTIONAL_OP))) {
+								.equals(FUNCTIONAL_OP) && !isSubsetFunction)) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
 							if ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
-									.equals(FUNCTIONAL_OP)) {
+									.equals(FUNCTIONAL_OP) && !isSubsetFunction) {
 								Element newLiElem = ulElement.appendElement(HTML_LI);
 								//ulElement = ulElement.appendElement(HTML_LI);
 								parseChild(childNodes.item(i), newLiElem, item,
@@ -890,6 +905,22 @@ public class HumanReadableGenerator {
 	}
 	
 	/**
+	 * Checks if the FUNCTION_OP is a subset type (FIRST-FIFTH, and MOST_RECENT).
+	 *
+	 * @param item the iteml
+	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
+	 * @return 
+	 */
+	private static boolean isSubsetFunction(Node item, XmlProcessor populationOrSubtreeXMLProcessor) {
+		boolean isSubset = false;
+		String itemType = item.getAttributes().getNamedItem("type").getNodeValue();
+		if(subSetFunctionsList.contains(itemType)){
+			isSubset = true;
+		}
+		return isSubset;
+	}
+
+	/**
 	 * Creates the satisfies.
 	 *
 	 * @param item the item
@@ -898,10 +929,10 @@ public class HumanReadableGenerator {
 	 */
 	private static void createSatisfies(Node item, Element liElement,
 			XmlProcessor populationOrSubtreeXMLProcessor) {
-/*		
+		
 		System.out.println("createSatisfies nodeName: " + item);
 		System.out.println("Parent List Element: " + liElement);
-*/
+
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
 			// Element ulElement = parentListElement.appendElement(HTML_LI);
@@ -920,12 +951,12 @@ public class HumanReadableGenerator {
 			if(!lhsID.contains(lhsId)){
 				lhsID.add(lhsId);
 			}
-/*			System.out.println("Added an ID: " + lhsId);
+			System.out.println("Added an ID: " + lhsId);
 			System.out.println("LhsID Array: ");
 			for (int i=0; i < lhsID.size(); i++) {
 				System.out.println(lhsID.get(i));
 			}
-*/	
+	
 		NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
 				Element ulElement = liElement.appendElement(HTML_UL);
@@ -1030,10 +1061,10 @@ public class HumanReadableGenerator {
 	private static void getRelationalOpText(Node item, Element liElement,
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
-/*		
+		
 		System.out.println("getRelationalOpText item: " + item);
 		System.out.println("List Element: " + liElement);
-*/		
+		
 		/**
 		 * A relationalOp can have 2 children. First evaluate the LHS child,
 		 * then add the name of the relationalOp and finally evaluate the RHS

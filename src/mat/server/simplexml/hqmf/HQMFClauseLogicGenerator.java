@@ -1452,7 +1452,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		String rhsName = rhsNode.getNodeName();
-		Node dataCritSectionNode = hqmfXmlProcessor.findNode(temporallyRelatedInfoNode.getOwnerDocument(), "//dataCriteriaSection");
 		
 		if("elementRef".equals(rhsName)){
 			Node entryNode = generateCritRefElementRef(temporallyRelatedInfoNode, rhsNode, measureExport.getHQMFXmlProcessor());
@@ -1462,7 +1461,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}else{
 			switch (rhsName) {
 				case "setOp":
-					generateCritRefSetOp(dataCritSectionNode, hqmfXmlProcessor,
+					generateCritRefSetOp(dataCriteriaSectionElem, hqmfXmlProcessor,
 							rhsNode, temporallyRelatedInfoNode);
 					break;
 				case "relationalOp":
@@ -1477,27 +1476,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 						}
 						
 						Node criteriaNode = fChild;
-						//temporallyRelatedInfoNode.appendChild(criteriaNode);
-						dataCritSectionNode.appendChild(lastChild);
-						//create criteriaRef
-						Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement("criteriaReference");
-						criteriaReference.setAttribute(CLASS_CODE, criteriaNode.getAttributes().getNamedItem(CLASS_CODE).getNodeValue());
-						criteriaReference.setAttribute(MOOD_CODE, criteriaNode.getAttributes().getNamedItem(MOOD_CODE).getNodeValue());
-						
-						NodeList childNodeList = criteriaNode.getChildNodes();
-						for(int i =0; i< childNodeList.getLength();i++) {
-							Node childNode = childNodeList.item(i);
-							if(childNode.getNodeName().equalsIgnoreCase(ID)){
-								Element id = hqmfXmlProcessor.getOriginalDoc().createElement("id");
-								id.setAttribute(ROOT, childNode.getAttributes().getNamedItem(ROOT).getNodeValue());
-								id.setAttribute("extension", childNode.getAttributes().getNamedItem("extension").getNodeValue());
-								criteriaReference.appendChild(id);
-								temporallyRelatedInfoNode.appendChild(criteriaReference);
-								break;
-							}
-						}
-						
-						
+						temporallyRelatedInfoNode.appendChild(criteriaNode);
 						NodeList childTemporalNodeList = ((Element)criteriaNode).getElementsByTagName("temporallyRelatedInformation");
 						if((childTemporalNodeList != null) && (childTemporalNodeList.getLength() > 0)){
 							Node childTemporalNode = childTemporalNodeList.item(0);
@@ -2147,8 +2126,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
 				generateSubTreeXML( subTreeNode, false);
 			}
+			System.out.println("Finding entry for ");
+			System.out.println("root="+root);
+			System.out.println("ext="+ext);
 			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
-			
+			System.out.println("idNodeQDM == null:"+(idNodeQDM == null));
 			if(idNodeQDM != null){
 				Node parent = idNodeQDM.getParentNode();
 				if(parent != null){

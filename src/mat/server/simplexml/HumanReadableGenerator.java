@@ -948,9 +948,7 @@ public class HumanReadableGenerator {
 					.getNodeValue().toLowerCase() + ":");
 			String lhsId = lhs.getAttributes().getNamedItem("id").getNodeValue();
 		
-			if(!lhsID.contains(lhsId)){
-				lhsID.add(lhsId);
-			}
+			lhsID.push(lhsId);
 			System.out.println("Added an ID: " + lhsId);
 			System.out.println("LhsID Array: ");
 			for (int i=0; i < lhsID.size(); i++) {

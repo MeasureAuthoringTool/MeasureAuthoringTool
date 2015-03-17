@@ -1,7 +1,7 @@
 package mat.server.simplexml.hqmf;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.xpath.XPathConstants;
@@ -25,10 +25,10 @@ import org.w3c.dom.NodeList;
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	
 	/** The clause logic map. */
-	private Map<String, String> clauseLogicMap = new LinkedHashMap<String, String>();
+	private Map<String, String> clauseLogicMap = new HashMap<String, String>();
 	
 	/** The measure grouping map. */
-	private Map<String, NodeList> measureGroupingMap = new LinkedHashMap<String, NodeList>();
+	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	
 	/** The scoring type. */
 	private String scoringType;

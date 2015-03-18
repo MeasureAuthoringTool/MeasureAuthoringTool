@@ -196,7 +196,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			Element stratCriteriaElement = doc.createElement("stratifierCriteria");
 			Element idElement = doc.createElement(ID);
 			idElement.setAttribute(ROOT, item.getAttributes().getNamedItem(UUID).getNodeValue());
-			idElement.setAttribute("identifierName", "Stratifiers");
+			idElement.setAttribute("extension", "Stratifiers");
 			stratCriteriaElement.appendChild(idElement);
 			Element codeElem = doc.createElement(CODE);
 			codeElem.setAttribute(CODE, "STRAT");

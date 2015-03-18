@@ -374,8 +374,7 @@ public class HumanReadableGenerator {
 			replaceSubTreeNode(measureXMLProcessor, subTreeRefNode, null,
 					subTreeNode);
 		} else {
-			System.out
-			.println("Found a chain of Clauses. Abort Human readable generation.");
+			//System.out.println("Found a chain of Clauses. Abort Human readable generation.");
 			//System.out.println(childSubTreeRefList);
 			return false;
 		}
@@ -538,8 +537,8 @@ public class HumanReadableGenerator {
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-		System.out.println("parseChild nodeName: " + nodeName);
-		System.out.println("Parent List Element: " + parentListElement);
+//		System.out.println("parseChild nodeName: " + nodeName);
+//		System.out.println("Parent List Element: " + parentListElement);
 
 		
 		
@@ -602,7 +601,7 @@ public class HumanReadableGenerator {
 			}
 		} else if (COMMENT.equals(nodeName)) {
 			String commentValue = item.getTextContent();
-			System.out.println("comment value:"+commentValue);
+			//System.out.println("comment value:" + commentValue);
 			if ((commentValue != null) && (commentValue.trim().length() > 0)) {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				liElement.attr("style", "list-style-type: none");
@@ -857,7 +856,7 @@ public class HumanReadableGenerator {
 						parseChild(childNodes.item(0), parentListElement, item,
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
-						System.out.println(" if Adding a new line");
+						//System.out.println(" if Adding a new line");
 					} else {
 						Element ulElement = parentListElement;
 						if ( !(childNodes.getLength() == 0) && ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
@@ -930,8 +929,8 @@ public class HumanReadableGenerator {
 	private static void createSatisfies(Node item, Element liElement,
 			XmlProcessor populationOrSubtreeXMLProcessor) {
 		
-		System.out.println("createSatisfies nodeName: " + item);
-		System.out.println("Parent List Element: " + liElement);
+		//System.out.println("createSatisfies nodeName: " + item);
+		//System.out.println("Parent List Element: " + liElement);
 
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
@@ -949,11 +948,11 @@ public class HumanReadableGenerator {
 			String lhsId = lhs.getAttributes().getNamedItem("id").getNodeValue();
 		
 			lhsID.push(lhsId);
-			System.out.println("Added an ID: " + lhsId);
-			System.out.println("LhsID Array: ");
-			for (int i=0; i < lhsID.size(); i++) {
-				System.out.println(lhsID.get(i));
-			}
+			//System.out.println("Added an ID: " + lhsId);
+			//System.out.println("LhsID Array: ");
+			//for (int i=0; i < lhsID.size(); i++) {
+			//	System.out.println(lhsID.get(i));
+			//}
 	
 		NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
@@ -1060,8 +1059,8 @@ public class HumanReadableGenerator {
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		
-		System.out.println("getRelationalOpText item: " + item);
-		System.out.println("List Element: " + liElement);
+		//System.out.println("getRelationalOpText item: " + item);
+		//System.out.println("List Element: " + liElement);
 		
 		/**
 		 * A relationalOp can have 2 children. First evaluate the LHS child,
@@ -2115,7 +2114,7 @@ public class HumanReadableGenerator {
 			boldNameElement.appendText(populationName + " =");
 			Element childPopulationULElement = populationListElement
 					.appendElement(HTML_UL);
-			System.out.println("clauseNodes.size():"+ clauseNodes.size());
+			//System.out.println("clauseNodes.size():"+ clauseNodes.size());
 			for (int c = 0; c < clauseNodes.size(); c++) {
 				Node clauseNode = clauseNodes.get(c);
 				Element childPopulationListElement = childPopulationULElement

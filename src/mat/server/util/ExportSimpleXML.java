@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,7 +19,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
@@ -27,7 +26,6 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -173,7 +171,7 @@ public class ExportSimpleXML {
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
 		
-	/*	usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
+		/*	usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
 		
 		usedSubTreeIds = checkUnUsedSubTreeRef(usedSubTreeIds, originalDoc);*/
 		
@@ -193,11 +191,11 @@ public class ExportSimpleXML {
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		modifyElementLookUpForOccurances(originalDoc);
 		modifySubTreeLookUpForOccurances(originalDoc);
+		// re-order measure Grouping sequence.
+		modifyMeasureGroupingSequence(originalDoc);
 		//addLocalVariableNameToQDMs(originalDoc);
 		return transform(originalDoc);
 	}
-	
-	
 	/**
 	 * Gets the used sub ref from risk adjustment variables.
 	 *
@@ -220,7 +218,7 @@ public class ExportSimpleXML {
 		subTreeRefIdsInRAVList.addAll(usedSubTreeIds);
 		return subTreeRefIdsInRAVList;
 	}
-
+	
 	/**
 	 * Format attribute date in qdm attribute.
 	 *
@@ -461,7 +459,7 @@ public class ExportSimpleXML {
 	
 	/**
 	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with
-	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children.
+	 * an "instanceOf" attribute, we need to fetch the corresponding <subTree> and copy its children.
 	 *
 	 * @param originalDoc the original doc
 	 * @throws XPathExpressionException the x path expression exception
@@ -485,6 +483,30 @@ public class ExportSimpleXML {
 			Node mainChildClone = mainChild.cloneNode(true);
 			
 			qdmVariableNode.appendChild(mainChildClone);
+		}
+	}
+	
+	/**
+	 * Method to re order Measure Grouping Sequence.
+	 * @param originalDoc - Document.
+	 * @throws XPathExpressionException - Exception.
+	 */
+	private static void modifyMeasureGroupingSequence(Document originalDoc) throws XPathExpressionException {
+		NodeList groupingNodeList = (NodeList) xPath.evaluate("/measure/measureGrouping/group",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		TreeMap<String, Node> groupMap = new TreeMap<String, Node>();
+		for (int i = 0; i < groupingNodeList.getLength(); i++) {
+			Node measureGroupingNode = groupingNodeList.item(i);
+			String key = measureGroupingNode.getAttributes().getNamedItem("sequence").getNodeValue();
+			groupMap.put(key, measureGroupingNode);
+		}
+		int measureGroupingSequenceCounter = 0;
+		for (String key : groupMap.keySet()) {
+			String xPathMeasureGroupingForSeq = "/measure/measureGrouping/group[@sequence='" + key + "']";
+			Node measureGroupingNode = (Node) xPath.evaluate(xPathMeasureGroupingForSeq,
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			measureGroupingSequenceCounter = measureGroupingSequenceCounter + 1;
+			measureGroupingNode.getAttributes().getNamedItem("sequence").setNodeValue(measureGroupingSequenceCounter + "");
 		}
 	}
 	
@@ -525,7 +547,7 @@ public class ExportSimpleXML {
 	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {
 		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@name != 'Measurement Period']"
 				+ "[@name != 'Expired']"
-				+ "[@name != 'Birthdate']/@uuid", 
+				+ "[@name != 'Birthdate']/@uuid",
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMIDs.getLength();i++){
@@ -759,10 +781,10 @@ public class ExportSimpleXML {
 		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
-	
+		
 		NodeList logicalNode = newClauseNode.getChildNodes();
 		
-//		for(int i = 0; i<logicalNode.getLength();i++){
+		//		for(int i = 0; i<logicalNode.getLength();i++){
 		for(int i = logicalNode.getLength()-1; i>-1; i--){
 			Node innerNode = logicalNode.item(i);
 			if(newClauseNode.getAttributes().getNamedItem("displayName").
@@ -771,14 +793,14 @@ public class ExportSimpleXML {
 			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
 				newClauseNode.removeChild(innerNode);
 			}else {
-			NodeList innerNodeChildren = innerNode.getChildNodes();
-			int length =  innerNodeChildren.getLength();
-			for(int j = length - 1; j>-1; j--){
-				Node child = innerNodeChildren.item(j);
-				innerNode.removeChild(child);
+				NodeList innerNodeChildren = innerNode.getChildNodes();
+				int length =  innerNodeChildren.getLength();
+				for(int j = length - 1; j>-1; j--){
+					Node child = innerNodeChildren.item(j);
+					innerNode.removeChild(child);
+				}
 			}
 		}
-	}
 		groupNode.appendChild(newClauseNode);
 	}
 	
@@ -850,7 +872,7 @@ public class ExportSimpleXML {
 		List<String> usedClauseIds = new ArrayList<String>();
 		
 		NodeList measureGrpupingNodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/ group/packageClause" +
-					"[not(@uuid = preceding:: group/packageClause/@uuid)]",
+				"[not(@uuid = preceding:: group/packageClause/@uuid)]",
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<measureGrpupingNodeList.getLength();i++){
@@ -861,21 +883,21 @@ public class ExportSimpleXML {
 				List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, originalDoc);
 				usedClauseIds.addAll(stratificationClausesIDlist);
 			} else {
-			    usedClauseIds.add(uuid);
+				usedClauseIds.add(uuid);
 			}
 		}
 		_logger.info("usedClauseIds:"+usedClauseIds);
 		return usedClauseIds;
 	}
 	
-     /**
-      * Gets the stratification clasues id list.
-      *
-      * @param uuid the uuid
-      * @param originalDoc the original doc
-      * @return the stratification clasues id list
-      */
-     private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) {
+	/**
+	 * Gets the stratification clasues id list.
+	 *
+	 * @param uuid the uuid
+	 * @param originalDoc the original doc
+	 * @return the stratification clasues id list
+	 */
+	private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) {
 		
 		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" +
 				"[@uuid='"+uuid+"']/clause/@uuid";
@@ -905,7 +927,7 @@ public class ExportSimpleXML {
 			throws XPathExpressionException {
 		// Populations
 		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
-        String uuidXPathString = "";
+		String uuidXPathString = "";
 		
 		for(String uuidString: usedClauseIds){
 			uuidXPathString += "@uuid = '"+uuidString + "' or";

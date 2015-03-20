@@ -901,6 +901,10 @@ public class HumanReadableGenerator {
 					.getNamedItem(DISPLAY_NAME).getNodeValue()
 					+ " ");
 		}
+
+//		System.out.println("End of kparseChild nodeName: " + nodeName);
+//		System.out.println("Parent List Element: " + parentListElement);
+
 	}
 	
 	/**
@@ -1142,7 +1146,10 @@ public class HumanReadableGenerator {
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
-						newLiElement.appendText(") ");
+						
+						Elements elements = newLiElement.getAllElements();
+						Element lastElement = elements.get(elements.size() - 1);
+						lastElement.appendText(") ");
 						return;
 					}
 				}

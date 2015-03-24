@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1549,7 +1552,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					}
 					break;
 				case "functionalOp" :
-					Node entryNode = generateFunctionalOpHQMF(rhsNode , (Element) dataCriteriaSectionElem);
+					Node entryNode = generateFunctionalOpHQMF(rhsNode , (Element) dataCritSectionNode);
 					if ((entryNode !=null) && entryNode.getNodeName().equals("entry")) {
 						Node fChild = entryNode.getFirstChild();
 						if ("localVariableName".equals(fChild.getNodeName())) {

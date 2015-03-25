@@ -343,11 +343,11 @@
 	<medicationAdministered changeAttribute="code,displayName">
 		<participation typeCode="CSM">
 		<role classCode="MANU">
-		<playingMaterial classCode="MMAT" determinerCode="KIND">
+		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
 		<code valueSet="$valueset" >
 		    <displayName value="$displaynamevalue"/>
 		</code>    	
-		</playingMaterial>
+		</playingManufacturedMaterial>
 		</role>
 		</participation>
 	</medicationAdministered>
@@ -379,11 +379,11 @@
 	<medicationDischarge changeAttribute="code,displayName">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
-		<playingMaterial classCode="MMAT" determinerCode="KIND">
+		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
 		<code valueSet="$valueSet" >
 		    <displayName value="$displaynamevalue"/>
 		</code>    
-		</playingMaterial>
+		</playingManufacturedMaterial>
 		</role>
 		</participation>
 	</medicationDischarge>

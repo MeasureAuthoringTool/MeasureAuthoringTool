@@ -1336,22 +1336,32 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		qds.setUuid(UUID.randomUUID().toString());
 		if (valueSetTransferObject.isVersionDate() || valueSetTransferObject.isEffectiveDate()) {
 			qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
-		} else {
+		} else  {
 			qds.setVersion("1.0");
+		} 
+		 if(valueSetTransferObject.isExpansionProfile()){
+			qds.setExpansionProfile(valueSetTransferObject.getMatValueSet().getExpansionProfile());
 		}
-		if (valueSetTransferObject.isEffectiveDate()) {
-			qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
-		}
+		
+		
+//		if (valueSetTransferObject.isEffectiveDate()) {
+//			qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
+//		}  
+		 
+		 ArrayList<QualityDataSetDTO> qualityDataSetDTOs = (ArrayList<QualityDataSetDTO>) 
+				 valueSetTransferObject.getAppliedQDMList();
 		if (valueSetTransferObject.isSpecificOccurrence()) {
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
-					matValueSet, (ArrayList<QualityDataSetDTO>) valueSetTransferObject.getAppliedQDMList());
+					matValueSet, qualityDataSetDTOs);
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
 				char occTxt = (char) occurrenceCount;
 				qds.setOccurrenceText("Occurrence" + " " + occTxt);
 				wrapper.getQualityDataDTO().add(qds);
 				result.setOccurrenceMessage(qds.getOccurrenceText());
+			    qualityDataSetDTOs.add(qds);
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				result.setSuccess(true);
+				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
 			}
 		} else { // Treat as regular QDM
@@ -1360,6 +1370,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				result.setSuccess(true);
+				qualityDataSetDTOs.add(qds);
+				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
 			} else {
 				result.setSuccess(false);
@@ -1410,6 +1422,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			wrapper.getQualityDataDTO().add(qds);
 			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 			result.setSuccess(true);
+			result.setAppliedQDMList(sortQualityDataSetList(wrapper
+					.getQualityDataDTO()));
 			result.setXmlString(qdmXMLString);
 		} else {
 			result.setSuccess(true);
@@ -1780,16 +1794,22 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				qds.setTaxonomy(matValueSet.getCodeSystemName());
 			}
-			if (matValueSetTransferObject.isVersionDate() || matValueSetTransferObject.isEffectiveDate()) {
+			if (matValueSetTransferObject.isVersionDate()) {
 				qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
 			} else {
 				qds.setVersion("1.0");
 			}
-			if (matValueSetTransferObject.isEffectiveDate()) {
-				qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
+			
+		     if(matValueSetTransferObject.isExpansionProfile()){
+				qds.setExpansionProfile(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
 			} else {
-				qds.setEffectiveDate(null);
+				qds.setExpansionProfile(null);
 			}
+//			if (matValueSetTransferObject.isEffectiveDate()) {
+//				qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
+//			} else {
+//				qds.setEffectiveDate(null);
+//			}
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet, (ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
@@ -1841,16 +1861,22 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				} else {
 					qds.setTaxonomy(matValueSet.getCodeSystemName());
 				}
-				if (matValueSetTransferObject.isVersionDate() || matValueSetTransferObject.isEffectiveDate()) {
+				if (matValueSetTransferObject.isVersionDate()) {
 					qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
 				} else {
 					qds.setVersion("1.0");
 				}
-				if (matValueSetTransferObject.isEffectiveDate()) {
-					qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
+				if(matValueSetTransferObject.isExpansionProfile()){
+					qds.setExpansionProfile(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
 				} else {
-					qds.setEffectiveDate(null);
+					qds.setExpansionProfile(null);
 				}
+				
+//				if (matValueSetTransferObject.isEffectiveDate()) {
+//					qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
+//				} else {
+//					qds.setEffectiveDate(null);
+//				}
 				qds.setOccurrenceText(null);
 				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());

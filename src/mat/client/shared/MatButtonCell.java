@@ -41,6 +41,8 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
    
    /** The css class. */
    String cssClass="";
+   
+    boolean isEditable;
   /**
    * Construct a new ButtonCell that will use a {@link SimpleSafeHtmlRenderer}.
    */
@@ -60,6 +62,13 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
 	    this(SimpleSafeHtmlRenderer.getInstance());
 	    this.ButtonTitle=ButtonTitle;
 	    this.cssClass = cssString;
+	  }
+  
+  public MatButtonCell(String ButtonTitle , String cssString, boolean isEditable) {
+	    this(SimpleSafeHtmlRenderer.getInstance());
+	    this.ButtonTitle=ButtonTitle;
+	    this.cssClass = cssString;
+	    this.isEditable = isEditable;
 	  }
   
   /**
@@ -95,12 +104,16 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
    */
   @Override
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-	  
-    sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\" tabindex=\"0\" class=\" "+cssClass+"\">");
-    if (data != null) {
-      sb.append(data);
-    }
-    sb.appendHtmlConstant("</button>");
+
+	  if(isEditable){
+		  sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\" tabindex=\"0\" class=\" "+cssClass+"\">");
+	  } else {
+		  sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\" tabindex=\"0\" class=\" "+cssClass+"\" disabled>");
+	  }
+	  if (data != null) {
+		  sb.append(data);
+		  }
+	  sb.appendHtmlConstant("</button>");
   }
 
  /* (non-Javadoc)

@@ -77,6 +77,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
 	
+	/** The expansion profile. */
 	private String expansionProfile;
 	
 	
@@ -432,6 +433,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	
 	/**
+	 * Checks if is specific occurrence.
+	 *
 	 * @return the specificOccurrence
 	 */
 	public boolean isSpecificOccurrence() {
@@ -441,6 +444,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	
 	/**
+	 * Sets the specific occurrence.
+	 *
 	 * @param specificOccurrence the specificOccurrence to set
 	 */
 	public void setSpecificOccurrence(boolean specificOccurrence) {
@@ -449,12 +454,22 @@ public class QualityDataSetDTO implements IsSerializable {
 
 
 
+	/**
+	 * Gets the expansion profile.
+	 *
+	 * @return the expansion profile
+	 */
 	public String getExpansionProfile() {
 		return expansionProfile;
 	}
 
 
 
+	/**
+	 * Sets the expansion profile.
+	 *
+	 * @param expansionProfile the new expansion profile
+	 */
 	public void setExpansionProfile(String expansionProfile) {
 		this.expansionProfile = expansionProfile;
 	}

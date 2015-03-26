@@ -77,6 +77,8 @@ public class MatValueSet implements IsSerializable {
 	 *
 	 * **/
 	private List<MatValueSet> groupedValueSet;
+	
+	private String expansionProfile;
 
 	/**
 	 * To string.
@@ -341,5 +343,13 @@ public class MatValueSet implements IsSerializable {
 	 */
 	public void setQdmId(String qdmId) {
 		this.qdmId = qdmId;
+	}
+
+	public String getExpansionProfile() {
+		return expansionProfile;
+	}
+
+	public void setExpansionProfile(String expansionProfile) {
+		this.expansionProfile = expansionProfile;
 	}
 }

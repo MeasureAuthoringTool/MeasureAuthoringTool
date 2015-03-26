@@ -1,8 +1,10 @@
 package mat.model;
 
+import mat.client.codelist.HasListBox;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class VSACProfile implements IsSerializable {
+public class VSACProfile implements IsSerializable, HasListBox {
 
 	
 	private String name;
@@ -19,6 +21,22 @@ public class VSACProfile implements IsSerializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int getSortOrder() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getValue() {
+		return name;
+	}
+
+	@Override
+	public String getItem() {
+		return name;
 	}
 	
 	

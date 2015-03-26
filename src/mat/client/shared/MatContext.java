@@ -215,6 +215,8 @@ public class MatContext implements IsSerializable {
 	
 	/** The profile list. */
 	private List<String> profileList = new ArrayList<String>();
+	
+	private List<VSACProfile> vsacProfList = new ArrayList<VSACProfile>();
 
 
 	/*
@@ -1538,7 +1540,7 @@ public class MatContext implements IsSerializable {
 					VsacApiResult result) {
 				if (result.getVsacProfileResp() != null) {
 					profileList.clear();
-//					profileList.add(MatContext.PLEASE_SELECT);
+					vsacProfList = result.getVsacProfileResp();
 					profileList = getProfileList(result.getVsacProfileResp());
 				}
 			}
@@ -1550,6 +1552,11 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
+	public List<VSACProfile> getVsacProfList() {
+		return vsacProfList;
+	}
+
+
 	/**
 	 * Sets the modify qdm pop up widget.
 	 * 

@@ -2580,6 +2580,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						newNode.getAttributes().setNamedItem(effectiveDateAttr);
 					}
 				}
+				
+				if (newNode.getAttributes().getNamedItem("expansionProfile") != null) {
+					if (!StringUtils.isBlank(modifyWithDTO.getExpansionProfile())) {
+						newNode.getAttributes().getNamedItem("expansionProfile").setNodeValue(
+								modifyWithDTO.getExpansionProfile());
+					} else {
+						newNode.getAttributes().removeNamedItem("expansionProfile");
+					}
+				} else {
+					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionProfile())) {
+						Attr expansionProfileAttr = processor.getOriginalDoc().createAttribute("expansionProfile");
+						expansionProfileAttr.setNodeValue(modifyWithDTO.getExpansionProfile());
+						newNode.getAttributes().setNamedItem(expansionProfileAttr);
+					}
+				}
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

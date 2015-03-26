@@ -370,8 +370,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+						if(qualityDataSetDTO.getExpansionProfile()!=null){
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(), 
+									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
+						} else {
+						    vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 								qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+						}
 					} catch (Exception ex) {
 						LOGGER.info("Value Set reterival failed at VSAC for OID :"
 								+ qualityDataSetDTO.getOid() + " with Data Type : "
@@ -609,8 +614,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
 								);
-						vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-								qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+						if(qualityDataSetDTO.getExpansionProfile()!=null){
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(), 
+									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
+						} else {
+						     vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+								     qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+						}
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
 								+ "VSAC for OID :" + qualityDataSetDTO.getOid() + " with Data Type : "

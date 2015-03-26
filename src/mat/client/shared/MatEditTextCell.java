@@ -19,15 +19,37 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 
+// TODO: Auto-generated Javadoc
 /**
  * An editable text cell. Click to edit, escape to cancel, return to commit.
  */
 public class MatEditTextCell extends
     AbstractEditableCell<String, MatEditTextCell.ViewData> {
 
+  /**
+   * The Interface Template.
+   */
   interface Template extends SafeHtmlTemplates {
-    @Template("<input type=\"text\" value=\"{0}\" style=\"width:80px;\" title=\"{1}\" tabindex=\"-1\"></input>")
+    
+    /**
+     * Input.
+     *
+     * @param value the value
+     * @param title the title
+     * @return the safe html
+     */
+    @Template("<input type=\"text\" value=\"{0}\" style=\"width:80px;\" title=\"{1}\" tabindex=\"0\"></input>")
     SafeHtml input(String value, String title);
+    
+    /**
+     * Input disabled.
+     *
+     * @param value the value
+     * @param title the title
+     * @return the safe html
+     */
+    @Template("<input type=\"text\" value=\"{0}\" style=\"width:80px;\" title=\"{1}\" tabindex=\"0\" disabled></input>")
+    SafeHtml inputDisabled(String value, String title);
   }
 
   /**
@@ -39,6 +61,7 @@ public class MatEditTextCell extends
    */
   static class ViewData {
 
+    /** The is editing. */
     private boolean isEditing;
 
     /**
@@ -52,7 +75,10 @@ public class MatEditTextCell extends
      */
     private String original;
 
+    /** The text. */
     private String text;
+    
+    
 
     /**
      * Construct a new ViewData in editing mode.
@@ -66,6 +92,9 @@ public class MatEditTextCell extends
       this.isEditingAgain = false;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
       if (o == null) {
@@ -77,14 +106,27 @@ public class MatEditTextCell extends
           && isEditingAgain == vd.isEditingAgain;
     }
 
+    /**
+     * Gets the original.
+     *
+     * @return the original
+     */
     public String getOriginal() {
       return original;
     }
 
+    /**
+     * Gets the text.
+     *
+     * @return the text
+     */
     public String getText() {
       return text;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
       return original.hashCode() + text.hashCode()
@@ -92,14 +134,29 @@ public class MatEditTextCell extends
           + Boolean.valueOf(isEditingAgain).hashCode();
     }
 
+    /**
+     * Checks if is editing.
+     *
+     * @return true, if is editing
+     */
     public boolean isEditing() {
       return isEditing;
     }
 
+    /**
+     * Checks if is editing again.
+     *
+     * @return true, if is editing again
+     */
     public boolean isEditingAgain() {
       return isEditingAgain;
     }
 
+    /**
+     * Sets the editing.
+     *
+     * @param isEditing the new editing
+     */
     public void setEditing(boolean isEditing) {
       boolean wasEditing = this.isEditing;
       this.isEditing = isEditing;
@@ -111,18 +168,34 @@ public class MatEditTextCell extends
       }
     }
 
+    /**
+     * Sets the text.
+     *
+     * @param text the new text
+     */
     public void setText(String text) {
       this.text = text;
     }
 
+    /**
+     * Equals or both null.
+     *
+     * @param o1 the o1
+     * @param o2 the o2
+     * @return true, if successful
+     */
     private boolean equalsOrBothNull(Object o1, Object o2) {
       return (o1 == null) ? o2 == null : o1.equals(o2);
     }
   }
 
+  /** The template. */
   private static Template template;
 
+  /** The renderer. */
   private final SafeHtmlRenderer<String> renderer;
+  
+  private boolean isEditable;
 
   /**
    * Construct a new EditTextCell that will use a
@@ -131,6 +204,17 @@ public class MatEditTextCell extends
   public MatEditTextCell() {
     this(SimpleSafeHtmlRenderer.getInstance());
   }
+  
+  
+  /**
+   * Instantiates a new mat edit text cell.
+   *
+   * @param isEditable the is editable
+   */
+  public MatEditTextCell(boolean isEditable) {
+	    this(SimpleSafeHtmlRenderer.getInstance());
+	    this.isEditable = isEditable;
+	  }
 
   /**
    * Construct a new EditTextCell that will use a given {@link SafeHtmlRenderer}
@@ -150,12 +234,18 @@ public class MatEditTextCell extends
     this.renderer = renderer;
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.cell.client.AbstractEditableCell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+   */
   @Override
   public boolean isEditing(Context context, Element parent, String value) {
     ViewData viewData = getViewData(context.getKey());
     return viewData == null ? false : viewData.isEditing();
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+   */
   @Override
   public void onBrowserEvent(Context context, Element parent, String value,
       NativeEvent event, ValueUpdater<String> valueUpdater) {
@@ -182,6 +272,9 @@ public class MatEditTextCell extends
     }
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+   */
   @Override
   public void render(Context context, String value, SafeHtmlBuilder sb) {
     // Get the view data.
@@ -202,7 +295,11 @@ public class MatEditTextCell extends
          * input element is always treated as text. SafeHtml isn't valid in the
          * context of the value attribute.
          */
-        sb.append(template.input(text, text));
+    	  if(isEditable){
+    		  sb.append(template.input(text, text));
+    	  } else {
+    		  sb.append(template.inputDisabled(text, text));
+    	  }
         return;
       } else {
         // The user pressed enter, but view data still exists.
@@ -221,6 +318,9 @@ public class MatEditTextCell extends
     }
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.cell.client.AbstractCell#resetFocus(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+   */
   @Override
   public boolean resetFocus(Context context, Element parent, String value) {
     if (isEditing(context, parent, value)) {
@@ -288,6 +388,16 @@ public class MatEditTextCell extends
     }
   }
 
+  /**
+   * Edits the event.
+   *
+   * @param context the context
+   * @param parent the parent
+   * @param value the value
+   * @param viewData the view data
+   * @param event the event
+   * @param valueUpdater the value updater
+   */
   private void editEvent(Context context, Element parent, String value,
       ViewData viewData, NativeEvent event, ValueUpdater<String> valueUpdater) {
     String type = event.getType();
@@ -327,6 +437,9 @@ public class MatEditTextCell extends
 
   /**
    * Get the input element in edit mode.
+   *
+   * @param parent the parent
+   * @return the input element
    */
   private InputElement getInputElement(Element parent) {
     return parent.getFirstChild().<InputElement> cast();

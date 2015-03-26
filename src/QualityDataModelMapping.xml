@@ -6,6 +6,9 @@
 	<class name="mat.model.QualityDataModelWrapper">
 		<map-to xml="measure" />
 
+       <!-- <field name = "vsacProfile" type="java.lang.String">
+            <bind-xml name="vsacProfile"  node="Attribute" location="elementLookUp"/>
+       </field> -->
 		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
 			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
 			collection="arraylist">
@@ -29,9 +32,9 @@
 					<field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />
 					</field>
-					<field name="effectiveDate" type="java.lang.String">
+					<!-- <field name="effectiveDate" type="java.lang.String">
                         <bind-xml name="effectiveDate" node="attribute" />
-                    </field>
+                    </field> -->
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>
@@ -43,6 +46,9 @@
 					</field>
 					<field name="suppDataElement" type="java.lang.Boolean">
 						<bind-xml name="suppDataElement" node="attribute" />
+					</field>
+					<field name="expansionProfile" type="java.lang.String">
+						<bind-xml name="expansionProfile" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

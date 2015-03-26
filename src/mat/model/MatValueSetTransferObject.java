@@ -28,6 +28,8 @@ public class MatValueSetTransferObject implements IsSerializable {
 	/** The is version date. */
 	boolean isVersionDate;
 	
+	boolean isExpansionProfile;
+	
 	/** The mat value set. */
 	MatValueSet matValueSet;
 	
@@ -251,4 +253,13 @@ public class MatValueSetTransferObject implements IsSerializable {
 	public void setVersionDate(boolean isVersionDate) {
 		this.isVersionDate = isVersionDate;
 	}
+	
+	public boolean isExpansionProfile() {
+		return isExpansionProfile;
+	}
+
+	public void setExpansionProfile(boolean isExpansionProfile) {
+		this.isExpansionProfile = isExpansionProfile;
+	}
+
 }

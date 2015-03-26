@@ -33,6 +33,8 @@ public class MatSelectionCell extends AbstractInputCell<String, String> {
   private HashMap<String, Integer> indexForOption = new HashMap<String, Integer>();
 
   private final List<String> options;
+  
+  private boolean isEditable;
 
   /**
    * Construct a new {@link SelectionCell} with the specified options.
@@ -50,6 +52,19 @@ public class MatSelectionCell extends AbstractInputCell<String, String> {
       indexForOption.put(option, index++);
     }
   }
+  
+  public MatSelectionCell(List<String> options, boolean isEditable) {
+	    super(BrowserEvents.CHANGE);
+	    if (template == null) {
+	      template = GWT.create(Template.class);
+	    }
+	    this.isEditable = isEditable;
+	    this.options = new ArrayList<String>(options);
+	    int index = 0;
+	    for (String option : options) {
+	      indexForOption.put(option, index++);
+	    }
+	  }
 
   @Override
   public void onBrowserEvent(Context context, Element parent, String value,
@@ -79,7 +94,11 @@ public class MatSelectionCell extends AbstractInputCell<String, String> {
     }
 
     int selectedIndex = getSelectedIndex(viewData == null ? value : viewData);
-    sb.appendHtmlConstant("<select tabindex=\"-1\" style=\"width:100px; important\">");
+    if(isEditable){
+    	sb.appendHtmlConstant("<select tabindex=\"-1\" style=\"width:80px; important\">");
+    } else {
+    	sb.appendHtmlConstant("<select tabindex=\"-1\" style=\"width:80px; important\" disabled>");
+    }
     int index = 0;
     for (String option : options) {
       if (index++ == selectedIndex) {

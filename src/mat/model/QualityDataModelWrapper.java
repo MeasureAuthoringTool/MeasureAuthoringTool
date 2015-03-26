@@ -16,6 +16,9 @@ public class QualityDataModelWrapper implements IsSerializable{
 	
 	/** The risk adj var dto list. */
 	private List<RiskAdjustmentDTO> riskAdjVarDTOList;
+	
+	/** The vsac profile. */
+	private String vsacProfile;
 	/**
 	 * Gets the quality data dto.
 	 * 
@@ -51,6 +54,24 @@ public class QualityDataModelWrapper implements IsSerializable{
 	 */
 	public void setRiskAdjVarDTO(List<RiskAdjustmentDTO> riskAdjVarDTOList) {
 		this.riskAdjVarDTOList = riskAdjVarDTOList;
+	}
+
+	/**
+	 * Gets the vsac profile.
+	 *
+	 * @return the vsac profile
+	 */
+	public String getVsacProfile() {
+		return vsacProfile;
+	}
+
+	/**
+	 * Sets the vsac profile.
+	 *
+	 * @param vsacProfile the new vsac profile
+	 */
+	public void setVsacProfile(String vsacProfile) {
+		this.vsacProfile = vsacProfile;
 	}
 
 }

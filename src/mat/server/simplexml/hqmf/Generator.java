@@ -1,6 +1,7 @@
 package mat.server.simplexml.hqmf;
 
 import mat.model.clause.MeasureExport;
+import mat.shared.MatConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -8,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * The Interface Generator.
  */
-public interface Generator {
+public interface Generator extends MatConstants {
 	
 	/** The Constant HIGH. */
 	public static final String HIGH = "high";

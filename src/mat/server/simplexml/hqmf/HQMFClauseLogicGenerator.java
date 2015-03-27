@@ -140,7 +140,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node subTreeNode = subTreeNodeList.item(i);
 			String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			String uuid = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			System.out.println("Calling generateSubTreeXML for:"+clauseName);
 			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
 					|| subTreeNodeInPOPMap.containsKey(uuid)){
 				generateSubTreeXML(subTreeNode, false);
@@ -182,13 +181,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String subTreeUUID = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		System.out.println("subTreeNodeMap:"+subTreeNodeMap);
 		
 		/**
 		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
 		 */
 		if(subTreeNodeMap.containsKey(subTreeUUID) && !msrObsDateTimeDiffSubTree){
-			//System.out.println("HQMF for Clause "+clauseName + " is already generated. Skipping.");
 			logger.info("HQMF for Clause "+clauseName + " is already generated. Skipping.");
 			return null;
 		}
@@ -197,7 +194,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node firstChild = subTreeNode.getFirstChild();
 		String firstChildName = firstChild.getNodeName();
 		logger.info("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName+"'.");
-		System.out.println("Generating HQMF for clause:'"+clauseName+"' with first child named:'"+firstChildName);
 		
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
@@ -322,7 +318,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String extForOccurrenceNode = "occ" + subTreeNode.getAttributes().getNamedItem(
 				"instance").getNodeValue() + "of_"+ext;
 		ext = StringUtils.deleteWhitespace(ext);
-		//System.out.println("generateOccHQMF "+"//entry/*/id[@root='" + root + "'][@extension='" + baseExt + "']");
 		logger.info("generateOccHQMF "+"//entry/*/id[@root='" + root + "'][@extension='" + baseExt + "']");
 		
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(),
@@ -2222,7 +2217,6 @@ public class HQMFClauseLogicGenerator implements Generator {
 			XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
 		String ext = getElementRefExt(elementRefNode, measureExport.getSimpleXMLProcessor());
 		String root = elementRefNode.getAttributes().getNamedItem(ID).getNodeValue();
-		//System.out.println("//entry/*/id[@root=\""+root+"\"][@extension=\""+ext+"\"]");
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root=\""+root+"\"][@extension=\""+ext+"\"]");
 		if(idNodeQDM != null){
 			Node parent = idNodeQDM.getParentNode();

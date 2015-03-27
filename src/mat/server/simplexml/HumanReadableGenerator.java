@@ -7,12 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
-
+import mat.shared.MatConstants;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,7 +24,7 @@ import org.w3c.dom.NodeList;
 /**
  * The Class HumanReadableGenerator.
  */
-public class HumanReadableGenerator {
+public class HumanReadableGenerator implements MatConstants{
 	
 	/** The Constant ELEMENT_LOOK_UP. */
 	private static final String ELEMENT_LOOK_UP = "elementLookUp";
@@ -62,7 +60,7 @@ public class HumanReadableGenerator {
 	private static final String LOGICAL_OP = "logicalOp";
 	
 	/** The Constant popNameArray. */
-	private static final String[] popNameArray = { "initialPopulation",
+	private static final String[] POPULATION_NAME_ARRAY = {"initialPopulation",
 		"denominator", "denominatorExclusions", "numerator",
 		"numeratorExclusions", "denominatorExceptions",
 		"measurePopulation", "measurePopulationExclusions",
@@ -121,7 +119,7 @@ public class HumanReadableGenerator {
 						+ "Most likely you have included a clause with clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
-						
+			
 			boolean isPopulation = checkIfPopulation(populationOrSubtreeXMLProcessor);
 			String name = getPopulationOrSubtreeName(
 					populationOrSubtreeXMLProcessor, isPopulation);
@@ -396,13 +394,13 @@ public class HumanReadableGenerator {
 		Node subTreeRefNodeParent = subTreeRefNode.getParentNode();
 		Node subTreeNodeImportedClone = xmlProcessor.getOriginalDoc()
 				.importNode(subTreeNode, true);
-				
+		
 		Node newNode = subTreeNodeImportedClone;
 		String qdmVariable = subTreeNodeImportedClone.getAttributes().getNamedItem("qdmVariable").getNodeValue();
 		if (subTreeNodeImportedClone.hasChildNodes() && "false".equalsIgnoreCase(qdmVariable)) {
 			newNode = subTreeNodeImportedClone.getFirstChild();
 		}
-						
+		
 		subTreeRefNodeParent.replaceChild(newNode, subTreeRefNode);
 		if (commentNode != null) {
 			subTreeRefNodeParent.insertBefore(commentNode,newNode);
@@ -537,9 +535,9 @@ public class HumanReadableGenerator {
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-//		System.out.println("parseChild - Node Name: " + nodeName);
-//		System.out.println("parseChild - Parent List Element: " + parentListElement);
-
+		//		System.out.println("parseChild - Node Name: " + nodeName);
+		//		System.out.println("parseChild - Parent List Element: " + parentListElement);
+		
 		
 		
 		if (LOGICAL_OP.equals(nodeName)) {
@@ -783,14 +781,14 @@ public class HumanReadableGenerator {
 			// check if it is a subset function ie.  FIRST-FIFTH, MOST RECENT
 			boolean isSubsetFunction = isSubsetFunction(item, populationOrSubtreeXMLProcessor);
 			if (LOGICAL_OP.equals(parentNode.getNodeName())
-				|| SET_OP.equals(parentNode.getNodeName())) {
+					|| SET_OP.equals(parentNode.getNodeName())) {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				// liElement.appendText(" "+getNodeText(parentNode,
 				// populationOrSubtreeXMLProcessor));
 				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 					liElement.appendText(" "
 							+ getNodeText(parentNode,
-							populationOrSubtreeXMLProcessor));
+									populationOrSubtreeXMLProcessor));
 				}
 				if (item.getAttributes().getNamedItem("type").getNodeValue()
 						.contains("SATISFIES")) {
@@ -808,8 +806,8 @@ public class HumanReadableGenerator {
 								satisfiesAnyAll);
 					} else {
 						if ((childNodes.getLength() > 1)
-								|| childNodes.item(0).getNodeName()
-								.equals(FUNCTIONAL_OP) && !isSubsetFunction) {
+								|| (childNodes.item(0).getNodeName()
+										.equals(FUNCTIONAL_OP) && !isSubsetFunction)) {
 							liElement = liElement.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
@@ -859,14 +857,14 @@ public class HumanReadableGenerator {
 						//System.out.println(" if Adding a new line");
 					} else {
 						Element ulElement = parentListElement;
-						if ( !(childNodes.getLength() == 0) && ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
-								.equals(FUNCTIONAL_OP) && !isSubsetFunction)) {
+						if ( !(childNodes.getLength() == 0) && ((childNodes.getLength() > 1) || (childNodes.item(0).getNodeName()
+								.equals(FUNCTIONAL_OP) && !isSubsetFunction))) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if ((childNodes.getLength() > 1) || childNodes.item(0).getNodeName()
-									.equals(FUNCTIONAL_OP) && !isSubsetFunction) {
+							if ((childNodes.getLength() > 1) || (childNodes.item(0).getNodeName()
+									.equals(FUNCTIONAL_OP) && !isSubsetFunction)) {
 								Element newLiElem = ulElement.appendElement(HTML_LI);
 								//ulElement = ulElement.appendElement(HTML_LI);
 								parseChild(childNodes.item(i), newLiElem, item,
@@ -901,10 +899,10 @@ public class HumanReadableGenerator {
 					.getNamedItem(DISPLAY_NAME).getNodeValue()
 					+ " ");
 		}
-
+		
 		//System.out.println("End of parseChild - Node Name: " + nodeName);
 		//System.out.println("End of parseChild - Parent List Element: " + parentListElement);
-
+		
 	}
 	
 	/**
@@ -912,7 +910,7 @@ public class HumanReadableGenerator {
 	 *
 	 * @param item the iteml
 	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @return 
+	 * @return
 	 */
 	private static boolean isSubsetFunction(Node item, XmlProcessor populationOrSubtreeXMLProcessor) {
 		boolean isSubset = false;
@@ -922,8 +920,8 @@ public class HumanReadableGenerator {
 		}
 		return isSubset;
 	}
-
-
+	
+	
 	/**
 	 * Creates the satisfies.
 	 *
@@ -936,7 +934,7 @@ public class HumanReadableGenerator {
 		
 		//System.out.println("createSatisfies nodeName: " + item);
 		//System.out.println("Parent List Element: " + liElement);
-
+		
 		Node lhs = item.getFirstChild();
 		if ("elementRef".equalsIgnoreCase(lhs.getNodeName())) {
 			// Element ulElement = parentListElement.appendElement(HTML_LI);
@@ -951,15 +949,15 @@ public class HumanReadableGenerator {
 					+ item.getAttributes().getNamedItem("displayName")
 					.getNodeValue().toLowerCase() + ":");
 			String lhsId = lhs.getAttributes().getNamedItem("id").getNodeValue();
-		
+			
 			lhsID.push(lhsId);
 			//System.out.println("Added an ID: " + lhsId);
 			//System.out.println("LhsID Array: ");
 			//for (int i=0; i < lhsID.size(); i++) {
 			//	System.out.println(lhsID.get(i));
 			//}
-	
-		NodeList childNodes = item.getChildNodes();
+			
+			NodeList childNodes = item.getChildNodes();
 			if (childNodes.getLength() > 1) {
 				Element ulElement = liElement.appendElement(HTML_UL);
 				for (int i = 1; i < childNodes.getLength(); i++) {
@@ -1113,15 +1111,15 @@ public class HumanReadableGenerator {
 			if(isParentheses){
 				newLiElement.appendText(" (");
 			}
-						
+			
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			
 			if(isParentheses){
-				/* Find all elements under this element 
+				/* Find all elements under this element
 				 * (including self, and children of children),
 				 * and add a parentheses to the last element in the list.
-				*/
+				 */
 				Elements elements = newLiElement.getAllElements();
 				Element lastElement = elements.get(elements.size() - 1);
 				lastElement.appendText(") ");
@@ -1143,7 +1141,7 @@ public class HumanReadableGenerator {
 				
 				if (RELATIONAL_OP.equals(childNodes.item(1).getNodeName())) {
 					NodeList children = childNodes.item(1).getChildNodes();
-					if(checkIfElementRefOrQDMVariable(children.item(0)) && checkIfElementRefOrQDMVariable(children.item(1))) {					
+					if(checkIfElementRefOrQDMVariable(children.item(0)) && checkIfElementRefOrQDMVariable(children.item(1))) {
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
@@ -1199,7 +1197,7 @@ public class HumanReadableGenerator {
 			}
 			if (children.getLength() == 3 ) {
 				if ((node.getAttributes().getNamedItem("type") != null)
-					&& node.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")) {
+						&& node.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")) {
 					retValue = true;
 				}
 			}
@@ -2079,7 +2077,7 @@ public class HumanReadableGenerator {
 			Element mainListElement, int totalGroupCount,
 			int currentGroupNumber, XmlProcessor simpleXMLProcessor) {
 		
-		for (String element : popNameArray) {
+		for (String element : POPULATION_NAME_ARRAY) {
 			generatePopulationNodes(element, clauseNodeList,
 					mainListElement, totalGroupCount, currentGroupNumber,
 					simpleXMLProcessor);

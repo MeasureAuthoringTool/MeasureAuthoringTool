@@ -36,14 +36,12 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,14 +76,6 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		ListBoxMVP getVSACProfileListBox();
 
 		/**
-		 * Sets the vsac profile selection list.
-		 * 
-		 * @param vsacProfileSelectionList
-		 *            the new vsac profile selection list
-		 */
-		void setVsacProfileSelectionList(List<String> vsacProfileSelectionList);
-
-		/**
 		 * Sets the vsac profile list box.
 		 */
 		void setVSACProfileListBox();
@@ -118,43 +108,13 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		 */
 		void setObserver(Observer observer);
 
-		/**
-		 * Gets the list data provider.
-		 * 
-		 * @return the list data provider
-		 */
-		ListDataProvider<QualityDataSetDTO> getListDataProvider();
-
-		/**
-		 * Builds the add by modify qdm cell table.
-		 * 
-		 * @param qdsAppliedListModel
-		 *            the qds applied list model
-		 */
-		void buildAddByModifyQDMCellTable(
-				QDSAppliedListModel qdsAppliedListModel);
-
-		/**
-		 * Sets the version list.
-		 * 
-		 * @param versionList
-		 *            the new version list
-		 */
-		void setVersionList(List<String> versionList);
-
-		/**
-		 * Gets the cell table.
-		 * 
-		 * @return the cell table
-		 */
-		CellTable<QualityDataSetDTO> getCellTable();
-
+		
 		/**
 		 * Gets the adds the new qdm button.
 		 * 
 		 * @return the adds the new qdm button
 		 */
-		Button getAddNewQDMButton();
+		Button getCancelQDMButton();
 
 		/**
 		 * Sets the profile list.
@@ -346,7 +306,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 	private MatValueSet currentMatValueSet;
 	
 	/** The exp profile to all qdm. */
-	private String expProfileToAllQDM;
+	//private String expProfileToAllQDM;
 	
 	/** The is modfied. */
 	private boolean isModfied = false;
@@ -491,17 +451,6 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		searchDisplay.getSuccessMessageDisplay().clear();
 	}
 
-	/**
-	 * Update modify cell table.
-	 */
-	private void updateModifyCellTable() {
-		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-		List<QualityDataSetDTO> modifyList = new ArrayList<QualityDataSetDTO>();
-		//modifyList.add(dto);
-		appliedListModel.setAppliedQDMs(modifyList);
-		searchDisplay.buildAddByModifyQDMCellTable(appliedListModel);
-
-	}
 
 	/**
 	 * Search value set in vsac.
@@ -659,7 +608,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 					}
 				});
 		
-		searchDisplay.getAddNewQDMButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -738,17 +687,17 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getUserDefinedInput().addKeyDownHandler(new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				int keycode = event.getNativeKeyCode();
-				System.out.println("keyCode: "+keycode);
-				if (event.isControlKeyDown()) {
-					if(keycode == 8){}
-				}
-		}
-		});
+//		searchDisplay.getUserDefinedInput().addKeyDownHandler(new KeyDownHandler() {
+//			
+//			@Override
+//			public void onKeyDown(KeyDownEvent event) {
+//				int keycode = event.getNativeKeyCode();
+//				System.out.println("keyCode: "+keycode);
+//				if (event.isControlKeyDown()) {
+//					if(keycode == 8){}
+//				}
+//		}
+//		});
 		
 		
       searchDisplay.getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -760,27 +709,6 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		});
 		
 		searchDisplay.setObserver(new VSACProfileSelectionView.Observer() {
-
-			@Override
-			public void onOIDEditClicked(QualityDataSetDTO result, String value) {
-				String version = null;
-				searchValueSetInVsac(version);
-			}
-
-			@Override
-			public void onNameEditClicked(QualityDataSetDTO result, String value) {
-
-				QualityDataSetDTO qualityDataSetDTO = new QualityDataSetDTO();
-				qualityDataSetDTO.setId(result.getId());
-				qualityDataSetDTO.setCodeListName(value);
-				qualityDataSetDTO.setOid(ConstantMessages.USER_DEFINED_CONTEXT_DESC);
-			}
-
-			@Override
-			public void onSaveClicked(QualityDataSetDTO result) {
-				// TODO Auto-generated method stub
-
-			}
 
 			@Override
 			public void onModifyClicked(QualityDataSetDTO result) {
@@ -828,6 +756,19 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 			}
 
 		});
+		
+		searchDisplay.getDataTypesListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				if(searchDisplay.getDataTypeText(
+						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+					searchDisplay.getSaveButton().setEnabled(false);
+				} else {
+					searchDisplay.getSaveButton().setEnabled(true);
+				}
+			}
+		});
    
 	}
 	
@@ -845,13 +786,11 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
-			searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
-			searchDisplay.getSaveButton().setEnabled(false);
 			isUSerDefined = false;
 	}
 		searchDisplay.getErrorMessageDisplay().clear();
@@ -866,7 +805,6 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		if (searchDisplay.getOIDInput().getValue().length()>0) {
 			isUSerDefined = false;
 			searchDisplay.getUserDefinedInput().setEnabled(false);	
-			searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			searchDisplay.getUserDefinedInput().setEnabled(true);
 			}
@@ -875,77 +813,6 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		searchDisplay.getSuccessMessageDisplay().clear();
 	}
 	
-	/**
-	 * Update all qd ms with exp profile.
-	 *
-	 * @param isUserDefinedQDM the is user defined qdm
-	 */
-//	private void updateAllQDMsWithExpProfile() {
-//		List<QualityDataSetDTO> modifiedQDMList = new ArrayList<QualityDataSetDTO>();
-//		for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
-//			if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
-//				qualityDataSetDTO.setVersion("1.0");
-//				qualityDataSetDTO.setExpansionProfile(expProfileToAllQDM);
-//				modifiedQDMList.add(qualityDataSetDTO);
-//			}
-//			}
-//		
-//		updateAllInMeasureXml(modifiedQDMList);
-//		getAppliedQDMList(true);
-//	}
-	
-	/**
-	 * Update all in measure xml.
-	 *
-	 * @param modifiedQDMList the modified qdm list
-	 */
-//	private void updateAllInMeasureXml(List<QualityDataSetDTO> modifiedQDMList) {
-//		String measureId =  MatContext.get().getCurrentMeasureId();
-//		for(QualityDataSetDTO qualityDataSetDTO : modifiedQDMList){
-//			service.updateMeasureXML(qualityDataSetDTO, qualityDataSetDTO, measureId, new AsyncCallback<Void>() {
-//
-//				@Override
-//				public void onFailure(Throwable caught) {
-//					// TODO Auto-generated method stub
-//					
-//				}
-//
-//				@Override
-//				public void onSuccess(Void result) {
-//					// TODO Auto-generated method stub
-//				}
-//			});
-//		}
-//	}
-
-	/**
-	 * Gets the list of applied qd ms.
-	 *
-	 * @param isUserDefined the is user defined
-	 * @return the list of applied qd ms
-	 */
-//	private void getListOfAppliedQDMs(final boolean isUserDefined) {
-//		String measureId = MatContext.get().getCurrentMeasureId();
-//		if ((measureId != null) && !measureId.equals("")) {
-//			service.getAppliedQDMFromMeasureXml(measureId, true,
-//					new AsyncCallback<List<QualityDataSetDTO>>() {
-//				
-//				@Override
-//				public void onFailure(final Throwable caught) {
-//					Window.alert(MatContext.get().getMessageDelegate()
-//							.getGenericErrorMessage());
-//				}
-//				
-//				@Override
-//				public void onSuccess(
-//						final List<QualityDataSetDTO> result) {
-//					appliedQDMList = result;
-//					addSelectedCodeListtoMeasure(isUserDefined);
-//					System.out.println("getListOfAppliedQDMs invoked");
-//				}
-//			});
-//		}
-//	}
 
 	/**
 	 * Adds the selected code listto measure.
@@ -1562,7 +1429,7 @@ public class VSACProfileSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setEnabled(editable);
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getApplyButton().setEnabled(editable);
-		searchDisplay.getAddNewQDMButton().setEnabled(editable);
+		searchDisplay.getCancelQDMButton().setEnabled(editable);
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);

@@ -537,8 +537,8 @@ public class HumanReadableGenerator {
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-//		System.out.println("parseChild nodeName: " + nodeName);
-//		System.out.println("Parent List Element: " + parentListElement);
+//		System.out.println("parseChild - Node Name: " + nodeName);
+//		System.out.println("parseChild - Parent List Element: " + parentListElement);
 
 		
 		
@@ -547,7 +547,7 @@ public class HumanReadableGenerator {
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 			String parentNodeDisplayName = parentNode.getAttributes()
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
-			// set the Flag is we have AND -> AND NOT or OR -> OR NOT
+			// set the Flag if we have AND -> AND NOT or OR -> OR NOT
 			boolean isNestedNot = (nodeDisplayName.equals(parentNodeDisplayName
 					+ " NOT"));
 			
@@ -902,8 +902,8 @@ public class HumanReadableGenerator {
 					+ " ");
 		}
 
-//		System.out.println("End of kparseChild nodeName: " + nodeName);
-//		System.out.println("Parent List Element: " + parentListElement);
+		//System.out.println("End of parseChild - Node Name: " + nodeName);
+		//System.out.println("End of parseChild - Parent List Element: " + parentListElement);
 
 	}
 	
@@ -922,6 +922,7 @@ public class HumanReadableGenerator {
 		}
 		return isSubset;
 	}
+
 
 	/**
 	 * Creates the satisfies.
@@ -1191,9 +1192,16 @@ public class HumanReadableGenerator {
 			retValue = checkIfElementRefOrQDMVariable(children.item(0));
 		} else if(FUNCTIONAL_OP.equals(nodeName)){
 			NodeList children = node.getChildNodes();
+			//System.out.println("Number of children: " + children.getLength());
 			if(children.getLength() == 1){
 				Node child = children.item(0);
 				retValue = checkIfElementRefOrQDMVariable(child);
+			}
+			if (children.getLength() == 3 ) {
+				if ((node.getAttributes().getNamedItem("type") != null)
+					&& node.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")) {
+					retValue = true;
+				}
 			}
 		}
 		

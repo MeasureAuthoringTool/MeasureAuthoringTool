@@ -193,7 +193,12 @@
                 <code nullFlavor="OTH">
                     <originalText value="NQF Number" />
                 </code>
-                <value xsi:type="ED" mediaType="text/plain" value="None" />
+                <xsl:variable name="NQFText">
+                    <xsl:call-template name="trim">
+                        <xsl:with-param name="textString" select="nqfid/@extension" />
+                    </xsl:call-template>
+                </xsl:variable>
+                <value xsi:type="ED" mediaType="text/plain" value="{$NQFText}" />
             </measureAttribute>
         </subjectOf>
 

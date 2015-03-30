@@ -349,13 +349,23 @@ public class VSACProfileSelectionView implements
 					pagerResources, false, 0, true);
 			spager.setDisplay(table);
 			spager.setPageStart(0);
-			Label invisibleLabel = (Label) LabelBuilder
+			Label invisibleLabel;
+			if(isEditable){
+			 invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"appliedQDMTableSummary",
 							"In the Following Applied QDM Elements table Name in First Column"
 									+ "OID in Second Column, DataType in Third Column, Expansion Profile in Fourth Column,"
 									+ "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
 									+ "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
+			} else {
+			    invisibleLabel = (Label) LabelBuilder
+						.buildInvisibleLabel(
+								"appliedQDMTableSummary",
+								"In the Following Applied QDM Elements table Name in First Column"
+										+ "OID in Second Column, DataType in Third Column, Expansion Profile in Fourth Column,"
+										+ "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
+			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
 					"appliedQDMTableSummary");
@@ -516,17 +526,21 @@ public class VSACProfileSelectionView implements
 			table.addColumn(versionColumn, SafeHtmlUtils
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
-			// Modify by Delete Column
-			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
-					getCompositeCellForQDMModifyAndDelete()) {
+			
+			if(isEditable){
+				// Modify by Delete Column
+				table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
+						getCompositeCellForQDMModifyAndDelete()) {
 
-				@Override
-				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
-					+ "Modify" + "</span>"));
-
+					@Override
+					public QualityDataSetDTO getValue(QualityDataSetDTO object) {
+						return object;
+					}
+				}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
+						+ "Modify" + "</span>"));
+	
+			}
+			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
@@ -968,13 +982,14 @@ public class VSACProfileSelectionView implements
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to Delete QDM";
 				String cssClass;
-				  if(!isEditable){
-					cssClass = "customDeleteDisableButton";
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass
-							+ "\"disabled/>");
-					
-				} else if (object.isUsed()) {
+//				  if(!isEditable){
+//					cssClass = "customDeleteDisableButton";
+//					sb.appendHtmlConstant("<button type=\"button\" title='"
+//							+ title + "' tabindex=\"0\" class=\" " + cssClass
+//							+ "\"disabled/>");
+//					
+//				} else 
+					if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass

@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-dbcp.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.4.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-pool.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ehcache.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jcl-over-slf4j-1.6.0.jar"/>
@@ -76,13 +76,10 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/vt-password-3.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon-9.1.0.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon-dom-9.1.0.8.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-graphics-0.9.4.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-g2d-v006.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-api-checker.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-codeserver.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-elemental.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-log-3.0.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-soyc-vis.jar"/>
@@ -94,5 +91,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/fluent-hc-4.2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/vsac_framework.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsoup-1.7.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jtidy.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

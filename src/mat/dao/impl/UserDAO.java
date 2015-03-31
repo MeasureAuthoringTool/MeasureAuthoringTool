@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -107,9 +108,11 @@ mat.dao.UserDAO {
 	private Criteria createSearchCriteria(String text) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.or(
-				Restrictions.ilike("firstName", "%" + text + "%"),
-				Restrictions.ilike("lastName", "%" + text + "%")));
+		Criterion nameRestriction = Restrictions.or(Restrictions.ilike("firstName", "%" + text + "%"),
+				Restrictions.ilike("lastName", "%" + text + "%"));
+		Criterion idResticition = Restrictions.or(Restrictions.ilike("emailAddress", "%" + text + "%"),
+				Restrictions.ilike("loginId", "%" + text + "%"));
+		criteria.add(Restrictions.or(nameRestriction, idResticition));
 		criteria.add(Restrictions.ne("id", "Admin"));
 		return criteria;
 	}
@@ -125,9 +128,11 @@ mat.dao.UserDAO {
 		
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.or(
-				Restrictions.ilike("firstName", "%" + text + "%"),
-				Restrictions.ilike("lastName", "%" + text + "%")));
+		Criterion nameRestriction = Restrictions.or(Restrictions.ilike("firstName", "%" + text + "%"),
+				Restrictions.ilike("lastName", "%" + text + "%"));
+		Criterion idResticition = Restrictions.or(Restrictions.ilike("emailAddress", "%" + text + "%"),
+				Restrictions.ilike("loginId", "%" + text + "%"));
+		criteria.add(Restrictions.or(nameRestriction, idResticition));
 		criteria.add(Restrictions.ne("securityRole.id", "1"));
 		criteria.add(Restrictions.ne("status.id", "2"));
 		return criteria;

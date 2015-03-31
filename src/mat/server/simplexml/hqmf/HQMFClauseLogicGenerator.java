@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -458,13 +461,17 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element root = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement("temp");
 		generateSubTreeHQMF(firstChildNode, root);
 		Element entryElement = (Element) root.getFirstChild();
+		Node firstChild = entryElement.getFirstChild();
+		if("localVariableName".equals(firstChild.getNodeName())){
+			firstChild = firstChild.getNextSibling();
+		}
 		Element excerpt = generateExcerptEntryForFunctionalNode(parentNode, null, measureExport.getHQMFXmlProcessor(), entryElement);
 		if(excerpt != null) {
 			//create comment node
 			Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().
-					createComment("entry for " + parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-			entryElement.appendChild(comment);
-			entryElement.appendChild(excerpt);
+					createComment("entry for " + parentNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			firstChild.appendChild(comment);
+			firstChild.appendChild(excerpt);
 		}
 		dataCriteriaSectionElem.appendChild(entryElement);
 		return entryElement;

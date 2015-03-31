@@ -1565,7 +1565,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 								if("qdm:sourceAttribute".equals(childName)){
 									Node cloneAttNode = child.cloneNode(true);
 									temporallyRelatedInfoNode.getFirstChild().appendChild(cloneAttNode);
-									hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "qdm", "targetAttribute");
+									hqmfXmlProcessor.getOriginalDoc().renameNode(cloneAttNode, "", "qdm:targetAttribute");
 									break;
 								}
 							}

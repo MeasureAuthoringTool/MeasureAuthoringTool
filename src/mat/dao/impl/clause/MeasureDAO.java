@@ -1147,16 +1147,19 @@ mat.dao.clause.MeasureDAO {
 								measure.getaBBRName().toLowerCase()
 								.contains(searchTextLC) ? true
 										:
-											// measure owner first name
-											measure.getOwner().getFirstName()
-											.toLowerCase()
-											.contains(searchTextLC) ? true
+											(new Integer(measure.geteMeasureId())).toString().contains(searchTextLC)
+											? true
 													:
-														// measure owner last name
-														measure.getOwner().getLastName()
+														// measure owner first name
+														measure.getOwner().getFirstName()
 														.toLowerCase()
 														.contains(searchTextLC) ? true
-																: false;
+																:
+																	// measure owner last name
+																	measure.getOwner().getLastName()
+																	.toLowerCase()
+																	.contains(searchTextLC) ? true
+																			: false;
 		return matchesSearch;
 	}
 	

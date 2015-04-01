@@ -16,6 +16,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 
@@ -115,9 +116,13 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 * @return the applied qdm from measure xml
 	 */
+//	void getAppliedQDMFromMeasureXml(String measureId,
+//			boolean checkForSupplementData,
+//			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
+	
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
-			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
+			AsyncCallback<QualityDataModelWrapper> asyncCallback);
 	
 	/**
 	 * Gets the max e measure id.
@@ -568,5 +573,8 @@ public interface MeasureServiceAsync {
 
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
 			AsyncCallback<Void> asyncCallback);
+	
+	void updateMeasureXMLForExpansionProfile(List<QualityDataSetDTO> list, String measureId, String expansionProfile,
+			AsyncCallback<Void> callback);
 		
 }

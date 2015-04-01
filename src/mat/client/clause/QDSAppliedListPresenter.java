@@ -13,6 +13,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -149,7 +150,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				if (searchDisplay.getSelectedElementToRemove() != null) {
 					service.getAppliedQDMFromMeasureXml(MatContext.get()
 							.getCurrentMeasureId(), false,
-							new AsyncCallback<List<QualityDataSetDTO>>() {
+							new AsyncCallback<QualityDataModelWrapper>() {
 						
 						@Override
 						public void onFailure(final Throwable caught) {
@@ -162,8 +163,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 						
 						@Override
 						public void onSuccess(
-								final List<QualityDataSetDTO> result) {
-							allQdsList = result;
+								final QualityDataModelWrapper result) {
+							allQdsList = result.getQualityDataDTO();
 							if (allQdsList.size() > 0) {
 								Iterator<QualityDataSetDTO> iterator = allQdsList
 										.iterator();
@@ -288,11 +289,12 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
-					new AsyncCallback<List<QualityDataSetDTO>>() {
+					new AsyncCallback<QualityDataModelWrapper>() {
 				
 				private void filterTimingQDMs(
 						List<QualityDataSetDTO> result) {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
 								.getDataType()) || ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
@@ -312,12 +314,12 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				
 				@Override
 				public void onSuccess(
-						final List<QualityDataSetDTO> result) {
+						final QualityDataModelWrapper result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					filterTimingQDMs(result);
-					appliedListModel.setAppliedQDMs(result);
+					filterTimingQDMs(result.getQualityDataDTO());
+					appliedListModel.setAppliedQDMs(result.getQualityDataDTO());
 					searchDisplay.buildCellTable(appliedListModel);
-					searchDisplay.setAppliedQDMList(result);
+					searchDisplay.setAppliedQDMList(result.getQualityDataDTO());
 				}
 			});
 			

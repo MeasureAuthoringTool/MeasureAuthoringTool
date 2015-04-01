@@ -14,6 +14,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.MatValueSet;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACProfileWrapper;
 import mat.model.VSACValueSetWrapper;
@@ -208,15 +209,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 *            - String.
 	 * @param version
 	 *            - String.
-	 * @param effectiveDate
+	 * @param profile
 	 *            - String.
 	 * @return VsacApiResult - VsacApiResult.
 	 * **/
 	@Override
 	public final VsacApiResult getValueSetByOIDAndVersionOrEffectiveDate(final String oid, final String version,
-			final String effectiveDate) {
+			final String profile) {
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid + "for version entered :"
-				+ version +" or Effective Date :" + effectiveDate);
+				+ version +" or Effective Date :" + profile);
 		VsacApiResult result = new VsacApiResult();
 		String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 		if (eightHourTicket != null) {
@@ -227,8 +228,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				if ((version != null) && StringUtils.isNotEmpty(version)) {
 					vsacResponseResult = vGroovyClient.
 							getMultipleValueSetsResponseByOIDAndVersion(oid.trim(),version,fiveMinServiceTicket);
-				} else if ((effectiveDate != null) && StringUtils.isNotEmpty(effectiveDate)) {
-					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndEffectiveDate(oid, effectiveDate,fiveMinServiceTicket);
+				} else if ((profile != null) && StringUtils.isNotEmpty(profile)) {
+					vsacResponseResult = vGroovyClient.
+							getMultipleValueSetsResponseByOIDAndProfile(oid, profile,fiveMinServiceTicket);
 				} else {
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket);
 				}
@@ -342,8 +344,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		VsacApiResult result = new VsacApiResult();
 		if (isAlreadySignedIn()) {
 			String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
-			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
-					getAppliedQDMFromMeasureXml(measureId, false);
+			//ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
+				//	getAppliedQDMFromMeasureXml(measureId, false);
+			QualityDataModelWrapper details = getMeasureLibraryService().
+					               getAppliedQDMFromMeasureXml(measureId, false);
+		    List<QualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
 			ArrayList<MatValueSet> matValueSetList = new ArrayList<MatValueSet>();
 			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
 					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
@@ -577,8 +582,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
 		if (isAlreadySignedIn()) {
-			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
+			QualityDataModelWrapper details = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);
+			List<QualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
 			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
 					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
 			ArrayList<QualityDataSetDTO> modifiedQDMList = new ArrayList<QualityDataSetDTO>();

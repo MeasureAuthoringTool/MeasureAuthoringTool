@@ -20,6 +20,7 @@ import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
@@ -99,8 +100,14 @@ MeasureService {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getAppliedQDMFromMeasureXml(java.lang.String, boolean)
 	 */
+//	@Override
+//	public List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(
+//			String measureId, boolean checkForSupplementData) {
+//		return this.getMeasureLibraryService().getAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
+//	}
+	
 	@Override
-	public List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(
+	public QualityDataModelWrapper getAppliedQDMFromMeasureXml(
 			String measureId, boolean checkForSupplementData) {
 		return this.getMeasureLibraryService().getAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
 	}
@@ -138,7 +145,7 @@ MeasureService {
 	 * 
 	 * @return the measure library service
 	 */
-	private MeasureLibraryService getMeasureLibraryService(){
+	public MeasureLibraryService getMeasureLibraryService(){
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 	
@@ -304,6 +311,7 @@ MeasureService {
 		this.getMeasureLibraryService().updateMeasureXML(modifyWithDTO, modifyDTO, measureId);
 		
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#updatePrivateColumnInMeasure(java.lang.String, boolean)
@@ -478,6 +486,16 @@ MeasureService {
 	@Override
 	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {		
 		return this.getMeasureLibraryService().getUsedStewardAndDevelopersList(measureId);
+	}
+
+	@Override
+	public void updateMeasureXMLForExpansionProfile(
+			List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile) {
+		 for(int i = 0; i<modifyWithDTO.size(); i++){
+			 QualityDataSetDTO dto = modifyWithDTO.get(i);
+			 this.getMeasureLibraryService().updateMeasureXmlForQDM(dto, measureId, expansionProfile);
+		 }
+		
 	}
 	
 }

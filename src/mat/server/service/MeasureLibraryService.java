@@ -21,6 +21,7 @@ import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
@@ -114,7 +115,10 @@ public interface MeasureLibraryService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+//	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+//			boolean checkForSupplementData);
+	
+	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 	
 	/**
@@ -538,6 +542,9 @@ public interface MeasureLibraryService {
 			String measureId);
 
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
+
+	void updateMeasureXmlForQDM(QualityDataSetDTO modifyWithDTO,
+			String expansionProfile, String measureId);
 
 	/**
 	 * Update steward and measure developers on deletion.

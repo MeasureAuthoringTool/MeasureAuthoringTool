@@ -22,6 +22,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -694,7 +695,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId, true,
-					new AsyncCallback<List<QualityDataSetDTO>>() {
+					new AsyncCallback<QualityDataModelWrapper>() {
 				
 				@Override
 				public void onFailure(final Throwable caught) {
@@ -704,8 +705,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				
 				@Override
 				public void onSuccess(
-						final List<QualityDataSetDTO> result) {
-					appliedQDMList = result;
+						final QualityDataModelWrapper result) {
+					appliedQDMList = result.getQualityDataDTO();
 					addSelectedCodeListtoMeasure(isUserDefined);
 					System.out.println("getListOfAppliedQDMs invoked");
 				}

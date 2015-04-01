@@ -125,7 +125,7 @@ public class VSACProfileSelectionView implements
 	private CellTable<QualityDataSetDTO> table;
 
 	/** The sort provider. */
-	private ListDataProvider<QualityDataSetDTO> sortProvider;
+	private ListDataProvider<QualityDataSetDTO> listDataProvider;
 
 	/** The update button. */
 	private Button updateVSACButton = new PrimaryButton("Update From VSAC ","primaryButton");
@@ -180,6 +180,8 @@ public class VSACProfileSelectionView implements
 	
 	/** The search header. */
 	private  Label searchHeader = new Label("Search");
+	
+	private MatSimplePager spager;
 
 
 	/**
@@ -259,6 +261,7 @@ public class VSACProfileSelectionView implements
 		  buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		  buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		  VerticalPanel searchPanel = new VerticalPanel();
+		  //searchPanel.setWidth("200px");
 		  searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		  searchPanel.setStyleName("valueSetSearchPanel");
 		  
@@ -331,18 +334,17 @@ public class VSACProfileSelectionView implements
 			table = new CellTable<QualityDataSetDTO>();
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			sortProvider = new ListDataProvider<QualityDataSetDTO>();
+			listDataProvider = new ListDataProvider<QualityDataSetDTO>();
 			// table.setSelectionModel(addSelectionHandlerOnTable(appliedListModel));
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
-			sortProvider.refresh();
-			sortProvider.getList().addAll(appliedListModel.getAppliedQDMs());
+			listDataProvider.refresh();
+			listDataProvider.getList().addAll(appliedListModel.getAppliedQDMs());
 			ListHandler<QualityDataSetDTO> sortHandler = new ListHandler<QualityDataSetDTO>(
-					sortProvider.getList());
+					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			table = addColumnToTable(table, sortHandler, isEditable);
-			sortProvider.addDataDisplay(table);
-			MatSimplePager spager;
+			listDataProvider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT
 					.create(CustomPager.Resources.class);
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
@@ -668,7 +670,7 @@ public class VSACProfileSelectionView implements
 	 * getVSACProfileListBox()
 	 */
 	@Override
-	public ListBoxMVP getVSACProfileListBox() {
+	public ListBoxMVP getVSACExpansionProfileListBox() {
 		return vsacProfileListBox;
 	}
 
@@ -701,7 +703,7 @@ public class VSACProfileSelectionView implements
 	 * setVSACProfileListBox()
 	 */
 	@Override
-	public void setVSACProfileListBox() {
+	public void setVSACExpansionProfileListBox() {
 		vsacProfileListBox.clear();
 		vsacProfileListBox.addItem("--Select--");
 		for (int i = 0; i < profileList.size()
@@ -715,7 +717,7 @@ public class VSACProfileSelectionView implements
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVSACProfileListBoxOptions(java.util.List)
 	 */
 	@Override
-	public void setVSACProfileListBoxOptions(List<? extends HasListBox> texts){
+	public void setVSACProfileListBox(List<? extends HasListBox> texts){
 		setProfileListBoxItems(expansionProListBox, texts, MatContext.PLEASE_SELECT);
 	}
 	
@@ -803,7 +805,7 @@ public class VSACProfileSelectionView implements
 		dataTypeListBox.setEnabled(false);
 		saveButton.setEnabled(false);
 		}
-		
+		searchHeader.setText("Search");
 	}
 
 	/*
@@ -1186,7 +1188,7 @@ public class VSACProfileSelectionView implements
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getExpansionProfileListBox()
 	 */
 	@Override
-	public ListBoxMVP getExpansionProfileListBox() {
+	public ListBoxMVP getVSACProfileListBox() {
 		return expansionProListBox;
 	}
 
@@ -1282,6 +1284,16 @@ public class VSACProfileSelectionView implements
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessagePanel;
+	}
+	
+	@Override
+	public ListDataProvider<QualityDataSetDTO> getListDataProvider(){
+		return listDataProvider;
+	}
+	
+	@Override
+	public MatSimplePager getSimplePager(){
+		return spager;
 	}
 	
 }

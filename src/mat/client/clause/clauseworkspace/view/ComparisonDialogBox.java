@@ -13,6 +13,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.shared.MatConstants;
 
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -46,30 +47,41 @@ public class ComparisonDialogBox {
 	private static List<String> filterFunctionList = new ArrayList<String>();
 	private static List<String> subSetFunctionsList = new ArrayList<String>();
 	private static List<String> aggregateFunctionsList = new ArrayList<String>();
+	private static List<String> temporalNoOperatorList = new ArrayList<String>();
 		
 	static{
-		filterFunctionList.add("FIRST");
-		filterFunctionList.add("SECOND");
-		filterFunctionList.add("THIRD");
-		filterFunctionList.add("FOURTH");
-		filterFunctionList.add("FIFTH");
-		filterFunctionList.add("MOST RECENT");
-		filterFunctionList.add("SATISFIES ALL");
-		filterFunctionList.add("SATISFIES ANY");
+		filterFunctionList.add(MatConstants.FIRST);
+		filterFunctionList.add(MatConstants.SECOND);
+		filterFunctionList.add(MatConstants.THIRD);
+		filterFunctionList.add(MatConstants.FOURTH);
+		filterFunctionList.add(MatConstants.FIFTH);
+		filterFunctionList.add(MatConstants.MOST_RECENT);
+		filterFunctionList.add(MatConstants.SATISFIES_ALL);
+		filterFunctionList.add(MatConstants.SATISFIES_ANY);
 		
-		subSetFunctionsList.add("FIRST");
-		subSetFunctionsList.add("SECOND");
-		subSetFunctionsList.add("THIRD");
-		subSetFunctionsList.add("FOURTH");
-		subSetFunctionsList.add("FIFTH");
-		subSetFunctionsList.add("MOST RECENT");
+		subSetFunctionsList.add(MatConstants.FIRST);
+		subSetFunctionsList.add(MatConstants.SECOND);
+		subSetFunctionsList.add(MatConstants.THIRD);
+		subSetFunctionsList.add(MatConstants.FOURTH);
+		subSetFunctionsList.add(MatConstants.FIFTH);
+		subSetFunctionsList.add(MatConstants.MOST_RECENT);
 		
-		aggregateFunctionsList.add("MIN");
-		aggregateFunctionsList.add("MAX");
-		aggregateFunctionsList.add("MEDIAN");
-		aggregateFunctionsList.add("AVG");
-		aggregateFunctionsList.add("COUNT");
-		aggregateFunctionsList.add("SUM");
+		aggregateFunctionsList.add(MatConstants.MIN);
+		aggregateFunctionsList.add(MatConstants.MAX);
+		aggregateFunctionsList.add(MatConstants.MEDIAN);
+		aggregateFunctionsList.add(MatConstants.AVG);
+		aggregateFunctionsList.add(MatConstants.COUNT);
+		aggregateFunctionsList.add(MatConstants.SUM);
+		
+		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH);
+		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH_END_OF);
+		temporalNoOperatorList.add(MatConstants.STARTS_DURING);
+		temporalNoOperatorList.add(MatConstants.ENDS_CONCURRENT_WITH);
+		temporalNoOperatorList.add(MatConstants.ENDS_CONCURRENT_WITH_START_OF);
+		temporalNoOperatorList.add(MatConstants.ENDS_DURING);
+		temporalNoOperatorList.add(MatConstants.CONCURRENT_WITH);
+		temporalNoOperatorList.add(MatConstants.DURING);
+		temporalNoOperatorList.add(MatConstants.OVERLAPS);
 	}
 	
 	/**
@@ -145,8 +157,8 @@ public class ComparisonDialogBox {
 		//modified for MAT-4692
 		for (int i = 0; i < keys.size(); i++) {
 			if(!(labelForListBox.equalsIgnoreCase("Functions")
-					&& ((keys.get(i).equals("SATISFIES ALL") 
-							|| keys.get(i).equals("SATISFIES ANY"))))){
+					&& ((keys.get(i).equals(MatConstants.SATISFIES_ALL) 
+							|| keys.get(i).equals(MatConstants.SATISFIES_ANY))))){
 				listAllTimeOrFunction.addItem(keys.get(i));
 			}
 		}
@@ -157,12 +169,13 @@ public class ComparisonDialogBox {
 			}	
 		}
 				
+		
 		listAllTimeOrFunction.setWidth("150px");
 		hPanel.clear();
 		dialogContents.add(hPanel);
-		Label lableListBoxTimingOrFunction = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, labelForListBox);
-		dialogContents.add(lableListBoxTimingOrFunction);
-		dialogContents.setCellHorizontalAlignment(lableListBoxTimingOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
+		Label labelListBoxTimingOrFunction = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, labelForListBox);
+		dialogContents.add(labelListBoxTimingOrFunction);
+		dialogContents.setCellHorizontalAlignment(labelListBoxTimingOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllTimeOrFunction);
 		dialogContents.setCellHorizontalAlignment(listAllTimeOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -182,9 +195,9 @@ public class ComparisonDialogBox {
 			}
 		}
 		listAllOperator.setWidth("150px");
-		Label lableOperator = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Operators");
-		dialogContents.add(lableOperator);
-		dialogContents.setCellHorizontalAlignment(lableOperator, HasHorizontalAlignment.ALIGN_LEFT);
+		final Label labelOperator = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Operators");
+		dialogContents.add(labelOperator);
+		dialogContents.setCellHorizontalAlignment(labelOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllOperator);
 		dialogContents.setCellHorizontalAlignment(listAllOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -197,9 +210,9 @@ public class ComparisonDialogBox {
 		quantity.setWidth("150px");
 		//validation to check only numeric values are added into Quantity.
 		addHandlerToQuantityTextBox(quantity);
-		Label lableQuantity = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Quantity");
-		dialogContents.add(lableQuantity);
-		dialogContents.setCellHorizontalAlignment(lableQuantity, HasHorizontalAlignment.ALIGN_LEFT);
+		final Label labelQuantity = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Quantity");
+		dialogContents.add(labelQuantity);
+		dialogContents.setCellHorizontalAlignment(labelQuantity, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(quantity);
 		dialogContents.setCellHorizontalAlignment(quantity, HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -227,9 +240,9 @@ public class ComparisonDialogBox {
 			
 		}
 		listAllUnits.setWidth("150px");
-		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");
-		dialogContents.add(lableUnits);
-		dialogContents.setCellHorizontalAlignment(lableUnits, HasHorizontalAlignment.ALIGN_LEFT);
+		final Label labelUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");
+		dialogContents.add(labelUnits);
+		dialogContents.setCellHorizontalAlignment(labelUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllUnits);
 		dialogContents.setCellHorizontalAlignment(listAllUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -242,7 +255,19 @@ public class ComparisonDialogBox {
 			listAllUnits.setEnabled(true);
 		}
 		
+		updateListboxVisability(listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex()), listAllOperator, labelOperator, quantity, labelQuantity, listAllUnits, labelUnits);
 		
+		//changeHandler for listAllTimeOrFunction
+		listAllTimeOrFunction.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				
+				updateListboxVisability(listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex()), listAllOperator, labelOperator, quantity, labelQuantity, listAllUnits, labelUnits);
+				
+			}
+		});
+				
 		//changeHandler for listAllOperator
 		listAllOperator.addChangeHandler(new ChangeHandler() {
 			
@@ -437,6 +462,34 @@ public class ComparisonDialogBox {
 		quantity.setValue(quantityValue);
 		listAllUnits.setSelectedIndex(0);
 	}
+
+	/**
+	 * Make the listboxes invisiable/visiable if needed.
+	 *
+	 * @param quantity the quantity
+	 * @param listAllUnits the list all units
+	 */
+	private static void updateListboxVisability(String timing, ListBoxMVP listAllOperator, Label labelOperator,
+			TextBox quantity, Label labelQuantity, ListBoxMVP listAllUnits, Label labelUnits){
+		
+		if (temporalNoOperatorList.contains(timing)) {
+			quantity.setVisible(false);
+			labelQuantity.setVisible(false);
+			listAllUnits.setVisible(false);
+			labelUnits.setVisible(false);
+			listAllOperator.setVisible(false);
+			labelOperator.setVisible(false);
+		} else {
+			quantity.setVisible(true);
+			labelQuantity.setVisible(true);
+			listAllUnits.setVisible(true);
+			labelUnits.setVisible(true);
+			listAllOperator.setVisible(true);
+			labelOperator.setVisible(true);
+		}
+	}
+
+	
 	
 	/**
 	 * Sets the focus.
@@ -527,17 +580,17 @@ public class ComparisonDialogBox {
 		
 		if(subSetFunctionsList.contains(nodeText)){
 			returnList.clear();
-			returnList.add("SATISFIES ALL");
-			returnList.add("SATISFIES ANY");
+			returnList.add(MatConstants.SATISFIES_ALL);
+			returnList.add(MatConstants.SATISFIES_ANY);
 		}else if(aggregateFunctionsList.contains(nodeText)){
 			returnList.clear();
-			returnList.add("SATISFIES ALL");
-			returnList.add("SATISFIES ANY");
-			returnList.add("DATETIMEDIFF");
-		}else if( (!("SATISFIES ALL".equals(nodeText)) 
-				&& !("SATISFIES ANY".equals(nodeText)) 
-				&& !("AGE AT".equals(nodeText)) 
-				&& !("DATETIMEDIFF".equals(nodeText)) )){
+			returnList.add(MatConstants.SATISFIES_ALL);
+			returnList.add(MatConstants.SATISFIES_ANY);
+			returnList.add(MatConstants.DATETIMEDIFF);
+		}else if( (!(MatConstants.SATISFIES_ALL.equals(nodeText)) 
+				&& !(MatConstants.SATISFIES_ANY.equals(nodeText)) 
+				&& !(MatConstants.AGE_AT.equals(nodeText)) 
+				&& !(MatConstants.DATETIMEDIFF.equals(nodeText)) )){
 			
 			returnList = allFunctionsList;
 		}

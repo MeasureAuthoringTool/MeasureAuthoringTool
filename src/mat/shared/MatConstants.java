@@ -7,6 +7,7 @@ package mat.shared;
  * This holds constants used across MAT.
  * These constants are available on client as well as server side.
  */
+
 public interface MatConstants {
 	/** The Constant NUMERATOR_EXCLUSIONS. */
 	String NUMERATOR_EXCLUSIONS = "numeratorExclusions";
@@ -28,10 +29,18 @@ public interface MatConstants {
 	String DATATYPE = "datatype";
 	/** The Constant DATETIMEDIFF. */
 	String DATETIMEDIFF = "DATETIMEDIFF";
-	/** The Constant FIFTH. */
-	String FIFTH = "FIFTH";
+	/** The Constant "FIRST". */
+	String FIRST = "FIRST";
+	/** The Constant "SECOND". */
+	String SECOND = "SECOND";
+	/** The Constant "THIRD". */
+	String THIRD = "THIRD";
 	/** The Constant FOURTH. */
 	String FOURTH = "FOURTH";
+	/** The Constant FIFTH. */
+	String FIFTH = "FIFTH";
+	/** The Constant MOST RECENT. */
+	String MOST_RECENT = "MOST RECENT";
 	/** The Constant TIMEDIFF. */
 	String TIMEDIFF = "TIMEDIFF";
 	/** The Constant SUM. */
@@ -152,4 +161,24 @@ public interface MatConstants {
 	String SATISFIES_ANY = "SATISFIES ANY";
 	/** The Constant SATISFIES_ALL. */
 	String SATISFIES_ALL = "SATISFIES ALL";
+	/** The Constant starts concurrent with. */
+	String STARTS_CONCURRENT_WITH =  "Starts Concurrent With";
+	/** The Constant starts concurrent with end of. */
+	String STARTS_CONCURRENT_WITH_END_OF = "Starts Concurrent With End Of";
+	/** The Constant starts during. */
+	String STARTS_DURING = "Starts During";
+	/** The Constant ends concurrent with. */
+	String ENDS_CONCURRENT_WITH = "Ends Concurrent With";
+	/** The Constant ends concurrent with start of. */
+	String ENDS_CONCURRENT_WITH_START_OF = "Ends Concurrent With Start Of";
+	/** The Constant ends during. */
+	String ENDS_DURING = "Ends During";
+	/** The Constant concurrent with. */
+	String CONCURRENT_WITH =  "Concurrent With";
+	/** The Constant during. */
+	String DURING = "During";
+	/** The Constant concurrent with. */
+	String OVERLAPS =  "Overlaps";
+	
+	
 }

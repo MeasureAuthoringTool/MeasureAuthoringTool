@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
+import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,19 +67,19 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 */
 	private static final Map<String, String> FUNCTIONAL_OPS_SUBSET = new HashMap<String, String>();
 	static {
-		FUNCTIONAL_OPS_NON_SUBSET.put("FIRST", "1");
-		FUNCTIONAL_OPS_NON_SUBSET.put("SECOND", "2");
-		FUNCTIONAL_OPS_NON_SUBSET.put("THIRD", "3");
-		FUNCTIONAL_OPS_NON_SUBSET.put("FOURTH", "4");
-		FUNCTIONAL_OPS_NON_SUBSET.put("FIFTH", "5");
+		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.FIRST, "1");
+		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.SECOND, "2");
+		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.THIRD, "3");
+		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.FOURTH, "4");
+		FUNCTIONAL_OPS_NON_SUBSET.put(MatConstants.FIFTH, "5");
 		
-		FUNCTIONAL_OPS_SUBSET.put("MOST RECENT", "QDM_LAST");
-		FUNCTIONAL_OPS_SUBSET.put("COUNT", "QDM_SUM");
-		FUNCTIONAL_OPS_SUBSET.put("MIN", "QDM_MIN");
-		FUNCTIONAL_OPS_SUBSET.put("MAX", "QDM_MAX");
-		FUNCTIONAL_OPS_SUBSET.put("SUM", "QDM_SUM");
-		FUNCTIONAL_OPS_SUBSET.put("MEDIAN", "QDM_MEDIAN");
-		FUNCTIONAL_OPS_SUBSET.put("AVG", "QDM_AVERAGE");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.MOST_RECENT, "QDM_LAST");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.COUNT, "QDM_SUM");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.MIN, "QDM_MIN");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.MAX, "QDM_MAX");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.SUM, "QDM_SUM");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.MEDIAN, "QDM_MEDIAN");
+		FUNCTIONAL_OPS_SUBSET.put(MatConstants.AVG, "QDM_AVERAGE");
 		
 	}
 	
@@ -631,7 +629,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				String isQdmVariable = parNode.getAttributes()
 						.getNamedItem(QDM_VARIABLE).getNodeValue();
 				if (TRUE.equalsIgnoreCase(isQdmVariable)) {
-					ext = "qdm_var_" + ext;
+					//ext = "qdm_var_" + ext;
 					String occText = null;
 					// Handled Occurrence Of QDM Variable.
 					if(parNode.getAttributes().getNamedItem(INSTANCE_OF) != null){
@@ -686,9 +684,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String setOpType = setOpNode.getAttributes().getNamedItem(TYPE).getNodeValue();
 		String conjunctionType = "OR";
 		
-		if("union".equals(setOpType) || SATISFIES_ANY.equals(setOpType)){
+		if("union".equalsIgnoreCase(setOpType) || SATISFIES_ANY.equalsIgnoreCase(setOpType)){
 			conjunctionType = "OR";
-		}else if("intersection".equals(setOpType) || SATISFIES_ALL.equals(setOpType)){
+		}else if("intersection".equalsIgnoreCase(setOpType) || SATISFIES_ALL.equalsIgnoreCase(setOpType)){
 			conjunctionType = "AND";
 		}
 		

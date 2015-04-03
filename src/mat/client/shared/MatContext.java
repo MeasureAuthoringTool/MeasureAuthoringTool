@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.TreeMap;
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -30,7 +30,6 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
-//import mat.client.measure.AdminManageMeasureSearchView;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.service.MeasureService;
@@ -45,10 +44,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.VSACProfile;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.DOM;
@@ -56,9 +52,9 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+//import mat.client.measure.AdminManageMeasureSearchView;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -202,13 +198,13 @@ public class MatContext implements IsSerializable {
 	public List<String> setOps = new ArrayList<String>();
 	
 	/** The operator map key short. */
-	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
+	public Map<String, String> operatorMapKeyShort = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** The operator map key long. */
-	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
+	public Map<String, String> operatorMapKeyLong = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** The removed relationship types. */
-	public Map<String, String> removedRelationshipTypes = new HashMap<String, String>();
+	public Map<String, String> removedRelationshipTypes = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** The data type list. */
 	private List<String> dataTypeList = new ArrayList<String>();
@@ -217,8 +213,8 @@ public class MatContext implements IsSerializable {
 	private List<String> profileList = new ArrayList<String>();
 	
 	private List<VSACProfile> vsacProfList = new ArrayList<VSACProfile>();
-
-
+	
+	
 	/*
 	 * POC Global Copy Paste.
 	 * public CellTreeNode copiedNode;*/
@@ -1326,19 +1322,19 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param manageCodeListSearchModel the new manage code list searc model
 	 */
-//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
-//		this.manageCodeListSearchView = manageCodeListSearchView;
-//	}
-//	
-//	
-//	/**
-//	 * Gets the manage code list search view.
-//	 * 
-//	 * @return the manageCodeListSearchView
-//	 */
-//	public ManageCodeListSearchView getManageCodeListSearchView() {
-//		return manageCodeListSearchView;
-//	}
+	//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
+	//		this.manageCodeListSearchView = manageCodeListSearchView;
+	//	}
+	//
+	//
+	//	/**
+	//	 * Gets the manage code list search view.
+	//	 *
+	//	 * @return the manageCodeListSearchView
+	//	 */
+	//	public ManageCodeListSearchView getManageCodeListSearchView() {
+	//		return manageCodeListSearchView;
+	//	}
 	
 	
 	/**
@@ -1431,7 +1427,7 @@ public class MatContext implements IsSerializable {
 				//for adding Removed Relationship Types
 				addRemovedRelationShipTypes();
 			}
-
+			
 			private void addRemovedRelationShipTypes() {
 				
 				removedRelationshipTypes.put("Is Authorized By", "AUTH");
@@ -1489,7 +1485,7 @@ public class MatContext implements IsSerializable {
 		if (itemList != null) {
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
-				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && 
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") &&
 						! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")){
 					dataTypeList.add(listBoxContent.getItem());
 				}
@@ -1513,7 +1509,7 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onSuccess(VsacApiResult result) {
 				if (result.getVsacProfileResp() != null) {
-
+					
 				}
 				
 			}
@@ -1534,7 +1530,7 @@ public class MatContext implements IsSerializable {
 	public void getAllProfileList(){
 		vsacapiServiceAsync
 		.getAllProfileList(new AsyncCallback<VsacApiResult>() {
-
+			
 			@Override
 			public void onSuccess(
 					VsacApiResult result) {
@@ -1544,7 +1540,7 @@ public class MatContext implements IsSerializable {
 					profileList = getProfileList(result.getVsacProfileResp());
 				}
 			}
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
@@ -1555,8 +1551,8 @@ public class MatContext implements IsSerializable {
 	public List<VSACProfile> getVsacProfList() {
 		return vsacProfList;
 	}
-
-
+	
+	
 	/**
 	 * Sets the modify qdm pop up widget.
 	 * 
@@ -1672,8 +1668,8 @@ public class MatContext implements IsSerializable {
 		}
 		return profileList;
 	}
-
-
+	
+	
 	/**
 	 * Gets the profile list.
 	 *
@@ -1682,8 +1678,8 @@ public class MatContext implements IsSerializable {
 	public List<String> getProfileList() {
 		return profileList;
 	}
-
-
+	
+	
 	/**
 	 * Sets the profile list.
 	 *

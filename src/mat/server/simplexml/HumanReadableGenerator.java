@@ -71,12 +71,12 @@ public class HumanReadableGenerator implements MatConstants{
 	/** The Constant subsetFunctions */
 	private static List<String> subSetFunctionsList = new ArrayList<String>();
 	static {
-		subSetFunctionsList.add("FIRST");
-		subSetFunctionsList.add("SECOND");
-		subSetFunctionsList.add("THIRD");
-		subSetFunctionsList.add("FOURTH");
-		subSetFunctionsList.add("FIFTH");
-		subSetFunctionsList.add("MOST RECENT");
+		subSetFunctionsList.add(MatConstants.FIRST);
+		subSetFunctionsList.add(MatConstants.SECOND);
+		subSetFunctionsList.add(MatConstants.THIRD);
+		subSetFunctionsList.add(MatConstants.FOURTH);
+		subSetFunctionsList.add(MatConstants.FIFTH);
+		subSetFunctionsList.add(MatConstants.MOST_RECENT);
 	}
 	
 	/** The show only variable name. */
@@ -1473,11 +1473,11 @@ public class HumanReadableGenerator implements MatConstants{
 		}
 		
 		String typeAttribute = item.getAttributes().getNamedItem("type")
-				.getNodeValue();
+				.getNodeValue().toUpperCase();
 		String functionDisplayName = item.getAttributes()
-				.getNamedItem(DISPLAY_NAME).getNodeValue();
+				.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 		
-		if ("AGE AT".equals(typeAttribute)) {
+		if (MatConstants.AGE_AT.equalsIgnoreCase(typeAttribute)) {
 			functionDisplayName = item.getAttributes()
 					.getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase();
 		} else if (functionDisplayName.startsWith("AVG")) {

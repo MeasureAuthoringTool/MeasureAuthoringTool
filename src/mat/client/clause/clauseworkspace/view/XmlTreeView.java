@@ -23,6 +23,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.cell.client.AbstractCell;
@@ -1725,8 +1726,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
 							&& (selectedNode.getNodeType() == CellTreeNode.SET_OP_NODE)) {
-						if( selectedNode.getParent().getName().equals("SATISFIES ALL")
-								||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
+						if( selectedNode.getParent().getName().equalsIgnoreCase(MatConstants.SATISFIES_ALL)
+								||  selectedNode.getParent().getName().equalsIgnoreCase(MatConstants.SATISFIES_ANY) ){
 							if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
 								copy();
 								removeNode();
@@ -2112,7 +2113,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				if(!isClauseWorkSpace) { // Check for measure Ob and datetimediff is to be performed on Population workspace only.
 					if (!isMeasureObservations
-							&& subTreeCellTreeNode.getName().contains("DATETIMEDIFF")) {
+							&& (subTreeCellTreeNode.getName().contains("DATETIMEDIFF")
+									|| subTreeCellTreeNode.getName().contains("DateTimeDiff"))) {
 						setValid(true);
 						isDateTimeDiffNotInMO = true;
 						setValidHumanReadable(false);
@@ -2343,7 +2345,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					int checkOpChildCount = 0;
 					String invalidKeyForOpMap = null;
 					if ((node.getName().equalsIgnoreCase(intersection)) ||
-						(node.getName().equalsIgnoreCase(union))) {
+							(node.getName().equalsIgnoreCase(union))) {
 						checkOpChildCount = 2;
 						invalidKeyForOpMap = "invalidNeed2Children";
 					}
@@ -2353,7 +2355,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					} else {
 						editNode(false, node);
-						if (invalidKeyForOpMap != null && !inValidNodeList.contains(invalidKeyForOpMap)) {
+						if ((invalidKeyForOpMap != null) && !inValidNodeList.contains(invalidKeyForOpMap)) {
 							inValidNodeList.add(invalidKeyForOpMap);
 						}
 					}
@@ -2369,7 +2371,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						funcType = node.getName();
 					}
 					if ((node.getName().equalsIgnoreCase(satisfiesAll))
-						|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+							|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
 						checkChildCount = 3;
 						invalidKeyForMap = "invalidNeed3Children";
 					} else if (node.getName().equalsIgnoreCase(dateTimeDiff)) {

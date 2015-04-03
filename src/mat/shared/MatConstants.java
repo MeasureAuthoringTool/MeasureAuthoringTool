@@ -30,35 +30,35 @@ public interface MatConstants {
 	/** The Constant DATETIMEDIFF. */
 	String DATETIMEDIFF = "DATETIMEDIFF";
 	/** The Constant "FIRST". */
-	String FIRST = "FIRST";
+	String FIRST = "First";
 	/** The Constant "SECOND". */
-	String SECOND = "SECOND";
+	String SECOND = "Second";
 	/** The Constant "THIRD". */
-	String THIRD = "THIRD";
+	String THIRD = "Third";
 	/** The Constant FOURTH. */
-	String FOURTH = "FOURTH";
+	String FOURTH = "Fourth";
 	/** The Constant FIFTH. */
-	String FIFTH = "FIFTH";
+	String FIFTH = "Fifth";
 	/** The Constant MOST RECENT. */
-	String MOST_RECENT = "MOST RECENT";
+	String MOST_RECENT = "Most Recent";
 	/** The Constant TIMEDIFF. */
 	String TIMEDIFF = "TIMEDIFF";
 	/** The Constant SUM. */
-	String SUM = "SUM";
+	String SUM = "Sum";
 	/** The Constant MEDIAN. */
-	String MEDIAN = "MEDIAN";
+	String MEDIAN = "Median";
 	/** The Constant MIN. */
-	String MIN = "MIN";
+	String MIN = "Min";
 	/** The Constant MAX. */
-	String MAX = "MAX";
+	String MAX = "Max";
 	/** The Constant DATEDIFF. */
 	String DATEDIFF = "DATEDIFF";
 	/** The Constant COUNT. */
-	String COUNT = "COUNT";
+	String COUNT = "Count";
 	/** The Constant AVG. */
-	String AVG = "AVG";
+	String AVG = "Avg";
 	/** The Constant AGE_AT. */
-	String AGE_AT = "AGE AT";
+	String AGE_AT = "Age At";
 	/** The Constant DATE. */
 	String DATE = "date";
 	/** The Constant MODE. */
@@ -158,9 +158,9 @@ public interface MatConstants {
 	/** The Constant OPERATOR_TYPE. */
 	String OPERATOR_TYPE = "operatorType";
 	/** The Constant SATISFIES_ANY. */
-	String SATISFIES_ANY = "SATISFIES ANY";
+	String SATISFIES_ANY = "Satisfies Any";
 	/** The Constant SATISFIES_ALL. */
-	String SATISFIES_ALL = "SATISFIES ALL";
+	String SATISFIES_ALL = "Satisfies All";
 	/** The Constant starts concurrent with. */
 	String STARTS_CONCURRENT_WITH =  "Starts Concurrent With";
 	/** The Constant starts concurrent with end of. */

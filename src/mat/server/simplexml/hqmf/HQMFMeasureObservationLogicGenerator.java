@@ -323,104 +323,104 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
 			}
 		}
-		String firstChildNodeName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		switch (firstChildNode.getNodeName()) {
-			case "setOp":
-				Node setOpsNode = firstChildNode.cloneNode(true);
-				parentSubTreeNode.appendChild(setOpsNode);
-				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, false);
-				}
-				if (localVariableName != null) {
-					Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
-					valueElement.setAttribute(XSI_TYPE, "PQ");
-					Element expressionElement = measureObDefinitionElement.getOwnerDocument()
-							.createElement("expression");
-					expressionElement.setAttribute(VALUE, localVariableName);
-					valueElement.appendChild(expressionElement);
-					measureObDefinitionElement.appendChild(valueElement);
-				}
-				break;
-			case "relationalOp" :
-				Node relOpsNode = firstChildNode.cloneNode(true);
-				parentSubTreeNode.appendChild(relOpsNode);
-				Node relOpsFirstChild = relOpsNode.getFirstChild();
-				//will not generate clause logic with timing LHS as DATETIMEDIFF
-				if (!relOpsFirstChild.getAttributes().getNamedItem("displayName")
-						.getNodeValue().equalsIgnoreCase("DATETIMEDIFF")) {
+			String firstChildNodeName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			switch (firstChildNode.getNodeName()) {
+				case "setOp":
+					Node setOpsNode = firstChildNode.cloneNode(true);
+					parentSubTreeNode.appendChild(setOpsNode);
 					if (isClauseLogicGeneratable) {
 						localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, false);
 					}
 					if (localVariableName != null) {
-						elementRefList = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
-								, measureObDefinitionElement);
-						if ((elementRefList != null) && (elementRefList.size() > 0)) {
-							generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
-									, firstChildNode, localVariableName);
-						} else {
-							Element valueElementRelOp = measureObDefinitionElement.getOwnerDocument()
-									.createElement("value");
-							valueElementRelOp.setAttribute(XSI_TYPE, "PQ");
-							Element expressionElementRelOp = measureObDefinitionElement.getOwnerDocument()
-									.createElement("expression");
-							expressionElementRelOp.setAttribute(VALUE, localVariableName);
-							valueElementRelOp.appendChild(expressionElementRelOp);
-							measureObDefinitionElement.appendChild(valueElementRelOp);
+						Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+						valueElement.setAttribute(XSI_TYPE, "PQ");
+						Element expressionElement = measureObDefinitionElement.getOwnerDocument()
+								.createElement("expression");
+						expressionElement.setAttribute(VALUE, localVariableName);
+						valueElement.appendChild(expressionElement);
+						measureObDefinitionElement.appendChild(valueElement);
+					}
+					break;
+				case "relationalOp" :
+					Node relOpsNode = firstChildNode.cloneNode(true);
+					parentSubTreeNode.appendChild(relOpsNode);
+					Node relOpsFirstChild = relOpsNode.getFirstChild();
+					//will not generate clause logic with timing LHS as DATETIMEDIFF
+					if (!relOpsFirstChild.getAttributes().getNamedItem("displayName")
+							.getNodeValue().equalsIgnoreCase("DATETIMEDIFF")) {
+						if (isClauseLogicGeneratable) {
+							localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, false);
+						}
+						if (localVariableName != null) {
+							elementRefList = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
+									, measureObDefinitionElement);
+							if ((elementRefList != null) && (elementRefList.size() > 0)) {
+								generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
+										, firstChildNode, localVariableName);
+							} else {
+								Element valueElementRelOp = measureObDefinitionElement.getOwnerDocument()
+										.createElement("value");
+								valueElementRelOp.setAttribute(XSI_TYPE, "PQ");
+								Element expressionElementRelOp = measureObDefinitionElement.getOwnerDocument()
+										.createElement("expression");
+								expressionElementRelOp.setAttribute(VALUE, localVariableName);
+								valueElementRelOp.appendChild(expressionElementRelOp);
+								measureObDefinitionElement.appendChild(valueElementRelOp);
+							}
 						}
 					}
-				}
-				break;
-			case "elementRef":
-				elementRefList.add(firstChildNode);
-				if (localVariableName != null) {
-					generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
-							, firstChildNode, localVariableName);
-				} else {
-					generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
-				}
-				break;
-			case "functionalOp":
-				if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
-					if ("DATETIMEDIFF".equals(firstChildNodeName)) {
-						generateMOClauseLogicForDateTimeDiff(firstChildNode, elementRefList
-								, measureObDefinitionElement);
+					break;
+				case "elementRef":
+					elementRefList.add(firstChildNode);
+					if (localVariableName != null) {
+						generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
+								, firstChildNode, localVariableName);
 					} else {
-						Node childNode = firstChildNode.getFirstChild().getFirstChild();
-						String childNodeName = "";
-						boolean isDateTimeDiff = false;
-						if (childNode != null) {
-							childNodeName = childNode.getAttributes().getNamedItem("displayName")
-									.getNodeValue();
-						}
-						if (childNodeName.equals("DATETIMEDIFF")) {
-							isDateTimeDiff = true;
-						}
-						if (!isDateTimeDiff) {
-							Node functionalOp = firstChildNode.cloneNode(true);
-							parentSubTreeNode.appendChild(functionalOp);
-							localVariableName = generateClauseLogicForChildsInsideFnxOp(
-									parentSubTreeNode, false);
-							generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
-									, measureObDefinitionElement, false, localVariableName);
+						generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
+					}
+					break;
+				case "functionalOp":
+					if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
+						if ("DATETIMEDIFF".equals(firstChildNodeName)) {
+							generateMOClauseLogicForDateTimeDiff(firstChildNode, elementRefList
+									, measureObDefinitionElement);
+						} else {
+							Node childNode = firstChildNode.getFirstChild().getFirstChild();
+							String childNodeName = "";
+							boolean isDateTimeDiff = false;
+							if (childNode != null) {
+								childNodeName = childNode.getAttributes().getNamedItem("displayName")
+										.getNodeValue();
+							}
+							if (childNodeName.equals("DATETIMEDIFF")) {
+								isDateTimeDiff = true;
+							}
+							if (!isDateTimeDiff) {
+								Node functionalOp = firstChildNode.cloneNode(true);
+								parentSubTreeNode.appendChild(functionalOp);
+								localVariableName = generateClauseLogicForChildsInsideFnxOp(
+										parentSubTreeNode, false);
+								generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
+										, measureObDefinitionElement, false, localVariableName);
+							}
 						}
 					}
-				}
-				break;
-			case "subTreeRef":
-				Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
-						.getNamedItem("id").getNodeValue());
-				Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
-				subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
-				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, false);
-				}
-				generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
-						, false, localVariableName);
-				break;
-			default:
-				break;
+					break;
+				case "subTreeRef":
+					Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
+							.getNamedItem("id").getNodeValue());
+					Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
+					subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
+					if (isClauseLogicGeneratable) {
+						localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, false);
+					}
+					generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
+							, false, localVariableName);
+					break;
+				default:
+					break;
+			}
 		}
-	}
 	/** method to get the subTree parent Node.
 	 * @param parentNode - Node
 	 * @return - Node

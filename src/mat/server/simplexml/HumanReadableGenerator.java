@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
+
 import javax.xml.xpath.XPathExpressionException;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -2049,18 +2051,36 @@ public class HumanReadableGenerator implements MatConstants{
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/measureGrouping/group");
 		
+		TreeMap<String, Node> groupMap = new TreeMap<String, Node>();
+		
 		for (int i = 0; i < groupNodeList.getLength(); i++) {
-			
-			if (groupNodeList.getLength() > 1) {
+			Node measureGroupingNode = groupNodeList.item(i);
+			String key = measureGroupingNode.getAttributes().getNamedItem("sequence").getNodeValue();
+			groupMap.put(key, measureGroupingNode);
+		}
+		
+//		for (int i = 0; i < groupNodeList.getLength(); i++) {
+//			
+//			if (groupNodeList.getLength() > 1) {
+//				mainListElement.append("<li style=\"list-style: none;\"><br><b>------ Population Criteria "
+//						+ (i + 1) + " ------</b><br><br></li>");
+//			}
+//			
+//			Node groupNode = groupNodeList.item(i);
+//			
+//			NodeList clauseNodeList = groupNode.getChildNodes();
+//			generatePopulationNodes(clauseNodeList, mainListElement,
+//					groupNodeList.getLength(), i, simpleXMLProcessor);
+//		}
+		
+		for (String key : groupMap.keySet()) {
+			if (groupMap.size() > 1) {
 				mainListElement.append("<li style=\"list-style: none;\"><br><b>------ Population Criteria "
-						+ (i + 1) + " ------</b><br><br></li>");
+						+ (key) + " ------</b><br><br></li>");
 			}
-			
-			Node groupNode = groupNodeList.item(i);
-			
-			NodeList clauseNodeList = groupNode.getChildNodes();
+			NodeList clauseNodeList = groupMap.get(key).getChildNodes();
 			generatePopulationNodes(clauseNodeList, mainListElement,
-					groupNodeList.getLength(), i, simpleXMLProcessor);
+					groupNodeList.getLength(),Integer.parseInt(key), simpleXMLProcessor);
 		}
 	}
 	

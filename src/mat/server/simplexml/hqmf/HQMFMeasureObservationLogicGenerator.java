@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -24,7 +26,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	/** The clause logic map. */
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
 	/** The measure grouping map. */
-	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+	private TreeMap<String, NodeList> measureGroupingMap = new TreeMap<String, NodeList>();
 	/** The elementRefList. */
 	//private List<Node> elementRefList;
 	/** The MeasureExport object. */

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -28,7 +30,9 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	private Map<String, String> clauseLogicMap = new HashMap<String, String>();
 	
 	/** The measure grouping map. */
-	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+//	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+	
+	private TreeMap<String, NodeList> measureGroupingMap = new TreeMap<String, NodeList>();
 	
 	/** The scoring type. */
 	private String scoringType;

@@ -410,6 +410,7 @@ public class ClauseWorkspaceContextMenu {
 				, subMenuBar);
 		createAddQDM_MenuItem(subMenuBar);
 		MenuBar timingSubTreeMenuBar = new MenuBar(true);
+		timingSubTreeMenuBar.getElement().setAttribute("id", "timingsSubMenu");
 		subMenuBar.addItem("Timing", timingSubTreeMenuBar); //Timing menu 2nd level
 		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE
 				, timingSubTreeMenuBar); // Timing sub menus 3rd level
@@ -419,6 +420,7 @@ public class ClauseWorkspaceContextMenu {
 		createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
 				, functionsSubTreeMenuBar); // functions sub menus 3rd level
 		MenuBar relSubTreeMenuBar2 = new MenuBar(true);
+		relSubTreeMenuBar2.getElement().setAttribute("id", "relOpSubMenu");
 		subMenuBar.addItem("Relationship", relSubTreeMenuBar2); //functions menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relSubTreeMenuBar2); // Relationship sub menus 3rd level
@@ -540,7 +542,9 @@ public class ClauseWorkspaceContextMenu {
 				, relAssociationMenuBar); // Relationship sub menus 3rd level
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
 		MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM(false);
+		subMenuBarRelLHS.getElement().setAttribute("id", "subMenuRelOpLHS");
 		MenuBar relAssociationMenuBarRHS = new MenuBar(true);
+		subMenuBarRelLHS.getElement().setAttribute("id", "relAssociationMenuBarRHS");
 		//subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBarRHS); // Relationship sub menus 3rd level
@@ -611,10 +615,13 @@ public class ClauseWorkspaceContextMenu {
 		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") ||
 				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")){
 			MenuBar subMenuBarLHS = createMenuBarWithOnlyQDM();
+			subMenuBarLHS.getElement().setAttribute("id","SubMenuFnxOpLHS");
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
 			
 			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
+			subMenuBarLHS.getElement().setAttribute("id","SubMenuFnxOpRHS");
 			MenuBar relSetOpMenuBar = new MenuBar(true);
+			subMenuBarLHS.getElement().setAttribute("id","SubMenuRelOpLHS");
 			subMenuBarRHS.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
 			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 					, relSetOpMenuBar);
@@ -675,9 +682,11 @@ public class ClauseWorkspaceContextMenu {
 					, subMenuBar);
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timing = new MenuBar(true);
+			timing.getElement().setAttribute("id","SubMenuTimingLHS");
 			subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
 			createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timing); // Timing sub menus 3rd level
 			MenuBar functions = new MenuBar(true);
+			timing.getElement().setAttribute("id","SubMenufunctions");
 			subMenuBar.addItem("Functions", functions); //functions menu 2nd level
 			List<String> functionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
 			createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
@@ -808,15 +817,18 @@ public class ClauseWorkspaceContextMenu {
 				, subMenuBar);
 		createAddQDM_MenuItem(subMenuBar);
 		MenuBar timingSetOpMenuBar = new MenuBar(true);
+		timingSetOpMenuBar.getElement().setAttribute("id", "SubMenuBartimingSetOpMenuBar");
 		subMenuBar.addItem("Timing", timingSetOpMenuBar); //Timing menu 2nd level
 		createAddMenus(MatContext.get().timings,
 				CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsSetOpMenuBar = new MenuBar(true);
+		functionsSetOpMenuBar.getElement().setAttribute("id", "SubMenuBarfunctionsSetOpMenuBar");
 		subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
 		List<String> functionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(),MatContext.get().functions);
 		createAddMenus(functionsList, CellTreeNode.FUNCTIONS_NODE
 				, functionsSetOpMenuBar); // functions sub menus 3rd level
 		MenuBar relSetOpMenuBar = new MenuBar(true);
+		relSetOpMenuBar.getElement().setAttribute("id", "SubMenuBarrelSetOpMenuBar");
 		subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relSetOpMenuBar); // Timing sub menus 3rd level
@@ -941,8 +953,10 @@ public class ClauseWorkspaceContextMenu {
 	private void timingNodePopUpMenuItems(final PopupPanel popupPanel) {
 		MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
+		addMenuLHS.getElement().setAttribute("id", "SubMenuBaraddMenuLHS");
 		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
+		addMenuRHS.getElement().setAttribute("id", "SubMenuBaraddMenuRHS");
 		/*
 		 * POC Global Copy Paste.
 		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
@@ -1096,6 +1110,7 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	protected MenuBar createMenuBarWithTimingFuncAndQDM(boolean addClauseMenuItem) {
 		MenuBar menuBar = new MenuBar(true);
+		menuBar.getElement().setAttribute("id", "SubMenuBarmenuBar");
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
 		//Commented for User story MAT-3167.
@@ -1105,6 +1120,7 @@ public class ClauseWorkspaceContextMenu {
 				, menuBar);
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
+		timingMenuBar.getElement().setAttribute("id", "timingMenuBar");
 		menuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level
 		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true);

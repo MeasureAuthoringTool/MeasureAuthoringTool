@@ -2377,29 +2377,29 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					} else if (node.getName().equalsIgnoreCase(dateTimeDiff)) {
 						checkChildCount = 2;
 						invalidKeyForMap = "invalidNeed2Children";
-					} else if(!MatContext.get().functions.contains(funcType)){
+					} else if (!MatContext.get().functions.contains(capWords(funcType))) {
 						invalidKeyForMap = "invalidAtFunction";
 						editNode(false, node);
-						if(!inValidNodeList.contains(invalidKeyForMap)){
+						if (!inValidNodeList.contains(invalidKeyForMap)) {
 							inValidNodeList.add(invalidKeyForMap);
 						}
 					}
-					if (((node.getChilds() != null) && (node.getChilds().size()>= checkChildCount))) {
-						if (!node.getValidNode() &&
-								!inValidNodeList.contains("invalidAtFunction")) {
+					if (((node.getChilds() != null) && (node.getChilds().size() >= checkChildCount))) {
+						if (!node.getValidNode()
+								&& !inValidNodeList.contains("invalidAtFunction")) {
 							editNode(true, node);
 						}
 					} else {
 						editNode(false, node);
-						if(!inValidNodeList.contains(invalidKeyForMap)){
+						if (!inValidNodeList.contains(invalidKeyForMap)) {
 							inValidNodeList.add(invalidKeyForMap);
 						}
 					}
 					break;
 				case CellTreeNode.SUBTREE_REF_NODE:
 					boolean checkForValidation = validateSubTreeRefNode(node);
-					if(checkForValidation){
-						if(!inValidNodeList.contains("invalidClauseLogic")){
+					if (checkForValidation) {
+						if (!inValidNodeList.contains("invalidClauseLogic")) {
 							inValidNodeList.add("invalidClauseLogic");
 						}
 						editNode(false, node);
@@ -2420,6 +2420,34 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return inValidNodeList;
 	}
 	
+	/**
+	 * Method to convert String into Sentence/Title Case.
+	 * @param strToConvert
+	 * @return Sentence Case String
+	 */
+	private String capWords(String strToConvert) {
+		if ((strToConvert == null) && strToConvert.isEmpty()) {
+			return strToConvert;
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for (String token : strToConvert.split(" ")) {
+				if (token.isEmpty()) {
+					if (sb.length() > 0) {
+						sb.append(" ");
+					}
+				} else {
+					if (sb.length() > 0) {
+						sb.append(" ");
+					}
+					sb.append(Character.toUpperCase(token.charAt(0)));
+					if (token.length() > 1) {
+						sb.append(token.substring(1).toLowerCase());
+					}
+				}
+			}
+			return sb.toString();
+		}
+	}
 	/**
 	 * @param treeNode
 	 * @param inValidNodeList

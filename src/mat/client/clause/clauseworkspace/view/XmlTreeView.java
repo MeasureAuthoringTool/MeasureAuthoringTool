@@ -2113,8 +2113,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				if(!isClauseWorkSpace) { // Check for measure Ob and datetimediff is to be performed on Population workspace only.
 					if (!isMeasureObservations
-							&& (subTreeCellTreeNode.getName().contains("DATETIMEDIFF")
-									|| subTreeCellTreeNode.getName().contains("DateTimeDiff"))) {
+							&& (subTreeCellTreeNode.getName().toUpperCase().contains("DATETIMEDIFF"))) {
 						setValid(true);
 						isDateTimeDiffNotInMO = true;
 						setValidHumanReadable(false);
@@ -2261,7 +2260,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		String satisfiesAny = "SATISFIES ANY";
 		String intersection = "INTERSECTION";
 		String union = "Union";
-		String dateTimeDiff = "DateTimeDiff";
+		//String dateTimeDiff = "DateTimeDiff";
 		if (treeNode != null) {
 			String attributeValue = "";
 			CellTreeNode node = treeNode;
@@ -2374,7 +2373,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
 						checkChildCount = 3;
 						invalidKeyForMap = "invalidNeed3Children";
-					} else if (node.getName().equalsIgnoreCase(dateTimeDiff)) {
+					} else if (node.getName().equalsIgnoreCase(MatConstants.DATETIMEDIFF)) {
 						checkChildCount = 2;
 						invalidKeyForMap = "invalidNeed2Children";
 					} else if (!MatContext.get().functions.contains(capWords(funcType))) {

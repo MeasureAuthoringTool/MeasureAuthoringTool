@@ -28,7 +28,7 @@
             UPDATE OPERATOR SET LONG_NAME ="Age At" where SHORT_NAME ="AGE AT";
             UPDATE OPERATOR SET LONG_NAME ="Satisfies All" where SHORT_NAME ="SATISFIES ALL";
             UPDATE OPERATOR SET LONG_NAME ="Satisfies Any" where SHORT_NAME ="SATISFIES ANY";
-            UPDATE OPERATOR SET LONG_NAME ="DateTimeDiff" where SHORT_NAME ="DATETIMEDIFF";
+            UPDATE OPERATOR SET LONG_NAME ="Datetimediff" where SHORT_NAME ="DATETIMEDIFF";
 		</sql>
     </changeSet>
 </databaseChangeLog>

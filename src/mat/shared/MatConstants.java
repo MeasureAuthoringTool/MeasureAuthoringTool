@@ -28,7 +28,7 @@ public interface MatConstants {
 	/** The Constant DATATYPE. */
 	String DATATYPE = "datatype";
 	/** The Constant DATETIMEDIFF. */
-	String DATETIMEDIFF = "DateTimeDiff";
+	String DATETIMEDIFF = "Datetimediff";
 	/** The Constant "FIRST". */
 	String FIRST = "First";
 	/** The Constant "SECOND". */

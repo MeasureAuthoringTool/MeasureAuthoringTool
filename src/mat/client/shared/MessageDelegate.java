@@ -149,9 +149,13 @@ public class MessageDelegate {
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, "
 			+ " Numerator and Denominator must contain one association.";
 	
+	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to QDM Elements";
+	
+	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "VSAC Profile Successfully Applied to QDM Elements.";
 	
 	
-	
+
+
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2252,6 +2256,13 @@ public class MessageDelegate {
 	public static String getWelcomeMessage() {
 		return WELCOME_MESSAGE;
 	}
+
 	
+	public String getVsacExpansionProfileSelection() {
+		return VSAC_EXPANSION_PROFILE_SELECTION;
+	}
 	
+	public String getVsacProfileAppliedToQdmElements() {
+		return VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS;
+	}
 }

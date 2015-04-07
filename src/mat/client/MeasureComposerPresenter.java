@@ -2,8 +2,8 @@ package mat.client;
 
 import mat.client.clause.AppliedQDMPresenter;
 import mat.client.clause.QDMPresenter;
-import mat.client.clause.VSACProfileSelectionPresenter;
-import mat.client.clause.VSACProfileSelectionView;
+import mat.client.clause.QDMAppliedSelectionPresenter;
+import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.event.MATClickHandler;
@@ -382,9 +382,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	
 	private MatPresenter buildAppliedQDMPresenter(){
-		VSACProfileSelectionView vascProfileSelectionView = new VSACProfileSelectionView();
-		VSACProfileSelectionPresenter vsacProfileSelectionPresenter = 
-				new VSACProfileSelectionPresenter(vascProfileSelectionView);
+		QDMAppliedSelectionView vascProfileSelectionView = new QDMAppliedSelectionView();
+		QDMAppliedSelectionPresenter vsacProfileSelectionPresenter = 
+				new QDMAppliedSelectionPresenter(vascProfileSelectionView);
 		vsacProfileSelectionPresenter.getWidget();
 		return vsacProfileSelectionPresenter;
 	}

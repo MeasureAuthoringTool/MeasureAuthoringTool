@@ -66,8 +66,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 /**
  * The Class VSACProfileSelectionView.
  */
-public class VSACProfileSelectionView implements
-		VSACProfileSelectionPresenter.SearchDisplay,
+public class QDMAppliedSelectionView implements
+		QDMAppliedSelectionPresenter.SearchDisplay,
 		HasSelectionHandlers<Boolean> {
 
 	/**
@@ -89,7 +89,7 @@ public class VSACProfileSelectionView implements
 		 * @param result
 		 *            the result
 		 */
-		void onDeleteClicked(QualityDataSetDTO result);
+		void onDeleteClicked(QualityDataSetDTO result, int index);
 	}
 
 	/** The observer. */
@@ -119,7 +119,7 @@ public class VSACProfileSelectionView implements
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 15;
+	private static final int TABLE_ROW_COUNT = 10;
 
 	/** The table. */
 	private CellTable<QualityDataSetDTO> table;
@@ -187,7 +187,7 @@ public class VSACProfileSelectionView implements
 	/**
 	 * Instantiates a new VSAC profile selection view.
 	 */
-	public VSACProfileSelectionView() {
+	public QDMAppliedSelectionView() {
 		  VerticalPanel verticalPanel = new VerticalPanel();
 		  SimplePanel updateButtonPanel = new SimplePanel();
 		  updateButtonPanel.add(updateVSACButton);
@@ -197,8 +197,11 @@ public class VSACProfileSelectionView implements
 		  simplePanel.setWidth("5px");
 		  HorizontalPanel hp = new HorizontalPanel();
 		  hp.getElement().setId("hp_HorizonalPanel");
+		  profileSel.getElement().setId("ProfileSelection_ChkBox");
 		  hp.add(profileSel);
 		  vsacProfileListBox.setWidth("200px");
+		  vsacProfileListBox.getElement().setId("VSACProfile_ListBox");
+		  vsacProfileListBox.getElement().setTitle("VSAC Profile Selection List");
 		  hp.add(simplePanel);
 		  hp.add(vsacProfileListBox);
 		  hp.add(simplePanel);
@@ -268,6 +271,7 @@ public class VSACProfileSelectionView implements
 		  searchHeader.getElement().setId("searchHeader_Label");
 		  searchHeader.setStyleName("valueSetHeader");
 		  searchHeader.getElement().setAttribute("tabIndex", "0");
+		  searchHeader.getElement().setTitle("Search by OID and Name");
 		  searchPanel.add(searchHeader);
 		  searchPanel.add(new SpacerWidget());
 		  
@@ -280,11 +284,17 @@ public class VSACProfileSelectionView implements
 		  nameInput.setTitle("Enter Name");
 		  nameInput.setWidth("200px");
 		  
+		  expansionProListBox.getElement().setId("ExpansionProfile_ListBox");
+		  expansionProListBox.getElement().setTitle("Expansion Profile Selection List");
 		  expansionProListBox.setEnabled(false);
 		  expansionProListBox.setWidth("200px");
+		  versionListBox.getElement().setId("Version_ListBox");
+		  versionListBox.getElement().setTitle("Version Selection List");
 		  versionListBox.setEnabled(false);
 		  versionListBox.setWidth("200px");
 		  dataTypeListBox.setWidth("200px");
+		  dataTypeListBox.getElement().setId("DataType_ListBox");
+		  dataTypeListBox.getElement().setTitle("DataType Selection List");
 		  
 		  cancelButton.setEnabled(!checkForEnable());
 		  cancelButton.setTitle("Add New");
@@ -298,6 +308,7 @@ public class VSACProfileSelectionView implements
 		  retrieveButton.getElement().setAttribute("tabIndex", "0");
 		  retrieveButton.setTitle("Search");
 		  specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
+		  specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
 		  Grid queryGrid = new Grid(7, 4);
 		  queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		  queryGrid.setWidget(1, 0, oidInput);
@@ -399,7 +410,7 @@ public class VSACProfileSelectionView implements
 	private CellTable<QualityDataSetDTO> addColumnToTable(
 			final CellTable<QualityDataSetDTO> table,
 			ListHandler<QualityDataSetDTO> sortHandler, boolean isEditable) {
-		if (table.getColumnCount() != 25) {
+		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			Label searchHeader = new Label("Applied QDM Elements");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.setStyleName("measureGroupingTableHeader");
@@ -706,9 +717,9 @@ public class VSACProfileSelectionView implements
 	public void setVSACExpansionProfileListBox() {
 		vsacProfileListBox.clear();
 		vsacProfileListBox.addItem("--Select--");
-		for (int i = 0; i < profileList.size()
-				&& profileList != null; i++) {
-			vsacProfileListBox.addItem(profileList.get(i));
+		for (int i = 0; i < getProfileList().size()
+				&& getProfileList() != null; i++) {
+			vsacProfileListBox.addItem(getProfileList().get(i));
 		}
 
 	}
@@ -973,7 +984,7 @@ public class VSACProfileSelectionView implements
 							SafeHtml value) {
 						if ((object != null) && !object.isUsed()) {
 							lastSelectedObject = object;
-							observer.onDeleteClicked(object);
+							observer.onDeleteClicked(object, index);
 						}
 					}
 				};
@@ -984,14 +995,8 @@ public class VSACProfileSelectionView implements
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to Delete QDM";
 				String cssClass;
-//				  if(!isEditable){
-//					cssClass = "customDeleteDisableButton";
-//					sb.appendHtmlConstant("<button type=\"button\" title='"
-//							+ title + "' tabindex=\"0\" class=\" " + cssClass
-//							+ "\"disabled/>");
-//					
-//				} else 
-					if (object.isUsed()) {
+				
+				if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass
@@ -1296,4 +1301,13 @@ public class VSACProfileSelectionView implements
 		return spager;
 	}
 	
+	@Override
+	public CellTable<QualityDataSetDTO> getCelltable(){
+		return table;
+	}
+	
+	@Override
+	public MatSimplePager getPager(){
+		return spager;
+	}
 }

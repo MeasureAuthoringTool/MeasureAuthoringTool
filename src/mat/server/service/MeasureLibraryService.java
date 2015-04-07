@@ -543,8 +543,9 @@ public interface MeasureLibraryService {
 
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
 
-	void updateMeasureXmlForQDM(QualityDataSetDTO modifyWithDTO,
-			String expansionProfile, String measureId);
+	void updateMeasureXMLForExpansionProfile(
+			List<QualityDataSetDTO> modifyWithDTO, String measureId,
+			String expansionProfile);
 
 	/**
 	 * Update steward and measure developers on deletion.

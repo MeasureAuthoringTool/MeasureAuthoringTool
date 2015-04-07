@@ -55,6 +55,26 @@ public class MatSimplePager extends CustomPager {
 		}  
 	}
 	
+	
+	
+	public void setPageStart(int index , int totalData) {
+		  
+		  if (this.getDisplay() != null) {
+		   Range range = getDisplay().getVisibleRange();
+		   int pageSize = range.getLength();
+		   if (!isRangeLimited() && getDisplay().isRowCountExact()) {
+		    index = Math.min(index, getDisplay().getRowCount() - pageSize);
+		   }
+		   index = Math.max(0, index);
+		   if (index >= totalData) {
+		    index = totalData - pageSize;
+		    getDisplay().setVisibleRange(index, pageSize);
+		   } else if (index != range.getStart()) {
+		    getDisplay().setVisibleRange(index, pageSize);
+		   }
+		  }
+		 }
+	
 	/**
 	 * Custom method to add tool tip and tab index on First,Next,Previous and
 	 * Last Page icons.

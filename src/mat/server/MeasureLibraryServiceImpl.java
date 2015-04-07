@@ -2795,38 +2795,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML End : Measure Id :: " + measureId);
 	}
 	
-	@Override
-	public void updateMeasureXmlForQDM(final QualityDataSetDTO modifyWithDTO, 
-			 String measureId, String expansionProfile){
-		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: " + measureId);
-		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		
-		if (model != null) {
-			XmlProcessor processor = new XmlProcessor(model.getXml());
+	
+	private void updateMeasureXmlForQDM(final QualityDataSetDTO modifyWithDTO, 
+			 XmlProcessor xmlprocessor, String expansionProfile){
 				if (!modifyWithDTO.getDataType().equalsIgnoreCase("Attribute")) {
 					String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"
 							+ modifyWithDTO.getUuid() + "']";
 					NodeList nodesElementLookUp;
 					try {
-						nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, processor.getOriginalDoc(),
+						nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, xmlprocessor.getOriginalDoc(),
 								XPathConstants.NODESET);
-					if(nodesElementLookUp.getLength()>1){
-						Node parentNode = nodesElementLookUp.item(0).getParentNode();
-						if (parentNode.getAttributes().getNamedItem("vsacProfile") != null) {
-							if (!StringUtils.isBlank(expansionProfile)) {
-								parentNode.getAttributes().getNamedItem("vsacProfile").setNodeValue(
-										expansionProfile);
-							} else {
-								parentNode.getAttributes().removeNamedItem("vsacProfile");
-							}
-						} else {
-							if (!StringUtils.isEmpty(modifyWithDTO.getExpansionProfile())) {
-								Attr vsacProfileAttr = processor.getOriginalDoc().createAttribute("vsacProfile");
-								vsacProfileAttr.setNodeValue(expansionProfile);
-								parentNode.getAttributes().setNamedItem(vsacProfileAttr);
-							}
-						}
-					}
+
 					for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
 						Node newNode = nodesElementLookUp.item(i);
 						newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
@@ -2839,7 +2818,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							}
 						} else {
 							if (!StringUtils.isEmpty(expansionProfile)) {
-								Attr expansionProfileAttr = processor.getOriginalDoc().createAttribute("expansionProfile");
+								Attr expansionProfileAttr = xmlprocessor.getOriginalDoc().createAttribute("expansionProfile");
 								expansionProfileAttr.setNodeValue(expansionProfile);
 								newNode.getAttributes().setNamedItem(expansionProfileAttr);
 							}
@@ -2849,11 +2828,48 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						e.printStackTrace();
 					}
 				}
+	}
+	
+	@Override
+	public void updateMeasureXMLForExpansionProfile(List<QualityDataSetDTO> modifyWithDTOList, 
+			String measureId, String expansionProfile){
+		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXMLForExpansionProfile Start : Measure Id :: " + measureId);
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		if (model != null) {
+			XmlProcessor processor = new XmlProcessor(model.getXml());
+			String XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR = "/measure/elementLookUp";
+			try {
+				Node nodesElementLookUp = (Node)xPath.evaluate(XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR, processor.getOriginalDoc(),
+						XPathConstants.NODE);
+				if(nodesElementLookUp!=null){
+				if (nodesElementLookUp.getAttributes().getNamedItem("vsacProfile") != null) {
+					if (!StringUtils.isBlank(expansionProfile)) {
+						nodesElementLookUp.getAttributes().getNamedItem("vsacProfile").setNodeValue(
+								expansionProfile);
+					} else {
+						nodesElementLookUp.getAttributes().removeNamedItem("vsacProfile");
+					}
+				} else {
+					if (!StringUtils.isEmpty(expansionProfile)) {
+						Attr vsacProfileAttr = processor.getOriginalDoc().createAttribute("vsacProfile");
+						vsacProfileAttr.setNodeValue(expansionProfile);
+						nodesElementLookUp.getAttributes().setNamedItem(vsacProfileAttr);
+					}
+				}
+			}
+				for(QualityDataSetDTO dto : modifyWithDTOList){
+					updateMeasureXmlForQDM(dto, processor, expansionProfile);	
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+			
 			model.setXml(processor.transform(processor.getOriginalDoc()));
 			getService().saveMeasureXml(model);
 		}
+		
 	}
-	
 	/**
 	 * Update sub tree look up.
 	 *

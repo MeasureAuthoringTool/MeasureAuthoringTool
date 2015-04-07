@@ -119,7 +119,7 @@ public class QDMAppliedSelectionView implements
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 10;
+	private static final int TABLE_ROW_COUNT = 15;
 
 	/** The table. */
 	private CellTable<QualityDataSetDTO> table;

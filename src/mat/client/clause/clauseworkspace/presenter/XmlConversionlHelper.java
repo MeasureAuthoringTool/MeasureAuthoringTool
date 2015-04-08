@@ -560,7 +560,7 @@ public class XmlConversionlHelper {
 				break;
 			case CellTreeNode.SET_OP_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.SET_OP);
-				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, capWords(cellTreeNode.getName(), null));
 				element.setAttribute(PopulationWorkSpaceConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 				break;
 			case CellTreeNode.TIMING_NODE:
@@ -630,8 +630,13 @@ public class XmlConversionlHelper {
 				HashMap<String, String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (functionMap != null) {
+					String operator = null;
+					if (functionMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)) {
+						operator = MatContext.get().operatorMapKeyLong.get(
+								functionMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE));
+					}
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME,
-							functionMap.get(PopulationWorkSpaceConstants.DISPLAY_NAME));
+							capWords(functionMap.get(PopulationWorkSpaceConstants.DISPLAY_NAME), operator));
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							functionMap.get(PopulationWorkSpaceConstants.TYPE));
 					if (functionMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)) {
@@ -647,7 +652,8 @@ public class XmlConversionlHelper {
 								functionMap.get(PopulationWorkSpaceConstants.UNIT));
 					}
 				} else {
-					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME
+							, capWords(cellTreeNode.getName(), null));
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				}
@@ -714,7 +720,6 @@ public class XmlConversionlHelper {
 	
 	/**
 	 * To proper case.
-	 * 
 	 * @param s
 	 *            the s
 	 * @return the string
@@ -722,5 +727,62 @@ public class XmlConversionlHelper {
 	private static String toProperCase(String s) {
 		return s.substring(0, 1).toUpperCase()
 				+ s.substring(1).toLowerCase();
+	}
+	/**
+	 * Method to convert String into Sentence/Title Case.
+	 * Operator If Any.
+	 * @param strToConvert - String
+	 * @param operator - String
+	 * @return Sentence Case String
+	 */
+	private static String capWords(String strToConvert , String operator) {
+		if ((strToConvert == null) && strToConvert.isEmpty()) {
+			return strToConvert;
+		} else {
+			StringBuilder sb = new StringBuilder();
+			if (operator != null) {
+				if (strToConvert.contains(operator)) {
+					String[] newString = strToConvert.split(operator);
+					// For functional Ops, Function name is always contains in index 0.
+					//This will not work for RelOp/Timing.
+					String token = newString[0];
+					for (String tokenSpace : token.split(" ")) {
+						if (tokenSpace.isEmpty()) {
+							if (sb.length() > 0) {
+								sb.append(" ");
+							}
+						} else {
+							if (sb.length() > 0) {
+								sb.append(" ");
+							}
+							sb.append(Character.toUpperCase(tokenSpace.charAt(0)));
+							if (tokenSpace.length() > 1) {
+								sb.append(tokenSpace.substring(1).toLowerCase());
+							}
+						}
+					}
+				}
+				int indexOfOperator = strToConvert.indexOf(operator);
+				String subString = strToConvert.substring(indexOfOperator);
+				sb.append(subString);
+			} else {
+				for (String token : strToConvert.split(" ")) {
+					if (token.isEmpty()) {
+						if (sb.length() > 0) {
+							sb.append(" ");
+						}
+					} else {
+						if (sb.length() > 0) {
+							sb.append(" ");
+						}
+						sb.append(Character.toUpperCase(token.charAt(0)));
+						if (token.length() > 1) {
+							sb.append(token.substring(1).toLowerCase());
+						}
+					}
+				}
+			}
+			return sb.toString();
+		}
 	}
 }

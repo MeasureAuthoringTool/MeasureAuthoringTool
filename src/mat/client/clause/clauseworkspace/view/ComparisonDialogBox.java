@@ -248,14 +248,25 @@ public class ComparisonDialogBox {
 			listAllUnits.setEnabled(true);
 		}
 		
-		enableDisableListboxes(listAllTimeOrFunction, listAllOperator, quantity, listAllUnits);
+		
+		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex());
+		
+		// if non-comparision operator, disable operator/quantity/units
+		if (temporalNoOperatorList.contains(timing)) {
+			quantity.setEnabled(false);
+			quantity.setValue("");
+			listAllUnits.setItemSelected(0, true);
+			listAllUnits.setEnabled(false);
+			listAllOperator.setItemSelected(0, true);
+			listAllOperator.setEnabled(false);			
+		} 
 		
 		//changeHandler for listAllTimeOrFunction
 		listAllTimeOrFunction.addChangeHandler(new ChangeHandler() {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				
+				// if non-comparision operator, disable operator/quantity/units
 				enableDisableListboxes(listAllTimeOrFunction, listAllOperator, quantity, listAllUnits);
 			}
 		});
@@ -476,10 +487,7 @@ public class ComparisonDialogBox {
 			listAllOperator.setEnabled(false);			
 		} else {
 			quantity.setEnabled(true);
-			quantity.setValue("");
-			listAllUnits.setItemSelected(0, true);
 			listAllUnits.setEnabled(true);
-			listAllOperator.setItemSelected(0, true);
 			listAllOperator.setEnabled(true);
 		}
 	}

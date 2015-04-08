@@ -302,9 +302,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	/** The vsacapi service. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
-
-	/** The all qds list. */
-	private List<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
 	
 	/** The is u ser defined. */
 	private boolean isUSerDefined = false;
@@ -452,7 +449,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(final Void result) {
-				
+				getAppliedQDMList(true);
 			}
 		});
 	}
@@ -474,19 +471,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(final Void result) {
-				allQdsList.removeAll(allQdsList);
-				//resetQDSMsgPanel();
-				//displaySearch();
-				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay.getCelltable().getVisibleRange(), 
-						true);
-				//int pageIndex = searchDisplay.getSimplePager().getPage();
-				//searchDisplay.getListDataProvider().refresh();
-//				List<QualityDataSetDTO> list = searchDisplay.getListDataProvider().getList();
-//				
+				appliedQDMList.removeAll(appliedQDMList);
+				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay
+						.getCelltable().getVisibleRange(), true);
 				searchDisplay.getListDataProvider().getList().remove(indexOf);
 				searchDisplay.getListDataProvider().refresh();
-				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay.getCelltable().getVisibleRange(), 
-						true);
 				searchDisplay.getPager().setPageStart(searchDisplay.getCelltable().getVisibleRange().getStart(), 
 						searchDisplay.getListDataProvider().getList().size());
 				searchDisplay.getSuccessMessageDisplay().setMessage(
@@ -821,8 +810,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				resetQDSMsgPanel();
 				isModified = true;
 				modifyValueSetDTO = result;
-				searchDisplay.getSearchHeader().setText("Modify Applied QDM("+result.getCodeListName()
-						+":"+result.getDataType()+")");
+				searchDisplay.getSearchHeader().setText("Modify Applied QDM ( "+result.getCodeListName()
+						+" : "+result.getDataType()+" )");
 				
 				if(result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 					isUSerDefined = true;
@@ -849,7 +838,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getOIDInput().setEnabled(true);
 					searchDisplay.getOIDInput().setValue(result.getOid());
 					searchDisplay.getSaveButton().setEnabled(false);
-					searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					searchDisplay.getSpecificOccChkBox().setEnabled(true);
 					
 					searchDisplay.getSpecificOccChkBox().setValue(result.isSpecificOccurrence());
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
@@ -898,9 +887,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 							@Override
 							public void onSuccess(QualityDataModelWrapper result) {
-								allQdsList = result.getQualityDataDTO();
-								if (allQdsList.size() > 0) {
-									Iterator<QualityDataSetDTO> iterator = allQdsList
+								appliedQDMList = result.getQualityDataDTO();
+								if (appliedQDMList.size() > 0) {
+									Iterator<QualityDataSetDTO> iterator = appliedQDMList
 											.iterator();
 									while (iterator.hasNext()) {
 										QualityDataSetDTO dataSetDTO = iterator
@@ -913,7 +902,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 											iterator.remove();
 										}
 									}
-									deleteAndSaveMeasureXML(allQdsList, index);
+									deleteAndSaveMeasureXML(appliedQDMList, index);
 //								searchDisplay.getListDataProvider().getList().remove(index);
 //								searchDisplay.getListDataProvider().refresh();
 //								searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay.getCelltable().getVisibleRange(), 
@@ -1145,10 +1134,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									.setText("");
 									searchDisplay.getDataTypesListBox()
 									.setSelectedIndex(0);
-									QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-									appliedListModel.setAppliedQDMs(result.getAppliedQDMList());
-									searchDisplay.buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService()
-											.checkForEditPermission());
+//									QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+//									appliedListModel.setAppliedQDMs(result.getAppliedQDMList());
+//									searchDisplay.buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService()
+//											.checkForEditPermission());
 								} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
 									searchDisplay
 									.getErrorMessageDisplay()
@@ -1158,7 +1147,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 											.getMessageDelegate()
 											.getDuplicateAppliedQDMMsg());
 								}
-								getAppliedQDMList(true);
 								//searchDisplay.getCancelQDMButton().click();
 							}
 						});
@@ -1247,11 +1235,24 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								new QDSElementCreatedEvent(
 										currentMatValueSet
 										.getDisplayName()));
-						QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-						appliedListModel.setAppliedQDMs(result.getAppliedQDMList());
-						appliedQDMList = result.getAppliedQDMList();
-						searchDisplay.buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService()
-								.checkForEditPermission());
+//						QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+//						appliedListModel.setAppliedQDMs(result.getAppliedQDMList());
+//						appliedQDMList = result.getAppliedQDMList();
+//						searchDisplay.buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService()
+//								.checkForEditPermission());
+						searchDisplay.getSearchHeader().setText("Search");
+						searchDisplay.getOIDInput().setEnabled(true);
+						searchDisplay.getOIDInput().setValue("");
+						searchDisplay.getUserDefinedInput().setEnabled(true);
+						searchDisplay.getUserDefinedInput().setValue("");
+						searchDisplay.getVSACProfileListBox().clear();
+						searchDisplay.getVersionListBox().clear();
+						searchDisplay.getDataTypesListBox().setSelectedIndex(0);
+						searchDisplay.getSpecificOccChkBox().setValue(false);
+						searchDisplay.getVSACProfileListBox().setEnabled(false);
+						searchDisplay.getVersionListBox().setEnabled(false);
+						searchDisplay.getSpecificOccChkBox().setEnabled(false);
+						searchDisplay.getDataTypesListBox().setEnabled(false);
 						searchDisplay
 						.getSuccessMessageDisplay()
 						.setMessage(message);

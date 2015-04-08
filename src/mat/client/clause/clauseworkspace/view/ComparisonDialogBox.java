@@ -248,7 +248,7 @@ public class ComparisonDialogBox {
 			listAllUnits.setEnabled(true);
 		}
 		
-		updateListboxVisability(listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex()), listAllOperator, labelOperator, quantity, labelQuantity, listAllUnits, labelUnits);
+		enableDisableListboxes(listAllTimeOrFunction, listAllOperator, quantity, listAllUnits);
 		
 		//changeHandler for listAllTimeOrFunction
 		listAllTimeOrFunction.addChangeHandler(new ChangeHandler() {
@@ -256,8 +256,7 @@ public class ComparisonDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				
-				updateListboxVisability(listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex()), listAllOperator, labelOperator, quantity, labelQuantity, listAllUnits, labelUnits);
-				
+				enableDisableListboxes(listAllTimeOrFunction, listAllOperator, quantity, listAllUnits);
 			}
 		});
 		
@@ -423,6 +422,7 @@ public class ComparisonDialogBox {
 		}
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, extraAttributes);
 	}
+
 	
 	/**
 	 * TextBox allow only Digits.
@@ -462,23 +462,25 @@ public class ComparisonDialogBox {
 	 * @param quantity the quantity
 	 * @param listAllUnits the list all units
 	 */
-	private static void updateListboxVisability(String timing, ListBoxMVP listAllOperator, Label labelOperator,
-			TextBox quantity, Label labelQuantity, ListBoxMVP listAllUnits, Label labelUnits){
+	private static void enableDisableListboxes(ListBoxMVP listAllTimeOrFunction, ListBoxMVP listAllOperator, 
+			TextBox quantity, ListBoxMVP listAllUnits){
+		
+		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction.getSelectedIndex());
 		
 		if (temporalNoOperatorList.contains(timing)) {
-			quantity.setVisible(false);
-			labelQuantity.setVisible(false);
-			listAllUnits.setVisible(false);
-			labelUnits.setVisible(false);
-			listAllOperator.setVisible(false);
-			labelOperator.setVisible(false);
+			quantity.setEnabled(false);
+			quantity.setValue("");
+			listAllUnits.setItemSelected(0, true);
+			listAllUnits.setEnabled(false);
+			listAllOperator.setItemSelected(0, true);
+			listAllOperator.setEnabled(false);			
 		} else {
-			quantity.setVisible(true);
-			labelQuantity.setVisible(true);
-			listAllUnits.setVisible(true);
-			labelUnits.setVisible(true);
-			listAllOperator.setVisible(true);
-			labelOperator.setVisible(true);
+			quantity.setEnabled(true);
+			quantity.setValue("");
+			listAllUnits.setItemSelected(0, true);
+			listAllUnits.setEnabled(true);
+			listAllOperator.setItemSelected(0, true);
+			listAllOperator.setEnabled(true);
 		}
 	}
 	

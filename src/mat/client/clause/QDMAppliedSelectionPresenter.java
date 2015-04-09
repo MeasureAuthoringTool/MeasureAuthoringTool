@@ -16,6 +16,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.ListBoxMVP;
@@ -288,6 +289,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		CellTable<QualityDataSetDTO> getCelltable();
 
 		MatSimplePager getPager();
+
+		ErrorMessageDisplay getUpdateVSACErrorMessagePanel();
+
+		SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
 	}
 
 	/** The panel. */
@@ -471,7 +476,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(final Void result) {
-				appliedQDMList.removeAll(appliedQDMList);
+				//appliedQDMList.removeAll(appliedQDMList);
 				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay
 						.getCelltable().getVisibleRange(), true);
 				searchDisplay.getListDataProvider().getList().remove(indexOf);
@@ -499,6 +504,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void resetQDSMsgPanel() {
 		searchDisplay.getSuccessMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getUpdateVSACSuccessMessagePanel().clear();
+		searchDisplay.getUpdateVSACErrorMessagePanel().clear();
 	}
 
 
@@ -1733,7 +1740,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				//showSearchingBusy(false);
 				searchDisplay.getInProgressMessageDisplay().clear();
 				if (result.isSuccess()) {
-					searchDisplay.getSuccessMessageDisplay().setMessage(
+					searchDisplay.getUpdateVSACSuccessMessagePanel().setMessage(
 							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
 					//getAppliedQDMList(true);
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
@@ -1742,7 +1749,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							.checkForEditPermission()
 							);
 				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
+					searchDisplay.getUpdateVSACErrorMessagePanel().setMessage(convertMessage(result.getFailureReason()));
 				}
 			}
 		});

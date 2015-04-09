@@ -146,7 +146,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
-		measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
+		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");

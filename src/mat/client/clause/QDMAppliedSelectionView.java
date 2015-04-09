@@ -85,9 +85,9 @@ public class QDMAppliedSelectionView implements
 
 		/**
 		 * On delete clicked.
-		 * 
-		 * @param result
-		 *            the result
+		 *
+		 * @param result            the result
+		 * @param index the index
 		 */
 		void onDeleteClicked(QualityDataSetDTO result, int index);
 	}
@@ -111,6 +111,9 @@ public class QDMAppliedSelectionView implements
 
 	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
+	
+	/** The update vsac error message panel. */
+	private ErrorMessageDisplay updateVSACErrorMessagePanel = new ErrorMessageDisplay();
 
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
@@ -134,10 +137,10 @@ public class QDMAppliedSelectionView implements
 	private Button cancelButton = new Button("Cancel");
 	
 	/** The apply button. */
-	private Button applyButton = new Button("Apply"); 
+	private Button applyButton = new PrimaryButton("Apply", "primaryButton"); 
 	
 	/** The save button. */
-	private Button saveButton = new PrimaryButton("Apply to Measure", "primaryButton");; 
+	private Button saveButton = new PrimaryButton("Apply", "primaryButton");
 
 	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
@@ -147,6 +150,9 @@ public class QDMAppliedSelectionView implements
 
 	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
+	
+	/** The update vsac success message panel. */
+	private SuccessMessageDisplay updateVSACSuccessMessagePanel = new SuccessMessageDisplay();
 
 	/** The last selected object. */
 	private QualityDataSetDTO lastSelectedObject;
@@ -181,6 +187,10 @@ public class QDMAppliedSelectionView implements
 	/** The search header. */
 	private  Label searchHeader = new Label("Search");
 	
+	/** The vsac profile header. */
+	private Label vsacProfileHeader = new Label("Apply VSAC Profile");
+	
+	/** The spager. */
 	private MatSimplePager spager;
 
 
@@ -195,39 +205,49 @@ public class QDMAppliedSelectionView implements
 		  mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		  SimplePanel simplePanel = new SimplePanel();
 		  simplePanel.setWidth("5px");
+//		  HorizontalPanel hp = new HorizontalPanel();
+//		  hp.getElement().setId("hp_HorizonalPanel");
+//		  profileSel.getElement().setId("ProfileSelection_ChkBox");
+//		  hp.add(profileSel);
+//		  vsacProfileListBox.setWidth("200px");
+//		  vsacProfileListBox.getElement().setId("VSACProfile_ListBox");
+//		  vsacProfileListBox.getElement().setTitle("VSAC Profile Selection List");
+//		  hp.add(simplePanel);
+//		  hp.add(vsacProfileListBox);
+//		  hp.add(simplePanel);
+//		  applyButton.setTitle("Apply the profile to all the QDM Element's");
+//		  applyButton.getElement().setId("applyToQDM_button");
+//		  hp.add(applyButton);
+//		  vsacProfileListBox.addItem("--Select--");
+//		  verticalPanel.setStylePrimaryName("qdmCellList");
 		  HorizontalPanel hp = new HorizontalPanel();
-		  hp.getElement().setId("hp_HorizonalPanel");
-		  profileSel.getElement().setId("ProfileSelection_ChkBox");
-		  hp.add(profileSel);
-		  vsacProfileListBox.setWidth("200px");
-		  vsacProfileListBox.getElement().setId("VSACProfile_ListBox");
-		  vsacProfileListBox.getElement().setTitle("VSAC Profile Selection List");
+		  hp.add(buildElementWithVSACValueSetWidget());
 		  hp.add(simplePanel);
-		  hp.add(vsacProfileListBox);
-		  hp.add(simplePanel);
-		  applyButton.setTitle("Apply the profile to all the QDM Element's");
-		  applyButton.getElement().setId("applyToQDM_button");
-		  hp.add(applyButton);
-		  vsacProfileListBox.addItem("--Select--");
-		  verticalPanel.setStylePrimaryName("qdmCellList");
+		  hp.add(buildElementWithVSACExpansionProfile());
 		  verticalPanel.add(new SpacerWidget());
-		  verticalPanel.add(inProgressMessageDisplay);
+//		  verticalPanel.add(inProgressMessageDisplay);
 		  verticalPanel.add(successMessagePanel);
 		  verticalPanel.add(errorMessagePanel);
 		  errorMessagePanel.getElement().setId(
 		    "errorMessagePanel_ErrorMessageDisplay");
 		  verticalPanel.add(new SpacerWidget());
-		  verticalPanel.add(updateButtonPanel);
+		 // verticalPanel.add(updateButtonPanel);
 		  verticalPanel.add(new SpacerWidget());
+		  //verticalPanel.add(hp);
+//		  verticalPanel.add(buildElementWithVSACExpansionProfile());
+//		  verticalPanel.add(new SpacerWidget());
+//		  verticalPanel.add(buildElementWithVSACValueSetWidget());
 		  verticalPanel.add(hp);
-		  verticalPanel.add(new SpacerWidget());
-		  verticalPanel.add(buildElementWithVSACValueSetWidget());
 		  verticalPanel.add(new SpacerWidget());
 		  updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		  updateVSACButton.getElement().setId("updateVsacButton_Button");
 		  verticalPanel.add(new SpacerWidget());
 		  verticalPanel.add(cellTablePanel);
 		  verticalPanel.add(new SpacerWidget());
+		  verticalPanel.add(updateVSACButton);
+		  verticalPanel.add(inProgressMessageDisplay);
+		  verticalPanel.add(updateVSACSuccessMessagePanel);
+		  verticalPanel.add(updateVSACErrorMessagePanel);
 		  mainPanel.add(verticalPanel);
 		  containerPanel.getElement().setAttribute("id",
 		    "subQDMAPPliedListContainerPanel");
@@ -236,6 +256,63 @@ public class QDMAppliedSelectionView implements
 		  MatContext.get().setVSACProfileView(this);
 		 }
 		
+
+	
+	/**
+	 * Builds the element with vsac expansion profile.
+	 *
+	 * @return the widget
+	 */
+	private Widget buildElementWithVSACExpansionProfile() {
+		  VerticalPanel mainPanel = new VerticalPanel();
+		  mainPanel.getElement().setId("mainPanel_VerticalPanel");
+		  mainPanel.setWidth("95%");
+		  mainPanel.add(buildVSAVExpProfilePanel());
+		  mainPanel.add(new SpacerWidget());
+		  mainPanel.add(new SpacerWidget());
+		  return mainPanel;
+		 }
+	
+	
+	
+
+	/**
+	 * Builds the vsav exp profile panel.
+	 *
+	 * @return the widget
+	 */
+	private Widget buildVSAVExpProfilePanel() {
+		  profileSel.getElement().setId("ProfileSelection_ChkBox");
+		  vsacProfileListBox.setWidth("200px");
+		  vsacProfileListBox.getElement().setId("VSACProfile_ListBox");
+		  vsacProfileListBox.getElement().setTitle("VSAC Profile Selection List");
+		  applyButton.setTitle("Apply the profile to all the QDM Element's");
+		  applyButton.getElement().setId("applyToQDM_button");
+		  vsacProfileListBox.addItem("--Select--");
+		  VerticalPanel searchPanel = new VerticalPanel();
+		  searchPanel.setWidth("450px");
+		  searchPanel.getElement().setId("searchPanel_VerticalPanel");
+		  searchPanel.setStyleName("valueSetSearchPanel");
+		  vsacProfileHeader.getElement().setId("searchHeader_Label");
+		  vsacProfileHeader.setStyleName("valueSetHeader");
+		  vsacProfileHeader.getElement().setAttribute("tabIndex", "0");
+		  vsacProfileHeader.getElement().setTitle("Search by OID and Name");
+		  searchPanel.add(vsacProfileHeader);
+		  searchPanel.add(new SpacerWidget());
+		  VerticalPanel vp = new VerticalPanel();
+		  vp.setHeight("60px");
+		  Grid queryGrid = new Grid(6, 1);
+		  queryGrid.setWidget(0, 0, profileSel);
+		  queryGrid.setWidget(1, 0, new SpacerWidget());
+		  queryGrid.setWidget(2, 0, vsacProfileListBox);
+		  queryGrid.setWidget(3, 0, new SpacerWidget());
+		  queryGrid.setWidget(4, 0, applyButton);
+		  queryGrid.setWidget(5, 0, vp);
+		  queryGrid.setStyleName("secondLabel");
+		  searchPanel.add(queryGrid);
+		return searchPanel;
+	}
+
 
 
 	/**
@@ -297,13 +374,13 @@ public class QDMAppliedSelectionView implements
 		  dataTypeListBox.getElement().setTitle("DataType Selection List");
 		  
 		  cancelButton.setEnabled(!checkForEnable());
-		  cancelButton.setTitle("Add New");
+		  cancelButton.setTitle("Cancel");
 		  cancelButton.getElement().setId("modify_Button");
 		  buttonLayout.add(saveButton);
 		  buttonLayout.add(cancelButton);
 		  saveButton.getElement().setId("saveButton_Button");
 		  saveButton.getElement().setAttribute("tabIndex", "0");
-		  saveButton.setTitle("Save to QDM Elements");
+		  saveButton.setTitle("Apply to QDM Elements");
 		  retrieveButton.getElement().setId("retrieveButton_Button");
 		  retrieveButton.getElement().setAttribute("tabIndex", "0");
 		  retrieveButton.setTitle("Search");
@@ -601,6 +678,11 @@ public class QDMAppliedSelectionView implements
 	 * @see
 	 * mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#asWidget()
 	 */
+	/**
+	 * As widget.
+	 *
+	 * @return the widget
+	 */
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
@@ -612,6 +694,11 @@ public class QDMAppliedSelectionView implements
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
 	 * getVSACProfileInput()
 	 */
+	/**
+	 * Gets the VSAC profile input.
+	 *
+	 * @return the VSAC profile input
+	 */
 	@Override
 	public HasValueChangeHandlers<Boolean> getVSACProfileInput() {
 		return profileSel;
@@ -620,6 +707,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSpecificOccChkBox()
 	 */
+	/**
+	 * Gets the specific occ chk box.
+	 *
+	 * @return the specific occ chk box
+	 */
 	@Override
 	public CustomCheckBox getSpecificOccChkBox(){
 		return specificOcurChkBox;
@@ -627,6 +719,12 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypeText(mat.client.shared.ListBoxMVP)
+	 */
+	/**
+	 * Gets the data type text.
+	 *
+	 * @param inputListBox the input list box
+	 * @return the data type text
 	 */
 	@Override
 	public String getDataTypeText(ListBoxMVP inputListBox) {
@@ -640,6 +738,12 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypeValue(mat.client.shared.ListBoxMVP)
 	 */
+	/**
+	 * Gets the data type value.
+	 *
+	 * @param inputListBox the input list box
+	 * @return the data type value
+	 */
 	@Override
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
@@ -652,6 +756,12 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getVersionValue(mat.client.shared.ListBoxMVP)
 	 */
+	/**
+	 * Gets the version value.
+	 *
+	 * @param inputListBox the input list box
+	 * @return the version value
+	 */
 	@Override
 	public String getVersionValue(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
@@ -663,6 +773,12 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getExpansionProfileValue(mat.client.shared.ListBoxMVP)
+	 */
+	/**
+	 * Gets the expansion profile value.
+	 *
+	 * @param inputListBox the input list box
+	 * @return the expansion profile value
 	 */
 	@Override
 	public String getExpansionProfileValue(ListBoxMVP inputListBox) {
@@ -679,6 +795,11 @@ public class QDMAppliedSelectionView implements
 	 * 
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
 	 * getVSACProfileListBox()
+	 */
+	/**
+	 * Gets the VSAC expansion profile list box.
+	 *
+	 * @return the VSAC expansion profile list box
 	 */
 	@Override
 	public ListBoxMVP getVSACExpansionProfileListBox() {
@@ -702,6 +823,11 @@ public class QDMAppliedSelectionView implements
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
 	 * getErrorMessageDisplay()
 	 */
+	/**
+	 * Gets the error message display.
+	 *
+	 * @return the error message display
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessagePanel;
@@ -712,6 +838,9 @@ public class QDMAppliedSelectionView implements
 	 * 
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
 	 * setVSACProfileListBox()
+	 */
+	/**
+	 * Sets the vsac expansion profile list box.
 	 */
 	@Override
 	public void setVSACExpansionProfileListBox() {
@@ -726,6 +855,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVSACProfileListBoxOptions(java.util.List)
+	 */
+	/**
+	 * Sets the VSAC profile list box.
+	 *
+	 * @param texts the new VSAC profile list box
 	 */
 	@Override
 	public void setVSACProfileListBox(List<? extends HasListBox> texts){
@@ -763,6 +897,11 @@ public class QDMAppliedSelectionView implements
 
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVSACVersionListBoxOptions(java.util.List)
+	 */
+	/**
+	 * Sets the VSAC version list box options.
+	 *
+	 * @param texts the new VSAC version list box options
 	 */
 	@Override
 	public void setVSACVersionListBoxOptions(List<? extends HasListBox> texts){
@@ -803,6 +942,9 @@ public class QDMAppliedSelectionView implements
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
 	 * resetVSACValueSetWidget()
 	 */
+	/**
+	 * Reset vsac value set widget.
+	 */
 	@Override
 	public void resetVSACValueSetWidget() {
 		profileSel.setValue(false);
@@ -826,6 +968,11 @@ public class QDMAppliedSelectionView implements
 	 * com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event
 	 * .shared.GwtEvent)
 	 */
+	/**
+	 * Fire event.
+	 *
+	 * @param event the event
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
@@ -837,6 +984,12 @@ public class QDMAppliedSelectionView implements
 	 * @see
 	 * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
 	 * (com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
+	/**
+	 * Adds the selection handler.
+	 *
+	 * @param handler the handler
+	 * @return the handler registration
 	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(
@@ -859,6 +1012,11 @@ public class QDMAppliedSelectionView implements
 	 * @see
 	 * mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setObserver
 	 * (mat.client.clause.VSACProfileSelectionView.Observer)
+	 */
+	/**
+	 * Sets the observer.
+	 *
+	 * @param observer the new observer
 	 */
 	@Override
 	public void setObserver(Observer observer) {
@@ -1111,6 +1269,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getAddNewQDMButton()
 	 */
+	/**
+	 * Gets the cancel qdm button.
+	 *
+	 * @return the cancel qdm button
+	 */
 	@Override
 	public Button getCancelQDMButton() {
 		return cancelButton;
@@ -1118,6 +1281,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getApplyButton()
+	 */
+	/**
+	 * Gets the apply button.
+	 *
+	 * @return the apply button
 	 */
 	@Override
 	public Button getApplyButton(){
@@ -1127,6 +1295,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getRetrieveFromVSACButton()
 	 */
+	/**
+	 * Gets the retrieve from vsac button.
+	 *
+	 * @return the retrieve from vsac button
+	 */
 	@Override
 	public Button getRetrieveFromVSACButton(){
 		return retrieveButton;
@@ -1135,6 +1308,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSaveButton()
 	 */
+	/**
+	 * Gets the save button.
+	 *
+	 * @return the save button
+	 */
 	@Override
 	public Button getSaveButton(){
 		return saveButton;
@@ -1142,6 +1320,11 @@ public class QDMAppliedSelectionView implements
 
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getUpdateFromVSACButton()
+	 */
+	/**
+	 * Gets the update from vsac button.
+	 *
+	 * @return the update from vsac button
 	 */
 	@Override 
 	public Button getUpdateFromVSACButton(){
@@ -1159,6 +1342,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setProfileList(java.util.List)
 	 */
+	/**
+	 * Sets the profile list.
+	 *
+	 * @param profileList the new profile list
+	 */
 	@Override
 	public void setProfileList(List<String> profileList) {
 		this.profileList = profileList;
@@ -1168,6 +1356,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSelectedElementToRemove()
 	 */
+	/**
+	 * Gets the selected element to remove.
+	 *
+	 * @return the selected element to remove
+	 */
 	@Override
 	public QualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
@@ -1175,6 +1368,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypesListBox()
+	 */
+	/**
+	 * Gets the data types list box.
+	 *
+	 * @return the data types list box
 	 */
 	@Override
 	public ListBoxMVP getDataTypesListBox() {
@@ -1184,6 +1382,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getVersionListBox()
 	 */
+	/**
+	 * Gets the version list box.
+	 *
+	 * @return the version list box
+	 */
 	@Override
 	public ListBoxMVP getVersionListBox() {
 		return versionListBox;
@@ -1191,6 +1394,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getExpansionProfileListBox()
+	 */
+	/**
+	 * Gets the VSAC profile list box.
+	 *
+	 * @return the VSAC profile list box
 	 */
 	@Override
 	public ListBoxMVP getVSACProfileListBox() {
@@ -1200,6 +1408,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getOIDInput()
 	 */
+	/**
+	 * Gets the OID input.
+	 *
+	 * @return the OID input
+	 */
 	@Override
 	public MatTextBox getOIDInput() {
 		return oidInput;
@@ -1208,6 +1421,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getUserDefinedInput()
 	 */
+	/**
+	 * Gets the user defined input.
+	 *
+	 * @return the user defined input
+	 */
 	@Override
 	public MatTextBox getUserDefinedInput() {
 		return nameInput;
@@ -1215,6 +1433,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setDataTypesListBoxOptions(java.util.List)
+	 */
+	/**
+	 * Sets the data types list box options.
+	 *
+	 * @param texts the new data types list box options
 	 */
 	@Override
 	public void setDataTypesListBoxOptions(List<? extends HasListBox> texts) {
@@ -1270,6 +1493,11 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getInProgressMessageDisplay()
 	 */
+	/**
+	 * Gets the in progress message display.
+	 *
+	 * @return the in progress message display
+	 */
 	@Override
 	public InProgressMessageDisplay getInProgressMessageDisplay() {
 		return inProgressMessageDisplay;
@@ -1277,6 +1505,11 @@ public class QDMAppliedSelectionView implements
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSearchHeader()
+	 */
+	/**
+	 * Gets the search header.
+	 *
+	 * @return the search header
 	 */
 	@Override
 	public Label getSearchHeader() {
@@ -1286,28 +1519,73 @@ public class QDMAppliedSelectionView implements
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSuccessMessageDisplay()
 	 */
+	/**
+	 * Gets the success message display.
+	 *
+	 * @return the success message display
+	 */
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessagePanel;
 	}
 	
+	/**
+	 * Gets the list data provider.
+	 *
+	 * @return the list data provider
+	 */
 	@Override
 	public ListDataProvider<QualityDataSetDTO> getListDataProvider(){
 		return listDataProvider;
 	}
 	
+	/**
+	 * Gets the simple pager.
+	 *
+	 * @return the simple pager
+	 */
 	@Override
 	public MatSimplePager getSimplePager(){
 		return spager;
 	}
 	
+	/**
+	 * Gets the celltable.
+	 *
+	 * @return the celltable
+	 */
 	@Override
 	public CellTable<QualityDataSetDTO> getCelltable(){
 		return table;
 	}
 	
+	/**
+	 * Gets the pager.
+	 *
+	 * @return the pager
+	 */
 	@Override
 	public MatSimplePager getPager(){
 		return spager;
+	}
+	
+	/**
+	 * Gets the update vsac error message panel.
+	 *
+	 * @return the update vsac error message panel
+	 */
+	@Override
+	public ErrorMessageDisplay getUpdateVSACErrorMessagePanel() {
+		return updateVSACErrorMessagePanel;
+	}
+	
+	/**
+	 * Gets the update vsac success message panel.
+	 *
+	 * @return the update vsac success message panel
+	 */
+	@Override
+	public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
+		return updateVSACSuccessMessagePanel;
 	}
 }

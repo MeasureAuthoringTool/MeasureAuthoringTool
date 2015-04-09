@@ -817,7 +817,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				resetQDSMsgPanel();
 				isModified = true;
 				modifyValueSetDTO = result;
-				searchDisplay.getSearchHeader().setText("Modify Applied QDM ( "+result.getCodeListName()
+				String displayName = null;
+				if ((result.getOccurrenceText() != null)
+						&& !result.getOccurrenceText().equals("")) {
+					displayName = result.getOccurrenceText() + " of "
+							+ result.getCodeListName();
+				} else {
+					displayName = result.getCodeListName();
+				}
+
+				searchDisplay.getSearchHeader().setText("Modify Applied QDM ( "+displayName
 						+" : "+result.getDataType()+" )");
 				
 				if(result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){

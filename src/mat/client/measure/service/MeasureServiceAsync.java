@@ -67,7 +67,7 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
-			String measureID, AsyncCallback<Void> callback);
+			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
 	
 	/**
 	 * Delete measure notes.

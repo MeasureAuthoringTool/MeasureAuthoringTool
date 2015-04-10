@@ -72,7 +72,7 @@ public interface MeasureLibraryService {
 	 *            the measure id
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
-			String measureID);
+			String measureID, String expProfileToAllQDM);
 	
 	/**
 	 * Delete measure notes.

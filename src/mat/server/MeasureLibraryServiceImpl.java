@@ -740,11 +740,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#createAndSaveElementLookUp(java.util.ArrayList, java.lang.String)
 	 */
 	@Override
-	public final void createAndSaveElementLookUp(final List<QualityDataSetDTO> list, final String measureID) {
+	public final void createAndSaveElementLookUp(final List<QualityDataSetDTO> list, final String measureID, 
+			String expProfileToAllQDM) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(list);
+		if(expProfileToAllQDM!=null && !expProfileToAllQDM.isEmpty()){
+			wrapper.setVsacProfile(expProfileToAllQDM);	
+			}
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
-		int startIndex = stream.toString().indexOf("<elementLookUp>", 0);
+		int startIndex = stream.toString().indexOf("<elementLookUp", 0);
 		int lastIndex = stream.toString().indexOf("</measure>", startIndex);
 		String xmlString = stream.toString().substring(startIndex, lastIndex);
 		String nodeName = "elementLookUp";

@@ -466,7 +466,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void deleteAndSaveMeasureXML(final List<QualityDataSetDTO> list , final int indexOf) {
 		service.createAndSaveElementLookUp(list, MatContext.get()
-				.getCurrentMeasureId(), new AsyncCallback<Void>() {
+				.getCurrentMeasureId(), expProfileToAllQDM, new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -1432,6 +1432,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				matValueSetTransferObject.setExpansionProfile(false);
 				currentMatValueSet.setVersion(searchDisplay.getVersionListBox().getValue());
 			}
+		}
+		
+		if(!expProfileToAllQDM.isEmpty()){
+			currentMatValueSet.setExpansionProfile(expProfileToAllQDM);
+			currentMatValueSet.setVersion("1.0");
+			matValueSetTransferObject.setExpansionProfile(true);
+			matValueSetTransferObject.setVersionDate(false);
 		}
 		MatContext.get().getCodeListService().updateCodeListToMeasure(matValueSetTransferObject,
 				new AsyncCallback<SaveUpdateCodeListResult>() {

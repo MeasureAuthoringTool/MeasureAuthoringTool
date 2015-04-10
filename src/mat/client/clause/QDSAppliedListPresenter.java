@@ -360,7 +360,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 */
 	private void saveMeasureXML(final List<QualityDataSetDTO> list) {
 		service.createAndSaveElementLookUp(list, MatContext.get()
-				.getCurrentMeasureId(), new AsyncCallback<Void>() {
+				.getCurrentMeasureId(), null, new AsyncCallback<Void>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {

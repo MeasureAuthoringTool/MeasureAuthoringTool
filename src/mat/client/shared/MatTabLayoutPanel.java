@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -341,20 +338,20 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0) {
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
-				int clauseWorkspaceTab = 3;
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2) {
+				int clauseWorkspaceTab = 2;
 				ClauseWorkSpacePresenter clauseWorkspacePresenter = (ClauseWorkSpacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter, selectedIndex);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
-				int populationWorkspaceTab = 4;
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
+				int populationWorkspaceTab = 3;
 				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
-			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 5) {
-				int measurePackagerTab = 5;
-				MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) 
+			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
+				int measurePackagerTab = 4;
+				MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(measurePackagerTab);
 				validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
 			}
@@ -363,7 +360,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter) previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-		} else if ((selectedIndex == 4) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
+		} else if ((selectedIndex == 3) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
 			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 		} else if (previousPresenter instanceof XmlTreePresenter) {
@@ -395,15 +392,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if (metaDataPresenter.isSubView()) {
 				metaDataPresenter.backToDetail();
 				metaDataPresenter.getMetaDataDisplay().setSaveButtonEnabled(
-						MatContext.get().getMeasureLockService().checkForEditPermission());	
+						MatContext.get().getMeasureLockService().checkForEditPermission());
 				metaDataPresenter.getComponentMeasures();
 				metaDataPresenter.setStewardAndMeasureDevelopers();
-				}
+			}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
 			handleClickEventsOnUnsavedErrorMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay()
 					.getSaveErrorMsg().getButtons(), metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg(), null);
-		} else {		
+		} else {
 			isUnsavedData = false;
 		}
 	}
@@ -414,7 +411,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 * @param selectedIndex the selected index
 	 * @param measurePackagerPresenter the measure packager presenter
 	 */
-	private void validateNewMeasurePackageTab(int selectedIndex, 
+	private void validateNewMeasurePackageTab(int selectedIndex,
 			MeasurePackagePresenter measurePackagerPresenter) {
 		if (!isMeasurePackageDetailsSame(measurePackagerPresenter)) {
 			saveErrorMessage = measurePackagerPresenter.getView().getSaveErrorMessageDisplay();
@@ -423,7 +420,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			//saveButton = (PrimaryButton)measurePackagerPresenter.getView().getAddQDMElementsToMeasureButton();
 			showErrorMessage(measurePackagerPresenter.getView().getSaveErrorMessageDisplay());
 			measurePackagerPresenter.getView().getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
-			handleClickEventsOnUnsavedErrorMsg(selectedIndex, measurePackagerPresenter.getView().getSaveErrorMessageDisplay().getButtons(), 
+			handleClickEventsOnUnsavedErrorMsg(selectedIndex, measurePackagerPresenter.getView().getSaveErrorMessageDisplay().getButtons(),
 					measurePackagerPresenter.getView().getSaveErrorMessageDisplay(), null);
 		} else {
 			isUnsavedData = false;
@@ -444,7 +441,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			return;
 		}
 		xmlTreePresenter.getXmlTreeDisplay().clearMessages();
-		if (xmlTreePresenter.getXmlTreeDisplay().isDirty() 
+		if (xmlTreePresenter.getXmlTreeDisplay().isDirty()
 				|| xmlTreePresenter.getXmlTreeDisplay().isQdmVariableDirty()) {
 			isUnsavedData = true;
 			saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
@@ -536,7 +533,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		metaDataPresenter.updateModelDetailsFromView(pageData, metaDataPresenter.getMetaDataDisplay());
 		ManageMeasureDetailModel dbData = metaDataPresenter.getCurrentMeasureDetail();
 		if (dbData.isDeleted() || !dbData.isEditable()) {
-			//dont show dirty check message when measure is deleted.			
+			//dont show dirty check message when measure is deleted.
 			return true;
 		} else {
 			pageData.setToCompareAuthor(pageData.getAuthorSelectedList());
@@ -546,7 +543,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());
 			dbData.setToCompareMeasure(metaDataPresenter.getDbMeasureTypeList());
 			dbData.setToCompareItemCount(metaDataPresenter.getDbQDMSelectedList());
-			dbData.setToCompareComponentMeasures(metaDataPresenter.getDbComponentMeasuresSelectedList());		
+			dbData.setToCompareComponentMeasures(metaDataPresenter.getDbComponentMeasuresSelectedList());
 			return pageData.equals(dbData);
 		}
 	}

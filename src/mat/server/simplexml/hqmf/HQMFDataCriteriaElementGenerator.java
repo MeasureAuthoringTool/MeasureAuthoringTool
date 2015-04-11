@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -314,7 +317,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				nodeToUse.getAttributes().removeNamedItem("instance");
 				forceGenerate = false;
 			}
-			
+									
 			generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, nodeToUse, forceGenerate);
 			occurrenceMap.put(datatype+"-"+oid, nodeToUse);
 		}
@@ -369,9 +372,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor simpleXmlprocessor, Node qdmNode, boolean forceGenerate)
 					throws XPathExpressionException {
 		String qdmUUID = qdmNode.getAttributes().getNamedItem(UUID).getNodeValue();
-		String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-		
-		
+				
 		String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 		NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
 		if(forceGenerate || (elementRefList.getLength() > 0)){
@@ -602,7 +603,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param attributeQDMNode the attribute qdm node
-	 * @return the string
+	 * @return void
 	 */
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
@@ -737,7 +738,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String occurString = dataType + "-" + qdmOidValue;
 		
 		if(qdmNode.getAttributes().getNamedItem("instance") != null){
-			generateOutboundForOccur(templateNode, qdmNode, dataCriteriaElem, occurString);
+			generateOutboundForOccur(templateNode, qdmNode, dataCriteriaElem, occurString, dataCriteriaXMLProcessor, simpleXmlprocessor);
 			entryCommentText = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + " " + entryCommentText;
 			appendEntryElem = true;
 		}else if(!occurrenceMap.containsKey(occurString) || (attributeQDMNode != null)){
@@ -847,40 +848,59 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param occurString the occur string
 	 */
 	private void generateOutboundForOccur(Node templateNode, Node qdmNode,
-			Element dataCriteriaElem, String occurString) {
+			Element dataCriteriaElem, String occurString,XmlProcessor dataCriteriaXMLProcessor, XmlProcessor
+			simpleXmlprocessor) {
 		Node refNode = occurrenceMap.get(occurString);
 		
 		logger.info("In generateOutboundForOccur()..refNode:"+refNode);
 		logger.info("----------Occurance map:"+occurrenceMap);
 		
 		if(refNode != null){
-			String refRootValue = refNode.getAttributes().getNamedItem(ID).getNodeValue();
 			
-			String instance = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
-			String refDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			String refQdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-			String reExt = StringUtils.deleteWhitespace(refQdmName + "_" + refDatatype);
+			try {
+				Node cloneRefNode = refNode.cloneNode(true);
+				String name = cloneRefNode.getAttributes().getNamedItem("name").getNodeValue();
+				String occName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
+				cloneRefNode.getAttributes().getNamedItem("name").setNodeValue(occName+"_"+name);
+				
+				if(!this.occurrenceMap.containsKey(occName+occurString)){
+					this.occurrenceMap.remove(occurString);
+					generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, cloneRefNode, true);
+					this.occurrenceMap.put(occurString, refNode);
+					this.occurrenceMap.put(occName+occurString,cloneRefNode);
+				}
 			
-			Element outboundRelElem = dataCriteriaElem.getOwnerDocument().createElement("outboundRelationship");
-			outboundRelElem.setAttribute("typeCode", "OCCR");
-			
-			Element criteriaRefElem = dataCriteriaElem.getOwnerDocument().createElement("criteriaReference");
-			String refClassCodeValue = templateNode.getAttributes().getNamedItem(CLASS)
-					.getNodeValue();
-			String refMoodValue = templateNode.getAttributes().getNamedItem(MOOD)
-					.getNodeValue();
-			criteriaRefElem.setAttribute(CLASS_CODE, refClassCodeValue);
-			criteriaRefElem.setAttribute(MOOD_CODE, refMoodValue);
-			
-			Element idRelElem = dataCriteriaElem.getOwnerDocument().createElement(ID);
-			idRelElem.setAttribute(ROOT, refRootValue);
-			idRelElem.setAttribute("extension", reExt);
-			
-			criteriaRefElem.appendChild(idRelElem);
-			outboundRelElem.appendChild(criteriaRefElem);
-			dataCriteriaElem.appendChild(outboundRelElem);
-			Node templateIdNode = dataCriteriaElem.getElementsByTagName("templateId").item(0);
-			dataCriteriaElem.removeChild(templateIdNode);
+				String refRootValue = cloneRefNode.getAttributes().getNamedItem(ID).getNodeValue();
+				
+				String refDatatype = cloneRefNode.getAttributes().getNamedItem("datatype").getNodeValue();
+				String refQdmName = cloneRefNode.getAttributes().getNamedItem("name").getNodeValue();
+				String reExt = StringUtils.deleteWhitespace(refQdmName + "_" + refDatatype);
+				
+				Element outboundRelElem = dataCriteriaElem.getOwnerDocument().createElement("outboundRelationship");
+				outboundRelElem.setAttribute("typeCode", "OCCR");
+				
+				Element criteriaRefElem = dataCriteriaElem.getOwnerDocument().createElement("criteriaReference");
+				String refClassCodeValue = templateNode.getAttributes().getNamedItem(CLASS)
+						.getNodeValue();
+				String refMoodValue = templateNode.getAttributes().getNamedItem(MOOD)
+						.getNodeValue();
+				criteriaRefElem.setAttribute(CLASS_CODE, refClassCodeValue);
+				criteriaRefElem.setAttribute(MOOD_CODE, refMoodValue);
+				
+				Element idRelElem = dataCriteriaElem.getOwnerDocument().createElement(ID);
+				idRelElem.setAttribute(ROOT, refRootValue);
+				idRelElem.setAttribute("extension", reExt);
+				
+				criteriaRefElem.appendChild(idRelElem);
+				outboundRelElem.appendChild(criteriaRefElem);
+				dataCriteriaElem.appendChild(outboundRelElem);
+				Node templateIdNode = dataCriteriaElem.getElementsByTagName("templateId").item(0);
+				dataCriteriaElem.removeChild(templateIdNode);
+			}
+			catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1911,8 +1931,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
 					.getNodeValue();
-			String version = attributeQDMNode.getAttributes().getNamedItem("version")
-					.getNodeValue();
+//			String version = attributeQDMNode.getAttributes().getNamedItem("version")
+//					.getNodeValue();
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			valueElem.setAttribute("valueSet", qdmOidValue);
@@ -2244,7 +2264,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		//		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
-	
+		
 	private void prepForUUID(MeasureExport me) {
 		
 		String xPathForFunctionalOp = "/measure/subTreeLookUp//functionalOp";

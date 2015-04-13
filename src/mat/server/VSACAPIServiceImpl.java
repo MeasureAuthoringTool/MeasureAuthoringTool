@@ -79,7 +79,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		  }
 		  server = System.getProperty("SERVER_TICKET_URL");
 		  service = System.getProperty("SERVICE_URL");
-		  retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL");
+		  retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL_NEW");
 		  profileService = System.getProperty("PROFILE_SERVICE");
 		  versionService = System.getProperty("VERSION_SERVICE");
 		  vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);

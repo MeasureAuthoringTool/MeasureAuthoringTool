@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -317,7 +314,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				nodeToUse.getAttributes().removeNamedItem("instance");
 				forceGenerate = false;
 			}
-									
+			
 			generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, nodeToUse, forceGenerate);
 			occurrenceMap.put(datatype+"-"+oid, nodeToUse);
 		}
@@ -372,7 +369,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor simpleXmlprocessor, Node qdmNode, boolean forceGenerate)
 					throws XPathExpressionException {
 		String qdmUUID = qdmNode.getAttributes().getNamedItem(UUID).getNodeValue();
-				
+		
 		String xPathForIndividualElementRefs = "/measure/subTreeLookUp//elementRef[@id='"+qdmUUID+"'][not(attribute)]";
 		NodeList elementRefList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForIndividualElementRefs);
 		if(forceGenerate || (elementRefList.getLength() > 0)){
@@ -822,21 +819,22 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		 * This is to be commented until we start getting value set versions from
 		 * VSAC.
 		 */
-		/*String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
-		if("1.0".equals(valueSetVersion)) {
-			if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
-				valueSetVersion = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+		if ("1.0".equals(valueSetVersion)) {
+			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
+				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
+			valueSetVersion = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 			addVersionToValueTag = true;
 		}
-		if(addVersionToValueTag) {
+		if (addVersionToValueTag) {
 			valueElem.setAttribute("valueSetVersion", valueSetVersion);
-		}*/
+		}
 	}
 	
 	/**
@@ -863,13 +861,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				String occName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
 				cloneRefNode.getAttributes().getNamedItem("name").setNodeValue(occName+"_"+name);
 				
-				if(!this.occurrenceMap.containsKey(occName+occurString)){
-					this.occurrenceMap.remove(occurString);
+				if(!occurrenceMap.containsKey(occName+occurString)){
+					occurrenceMap.remove(occurString);
 					generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, cloneRefNode, true);
-					this.occurrenceMap.put(occurString, refNode);
-					this.occurrenceMap.put(occName+occurString,cloneRefNode);
+					occurrenceMap.put(occurString, refNode);
+					occurrenceMap.put(occName+occurString,cloneRefNode);
 				}
-			
+				
 				String refRootValue = cloneRefNode.getAttributes().getNamedItem(ID).getNodeValue();
 				
 				String refDatatype = cloneRefNode.getAttributes().getNamedItem("datatype").getNodeValue();
@@ -1001,15 +999,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
 		boolean addVersionToValueTag = false;
-		if("1.0".equals(version)) {
-			if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
-				version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+		if ("1.0".equals(version)) {
+			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
+				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
 			addVersionToValueTag = true;
+			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version")
+					.getNodeValue();
 		}
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
@@ -1032,8 +1032,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					if(addVersionToValueTag){
 						Attr attrNode = attributedToBeChangedInNode.getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(version);
-						//commented the line below until we start getting value set version from VSAC.
-						//attributedToBeChangedInNode.getAttributes().setNamedItem(attrNode);
+						attributedToBeChangedInNode.getAttributes().setNamedItem(attrNode);
 					}
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
@@ -1245,14 +1244,14 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ attrName.toLowerCase() + "']");
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
 		Element targetQuantityTag = null;
-		if(targetNode!=null){
+		if (targetNode!=null) {
 			targetQuantityTag = dataCriteriaElem.getOwnerDocument().createElement(targetNode.getNodeValue());
 		}
 		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
-		if(CHECK_IF_PRESENT.equals(attrMode)){
+		if (CHECK_IF_PRESENT.equals(attrMode)) {
 			targetQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-		}  else if(VALUE_SET.equals(attrMode)){
-			if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
+		}  else if (VALUE_SET.equals(attrMode)) {
+			if (attrName.equalsIgnoreCase(LENGTH_OF_STAY)) {
 				isLengthOfStayValueSet = true;
 			} else {
 				targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
@@ -1260,19 +1259,20 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 				String version = attrVersion.getNodeValue();
 				boolean addVersionToValueTag = false;
-				if("1.0".equals(version)) {
-					if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
-						version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+				if ("1.0".equals(version)) {
+					if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
+						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile")
+								.getNodeValue();
 						addVersionToValueTag = true;
 					} else {
 						addVersionToValueTag = false;
 					}
 				} else {
 					addVersionToValueTag = true;
+					version = "vsac:version:" + attrVersion.getNodeValue();
 				}
-				if(addVersionToValueTag) {
-					//commented this line until we start getting value set version from VSAC.
-					//translationNode.setAttribute("valueSetVersion", version);
+				if (addVersionToValueTag) {
+					translationNode.setAttribute("valueSetVersion", version);
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
@@ -1931,8 +1931,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
 					.getNodeValue();
-//			String version = attributeQDMNode.getAttributes().getNamedItem("version")
-//					.getNodeValue();
+			//			String version = attributeQDMNode.getAttributes().getNamedItem("version")
+			//					.getNodeValue();
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			valueElem.setAttribute("valueSet", qdmOidValue);
@@ -2264,7 +2264,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		//		System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(), true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
-		
+	
 	private void prepForUUID(MeasureExport me) {
 		
 		String xPathForFunctionalOp = "/measure/subTreeLookUp//functionalOp";

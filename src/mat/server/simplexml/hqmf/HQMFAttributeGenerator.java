@@ -116,19 +116,20 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 				String version = attrVersion.getNodeValue();
 				boolean addVersionToValueTag = false;
-				if("1.0".equals(version)) {
-					if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
-						version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+				if ("1.0".equals(version)) {
+					if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
+						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile")
+								.getNodeValue();
 						addVersionToValueTag = true;
 					} else {
 						addVersionToValueTag = false;
 					}
 				} else {
 					addVersionToValueTag = true;
+					version = "vsac:version:" + attrVersion.getNodeValue();
 				}
-				if(addVersionToValueTag) {
-					//commented this line until we start getting value set version from VSAC.
-					//translationNode.setAttribute("valueSetVersion", version);
+				if (addVersionToValueTag) {
+					translationNode.setAttribute("valueSetVersion", version);
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
@@ -1100,15 +1101,18 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
 		boolean addVersionToValueTag = false;
-		if("1.0".equals(version)) {
-			if(qdmNode.getAttributes().getNamedItem("effectiveDate") !=null){
-				version = qdmNode.getAttributes().getNamedItem("effectiveDate").getNodeValue();
+		if ("1.0".equals(version)) {
+			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
+				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").
+						getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
 			addVersionToValueTag = true;
+			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version")
+					.getNodeValue();
 		}
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();

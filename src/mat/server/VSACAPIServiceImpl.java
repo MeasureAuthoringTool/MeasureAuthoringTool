@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
@@ -23,7 +22,6 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,17 +71,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 * Instantiates a new VSACAPI service impl.
 	 */
 	public VSACAPIServiceImpl(){
-		  PROXY_HOST = System.getProperty("vsac_proxy_host");
-		  if(PROXY_HOST !=null) {
-		   PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
-		  }
-		  server = System.getProperty("SERVER_TICKET_URL");
-		  service = System.getProperty("SERVICE_URL");
-		  retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL_NEW");
-		  profileService = System.getProperty("PROFILE_SERVICE");
-		  versionService = System.getProperty("VERSION_SERVICE");
-		  vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
-		 }
+		PROXY_HOST = System.getProperty("vsac_proxy_host");
+		if(PROXY_HOST !=null) {
+			PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+		}
+		server = System.getProperty("SERVER_TICKET_URL");
+		service = System.getProperty("SERVICE_URL");
+		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL_NEW");
+		profileService = System.getProperty("PROFILE_SERVICE");
+		versionService = System.getProperty("VERSION_SERVICE");
+		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
+	}
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
@@ -161,7 +159,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		return profileDetails;
 	}
 	
-	private VSACVersionWrapper convertXmlToVersionList(final String xmlPayLoad){
+	/**
+	 * Caster conversion for Version list.
+	 * @param xmlPayLoad - String
+	 * @return VSACVersionWrapper
+	 */
+	private VSACVersionWrapper convertXmlToVersionList(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmlToVersionList");
 		VSACVersionWrapper versionDetails = null;
 		String xml = xmlPayLoad;
@@ -268,7 +271,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 *            - MatValueSet.
 	 */
 	private void handleVSACGroupedValueSet(final String eightHourTicket, final MatValueSet valueSet) {
-		if (!valueSet.isGrouping()) { 
+		if (!valueSet.isGrouping()) {
 			return;
 		}
 		valueSet.setGroupedValueSet(new ArrayList<MatValueSet>());
@@ -290,7 +293,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					VSACResponseResult vsacResponseResult = vGroovyClient.
 							getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim(),fiveMinServiceTicket);
 					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
-					valueSet.getGroupedValueSet().add(wrapperGrouped.getValueSetList().get(0));
+					MatValueSet valueSetGrouping = wrapperGrouped.getValueSetList().get(0);
+					valueSetGrouping.setVersion("Draft"); // Grouping members should not show version value in value set sheet.
+					valueSet.getGroupedValueSet().add(valueSetGrouping);
 				}
 			}
 		}
@@ -345,10 +350,10 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		if (isAlreadySignedIn()) {
 			String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 			//ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
-				//	getAppliedQDMFromMeasureXml(measureId, false);
+			//	getAppliedQDMFromMeasureXml(measureId, false);
 			QualityDataModelWrapper details = getMeasureLibraryService().
-					               getAppliedQDMFromMeasureXml(measureId, false);
-		    List<QualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
+					getAppliedQDMFromMeasureXml(measureId, false);
+			List<QualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
 			ArrayList<MatValueSet> matValueSetList = new ArrayList<MatValueSet>();
 			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
 					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
@@ -369,18 +374,18 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					}
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
-						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					// Only Update Measure XML for those which have version as 1.0 or 1.
+						|| ("1".equalsIgnoreCase(qualityDataSetDTO.getVersion()))) {
+					// Only Update Measure XML for those which have version as 1.0 or 1 and no expansionProfile.
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-						if(qualityDataSetDTO.getExpansionProfile()!=null){
-							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(), 
+						if (qualityDataSetDTO.getExpansionProfile() != null) {
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
 									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
 						} else {
-						    vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-								qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+									qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
 						}
 					} catch (Exception ex) {
 						LOGGER.info("Value Set reterival failed at VSAC for OID :"
@@ -416,6 +421,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 							if (matValueSet != null) {
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
 								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
+								matValueSet.setVersion("Draft"); // If expansion Profile is used or most recent search is done , version should not show up in value set sheet.
+								if (qualityDataSetDTO.getExpansionProfile() != null) {
+									matValueSet.setExpansionProfile(qualityDataSetDTO.
+											getExpansionProfile());
+								}
 								if (matValueSet.isGrouping()) {
 									qualityDataSetDTO.setTaxonomy(ConstantMessages.
 											GROUPING_CODE_SYSTEM);
@@ -442,18 +452,20 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					VSACResponseResult responseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-						responseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion( qualityDataSetDTO.getOid(),
-								qualityDataSetDTO.getVersion(),fiveMinuteServiceTicket);
+						responseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(qualityDataSetDTO.getOid(),
+								qualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
 					} catch (Exception ex) {
 						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
 								+ " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
 					if (responseResult.getXmlPayLoad() != null) {
-						if ((responseResult.getXmlPayLoad() != null) && StringUtils.isNotEmpty(responseResult.getXmlPayLoad())) {
+						if ((responseResult.getXmlPayLoad() != null)
+								&& StringUtils.isNotEmpty(responseResult.getXmlPayLoad())) {
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(responseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
+								matValueSet.setVersion(qualityDataSetDTO.getVersion());
 								handleVSACGroupedValueSet(eightHourTicket, matValueSet);
 								if (matValueSet.isGrouping()
 										&& (matValueSet.getGroupedValueSet().size() != 0)) {
@@ -553,7 +565,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				if ((vsacResponseResult.getXmlPayLoad() != null)
 						&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
 					// Caster conversion here.
-				 	VSACVersionWrapper wrapper = convertXmlToVersionList(vsacResponseResult.getXmlPayLoad()); 
+					VSACVersionWrapper wrapper = convertXmlToVersionList(vsacResponseResult.getXmlPayLoad());
 					result.setVsacVersionResp(wrapper.getVersionList());
 					return result;
 				}
@@ -613,8 +625,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					}
 					continue;
 				} else if (("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
-						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) 
-						&& qualityDataSetDTO.getExpansionProfile()==null ) {
+						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion()))
+						&& (qualityDataSetDTO.getExpansionProfile()==null) ) {
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					VSACResponseResult vsacResponseResult = null;
 					try {
@@ -622,11 +634,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
 								);
 						if(qualityDataSetDTO.getExpansionProfile()!=null){
-							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(), 
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
 									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
 						} else {
-						     vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-								     qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+									qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
 						}
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "

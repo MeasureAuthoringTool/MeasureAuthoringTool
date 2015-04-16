@@ -2,14 +2,12 @@ package mat.server.service.impl;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.model.ListObject;
 import mat.model.MatValueSet;
 import mat.model.clause.Measure;
 import mat.shared.DateUtility;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -17,7 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /** The Class CodeListXLSGenerator. */
 public class CodeListXLSGenerator extends XLSGenerator{
-
+	
 	/** SVS Column name.**/
 	private final String[] svsNameString = {
 			"ValueSetDeveloper_SVS",
@@ -28,12 +26,14 @@ public class CodeListXLSGenerator extends XLSGenerator{
 			"CodeSystem_SVS",
 			"CodeSystemVersion_SVS",
 			"Code_SVS",
-	"Descriptor_SVS"};
-
+			"Descriptor_SVS",
+			"Version_SVS",
+	"ExpansionProfile_SVS"};
+	
 	/** List of String containing qdm OID.**/
 	private List<String> qdmOIDs = new ArrayList<String>();
-
-
+	
+	
 	/** Gets the xls.
 	 * 
 	 * @param m - Measure Object.
@@ -57,7 +57,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 			MatValueSet matValueSet = findInList(supplRefId, matValueSets);
 			supplementRefId.add(matValueSet);
 		}
-
+		
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		createMetaData(wkbk);
 		// addDisclaimer(wkbk);
@@ -70,7 +70,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		addVsacValueSetWorkSheet("Supplemental Value Sets", svsNameString, m , wkbk, supplementRefId , matValueSets);
 		return wkbk;
 	}
-
+	
 	/** Adds the vsac value set work sheet.
 	 * 
 	 * @param sheetName -String.
@@ -84,10 +84,10 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	public final void addVsacValueSetWorkSheet(final String sheetName, final String[] names, final Measure m,
 			final HSSFWorkbook wkbk, final List<MatValueSet> supplementalQDMS,
 			final List<MatValueSet> matValueSetList) {
-
+		
 		HSSFCellStyle style = wkbk.createCellStyle();
 		HSSFSheet wkst = createSheet(wkbk, style, sheetName);
-
+		
 		createHeaderRow(wkst, getHEADER_STRINGS(), names,  0, style);
 		for (MatValueSet loFamily: supplementalQDMS) {
 			cacheXLSRow(loFamily);
@@ -96,27 +96,32 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		rowCache.clear();
 		sizeColumns(wkst);
 	}
-
+	
 	/** Cache xls row.
 	 * 
 	 * @param lo - MatValueSet Object
 	 * 
 	 *        * */
-
+	
 	@Override
 	protected final void cacheXLSRow(final MatValueSet lo) {
-
+		
 		if (lo == null) {
 			return;
 		}
-		String OIDAndVersion = lo.getID()+":"+lo.getVersion();
-		if (!qdmOIDs.contains(OIDAndVersion)) {
-			qdmOIDs.add(OIDAndVersion);
+		// Expansion Profile is different from version. There value could be same.
+		// so v and ex are used for version and expansion profile are used to differentiate.
+		String OIDAndVersionOrExpansionProfile = lo.getID() + ":v:" + lo.getVersion();
+		if (lo.getExpansionProfile() != null) {
+			OIDAndVersionOrExpansionProfile = lo.getID() + ":ex:" + lo.getExpansionProfile();
+		}
+		if (!qdmOIDs.contains(OIDAndVersionOrExpansionProfile)) {
+			qdmOIDs.add(OIDAndVersionOrExpansionProfile);
 			processXLSRow(lo);
 		}
-
+		
 	}
-
+	
 	/** Find in list.
 	 * 
 	 * @param id - String qdm Id.
@@ -134,7 +139,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		}
 		return result;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.ListObject, mat.dao.ListObjectDAO, java.sql.Timestamp)
 	 */

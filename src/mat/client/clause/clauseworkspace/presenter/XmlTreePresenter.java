@@ -750,7 +750,7 @@ public class XmlTreePresenter {
 								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE());
 							}
 							if(inValidNode.equalsIgnoreCase("invalidClauseLogic")){
-								messageList.add("Invalid Clause Logic. Please validate clause logic on Clause Workspace.");
+								messageList.add("Invalid clause logic. Please validate clause logic on Clause Workspace.");
 							}
 							if(inValidNode.equalsIgnoreCase("nestedClauseLogic")){
 								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());

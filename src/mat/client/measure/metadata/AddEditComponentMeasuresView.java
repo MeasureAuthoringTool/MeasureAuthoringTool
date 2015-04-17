@@ -119,8 +119,8 @@ public class AddEditComponentMeasuresView implements
 	protected Button returnButton = new PrimaryButton("Return to Previous");
 
 	/** The addto component measures. */
-	protected Button addtoComponentMeasures = new PrimaryButton(
-			"Add to Component Measures List");
+	protected Button applytoComponentMeasures = new PrimaryButton(
+			"Apply to Component Measures List");
 
 	/** The success messages. */ 
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
@@ -146,7 +146,7 @@ public class AddEditComponentMeasuresView implements
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(getAddtoComponentMeasuresBtn());
+		mainPanel.add(getApplytoComponentMeasuresBtn());
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class AddEditComponentMeasuresView implements
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			selectedMeasureList = new ArrayList<Result>();
 			//componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
-			componentMeasuresList.addAll(measureSelectedList);
+			componentMeasuresList = measureSelectedList;
 			selectedMeasureList.addAll(result.getData());
 			table.setPageSize(PAGE_SIZE);
 			table.redraw();
@@ -371,7 +371,7 @@ public class AddEditComponentMeasuresView implements
 		}
 		SimplePanel addMeasureBtnPanel = new SimplePanel();
 		addMeasureBtnPanel.addStyleName("marginTop");
-		addMeasureBtnPanel.add(getAddtoComponentMeasuresBtn());
+		addMeasureBtnPanel.add(getApplytoComponentMeasuresBtn());
 		SimplePanel addSuccessMsgPanel = new SimplePanel();
 		addSuccessMsgPanel.addStyleName("marginTop");
 		addSuccessMsgPanel.add(successMessages);
@@ -596,9 +596,9 @@ public class AddEditComponentMeasuresView implements
 	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
 	 * #getAddtoComponentMeasuresBtn()
 	 */
-	public Button getAddtoComponentMeasuresBtn() {
-		addtoComponentMeasures.getElement().setId("addtoComponentMeasures_Button");
-		return addtoComponentMeasures;
+	public Button getApplytoComponentMeasuresBtn() {
+		applytoComponentMeasures.getElement().setId("applytoComponentMeasures_Button");
+		return applytoComponentMeasures;
 	}
 
 	/*
@@ -609,8 +609,8 @@ public class AddEditComponentMeasuresView implements
 	 * #getAddtoComponentMeasuresButtonHandler()
 	 */
 	@Override
-	public HasClickHandlers getAddtoComponentMeasuresButtonHandler() {
-		return addtoComponentMeasures;
+	public HasClickHandlers getApplytoComponentMeasuresButtonHandler() {
+		return applytoComponentMeasures;
 	}
 
 	/*

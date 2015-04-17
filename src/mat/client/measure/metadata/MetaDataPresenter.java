@@ -872,7 +872,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the addto component measures button handler
 		 */
-		HasClickHandlers getAddtoComponentMeasuresButtonHandler();
+		HasClickHandlers getApplytoComponentMeasuresButtonHandler();
 		
 		/**
 		 * Gets the search button.
@@ -903,7 +903,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the addto component measures btn
 		 */
-		public Button getAddtoComponentMeasuresBtn();
+		public Button getApplytoComponentMeasuresBtn();
 		
 		/**
 		 * Gets the component measures list.
@@ -1424,7 +1424,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		((Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
 		((Button) addEditComponentMeasuresDisplay.getReturnButton()).setEnabled(!busy);
-		addEditComponentMeasuresDisplay.getAddtoComponentMeasuresBtn().setEnabled(!busy);
+		addEditComponentMeasuresDisplay.getApplytoComponentMeasuresBtn().setEnabled(!busy);
 	}
 	
 	
@@ -2014,7 +2014,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	private void addEditComponenetMeasuresClickHandlers() {
 		//AddToComponentMeasures Button clickHandler Handler
 		addEditComponentMeasuresDisplay
-		.getAddtoComponentMeasuresButtonHandler().addClickHandler(
+		.getApplytoComponentMeasuresButtonHandler().addClickHandler(
 				new ClickHandler() {
 					
 					@Override

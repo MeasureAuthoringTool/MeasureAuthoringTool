@@ -2802,7 +2802,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private void updateMeasureXmlForQDM(final QualityDataSetDTO modifyWithDTO, 
 			 XmlProcessor xmlprocessor, String expansionProfile){
-				if (!modifyWithDTO.getDataType().equalsIgnoreCase("Attribute")) {
+				//if (!modifyWithDTO.getDataType().equalsIgnoreCase("Attribute")) {
 					String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"
 							+ modifyWithDTO.getUuid() + "']";
 					NodeList nodesElementLookUp;
@@ -2831,7 +2831,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}  catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
-				}
+				//}
 	}
 	
 	@Override

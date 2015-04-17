@@ -192,6 +192,8 @@ public class QDMAppliedSelectionView implements
 	
 	/** The spager. */
 	private MatSimplePager spager;
+	
+	private MatTextBox myTextBox = new MatTextBox();
 
 
 	/**
@@ -205,42 +207,25 @@ public class QDMAppliedSelectionView implements
 		  mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		  SimplePanel simplePanel = new SimplePanel();
 		  simplePanel.setWidth("5px");
-//		  HorizontalPanel hp = new HorizontalPanel();
-//		  hp.getElement().setId("hp_HorizonalPanel");
-//		  profileSel.getElement().setId("ProfileSelection_ChkBox");
-//		  hp.add(profileSel);
-//		  vsacProfileListBox.setWidth("200px");
-//		  vsacProfileListBox.getElement().setId("VSACProfile_ListBox");
-//		  vsacProfileListBox.getElement().setTitle("VSAC Profile Selection List");
-//		  hp.add(simplePanel);
-//		  hp.add(vsacProfileListBox);
-//		  hp.add(simplePanel);
-//		  applyButton.setTitle("Apply the profile to all the QDM Element's");
-//		  applyButton.getElement().setId("applyToQDM_button");
-//		  hp.add(applyButton);
-//		  vsacProfileListBox.addItem("--Select--");
-//		  verticalPanel.setStylePrimaryName("qdmCellList");
+		  
 		  HorizontalPanel hp = new HorizontalPanel();
 		  hp.add(buildElementWithVSACValueSetWidget());
 		  hp.add(simplePanel);
 		  hp.add(buildElementWithVSACExpansionProfile());
+		  
 		  verticalPanel.add(new SpacerWidget());
-//		  verticalPanel.add(inProgressMessageDisplay);
 		  verticalPanel.add(successMessagePanel);
 		  verticalPanel.add(errorMessagePanel);
 		  errorMessagePanel.getElement().setId(
 		    "errorMessagePanel_ErrorMessageDisplay");
+		  
 		  verticalPanel.add(new SpacerWidget());
-		 // verticalPanel.add(updateButtonPanel);
 		  verticalPanel.add(new SpacerWidget());
-		  //verticalPanel.add(hp);
-//		  verticalPanel.add(buildElementWithVSACExpansionProfile());
-//		  verticalPanel.add(new SpacerWidget());
-//		  verticalPanel.add(buildElementWithVSACValueSetWidget());
 		  verticalPanel.add(hp);
 		  verticalPanel.add(new SpacerWidget());
 		  updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		  updateVSACButton.getElement().setId("updateVsacButton_Button");
+		  
 		  verticalPanel.add(new SpacerWidget());
 		  verticalPanel.add(cellTablePanel);
 		  verticalPanel.add(new SpacerWidget());
@@ -248,6 +233,7 @@ public class QDMAppliedSelectionView implements
 		  verticalPanel.add(inProgressMessageDisplay);
 		  verticalPanel.add(updateVSACSuccessMessagePanel);
 		  verticalPanel.add(updateVSACErrorMessagePanel);
+		  
 		  mainPanel.add(verticalPanel);
 		  containerPanel.getElement().setAttribute("id",
 		    "subQDMAPPliedListContainerPanel");
@@ -341,7 +327,6 @@ public class QDMAppliedSelectionView implements
 		  buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		  buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		  VerticalPanel searchPanel = new VerticalPanel();
-		  //searchPanel.setWidth("200px");
 		  searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		  searchPanel.setStyleName("valueSetSearchPanel");
 		  
@@ -387,20 +372,19 @@ public class QDMAppliedSelectionView implements
 		  specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
 		  specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
 		  Grid queryGrid = new Grid(7, 4);
-		  queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
+		  queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "OID:"));
 		  queryGrid.setWidget(1, 0, oidInput);
-		  queryGrid.setWidget(0, 1, LabelBuilder.buildRequiredLabel(new Label(), "Name:"));
+		  queryGrid.setWidget(0, 1, LabelBuilder.buildLabel(new Label(), "Name:"));
 		  queryGrid.setWidget(1, 1, nameInput);
 		  queryGrid.setWidget(2, 0, LabelBuilder.buildLabel("Expansion Profile", "Expansion Profile"));
 		  queryGrid.setWidget(2, 1, LabelBuilder.buildLabel("Version", "Version"));
 		  queryGrid.setWidget(3, 0, expansionProListBox);
 		  queryGrid.setWidget(3, 1, versionListBox);
 		  queryGrid.setWidget(4, 0, LabelBuilder.buildLabel("Data type", "Data type") );
-		  //queryGrid.setWidget(4, 1, LabelBuilder.buildLabel("Specific Occurrence", "Specific Occurrence"));
 		  queryGrid.setWidget(5, 0, dataTypeListBox);
 		  queryGrid.setWidget(5, 1, specificOcurChkBox);
-		  queryGrid.setWidget(6, 0, retrieveButton);
-		  queryGrid.setWidget(6, 1, buttonLayout);
+		  queryGrid.setWidget(6, 0, buttonLayout);
+		  queryGrid.setWidget(6, 1, retrieveButton);
 
 		  queryGrid.setStyleName("secondLabel");
 		  searchPanel.add(queryGrid);
@@ -423,7 +407,6 @@ public class QDMAppliedSelectionView implements
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<QualityDataSetDTO>();
-			// table.setSelectionModel(addSelectionHandlerOnTable(appliedListModel));
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();

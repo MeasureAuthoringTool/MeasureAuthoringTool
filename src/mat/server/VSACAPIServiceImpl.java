@@ -237,7 +237,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				} else {
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket);
 				}
-				if(!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad())) {
+				if((vsacResponseResult.getXmlPayLoad() != null)
+						&& (!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad()))) {
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 					for (MatValueSet valueSet : wrapper.getValueSetList()) {

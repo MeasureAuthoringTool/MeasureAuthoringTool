@@ -567,7 +567,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							.getUMLS_OID_REQUIRED());
 			return;
 		}
-
+		showSearchingBusy(true);
+		
 		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version,
 				expansionProfile, new AsyncCallback<VsacApiResult>() {
 					@Override
@@ -575,6 +576,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						searchDisplay.getErrorMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate()
 										.getVSAC_RETRIEVE_FAILED());
+						showSearchingBusy(false);
 					}
 
 					/**
@@ -602,8 +604,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							} else {
 								String message = convertMessage(result.getFailureReason());
 								searchDisplay.getErrorMessageDisplay().setMessage(message);
+								showSearchingBusy(false);
 							}
-						showSearchingBusy(false);
 						}
 				});
 	}
@@ -621,6 +623,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(VsacApiResult result) {
+						
 						if (result.getVsacVersionResp() != null) {
 							searchDisplay.setVSACVersionListBoxOptions(getVersionList(result
 									.getVsacVersionResp()));
@@ -644,12 +647,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								searchDisplay.getVSACProfileListBox().setEnabled(true);
 								searchDisplay.getVersionListBox().setEnabled(true);
 							}
-							
-//							if(!expProfileToAllQDM.isEmpty()){
-//								searchDisplay.getVSACProfileListBox().clear();
-//								searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM, 
-//										expProfileToAllQDM);
-//							}
+							showSearchingBusy(false);
+							searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+									.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
 							
 						}
 					}
@@ -657,6 +657,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					public void onFailure(Throwable caught) {
                        searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
 						.getVSAC_RETRIEVE_FAILED());
+                       showSearchingBusy(false);
 					}
 				});
 
@@ -945,6 +946,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						break;
 					}
 				}
+				if(searchDisplay.getDataTypeText(
+						searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")){
+					searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					searchDisplay.getSpecificOccChkBox().setValue(false);
+				}
+				
 				
 				if(!expProfileToAllQDM.isEmpty()){
 					searchDisplay.getVSACProfileListBox().clear();
@@ -1004,6 +1011,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				} else if(searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")){
 					searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					searchDisplay.getSpecificOccChkBox().setValue(false);
 					searchDisplay.getSaveButton().setEnabled(true);
 				} else {
 					searchDisplay.getSaveButton().setEnabled(true);
@@ -1132,7 +1140,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 
 	/**
-	 * Adds the selected code listto measure.
+	 * Adds the selected code list to measure.
 	 *
 	 * @param isUserDefinedQDM the is user defined qdm
 	 */
@@ -1802,6 +1810,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
+		searchDisplay.getUpdateFromVSACButton().setEnabled(!busy);
+		searchDisplay.getRetrieveFromVSACButton().setEnabled(!busy);
 	}
 
 }

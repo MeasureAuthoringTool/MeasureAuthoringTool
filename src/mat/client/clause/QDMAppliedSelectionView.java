@@ -361,14 +361,16 @@ public class QDMAppliedSelectionView implements
 		  cancelButton.setEnabled(!checkForEnable());
 		  cancelButton.setTitle("Cancel");
 		  cancelButton.getElement().setId("modify_Button");
-		  buttonLayout.add(saveButton);
-		  buttonLayout.add(cancelButton);
+//		  buttonLayout.add(saveButton);
+//		  buttonLayout.add(cancelButton);
 		  saveButton.getElement().setId("saveButton_Button");
 		  saveButton.getElement().setAttribute("tabIndex", "0");
 		  saveButton.setTitle("Apply to QDM Elements");
 		  retrieveButton.getElement().setId("retrieveButton_Button");
 		  retrieveButton.getElement().setAttribute("tabIndex", "0");
 		  retrieveButton.setTitle("Search");
+		  buttonLayout.add(saveButton);
+		  buttonLayout.add(retrieveButton);
 		  specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
 		  specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
 		  Grid queryGrid = new Grid(7, 4);
@@ -384,7 +386,7 @@ public class QDMAppliedSelectionView implements
 		  queryGrid.setWidget(5, 0, dataTypeListBox);
 		  queryGrid.setWidget(5, 1, specificOcurChkBox);
 		  queryGrid.setWidget(6, 0, buttonLayout);
-		  queryGrid.setWidget(6, 1, retrieveButton);
+		  queryGrid.setWidget(6, 1, cancelButton);
 
 		  queryGrid.setStyleName("secondLabel");
 		  searchPanel.add(queryGrid);

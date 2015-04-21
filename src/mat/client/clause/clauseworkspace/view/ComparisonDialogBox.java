@@ -11,6 +11,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.shared.MatConstants;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -29,45 +30,44 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import mat.shared.MatConstants;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ComparisonDialogBox.
  */
 public class ComparisonDialogBox {
-
+	
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false, true);
-
+	
 	private static List<String> filterFunctionList = new ArrayList<String>();
 	private static List<String> subSetFunctionsList = new ArrayList<String>();
 	private static List<String> aggregateFunctionsList = new ArrayList<String>();
 	private static List<String> temporalNoOperatorList = new ArrayList<String>();
 	static {
-		filterFunctionList.add(MatConstants.FIRST);
-		filterFunctionList.add(MatConstants.SECOND);
-		filterFunctionList.add(MatConstants.THIRD);
-		filterFunctionList.add(MatConstants.FOURTH);
-		filterFunctionList.add(MatConstants.FIFTH);
-		filterFunctionList.add(MatConstants.MOST_RECENT);
-		filterFunctionList.add(MatConstants.SATISFIES_ALL);
-		filterFunctionList.add(MatConstants.SATISFIES_ANY);
-
-		subSetFunctionsList.add(MatConstants.FIRST);
-		subSetFunctionsList.add(MatConstants.SECOND);
-		subSetFunctionsList.add(MatConstants.THIRD);
-		subSetFunctionsList.add(MatConstants.FOURTH);
-		subSetFunctionsList.add(MatConstants.FIFTH);
-		subSetFunctionsList.add(MatConstants.MOST_RECENT);
-
-		aggregateFunctionsList.add(MatConstants.MIN);
-		aggregateFunctionsList.add(MatConstants.MAX);
-		aggregateFunctionsList.add(MatConstants.MEDIAN);
-		aggregateFunctionsList.add(MatConstants.AVG);
-		aggregateFunctionsList.add(MatConstants.COUNT);
-		aggregateFunctionsList.add(MatConstants.SUM);
-
+		filterFunctionList.add(MatConstants.FIRST.toUpperCase());
+		filterFunctionList.add(MatConstants.SECOND.toUpperCase());
+		filterFunctionList.add(MatConstants.THIRD.toUpperCase());
+		filterFunctionList.add(MatConstants.FOURTH.toUpperCase());
+		filterFunctionList.add(MatConstants.FIFTH.toUpperCase());
+		filterFunctionList.add(MatConstants.MOST_RECENT.toUpperCase());
+		filterFunctionList.add(MatConstants.SATISFIES_ALL.toUpperCase());
+		filterFunctionList.add(MatConstants.SATISFIES_ANY.toUpperCase());
+		
+		subSetFunctionsList.add(MatConstants.FIRST.toUpperCase());
+		subSetFunctionsList.add(MatConstants.SECOND.toUpperCase());
+		subSetFunctionsList.add(MatConstants.THIRD.toUpperCase());
+		subSetFunctionsList.add(MatConstants.FOURTH.toUpperCase());
+		subSetFunctionsList.add(MatConstants.FIFTH.toUpperCase());
+		subSetFunctionsList.add(MatConstants.MOST_RECENT.toUpperCase());
+		
+		aggregateFunctionsList.add(MatConstants.MIN.toUpperCase());
+		aggregateFunctionsList.add(MatConstants.MAX.toUpperCase());
+		aggregateFunctionsList.add(MatConstants.MEDIAN.toUpperCase());
+		aggregateFunctionsList.add(MatConstants.AVG.toUpperCase());
+		aggregateFunctionsList.add(MatConstants.COUNT.toUpperCase());
+		aggregateFunctionsList.add(MatConstants.SUM.toUpperCase());
+		
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH);
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH_END_OF);
 		temporalNoOperatorList.add(MatConstants.STARTS_DURING);
@@ -78,7 +78,7 @@ public class ComparisonDialogBox {
 		temporalNoOperatorList.add(MatConstants.DURING);
 		temporalNoOperatorList.add(MatConstants.OVERLAPS);
 	}
-
+	
 	/**
 	 * Show comparison dialog box.
 	 * 
@@ -111,8 +111,8 @@ public class ComparisonDialogBox {
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
 		HashMap<String, String> extraAttributesMap = (HashMap<String, String>) cellTreeNode
-				.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-
+		.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+		
 		final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
 		String timingOrFuncMethod = "--Select--";
 		String operatorMethod = "--Select--";
@@ -123,23 +123,23 @@ public class ComparisonDialogBox {
 					.get(PopulationWorkSpaceConstants.TYPE);
 			timingOrFuncMethod = MatContext.get().operatorMapKeyShort
 					.containsKey(timingOrFuncMethod) ? MatContext.get().operatorMapKeyShort
-					.get(timingOrFuncMethod) : "--Select--";
-			operatorMethod = extraAttributesMap
-					.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) ? extraAttributesMap
-					.get(PopulationWorkSpaceConstants.OPERATOR_TYPE)
-					: operatorMethod;
-			quantityValue = extraAttributesMap
-					.containsKey(PopulationWorkSpaceConstants.QUANTITY) ? extraAttributesMap
-					.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
-			unitType = extraAttributesMap
-					.containsKey(PopulationWorkSpaceConstants.UNIT) ? extraAttributesMap
-					.get(PopulationWorkSpaceConstants.UNIT) : unitType;
-			if (operatorMethod.trim().length() == 0) {
-				operatorMethod = "--Select--";
-			}
-			if (unitType.trim().length() == 0) {
-				unitType = "--Select--";
-			}
+							.get(timingOrFuncMethod) : "--Select--";
+							operatorMethod = extraAttributesMap
+									.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) ? extraAttributesMap
+											.get(PopulationWorkSpaceConstants.OPERATOR_TYPE)
+											: operatorMethod;
+											quantityValue = extraAttributesMap
+													.containsKey(PopulationWorkSpaceConstants.QUANTITY) ? extraAttributesMap
+															.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
+															unitType = extraAttributesMap
+																	.containsKey(PopulationWorkSpaceConstants.UNIT) ? extraAttributesMap
+																			.get(PopulationWorkSpaceConstants.UNIT) : unitType;
+																			if (operatorMethod.trim().length() == 0) {
+																				operatorMethod = "--Select--";
+																			}
+																			if (unitType.trim().length() == 0) {
+																				unitType = "--Select--";
+																			}
 		} else {
 			timingOrFuncMethod = cellTreeNode.getLabel();
 		}
@@ -154,12 +154,12 @@ public class ComparisonDialogBox {
 			keys = filterFunctions(cellTreeNode.getParent(), keys);
 			labelForListBox = "Functions";
 		}
-
+		
 		if (timingOrFuncMethod.contains("Select")) { // added is null check for
-														// Functions which are
-														// not in recent list
-														// but exists in prod
-														// like COUNTDISTINCT
+			// Functions which are
+			// not in recent list
+			// but exists in prod
+			// like COUNTDISTINCT
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
 		}
 		// modified for MAT-4692
@@ -177,7 +177,7 @@ public class ComparisonDialogBox {
 				listAllTimeOrFunction.setSelectedIndex(i);
 			}
 		}
-
+		
 		listAllTimeOrFunction.setWidth("150px");
 		hPanel.clear();
 		dialogContents.add(hPanel);
@@ -189,7 +189,7 @@ public class ComparisonDialogBox {
 		dialogContents.add(listAllTimeOrFunction);
 		dialogContents.setCellHorizontalAlignment(listAllTimeOrFunction,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		// List of Operators.
 		final ListBoxMVP listAllOperator = new ListBoxMVP();
 		// listAllOperator.addItem("--Select--");
@@ -214,7 +214,7 @@ public class ComparisonDialogBox {
 		dialogContents.add(listAllOperator);
 		dialogContents.setCellHorizontalAlignment(listAllOperator,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		// Qunatity Text Box.
 		final TextBox quantity = new TextBox();
 		quantity.getElement().setId("quantity_TextBox");
@@ -232,7 +232,7 @@ public class ComparisonDialogBox {
 		dialogContents.add(quantity);
 		dialogContents.setCellHorizontalAlignment(quantity,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		// List of Units.
 		final ListBoxMVP listAllUnits = new ListBoxMVP();
 		// if (unitType.contains("Select"))
@@ -256,7 +256,7 @@ public class ComparisonDialogBox {
 					listAllUnits.setSelectedIndex(i + 1);
 				}
 			}
-
+			
 		}
 		listAllUnits.setWidth("150px");
 		final Label labelUnits = (Label) LabelBuilder.buildLabel(
@@ -267,7 +267,7 @@ public class ComparisonDialogBox {
 		dialogContents.add(listAllUnits);
 		dialogContents.setCellHorizontalAlignment(listAllUnits,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		if (operatorMethod.contains("Select")) {
 			quantity.setEnabled(false);
 			listAllUnits.setEnabled(false);
@@ -275,10 +275,10 @@ public class ComparisonDialogBox {
 			quantity.setEnabled(true);
 			listAllUnits.setEnabled(true);
 		}
-
+		
 		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction
 				.getSelectedIndex());
-
+		
 		// if non-comparision operator, disable operator/quantity/units
 		if (temporalNoOperatorList.contains(timing)) {
 			quantity.setEnabled(false);
@@ -288,10 +288,10 @@ public class ComparisonDialogBox {
 			listAllOperator.setItemSelected(0, true);
 			listAllOperator.setEnabled(false);
 		}
-
+		
 		// changeHandler for listAllTimeOrFunction
 		listAllTimeOrFunction.addChangeHandler(new ChangeHandler() {
-
+			
 			@Override
 			public void onChange(ChangeEvent event) {
 				// if non-comparision operator, disable operator/quantity/units
@@ -299,10 +299,10 @@ public class ComparisonDialogBox {
 						quantity, listAllUnits, cellTreeNode);
 			}
 		});
-
+		
 		// changeHandler for listAllOperator
 		listAllOperator.addChangeHandler(new ChangeHandler() {
-
+			
 			@Override
 			public void onChange(ChangeEvent event) {
 				hPanel.clear();
@@ -318,16 +318,16 @@ public class ComparisonDialogBox {
 				updateQuantityandUnits(quantity, listAllUnits);
 			}
 		});
-
+		
 		quantity.addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				quantity.removeStyleName("gwt-TextBoxRed");
-
+				
 			}
 		});
-
+		
 		// Add a Save button at the bottom of the dialog
 		Button save = new Button("OK", new ClickHandler() {
 			@Override
@@ -354,7 +354,7 @@ public class ComparisonDialogBox {
 			public void onClick(ClickEvent event) {
 				dialogContents.clear();
 				dialogBox.hide();
-
+				
 			}
 		});
 		closeButton.getElement().setId("closeButton_Button");
@@ -370,9 +370,9 @@ public class ComparisonDialogBox {
 		dialogContents.add(buttonPanel);
 		dialogBox.center();
 		dialogBox.show();
-
+		
 	}
-
+	
 	/**
 	 * Validate quantity.
 	 * 
@@ -399,7 +399,7 @@ public class ComparisonDialogBox {
 		}
 		return isValid;
 	}
-
+	
 	/**
 	 * Method to set attributes to CellTreeNode extraInformation.
 	 * 
@@ -440,51 +440,51 @@ public class ComparisonDialogBox {
 				// " ";
 				String operatorType = MatContext.get().operatorMapKeyLong
 						.containsKey(operator) ? MatContext.get().operatorMapKeyLong
-						.get(operator) : " ";
-				// StringBuilder operatorTypeKey = new
-				// StringBuilder(operatorType);
-				if (operator.equals("")) {
-					displayName.append(functionOrTiming);
-					// extraAttributes.remove("quantity");
-				} else {
-					displayName.append(operatorType).append(" ")
-							.append(quantity).append(" ").append(unit)
-							.append(" ").append(functionOrTiming);
-				}
+								.get(operator) : " ";
+								// StringBuilder operatorTypeKey = new
+								// StringBuilder(operatorType);
+								if (operator.equals("")) {
+									displayName.append(functionOrTiming);
+									// extraAttributes.remove("quantity");
+								} else {
+									displayName.append(operatorType).append(" ")
+									.append(quantity).append(" ").append(unit)
+									.append(" ").append(functionOrTiming);
+								}
 			} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE) {
 				String operatorType = MatContext.get().operatorMapKeyLong
 						.containsKey(operator) ? MatContext.get().operatorMapKeyLong
-						.get(operator) : " ";
-				if (operator.equals("")) {
-					displayName.append(functionOrTiming);
-					// extraAttributes.remove("quantity");
-				} else {
-					if ("AGE AT".equalsIgnoreCase(functionOrTiming)) {
-						displayName.append("Age").append(" ")
-								.append(operatorType).append(" ")
-								.append(quantity).append(" ").append(unit)
-								.append(" at");
-					} else {
-						displayName.append(functionOrTiming).append(" ")
-								.append(operatorType).append(" ")
-								.append(quantity).append(" ").append(unit);
-					}
-				}
+								.get(operator) : " ";
+								if (operator.equals("")) {
+									displayName.append(functionOrTiming);
+									// extraAttributes.remove("quantity");
+								} else {
+									if ("AGE AT".equalsIgnoreCase(functionOrTiming)) {
+										displayName.append("Age").append(" ")
+										.append(operatorType).append(" ")
+										.append(quantity).append(" ").append(unit)
+										.append(" at");
+									} else {
+										displayName.append(functionOrTiming).append(" ")
+										.append(operatorType).append(" ")
+										.append(quantity).append(" ").append(unit);
+									}
+								}
 			}
 			extraAttributes.put(PopulationWorkSpaceConstants.DISPLAY_NAME,
 					displayName.toString());
 			xmlTreeDisplay.editNode(displayName.toString(),
 					displayName.toString());
 		}
-
+		
 		if (!operator.equals("")) {
 			extraAttributes
-					.put(PopulationWorkSpaceConstants.QUANTITY, quantity);
+			.put(PopulationWorkSpaceConstants.QUANTITY, quantity);
 		}
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(
 				PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, extraAttributes);
 	}
-
+	
 	/**
 	 * TextBox allow only Digits.
 	 * 
@@ -492,7 +492,7 @@ public class ComparisonDialogBox {
 	 *            the quantity
 	 */
 	private static void addHandlerToQuantityTextBox(TextBox quantity) {
-
+		
 		quantity.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
@@ -501,11 +501,11 @@ public class ComparisonDialogBox {
 						&& (event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE)) {
 					((TextBox) event.getSource()).cancelKey();
 				}
-
+				
 			}
 		});
 	}
-
+	
 	/**
 	 * Update quantityand units.
 	 * 
@@ -520,7 +520,7 @@ public class ComparisonDialogBox {
 		quantity.setValue(quantityValue);
 		listAllUnits.setSelectedIndex(0);
 	}
-
+	
 	/**
 	 * Make the listboxes invisiable/visiable if needed.
 	 * 
@@ -528,15 +528,15 @@ public class ComparisonDialogBox {
 	 *            the quantity
 	 * @param listAllUnits
 	 *            the list all units
-	 * @param cellTreeNode 
+	 * @param cellTreeNode
 	 */
 	private static void enableDisableListboxes(
 			ListBoxMVP listAllTimeOrFunction, ListBoxMVP listAllOperator,
 			TextBox quantity, ListBoxMVP listAllUnits, CellTreeNode cellTreeNode) {
-
+		
 		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction
 				.getSelectedIndex());
-
+		
 		if (temporalNoOperatorList.contains(timing)) {
 			quantity.setEnabled(false);
 			quantity.setValue("");
@@ -551,8 +551,8 @@ public class ComparisonDialogBox {
 			if (extraAttributesMap != null) {
 				operatorMethod = extraAttributesMap
 						.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) ? extraAttributesMap
-						.get(PopulationWorkSpaceConstants.OPERATOR_TYPE)
-						: operatorMethod;
+								.get(PopulationWorkSpaceConstants.OPERATOR_TYPE)
+								: operatorMethod;
 			}
 			listAllOperator.setEnabled(true);
 			if (operatorMethod.contains("Select")) {
@@ -564,7 +564,7 @@ public class ComparisonDialogBox {
 			}
 		}
 	}
-
+	
 	/**
 	 * Sets the focus.
 	 * 
@@ -588,7 +588,7 @@ public class ComparisonDialogBox {
 			// do nothing.
 		}
 	}
-
+	
 	/**
 	 * Gets the widget.
 	 * 
@@ -617,7 +617,7 @@ public class ComparisonDialogBox {
 		setFocus(hPanel);
 		return hPanel;
 	}
-
+	
 	/**
 	 * Timings, Relationships (Fulfills), Union/Intersection, Satisfies All/Any
 	 * should have a restricted list of functions to use as children. Only
@@ -628,13 +628,13 @@ public class ComparisonDialogBox {
 	 */
 	public static List<String> filterFunctions(final CellTreeNode cellTreeNode,
 			List<String> allFunctionsList) {
-
+		
 		System.out.println("filterFunctions....");
 		List<String> returnList = new ArrayList<String>(filterFunctionList);
-
+		
 		int nodeType = cellTreeNode.getNodeType();
 		System.out.println("nodeType:" + nodeType);
-
+		
 		if (nodeType == CellTreeNode.FUNCTIONS_NODE) {
 			@SuppressWarnings("unchecked")
 			String nodeText = cellTreeNode.getName();
@@ -645,28 +645,28 @@ public class ComparisonDialogBox {
 			}
 			System.out.println("nodeText:" + nodeText);
 			returnList = getAllowedFunctionsList(allFunctionsList, nodeText);
-
+			
 		} else if ((nodeType != CellTreeNode.TIMING_NODE)
 				&& (nodeType != CellTreeNode.SET_OP_NODE)
 				&& (nodeType != CellTreeNode.RELATIONSHIP_NODE)
 				&& (nodeType != CellTreeNode.FUNCTIONS_NODE)) {
 			returnList = allFunctionsList;
 		}
-
+		
 		System.out.println("returnList:" + returnList);
 		return returnList;
 	}
-
+	
 	public static List<String> getAllowedFunctionsList(
 			List<String> allFunctionsList, String nodeText) {
-
+		
 		List<String> returnList = new ArrayList<String>(filterFunctionList);
-
-		if (subSetFunctionsList.contains(nodeText)) {
+		
+		if (subSetFunctionsList.contains(nodeText.toUpperCase())) {
 			returnList.clear();
 			returnList.add(MatConstants.SATISFIES_ALL);
 			returnList.add(MatConstants.SATISFIES_ANY);
-		} else if (aggregateFunctionsList.contains(nodeText)) {
+		} else if (aggregateFunctionsList.contains(nodeText.toUpperCase())) {
 			returnList.clear();
 			returnList.add(MatConstants.SATISFIES_ALL);
 			returnList.add(MatConstants.SATISFIES_ANY);
@@ -674,19 +674,19 @@ public class ComparisonDialogBox {
 		} else if ((!(MatConstants.SATISFIES_ALL.equalsIgnoreCase(nodeText))
 				&& !(MatConstants.SATISFIES_ANY.equalsIgnoreCase(nodeText))
 				&& !(MatConstants.AGE_AT.equalsIgnoreCase(nodeText)) && !(MatConstants.DATETIMEDIFF
-					.equalsIgnoreCase(nodeText)))) {
-
+						.equalsIgnoreCase(nodeText)))) {
+			
 			returnList = allFunctionsList;
 		}
 		return returnList;
 	}
-
+	
 	public static List<String> getSubSetFunctionsList() {
 		return subSetFunctionsList;
 	}
-
+	
 	public static List<String> getAggregateFunctionsList() {
 		return aggregateFunctionsList;
 	}
-
+	
 }

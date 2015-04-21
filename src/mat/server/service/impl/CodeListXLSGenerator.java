@@ -26,9 +26,10 @@ public class CodeListXLSGenerator extends XLSGenerator{
 			"CodeSystem_SVS",
 			"CodeSystemVersion_SVS",
 			"Code_SVS",
-			"Descriptor_SVS",
 			"Version_SVS",
-	"ExpansionProfile_SVS"};
+			"ExpansionProfile_SVS",
+			"Descriptor_SVS"
+	};
 	
 	/** List of String containing qdm OID.**/
 	private List<String> qdmOIDs = new ArrayList<String>();

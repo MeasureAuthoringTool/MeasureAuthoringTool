@@ -663,30 +663,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 	}
 	
-//	private void populateVersionAndProfileList(QualityDataSetDTO modifyDTO){
-//	
-//		if(modifyDTO!=null){
-//			if(modifyDTO.getVersion()!=null){
-//				for(int i = 0; i < searchDisplay.getVersionListBox().getItemCount(); i++){
-//					if(searchDisplay.getVersionListBox().getItemText(i)
-//							.equalsIgnoreCase(modifyDTO.getVersion())) {
-//						searchDisplay.getVersionListBox().setSelectedIndex(i);
-//						break;
-//					}
-//				}
-//			} 
-//			
-//			if(modifyDTO.getExpansionProfile()!=null){
-//				for(int i = 0; i < searchDisplay.getVSACProfileListBox().getItemCount(); i++){
-//					if(searchDisplay.getVSACProfileListBox().getItemText(i)
-//							.equalsIgnoreCase(modifyDTO.getExpansionProfile())) {
-//						searchDisplay.getVSACProfileListBox().setSelectedIndex(i);
-//						break;
-//					}
-//				}
-//			}
-//		}
-//	}
 	
 	/**
 	 * Gets the profile list.
@@ -894,7 +870,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
 					searchDisplay.getSpecificOccChkBox().setEnabled(false);
 					searchDisplay.getSaveButton().setEnabled(true);
-					searchDisplay.getOIDInput().setEnabled(false);
+					searchDisplay.getOIDInput().setEnabled(true);
 					searchDisplay.getOIDInput().setValue("");
 					searchDisplay.getVersionListBox().clear();
 					searchDisplay.getVSACProfileListBox().clear();
@@ -916,26 +892,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getVSACProfileListBox().clear(); 
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
 					searchDisplay.getVersionListBox().setEnabled(false);
-//					if(result.getExpansionProfile()!=null){
-//						searchDisplay.getVersionListBox().setEnabled(false);
-//						searchDisplay.getVSACProfileListBox().addItem(result.getExpansionProfile(), 
-//								result.getExpansionProfile());
-//					} else if (result.getVersion()!=null) {
-//						searchDisplay.getVersionListBox().setEnabled(true);
-//						searchDisplay.getVSACProfileListBox().setEnabled(false);
-//						if(result.getVersion().equals("1.0") || result.getVersion().equals("1")){
-//							//searchDisplay.getVersionListBox().setValue("Most Recent");
-//							searchDisplay.getVersionListBox().addItem("Most Recent", "Most Recent");
-//						} else {
-//							searchDisplay.getVersionListBox().addItem(result.getVersion(), result.getVersion());
-//						}
-//					}
-					
-					
-						
-//					} else {
-//						searchDisplay.getVSACProfileListBox().setEnabled(true);
-//					}
 				}
 				
 				searchDisplay.getDataTypesListBox().setEnabled(true);
@@ -1111,12 +1067,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
+			searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			isUSerDefined = false;
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
+			searchDisplay.getSaveButton().setEnabled(false);
 			}
 	}
 	
@@ -1129,10 +1087,17 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			isUSerDefined = false;
 			searchDisplay.getUserDefinedInput().setEnabled(false);
 			searchDisplay.getSaveButton().setEnabled(false);
+			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		} else if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUSerDefined = true;
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
+			searchDisplay.getSpecificOccChkBox().setValue(false);
+			searchDisplay.getVSACProfileListBox().clear();
 			searchDisplay.getUserDefinedInput().setEnabled(true);
+			if(!searchDisplay.getDataTypeText(
+					searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+				searchDisplay.getSaveButton().setEnabled(true);
+			}
 		} else {
 			searchDisplay.getUserDefinedInput().setEnabled(true);	
 		}
@@ -1315,6 +1280,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					
 				}
 			});
+		} else {
+			searchDisplay
+			.getErrorMessageDisplay()
+			.setMessage(MatContext.get().getMessageDelegate()
+					.getVALIDATION_MSG_DATA_TYPE_VSAC());
 		}
 	}
 	

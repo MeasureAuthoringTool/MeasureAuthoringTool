@@ -237,7 +237,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				} else {
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket);
 				}
-				if((vsacResponseResult.getXmlPayLoad() != null)
+				if((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)
 						&& (!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad()))) {
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
@@ -293,10 +293,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
 					VSACResponseResult vsacResponseResult = vGroovyClient.
 							getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim(),fiveMinServiceTicket);
-					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
-					MatValueSet valueSetGrouping = wrapperGrouped.getValueSetList().get(0);
-					valueSetGrouping.setVersion("Draft"); // Grouping members should not show version value in value set sheet.
-					valueSet.getGroupedValueSet().add(valueSetGrouping);
+					
+					if(vsacResponseResult != null) {
+						
+						VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+						MatValueSet valueSetGrouping = wrapperGrouped.getValueSetList().get(0);
+						valueSetGrouping.setVersion("Draft"); // Grouping members should not show version value in value set sheet.
+						valueSet.getGroupedValueSet().add(valueSetGrouping);
+					}
 				}
 			}
 		}
@@ -393,7 +397,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType());
 					}
-					if (vsacResponseResult.getXmlPayLoad() != null) {
+					if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
 						LOGGER.info("Value Set from VSAC for OID :"
 								+ qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType()
@@ -459,7 +463,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
 								+ " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
-					if (responseResult.getXmlPayLoad() != null) {
+					if ( responseResult != null && responseResult.getXmlPayLoad() != null) {
 						if ((responseResult.getXmlPayLoad() != null)
 								&& StringUtils.isNotEmpty(responseResult.getXmlPayLoad())) {
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(responseResult.getXmlPayLoad());
@@ -512,7 +516,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			} catch (Exception ex) {
 				LOGGER.info("VSACAPIServiceImpl ProfileList failed in method :: getAllProfileList");
 			}
-			if (vsacResponseResult.getXmlPayLoad() != null) {
+			if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
 				if (vsacResponseResult.getIsFailResponse()
 						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
 					LOGGER.info("Profile List reterival failed at VSAC with Failure Reason: "
@@ -554,7 +558,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			} catch (Exception ex) {
 				LOGGER.info("VSACAPIServiceImpl VersionList failed in method :: getAllVersionListByOID");
 			}
-			if (vsacResponseResult.getXmlPayLoad() != null) {
+			if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
 				if (vsacResponseResult.getIsFailResponse()
 						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
 					LOGGER.info("Version List reterival failed at VSAC with Failure Reason: "
@@ -646,7 +650,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ "VSAC for OID :" + qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType());
 					}
-					if (vsacResponseResult.getXmlPayLoad() != null) {
+					if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
 						if (vsacResponseResult.getIsFailResponse()
 								&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
 							LOGGER.info("Value Set reterival failed at VSAC for OID :"

@@ -660,8 +660,8 @@ public class ComparisonDialogBox {
 	public static List<String> getAllowedFunctionsList(
 			List<String> allFunctionsList, String nodeText) {
 		
-		List<String> returnList = new ArrayList<String>(filterFunctionList);
-		
+		List<String> returnList = new ArrayList<String>();
+		addFunctionWithTitelCaseInList(returnList);
 		if (subSetFunctionsList.contains(nodeText.toUpperCase())) {
 			returnList.clear();
 			returnList.add(MatConstants.SATISFIES_ALL);
@@ -675,10 +675,24 @@ public class ComparisonDialogBox {
 				&& !(MatConstants.SATISFIES_ANY.equalsIgnoreCase(nodeText))
 				&& !(MatConstants.AGE_AT.equalsIgnoreCase(nodeText)) && !(MatConstants.DATETIMEDIFF
 						.equalsIgnoreCase(nodeText)))) {
-			
 			returnList = allFunctionsList;
 		}
 		return returnList;
+	}
+	
+	/**
+	 * Add Functions First - Fifth , Most Recent, Satisfy All/Any in Title Case in List.
+	 * @param returnList
+	 */
+	private static void addFunctionWithTitelCaseInList(List<String> returnList) {
+		returnList.add(MatConstants.FIRST);
+		returnList.add(MatConstants.SECOND);
+		returnList.add(MatConstants.THIRD);
+		returnList.add(MatConstants.FOURTH);
+		returnList.add(MatConstants.FIFTH);
+		returnList.add(MatConstants.MOST_RECENT);
+		returnList.add(MatConstants.SATISFIES_ALL);
+		returnList.add(MatConstants.SATISFIES_ANY);
 	}
 	
 	public static List<String> getSubSetFunctionsList() {

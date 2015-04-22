@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -344,11 +347,21 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(),
 				"//entry/*/id[@root='" + root + "'][@extension='" + baseExt + "']");
 		logger.info("idNodeQDM == null?"+(idNodeQDM == null));
+				
 		if (idNodeQDM != null) {
-			Node parentNode = idNodeQDM.getParentNode().cloneNode(false);
+			//Add code here which will create a replica of the entry elem of 'idNodeQDM' and assign it an extension
+			//which has "Occ_X" string in it.
+			Node cloneMainEntryNode = idNodeQDM.getParentNode().getParentNode().cloneNode(true);
+			Node cloneIDNode = findNode(cloneMainEntryNode, "ID");
+			cloneIDNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(extForOccurrenceNode);
 			
 			Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc()
 					.getElementsByTagName(DATA_CRITERIA_SECTION).item(0);
+			Comment occComment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause (Main entry)'"+clauseName+"'");
+			dataCriteriaSectionElem.appendChild(occComment);
+			dataCriteriaSectionElem.appendChild(cloneMainEntryNode);
+			
+			Node parentNode = cloneIDNode.getParentNode().cloneNode(false);			
 			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
 			dataCriteriaSectionElem.appendChild(comment);
 			Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
@@ -370,7 +383,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			Element idRelElem = hqmfXmlProcessor.getOriginalDoc().createElement(ID);
 			idRelElem.setAttribute(ROOT, root);
-			idRelElem.setAttribute(EXTENSION, baseExt);
+			idRelElem.setAttribute(EXTENSION, extForOccurrenceNode);
 			
 			criteriaRefElem.appendChild(idRelElem);
 			outboundRelElem.appendChild(criteriaRefElem);
@@ -970,7 +983,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				idNode.getAttributes().getNamedItem(ROOT).setNodeValue(root);
 				idNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
 				// Updated Excerpt tag idNode root and extension.
-				String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
+				//String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
 				Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
 						measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/excerpt/*/id[@root='"+idRoot+"'][@extension='"+idExtension+"']");
 				if(idNodeExcerpt!=null){

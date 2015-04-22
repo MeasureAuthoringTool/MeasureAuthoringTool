@@ -661,7 +661,7 @@ public class ComparisonDialogBox {
 			List<String> allFunctionsList, String nodeText) {
 		
 		List<String> returnList = new ArrayList<String>();
-		addFunctionWithTitelCaseInList(returnList);
+		addFunctionWithTitleCaseInList(returnList);
 		if (subSetFunctionsList.contains(nodeText.toUpperCase())) {
 			returnList.clear();
 			returnList.add(MatConstants.SATISFIES_ALL);
@@ -684,7 +684,7 @@ public class ComparisonDialogBox {
 	 * Add Functions First - Fifth , Most Recent, Satisfy All/Any in Title Case in List.
 	 * @param returnList
 	 */
-	private static void addFunctionWithTitelCaseInList(List<String> returnList) {
+	private static void addFunctionWithTitleCaseInList(List<String> returnList) {
 		returnList.add(MatConstants.FIRST);
 		returnList.add(MatConstants.SECOND);
 		returnList.add(MatConstants.THIRD);

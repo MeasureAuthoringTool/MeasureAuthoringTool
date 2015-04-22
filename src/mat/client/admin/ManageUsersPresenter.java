@@ -300,6 +300,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		 *            the new title
 		 */
 		void setTitle(String title);
+
+		Label getExpLabel();
 	}
 	
 	/** The panel. */
@@ -702,7 +704,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
-		
+		detailDisplay.getExpLabel().setText("Expires "+currentDetails.getPasswordExpirationDate()+" 11:59");
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {
 			detailDisplay.getIsRevoked().setValue(true);

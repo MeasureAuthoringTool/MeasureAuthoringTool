@@ -127,6 +127,9 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The title label. */
 	private String titleLabel = "Title";
 	
+	Label expLabel = new Label("Expires");
+
+
 	/**
 	 * Instantiates a new manage users detail view.
 	 */
@@ -235,11 +238,19 @@ implements ManageUsersPresenter.DetailDisplay {
 		/*rightPanel.add(LabelBuilder.buildRequiredLabel(rootOid, rootOidLabel));
 		rightPanel.add(rootOid);
 		rightPanel.add(new SpacerWidget());*/
-		
+		HorizontalPanel hzPanel = new HorizontalPanel();
+		hzPanel.getElement().setId("HorizontalPanel_UserExpiryDate");
+		expLabel.getElement().setId("UserPasswordExpiry_Label");
 		rightPanel.add(LabelBuilder.buildLabel(activeStatus, statusLabel));
 		activeStatus.addStyleName("block");
 		revokedStatus.addStyleName("block");
-		rightPanel.add(activeStatus);
+		SimplePanel sPanel = new SimplePanel();
+		sPanel.setWidth("10px");
+		hzPanel.add(activeStatus);
+		hzPanel.add(sPanel);
+		hzPanel.add(expLabel);
+		hzPanel.addStyleName("inline");
+		rightPanel.add(hzPanel);
 		rightPanel.add(revokedStatus);
 		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
@@ -584,5 +595,10 @@ implements ManageUsersPresenter.DetailDisplay {
 	@Override
 	public void setUserLocked(boolean b) {
 		MatContext.get().setVisible(lockedLabel, b);
+	}
+	
+	@Override
+	public Label getExpLabel() {
+		return expLabel;
 	}
 }

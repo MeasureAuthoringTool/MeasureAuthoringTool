@@ -58,6 +58,8 @@ public class ManageUsersDetailModel implements IsSerializable {
 	
 	/** The current user can change account status. */
 	private boolean currentUserCanChangeAccountStatus;
+	
+	private String passwordExpirationDate;
 
 	/**
 	 * Checks if is current user can unlock.
@@ -404,5 +406,19 @@ public class ManageUsersDetailModel implements IsSerializable {
 	 * @param organizationId the organizationId to set */
 	public void setOrganizationId(String organizationId) {
 		this.organizationId = organizationId;
+	}
+
+	/**
+	 * @return the passwordExpirationDate
+	 */
+	public String getPasswordExpirationDate() {
+		return passwordExpirationDate;
+	}
+
+	/**
+	 * @param passwordExpirationDate the passwordExpirationDate to set
+	 */
+	public void setPasswordExpirationDate(String passwordExpirationDate) {
+		this.passwordExpirationDate = passwordExpirationDate;
 	}
 }

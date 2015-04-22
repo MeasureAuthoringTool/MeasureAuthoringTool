@@ -1,6 +1,10 @@
 package mat.server;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import mat.client.admin.ManageOrganizationDetailModel;
@@ -11,9 +15,11 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.SaveUpdateOrganizationResult;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.dao.OrganizationDAO;
+import mat.dao.UserDAO;
 import mat.model.Organization;
 import mat.model.Status;
 import mat.model.User;
+import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.shared.AdminManageOrganizationModelValidator;
 import mat.shared.AdminManageUserModelValidator;
@@ -104,7 +110,20 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		boolean v = isCurrentUserAdminForUser(user);
 		model.setCurrentUserCanChangeAccountStatus(v);
 		model.setCurrentUserCanUnlock(v);
+		model.setPasswordExpirationDate(getUserPwCreationDate(user.getLoginId()));
 		return model;
+	}
+	
+	private String getUserPwCreationDate(String userID){
+		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
+		Date createDate = userDetails.getUserPassword().getCreatedDate();
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(createDate);
+		calendar.add(Calendar.DATE, 59);
+		SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
+		String passwordExpirationDate = currentDateFormat.format(calendar.getTime());
+	    return  passwordExpirationDate;
 	}
 	
 	/* (non-Javadoc)

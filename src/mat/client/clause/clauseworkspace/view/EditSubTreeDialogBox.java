@@ -159,8 +159,26 @@ public class EditSubTreeDialogBox {
 							dialogBox.setPopupPosition(365, 215);
 							dialogBox.show();
 						}
-					}else{
-						dialogBox.hide();
+					} else {
+						
+						if (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(subTreeName.getText().trim())) {
+							isClausePresent = false;
+						} 
+						
+						if(!isClausePresent){
+							dialogBox.hide();
+							xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
+							xmlTreeDisplay.setDirty(true);
+						}else{
+							validationMessagePanel.add(warningIcon);
+							messageLabel.setText("Clause name already exists");
+							validationMessagePanel.setStyleName("alertMessage");
+							validationMessagePanel.add(messageLabel);
+							dialogContents.insert(validationMessagePanel, 0);
+							dialogBox.setPopupPosition(365, 215);
+							dialogBox.show();
+						}
+						//dialogBox.hide();
 					}
 				}
 				

@@ -39,6 +39,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private Node numerator;
 	/** HQMFClauseLogicGenerator. */
 	private HQMFClauseLogicGenerator clauseLogicGenerator = new HQMFClauseLogicGenerator();
+	private boolean clauseLogicHasElementRef = false;
 	/**
 	 * MAP of Functional Ops AGGREGATE that can be used in Measure Observation.
 	 */
@@ -282,11 +283,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) throws XPathExpressionException {
 		String clauseNodeName = clauseNodes.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		List<Node> elementRefList = new ArrayList<Node>();
+		clauseLogicHasElementRef = false;
 		if (FUNCTIONAL_OPS_AGGREGATE.containsKey(clauseNodeName)) {
 			if (clauseNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
 				generateMOClauseLogicForDateTimeDiff(clauseNodes, elementRefList, measureObDefinitionElement);
 			} else {
-				generateMOClauseLogic(clauseNodes,  elementRefList, measureObDefinitionElement, true, null);
+				generateMOClauseLogic(clauseNodes,  elementRefList, measureObDefinitionElement, true, null,false);
 			}
 			generateMethodCode(measureObDefinitionElement, clauseNodeName);
 		}
@@ -299,17 +301,22 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @param measureObDefinitionElement - DOM element
 	 * @throws XPathExpressionException - Exception.
 	 */
-	private void generateMOClauseLogic(Node clauseNodes, List<Node> elementRefList, Element measureObDefinitionElement,
-			boolean isClauseLogicGeneratable, String variableName) throws XPathExpressionException {
+	private String generateMOClauseLogic(Node clauseNodes, List<Node> elementRefList, Element measureObDefinitionElement,
+			boolean isClauseLogicGeneratable, String variableName , boolean checkIfDateTimeDiff) throws XPathExpressionException {
 		String localVariableName = null;
 		Node firstChildNode = null;
 		Node parentSubTreeNode = null;
+		String preCodExp = null;
 		if (variableName != null) {
 			localVariableName = variableName;
 		}
 		if (isClauseLogicGeneratable) {
 			firstChildNode = clauseNodes.getFirstChild();
-			parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
+			if (clauseNodes.getParentNode() != null) {
+				parentSubTreeNode = clauseNodes.getParentNode().cloneNode(false);
+			} else if (clauseNodes.getNodeName().equals("subTree")) {
+				parentSubTreeNode = clauseNodes.cloneNode(false);
+			}
 		} else {
 			if ((checkIfParentSubTree(clauseNodes).getNodeName()).equalsIgnoreCase("subTree")) {
 				if (clauseNodes.getNodeName().equals("elementRef")) {
@@ -329,7 +336,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				Node setOpsNode = firstChildNode.cloneNode(true);
 				parentSubTreeNode.appendChild(setOpsNode);
 				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, false);
+					localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
 				}
 				if (localVariableName != null) {
 					Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
@@ -349,13 +356,14 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				if (!relOpsFirstChild.getAttributes().getNamedItem(DISPLAY_NAME)
 						.getNodeValue().equalsIgnoreCase(DATETIMEDIFF)) {
 					if (isClauseLogicGeneratable) {
-						localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, false);
+						localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
 					}
 					if (localVariableName != null) {
-						elementRefList = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
+						List<Node> relOpLHSQdm = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
 								, measureObDefinitionElement);
-						if ((elementRefList != null) && (elementRefList.size() > 0)) {
-							generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
+						if ((relOpLHSQdm != null) && (relOpLHSQdm.size() > 0)) {
+							clauseLogicHasElementRef = true;
+							preCodExp = generateValueAndExpressionTag(relOpLHSQdm, measureObDefinitionElement
 									, firstChildNode, localVariableName);
 						} else {
 							Element valueElementRelOp = measureObDefinitionElement.getOwnerDocument()
@@ -401,7 +409,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 							localVariableName = generateClauseLogicForChildsInsideFnxOp(
 									parentSubTreeNode, false);
 							generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
-									, measureObDefinitionElement, false, localVariableName);
+									, measureObDefinitionElement, false, localVariableName,checkIfDateTimeDiff);
 						}
 					}
 				}
@@ -412,14 +420,15 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
 				subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
 				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, false);
+					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
 				}
 				generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
-						, false, localVariableName);
+						, false, localVariableName, checkIfDateTimeDiff);
 				break;
 			default:
 				break;
 		}
+		return preCodExp;
 	}
 	/** method to get the subTree parent Node.
 	 * @param parentNode - Node
@@ -468,7 +477,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 							if ((relOpLHSQDM != null) && (relOpLHSQDM.size() > 0)) {
 								preCondExp = generateValueAndExpressionTag(relOpLHSQDM, measureObDefinitionElement
 										, firstChildNode, localVariableName);
-								generateValueExpression = true;
+								clauseLogicHasElementRef = true;
 							} else {
 								Element valueElementRelOp = measureObDefinitionElement
 										.getOwnerDocument().createElement("value");
@@ -496,7 +505,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 								if (localVariableName != null) {
 									generateMOClauseLogic(functionalOp.getFirstChild(),
 											new ArrayList<Node>(), measureObDefinitionElement,
-											false, localVariableName);
+											false, localVariableName, false);
 								}
 							}
 						}
@@ -507,17 +516,17 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						if (!subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("setOp")) {
 							Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
 							subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
-							localVariableName = generateClauseLogicForChildsInsideFnxOp(
-									subTreeRefParentNode, true);
-							generateMOClauseLogic(subTreeRefNodeLogic, new ArrayList<Node>()
-									, measureObDefinitionElement, false, localVariableName);
+							/*localVariableName = generateClauseLogicForChildsInsideFnxOp(
+									subTreeRefParentNode, true);*/
+							preCondExp = generateMOClauseLogic(subTreeRefParentNode, new ArrayList<Node>()
+									, measureObDefinitionElement, true, localVariableName, true);
 						}
 						break;
 					default:
 						break;
 				}
 			}
-			if (generateValueExpression) {
+			if (generateValueExpression || (preCondExp != null)) {
 				String preConditionExpression = generateValueAndExpressionTag(elementRefList,
 						measureObDefinitionElement, firstChildNode, null);
 				if (preCondExp != null) {
@@ -627,8 +636,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	private void generatePreCondition(Element measureObDefinitionElement, String preConditionJoinExpressionValue
 			, List<Node> elementRefList) {
 		//precondition is created if and only if more than 1 qdm is applied.
-		if ((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
-				&& (preConditionJoinExpressionValue.length() > 0)) {
+		if (((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
+				&& (preConditionJoinExpressionValue.length() > 0)) || (clauseLogicHasElementRef == true)) {
 			Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
 			preConditionElement.setAttribute(TYPE_CODE, "PRCN");
 			Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");

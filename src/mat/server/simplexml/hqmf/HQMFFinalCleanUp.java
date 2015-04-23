@@ -80,8 +80,17 @@ public class HQMFFinalCleanUp {
 			for(int i=0;i<measureObPreConditionValList.getLength();i++){
 				Node valueNode = measureObPreConditionValList.item(i);
 				String value = valueNode.getAttributes().getNamedItem("value").getNodeValue();
+				String [] preConditionExpArray = value.split("==");
+				String preCondExpValue = null;
+				for (String valueToEval : preConditionExpArray) {
+					if (preCondExpValue == null) {
+						preCondExpValue = getReplaceString(valueToEval);
+					} else {
+						preCondExpValue = preCondExpValue + "==" + getReplaceString(valueToEval);
+					}
+				}
 				value = getReplaceString(value);
-				valueNode.getAttributes().getNamedItem("value").setNodeValue(value);
+				valueNode.getAttributes().getNamedItem("value").setNodeValue(preCondExpValue);
 			}
 			
 		} catch (XPathExpressionException e) {

@@ -752,6 +752,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				searchDisplay.getVersionListBox().setEnabled(false);
 				searchDisplay.getSpecificOccChkBox().setEnabled(false);
 				searchDisplay.getDataTypesListBox().setEnabled(false);
+				searchDisplay.getSaveButton().setEnabled(false);
 				
 			}
 		});

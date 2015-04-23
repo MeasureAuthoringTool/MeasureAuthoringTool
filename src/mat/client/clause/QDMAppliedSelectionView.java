@@ -382,7 +382,7 @@ public class QDMAppliedSelectionView implements
 		  queryGrid.setWidget(2, 1, LabelBuilder.buildLabel("Version", "Version"));
 		  queryGrid.setWidget(3, 0, expansionProListBox);
 		  queryGrid.setWidget(3, 1, versionListBox);
-		  queryGrid.setWidget(4, 0, LabelBuilder.buildLabel("Data type", "Data type") );
+		  queryGrid.setWidget(4, 0, LabelBuilder.buildLabel("Datatype", "Datatype") );
 		  queryGrid.setWidget(5, 0, dataTypeListBox);
 		  queryGrid.setWidget(5, 1, specificOcurChkBox);
 		  queryGrid.setWidget(6, 0, buttonLayout);

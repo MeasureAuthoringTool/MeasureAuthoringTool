@@ -153,7 +153,7 @@ public class MessageDelegate {
 	
 	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "VSAC Profile Successfully Applied to QDM Elements.";
 	
-	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from VSAC.";
+	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from the VSAC.";
 	
 
 

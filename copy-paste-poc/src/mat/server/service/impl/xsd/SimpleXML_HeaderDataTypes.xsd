@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="mns" xmlns:msr="mns" targetNamespace="mns" elementFormDefault="qualified">
+    <xs:include schemaLocation="SimpleXML_BaselineDataTypes.xsd"/>
+    <xs:include schemaLocation="SimpleXML_Patterns.xsd"/>
+    <xs:include schemaLocation="SimpleXML_Vocab.xsd"/>
+
+    <!-- 
+    *************************************
+    *  H E A D E R   D A T A T Y P E S  *
+    *************************************
+-->
+
+    <!-- A. HEADER ELEMENTS -->
+    <xs:complexType name="headerInfoType">
+        <xs:annotation>
+            <xs:documentation>
+                List of all allowable header elements.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Title: Represents the title of the particular quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="uuid" type="uuidPattern" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        UUID: Represents the globally unique measure identifier for a particular version of a quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="version" type="xs:decimal" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Version: A positive integer value used to version successive replacement documents.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="setid" type="uuidPattern" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        SetId: Represents the unique measure identifier for a quality measure, regardless of version. This id is used for version control.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="period" type="periodType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Period: Represents measurement period information (i.e., startdate and stopdate)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="status" type="statusEnum" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Status: Represents the state of the current version of the eMeasure. Can be used to signify that a particular version is draft (i.e., In Progress) vs. final (i.e., Complete). 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="nqfid" type="rootExtType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Description: Represents the NQF Id for the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="authors" type="authorType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Authors: Grouper for author elements used to represent the author(s) of the measure. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="custodian" type="orgBaseType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Custodian: Represents the organization that is in charge of maintaining the document. The custodian is the steward that is entrusted with the care of the document, and bears overall responsibility for the measure, serving as primary contact for issues or concerns about the measure. Every eMeasure document has exactly one custodian. 
+                        
+                        Typically, the author(s) and the custodian are part of the same organization. However, there may be use cases where the quality measure is authored by one organization on behalf of the custodian organization.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="verifiers" type="verifierType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Verifiers: Grouper for verifier elements used to represent the approver(s) of the measure.                               
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Description: Represents a brief narrative description of the quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="copyright" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Copyright: Copyright information for the quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="disclaimer" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Disclaimer: Disclaimer information for the quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="scores" type="measureScoreType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Scores: Grouper for score elements used to represent the score(s) for the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="types" type="measureType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Types: Grouper for type elements used to represent the measure type.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="stratification" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Stratification: Containts stratification information for the quality measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="supplementalData" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Supplemental Data: User provided narrative for the Supplemental Data Elements section.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="riskAdjustment" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Risk Adjustment: Represents the method of adjusting for clinical severity and conditions present at the start of care that can influence patient outcomes, to make valid comparisons of outcome measures across providers. Indicates whether a measure is subject to the statistical process for reducing, removing, or clarifying the influences of confounding factors to allow more useful comparisons. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="transmission" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Risk Adjustment: Represents the method of adjusting for clinical severity and conditions present at the start of care that can influence patient outcomes, to make valid comparisons of outcome measures across providers. Indicates whether a measure is subject to the statistical process for reducing, removing, or clarifying the influences of confounding factors to allow more useful comparisons. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="rationales" type="rationaleType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Rationales: Grouper for rationale elements used to provide the overall rationale for the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="recommendations" type="recommendationType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Recommendations: Grouper for recommendation elements used to provide overall recommendations for the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="improvementNotation" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Improvement Notation: Information on whether an increase or decrease in score is the preferred result. This should reflect information on which way is better, an increase or decrease in score.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="references" type="referenceType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        References: Grouper for reference elements used to provide external evidence in support of the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>            
+            <xs:element name="definitions" type="definitionType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Definitions: Grouper for definition elements used to define measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="guidance" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Guidance: Provides guidance for the quality measure either in how care should be given or measurement calculated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="transmissionFormat" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Transmission Format: Specifies which format a report should be submitted in for this measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="descriptions" type="descriptionType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Descriptions: Grouper for description elements used to provide more user-friendly descriptions of population or population-like sections used in the measure (e.g., IPP, Denominator, Numerator, Measure Observation).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>   
+            <xs:element name="supplemental" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Supplemental Description: used to provide information on the Supplemental Data Elements section.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="qualityMeasureSet" type="uuidBaseType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Quality Measure Set: Represents the quality measure set to which the quality measure belongs.                        
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="aggregation" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Aggregation: used to provide information on rate aggregation for the measure.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="initialPatientPopDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Initial Patient Population Description: User description about Initial Patient Population. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="denominatorExclusionsDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Denominator Exclusions Description: User description about Denominator Exclusions. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numeratorDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Numerator Description: User description about Numerator.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numeratorExclusionsDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Numerator Exclusions Description: User description about Numerator Exclusions.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="denominatorExceptionsDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Denominator Exceptions Description: User description about Denominator Exceptions.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="measurePopulationDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Measure Population Description: User description about Measure Population. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="measureObservationsDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Measure Observation Description: User description about Measure Observation. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="denominatorDescription" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Denominator Description: User description about Denominator. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="emeasureid" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        e-Measure Id: The id for this measure that CMS uses for their legislation. This should be distinguised from the setId element, which is the measure id used for version control.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger">
+                        <xs:totalDigits value="6"/>                                                
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>                
+        </xs:all>
+    </xs:complexType>
+
+    <!-- B. TYPES SPECIFIC TO HEADER -->
+
+    <!-- 1) REFERENCES A TYPE SPECIFIC TO XML DATATYPES -->
+    <xs:complexType name="definitionType">
+        <xs:sequence>
+            <xs:element name="definition" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Definition: A definition of the quality measure. There can be several definitions. Each definition would be indicated in a separate definition element within the definitions grouper. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="rationaleType">
+        <xs:sequence>
+            <xs:element name="rationale" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Rationale: Description of why this measure is important, particularly from a clinical perspective. There can several rationale provided for a measure. Each rationale is indicated in a separate rationale element within the rationales grouper. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="recommendationType">
+        <xs:sequence>
+            <xs:element name="recommendation" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Recommendation: A clinical recommendation for the quality measure. There can be several recommendations for a measure. Each recommendation is indicated in a separate recommendation element within the recommendations grouper.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="referenceType">
+        <xs:sequence>
+            <xs:element name="reference" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Reference: A bibliographic citation to support the quality measure. There may be several references for a measure. Each reference would be in a separate reference element within the references grouper.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 2) REFERENCES A TYPE SPECIFIC TO SimpleXML_Vocab.xsd -->
+    <xs:complexType name="authorType">
+        <xs:sequence>
+            <xs:element name="author" type="orgBaseType" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Author: Represents a single human or organization that authored part or all of the quality measure. There can be several authors; each author would be in a separate author element within the authors grouper. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="measureScoreType">
+        <xs:all>
+            <xs:element name="score" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Score: Represents how the measure is scored. Examples: Proportion, Ratio, Continuous variable
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType mixed="true">
+                    <xs:attribute name="id" type="qualityMsrScoreEnum" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                @id: A coded value for the quality measure score (PROPOR, RATIO, CONTVAR).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="measureType">
+        <xs:sequence>
+            <xs:element name="type" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Type: Indicates whether the measure is used to examine a process or an outcome over time. There can be several measure types for a quality measure. Each measure type would be in a separate type element within the types grouper.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType mixed="true">
+                    <xs:attribute name="id" type="qualityMsrTypeEnum" use="required">
+                        <xs:annotation>
+                            <xs:documentation>
+                                @id: A coded value for the quality measure type (PROCESS, OUTCOME, COMPOSITE, COSTRESOURCEUSE, EFFICIENCY, STRUCTURE, PATENGEXP)
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 3) REFERENCES A TYPE SPECIFIC TO SimpleXML_BaselineDataTypes.xsd -->
+    <xs:complexType name="verifierType">
+        <xs:sequence>
+            <xs:element name="verifier" type="orgBaseType" minOccurs="1" maxOccurs="unbounded">                
+                <xs:annotation>
+                    <xs:documentation>
+                        Verifier: Used to indicate that no organization verified.                              
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="descriptionType">
+        <xs:sequence>
+            <xs:element name="description" type="descriptionBaseType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Description: Provide description of a section used in the body of the measure. There may be several Initial Patient Populations for a measure (e.g., IPP, Denominator, Numerator). Each description would be in a separate description element within the associated grouper.                        
+                    </xs:documentation>
+                </xs:annotation>  
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>        
+
+    <!-- 4) REFERENCES A TYPE IN SimpleXML_BaselineDataTypes.xsd AND SimpleXML_Patterns.xsd -->
+    <xs:complexType name="periodType">
+        <xs:sequence>
+            <xs:element name="startdate" type="dateBaseType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        StartDate: Represents start date of measurement period.
+                        Format: YYYYMMDD.
+                        Note: To indicate 20XX for year, value must be equal to 0000.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="stopdate" type="dateBaseType" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        StopDate: Represents end date of measurement period.
+                        Format: YYYYMMDD.
+                        Note: To indicate 20XX for year, value must be equal to 0000.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="uuid" type="uuidPattern" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    @uuid: A UUID for the measurement period provided. A UUID is an identifier that uniquely identifies a thing or object and is in format similar to the following: F13FC49F-BC05-47A7-B130-AEA9E4D6B439. When referencing the measurment period, this UUID should be used.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>   
+
+</xs:schema>

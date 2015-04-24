@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+          version="3.0">
+  
+  <!-- Default page to serve -->
+ 
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+             /WEB-INF/applicationContext-service.xml
+              /WEB-INF/applicationContext-security.xml
+           /WEB-INF/mat-persistence.xml
+           /WEB-INF/applicationContext-mail.xml
+           /WEB-INF/applicationContext-task.xml
+        </param-value>
+    </context-param>
+    <filter>
+        <filter-name>hibernateStatsFilter</filter-name>
+        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter>
+        <filter-name>hibernateFilter</filter-name>
+        <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+ <filter>
+    <filter-name>PreventCachingFilter</filter-name>
+  <filter-class>mat.server.PreventCachingFilter</filter-class>
+ </filter>
+ 
+ <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>  
+ 
+    <filter-mapping>
+      <filter-name>hibernateStatsFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>hibernateFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+   <filter-name>PreventCachingFilter</filter-name>
+   <url-pattern>/*</url-pattern>
+ </filter-mapping> 
+    
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>mat.server.MatSessionListener</listener-class>
+    </listener>
+    <listener>
+    <listener-class>
+      org.springframework.security.web.session.HttpSessionEventPublisher
+    </listener-class>
+  </listener> 
+  <servlet>
+    <servlet-name>adminServlet</servlet-name>
+    <servlet-class>mat.server.AdminServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>measureLibraryServlet</servlet-name>
+    <servlet-class>mat.server.MeasureServiceImpl</servlet-class>
+  </servlet>  
+  <servlet>
+    <servlet-name>sessionManagementServlet</servlet-name>
+    <servlet-class>mat.server.SessionManagementServImpl</servlet-class>
+  </servlet>    
+  <servlet>
+    <servlet-name>myAccountServlet</servlet-name>
+    <servlet-class>mat.server.MyAccountServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+   <servlet-name>loginServiceImpl</servlet-name>
+   <servlet-class>mat.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+   <servlet-name>logoutServiceImpl</servlet-name>
+   <servlet-class>mat.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>codelistServiceImpl</servlet-name>
+    <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
+  </servlet>
+  <!-- <servlet>
+    <servlet-name>clauseServiceImpl</servlet-name>
+    <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>clauseCloningServiceImpl</servlet-name>
+    <servlet-class>mat.server.clause.ClauseCloningServiceImpl</servlet-class>
+  </servlet> -->
+  <servlet>
+    <servlet-name>packageServiceImpl</servlet-name>
+    <servlet-class>mat.server.PackageServiceImpl</servlet-class>
+  </servlet>
+   <servlet>
+    <servlet-name>qDSAttributesServiceImpl</servlet-name>
+    <servlet-class>mat.server.clause.QDSAttributesServiceImpl</servlet-class>
+  </servlet> 
+  <servlet>
+    <servlet-name>measureCloningServiceImpl</servlet-name>
+    <servlet-class>mat.server.clause.MeasureCloningServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>exportServlet</servlet-name>
+    <servlet-class>mat.server.ExportServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>bulkExportServlet</servlet-name>
+    <servlet-class>mat.server.BulkExportServlet</servlet-class>
+  </servlet>
+   <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+   <servlet-name>auditServiceImpl</servlet-name>
+   <servlet-class>mat.server.AuditServiceImpl</servlet-class>
+  </servlet>  
+   <servlet>
+    <servlet-name>vsacAPIServiceImpl</servlet-name>
+    <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/mat/uploadFormHandler</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>exportServlet</servlet-name>
+    <url-pattern>/mat/export</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>bulkExportServlet</servlet-name>
+    <url-pattern>/mat/bulkExport</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>adminServlet</servlet-name>
+    <url-pattern>/mat/admin</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>sessionManagementServlet</servlet-name>
+    <url-pattern>/mat/sessionService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>measureLibraryServlet</servlet-name>
+    <url-pattern>/mat/measureLibrary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>myAccountServlet</servlet-name>
+    <url-pattern>/mat/myAccount</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+   <servlet-name>loginServiceImpl</servlet-name>
+   <url-pattern>/login/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>logoutServiceImpl</servlet-name>
+   <url-pattern>/mat/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>codelistServiceImpl</servlet-name>
+    <url-pattern>/mat/codelist</url-pattern>
+  </servlet-mapping>
+ <!--  <servlet-mapping>
+    <servlet-name>clauseServiceImpl</servlet-name>
+    <url-pattern>/mat/clause</url-pattern>
+  </servlet-mapping> -->
+ <!--  <servlet-mapping>
+    <servlet-name>clauseCloningServiceImpl</servlet-name>
+    <url-pattern>/mat/clauseCloning</url-pattern>
+  </servlet-mapping> -->
+  <servlet-mapping>
+    <servlet-name>packageServiceImpl</servlet-name>
+    <url-pattern>/mat/package</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+    <servlet-name>qDSAttributesServiceImpl</servlet-name>
+    <url-pattern>/mat/qdsattributes</url-pattern>
+  </servlet-mapping> 
+  <servlet-mapping>
+    <servlet-name>measureCloningServiceImpl</servlet-name>
+    <url-pattern>/mat/measureCloning</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+   <servlet-name>auditServiceImpl</servlet-name>
+   <url-pattern>/mat/auditService</url-pattern>
+  </servlet-mapping> 
+  <servlet-mapping>
+    <servlet-name>vsacAPIServiceImpl</servlet-name>
+    <url-pattern>/mat/vsacapi</url-pattern>
+  </servlet-mapping> 
+   <session-config>
+        <session-timeout>70</session-timeout>
+        <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
+        <cookie-config>
+           <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+   </session-config>
+ 
+</web-app>
+ 
+
+ 

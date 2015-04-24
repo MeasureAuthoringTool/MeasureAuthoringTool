@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.QualityDataModelWrapper">
+		<map-to xml="measure" />
+		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
+			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
+			collection="arraylist">
+			<bind-xml name="elementRef" location="supplementalDataElements">
+				<class name="mat.model.QualityDataSetDTO">
+					<field name="uuid" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="codeListName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+</mapping>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="mns" xmlns:msr="mns" targetNamespace="mns" elementFormDefault="qualified">    
+    <xs:include schemaLocation="SimpleXML_BaselineDataTypes.xsd"/>
+
+    <xs:complexType name="abbrElementType">
+        <xs:sequence>
+            <xs:element name="qdsel" type="qdselElementType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="measureel" type="msrelElementType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>    
+
+    <xs:complexType name="qdselElementType">        
+        <xs:attributeGroup ref="qdselBaseAttributeGroup"/>
+    </xs:complexType>
+    
+    <xs:complexType name="msrelElementType">        
+        <xs:attributeGroup ref="msrelBaseAttributeGroup"/>            
+        <xs:attribute name="uuid" type="uuidPattern" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    @uuid: A UUID for the measure element. A UUID is an identifier that uniquely identifies the measureel within the eMeasure.xml and is in format similar to the following: F13FC49F-BC05-47A7-B130-AEA9E4D6B439.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>    
+
+</xs:schema>

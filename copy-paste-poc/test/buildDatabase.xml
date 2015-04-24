@@ -1,0 +1,100 @@
+<project name="MAT-Database" basedir="." >
+    <property name="build.file" value="buildDatabase.xml"/>
+	
+    <property environment="env"/>
+    <property file="${config.file}" />
+    <property file="${user.name}.properties" />
+    <property file="build.properties" />
+
+	<property name="junit.output" value="${env.TEMP}/testResults"/>
+	
+	  <path id="junit.classpath">
+	  	<!-- fileset dir="../war/WEB-INF/classes" / -->
+	  	<fileset dir="../war/WEB-INF/lib" includes="*"/>
+	  	<path path="../test-classes"/>
+	  </path>
+
+	
+	
+    <target name="dumpProperties">
+    	<echoproperties></echoproperties>
+    </target>
+    
+	
+	<target name="dumpDatabase" description="Export database to the file specificy by backup.file">
+		<mkdir dir="database_backups"/>
+		<echo>Dumping database to ${backup.file}</echo>
+	    <exec dir="" executable="mysqldump.exe" failonerror="true" failifexecutionfails="true">
+	        <arg value="-u${db.user}"/>
+	    	<arg value="-p${db.password}"/>
+            <arg value="-h${db.host}"/>
+	    	<arg value="-r"/>
+	    	<arg value="database_backups/${backup.file}"/>
+	    	<arg value="mat_app"/>
+	    </exec>
+	</target>
+	
+	<target name="restoreDatabase">
+		<echo>Restoring database from ${backup.file}</echo>
+        <exec dir="" executable="mysql.exe" failonerror="true" failifexecutionfails="true">
+            <arg value="-u${db.user}"/>
+            <arg value="-p${db.password}"/>
+        	<arg value="-h${db.host}"/>
+            <arg value="-Dmat_app"/>
+            <arg value="-e"/>
+        	<arg value='"source database_backups/${backup.file}"'/>
+        </exec>		
+    </target>
+	
+	<target name="startDatabase">
+	    <exec dir="" executable="mysqld.exe" spawn="true">
+	    	<arg line="--skip-grant-tables"/>
+	    </exec>
+	</target>
+	
+	<target name="stopDatabase">
+        <exec dir="" executable="mysqlAdmin.exe" failonerror="true" failifexecutionfails="true">
+            <arg line="shutdown"/>
+        </exec>
+    </target>
+	
+	<target name="runTestImpl">
+		<!-- antcall target="restoreDatabase"/ -->
+		<echo>Running test ${test.suite}</echo>
+		<junit haltonfailure="true" haltonerror="true">
+			<classpath refid="junit.classpath"/> 
+			<test name="${test.suite}" todir="${junit.output}">
+			    <formatter type="xml"/>
+			</test>
+		</junit>
+	</target>
+	
+	<target name="runTestConfigs">
+    	<apply executable="ant.bat" failonerror="true" failifexecutionfails="true">  
+    	    <arg value="-f"/>
+    		<arg value="${build.file}"/>
+    	    <srcfile prefix="-Dconfig.file="/> 
+    	    <arg value="runTestImpl"/>
+    	    <fileset dir="testConfigs" includes="*.properties"/> 
+    	  </apply> 
+	</target>
+	
+	<target name="runAllTests">
+		<delete dir="${junit.output}"/>
+		<mkdir dir="${junit.output}"/>
+		
+		<antcall target="startDatabase"/>
+		<antcall target="dumpDatabase"/>
+		<antcall target="runTestConfigs"/>
+		<antcall target="restoreDatabase"/>
+		<antcall target="stopDatabase"/>
+		
+		<junitreport todir=".">
+		  <fileset dir="${junit.output}">
+		    <include name="TEST-*.xml"/>
+		  </fileset>
+		  <report format="frames" todir="./report/html"/>
+		</junitreport>
+
+	</target>
+</project>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="mns" xmlns:msr="mns" targetNamespace="mns" elementFormDefault="qualified">
+    <xs:include schemaLocation="SimpleXML_BaselineDataTypes.xsd"/>
+    <xs:include schemaLocation="SimpleXML_Patterns.xsd"/>  
+    
+    <xs:complexType name="observationType">
+        <xs:sequence>
+            <xs:element name="AND" type="logicalOpType" minOccurs="1" maxOccurs="1"/>
+            
+        </xs:sequence>
+        <xs:attribute name="uuid" type="uuidPattern" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    @uuid: A UUID for the Measure Observation provided. A UUID is an identifier that uniquely identifies a thing or object and is in format similar to the following: F13FC49F-BC05-47A7-B130-AEA9E4D6B439.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType> 
+</xs:schema>

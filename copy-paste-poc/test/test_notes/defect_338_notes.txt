@@ -1,0 +1,25 @@
+Defect 338 Test
+
+01) create measure adding AND to all system clauses
+02) create a phrase p1 and add it to a system clause sc1 --> AND
+03) save
+04) select sc1 and select copy
+05) select user defined
+06) select paste
+07) enter custom user name
+07) save
+08) select sign out
+09) sign in and verify user defined containd system clause is displaying the user defined name
+10) verify clause library displays the copied system clause custom name
+
+11) create a second measure with a phrase p2
+12) add p2 to system clause sc2 --> AND
+13) select sc1 and select clone
+14) select user defined and select paste clone
+15) save
+16) sign out
+17) sign in and verify user defined contained system clause is displaying the cloned system clause
+
+TODO
+add test notes for copy and clone into other system clauses
+add test notes to verify an alert box appears when clone is selected and no system clause in the clause library has been selected yet

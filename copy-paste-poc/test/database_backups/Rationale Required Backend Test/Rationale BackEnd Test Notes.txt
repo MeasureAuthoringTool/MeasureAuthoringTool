@@ -1,0 +1,14 @@
+Note:- This test is to see whether in the database, all the Empty value and white spaces and NULL in Rationale
+field has been replaced with N/A.
+
+1.Please Run the initialPosition.sql in your sql database,
+2. Then choose the Rationale Dump.sql which dumps the dummy codeList with NULL, empty spaces and white spaces 
+for the list object 
+3. Then run Production Patch Rationale Required-1.0.4.sql to test whether all the NULL,emptySpaces 
+and whiteSpaces has been replaced with N/A.
+
+
+Note:- Follow the below steps to see whether the database allow NULL and empty spaces after you 
+followed above steps,
+4. Run the RationaleUpdateTest.sql, if the sql fails, then it means the database has got the NOT NULL constraint
+set.

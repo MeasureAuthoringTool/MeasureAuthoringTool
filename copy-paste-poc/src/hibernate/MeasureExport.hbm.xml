@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.MeasureExport" table="MEASURE_EXPORT" lazy="true">
+    <id name="id" column="MEASURE_EXPORT_ID" >
+        <generator class="uuid"/>
+    </id>
+    <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID" unique="true"/>
+	<property name="simpleXML" column="SIMPLE_XML" />
+	<property name="codeList" type="blob" column="CODE_LIST" />
+  </class>
+</hibernate-mapping>

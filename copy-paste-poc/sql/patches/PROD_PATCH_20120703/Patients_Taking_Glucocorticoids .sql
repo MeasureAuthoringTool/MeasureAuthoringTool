@@ -1,0 +1,1 @@
+UPDATE `MAT_APP`.`CLAUSE` SET `NAME`='GIOP Risk Assessment_Population2' WHERE `ID`='8a4d92b235fb4aa701365418e0157c11';

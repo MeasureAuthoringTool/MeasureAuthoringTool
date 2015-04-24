@@ -1,0 +1,7 @@
+Hi ${content.firstname} ${content.lastname}${content.rolename}!
+
+Your account has been inactive for 180 days and is therefore now disabled. 
+
+To activate your account, contact the help desk at support@emeasuretool.org.
+ 
+ 

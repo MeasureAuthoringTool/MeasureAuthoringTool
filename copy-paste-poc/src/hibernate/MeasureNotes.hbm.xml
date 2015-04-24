@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.MeasureNotes" table="MEASURE_NOTES" lazy="false">
+	<id name="id" column="ID">	
+			<generator class="uuid"/>
+    </id>
+	<!-- <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID"/> -->
+	<property name="measure_id" column="MEASURE_ID"/>
+	<property name="noteTitle"  column="TITLE"/>
+	<property name="noteDesc"   column="DESCRIPTION"/>
+	<many-to-one name="createUser" class="mat.model.User" column="CREATE_USER_ID"/>
+	<many-to-one name="modifyUser" class="mat.model.User" column="MODIFY_USER_ID"/>
+	<property name="lastModifiedDate" column="LAST_MODIFIED_DATE"/>
+</class>
+</hibernate-mapping>

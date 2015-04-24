@@ -110,21 +110,33 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		boolean v = isCurrentUserAdminForUser(user);
 		model.setCurrentUserCanChangeAccountStatus(v);
 		model.setCurrentUserCanUnlock(v);
-		model.setPasswordExpirationDate(getUserPwCreationDate(user.getLoginId()));
+		model.setPasswordExpirationMsg(getUserPwdCreationMsg(user.getLoginId()));
 		return model;
 	}
 	
-	private String getUserPwCreationDate(String userID){
+	private String getUserPwdCreationMsg(String userID){
 		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
-		Date createDate = userDetails.getUserPassword().getCreatedDate();
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(createDate);
-		calendar.add(Calendar.DATE, 59);
-		SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
-		String passwordExpirationDate = currentDateFormat.format(calendar.getTime());
-	    return  passwordExpirationDate;
+		Date creationDate = userDetails.getUserPassword().getCreatedDate();
+		Date currentDate = new Date();
+		String passwordExpiryMsg = "";
+		
+			Calendar calendar = GregorianCalendar.getInstance();
+			calendar.setTime(creationDate);
+			calendar.add(Calendar.DATE, 59);
+			SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
+			if(currentDate.before(calendar.getTime()) || 
+					currentDate.equals(calendar.getTime())){
+			passwordExpiryMsg = "Password Expiry Date: " +
+			                  currentDateFormat.format(calendar.getTime())+" 23:59  ";
+		} else {
+			passwordExpiryMsg = "Password Expired.";
+		}
+		
+	    return  passwordExpiryMsg;
 	}
+	
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#getAllOrganizations()

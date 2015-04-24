@@ -1,7 +1,10 @@
 package mat.client.admin;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.InformationMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -301,7 +305,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		void setTitle(String title);
 
-		Label getExpLabel();
+		//Label getExpLabel();
+
+		InformationMessageDisplayInterface getInformationMessageDisplay();
 	}
 	
 	/** The panel. */
@@ -334,6 +340,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
 		displaySearch();
+		
 		
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageUsersSearchModel.Result>() {
 			@Override
@@ -700,11 +707,17 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
 		detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
-		detailDisplay.getLoginId().setText(currentDetails.getLoginId());
+		//detailDisplay.getLoginId().setText(currentDetails.getLoginId());
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
-		detailDisplay.getExpLabel().setText("Expires "+currentDetails.getPasswordExpirationDate()+" 11:59");
+		List<String> messages = new ArrayList<String>();
+		messages.add("User ID : "+currentDetails.getLoginId());
+		messages.add(currentDetails.getPasswordExpirationMsg());
+		
+		if(currentDetails.getLoginId() != null){
+			detailDisplay.getInformationMessageDisplay().setMessages(messages);
+		}
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {
 			detailDisplay.getIsRevoked().setValue(true);
@@ -737,6 +750,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getOid().setTitle(currentDetails.getOid());*/
 		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 	}
+	
 	
 	/**
 	 * Update user details from view.

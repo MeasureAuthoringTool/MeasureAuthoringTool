@@ -808,6 +808,18 @@ left:50px;
     text-align: left;
 }
 
+.informationMessage {
+    background: no-repeat scroll 6px 50% #D3DDF5;
+    border: 1px solid #4278F5;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+}
+
+
 .loginInfoMessageContainer {
 	-moz-box-sizing:border-box;
     background-color:#E3F3D8;

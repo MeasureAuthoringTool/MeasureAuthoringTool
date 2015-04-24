@@ -1,5 +1,0 @@
-https://subversion.ifmc.org/svn/NQFMeasureAuthoringTool/trunk/sql/PROD_Rollback_20110511/DATABASECHANGELOG_rollback.sql
-https://subversion.ifmc.org/svn/NQFMeasureAuthoringTool/trunk/sql/PROD_Rollback_20110511/rollback_01.00.09_20110322.sql
-https://subversion.ifmc.org/svn/NQFMeasureAuthoringTool/trunk/sql/PROD_Rollback_20110511/rollback_01.00.13_20110503.sql
-https://subversion.ifmc.org/svn/NQFMeasureAuthoringTool/trunk/sql/PROD_Rollback_20110511/rollback_01.00.12_20110513.sql
-https://subversion.ifmc.org/svn/NQFMeasureAuthoringTool/trunk/sql/PROD_Rollback_20110511/rollback_01.00.09B_20110322.sql

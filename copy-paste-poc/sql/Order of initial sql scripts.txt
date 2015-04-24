@@ -1,3 +1,0 @@
-MAT_APP.sql
-measure_package.sql
-insert.sql

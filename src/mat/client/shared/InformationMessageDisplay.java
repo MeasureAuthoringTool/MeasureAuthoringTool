@@ -91,7 +91,7 @@ public class InformationMessageDisplay extends Composite implements InformationM
 		for(String message : messages) {
 			msgPanel.add(wrap(message));
 		}
-		vPanel.add(new SpacerWidget());
+		msgPanel.add(new SpacerWidget());
 		setFocus();
 	}
 

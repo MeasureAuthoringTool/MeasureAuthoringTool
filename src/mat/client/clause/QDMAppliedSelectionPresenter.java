@@ -14,12 +14,14 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -44,6 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -147,7 +150,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the retrieve from vsac button
 		 */
-		Button getRetrieveFromVSACButton();
+		PrimaryButton getRetrieveFromVSACButton();
 		
 		/**
 		 * Gets the save button.
@@ -973,6 +976,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				} else {
 					searchDisplay.getSaveButton().setEnabled(true);
 					searchDisplay.getSpecificOccChkBox().setValue(false);
+					if(!isUSerDefined){
+						searchDisplay.getSpecificOccChkBox().setEnabled(true);
+					}
 				}
 			}
 		});
@@ -1438,7 +1444,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		}
 		
-		if(!expProfileToAllQDM.isEmpty()){
+		if(!expProfileToAllQDM.isEmpty() && !isUSerDefined){
 			currentMatValueSet.setExpansionProfile(expProfileToAllQDM);
 			currentMatValueSet.setVersion("1.0");
 			matValueSetTransferObject.setExpansionProfile(true);

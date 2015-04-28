@@ -15,6 +15,8 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
@@ -62,9 +64,8 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class VSACProfileSelectionView.
+ * The Class QDMAppliedSelectionView.
  */
 public class QDMAppliedSelectionView implements
 		QDMAppliedSelectionPresenter.SearchDisplay,
@@ -132,15 +133,9 @@ public class QDMAppliedSelectionView implements
 
 	/** The update button. */
 	private Button updateVSACButton = new PrimaryButton("Update From VSAC ","primaryButton");
-
-	/** The add new button. */
-	private Button cancelButton = new Button("Cancel");
 	
 	/** The apply button. */
 	private Button applyButton = new PrimaryButton("Apply", "primaryButton"); 
-	
-	/** The save button. */
-	private Button saveButton = new PrimaryButton("Apply", "primaryButton");
 
 	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
@@ -166,15 +161,9 @@ public class QDMAppliedSelectionView implements
 	/** The data type list box. */
 	ListBoxMVP dataTypeListBox = new ListBoxMVP();
 	 
-	
-	 /** The oid input. */
- 	private MatTextBox oidInput = new MatTextBox();
-	 
  	/** The name input. */
  	private MatTextBox nameInput = new MatTextBox();
-	 /** The retrieve button. */
-	 private Button retrieveButton = new Button("Search");
-	 
+
 	 /** The is editable. */
  	private boolean isEditable;
 
@@ -193,7 +182,11 @@ public class QDMAppliedSelectionView implements
 	/** The spager. */
 	private MatSimplePager spager;
 	
-	private MatTextBox myTextBox = new MatTextBox();
+	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar();
+	
+	private SearchWidget searchWidget = new SearchWidget("Retrieve OID", 
+			"Enter OID", "textSearchWidget");
+	
 
 
 	/**
@@ -207,7 +200,7 @@ public class QDMAppliedSelectionView implements
 		  mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		  SimplePanel simplePanel = new SimplePanel();
 		  simplePanel.setWidth("5px");
-		  
+
 		  HorizontalPanel hp = new HorizontalPanel();
 		  hp.add(buildElementWithVSACValueSetWidget());
 		  hp.add(simplePanel);
@@ -277,6 +270,7 @@ public class QDMAppliedSelectionView implements
 		  vsacProfileListBox.addItem("--Select--");
 		  VerticalPanel searchPanel = new VerticalPanel();
 		  searchPanel.setWidth("450px");
+		  searchPanel.setHeight("227px");
 		  searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		  searchPanel.setStyleName("valueSetSearchPanel");
 		  vsacProfileHeader.getElement().setId("searchHeader_Label");
@@ -285,15 +279,12 @@ public class QDMAppliedSelectionView implements
 		  vsacProfileHeader.getElement().setTitle("Search by OID and Name");
 		  searchPanel.add(vsacProfileHeader);
 		  searchPanel.add(new SpacerWidget());
-		  VerticalPanel vp = new VerticalPanel();
-		  vp.setHeight("60px");
-		  Grid queryGrid = new Grid(6, 1);
+		  Grid queryGrid = new Grid(5, 1);
 		  queryGrid.setWidget(0, 0, profileSel);
 		  queryGrid.setWidget(1, 0, new SpacerWidget());
 		  queryGrid.setWidget(2, 0, vsacProfileListBox);
 		  queryGrid.setWidget(3, 0, new SpacerWidget());
 		  queryGrid.setWidget(4, 0, applyButton);
-		  queryGrid.setWidget(5, 0, vp);
 		  queryGrid.setStyleName("secondLabel");
 		  searchPanel.add(queryGrid);
 		return searchPanel;
@@ -337,10 +328,10 @@ public class QDMAppliedSelectionView implements
 		  searchPanel.add(searchHeader);
 		  searchPanel.add(new SpacerWidget());
 		  
-		  oidInput.getElement().setId("oidInput_TextBox");
-		  oidInput.getElement().setAttribute("tabIndex", "0");
-		  oidInput.setTitle("Enter OID");
-		  oidInput.setWidth("200px");
+		  //oidInput.getElement().setId("oidInput_TextBox");
+		 // oidInput.getElement().setAttribute("tabIndex", "0");
+		 // oidInput.setTitle("Enter OID");
+		 // oidInput.setWidth("200px");
 		  nameInput.getElement().setId("nameInput_TextBox");
 		  nameInput.getElement().setAttribute("tabIndex", "0");
 		  nameInput.setTitle("Enter Name");
@@ -357,38 +348,26 @@ public class QDMAppliedSelectionView implements
 		  dataTypeListBox.setWidth("200px");
 		  dataTypeListBox.getElement().setId("DataType_ListBox");
 		  dataTypeListBox.getElement().setTitle("DataType Selection List");
-		  
-		  cancelButton.setEnabled(!checkForEnable());
-		  cancelButton.setTitle("Cancel");
-		  cancelButton.getElement().setId("modify_Button");
-//		  buttonLayout.add(saveButton);
-//		  buttonLayout.add(cancelButton);
-		  saveButton.getElement().setId("saveButton_Button");
-		  saveButton.getElement().setAttribute("tabIndex", "0");
-		  saveButton.setTitle("Apply to QDM Elements");
-		  retrieveButton.getElement().setId("retrieveButton_Button");
-		  retrieveButton.getElement().setAttribute("tabIndex", "0");
-		  retrieveButton.setTitle("Search");
-		  buttonLayout.add(saveButton);
-		  buttonLayout.add(retrieveButton);
+
 		  specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
 		  specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
-		  Grid queryGrid = new Grid(7, 4);
-		  queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "OID:"));
-		  queryGrid.setWidget(1, 0, oidInput);
-		  queryGrid.setWidget(0, 1, LabelBuilder.buildLabel(new Label(), "Name:"));
-		  queryGrid.setWidget(1, 1, nameInput);
+		  
+		  saveCancelButtonBar.getSaveButton().setText("Apply");
+		  searchWidget.getSearchInput().setWidth("270px");
+		  Grid queryGrid = new Grid(5, 4);
+		  queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "Name"));
+		  queryGrid.setWidget(1, 0, nameInput);
+		  queryGrid.setWidget(0, 1, LabelBuilder.buildLabel("Datatype", "Datatype"));
+		  queryGrid.setWidget(1, 1, dataTypeListBox);
 		  queryGrid.setWidget(2, 0, LabelBuilder.buildLabel("Expansion Profile", "Expansion Profile"));
 		  queryGrid.setWidget(2, 1, LabelBuilder.buildLabel("Version", "Version"));
 		  queryGrid.setWidget(3, 0, expansionProListBox);
 		  queryGrid.setWidget(3, 1, versionListBox);
-		  queryGrid.setWidget(4, 0, LabelBuilder.buildLabel("Datatype", "Datatype") );
-		  queryGrid.setWidget(5, 0, dataTypeListBox);
-		  queryGrid.setWidget(5, 1, specificOcurChkBox);
-		  queryGrid.setWidget(6, 0, buttonLayout);
-		  queryGrid.setWidget(6, 1, cancelButton);
-
+		  queryGrid.setWidget(4, 0, saveCancelButtonBar);
+		  queryGrid.setWidget(4, 1, specificOcurChkBox);
 		  queryGrid.setStyleName("secondLabel");
+		  searchPanel.add(searchWidget);
+		  searchPanel.add(new SpacerWidget());
 		  searchPanel.add(queryGrid);
 		  return searchPanel;
 		 }
@@ -941,7 +920,7 @@ public class QDMAppliedSelectionView implements
 		versionListBox.setEnabled(false);
 		specificOcurChkBox.setEnabled(false);
 		dataTypeListBox.setEnabled(false);
-		saveButton.setEnabled(false);
+		//saveButton.setEnabled(false);
 		}
 		searchHeader.setText("Search");
 	}
@@ -1261,7 +1240,7 @@ public class QDMAppliedSelectionView implements
 	 */
 	@Override
 	public Button getCancelQDMButton() {
-		return cancelButton;
+		return saveCancelButtonBar.getCancelButton();
 	}
 	
 	/* (non-Javadoc)
@@ -1286,8 +1265,8 @@ public class QDMAppliedSelectionView implements
 	 * @return the retrieve from vsac button
 	 */
 	@Override
-	public Button getRetrieveFromVSACButton(){
-		return retrieveButton;
+	public PrimaryButton getRetrieveFromVSACButton(){
+		return searchWidget.getSearchButton();
 	}
 	
 	/* (non-Javadoc)
@@ -1300,7 +1279,7 @@ public class QDMAppliedSelectionView implements
 	 */
 	@Override
 	public Button getSaveButton(){
-		return saveButton;
+		return saveCancelButtonBar.getSaveButton();
 	}
 
 	/* (non-Javadoc)
@@ -1400,7 +1379,7 @@ public class QDMAppliedSelectionView implements
 	 */
 	@Override
 	public MatTextBox getOIDInput() {
-		return oidInput;
+		return searchWidget.getSearchInput();
 	}
 	
 	/* (non-Javadoc)
@@ -1573,4 +1552,5 @@ public class QDMAppliedSelectionView implements
 	public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
 		return updateVSACSuccessMessagePanel;
 	}
+	
 }

@@ -419,11 +419,25 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						.getNamedItem("id").getNodeValue());
 				Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
 				subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
-				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
+				String firstSubTreeNodeName = subTreeRefNodeLogic.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+				if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("functionalOp")) {
+					if (firstSubTreeNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
+						generateMOClauseLogicForDateTimeDiff(subTreeRefNodeLogic, elementRefList
+								, measureObDefinitionElement);
+					} else {
+						if (isClauseLogicGeneratable) {
+							localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
+						}
+						generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
+								, false, localVariableName, checkIfDateTimeDiff);
+					}
+				} else {
+					if (isClauseLogicGeneratable) {
+						localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
+					}
+					generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
+							, false, localVariableName, checkIfDateTimeDiff);
 				}
-				generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
-						, false, localVariableName, checkIfDateTimeDiff);
 				break;
 			default:
 				break;

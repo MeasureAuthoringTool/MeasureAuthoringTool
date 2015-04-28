@@ -1786,6 +1786,21 @@ padding: 2px;
     margin-right:auto;
     margin-top:8px;
 }
+
+.textSearchWidget{
+    border:1px solid lightgray;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    padding-right: 10px;
+    padding-top: 8px;
+    font-size:.8em;
+    margin-right:auto;
+    margin-top:8px;
+    margin-left: 15px;
+}
 .searchWidgetLabel{
 	font-size: 11px;
     display: block;
@@ -2209,4 +2224,8 @@ padding: 2px;
 .invisibleTableCaption{
     color:transparent;
     font-size:0;
+}
+
+.inline{
+	display: inline;
 }

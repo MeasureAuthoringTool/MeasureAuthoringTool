@@ -1,5 +1,7 @@
 package mat.client.shared;
 
+import mat.client.util.MatTextBox;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -10,6 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+// TODO: Auto-generated Javadoc
 /** MeasureSearchFilterWidget.java. */
 public class SearchWidget extends Composite implements ClickHandler {
 	/** Search Button Left Margin Value. */
@@ -20,19 +23,65 @@ public class SearchWidget extends Composite implements ClickHandler {
 	private PrimaryButton searchButton;
 	
 	/** The search input. {@link WatermarkedTextBox}. */
-	private TextBox searchInput = new TextBox();
+	private MatTextBox searchInput = new MatTextBox();
 	
 	/** Default Constructor. */
-	public SearchWidget() {
+//	public SearchWidget() {
+//		// searchInput.setWatermark("Search");
+//		searchButton = new PrimaryButton("Search", "primaryButton");
+//		searchButton.addClickHandler(this);
+//		searchButton.getElement().setId("searchButton_PrimaryButton");
+//		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
+//		searchInput.getElement().getStyle().setMarginLeft(10, Unit.PX);
+//		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
+//		searchInput.getElement().getStyle().setMarginBottom(7, Unit.PX);
+//		searchInput.getElement().setPropertyString("placeholder", "Search");
+//		
+//		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
+//		VerticalPanel topPanel = new VerticalPanel();
+//		topPanel.getElement().setId("SearchFilterWidget_verticalPanel");
+//		HorizontalPanel horizontalPanel = new HorizontalPanel();
+//		
+//		horizontalPanel.add(searchInput);
+//		searchInput.getElement().setId("searchInput_TextBox");
+//		horizontalPanel.add(searchButton);
+//		searchButton.getElement().setId("searchButton_PrimaryButton");
+//		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed"),
+//				"SearchWidgetDisplayed");
+//		topPanel.add(invisibleLabel);
+//		topPanel.add(horizontalPanel);
+//		
+//		horizontalPanel.setStylePrimaryName("searchWidget");
+//		Element element = topPanel.getElement();
+//		element.setAttribute("aria-role", "panel");
+//		element.setAttribute("aria-labelledby", "SearchWidgetDisplayed");
+//		element.setAttribute("aria-live", "assertive");
+//		element.setAttribute("aria-atomic", "true");
+//		element.setAttribute("aria-relevant", "all");
+//		element.setAttribute("role", "alert");
+//		// All composites must call initWidget() in their constructors.
+//		initWidget(topPanel);
+//	}
+	
+	/**
+	 * Instantiates a new search widget.
+	 * which takes button label, placeHolder and 
+	 * style for the search widget as parameters
+	 *
+	 * @param btnStr the btn str
+	 * @param placeHolder the place holder
+	 * @param style the style
+	 * @param width the width
+	 */
+	public SearchWidget(String btnLabel, String placeHolder, String style) {
 		// searchInput.setWatermark("Search");
-		searchButton = new PrimaryButton("Search", "primaryButton");
+		searchButton = new PrimaryButton(btnLabel, "primaryButton");
 		searchButton.addClickHandler(this);
 		searchButton.getElement().setId("searchButton_PrimaryButton");
-		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
 		searchInput.getElement().getStyle().setMarginLeft(10, Unit.PX);
 		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
 		searchInput.getElement().getStyle().setMarginBottom(7, Unit.PX);
-		searchInput.getElement().setPropertyString("placeholder", "Search");
+		searchInput.getElement().setPropertyString("placeholder", placeHolder);
 		
 		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
 		VerticalPanel topPanel = new VerticalPanel();
@@ -48,7 +97,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 		topPanel.add(invisibleLabel);
 		topPanel.add(horizontalPanel);
 		
-		horizontalPanel.setStylePrimaryName("searchWidget");
+		horizontalPanel.setStylePrimaryName(style);
 		Element element = topPanel.getElement();
 		element.setAttribute("aria-role", "panel");
 		element.setAttribute("aria-labelledby", "SearchWidgetDisplayed");
@@ -71,7 +120,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 	/** Gets the search input.
 	 * 
 	 * @return the textBox {@link TextBox}. */
-	public final TextBox getSearchInput() {
+	public final MatTextBox getSearchInput() {
 		return searchInput;
 	}
 	

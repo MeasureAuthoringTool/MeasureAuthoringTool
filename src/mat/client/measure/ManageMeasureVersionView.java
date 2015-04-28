@@ -71,7 +71,8 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
 	
 	/** The measure search filter widget. */
-	private SearchWidget searchWidget = new SearchWidget();
+	private SearchWidget searchWidget = new SearchWidget("Search", 
+            "Search", "searchWidget");
 	
 	/** The selection model. */
 	private SingleSelectionModel<Result> selectionModel;
@@ -88,6 +89,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		zoomButton.getElement().setId("zoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
+		searchWidget.getSearchInput().setHeight("20px");
 		mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		

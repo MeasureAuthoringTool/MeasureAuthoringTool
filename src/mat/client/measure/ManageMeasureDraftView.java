@@ -53,7 +53,8 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The measure search filter widget. */
-	private SearchWidget searchWidget = new SearchWidget();
+	private SearchWidget searchWidget = new SearchWidget("Search", 
+			                       "Search", "searchWidget");
 	/** The selection model. */
 	private SingleSelectionModel<Result> selectionModel;
 	/**
@@ -68,6 +69,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
+		searchWidget.getSearchInput().setHeight("20px");
 		mainPanel.add(searchWidget);
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("99%");

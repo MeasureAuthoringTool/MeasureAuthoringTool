@@ -88,7 +88,8 @@ public class AddEditComponentMeasuresView implements
 			"measureLibrarySearchWidget", "measureLibraryFilterDisclosurePanel");
 
 	/** The search widget. */
-	private SearchWidget searchWidget = new SearchWidget();
+	private SearchWidget searchWidget = new SearchWidget("Search", 
+            "Search", "searchWidget");
 
 	/** The even. */
 	private Boolean even;
@@ -141,6 +142,7 @@ public class AddEditComponentMeasuresView implements
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
+		searchWidget.getSearchInput().setHeight("20px");
 		measureFilterVP.add(searchWidget);
 		mainHorizontalPanel.add(measureFilterVP);
 		mainPanel.add(mainHorizontalPanel);

@@ -136,131 +136,28 @@ public class ExportServlet extends HttpServlet {
 		FileNameUtility fnu = new FileNameUtility();
 		try {
 			if (SIMPLEXML.equals(format)) {
-				export = getService().getSimpleXML(id);
-				if (SAVE.equals(type)) {
-					if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))) {
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getSimpleXMLName(export.measureName + matVersion[0])); 
-					}
-					else if(measure.getExportedDate().equals(measureLibraryService
-							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-							 || measure.getExportedDate().after(measureLibraryService
-									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getSimpleXMLName(export.measureName + matVersion[1])); 
-					}
-				} else {
-					resp.setHeader(CONTENT_TYPE, TEXT_XML);
-				}
+				export = exportSimpleXML(resp, measureLibraryService, id, type,
+						matVersion, measure, fnu);
 			} else if (EMEASURE.equals(format)) {
-				if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-					if ("open".equals(type)) {
-						export = getService().getEMeasureHTML(id);
-						resp.setHeader(CONTENT_TYPE, TEXT_HTML);
-					} else if (SAVE.equals(type)) {
-						export = getService().getEMeasureXML(id);
-//						if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getEmeasureXMLName(export.measureName + matVersion[0]));
-//						}
-					}
-				}else{
-					if ("open".equals(type)) {
-						export = getService().getNewEMeasureHTML(id);
-						resp.setHeader(CONTENT_TYPE, TEXT_HTML);
-					}else if (SAVE.equals(type)) {
-						export = getService().getNewEMeasureXML(id);
-						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getEmeasureXMLName(export.measureName + matVersion[1]));
-					}
-				}				
+				export = exportEmeasureXML(resp, measureLibraryService, id,
+						type, matVersion, measure, export, fnu);				
 			} else if (CODELIST.equals(format)) {
-				export = getService().getEMeasureXLS(id);
-				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getEmeasureXLSName(export.measureName + matVersion[0], export.packageDate));
-				} else if(measure.getExportedDate().equals(measureLibraryService
-						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-						 || measure.getExportedDate().after(measureLibraryService
-								 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getEmeasureXLSName(export.measureName + matVersion[1], export.packageDate));
-				}
-				resp.setContentType("application/vnd.ms-excel");
-				resp.getOutputStream().write(export.wkbkbarr);
-				resp.getOutputStream().close();
-				export.wkbkbarr = null;
+				export = exportCodeListXLS(resp, measureLibraryService, id,
+						matVersion, measure, fnu);
 			} else if (ZIP.equals(format)) {
-				export = getService().getEMeasureZIP(id,exportDate,releaseDate);
-				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[0]));
-				} else if(measure.getExportedDate().equals(measureLibraryService
-						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-						 || measure.getExportedDate().after(measureLibraryService
-								 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[1]));
-				}
-				resp.setContentType("application/zip");
-				resp.getOutputStream().write(export.zipbarr);
-				resp.getOutputStream().close();
-				export.zipbarr = null;
+				export = exportEmeasureZip(resp, measureLibraryService, id,
+						matVersion, measure, exportDate, releaseDate, fnu);
 			} else if (SUBTREE_HTML.equals(format)){
-				String nodeXML = req.getParameter(XML_PARAM);
-				System.out.println("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
-				export = getService().getHumanReadableForNode(id,nodeXML);
-				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+				export = exportSubTreeHumanReadable(req, resp, id);
 			} else if (VALUESET.equals(format)) {
-				export = getService().getValueSetXLS(id);
-				 if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getValueSetXLSName(export.valueSetName + matVersion[0], export.lastModifiedDate));
-				 } else if(measure.getExportedDate().equals(measureLibraryService
-							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-							 || measure.getExportedDate().after(measureLibraryService
-									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-					 resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getValueSetXLSName(export.valueSetName + matVersion[1], export.lastModifiedDate));
-				 }
-				resp.setContentType("application/vnd.ms-excel");
-				resp.getOutputStream().write(export.wkbkbarr);
-				resp.getOutputStream().close();
-				export.wkbkbarr = null;
+				export = exportValueSetListXLS(resp, measureLibraryService, id,
+						matVersion, measure, fnu);
 			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
-				String userRole = LoggedInUserUtil.getLoggedInUserRole();
-				if ("Administrator".equalsIgnoreCase(userRole)) {
-					String csvFileString = generateCSVOfActiveUserEmails();
-					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String activeUserCSVDate = formatter.format(new Date());
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
-					resp.setContentType("text/csv");
-					resp.getOutputStream().write(csvFileString.getBytes());
-					resp.getOutputStream().close();
-				}
+				exportActiveUserListCSV(resp, fnu);
 			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
-				String userRole = LoggedInUserUtil.getLoggedInUserRole();
-				if ("Administrator".equalsIgnoreCase(userRole)) {
-					String csvFileString = generateCSVOfActiveUserOIDs();
-					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					String activeUserCSVDate = formatter.format(new Date());
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
-					resp.setContentType("text/csv");
-					resp.getOutputStream().write(csvFileString.getBytes());
-					resp.getOutputStream().close();
-				}
+				exportActiveOrganizationListCSV(resp, fnu);
 			} else if (EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
-				System.out.println("testing the print out!");
-				//String csvFileString = generateCSVToExportMeasureNotes(id);
-				export = getService().getSimpleXML(id);
-				String csvFileString = generateHTMLToExportMeasureNotes(id,export,measure.getDescription());
-				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String measureNoteDate = formatter.format(new Date());
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getHTMLFileName("MeasureNotes", measureNoteDate) + ";");
-				resp.setContentType("html");
-				resp.getOutputStream().write(csvFileString.getBytes());
-				resp.getOutputStream().close();
+				export = exportMeasureNotesCSV(resp, id, measure, fnu);
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -269,6 +166,184 @@ public class ExportServlet extends HttpServlet {
 				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
 			resp.getOutputStream().println(export.export);
 		}
+	}
+
+	public ExportResult exportMeasureNotesCSV(HttpServletResponse resp,
+			String id, Measure measure, FileNameUtility fnu) throws Exception,
+			XPathExpressionException, IOException {
+		ExportResult export;
+		System.out.println("testing the print out!");
+		//String csvFileString = generateCSVToExportMeasureNotes(id);
+		export = getService().getSimpleXML(id);
+		String csvFileString = generateHTMLToExportMeasureNotes(id,export,measure.getDescription());
+		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String measureNoteDate = formatter.format(new Date());
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+				+ fnu.getHTMLFileName("MeasureNotes", measureNoteDate) + ";");
+		resp.setContentType("html");
+		resp.getOutputStream().write(csvFileString.getBytes());
+		resp.getOutputStream().close();
+		return export;
+	}
+
+	public void exportActiveOrganizationListCSV(HttpServletResponse resp,
+			FileNameUtility fnu) throws IOException {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		if ("Administrator".equalsIgnoreCase(userRole)) {
+			String csvFileString = generateCSVOfActiveUserOIDs();
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String activeUserCSVDate = formatter.format(new Date());
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
+			resp.setContentType("text/csv");
+			resp.getOutputStream().write(csvFileString.getBytes());
+			resp.getOutputStream().close();
+		}
+	}
+
+	public void exportActiveUserListCSV(HttpServletResponse resp,
+			FileNameUtility fnu) throws InCorrectUserRoleException, IOException {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		if ("Administrator".equalsIgnoreCase(userRole)) {
+			String csvFileString = generateCSVOfActiveUserEmails();
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String activeUserCSVDate = formatter.format(new Date());
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
+			resp.setContentType("text/csv");
+			resp.getOutputStream().write(csvFileString.getBytes());
+			resp.getOutputStream().close();
+		}
+	}
+
+	public ExportResult exportValueSetListXLS(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String[] matVersion, Measure measure, FileNameUtility fnu)
+			throws Exception, IOException {
+		ExportResult export;
+		export = getService().getValueSetXLS(id);
+		 if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+				+ fnu.getValueSetXLSName(export.valueSetName + matVersion[0], export.lastModifiedDate));
+		 } else if(measure.getExportedDate().equals(measureLibraryService
+					.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+					 || measure.getExportedDate().after(measureLibraryService
+							 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+			 resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getValueSetXLSName(export.valueSetName + matVersion[1], export.lastModifiedDate));
+		 }
+		resp.setContentType("application/vnd.ms-excel");
+		resp.getOutputStream().write(export.wkbkbarr);
+		resp.getOutputStream().close();
+		export.wkbkbarr = null;
+		return export;
+	}
+
+	public ExportResult exportSubTreeHumanReadable(HttpServletRequest req,
+			HttpServletResponse resp, String id) throws Exception {
+		ExportResult export;
+		String nodeXML = req.getParameter(XML_PARAM);
+		System.out.println("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
+		export = getService().getHumanReadableForNode(id,nodeXML);
+		resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+		return export;
+	}
+
+	public ExportResult exportEmeasureZip(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String[] matVersion, Measure measure, Date exportDate,
+			Date releaseDate, FileNameUtility fnu) throws Exception,
+			IOException {
+		ExportResult export;
+		export = getService().getEMeasureZIP(id,exportDate,releaseDate);
+		if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[0]));
+		} else if(measure.getExportedDate().equals(measureLibraryService
+				.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+				 || measure.getExportedDate().after(measureLibraryService
+						 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[1]));
+		}
+		resp.setContentType("application/zip");
+		resp.getOutputStream().write(export.zipbarr);
+		resp.getOutputStream().close();
+		export.zipbarr = null;
+		return export;
+	}
+
+	public ExportResult exportCodeListXLS(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String[] matVersion, Measure measure, FileNameUtility fnu)
+			throws Exception, IOException {
+		ExportResult export;
+		export = getService().getEMeasureXLS(id);
+		if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+				+ fnu.getEmeasureXLSName(export.measureName + matVersion[0], export.packageDate));
+		} else if(measure.getExportedDate().equals(measureLibraryService
+				.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+				 || measure.getExportedDate().after(measureLibraryService
+						 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getEmeasureXLSName(export.measureName + matVersion[1], export.packageDate));
+		}
+		resp.setContentType("application/vnd.ms-excel");
+		resp.getOutputStream().write(export.wkbkbarr);
+		resp.getOutputStream().close();
+		export.wkbkbarr = null;
+		return export;
+	}
+
+	public ExportResult exportEmeasureXML(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String type, String[] matVersion, Measure measure,
+			ExportResult export, FileNameUtility fnu) throws Exception {
+		if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+			if ("open".equals(type)) {
+				export = getService().getEMeasureHTML(id);
+				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+			} else if (SAVE.equals(type)) {
+				export = getService().getEMeasureXML(id);
+//						if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getEmeasureXMLName(export.measureName + matVersion[0]));
+//						}
+			}
+		}else{
+			if ("open".equals(type)) {
+				export = getService().getNewEMeasureHTML(id);
+				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+			}else if (SAVE.equals(type)) {
+				export = getService().getNewEMeasureXML(id);
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getEmeasureXMLName(export.measureName + matVersion[1]));
+			}
+		}
+		return export;
+	}
+
+	public ExportResult exportSimpleXML(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String type, String[] matVersion, Measure measure,
+			FileNameUtility fnu) throws Exception {
+		ExportResult export;
+		export = getService().getSimpleXML(id);
+		if (SAVE.equals(type)) {
+			if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))) {
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getSimpleXMLName(export.measureName + matVersion[0])); 
+			}
+			else if(measure.getExportedDate().equals(measureLibraryService
+					.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+					 || measure.getExportedDate().after(measureLibraryService
+							 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getSimpleXMLName(export.measureName + matVersion[1])); 
+			}
+		} else {
+			resp.setHeader(CONTENT_TYPE, TEXT_XML);
+		}
+		return export;
 	}
 
 	/**

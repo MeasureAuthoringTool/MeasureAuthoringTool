@@ -347,6 +347,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			r.setFirstName(user.getFirstName());
 			r.setLastName(user.getLastName());
 			r.setOrgName(user.getOrganizationName());
+			r.setUserRole(user.getSecurityRole().getDescription());
 			r.setKey(user.getId());
 			r.setLoginId(user.getLoginId());
 			if (user.getStatus() != null) {

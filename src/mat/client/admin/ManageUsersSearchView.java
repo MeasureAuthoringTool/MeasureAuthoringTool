@@ -126,6 +126,15 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
 				"<span title=\"Organization\">" + "Organization" + "</span>"));
+		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
+			}
+		};
+		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant(
+				"<span title=\"User Role\">" + "User Role" + "</span>"));
+
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {

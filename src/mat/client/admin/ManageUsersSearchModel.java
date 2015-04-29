@@ -37,6 +37,19 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		/** The status. */
 		private String status;
 		
+		/** The user type. */
+		private String userRole;
+			
+		
+		/**
+		 * Gets the first name.
+		 * 
+		 * @return the first name
+		 */
+		public String getFirstName() {
+			return firstName;
+		}
+
 		/**
 		 * Gets the key.
 		 * 
@@ -45,24 +58,43 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		public String getKey() {
 			return key;
 		}
-		
+
 		/**
-		 * Sets the key.
+		 * Gets the last name.
 		 * 
-		 * @param key
-		 *            the new key
+		 * @return the last name
 		 */
-		public void setKey(String key) {
-			this.key = key;
+		public String getLastName() {
+			return lastName;
 		}
 
 		/**
-		 * Gets the first name.
+		 * Gets the login id.
 		 * 
-		 * @return the first name
+		 * @return the loginId
 		 */
-		public String getFirstName() {
-			return firstName;
+		public String getLoginId() {
+			return loginId;
+		}
+
+		/**
+		 * Gets the org name.
+		 * 
+		 * @return the org name
+		 */
+		public String getOrgName() {
+			return orgName;
+		}
+		
+		/**
+		 * @return the status
+		 */
+		public String getStatus() {
+			return status;
+		}
+
+		public String getUserRole() {
+			return userRole;
 		}
 		
 		/**
@@ -76,12 +108,13 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		}
 		
 		/**
-		 * Gets the last name.
+		 * Sets the key.
 		 * 
-		 * @return the last name
+		 * @param key
+		 *            the new key
 		 */
-		public String getLastName() {
-			return lastName;
+		public void setKey(String key) {
+			this.key = key;
 		}
 		
 		/**
@@ -95,12 +128,13 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		}
 		
 		/**
-		 * Gets the org name.
+		 * Sets the login id.
 		 * 
-		 * @return the org name
+		 * @param loginId
+		 *            the loginId to set
 		 */
-		public String getOrgName() {
-			return orgName;
+		public void setLoginId(String loginId) {
+			this.loginId = loginId;
 		}
 		
 		/**
@@ -114,37 +148,16 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		}
 		
 		/**
-		 * Sets the login id.
-		 * 
-		 * @param loginId
-		 *            the loginId to set
-		 */
-		public void setLoginId(String loginId) {
-			this.loginId = loginId;
-		}
-		
-		/**
-		 * Gets the login id.
-		 * 
-		 * @return the loginId
-		 */
-		public String getLoginId() {
-			return loginId;
-		}
-
-		/**
-		 * @return the status
-		 */
-		public String getStatus() {
-			return status;
-		}
-
-		/**
 		 * @param status the status to set
 		 */
 		public void setStatus(String status) {
 			this.status = status;
 		}
+
+		public void setUserRole(String userRole) {
+			this.userRole = userRole;
+		}
+
 	}
 
 	/** The headers. */
@@ -162,38 +175,12 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	/** The results total. */
 	private int resultsTotal;
 	
-	/**
-	 * Sets the data.
-	 * 
-	 * @param data
-	 *            the new data
-	 */
-	public void setData(List<Result> data) {
-		this.data = data;
-	}
-
 	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 * @see mat.client.shared.search.SearchResults#get(int)
 	 */
 	@Override
-	public boolean isColumnSortable(int columnIndex) {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
-	 */
-	@Override
-	public int getNumberOfColumns() {
-		return 2;
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
-	 */
-	@Override
-	public int getNumberOfRows() {
-		return data != null ? data.size() : 0;
+	public Result get(int row) {
+		return data.get(row);
 	}
 
 	/* (non-Javadoc)
@@ -212,15 +199,56 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		return widths[columnIndex];
 	}
 
+	/**
+	 * Gets the data list.
+	 *
+	 * @return the data list
+	 */
+	public List<Result> getDataList() {
+		return data;
+	}
+
 	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
+	 * @see mat.client.shared.search.SearchResults#getKey(int)
 	 */
 	@Override
-	public boolean isColumnFiresSelection(int columnIndex) {
-		return columnIndex == 0;
+	public String getKey(int row) {
+		return data.get(row).getKey();
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
+	 */
+	@Override
+	public int getNumberOfColumns() {
+		return 2;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
+	 */
+	@Override
+	public int getNumberOfRows() {
+		return data != null ? data.size() : 0;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
+	 */
+	@Override
+	public int getResultsTotal() {
+		return resultsTotal;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 */
+	@Override
+	public int getStartIndex() {
+		return startIndex;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
 	 */
@@ -242,11 +270,47 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	}
 
 	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
 	 */
 	@Override
-	public int getStartIndex() {
-		return startIndex;
+	public boolean isColumnFiresSelection(int columnIndex) {
+		return columnIndex == 0;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
+	@Override
+	public boolean isColumnSelectAll(int columnIndex) {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 */
+	@Override
+	public boolean isColumnSortable(int columnIndex) {
+		return false;
+	}
+
+	/**
+	 * Sets the data.
+	 * 
+	 * @param data
+	 *            the new data
+	 */
+	public void setData(List<Result> data) {
+		this.data = data;
+	}
+
+	/**
+	 * Sets the results total.
+	 * 
+	 * @param resultsTotal
+	 *            the new results total
+	 */
+	public void setResultsTotal(int resultsTotal) {
+		this.resultsTotal = resultsTotal;
 	}
 	
 	/**
@@ -257,56 +321,5 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	 */
 	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
-	 */
-	@Override
-	public int getResultsTotal() {
-		return resultsTotal;
-	}
-	
-	/**
-	 * Sets the results total.
-	 * 
-	 * @param resultsTotal
-	 *            the new results total
-	 */
-	public void setResultsTotal(int resultsTotal) {
-		this.resultsTotal = resultsTotal;
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getKey(int)
-	 */
-	@Override
-	public String getKey(int row) {
-		return data.get(row).getKey();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#get(int)
-	 */
-	@Override
-	public Result get(int row) {
-		return data.get(row);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
-	 */
-	@Override
-	public boolean isColumnSelectAll(int columnIndex) {
-		return false;
-	}
-	
-	/**
-	 * Gets the data list.
-	 *
-	 * @return the data list
-	 */
-	public List<Result> getDataList() {
-		return data;
 	}
 }

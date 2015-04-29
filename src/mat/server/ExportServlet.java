@@ -548,6 +548,7 @@ public class ExportServlet extends HttpServlet {
 		}
 		return csvStringBuilder.toString();
 	}
+	
 	/**
 	 * Creates the csv of all non admin active users.
 	 * 
@@ -560,12 +561,15 @@ public class ExportServlet extends HttpServlet {
 		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
-		csvStringBuilder.append("Last Name,First Name,Email Address,Organization,Organization Id");
+		csvStringBuilder.append("Last Name,First Name,Email Address,Organization,User Role,Organization Id");
 		csvStringBuilder.append("\r\n");
+		
+		
 		//Add data rows
 		for (User user:allNonAdminActiveUsersList) {
 			csvStringBuilder.append("\"" + user.getLastName() + "\",\"" + user.getFirstName()
 					+ "\",\"" + user.getEmailAddress() + "\",\"" + user.getOrganizationName()
+					+ "\",\"" + user.getSecurityRole().getDescription() 
 					+ "\",\"" + user.getOrgOID() + "\"");
 			csvStringBuilder.append("\r\n");
 		}

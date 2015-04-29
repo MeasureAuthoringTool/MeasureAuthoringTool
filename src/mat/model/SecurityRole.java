@@ -18,7 +18,7 @@ public class SecurityRole implements IsSerializable {
 	public static final String USER_ROLE = "User";
 	
 	/** The Constant SUPER_USER_ROLE. */
-	public static final String SUPER_USER_ROLE = "Super user";
+	public static final String SUPER_USER_ROLE = "Top Level User";
 	
 	/** The Constant ADMIN_ROLE_ID. */
 	public static final String ADMIN_ROLE_ID = "1";

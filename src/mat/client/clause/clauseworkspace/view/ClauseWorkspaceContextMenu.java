@@ -642,12 +642,12 @@ public class ClauseWorkspaceContextMenu {
 						(xmlTreeDisplay.getSelectedNode().getChilds() != null) &&
 						(xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
 					if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-						String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+						String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName().toUpperCase();
 						
 						@SuppressWarnings("unchecked")
 						HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 						if(map != null){
-							copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+							copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 						}
 						List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 						if(!allowedFunctionsList.contains(copiedFuncName)){
@@ -694,11 +694,11 @@ public class ClauseWorkspaceContextMenu {
 			createAddClauseMenuItem(subMenuBar);
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			
-			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getName();
+			String selectedFunctionName = xmlTreeDisplay.getSelectedNode().getName().toUpperCase();
 			@SuppressWarnings("unchecked")
 			HashMap<String, String> attribMap =  (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 			if(attribMap != null){
-				selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE);
+				selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 			}
 			
 			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
@@ -717,7 +717,7 @@ public class ClauseWorkspaceContextMenu {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 							@SuppressWarnings("unchecked")
 							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName().toUpperCase();
 							if(map != null){
 								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
 							}
@@ -738,9 +738,9 @@ public class ClauseWorkspaceContextMenu {
 						if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 							@SuppressWarnings("unchecked")
 							HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName();
+							String copiedFuncName = xmlTreeDisplay.getCopiedNode().getName().toUpperCase();
 							if(map != null){
-								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE);
+								copiedFuncName = map.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 							}
 							List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 							if(!allowedFunctionsList.contains(copiedFuncName)){
@@ -844,7 +844,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 				HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-				String funcName = map.get(PopulationWorkSpaceConstants.TYPE);
+				String funcName = map.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 				
 				List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(xmlTreeDisplay.getSelectedNode(), MatContext.get().functions);
 				if(!allowedFunctionsList.contains(funcName)){
@@ -999,7 +999,7 @@ public class ClauseWorkspaceContextMenu {
 			
 			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 				HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-				String funcName = xmlTreeDisplay.getCopiedNode().getName();
+				String funcName = xmlTreeDisplay.getCopiedNode().getName().toUpperCase();
 				if(map != null){
 					funcName = map.get(PopulationWorkSpaceConstants.TYPE);
 				}

@@ -556,6 +556,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
+		detailDisplay.getInformationMessageDisplay().clear();
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}

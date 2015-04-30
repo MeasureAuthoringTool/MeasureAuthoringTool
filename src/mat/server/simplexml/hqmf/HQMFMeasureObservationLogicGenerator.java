@@ -381,10 +381,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			case "elementRef":
 				elementRefList.add(firstChildNode);
 				if (localVariableName != null) {
-					generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
+					preCodExp =generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
 							, firstChildNode, localVariableName);
 				} else {
-					generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
+					preCodExp = generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
 				}
 				break;
 			case "functionalOp":

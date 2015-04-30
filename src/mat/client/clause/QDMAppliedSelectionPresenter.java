@@ -22,6 +22,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -37,6 +38,7 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -47,6 +49,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -323,6 +326,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the update vsac success message panel
 		 */
 		SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
+
+		VerticalPanel getMainPanel();
+
 	}
 
 	/** The panel. */
@@ -597,7 +603,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								MatValueSet matValueSet = matValueSets.get(0);
 								currentMatValueSet = matValueSet;
 								}
+							searchDisplay.getOIDInput().setTitle(oid);
 							searchDisplay.getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
+							searchDisplay.getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
 							searchDisplay.getVSACProfileListBox().setEnabled(true);
 							searchDisplay.getVersionListBox().setEnabled(true);
 							searchDisplay.getDataTypesListBox().setEnabled(true);
@@ -745,7 +753,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				searchDisplay.getSearchHeader().setText("Search");
 				searchDisplay.getOIDInput().setEnabled(true);
 				searchDisplay.getOIDInput().setValue("");
+				searchDisplay.getOIDInput().setTitle("Enter OID");
 				searchDisplay.getUserDefinedInput().setEnabled(true);
+				searchDisplay.getUserDefinedInput().setTitle("Enter Name");
 				searchDisplay.getUserDefinedInput().setValue("");
 				searchDisplay.getVSACProfileListBox().clear();
 				searchDisplay.getVersionListBox().clear();
@@ -862,7 +872,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 				searchDisplay.getSearchHeader().setText("Modify Applied QDM ( "+displayName
 						+" : "+result.getDataType()+" )");
-				
+				searchDisplay.getMainPanel().getElement().focus();
 				if(result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 					isUSerDefined = true;
 					//set UserDefined value in Modify Panel
@@ -885,8 +895,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					isUSerDefined = false;
 					searchDisplay.getUserDefinedInput().setEnabled(false);
 					searchDisplay.getUserDefinedInput().setValue(result.getCodeListName());
+					searchDisplay.getUserDefinedInput().setTitle(result.getCodeListName());
 					searchDisplay.getOIDInput().setEnabled(true);
 					searchDisplay.getOIDInput().setValue(result.getOid());
+					searchDisplay.getOIDInput().setTitle(result.getOid());
 					searchDisplay.getSaveButton().setEnabled(false);
 					searchDisplay.getSpecificOccChkBox().setEnabled(true);
 					
@@ -1736,7 +1748,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setEnabled(editable);
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getApplyButton().setEnabled(editable);
-		searchDisplay.getCancelQDMButton().setEnabled(editable);
+		
+		((Button)searchDisplay.getCancelQDMButton()).setEnabled(editable);
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);

@@ -37,6 +37,7 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -187,6 +188,8 @@ public class QDMAppliedSelectionView implements
 	private SearchWidget searchWidget = new SearchWidget("Retrieve OID", 
 			"Enter OID", "textSearchWidget");
 	
+	VerticalPanel mainPanel;
+	
 
 
 	/**
@@ -298,7 +301,7 @@ public class QDMAppliedSelectionView implements
 	 * @return the widget
 	 */
 	private Widget buildElementWithVSACValueSetWidget() {
-		  VerticalPanel mainPanel = new VerticalPanel();
+		  mainPanel = new VerticalPanel();
 		  mainPanel.getElement().setId("mainPanel_VerticalPanel");
 		  mainPanel.setWidth("95%");
 		  mainPanel.add(buildSearchPanel());
@@ -354,6 +357,8 @@ public class QDMAppliedSelectionView implements
 		  
 		  saveCancelButtonBar.getSaveButton().setText("Apply");
 		  searchWidget.getSearchInput().setWidth("270px");
+		  searchWidget.getSearchInput().setHeight("20px");
+		  searchWidget.getSearchInput().setTitle("Enter OID");
 		  Grid queryGrid = new Grid(5, 4);
 		  queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "Name"));
 		  queryGrid.setWidget(1, 0, nameInput);
@@ -915,11 +920,14 @@ public class QDMAppliedSelectionView implements
 		vsacProfileListBox.clear();
 		vsacProfileListBox.setEnabled(false);
 		vsacProfileListBox.addItem("--Select--");
+		
 		if(checkForEnable()){
 			expansionProListBox.setEnabled(false);
 		versionListBox.setEnabled(false);
 		specificOcurChkBox.setEnabled(false);
 		dataTypeListBox.setEnabled(false);
+		searchWidget.getSearchInput().setTitle("Enter OID");
+		nameInput.setTitle("Enter Name");
 		//saveButton.setEnabled(false);
 		}
 		searchHeader.setText("Search");
@@ -1243,7 +1251,7 @@ public class QDMAppliedSelectionView implements
 		return saveCancelButtonBar.getCancelButton();
 	}
 	
-	/* (non-Javadoc)
+		/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getApplyButton()
 	 */
 	/**
@@ -1551,6 +1559,11 @@ public class QDMAppliedSelectionView implements
 	@Override
 	public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
 		return updateVSACSuccessMessagePanel;
+	}
+	
+	@Override 
+	public VerticalPanel getMainPanel(){
+		return mainPanel;
 	}
 	
 }

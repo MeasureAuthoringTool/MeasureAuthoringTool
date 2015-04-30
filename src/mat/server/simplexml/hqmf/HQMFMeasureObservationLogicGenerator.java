@@ -474,7 +474,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			boolean generateValueExpression = false;
 			String localVariableName = null;
 			Node firstChildNode = null;
-			String preCondExp = null;
+			String preCondExp = StringUtils.EMPTY;
 			for (int i = 0; i < childNodes.getLength(); i++) {
 				firstChildNode = childNodes.item(i);
 				String firstChildNodeName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
@@ -489,8 +489,13 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 							List<Node> relOpLHSQDM = findFirstLHSElementRef(firstChildNode,
 									new ArrayList<Node>(), measureObDefinitionElement);
 							if ((relOpLHSQDM != null) && (relOpLHSQDM.size() > 0)) {
-								preCondExp = generateValueAndExpressionTag(relOpLHSQDM, measureObDefinitionElement
-										, firstChildNode, localVariableName);
+								if(preCondExp == null) {
+									preCondExp = generateValueAndExpressionTag(relOpLHSQDM, measureObDefinitionElement
+											, firstChildNode, localVariableName);
+								} else {
+									preCondExp = preCondExp + generateValueAndExpressionTag(relOpLHSQDM, measureObDefinitionElement
+											, firstChildNode, localVariableName);
+								}
 								clauseLogicHasElementRef = true;
 							} else {
 								Element valueElementRelOp = measureObDefinitionElement
@@ -532,7 +537,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 							subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
 							/*localVariableName = generateClauseLogicForChildsInsideFnxOp(
 									subTreeRefParentNode, true);*/
-							preCondExp = generateMOClauseLogic(subTreeRefParentNode, new ArrayList<Node>()
+							preCondExp = preCondExp + generateMOClauseLogic(subTreeRefParentNode, new ArrayList<Node>()
 									, measureObDefinitionElement, true, localVariableName, true);
 						}
 						break;
@@ -540,10 +545,10 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 						break;
 				}
 			}
-			if (generateValueExpression || (preCondExp != null)) {
+			if (generateValueExpression || (StringUtils.isNotEmpty(preCondExp))) {
 				String preConditionExpression = generateValueAndExpressionTag(elementRefList,
 						measureObDefinitionElement, firstChildNode, null);
-				if (preCondExp != null) {
+				if (StringUtils.isNotEmpty(preCondExp)) {
 					preConditionExpression = preCondExp + preConditionExpression;
 				}
 				generatePreCondition(measureObDefinitionElement, preConditionExpression, elementRefList);

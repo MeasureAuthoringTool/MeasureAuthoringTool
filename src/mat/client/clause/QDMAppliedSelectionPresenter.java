@@ -1736,7 +1736,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void checkForCopiedQDMList() {
 		
 		if(MatContext.get().getCopiedQDMList().size()>0){
-			Window.alert(" size:"+ MatContext.get().getCopiedQDMList().size());
+			//Window.alert(" size:"+ MatContext.get().getCopiedQDMList().size());
 		}
 	}
 

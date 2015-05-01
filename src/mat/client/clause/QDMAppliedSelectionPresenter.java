@@ -1,11 +1,9 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
@@ -23,7 +21,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -36,10 +33,8 @@ import mat.model.QualityDataSetDTO;
 import mat.model.VSACProfile;
 import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -49,61 +44,59 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.sun.java.swing.plaf.windows.resources.windows;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class VSACProfileSelectionPresenter.
  */
 public class QDMAppliedSelectionPresenter implements MatPresenter {
-
+	
 	/**
 	 * The Interface SearchDisplay.
 	 */
 	interface SearchDisplay {
-
+		
 		/**
 		 * As widget.
 		 * 
 		 * @return the widget
 		 */
 		Widget asWidget();
-
+		
 		/**
 		 * Gets the VSAC profile input.
 		 * 
 		 * @return the VSAC profile input
 		 */
 		HasValueChangeHandlers<Boolean> getVSACProfileInput();
-
+		
 		/**
 		 * Gets the VSAC profile list box.
 		 * 
 		 * @return the VSAC profile list box
 		 */
 		ListBoxMVP getVSACExpansionProfileListBox();
-
+		
 		/**
 		 * Sets the vsac profile list box.
 		 */
 		void setVSACExpansionProfileListBox();
-
+		
 		/**
 		 * Gets the error message display.
 		 * 
 		 * @return the error message display
 		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
-
+		
 		/**
 		 * Reset vsac value set widget.
 		 */
 		void resetVSACValueSetWidget();
-
+		
 		/**
 		 * Builds the cell table.
 		 *
@@ -111,7 +104,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @param isEditable the is editable
 		 */
 		void buildAppliedQDMCellTable(QDSAppliedListModel appliedListModel, boolean isEditable);
-
+		
 		/**
 		 * Sets the observer.
 		 * 
@@ -119,7 +112,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *            the new observer
 		 */
 		void setObserver(Observer observer);
-
+		
 		
 		/**
 		 * Gets the adds the new qdm button.
@@ -127,7 +120,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the adds the new qdm button
 		 */
 		Button getCancelQDMButton();
-
+		
 		/**
 		 * Sets the profile list.
 		 * 
@@ -135,14 +128,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *            the new profile list
 		 */
 		void setProfileList(List<String> profileList);
-
+		
 		/**
 		 * Gets the selected element to remove.
 		 *
 		 * @return the selected element to remove
 		 */
 		QualityDataSetDTO getSelectedElementToRemove();
-
+		
 		/**
 		 * Gets the apply button.
 		 *
@@ -163,77 +156,77 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the save button
 		 */
 		Button getSaveButton();
-
+		
 		/**
 		 * Gets the data types list box.
 		 *
 		 * @return the data types list box
 		 */
 		ListBoxMVP getDataTypesListBox();
-
+		
 		/**
 		 * Gets the version list box.
 		 *
 		 * @return the version list box
 		 */
 		ListBoxMVP getVersionListBox();
-
+		
 		/**
 		 * Gets the expansion profile list box.
 		 *
 		 * @return the expansion profile list box
 		 */
 		ListBoxMVP getVSACProfileListBox();
-
+		
 		/**
 		 * Gets the OID input.
 		 *
 		 * @return the OID input
 		 */
 		MatTextBox getOIDInput();
-
+		
 		/**
 		 * Gets the user defined input.
 		 *
 		 * @return the user defined input
 		 */
 		MatTextBox getUserDefinedInput();
-
+		
 		/**
 		 * Sets the data types list box options.
 		 *
 		 * @param texts the new data types list box options
 		 */
 		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
-
+		
 		/**
 		 * Sets the VSAC version list box options.
 		 *
 		 * @param texts the new VSAC version list box options
 		 */
 		void setVSACVersionListBoxOptions(List<? extends HasListBox> texts);
-
+		
 		/**
 		 * Sets the VSAC profile list box options.
 		 *
 		 * @param texts the new VSAC profile list box options
 		 */
 		void setVSACProfileListBox(List<? extends HasListBox> texts);
-
+		
 		/**
 		 * Gets the update from vsac button.
 		 *
 		 * @return the update from vsac button
 		 */
 		Button getUpdateFromVSACButton();
-
+		
 		/**
 		 * Gets the specific occ chk box.
 		 *
 		 * @return the specific occ chk box
 		 */
 		CustomCheckBox getSpecificOccChkBox();
-
+		
 		/**
 		 * Gets the data type text.
 		 *
@@ -249,7 +242,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the data type value
 		 */
 		String getDataTypeValue(ListBoxMVP inputListBox);
-
+		
 		/**
 		 * Gets the version value.
 		 *
@@ -257,7 +250,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the version value
 		 */
 		String getVersionValue(ListBoxMVP inputListBox);
-
+		
 		/**
 		 * Gets the expansion profile value.
 		 *
@@ -265,21 +258,21 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the expansion profile value
 		 */
 		String getExpansionProfileValue(ListBoxMVP inputListBox);
-
+		
 		/**
 		 * Gets the in progress message display.
 		 *
 		 * @return the in progress message display
 		 */
 		InProgressMessageDisplay getInProgressMessageDisplay();
-
+		
 		/**
 		 * Gets the search header.
 		 *
 		 * @return the search header
 		 */
 		Label getSearchHeader();
-
+		
 		/**
 		 * Gets the success message display.
 		 *
@@ -293,65 +286,65 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the list data provider
 		 */
 		ListDataProvider<QualityDataSetDTO> getListDataProvider();
-
+		
 		/**
 		 * Gets the simple pager.
 		 *
 		 * @return the simple pager
 		 */
 		MatSimplePager getSimplePager();
-
+		
 		/**
 		 * Gets the celltable.
 		 *
 		 * @return the celltable
 		 */
 		CellTable<QualityDataSetDTO> getCelltable();
-
+		
 		/**
 		 * Gets the pager.
 		 *
 		 * @return the pager
 		 */
 		MatSimplePager getPager();
-
+		
 		/**
 		 * Gets the update vsac error message panel.
 		 *
 		 * @return the update vsac error message panel
 		 */
 		ErrorMessageDisplay getUpdateVSACErrorMessagePanel();
-
+		
 		/**
 		 * Gets the update vsac success message panel.
 		 *
 		 * @return the update vsac success message panel
 		 */
 		SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
-
+		
 		VerticalPanel getMainPanel();
-
+		
 		CustomButton getQDMCopyButton();
-
+		
 		CustomButton getQDMPasteButton();
-
+		
 		CustomButton getQDMClearButton();
-
+		
 		void clearQDMCheckBoxes();
-
+		
 		List<QualityDataSetDTO> getQdmSelectedList();
-
+		
 	}
-
+	
 	/** The panel. */
 	SimplePanel panel = new SimplePanel();
-
+	
 	/** The search display. */
 	SearchDisplay searchDisplay;
-
+	
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-
+	
 	/** The vsacapi service. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
@@ -376,7 +369,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/** The is expansion profile. */
 	private boolean isExpansionProfile = false;
-
+	
 	/**
 	 * Instantiates a new VSAC profile selection presenter.
 	 * 
@@ -388,7 +381,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		MatContext.get().getAllDataType();
 		addAllHandlers();
 	}
-
+	
 	/**
 	 * Gets the applied qdm list.
 	 * 
@@ -402,83 +395,83 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
 					new AsyncCallback<QualityDataModelWrapper>() {
-
-						private void filterTimingQDMs(
-								List<QualityDataSetDTO> result) {
-							List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
-							for (QualityDataSetDTO qdsDTO : result) {
-								if ("Timing Element".equals(qdsDTO
-										.getDataType())
-										|| ConstantMessages.BIRTHDATE_OID
-												.equals(qdsDTO.getOid())
-										|| ConstantMessages.EXPIRED_OID
-												.equals(qdsDTO.getOid())) {
-									timingQDMs.add(qdsDTO);
+				
+				private void filterTimingQDMs(
+						List<QualityDataSetDTO> result) {
+					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					for (QualityDataSetDTO qdsDTO : result) {
+						if ("Timing Element".equals(qdsDTO
+								.getDataType())
+								|| ConstantMessages.BIRTHDATE_OID
+								.equals(qdsDTO.getOid())
+								|| ConstantMessages.EXPIRED_OID
+								.equals(qdsDTO.getOid())) {
+							timingQDMs.add(qdsDTO);
+						}
+					}
+					result.removeAll(timingQDMs);
+				}
+				
+				@Override
+				public void onFailure(final Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						final QualityDataModelWrapper result) {
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					filterTimingQDMs(result.getQualityDataDTO());
+					appliedListModel.setAppliedQDMs(result.getQualityDataDTO());
+					appliedQDMList = result.getQualityDataDTO();
+					searchDisplay.buildAppliedQDMCellTable(
+							appliedListModel, MatContext.get().getMeasureLockService()
+							.checkForEditPermission());
+					//if UMLS is not logged in
+					if (!MatContext.get().isUMLSLoggedIn()) {
+						if(result.getVsacProfile()!=null){
+							searchDisplay.getVSACExpansionProfileListBox().setEnabled(false);
+							searchDisplay.getVSACExpansionProfileListBox().clear();
+							searchDisplay.getVSACExpansionProfileListBox().addItem(result.getVsacProfile());
+							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+							chkBox.setValue(true);
+							chkBox.setEnabled(false);
+							isExpansionProfile = true;
+							expProfileToAllQDM = result.getVsacProfile();
+						} else {
+							expProfileToAllQDM = "";
+							isExpansionProfile = false;
+						}
+					} else {
+						if(result.getVsacProfile()!=null){
+							searchDisplay.getVSACExpansionProfileListBox().setEnabled(true);
+							searchDisplay.setProfileList(MatContext.get()
+									.getProfileList());
+							searchDisplay.setVSACExpansionProfileListBox();
+							for(int i = 0; i < searchDisplay.getVSACExpansionProfileListBox().getItemCount(); i++){
+								if(searchDisplay.getVSACExpansionProfileListBox().getItemText(i)
+										.equalsIgnoreCase(result.getVsacProfile())) {
+									searchDisplay.getVSACExpansionProfileListBox().setSelectedIndex(i);
+									break;
 								}
 							}
-							result.removeAll(timingQDMs);
+							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+							chkBox.setValue(true);
+							chkBox.setEnabled(true);
+							expProfileToAllQDM = result.getVsacProfile();
+							isExpansionProfile = true;
+						} else {
+							expProfileToAllQDM = "";
+							isExpansionProfile = false;
 						}
-
-						@Override
-						public void onFailure(final Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate()
-									.getGenericErrorMessage());
-						}
-
-						@Override
-						public void onSuccess(
-								final QualityDataModelWrapper result) {
-							QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-							filterTimingQDMs(result.getQualityDataDTO());
-							appliedListModel.setAppliedQDMs(result.getQualityDataDTO());
-							appliedQDMList = result.getQualityDataDTO();
-							searchDisplay.buildAppliedQDMCellTable(
-									appliedListModel, MatContext.get().getMeasureLockService()
-											.checkForEditPermission());
-							//if UMLS is not logged in 
-							if (!MatContext.get().isUMLSLoggedIn()) {
-								if(result.getVsacProfile()!=null){
-									searchDisplay.getVSACExpansionProfileListBox().setEnabled(false);
-									searchDisplay.getVSACExpansionProfileListBox().clear();
-								    searchDisplay.getVSACExpansionProfileListBox().addItem(result.getVsacProfile());
-									CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
-									chkBox.setValue(true);
-									chkBox.setEnabled(false);
-									isExpansionProfile = true;
-									expProfileToAllQDM = result.getVsacProfile();
-								} else {
-									expProfileToAllQDM = "";
-									isExpansionProfile = false;
-								}
-							} else {
-								if(result.getVsacProfile()!=null){
-									searchDisplay.getVSACExpansionProfileListBox().setEnabled(true);
-									searchDisplay.setProfileList(MatContext.get()
-											.getProfileList());
-									searchDisplay.setVSACExpansionProfileListBox();
-									for(int i = 0; i < searchDisplay.getVSACExpansionProfileListBox().getItemCount(); i++){
-										if(searchDisplay.getVSACExpansionProfileListBox().getItemText(i)
-												.equalsIgnoreCase(result.getVsacProfile())) {
-											searchDisplay.getVSACExpansionProfileListBox().setSelectedIndex(i);
-											break;
-										}
-									}
-									CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
-									chkBox.setValue(true);
-									chkBox.setEnabled(true);
-									expProfileToAllQDM = result.getVsacProfile();
-									isExpansionProfile = true;
-								} else {
-									expProfileToAllQDM = "";
-									isExpansionProfile = false;
-								}
-							}
-							
-						}
-					});
+					}
+					
+				}
+			});
 		}
 	}
-
+	
 	/**
 	 * Save measure xml.
 	 *
@@ -519,13 +512,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void deleteAndSaveMeasureXML(final List<QualityDataSetDTO> list , final int indexOf) {
 		service.createAndSaveElementLookUp(list, MatContext.get()
 				.getCurrentMeasureId(), expProfileToAllQDM, new AsyncCallback<Void>() {
-
+			
 			@Override
 			public void onFailure(final Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 			}
-
+			
 			@Override
 			public void onSuccess(final Void result) {
 				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay
@@ -533,19 +526,19 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				searchDisplay.getListDataProvider().getList().remove(indexOf);
 				if(searchDisplay.getListDataProvider().getList().size()>0){
 					searchDisplay.getListDataProvider().refresh();
-					searchDisplay.getPager().setPageStart(searchDisplay.getCelltable().getVisibleRange().getStart(), 
-							searchDisplay.getListDataProvider().getList().size());	
+					searchDisplay.getPager().setPageStart(searchDisplay.getCelltable().getVisibleRange().getStart(),
+							searchDisplay.getListDataProvider().getList().size());
 				} else {
 					searchDisplay.buildAppliedQDMCellTable(new QDSAppliedListModel(), isModified);
 				}
- 				
+				
 				searchDisplay.getSuccessMessageDisplay().setMessage(
 						"Successfully removed selected QDM element.");
 			}
-
+			
 		});
 	}
-
+	
 	/**
 	 * Load applied list data.
 	 */
@@ -553,7 +546,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		getAppliedQDMList(true);
 		displaySearch();
 	}
-
+	
 	/**
 	 * Reset qds fields.
 	 */
@@ -563,8 +556,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getUpdateVSACSuccessMessagePanel().clear();
 		searchDisplay.getUpdateVSACErrorMessagePanel().clear();
 	}
-
-
+	
+	
 	/**
 	 * Search value set in vsac.
 	 *
@@ -572,67 +565,67 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param expansionProfile the expansion profile
 	 */
 	private void searchValueSetInVsac(String version, String expansionProfile) {
-       
+		
 		final String oid = searchDisplay.getOIDInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate()
-							.getUMLS_NOT_LOGGEDIN());
+					.getUMLS_NOT_LOGGEDIN());
 			return;
 		}
-
+		
 		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate()
-							.getUMLS_OID_REQUIRED());
+					.getUMLS_OID_REQUIRED());
 			return;
 		}
 		showSearchingBusy(true);
 		
 		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version,
 				expansionProfile, new AsyncCallback<VsacApiResult>() {
-					@Override
-					public void onFailure(final Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate()
-										.getVSAC_RETRIEVE_FAILED());
-						showSearchingBusy(false);
+			@Override
+			public void onFailure(final Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate()
+						.getVSAC_RETRIEVE_FAILED());
+				showSearchingBusy(false);
+			}
+			
+			/**
+			 * On success.
+			 * 
+			 * @param result
+			 *            the result
+			 */
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				//to get the VSAC version list corresponding the OID
+				if(result.isSuccess()){
+					List<MatValueSet> matValueSets = result.getVsacResponse();
+					if (matValueSets != null) {
+						MatValueSet matValueSet = matValueSets.get(0);
+						currentMatValueSet = matValueSet;
 					}
-
-					/**
-					 * On success.
-					 * 
-					 * @param result
-					 *            the result
-					 */
-					@Override
-					public void onSuccess(final VsacApiResult result) {
-						//to get the VSAC version list corresponding the OID
-						if(result.isSuccess()){
-							List<MatValueSet> matValueSets = result.getVsacResponse();
-							if (matValueSets != null) {
-								MatValueSet matValueSet = matValueSets.get(0);
-								currentMatValueSet = matValueSet;
-								}
-							searchDisplay.getOIDInput().setTitle(oid);
-							searchDisplay.getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
-							searchDisplay.getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
-							searchDisplay.getVSACProfileListBox().setEnabled(true);
-							searchDisplay.getVersionListBox().setEnabled(true);
-							searchDisplay.getDataTypesListBox().setEnabled(true);
-							searchDisplay.getSpecificOccChkBox().setEnabled(true);
-							searchDisplay.getSpecificOccChkBox().setValue(false);
-							getVSACVersionListByOID(oid);
-							} else {
-								String message = convertMessage(result.getFailureReason());
-								searchDisplay.getErrorMessageDisplay().setMessage(message);
-								showSearchingBusy(false);
-							}
-						}
-				});
+					searchDisplay.getOIDInput().setTitle(oid);
+					searchDisplay.getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
+					searchDisplay.getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
+					searchDisplay.getVSACProfileListBox().setEnabled(true);
+					searchDisplay.getVersionListBox().setEnabled(true);
+					searchDisplay.getDataTypesListBox().setEnabled(true);
+					searchDisplay.getSpecificOccChkBox().setEnabled(true);
+					searchDisplay.getSpecificOccChkBox().setValue(false);
+					getVSACVersionListByOID(oid);
+				} else {
+					String message = convertMessage(result.getFailureReason());
+					searchDisplay.getErrorMessageDisplay().setMessage(message);
+					showSearchingBusy(false);
+				}
+			}
+		});
 	}
-
+	
 	/**
 	 * Gets the VSAC version list by oid.
 	 * 
@@ -643,47 +636,47 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void getVSACVersionListByOID(String oid) {
 		vsacapiService.getAllVersionListByOID(oid,
 				new AsyncCallback<VsacApiResult>() {
-
-					@Override
-					public void onSuccess(VsacApiResult result) {
-						
-						if (result.getVsacVersionResp() != null) {
-							searchDisplay.setVSACVersionListBoxOptions(getVersionList(result
-									.getVsacVersionResp()));
-							searchDisplay.setVSACProfileListBox(getProfileList(
-									MatContext.get().getVsacProfList()));
-							searchDisplay.getSaveButton().setEnabled(true);
-
-							if(searchDisplay.getDataTypeText(
-									searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")) {
-								searchDisplay.getSpecificOccChkBox().setEnabled(false);
-							} else {
-								searchDisplay.getSpecificOccChkBox().setEnabled(true);
-							}
-							if(isExpansionProfile){
-								searchDisplay.getVSACProfileListBox().setEnabled(false);
-								searchDisplay.getVersionListBox().setEnabled(false);
-								searchDisplay.getVSACProfileListBox().clear();
-								searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM, 
-										expProfileToAllQDM);
-							} else {
-								searchDisplay.getVSACProfileListBox().setEnabled(true);
-								searchDisplay.getVersionListBox().setEnabled(true);
-							}
-							showSearchingBusy(false);
-							searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-									.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
-							
-						}
+			
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				
+				if (result.getVsacVersionResp() != null) {
+					searchDisplay.setVSACVersionListBoxOptions(getVersionList(result
+							.getVsacVersionResp()));
+					searchDisplay.setVSACProfileListBox(getProfileList(
+							MatContext.get().getVsacProfList()));
+					searchDisplay.getSaveButton().setEnabled(true);
+					
+					if(searchDisplay.getDataTypeText(
+							searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")) {
+						searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					} else {
+						searchDisplay.getSpecificOccChkBox().setEnabled(true);
 					}
-					@Override
-					public void onFailure(Throwable caught) {
-                       searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+					if(isExpansionProfile){
+						searchDisplay.getVSACProfileListBox().setEnabled(false);
+						searchDisplay.getVersionListBox().setEnabled(false);
+						searchDisplay.getVSACProfileListBox().clear();
+						searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM,
+								expProfileToAllQDM);
+					} else {
+						searchDisplay.getVSACProfileListBox().setEnabled(true);
+						searchDisplay.getVersionListBox().setEnabled(true);
+					}
+					showSearchingBusy(false);
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+					
+				}
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
 						.getVSAC_RETRIEVE_FAILED());
-                       showSearchingBusy(false);
-					}
-				});
-
+				showSearchingBusy(false);
+			}
+		});
+		
 	}
 	
 	
@@ -696,7 +689,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private List<? extends HasListBox> getProfileList(List<VSACProfile> list){
 		return list;
 	}
-
+	
 	/**
 	 * Convert message.
 	 * 
@@ -707,21 +700,21 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private String convertMessage(final int id) {
 		String message;
 		switch (id) {
-		case VsacApiResult.UMLS_NOT_LOGGEDIN:
-			message = MatContext.get().getMessageDelegate()
-					.getUMLS_NOT_LOGGEDIN();
-			break;
-		case VsacApiResult.OID_REQUIRED:
-			message = MatContext.get().getMessageDelegate()
-					.getUMLS_OID_REQUIRED();
-			break;
-		default:
-			message = MatContext.get().getMessageDelegate()
-					.getVSAC_RETRIEVE_FAILED();
+			case VsacApiResult.UMLS_NOT_LOGGEDIN:
+				message = MatContext.get().getMessageDelegate()
+				.getUMLS_NOT_LOGGEDIN();
+				break;
+			case VsacApiResult.OID_REQUIRED:
+				message = MatContext.get().getMessageDelegate()
+				.getUMLS_OID_REQUIRED();
+				break;
+			default:
+				message = MatContext.get().getMessageDelegate()
+				.getVSAC_RETRIEVE_FAILED();
 		}
 		return message;
 	}
-
+	
 	/**
 	 * Adds the all handlers.
 	 */
@@ -732,14 +725,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					public void onValueChange(ValueChangeEvent<Boolean> event) {
 						if (event.getValue().toString().equals("true")) {
 							if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
-																		// Login
-																		// Validation
+								// Login
+								// Validation
 								searchDisplay
-										.getErrorMessageDisplay()
-										.setMessage(
-												MatContext.get()
-														.getMessageDelegate()
-														.getUMLS_NOT_LOGGEDIN());
+								.getErrorMessageDisplay()
+								.setMessage(
+										MatContext.get()
+										.getMessageDelegate()
+										.getUMLS_NOT_LOGGEDIN());
 								return;
 							}
 							searchDisplay.getVSACExpansionProfileListBox().setEnabled(
@@ -752,12 +745,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									false);
 							searchDisplay.setVSACExpansionProfileListBox();
 						}
-
+						
 					}
 				});
 		
 		searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				resetQDSMsgPanel();
@@ -794,7 +787,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
 							.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 					return;
-					}
+				}
 				searchDisplay.getSearchHeader().setText("Search");
 				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
 				if(!searchDisplay.getVSACExpansionProfileListBox().getValue().equalsIgnoreCase("--Select--")){
@@ -849,7 +842,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 		
 		searchDisplay.getUserDefinedInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-
+			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
@@ -857,7 +850,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		});
 		
-      searchDisplay.getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
+		searchDisplay.getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -867,7 +860,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 		
 		searchDisplay.setObserver(new QDMAppliedSelectionView.Observer() {
-
+			
 			@Override
 			public void onModifyClicked(QualityDataSetDTO result) {
 				resetQDSMsgPanel();
@@ -881,7 +874,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				} else {
 					displayName = result.getCodeListName();
 				}
-
+				
 				searchDisplay.getSearchHeader().setText("Modify Applied QDM ( "+displayName
 						+" : "+result.getDataType()+" )");
 				searchDisplay.getMainPanel().getElement().focus();
@@ -890,7 +883,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					//set UserDefined value in Modify Panel
 					searchDisplay.getUserDefinedInput().setValue(result.getCodeListName());
 					searchDisplay.getUserDefinedInput().setEnabled(true);
-//					searchDisplay.getOIDInput().setValue(result.getOid());
+					//					searchDisplay.getOIDInput().setValue(result.getOid());
 					searchDisplay.getVersionListBox().setEnabled(false);
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
@@ -900,7 +893,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getOIDInput().setValue("");
 					searchDisplay.getVersionListBox().clear();
 					searchDisplay.getVSACProfileListBox().clear();
-				
+					
 				} else {
 					
 					//set OID Based QDM's in Modify Panel
@@ -917,7 +910,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getSpecificOccChkBox().setValue(result.isSpecificOccurrence());
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 					searchDisplay.getVersionListBox().clear();
-					searchDisplay.getVSACProfileListBox().clear(); 
+					searchDisplay.getVSACProfileListBox().clear();
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
 					searchDisplay.getVersionListBox().setEnabled(false);
 				}
@@ -939,53 +932,53 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				
 				if(!expProfileToAllQDM.isEmpty()){
 					searchDisplay.getVSACProfileListBox().clear();
-					searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM, 
+					searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM,
 							expProfileToAllQDM);
 				}
 			}
-
+			
 			@Override
 			public void onDeleteClicked(QualityDataSetDTO result, final int index) {
 				resetQDSMsgPanel();
 				service.getAppliedQDMFromMeasureXml(MatContext.get()
 						.getCurrentMeasureId(), false,
 						new AsyncCallback<QualityDataModelWrapper>() {
-
-							@Override
-							public void onSuccess(QualityDataModelWrapper result) {
-								appliedQDMList = result.getQualityDataDTO();
-								if (appliedQDMList.size() > 0) {
-									Iterator<QualityDataSetDTO> iterator = appliedQDMList
-											.iterator();
-									while (iterator.hasNext()) {
-										QualityDataSetDTO dataSetDTO = iterator
-												.next();
-										if (dataSetDTO
-												.getUuid()
-												.equals(searchDisplay
-														.getSelectedElementToRemove()
-														.getUuid())) {
-											iterator.remove();
-										}
-									}
-									deleteAndSaveMeasureXML(appliedQDMList, index);
+					
+					@Override
+					public void onSuccess(QualityDataModelWrapper result) {
+						appliedQDMList = result.getQualityDataDTO();
+						if (appliedQDMList.size() > 0) {
+							Iterator<QualityDataSetDTO> iterator = appliedQDMList
+									.iterator();
+							while (iterator.hasNext()) {
+								QualityDataSetDTO dataSetDTO = iterator
+										.next();
+								if (dataSetDTO
+										.getUuid()
+										.equals(searchDisplay
+												.getSelectedElementToRemove()
+												.getUuid())) {
+									iterator.remove();
 								}
-
 							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-
+							deleteAndSaveMeasureXML(appliedQDMList, index);
+						}
+						
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				
 			}
-
+			
 		});
 		
 		searchDisplay.getDataTypesListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
-
+			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
@@ -1008,60 +1001,60 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 		
 		searchDisplay.getVSACProfileListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
-
+			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
 				if(!searchDisplay.getExpansionProfileValue(
 						searchDisplay.getVSACProfileListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
-				   searchDisplay.getVersionListBox().setSelectedIndex(0);
+					searchDisplay.getVersionListBox().setSelectedIndex(0);
 				}
 			}
 			
 		});
 		
-		 searchDisplay.getVersionListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+		searchDisplay.getVersionListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
 				if(!searchDisplay.getVersionValue(
 						searchDisplay.getVersionListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
-				   searchDisplay.getVSACProfileListBox().setSelectedIndex(0);
+					searchDisplay.getVSACProfileListBox().setSelectedIndex(0);
 				}
 				
 			}
 		});
-		 
-		 searchDisplay.getQDMClearButton().addClickHandler(new ClickHandler() {
+		
+		searchDisplay.getQDMClearButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.clearQDMCheckBoxes();
 			}
 		});
-		 
-		 //Global Copying of QDM Elements 
-		 searchDisplay.getQDMCopyButton().addClickHandler(new ClickHandler() {
+		
+		//Global Copying of QDM Elements
+		searchDisplay.getQDMCopyButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				List<QualityDataSetDTO> copiedList = searchDisplay.getQdmSelectedList();
-			   MatContext.get().setCopiedQDMList(copiedList);
+				MatContext.get().setCopiedQDMList(copiedList);
 			}
 		});
-		 
-		 
-		 searchDisplay.getQDMPasteButton().addClickHandler(new ClickHandler() {
+		
+		
+		searchDisplay.getQDMPasteButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-			
-			  if(MatContext.get().getCopiedQDMList().size()>0){
-				  
-			  }	else {
-				  searchDisplay.getErrorMessageDisplay().setMessage("No QDM Elements to be Pasted");
-			  }
+				
+				if(MatContext.get().getCopiedQDMList().size()>0){
+					
+				}	else {
+					searchDisplay.getErrorMessageDisplay().setMessage("No QDM Elements to be Pasted");
+				}
 			}
 		});
 	}
@@ -1077,17 +1070,17 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				qualityDataSetDTO.setVersion("1.0");
 				if(!expProfileToAllQDM.isEmpty()){
 					qualityDataSetDTO.setExpansionProfile(expProfileToAllQDM);
-					}
+				}
 				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
 				if(chkBox.getValue()){
 					modifiedQDMList.add(qualityDataSetDTO);
 				}
-				}
 			}
+		}
 		updateAllInMeasureXml(modifiedQDMList);
 	}
 	
-
+	
 	
 	
 	/**
@@ -1097,7 +1090,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void updateAllInMeasureXml(List<QualityDataSetDTO> modifiedQDMList) {
 		String measureId =  MatContext.get().getCurrentMeasureId();
-		service.updateMeasureXMLForExpansionProfile(modifiedQDMList, measureId, expProfileToAllQDM, 
+		service.updateMeasureXMLForExpansionProfile(modifiedQDMList, measureId, expProfileToAllQDM,
 				new AsyncCallback<Void>() {
 			
 			@Override
@@ -1125,7 +1118,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void validateUserDefinedInput(){
 		if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUSerDefined = true;
-			searchDisplay.getOIDInput().setEnabled(true);	
+			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getVSACProfileListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
@@ -1139,7 +1132,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 			searchDisplay.getSaveButton().setEnabled(false);
-			}
+		}
 	}
 	
 	
@@ -1163,11 +1156,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				searchDisplay.getSaveButton().setEnabled(true);
 			}
 		} else {
-			searchDisplay.getUserDefinedInput().setEnabled(true);	
+			searchDisplay.getUserDefinedInput().setEnabled(true);
 		}
 	}
 	
-
+	
 	/**
 	 * Adds the selected code list to measure.
 	 *
@@ -1249,7 +1242,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					MatContext.get().getMessageDelegate()
 					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
-			
+		
 	}
 	
 	
@@ -1275,7 +1268,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
 					measureID);
 			MatContext.get().getCodeListService().saveQDStoMeasure(matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-
+				
 				@Override
 				public void onFailure(Throwable caught) {
 					if (appliedQDMList.size() > 0) {
@@ -1371,7 +1364,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		matValueSetTransferObject.setDatatype(dataType);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		if(version != null || expansionProfile != null ){
+		if((version != null) || (expansionProfile != null) ){
 			if (!expansionProfile.equalsIgnoreCase(MatContext.PLEASE_SELECT)
 					&& !expansionProfile.equalsIgnoreCase("")) {
 				matValueSetTransferObject.setExpansionProfile(true);
@@ -1484,7 +1477,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		if(version != null || expansionProfile != null ){
+		if((version != null) || (expansionProfile != null) ){
 			if (!expansionProfile.equalsIgnoreCase(MatContext.PLEASE_SELECT)
 					&& !expansionProfile.equalsIgnoreCase("")) {
 				matValueSetTransferObject.setExpansionProfile(true);
@@ -1573,7 +1566,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void updateMeasureXML(final QualityDataSetDTO modifyWithDTO,
 			final QualityDataSetDTO modifyableDTO, final boolean isUserDefined) {
-		    service.updateMeasureXML(modifyWithDTO, modifyableDTO,
+		service.updateMeasureXML(modifyWithDTO, modifyableDTO,
 				MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
 			
 			@Override
@@ -1596,7 +1589,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		});
 	}
-
+	
 	
 	/**
 	 * Modify qdm list.
@@ -1685,7 +1678,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private List<? extends HasListBox> getVersionList(List<VSACVersion> list) {
 		return list;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1695,7 +1688,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		// TODO Auto-generated method stub
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1705,7 +1698,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	public void beforeDisplay() {
 		displaySearch();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1715,7 +1708,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	public Widget getWidget() {
 		return panel;
 	}
-
+	
 	/**
 	 * Display search.
 	 */
@@ -1739,7 +1732,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			//Window.alert(" size:"+ MatContext.get().getCopiedQDMList().size());
 		}
 	}
-
+	
 	/**
 	 * Sets the widget to default.
 	 */
@@ -1748,14 +1741,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getVSACProfileListBox().clear();
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setValue("");
-		CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getSpecificOccChkBox();
+		CustomCheckBox chkBox = searchDisplay.getSpecificOccChkBox();
 		chkBox.setEnabled(false);
 		chkBox.setValue(false);
-		//will enable the apply button once done 
+		//will enable the apply button once done
 		//with the functionality
 		//searchDisplay.getApplyButton().setEnabled(false);
 	}
-
+	
 	/**
 	 * Populate all data type.
 	 */
@@ -1787,7 +1780,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					}
 				});
 	}
-
+	
 	
 	/**
 	 * Sets the widgets read only.
@@ -1802,13 +1795,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getApplyButton().setEnabled(editable);
 		
-		((Button)searchDisplay.getCancelQDMButton()).setEnabled(editable);
+		searchDisplay.getCancelQDMButton().setEnabled(editable);
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);
 		CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
 		chkBox.setEnabled(editable);
-		CustomCheckBox specificChkBox = (CustomCheckBox)searchDisplay.getSpecificOccChkBox();
+		CustomCheckBox specificChkBox = searchDisplay.getSpecificOccChkBox();
 		specificChkBox.setEnabled(editable);
 	}
 	
@@ -1857,5 +1850,5 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getUpdateFromVSACButton().setEnabled(!busy);
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(!busy);
 	}
-
+	
 }

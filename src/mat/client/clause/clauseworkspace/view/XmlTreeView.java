@@ -1609,7 +1609,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								if(selectedNode.getName().contains("SATISFIES")){
 									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
 										if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-											String funcName = copiedNode.getLabel();
+											String funcName = copiedNode.getLabel().toUpperCase();
 											List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
 											if(!allowedFunctionsList.contains(funcName)){
 												canPaste = false;
@@ -1622,12 +1622,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									}
 								}else if(selectedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 									
-									String selectedFunctionName = selectedNode.getName();
+									String selectedFunctionName = selectedNode.getName().toUpperCase();
 									
 									@SuppressWarnings("unchecked")
 									HashMap<String, String> map =  (HashMap<String, String>) selectedNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 									if(map != null){
-										selectedFunctionName = map.get(PopulationWorkSpaceConstants.TYPE);
+										selectedFunctionName = map.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 									}
 									
 									if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName)
@@ -1644,9 +1644,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 										@SuppressWarnings("unchecked")
 										HashMap<String, String> copiedNodeMap =  (HashMap<String, String>) copiedNode.getExtraInformation(
 												PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-										String copiedFuncName = getCopiedNode().getName();
+										String copiedFuncName = getCopiedNode().getName().toUpperCase();
 										if(copiedNodeMap != null) {
-											copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE);
+											copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 										}
 										
 										List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedFunctionName);
@@ -1666,7 +1666,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 										@SuppressWarnings("unchecked")
 										HashMap<String, String> copiedNodeMap =  (HashMap<String, String>) copiedNode.getExtraInformation(
 												PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-										String copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE);
+										String copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 										
 										List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(selectedNode, MatContext.get().functions);
 										if(!allowedFunctionsList.contains(copiedFuncName)){
@@ -1685,12 +1685,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									@SuppressWarnings("unchecked")
 									HashMap<String, String> copiedNodeMap =  (HashMap<String, String>) copiedNode.getExtraInformation(
 											PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-									String copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE);
+									String copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 									
 									@SuppressWarnings("unchecked")
 									HashMap<String, String> selectedNodeMap =  (HashMap<String, String>) selectedNode.getExtraInformation(
 											PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-									String selectedFuncName = selectedNodeMap.get(PopulationWorkSpaceConstants.TYPE);
+									String selectedFuncName = selectedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 									
 									List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedFuncName);
 									if(!allowedFunctionsList.contains(copiedFuncName)){

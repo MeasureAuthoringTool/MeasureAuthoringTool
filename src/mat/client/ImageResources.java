@@ -344,4 +344,13 @@ public interface ImageResources extends ClientBundle {
 	
 	@Source("images/richTextToolbar.png")
 	ImageResource rich_Text_Toolbar();
+	
+	@Source("images/CopyIcon.png")
+	ImageResource getCopy();
+	
+	@Source("images/PasteIcon.png")
+	ImageResource getPaste();
+	
+	@Source("images/eraserIcon.png")
+	ImageResource getErase();
 }

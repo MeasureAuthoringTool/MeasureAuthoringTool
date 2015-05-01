@@ -1,6 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.sun.java.swing.plaf.windows.resources.windows;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -328,6 +330,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
 
 		VerticalPanel getMainPanel();
+
+		CustomButton getQDMCopyButton();
+
+		CustomButton getQDMPasteButton();
+
+		CustomButton getQDMClearButton();
+
+		void clearQDMCheckBoxes();
+
+		List<QualityDataSetDTO> getQdmSelectedList();
 
 	}
 
@@ -1020,6 +1032,38 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				
 			}
 		});
+		 
+		 searchDisplay.getQDMClearButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.clearQDMCheckBoxes();
+			}
+		});
+		 
+		 //Global Copying of QDM Elements 
+		 searchDisplay.getQDMCopyButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				List<QualityDataSetDTO> copiedList = searchDisplay.getQdmSelectedList();
+			   MatContext.get().setCopiedQDMList(copiedList);
+			}
+		});
+		 
+		 
+		 searchDisplay.getQDMPasteButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+			
+			  if(MatContext.get().getCopiedQDMList().size()>0){
+				  
+			  }	else {
+				  searchDisplay.getErrorMessageDisplay().setMessage("No QDM Elements to be Pasted");
+			  }
+			}
+		});
 	}
 	
 	
@@ -1681,12 +1725,21 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
 		searchDisplay.resetVSACValueSetWidget();
+		//searchDisplay.clearQDMCheckBoxes();
 		populateAllDataType();
 		getAppliedQDMList(true);
 		setWidgetToDefault();
 		panel.add(searchDisplay.asWidget());
+		checkForCopiedQDMList();
 	}
 	
+	private void checkForCopiedQDMList() {
+		
+		if(MatContext.get().getCopiedQDMList().size()>0){
+			Window.alert(" size:"+ MatContext.get().getCopiedQDMList().size());
+		}
+	}
+
 	/**
 	 * Sets the widget to default.
 	 */

@@ -5,13 +5,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mat.client.CustomPager;
+import mat.client.ImageResources;
 import mat.client.codelist.HasListBox;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
@@ -45,6 +50,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -62,6 +68,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -190,6 +197,19 @@ public class QDMAppliedSelectionView implements
 	
 	VerticalPanel mainPanel;
 	
+	private List<QualityDataSetDTO> qdmSelectedList = new ArrayList<QualityDataSetDTO>();
+
+	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
+	
+	private CustomButton copyQDMButton = (CustomButton) getImage("Copy",
+			ImageResources.INSTANCE.getCopy(), "Copy"); 
+	
+	private CustomButton pasteQDMButton = (CustomButton) getImage("Paste",
+			ImageResources.INSTANCE.getPaste(), "Paste");
+	
+	private CustomButton clearQDMButton = (CustomButton) getImage("Clear",
+			ImageResources.INSTANCE.getErase(), "Clear");
+	
 
 
 	/**
@@ -203,7 +223,16 @@ public class QDMAppliedSelectionView implements
 		  mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		  SimplePanel simplePanel = new SimplePanel();
 		  simplePanel.setWidth("5px");
-
+          /* Horizontal Button Panel
+           * for copy, paste and clear
+           * */
+		  HorizontalPanel buttonLayOut = new HorizontalPanel();
+		  
+		  buttonLayOut.add(copyQDMButton);
+		  buttonLayOut.add(pasteQDMButton);
+		  buttonLayOut.add(clearQDMButton);
+		  buttonLayOut.setStyleName("continueButton");
+		  
 		  HorizontalPanel hp = new HorizontalPanel();
 		  hp.add(buildElementWithVSACValueSetWidget());
 		  hp.add(simplePanel);
@@ -221,7 +250,7 @@ public class QDMAppliedSelectionView implements
 		  verticalPanel.add(new SpacerWidget());
 		  updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		  updateVSACButton.getElement().setId("updateVsacButton_Button");
-		  
+		  verticalPanel.add(buttonLayOut);
 		  verticalPanel.add(new SpacerWidget());
 		  verticalPanel.add(cellTablePanel);
 		  verticalPanel.add(new SpacerWidget());
@@ -464,6 +493,8 @@ public class QDMAppliedSelectionView implements
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
+			selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
+			table.setSelectionModel(selectionModel);
 
 			// Name Column
 			Column<QualityDataSetDTO, SafeHtml> nameColumn = new Column<QualityDataSetDTO, SafeHtml>(
@@ -1004,6 +1035,7 @@ public class QDMAppliedSelectionView implements
 		final List<HasCell<QualityDataSetDTO, ?>> cells = new LinkedList<HasCell<QualityDataSetDTO, ?>>();
 		cells.add(getModifyQDMButtonCell());
 		cells.add(getDeleteQDMButtonCell());
+		cells.add(getQDMCheckBoxCell());
 		CompositeCell<QualityDataSetDTO> cell = new CompositeCell<QualityDataSetDTO>(
 				cells) {
 			@Override
@@ -1141,6 +1173,56 @@ public class QDMAppliedSelectionView implements
 			}
 		};
 
+		return hasCell;
+	}
+	
+	
+	private HasCell<QualityDataSetDTO, Boolean> getQDMCheckBoxCell(){
+		HasCell<QualityDataSetDTO, Boolean> hasCell = new HasCell<QualityDataSetDTO, Boolean>() {
+			
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
+			@Override
+			public Cell<Boolean> getCell() {
+				return cell;
+			}
+			@Override
+			public Boolean getValue(QualityDataSetDTO object) {
+				boolean isSelected = false;
+				if (qdmSelectedList.size() > 0) {
+				for (int i = 0; i < qdmSelectedList.size(); i++) {
+					if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+						isSelected = true;
+						selectionModel.setSelected(object, isSelected);
+						break;
+					}
+				}
+			} else {
+				isSelected = false;
+				selectionModel.setSelected(object, isSelected);
+				}
+				return isSelected;			
+			}
+			@Override
+			public FieldUpdater<QualityDataSetDTO, Boolean> getFieldUpdater() {
+				return new FieldUpdater<QualityDataSetDTO, Boolean>() {
+					@Override
+					public void update(int index, QualityDataSetDTO object,
+							Boolean isCBChecked) {
+						if(isCBChecked)
+							qdmSelectedList.add(object);
+						else{
+							for (int i = 0; i < qdmSelectedList.size(); i++) {
+								if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+									qdmSelectedList.remove(i);
+									break;
+								}
+							}
+						}
+						selectionModel.setSelected(object, isCBChecked);
+					}
+				};
+			}
+		};
 		return hasCell;
 	}
 	
@@ -1565,5 +1647,54 @@ public class QDMAppliedSelectionView implements
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
 	}
+	
+	private Widget getImage(String action, ImageResource url, String key) {
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
+		image.setTitle(action);
+		image.setResource(url, action);
+		image.getElement().setAttribute("id", "MeasureSearchButton");
+		return image;
+	}
+	
+	@Override
+	public CustomButton getQDMCopyButton(){
+		return copyQDMButton;
+	}
+	
+	@Override
+	public CustomButton getQDMPasteButton(){
+		return pasteQDMButton;
+	}
+	
+	@Override
+	public CustomButton getQDMClearButton(){
+		return clearQDMButton;
+	}
+	
+	@Override
+	public void clearQDMCheckBoxes(){
+		if(table!=null){
+			List<QualityDataSetDTO> displayedItems = new ArrayList<QualityDataSetDTO>();
+			displayedItems.addAll(qdmSelectedList);
+			qdmSelectedList.clear();
+			for (QualityDataSetDTO dto : displayedItems) {
+				selectionModel.setSelected(dto, false);
+				}
+			table.redraw();
+		}
+	}
+	
+	@Override
+	public List<QualityDataSetDTO> getQdmSelectedList() {
+		return qdmSelectedList;
+	}
+
+
+	public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
+		this.qdmSelectedList = qdmSelectedList;
+	}
+	
 	
 }

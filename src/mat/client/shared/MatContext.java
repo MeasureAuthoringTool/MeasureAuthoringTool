@@ -42,6 +42,7 @@ import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
+import mat.model.QualityDataSetDTO;
 import mat.model.VSACProfile;
 import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
@@ -213,6 +214,8 @@ public class MatContext implements IsSerializable {
 	private List<String> profileList = new ArrayList<String>();
 	
 	private List<VSACProfile> vsacProfList = new ArrayList<VSACProfile>();
+	
+	private List<QualityDataSetDTO> copiedQDMList = new ArrayList<QualityDataSetDTO>();
 	
 	
 	/*
@@ -1686,6 +1689,22 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setProfileList(List<String> profileList) {
 		this.profileList = profileList;
+	}
+
+
+	/**
+	 * @return the copiedQDMList
+	 */
+	public List<QualityDataSetDTO> getCopiedQDMList() {
+		return copiedQDMList;
+	}
+
+
+	/**
+	 * @param copiedQDMList the copiedQDMList to set
+	 */
+	public void setCopiedQDMList(List<QualityDataSetDTO> copiedQDMList) {
+		this.copiedQDMList = copiedQDMList;
 	}
 	
 }

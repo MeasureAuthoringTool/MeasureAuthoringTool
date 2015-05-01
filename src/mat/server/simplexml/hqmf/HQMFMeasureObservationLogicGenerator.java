@@ -532,13 +532,16 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 					case "subTreeRef":
 						Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
 								.getNamedItem("id").getNodeValue());
-						if (!subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("setOp")) {
+						if (!subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("setOp")
+								&& !subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("elementRef")) {
 							Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
 							subTreeRefParentNode.appendChild(subTreeRefNodeLogic);
-							/*localVariableName = generateClauseLogicForChildsInsideFnxOp(
-									subTreeRefParentNode, true);*/
 							preCondExp = preCondExp + generateMOClauseLogic(subTreeRefParentNode, new ArrayList<Node>()
 									, measureObDefinitionElement, true, localVariableName, true);
+						} else if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("elementRef")) {
+							elementRefList.add(subTreeRefNodeLogic);
+							generateValueExpression = true;
+							break;
 						}
 						break;
 					default:

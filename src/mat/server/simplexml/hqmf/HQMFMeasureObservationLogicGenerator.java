@@ -381,7 +381,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			case "elementRef":
 				elementRefList.add(firstChildNode);
 				if (localVariableName != null) {
-					preCodExp =generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
+					preCodExp = generateValueAndExpressionTag(elementRefList, measureObDefinitionElement
 							, firstChildNode, localVariableName);
 				} else {
 					preCodExp = generateValueAndExpressionTag(elementRefList, measureObDefinitionElement, firstChildNode, null);
@@ -408,7 +408,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 							parentSubTreeNode.appendChild(functionalOp);
 							localVariableName = generateClauseLogicForChildsInsideFnxOp(
 									parentSubTreeNode, false);
-							generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
+							preCodExp = generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
 									, measureObDefinitionElement, false, localVariableName,checkIfDateTimeDiff);
 						}
 					}
@@ -522,7 +522,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 								localVariableName = generateClauseLogicForChildsInsideFnxOp(
 										parentSubTreeNode, true);
 								if (localVariableName != null) {
-									generateMOClauseLogic(functionalOp.getFirstChild(),
+									preCondExp = preCondExp + generateMOClauseLogic(functionalOp.getFirstChild(),
 											new ArrayList<Node>(), measureObDefinitionElement,
 											false, localVariableName, false);
 								}

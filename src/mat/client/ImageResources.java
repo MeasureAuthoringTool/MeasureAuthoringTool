@@ -345,10 +345,10 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/richTextToolbar.png")
 	ImageResource rich_Text_Toolbar();
 	
-	@Source("images/CopyIcon.png")
+	@Source("images/copyIcon.png")
 	ImageResource getCopy();
 	
-	@Source("images/PasteIcon.png")
+	@Source("images/pasteIcon.png")
 	ImageResource getPaste();
 	
 	@Source("images/eraserIcon.png")

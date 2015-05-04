@@ -10,6 +10,7 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
+import mat.client.shared.GlobalCopyPasteObject;
 import mat.model.Code;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -695,4 +696,10 @@ public interface CodeListService extends RemoteService {
 	 * @return the save update code list result
 	 */
 	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
+	
+	
+	SaveUpdateCodeListResult saveCopiedQDMListToMeasure(GlobalCopyPasteObject gbCopyPaste, 
+			List<QualityDataSetDTO> qdmList);
+
+
 }

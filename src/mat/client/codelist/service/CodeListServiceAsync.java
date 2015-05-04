@@ -10,6 +10,7 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
+import mat.client.shared.GlobalCopyPasteObject;
 import mat.model.Code;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -405,4 +406,8 @@ public interface CodeListServiceAsync {
 	 */
 	void updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+	
+	void saveCopiedQDMListToMeasure(GlobalCopyPasteObject gbCopyPaste, List<QualityDataSetDTO> qdmList,
+			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+	
 }

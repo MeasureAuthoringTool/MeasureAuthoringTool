@@ -197,7 +197,7 @@ public class QDMAppliedSelectionView implements
 	
 	VerticalPanel mainPanel;
 	
-	private List<QualityDataSetDTO> qdmSelectedList = new ArrayList<QualityDataSetDTO>();
+	private List<QualityDataSetDTO> qdmSelectedList;
 
 	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
 	
@@ -422,6 +422,7 @@ public class QDMAppliedSelectionView implements
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<QualityDataSetDTO>();
+			qdmSelectedList = new ArrayList<QualityDataSetDTO>();
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
@@ -460,7 +461,16 @@ public class QDMAppliedSelectionView implements
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
-			cellTablePanel.add(spager);
+			HorizontalPanel hPanel = new HorizontalPanel();
+			HorizontalPanel buttonLayOut = new HorizontalPanel();
+			buttonLayOut.add(copyQDMButton);
+			buttonLayOut.add(pasteQDMButton);
+			buttonLayOut.add(clearQDMButton);
+			buttonLayOut.setStyleName("continueButton");
+			hPanel.add(spager);
+			hPanel.add(buttonLayOut);
+			cellTablePanel.add(hPanel);
+			//cellTablePanel.add(spager);
 
 		} else {
 			Label searchHeader = new Label("Applied QDM Elements");
@@ -1678,7 +1688,7 @@ public class QDMAppliedSelectionView implements
 		if(table!=null){
 			List<QualityDataSetDTO> displayedItems = new ArrayList<QualityDataSetDTO>();
 			displayedItems.addAll(qdmSelectedList);
-			qdmSelectedList.clear();
+			qdmSelectedList = new  ArrayList<QualityDataSetDTO>();
 			for (QualityDataSetDTO dto : displayedItems) {
 				selectionModel.setSelected(dto, false);
 				}

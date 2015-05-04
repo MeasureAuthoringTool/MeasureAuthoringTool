@@ -215,9 +215,10 @@ public class MatContext implements IsSerializable {
 	
 	private List<VSACProfile> vsacProfList = new ArrayList<VSACProfile>();
 	
-	private List<QualityDataSetDTO> copiedQDMList = new ArrayList<QualityDataSetDTO>();
+	private GlobalCopyPasteObject globalCopyPaste;
 	
-	
+
+
 	/*
 	 * POC Global Copy Paste.
 	 * public CellTreeNode copiedNode;*/
@@ -1691,20 +1692,13 @@ public class MatContext implements IsSerializable {
 		this.profileList = profileList;
 	}
 
-
-	/**
-	 * @return the copiedQDMList
-	 */
-	public List<QualityDataSetDTO> getCopiedQDMList() {
-		return copiedQDMList;
+	public GlobalCopyPasteObject getGlobalCopyPaste() {
+		return globalCopyPaste;
 	}
 
-
-	/**
-	 * @param copiedQDMList the copiedQDMList to set
-	 */
-	public void setCopiedQDMList(List<QualityDataSetDTO> copiedQDMList) {
-		this.copiedQDMList = copiedQDMList;
+	public void setGlobalCopyPaste(GlobalCopyPasteObject globalCopyPaste) {
+		this.globalCopyPaste = globalCopyPaste;
 	}
+
 	
 }

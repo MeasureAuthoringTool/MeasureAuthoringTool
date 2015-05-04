@@ -16,6 +16,8 @@ import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.shared.GlobalCopyPasteObject;
+import mat.client.shared.MatContext;
 import mat.model.Code;
 import mat.model.GroupedCodeListDTO;
 import mat.model.MatValueSetTransferObject;
@@ -518,10 +520,23 @@ implements mat.client.codelist.service.CodeListService {
 	 */
 	@Override
 	public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject) {
-		
 		return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
 	}
+
+	@Override
+	public SaveUpdateCodeListResult saveCopiedQDMListToMeasure( GlobalCopyPasteObject gbCopyPaste,
+			List<QualityDataSetDTO> qdmList) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		List<QualityDataSetDTO> finalList = getFinalQDMList(qdmList, 
+				gbCopyPaste.getCopiedQDMList());
+		return result;
+	}
 	
+	private List<QualityDataSetDTO> getFinalQDMList(List<QualityDataSetDTO> qdmList, 
+			List<QualityDataSetDTO> copiedQDMList){
+		
+		return null;
+	}
 	
 	
 }

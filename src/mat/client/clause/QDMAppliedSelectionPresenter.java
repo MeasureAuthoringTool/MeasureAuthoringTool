@@ -16,6 +16,7 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.GlobalCopyPasteObject;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -883,7 +884,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					//set UserDefined value in Modify Panel
 					searchDisplay.getUserDefinedInput().setValue(result.getCodeListName());
 					searchDisplay.getUserDefinedInput().setEnabled(true);
-					//					searchDisplay.getOIDInput().setValue(result.getOid());
 					searchDisplay.getVersionListBox().setEnabled(false);
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
@@ -1022,7 +1022,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						searchDisplay.getVersionListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getVSACProfileListBox().setSelectedIndex(0);
 				}
-				
 			}
 		});
 		
@@ -1030,6 +1029,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				resetQDSMsgPanel();
 				searchDisplay.clearQDMCheckBoxes();
 			}
 		});
@@ -1039,8 +1039,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				List<QualityDataSetDTO> copiedList = searchDisplay.getQdmSelectedList();
-				MatContext.get().setCopiedQDMList(copiedList);
+				resetQDSMsgPanel();
+				GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
+				gbCopyPaste.setCopiedQDMList(searchDisplay.getQdmSelectedList());
+				gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
+				MatContext.get().setGlobalCopyPaste(gbCopyPaste);
 			}
 		});
 		
@@ -1049,11 +1052,35 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				resetQDSMsgPanel();
+				GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
+				if( gbCopyPaste != null && gbCopyPaste.getCopiedQDMList().size()>0 ){
+					MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList, 
+							new AsyncCallback<SaveUpdateCodeListResult>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onSuccess(
+										SaveUpdateCodeListResult result) {
+									// TODO Auto-generated method stub
+									
+								}
+					});
 				
-				if(MatContext.get().getCopiedQDMList().size()>0){
 					
-				}	else {
-					searchDisplay.getErrorMessageDisplay().setMessage("No QDM Elements to be Pasted");
+//					if(!MatContext.get().getGlobalCopyPaste().getCurrentMeasureId()
+//							.equalsIgnoreCase(MatContext.get().getCurrentMeasureId())){
+//					} else {
+//						searchDisplay.getErrorMessageDisplay().setMessage("Cannot Paste the QDM elements in same Measure");
+//					}
+					
+				} else {
+					searchDisplay.getErrorMessageDisplay().setMessage("No QDM elements to be pasted.");
 				}
 			}
 		});
@@ -1728,9 +1755,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	private void checkForCopiedQDMList() {
 		
-		if(MatContext.get().getCopiedQDMList().size()>0){
-			//Window.alert(" size:"+ MatContext.get().getCopiedQDMList().size());
-		}
+//		if(MatContext.get().getGlobalCopyPaste().getCopiedQDMList().size()>0){
+//			Window.alert(" size:"+ MatContext.get().getGlobalCopyPaste().getCopiedQDMList().size());
+//		}
 	}
 	
 	/**

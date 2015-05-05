@@ -631,6 +631,7 @@ public class ComparisonDialogBox {
 	 * @param allFunctionsList
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<String> filterFunctions(final CellTreeNode cellTreeNode,
 			List<String> allFunctionsList) {
 		
@@ -641,7 +642,6 @@ public class ComparisonDialogBox {
 		System.out.println("nodeType:" + nodeType);
 		
 		if (nodeType == CellTreeNode.FUNCTIONS_NODE) {
-			@SuppressWarnings("unchecked")
 			String nodeText = cellTreeNode.getName();
 			HashMap<String, String> map = (HashMap<String, String>) cellTreeNode
 					.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);

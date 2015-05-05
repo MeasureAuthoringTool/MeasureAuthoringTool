@@ -276,18 +276,23 @@ public class ComparisonDialogBox {
 			listAllUnits.setEnabled(true);
 		}
 		
-		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction
-				.getSelectedIndex());
 		
-		// if non-comparision operator, disable operator/quantity/units
-		if (temporalNoOperatorList.contains(timing)) {
-			quantity.setEnabled(false);
-			quantity.setValue("");
-			listAllUnits.setItemSelected(0, true);
-			listAllUnits.setEnabled(false);
-			listAllOperator.setItemSelected(0, true);
-			listAllOperator.setEnabled(false);
+		if(listAllTimeOrFunction.getItemCount()>0){
+			String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction
+					.getSelectedIndex());
+			
+			// if non-comparision operator, disable operator/quantity/units
+			if (temporalNoOperatorList.contains(timing)) {
+				quantity.setEnabled(false);
+				quantity.setValue("");
+				listAllUnits.setItemSelected(0, true);
+				listAllUnits.setEnabled(false);
+				listAllOperator.setItemSelected(0, true);
+				listAllOperator.setEnabled(false);
+			}
 		}
+		
+		
 		
 		// changeHandler for listAllTimeOrFunction
 		listAllTimeOrFunction.addChangeHandler(new ChangeHandler() {

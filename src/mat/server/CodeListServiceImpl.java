@@ -6,9 +6,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
@@ -16,9 +16,9 @@ import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.shared.GlobalCopyPasteObject;
-import mat.client.shared.MatContext;
+import mat.dao.DataTypeDAO;
 import mat.model.Code;
+import mat.model.DataType;
 import mat.model.GroupedCodeListDTO;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -32,10 +32,9 @@ import mat.server.service.UserService;
 import mat.server.service.ValueSetLastModifiedDateNotUniqueException;
 import mat.shared.ConstantMessages;
 import mat.shared.ListObjectModelValidator;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
@@ -522,21 +521,56 @@ implements mat.client.codelist.service.CodeListService {
 	public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject) {
 		return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.service.CodeListService#saveCopiedQDMListToMeasure(mat.model.GlobalCopyPasteObject, java.util.List, java.lang.String)
+	 */
 	@Override
-	public SaveUpdateCodeListResult saveCopiedQDMListToMeasure( GlobalCopyPasteObject gbCopyPaste,
-			List<QualityDataSetDTO> qdmList) {
+	public SaveUpdateCodeListResult saveCopiedQDMListToMeasure(mat.model.GlobalCopyPasteObject gbCopyPaste,
+			List<QualityDataSetDTO> qdmList, String measureId) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		List<QualityDataSetDTO> finalList = getFinalQDMList(qdmList, 
-				gbCopyPaste.getCopiedQDMList());
+		List<MatValueSetTransferObject> matValueSetTransferObjects = gbCopyPaste.getMatValueSetList();
+		StringBuilder finalXmlString = new StringBuilder();
+		for (MatValueSetTransferObject  transferObject : matValueSetTransferObjects) {
+			transferObject.setAppliedQDMList(qdmList);
+			DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
+			DataType dataType = dataTypeDAO.findByDataTypeName(transferObject.getDatatype());
+			transferObject.setDatatype(dataType.getId());
+			SaveUpdateCodeListResult saCodeListResult = new SaveUpdateCodeListResult();
+			if ((transferObject.getUserDefinedText() != null)
+					&& StringUtils.isNotEmpty(transferObject.getUserDefinedText())) {
+				saCodeListResult = getCodeListService().saveUserDefinedQDStoMeasure(transferObject);
+				if ((saCodeListResult.getXmlString() != null) && !StringUtils.isEmpty(saCodeListResult.getXmlString())) {
+					finalXmlString = finalXmlString.append(saCodeListResult.getXmlString());
+				}
+			} else {
+				saCodeListResult = getCodeListService().saveQDStoMeasure(transferObject);
+				if ((saCodeListResult.getXmlString() != null) && !StringUtils.isEmpty(saCodeListResult.getXmlString())) {
+					finalXmlString = finalXmlString.append(saCodeListResult.getXmlString());
+				}
+			}
+		}
+		result.setXmlString(finalXmlString.toString());
+		// Temporary Commentted - Add code to append ElementLoopUp tags and then Invoke this method.
+		// 		saveAndAppendElementLookup(result, measureId);
+		result.setAppliedQDMList(qdmList);
 		return result;
 	}
 	
-	private List<QualityDataSetDTO> getFinalQDMList(List<QualityDataSetDTO> qdmList, 
-			List<QualityDataSetDTO> copiedQDMList){
-		
-		return null;
+	/**
+	 * Invoke MeasureLibrary Service to save global paste qdm Elements in MeasureXml.
+	 * @param result - {@link SaveUpdateCodeListResult}
+	 * @param measureId - Current Measure Id
+	 */
+	private void saveAndAppendElementLookup(SaveUpdateCodeListResult result, String measureId) {
+		String nodeName = "qdm";
+		MeasureXmlModel exportModal = new MeasureXmlModel();
+		exportModal.setMeasureId(measureId);
+		exportModal.setParentNode("/measure/elementLookUp");
+		exportModal.setToReplaceNode("qdm");
+		System.out.println("XML " + result.getXmlString());
+		exportModal.setXml(result.getXmlString());
+		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
+		measureService.appendAndSaveNode(exportModal,nodeName);
 	}
-	
-	
 }

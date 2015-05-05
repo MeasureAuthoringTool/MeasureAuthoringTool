@@ -13,10 +13,11 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
+import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
-import mat.client.clause.QDMAppliedSelectionView;
+import mat.client.clause.clauseworkspace.model.GlobalCopyPaste;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
@@ -42,7 +43,7 @@ import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
-import mat.model.QualityDataSetDTO;
+import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACProfile;
 import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
@@ -217,8 +218,8 @@ public class MatContext implements IsSerializable {
 	
 	private GlobalCopyPasteObject globalCopyPaste;
 	
-
-
+	//private GlobalCopyPaste copyPaste;
+	
 	/*
 	 * POC Global Copy Paste.
 	 * public CellTreeNode copiedNode;*/
@@ -1691,14 +1692,24 @@ public class MatContext implements IsSerializable {
 	public void setProfileList(List<String> profileList) {
 		this.profileList = profileList;
 	}
-
+	
 	public GlobalCopyPasteObject getGlobalCopyPaste() {
 		return globalCopyPaste;
 	}
-
+	
 	public void setGlobalCopyPaste(GlobalCopyPasteObject globalCopyPaste) {
 		this.globalCopyPaste = globalCopyPaste;
 	}
-
+	
+	
+	/*public GlobalCopyPaste getCopyPaste() {
+		return copyPaste;
+	}
+	
+	
+	public void setCopyPaste(GlobalCopyPaste copyPaste) {
+		this.copyPaste = copyPaste;
+	}*/
+	
 	
 }

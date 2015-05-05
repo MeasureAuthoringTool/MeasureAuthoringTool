@@ -2,7 +2,6 @@ package mat.client.codelist.service;
 
 import java.util.List;
 import java.util.Map;
-
 import mat.DTO.OperatorDTO;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
@@ -10,11 +9,10 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
-import mat.client.shared.GlobalCopyPasteObject;
 import mat.model.Code;
+import mat.model.GlobalCopyPasteObject;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -407,7 +405,7 @@ public interface CodeListServiceAsync {
 	void updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 	
-	void saveCopiedQDMListToMeasure(GlobalCopyPasteObject gbCopyPaste, List<QualityDataSetDTO> qdmList,
+	void saveCopiedQDMListToMeasure(GlobalCopyPasteObject gbCopyPaste, List<QualityDataSetDTO> qdmList, String measureId,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 	
 }

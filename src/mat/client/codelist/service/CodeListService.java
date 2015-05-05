@@ -2,7 +2,6 @@ package mat.client.codelist.service;
 
 import java.util.List;
 import java.util.Map;
-
 import mat.DTO.OperatorDTO;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
@@ -10,11 +9,9 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
-import mat.client.shared.GlobalCopyPasteObject;
 import mat.model.Code;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -698,8 +695,8 @@ public interface CodeListService extends RemoteService {
 	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
 	
-	SaveUpdateCodeListResult saveCopiedQDMListToMeasure(GlobalCopyPasteObject gbCopyPaste, 
-			List<QualityDataSetDTO> qdmList);
-
-
+	SaveUpdateCodeListResult saveCopiedQDMListToMeasure(mat.model.GlobalCopyPasteObject gbCopyPaste,
+			List<QualityDataSetDTO> qdmList, String measureId);
+	
+	
 }

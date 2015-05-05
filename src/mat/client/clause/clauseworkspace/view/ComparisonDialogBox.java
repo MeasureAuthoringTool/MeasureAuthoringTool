@@ -651,11 +651,14 @@ public class ComparisonDialogBox {
 			System.out.println("nodeText:" + nodeText);
 			returnList = getAllowedFunctionsList(allFunctionsList, nodeText);
 			
-		} else if ((nodeType != CellTreeNode.TIMING_NODE)
-				&& (nodeType != CellTreeNode.SET_OP_NODE)
-				&& (nodeType != CellTreeNode.RELATIONSHIP_NODE)
-				&& (nodeType != CellTreeNode.FUNCTIONS_NODE)) {
+		} else if ((nodeType == CellTreeNode.SUBTREE_NODE)) {
 			returnList = allFunctionsList;
+		} else if ((nodeType == CellTreeNode.TIMING_NODE)
+				|| (nodeType == CellTreeNode.SET_OP_NODE)
+				|| (nodeType == CellTreeNode.RELATIONSHIP_NODE)
+				) {
+			returnList = new ArrayList<String>();
+			addFunctionWithTitleCaseInList(returnList);
 		}
 		
 		System.out.println("returnList:" + returnList);

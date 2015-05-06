@@ -241,8 +241,10 @@ HasSelectionHandlers<Boolean> {
 //	public  Button noBtn = new SecondaryButton("No");
 	
 	
-	private SimplePanel pasteTopButtonPanel = new SimplePanel();
+	/** The paste top button panel. */
+private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	
+	/** The paste bottom button panel. */
 	private SimplePanel pasteBottomButtonPanel = new SimplePanel();;
 	
 	
@@ -332,6 +334,9 @@ HasSelectionHandlers<Boolean> {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#buildPasteTopPanel(boolean)
+	 */
 	@Override
 	public Widget buildPasteTopPanel(boolean isEditable){
 		pasteTopButtonPanel.clear();
@@ -349,6 +354,9 @@ HasSelectionHandlers<Boolean> {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#buildPasteBottomPanel(boolean)
+	 */
 	@Override
 	public Widget buildPasteBottomPanel(boolean isEditable){
 		pasteBottomButtonPanel.clear();
@@ -1125,7 +1133,8 @@ HasSelectionHandlers<Boolean> {
 	
 	/**
 	 * Gets the composite cell for bulk export.
-	 * 
+	 *
+	 * @param isEditable the is editable
 	 * @return the composite cell for bulk export
 	 */
 	private CompositeCell<QualityDataSetDTO> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {

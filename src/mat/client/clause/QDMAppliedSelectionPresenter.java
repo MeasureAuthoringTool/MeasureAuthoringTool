@@ -330,26 +330,81 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 */
 		SuccessMessageDisplay getUpdateVSACSuccessMessagePanel();
 		
+		/**
+		 * Gets the main panel.
+		 *
+		 * @return the main panel
+		 */
 		VerticalPanel getMainPanel();
 		
+		/**
+		 * Gets the QDM copy top button.
+		 *
+		 * @return the QDM copy top button
+		 */
 		CustomButton getQDMCopyTopButton();
 		
+		/**
+		 * Gets the QDM paste top button.
+		 *
+		 * @return the QDM paste top button
+		 */
 		CustomButton getQDMPasteTopButton();
 		
+		/**
+		 * Gets the QDM clear top button.
+		 *
+		 * @return the QDM clear top button
+		 */
 		CustomButton getQDMClearTopButton();
 		
+		/**
+		 * Clear qdm check boxes.
+		 */
 		void clearQDMCheckBoxes();
 		
+		/**
+		 * Gets the qdm selected list.
+		 *
+		 * @return the qdm selected list
+		 */
 		List<QualityDataSetDTO> getQdmSelectedList();
 
+		/**
+		 * Gets the QDM copy bottom button.
+		 *
+		 * @return the QDM copy bottom button
+		 */
 		CustomButton getQDMCopyBottomButton();
 
+		/**
+		 * Gets the QDM paste bottom button.
+		 *
+		 * @return the QDM paste bottom button
+		 */
 		CustomButton getQDMPasteBottomButton();
 
+		/**
+		 * Gets the QDM clear bottom button.
+		 *
+		 * @return the QDM clear bottom button
+		 */
 		CustomButton getQDMClearBottomButton();
 
+		/**
+		 * Builds the paste top panel.
+		 *
+		 * @param isEditable the is editable
+		 * @return the widget
+		 */
 		Widget buildPasteTopPanel(boolean isEditable);
 
+		/**
+		 * Builds the paste bottom panel.
+		 *
+		 * @param isEditable the is editable
+		 * @return the widget
+		 */
 		Widget buildPasteBottomPanel(boolean isEditable);
 
 //		Button getYesButton();
@@ -1237,6 +1292,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setValue(false);
 			searchDisplay.getVSACProfileListBox().clear();
+			searchDisplay.getVersionListBox().clear();
 			searchDisplay.getUserDefinedInput().setEnabled(true);
 			if(!searchDisplay.getDataTypeText(
 					searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
@@ -1398,19 +1454,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								new QDSElementCreatedEvent(
 										currentMatValueSet
 										.getDisplayName()));
-						searchDisplay.getSearchHeader().setText("Search");
-						searchDisplay.getOIDInput().setEnabled(true);
-						searchDisplay.getOIDInput().setValue("");
-						searchDisplay.getUserDefinedInput().setEnabled(true);
-						searchDisplay.getUserDefinedInput().setValue("");
-						searchDisplay.getVSACProfileListBox().clear();
-						searchDisplay.getVersionListBox().clear();
-						searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-						searchDisplay.getSpecificOccChkBox().setValue(false);
-						searchDisplay.getVSACProfileListBox().setEnabled(false);
-						searchDisplay.getVersionListBox().setEnabled(false);
-						searchDisplay.getSpecificOccChkBox().setEnabled(false);
-						searchDisplay.getDataTypesListBox().setEnabled(false);
+						resetQDMSearchPanel();
 						searchDisplay
 						.getSuccessMessageDisplay()
 						.setMessage(message);
@@ -1612,10 +1656,31 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					isModified = false;
 					appliedQDMList = result.getAppliedQDMList();
 					updateMeasureXML(result.getDataSetDTO() , qualityDataSetDTO, isUSerDefined);
+					resetQDMSearchPanel();
 				}
 			}
 		});
 		
+	}
+	
+	
+	/**
+	 * Reset qdm search panel.
+	 */
+	private void resetQDMSearchPanel(){
+		searchDisplay.getSearchHeader().setText("Search");
+		searchDisplay.getOIDInput().setEnabled(true);
+		searchDisplay.getOIDInput().setValue("");
+		searchDisplay.getUserDefinedInput().setEnabled(true);
+		searchDisplay.getUserDefinedInput().setValue("");
+		searchDisplay.getVSACProfileListBox().clear();
+		searchDisplay.getVersionListBox().clear();
+		searchDisplay.getDataTypesListBox().setSelectedIndex(0);
+		searchDisplay.getSpecificOccChkBox().setValue(false);
+		searchDisplay.getVSACProfileListBox().setEnabled(false);
+		searchDisplay.getVersionListBox().setEnabled(false);
+		searchDisplay.getSpecificOccChkBox().setEnabled(false);
+		searchDisplay.getDataTypesListBox().setEnabled(false);
 	}
 	
 	/**
@@ -1805,20 +1870,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
 		searchDisplay.resetVSACValueSetWidget();
-		//searchDisplay.clearQDMCheckBoxes();
 		populateAllDataType();
 		getAppliedQDMList(true);
 		setWidgetToDefault();
 		panel.add(searchDisplay.asWidget());
-		checkForCopiedQDMList();
 	}
 	
-	private void checkForCopiedQDMList() {
-		
-		//		if(MatContext.get().getGlobalCopyPaste().getCopiedQDMList().size()>0){
-		//			Window.alert(" size:"+ MatContext.get().getGlobalCopyPaste().getCopiedQDMList().size());
-		//		}
-	}
 	
 	/**
 	 * Sets the widget to default.
@@ -1831,6 +1888,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		CustomCheckBox chkBox = searchDisplay.getSpecificOccChkBox();
 		chkBox.setEnabled(false);
 		chkBox.setValue(false);
+		searchDisplay.getSaveButton().setEnabled(false);
 		//will enable the apply button once done
 		//with the functionality
 		//searchDisplay.getApplyButton().setEnabled(false);
@@ -1944,6 +2002,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Copy.
+	 */
 	private void copy() {
 		
 		resetQDSMsgPanel();
@@ -1954,6 +2015,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Paste.
+	 */
 	private void paste() {
 		//searchDisplay.showPasteDialogBox();
 		resetQDSMsgPanel();
@@ -1987,6 +2051,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 //		}
 	}
 	
+	/**
+	 * Clear.
+	 */
 	private void clear() {
 		resetQDSMsgPanel();
 		searchDisplay.clearQDMCheckBoxes();

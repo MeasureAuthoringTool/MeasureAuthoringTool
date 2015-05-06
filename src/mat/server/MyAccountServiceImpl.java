@@ -214,7 +214,6 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 	 * @see mat.client.myAccount.service.MyAccountService#changePassword(java.lang.String)
 	 */
 	public SaveMyAccountResult changePassword(String password) {
-		logger.info("Changing password to " + password);
 		SaveMyAccountResult result = new SaveMyAccountResult();
 		PasswordVerifier verifier = new PasswordVerifier(
 				LoggedInUserUtil.getLoggedInLoginId(),password,password);

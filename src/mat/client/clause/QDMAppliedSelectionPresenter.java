@@ -348,6 +348,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 		CustomButton getQDMClearBottomButton();
 
+		Widget buildPasteTopPanel(boolean isEditable);
+
+		Widget buildPasteBottomPanel(boolean isEditable);
+
 //		Button getYesButton();
 //
 //		Button getNoButton();
@@ -1888,6 +1892,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		specificChkBox.setEnabled(editable);
 		searchDisplay.getQDMPasteTopButton().setEnabled(editable);
 		searchDisplay.getQDMPasteBottomButton().setEnabled(editable);
+		searchDisplay.buildPasteBottomPanel(editable);
+		searchDisplay.buildPasteTopPanel(editable);
+		
 	}
 	
 	/**

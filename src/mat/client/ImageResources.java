@@ -353,4 +353,8 @@ public interface ImageResources extends ClientBundle {
 	
 	@Source("images/eraserIcon.png")
 	ImageResource getErase();
+	
+	
+	@Source("images/grayscale_pasteIcon.png")
+	ImageResource getGrayScalePaste();
 }

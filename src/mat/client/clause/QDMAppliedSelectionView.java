@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.record.HCenterRecord;
 
 import mat.client.CustomPager;
 import mat.client.ImageResources;
@@ -215,8 +216,7 @@ HasSelectionHandlers<Boolean> {
 			ImageResources.INSTANCE.getCopy(), "Copy");
 	
 	/** The paste qdm top button. */
-	private CustomButton pasteQDMTopButton = (CustomButton) getImage("Paste",
-			ImageResources.INSTANCE.getPaste(), "Paste");
+	private CustomButton pasteQDMTopButton;
 	
 	/** The clear qdm top button. */
 	private CustomButton clearQDMTopButton = (CustomButton) getImage("Clear",
@@ -227,8 +227,7 @@ HasSelectionHandlers<Boolean> {
 			ImageResources.INSTANCE.getCopy(), "Copy");
 	
 	/** The paste qdm bottom button. */
-	private CustomButton pasteQDMBottomButton = (CustomButton) getImage("Paste",
-			ImageResources.INSTANCE.getPaste(), "Paste");
+	private CustomButton pasteQDMBottomButton;
 	
 	/** The clear qdm bottom button. */
 	private CustomButton clearQDMBottomButton = (CustomButton) getImage("Clear",
@@ -241,6 +240,10 @@ HasSelectionHandlers<Boolean> {
 //	
 //	public  Button noBtn = new SecondaryButton("No");
 	
+	
+	private SimplePanel pasteTopButtonPanel = new SimplePanel();
+	
+	private SimplePanel pasteBottomButtonPanel = new SimplePanel();;
 	
 	
 	/**
@@ -261,16 +264,14 @@ HasSelectionHandlers<Boolean> {
 		 * */
 		HorizontalPanel topButtonLayOut = new HorizontalPanel();
 		copyQDMTopButton.getElement().setId("copyQDMTop_button");
-		pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
 		clearQDMTopButton.getElement().setId("clearQDMTop_butotn");
 		
 		copyQDMTopButton.getElement().setAttribute("tabIndex", "0");
-		pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
 		clearQDMTopButton.getElement().setAttribute("tabIndex", "0");
 		
 		topButtonLayOut.getElement().setId("topButtonLayOut_HorzPanel");
 		topButtonLayOut.add(copyQDMTopButton);
-		topButtonLayOut.add(pasteQDMTopButton);
+		topButtonLayOut.add(buildPasteTopPanel(checkForEnable()));
 		topButtonLayOut.add(clearQDMTopButton);
 		topButtonLayOut.setStyleName("continueButton");
 		
@@ -287,19 +288,18 @@ HasSelectionHandlers<Boolean> {
 				"errorMessagePanel_ErrorMessageDisplay");
 		
 		HorizontalPanel bottomButtonLayOut = new HorizontalPanel();
-		
+		SimplePanel pasteTopPanel =  new SimplePanel();
 		copyQDMBottomButton.getElement().setId("copyQDMBottom_button");
-		pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
 		clearQDMBottomButton.getElement().setId("clearQDMBottom_butotn");
 	
 		copyQDMBottomButton.getElement().setAttribute("tabIndex", "0");
-		pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
 		clearQDMBottomButton.getElement().setAttribute("tabIndex", "0");
 
 		bottomButtonLayOut.getElement().setId("bottomButtonLayOut_HorzPanel");
+		pasteTopPanel.add(pasteQDMBottomButton);
 		
         bottomButtonLayOut.add(copyQDMBottomButton);
-        bottomButtonLayOut.add(pasteQDMBottomButton);
+        bottomButtonLayOut.add(buildPasteBottomPanel(checkForEnable()));
         bottomButtonLayOut.add(clearQDMBottomButton);
         bottomButtonLayOut.setStyleName("continueButton");
 		HorizontalPanel hPanel = new HorizontalPanel();
@@ -331,6 +331,39 @@ HasSelectionHandlers<Boolean> {
 		MatContext.get().setVSACProfileView(this);
 	}
 	
+	
+	@Override
+	public Widget buildPasteTopPanel(boolean isEditable){
+		pasteTopButtonPanel.clear();
+		 if(isEditable){
+			 pasteQDMTopButton = (CustomButton) getImage("Paste",
+						ImageResources.INSTANCE.getPaste(), "Paste");
+		 } else {
+			 pasteQDMTopButton = (CustomButton) getImage("Paste",
+						ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
+		 }
+		 pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
+		 pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
+		 pasteTopButtonPanel.add(pasteQDMTopButton);
+		 return pasteTopButtonPanel;
+	}
+	
+	
+	@Override
+	public Widget buildPasteBottomPanel(boolean isEditable){
+		pasteBottomButtonPanel.clear();
+		 if(isEditable){
+			 pasteQDMBottomButton = (CustomButton) getImage("Paste",
+				ImageResources.INSTANCE.getPaste(), "Paste");
+		 } else {
+			 pasteQDMBottomButton = (CustomButton) getImage("Paste",
+						ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
+		 }
+		 pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
+		 pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
+		 pasteBottomButtonPanel.add(pasteQDMBottomButton);
+		 return pasteBottomButtonPanel;
+	}
 	
 	
 	/**

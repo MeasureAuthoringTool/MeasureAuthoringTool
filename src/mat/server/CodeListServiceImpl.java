@@ -530,7 +530,7 @@ implements mat.client.codelist.service.CodeListService {
 			List<QualityDataSetDTO> qdmList, String measureId) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		List<MatValueSetTransferObject> matValueSetTransferObjects = gbCopyPaste.getMatValueSetList();
-		StringBuilder finalXmlString = new StringBuilder();
+		StringBuilder finalXmlString = new StringBuilder("<elementLookUp>");
 		for (MatValueSetTransferObject  transferObject : matValueSetTransferObjects) {
 			transferObject.setAppliedQDMList(qdmList);
 			DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
@@ -550,9 +550,10 @@ implements mat.client.codelist.service.CodeListService {
 				}
 			}
 		}
+		finalXmlString.append("</elementLookUp>");
 		result.setXmlString(finalXmlString.toString());
 		// Temporary Commentted - Add code to append ElementLoopUp tags and then Invoke this method.
-		// 		saveAndAppendElementLookup(result, measureId);
+		saveAndAppendElementLookup(result, measureId);
 		result.setAppliedQDMList(qdmList);
 		return result;
 	}

@@ -3,14 +3,19 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.CustomButton;
+import mat.client.shared.DialogBoxWithCloseButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
+import mat.client.shared.InformationMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
@@ -19,8 +24,10 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.WarningMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
@@ -56,6 +63,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -67,6 +75,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
@@ -185,25 +194,52 @@ HasSelectionHandlers<Boolean> {
 	/** The spager. */
 	private MatSimplePager spager;
 	
+	/** The save cancel button bar. */
 	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar();
 	
+	/** The search widget. */
 	private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
 			"Enter OID", "textSearchWidget");
 	
+	/** The main panel. */
 	VerticalPanel mainPanel;
 	
+	/** The qdm selected list. */
 	private List<QualityDataSetDTO> qdmSelectedList;
 	
+	/** The selection model. */
 	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
 	
-	private CustomButton copyQDMButton = (CustomButton) getImage("Copy",
+	/** The copy qdm top button. */
+	private CustomButton copyQDMTopButton = (CustomButton) getImage("Copy",
 			ImageResources.INSTANCE.getCopy(), "Copy");
 	
-	private CustomButton pasteQDMButton = (CustomButton) getImage("Paste",
+	/** The paste qdm top button. */
+	private CustomButton pasteQDMTopButton = (CustomButton) getImage("Paste",
 			ImageResources.INSTANCE.getPaste(), "Paste");
 	
-	private CustomButton clearQDMButton = (CustomButton) getImage("Clear",
+	/** The clear qdm top button. */
+	private CustomButton clearQDMTopButton = (CustomButton) getImage("Clear",
 			ImageResources.INSTANCE.getErase(), "Clear");
+	
+	/** The copy qdm bottom button. */
+	private CustomButton copyQDMBottomButton = (CustomButton) getImage("Copy",
+			ImageResources.INSTANCE.getCopy(), "Copy");
+	
+	/** The paste qdm bottom button. */
+	private CustomButton pasteQDMBottomButton = (CustomButton) getImage("Paste",
+			ImageResources.INSTANCE.getPaste(), "Paste");
+	
+	/** The clear qdm bottom button. */
+	private CustomButton clearQDMBottomButton = (CustomButton) getImage("Clear",
+			ImageResources.INSTANCE.getErase(), "Clear");
+	
+//	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
+//			StringUtils.EMPTY);
+//	
+//	public  Button yesBtn = new SecondaryButton("Yes");
+//	
+//	public  Button noBtn = new SecondaryButton("No");
 	
 	
 	
@@ -213,31 +249,64 @@ HasSelectionHandlers<Boolean> {
 	public QDMAppliedSelectionView() {
 		VerticalPanel verticalPanel = new VerticalPanel();
 		SimplePanel updateButtonPanel = new SimplePanel();
+		updateButtonPanel.getElement().setId("updateButtonPanel_SimplePanel");
 		updateButtonPanel.add(updateVSACButton);
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		SimplePanel simplePanel = new SimplePanel();
+		simplePanel.getElement().setId("simplePanel_SimplePanel");
 		simplePanel.setWidth("5px");
 		/* Horizontal Button Panel
 		 * for copy, paste and clear
 		 * */
-		/*HorizontalPanel buttonLayOut = new HorizontalPanel();
+		HorizontalPanel topButtonLayOut = new HorizontalPanel();
+		copyQDMTopButton.getElement().setId("copyQDMTop_button");
+		pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
+		clearQDMTopButton.getElement().setId("clearQDMTop_butotn");
 		
-		buttonLayOut.add(copyQDMButton);
-		buttonLayOut.add(pasteQDMButton);
-		buttonLayOut.add(clearQDMButton);
-		buttonLayOut.setStyleName("continueButton");*/
+		copyQDMTopButton.getElement().setAttribute("tabIndex", "0");
+		pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
+		clearQDMTopButton.getElement().setAttribute("tabIndex", "0");
+		
+		topButtonLayOut.getElement().setId("topButtonLayOut_HorzPanel");
+		topButtonLayOut.add(copyQDMTopButton);
+		topButtonLayOut.add(pasteQDMTopButton);
+		topButtonLayOut.add(clearQDMTopButton);
+		topButtonLayOut.setStyleName("continueButton");
 		
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(buildElementWithVSACValueSetWidget());
 		hp.add(simplePanel);
 		hp.add(buildElementWithVSACExpansionProfile());
 		
+		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(successMessagePanel);
 		verticalPanel.add(errorMessagePanel);
 		errorMessagePanel.getElement().setId(
 				"errorMessagePanel_ErrorMessageDisplay");
+		
+		HorizontalPanel bottomButtonLayOut = new HorizontalPanel();
+		
+		copyQDMBottomButton.getElement().setId("copyQDMBottom_button");
+		pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
+		clearQDMBottomButton.getElement().setId("clearQDMBottom_butotn");
+	
+		copyQDMBottomButton.getElement().setAttribute("tabIndex", "0");
+		pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
+		clearQDMBottomButton.getElement().setAttribute("tabIndex", "0");
+
+		bottomButtonLayOut.getElement().setId("bottomButtonLayOut_HorzPanel");
+		
+        bottomButtonLayOut.add(copyQDMBottomButton);
+        bottomButtonLayOut.add(pasteQDMBottomButton);
+        bottomButtonLayOut.add(clearQDMBottomButton);
+        bottomButtonLayOut.setStyleName("continueButton");
+		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
+		hPanel.setWidth("930px");
+		hPanel.add(updateVSACButton);
+        hPanel.add(bottomButtonLayOut);
 		
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
@@ -245,11 +314,11 @@ HasSelectionHandlers<Boolean> {
 		verticalPanel.add(new SpacerWidget());
 		updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
-		// verticalPanel.add(buttonLayOut);
-		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(topButtonLayOut);
+//		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(updateVSACButton);
+		verticalPanel.add(hPanel);
 		verticalPanel.add(inProgressMessageDisplay);
 		verticalPanel.add(updateVSACSuccessMessagePanel);
 		verticalPanel.add(updateVSACErrorMessagePanel);
@@ -456,16 +525,7 @@ HasSelectionHandlers<Boolean> {
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
-			HorizontalPanel hPanel = new HorizontalPanel();
-			HorizontalPanel buttonLayOut = new HorizontalPanel();
-			buttonLayOut.add(copyQDMButton);
-			buttonLayOut.add(pasteQDMButton);
-			buttonLayOut.add(clearQDMButton);
-			buttonLayOut.setStyleName("continueButton");
-			hPanel.add(spager);
-			hPanel.add(buttonLayOut);
-			cellTablePanel.add(hPanel);
-			//cellTablePanel.add(spager);
+			cellTablePanel.add(spager);
 			
 		} else {
 			Label searchHeader = new Label("Applied QDM Elements");
@@ -622,10 +682,10 @@ HasSelectionHandlers<Boolean> {
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
 			
-			if(isEditable){
+			
 				// Modify by Delete Column
 				table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
-						getCompositeCellForQDMModifyAndDelete()) {
+						getCompositeCellForQDMModifyAndDelete(isEditable)) {
 					
 					@Override
 					public QualityDataSetDTO getValue(QualityDataSetDTO object) {
@@ -634,7 +694,6 @@ HasSelectionHandlers<Boolean> {
 				}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
 						+ "Modify" + "</span>"));
 				
-			}
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
@@ -1036,10 +1095,12 @@ HasSelectionHandlers<Boolean> {
 	 * 
 	 * @return the composite cell for bulk export
 	 */
-	private CompositeCell<QualityDataSetDTO> getCompositeCellForQDMModifyAndDelete() {
+	private CompositeCell<QualityDataSetDTO> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
 		final List<HasCell<QualityDataSetDTO, ?>> cells = new LinkedList<HasCell<QualityDataSetDTO, ?>>();
-		cells.add(getModifyQDMButtonCell());
-		cells.add(getDeleteQDMButtonCell());
+		if(isEditable){
+			cells.add(getModifyQDMButtonCell());
+			cells.add(getDeleteQDMButtonCell());
+		}
 		cells.add(getQDMCheckBoxCell());
 		CompositeCell<QualityDataSetDTO> cell = new CompositeCell<QualityDataSetDTO>(
 				cells) {
@@ -1182,6 +1243,11 @@ HasSelectionHandlers<Boolean> {
 	}
 	
 	
+	/**
+	 * Gets the QDM check box cell.
+	 *
+	 * @return the QDM check box cell
+	 */
 	private HasCell<QualityDataSetDTO, Boolean> getQDMCheckBoxCell(){
 		HasCell<QualityDataSetDTO, Boolean> hasCell = new HasCell<QualityDataSetDTO, Boolean>() {
 			
@@ -1649,11 +1715,22 @@ HasSelectionHandlers<Boolean> {
 		return updateVSACSuccessMessagePanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getMainPanel()
+	 */
 	@Override
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
 	}
 	
+	/**
+	 * Gets the image.
+	 *
+	 * @param action the action
+	 * @param url the url
+	 * @param key the key
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
@@ -1664,21 +1741,57 @@ HasSelectionHandlers<Boolean> {
 		return image;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMCopyTopButton()
+	 */
 	@Override
-	public CustomButton getQDMCopyButton(){
-		return copyQDMButton;
+	public CustomButton getQDMCopyTopButton(){
+		return copyQDMTopButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMPasteTopButton()
+	 */
 	@Override
-	public CustomButton getQDMPasteButton(){
-		return pasteQDMButton;
+	public CustomButton getQDMPasteTopButton(){
+		return pasteQDMTopButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMClearTopButton()
+	 */
 	@Override
-	public CustomButton getQDMClearButton(){
-		return clearQDMButton;
+	public CustomButton getQDMClearTopButton(){
+		return clearQDMTopButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMCopyBottomButton()
+	 */
+	@Override
+	public CustomButton getQDMCopyBottomButton(){
+		return copyQDMBottomButton;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMPasteBottomButton()
+	 */
+	@Override
+	public CustomButton getQDMPasteBottomButton(){
+		return pasteQDMBottomButton;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQDMClearBottomButton()
+	 */
+	@Override
+	public CustomButton getQDMClearBottomButton(){
+		return clearQDMBottomButton;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#clearQDMCheckBoxes()
+	 */
 	@Override
 	public void clearQDMCheckBoxes(){
 		if(table!=null){
@@ -1692,15 +1805,71 @@ HasSelectionHandlers<Boolean> {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getQdmSelectedList()
+	 */
 	@Override
 	public List<QualityDataSetDTO> getQdmSelectedList() {
 		return qdmSelectedList;
 	}
 	
 	
+	/**
+	 * Sets the qdm selected list.
+	 *
+	 * @param qdmSelectedList the new qdm selected list
+	 */
 	public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
 		this.qdmSelectedList = qdmSelectedList;
 	}
+	
+	
+//	@Override
+//	public Button getYesButton(){
+//		return yesBtn;
+//	}
+//	
+//	@Override
+//	public Button getNoButton(){
+//		return noBtn;
+//	}
+	
+//	@Override
+//	public void showPasteDialogBox(){
+//		dialogBox.setGlassEnabled(true);
+//		dialogBox.setAnimationEnabled(true);
+//		dialogBox.setText("Warning");
+//		//dialogBox.setVisible(true);
+//		// Create a table to layout the content
+//		VerticalPanel dialogContents = new VerticalPanel();
+//		dialogContents.getElement().setId("dialogContents_VerticalPanel");
+//		dialogContents.setWidth("28em");
+//		dialogContents.setSpacing(5);
+//		dialogBox.setWidget(dialogContents);
+//		yesBtn.setStyleName("padLeft5px");
+//		noBtn.setStyleName("padLeft5px");
+//		HorizontalPanel buttonPanel = new HorizontalPanel();
+//		buttonPanel.add(yesBtn);
+//		buttonPanel.add(noBtn);
+//		WarningMessageDisplay warningMsgDispaly = new WarningMessageDisplay();
+//		warningMsgDispaly.setMessage(MatContext.get().getMessageDelegate()
+//				.getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS());
+//		
+//		dialogContents.add(warningMsgDispaly);
+//		dialogContents.setCellHorizontalAlignment(warningMsgDispaly,
+//				HasHorizontalAlignment.ALIGN_LEFT);
+//		dialogContents.add(buttonPanel);
+//		dialogContents.setCellHorizontalAlignment(buttonPanel,
+//				HasHorizontalAlignment.ALIGN_LEFT);
+//		dialogBox.center();
+//		dialogBox.show();
+//	}
+	
+	
+//	@Override
+//	public DialogBoxWithCloseButton getDialogBox(){
+//		return dialogBox;
+//	}
 	
 	
 }

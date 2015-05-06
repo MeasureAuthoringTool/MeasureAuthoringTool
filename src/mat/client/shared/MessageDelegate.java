@@ -149,11 +149,21 @@ public class MessageDelegate {
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, "
 			+ " Numerator and Denominator must contain one association.";
 	
+	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to QDM Elements";
 	
+	/** The vsac profile applied to qdm elements. */
 	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "VSAC Profile Successfully Applied to QDM Elements.";
 	
+	/** The successful oid retreival from vsac. */
 	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from the VSAC.";
+	
+	/** The warning pasting in applied qdm elements. */
+	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure. " +
+			                          "If you want to continue say Yes or No to cancel.";
+	
+	/** The successfully pasted qdm elements in measure. */
+	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Successfully pasted QDM elements in this Measure";
 	
 
 
@@ -2243,6 +2253,8 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the clause work space invalid nested depth clause.
+	 *
 	 * @return the cLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE
 	 */
 	public String getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE() {
@@ -2259,15 +2271,48 @@ public class MessageDelegate {
 	}
 
 	
+	/**
+	 * Gets the vsac expansion profile selection.
+	 *
+	 * @return the vsac expansion profile selection
+	 */
 	public String getVsacExpansionProfileSelection() {
 		return VSAC_EXPANSION_PROFILE_SELECTION;
 	}
 	
+	/**
+	 * Gets the vsac profile applied to qdm elements.
+	 *
+	 * @return the vsac profile applied to qdm elements
+	 */
 	public String getVsacProfileAppliedToQdmElements() {
 		return VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS;
 	}
 	
+	/**
+	 * Gets the vsac retrieval success.
+	 *
+	 * @return the vsac retrieval success
+	 */
 	public String getVSAC_RETRIEVAL_SUCCESS() {
 		return SUCCESSFUL_OID_RETREIVAL_FROM_VSAC;
+	}
+	
+	/**
+	 * Gets the warning pasting in applied qdm elements.
+	 *
+	 * @return the warning pasting in applied qdm elements
+	 */
+	public String getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS() {
+		return WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS;
+	}
+	
+	/**
+	 * Gets the successfully pasted qdm elements in measure.
+	 *
+	 * @return the successfully pasted qdm elements in measure
+	 */
+	public String getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE() {
+		return SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE;
 	}
 }

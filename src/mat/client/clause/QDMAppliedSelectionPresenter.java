@@ -610,7 +610,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				
 				searchDisplay.getSuccessMessageDisplay().setMessage(
-						"Successfully removed selected QDM element.");
+						MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
 			}
 			
 		});
@@ -959,6 +959,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					isUSerDefined = true;
 					//set UserDefined value in Modify Panel
 					searchDisplay.getUserDefinedInput().setValue(result.getCodeListName());
+					searchDisplay.getUserDefinedInput().setTitle(result.getCodeListName());
 					searchDisplay.getUserDefinedInput().setEnabled(true);
 					searchDisplay.getVersionListBox().setEnabled(false);
 					searchDisplay.getVSACProfileListBox().setEnabled(false);
@@ -1266,6 +1267,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUSerDefined = true;
 			searchDisplay.getOIDInput().setEnabled(true);
+			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().toString());
 			searchDisplay.getVSACProfileListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
@@ -1274,6 +1276,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			isUSerDefined = false;
+			searchDisplay.getUserDefinedInput().setTitle("Enter Name");
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);

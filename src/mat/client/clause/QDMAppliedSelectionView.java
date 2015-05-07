@@ -257,10 +257,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * Instantiates a new VSAC profile selection view.
 	 */
 	public QDMAppliedSelectionView() {
+		
 		VerticalPanel verticalPanel = new VerticalPanel();
-		SimplePanel updateButtonPanel = new SimplePanel();
-		updateButtonPanel.getElement().setId("updateButtonPanel_SimplePanel");
-		updateButtonPanel.add(updateVSACButton);
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		SimplePanel simplePanel = new SimplePanel();
@@ -283,6 +281,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		topButtonLayOut.setStyleName("continueButton");
 		
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 		hp.add(buildElementWithVSACValueSetWidget());
 		hp.add(simplePanel);
 		hp.add(buildElementWithVSACExpansionProfile());

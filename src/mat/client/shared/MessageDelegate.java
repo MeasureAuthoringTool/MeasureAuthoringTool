@@ -159,14 +159,17 @@ public class MessageDelegate {
 	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from the VSAC.";
 	
 	/** The warning pasting in applied qdm elements. */
-	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure. " +
+	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure." +
 			                          "If you want to continue say Yes or No to cancel.";
 	
 	/** The successfully pasted qdm elements in measure. */
-	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Successfully pasted QDM elements in this Measure";
+	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully";
 	
 	/** The copy qdm select atleast one. */
-	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select atleast one applied QDM to copy.";
+	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied QDM element to copy.";
+	
+	/** The successful qdm remove msg. */
+	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected QDM element has been removed successfully.";
 	
 	
 
@@ -2326,5 +2329,15 @@ public class MessageDelegate {
 	 */
 	public String getCOPY_QDM_SELECT_ATLEAST_ONE() {
 		return COPY_QDM_SELECT_ATLEAST_ONE;
+	}
+	
+	
+	/**
+	 * Gets the successful qdm remove msg.
+	 *
+	 * @return the successful qdm remove msg
+	 */
+	public String getSUCCESSFUL_QDM_REMOVE_MSG() {
+		return SUCCESSFUL_QDM_REMOVE_MSG;
 	}
 }

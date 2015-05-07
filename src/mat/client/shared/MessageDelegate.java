@@ -165,7 +165,10 @@ public class MessageDelegate {
 	/** The successfully pasted qdm elements in measure. */
 	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Successfully pasted QDM elements in this Measure";
 	
-
+	/** The copy qdm select atleast one. */
+	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select atleast one applied QDM to copy.";
+	
+	
 
 	/**
 	 * Gets the measure save server error message.
@@ -2314,5 +2317,14 @@ public class MessageDelegate {
 	 */
 	public String getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE() {
 		return SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE;
+	}
+	
+	/**
+	 * Gets the copy qdm select atleast one.
+	 *
+	 * @return the copy qdm select atleast one
+	 */
+	public String getCOPY_QDM_SELECT_ATLEAST_ONE() {
+		return COPY_QDM_SELECT_ATLEAST_ONE;
 	}
 }

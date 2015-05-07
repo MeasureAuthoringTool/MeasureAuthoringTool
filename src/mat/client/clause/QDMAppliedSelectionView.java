@@ -4,19 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.record.HCenterRecord;
-
 import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.CustomButton;
-import mat.client.shared.DialogBoxWithCloseButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
-import mat.client.shared.InformationMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
@@ -25,16 +20,15 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.WarningMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -46,6 +40,8 @@ import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -64,7 +60,6 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -80,9 +75,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 /**
  * The Class QDMAppliedSelectionView.
  */
-public class QDMAppliedSelectionView implements
-QDMAppliedSelectionPresenter.SearchDisplay,
-HasSelectionHandlers<Boolean> {
+public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
+                                                           HasSelectionHandlers<Boolean> {
 	
 	/**
 	 * The Interface Observer.
@@ -104,6 +98,17 @@ HasSelectionHandlers<Boolean> {
 		 * @param index the index
 		 */
 		void onDeleteClicked(QualityDataSetDTO result, int index);
+		
+		
+		/**
+		 * On top qdm paste clicked.
+		 */
+		void onTopQDMPasteClicked();
+		
+		/**
+		 * On bottom qdm paste clicked.
+		 */
+		void onBottomQDMPasteClicked();
 	}
 	
 	/** The observer. */
@@ -338,7 +343,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#buildPasteTopPanel(boolean)
 	 */
 	@Override
-	public Widget buildPasteTopPanel(boolean isEditable){
+	public Widget buildPasteTopPanel(final boolean isEditable){
 		pasteTopButtonPanel.clear();
 		 if(isEditable){
 			 pasteQDMTopButton = (CustomButton) getImage("Paste",
@@ -350,6 +355,17 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		 pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
 		 pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
 		 pasteTopButtonPanel.add(pasteQDMTopButton);
+		 
+		 pasteQDMTopButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(isEditable){
+					observer.onTopQDMPasteClicked();
+				}
+				
+			}
+		});
 		 return pasteTopButtonPanel;
 	}
 	
@@ -358,7 +374,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#buildPasteBottomPanel(boolean)
 	 */
 	@Override
-	public Widget buildPasteBottomPanel(boolean isEditable){
+	public Widget buildPasteBottomPanel(final boolean isEditable){
 		pasteBottomButtonPanel.clear();
 		 if(isEditable){
 			 pasteQDMBottomButton = (CustomButton) getImage("Paste",
@@ -370,6 +386,16 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		 pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
 		 pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
 		 pasteBottomButtonPanel.add(pasteQDMBottomButton);
+		 pasteQDMBottomButton.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					if(isEditable){
+						observer.onBottomQDMPasteClicked();
+					}
+					
+				}
+			});
 		 return pasteBottomButtonPanel;
 	}
 	
@@ -1064,7 +1090,12 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 			dataTypeListBox.setEnabled(false);
 			searchWidget.getSearchInput().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
-			//saveButton.setEnabled(false);
+			//saveButton.setEnabled(false); 
+			pasteQDMTopButton.setEnabled(true);
+			pasteQDMBottomButton.setEnabled(true);
+		} else { 
+			pasteQDMTopButton.setEnabled(false);
+			pasteQDMBottomButton.setEnabled(false);
 		}
 		searchHeader.setText("Search");
 	}

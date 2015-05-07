@@ -2019,7 +2019,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		   gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
 		   MatContext.get().setGlobalCopyPaste(gbCopyPaste);
 	   } else {
-		   searchDisplay.getErrorMessageDisplay().setMessage("");
+		   searchDisplay.getErrorMessageDisplay().setMessage(
+				   MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
 	   }
 	}
 	

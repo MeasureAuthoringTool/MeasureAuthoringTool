@@ -116,7 +116,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 				String version = attrVersion.getNodeValue();
 				boolean addVersionToValueTag = false;
-				if ("1.0".equals(version)) {
+				if ("1.0".equals(version) || "1".equals(version)) {
 					if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
 						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile")
 								.getNodeValue();
@@ -1101,7 +1101,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
 		boolean addVersionToValueTag = false;
-		if ("1.0".equals(version)) {
+		if ("1.0".equals(version) || "1".equals(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
 				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").
 						getNodeValue();

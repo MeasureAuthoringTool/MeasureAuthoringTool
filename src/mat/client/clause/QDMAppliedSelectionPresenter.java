@@ -2014,9 +2014,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Copy.
 	 */
 	private void copy() {
-		
+		resetQDSMsgPanel();
 	   if(searchDisplay.getQdmSelectedList().size() > 0){
-		   resetQDSMsgPanel();
 		   mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 		   gbCopyPaste.setCopiedQDMList(searchDisplay.getQdmSelectedList());
 		   gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());

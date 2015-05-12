@@ -81,12 +81,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * 
 		 * @return the VSAC profile list box
 		 */
-		ListBoxMVP getVSACExpansionProfileListBox();
+		ListBoxMVP getVSACExpansionIdentifierListBox();
 		
 		/**
 		 * Sets the vsac profile list box.
 		 */
-		void setVSACExpansionProfileListBox();
+		void setVSACExpansionIdentifierListBox();
 		
 		/**
 		 * Gets the error message display.
@@ -214,7 +214,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @param texts the new VSAC profile list box options
 		 */
-		void setVSACProfileListBox(List<? extends HasListBox> texts);
+		void setVSACIdentifierListBox(List<? extends HasListBox> texts);
 		
 		/**
 		 * Gets the update from vsac button.
@@ -260,7 +260,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @param inputListBox the input list box
 		 * @return the expansion profile value
 		 */
-		String getExpansionProfileValue(ListBoxMVP inputListBox);
+		String getExpansionIdentifierValue(ListBoxMVP inputListBox);
 		
 		/**
 		 * Gets the in progress message display.
@@ -508,9 +508,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					//if UMLS is not logged in
 					if (!MatContext.get().isUMLSLoggedIn()) {
 						if(result.getVsacProfile()!=null){
-							searchDisplay.getVSACExpansionProfileListBox().setEnabled(false);
-							searchDisplay.getVSACExpansionProfileListBox().clear();
-							searchDisplay.getVSACExpansionProfileListBox().addItem(result.getVsacProfile());
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(false);
+							searchDisplay.getVSACExpansionIdentifierListBox().clear();
+							searchDisplay.getVSACExpansionIdentifierListBox().addItem(result.getVsacProfile());
 							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
 							chkBox.setValue(true);
 							chkBox.setEnabled(false);
@@ -522,14 +522,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						}
 					} else {
 						if(result.getVsacProfile()!=null){
-							searchDisplay.getVSACExpansionProfileListBox().setEnabled(true);
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(true);
 							searchDisplay.setProfileList(MatContext.get()
 									.getProfileList());
-							searchDisplay.setVSACExpansionProfileListBox();
-							for(int i = 0; i < searchDisplay.getVSACExpansionProfileListBox().getItemCount(); i++){
-								if(searchDisplay.getVSACExpansionProfileListBox().getItemText(i)
+							searchDisplay.setVSACExpansionIdentifierListBox();
+							for(int i = 0; i < searchDisplay.getVSACExpansionIdentifierListBox().getItemCount(); i++){
+								if(searchDisplay.getVSACExpansionIdentifierListBox().getItemText(i)
 										.equalsIgnoreCase(result.getVsacProfile())) {
-									searchDisplay.getVSACExpansionProfileListBox().setSelectedIndex(i);
+									searchDisplay.getVSACExpansionIdentifierListBox().setSelectedIndex(i);
 									break;
 								}
 							}
@@ -720,7 +720,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				if (result.getVsacVersionResp() != null) {
 					searchDisplay.setVSACVersionListBoxOptions(getVersionList(result
 							.getVsacVersionResp()));
-					searchDisplay.setVSACProfileListBox(getProfileList(
+					searchDisplay.setVSACIdentifierListBox(getProfileList(
 							MatContext.get().getVsacProfList()));
 					searchDisplay.getSaveButton().setEnabled(true);
 					
@@ -812,15 +812,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 										.getUMLS_NOT_LOGGEDIN());
 								return;
 							}
-							searchDisplay.getVSACExpansionProfileListBox().setEnabled(
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
 									true);
 							searchDisplay.setProfileList(MatContext.get()
 									.getProfileList());
-							searchDisplay.setVSACExpansionProfileListBox();
+							searchDisplay.setVSACExpansionIdentifierListBox();
 						} else if (event.getValue().toString().equals("false")) {
-							searchDisplay.getVSACExpansionProfileListBox().setEnabled(
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
 									false);
-							searchDisplay.setVSACExpansionProfileListBox();
+							searchDisplay.setVSACExpansionIdentifierListBox();
 						}
 						
 					}
@@ -867,8 +867,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				searchDisplay.getSearchHeader().setText("Search");
 				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
-				if(!searchDisplay.getVSACExpansionProfileListBox().getValue().equalsIgnoreCase("--Select--")){
-					expProfileToAllQDM = searchDisplay.getVSACExpansionProfileListBox().getValue();
+				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
+					expProfileToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
 					updateAllQDMsWithExpProfile();
 				} else if(!chkBox.getValue()){
 					expProfileToAllQDM = "";
@@ -1092,7 +1092,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
-				if(!searchDisplay.getExpansionProfileValue(
+				if(!searchDisplay.getExpansionIdentifierValue(
 						searchDisplay.getVSACProfileListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getVersionListBox().setSelectedIndex(0);
 				}
@@ -1496,7 +1496,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, final boolean isSpecificOccurrence,
 			String measureID) {
 		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-		String expansionProfile = searchDisplay.getExpansionProfileValue(
+		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
 				searchDisplay.getVSACProfileListBox());
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
 		matValueSetTransferObject.setMeasureId(measureID);
@@ -1607,7 +1607,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			final boolean isUSerDefined) {
 		modifyQDMList(qualityDataSetDTO);
 		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-		String expansionProfile = searchDisplay.getExpansionProfileValue(
+		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
 				searchDisplay.getVSACProfileListBox());
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
 		matValueSetTransferObject.setDatatype(dataType);

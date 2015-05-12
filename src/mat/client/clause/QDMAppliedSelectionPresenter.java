@@ -2051,9 +2051,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				public void onSuccess(
 						SaveUpdateCodeListResult result) {
 					
+					getAppliedQDMList(true);
 					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
-					getAppliedQDMList(true);
 				}
 			});
 			

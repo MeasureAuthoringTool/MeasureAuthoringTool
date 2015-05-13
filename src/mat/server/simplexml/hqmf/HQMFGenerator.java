@@ -133,6 +133,9 @@ public class HQMFGenerator implements Generator {
 		//Get narrative for Supplemental Data Elements section
 		Node dataCritSuppNode = generateNarrativeItem(me, humanReadableProcessor, "Supplemental Data Elements");
 		
+		//Get narrative for Risk Adjustment Data Elements section
+		Node riskAdjustmentSuppNode = generateNarrativeItem(me, humanReadableProcessor, "Risk Adjustment Variables");
+		
 		XmlProcessor hqmfProcessor = me.getHQMFXmlProcessor();
 		String xPathForDataCriteriaSection = "//dataCriteriaSection/text";
 		Node dataCritTextNode = hqmfProcessor.findNode(hqmfProcessor.getOriginalDoc(), xPathForDataCriteriaSection);
@@ -144,6 +147,7 @@ public class HQMFGenerator implements Generator {
 		listNode.appendChild(dataCritQDMVarNode);
 		listNode.appendChild(dataCritQDMNode);
 		listNode.appendChild(dataCritSuppNode);
+		listNode.appendChild(riskAdjustmentSuppNode);
 		
 		itemNode.appendChild(listNode);
 		xmlNode.appendChild(itemNode);

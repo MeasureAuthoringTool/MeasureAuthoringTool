@@ -69,13 +69,13 @@ public abstract class XLSGenerator {
 	/** The codedescription. */
 	protected final int codedescription = 9;
 	protected final int version = 7;
-	protected final int expansionProfile = 8;
+	protected final int expansionIdentifier = 8;
 	/**
 	 * WorkBook Header.
 	 * **/
 	private final String[] HEADER_STRINGS = { "Value Set Developer",
 			"Value Set OID", "Revision Date", "Value Set Name",
-			"Code System", "Code System Version", "Code" ,"Version" ,"Expansion Profile" , "Descriptor"};
+			"Code System", "Code System Version", "Code" ,"Version" ,"Expansion Identifier" , "Descriptor"};
 	
 	/** The keywords. */
 	protected final String KEYWORDS = "Value Set, OID, Export, Measure, Code, Descriptor";
@@ -87,7 +87,7 @@ public abstract class XLSGenerator {
 	 * **/
 	private final String[] NAME_STRINGS = { "ValueSetDeveloper",
 			"ValueSetOID", "RevisionDate", "ValueSetName", "QDMCategory",
-			"CodeSystem", "CodeSystemVersion", "Code" ,"Version" , "ExpansionProfile", "Descriptor"};
+			"CodeSystem", "CodeSystemVersion", "Code" ,"Version" , "ExpansionIdentifier", "Descriptor"};
 	
 	/** The oid. */
 	protected final int oid = 1;
@@ -196,7 +196,7 @@ public abstract class XLSGenerator {
 		generateName(wkbk, names[code], "'" + wkst.getSheetName() + "'!$G$1");
 		generateName(wkbk, names[version], "'" + wkst.getSheetName()
 				+ "'!$H$1");
-		generateName(wkbk, names[expansionProfile], "'" + wkst.getSheetName()
+		generateName(wkbk, names[expansionIdentifier], "'" + wkst.getSheetName()
 				+ "'!$I$1");
 		generateName(wkbk, names[codedescription], "'" + wkst.getSheetName()
 				+ "'!$J$1");
@@ -286,8 +286,8 @@ public abstract class XLSGenerator {
 				values[code]);
 		row.createCell(version, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[version]);
-		row.createCell(expansionProfile, HSSFCell.CELL_TYPE_STRING)
-		.setCellValue(values[expansionProfile]);
+		row.createCell(expansionIdentifier, HSSFCell.CELL_TYPE_STRING)
+		.setCellValue(values[expansionIdentifier]);
 		row.createCell(codedescription, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[codedescription]);
 		if (style != null) {
@@ -300,7 +300,7 @@ public abstract class XLSGenerator {
 			row.getCell(standardtaxonomyversion).setCellStyle(style);
 			row.getCell(code).setCellStyle(style);
 			row.getCell(version).setCellStyle(style);
-			row.getCell(expansionProfile).setCellStyle(style);
+			row.getCell(expansionIdentifier).setCellStyle(style);
 			row.getCell(codedescription).setCellStyle(style);
 		}
 		return row;
@@ -540,7 +540,7 @@ public abstract class XLSGenerator {
 		sizeColumn(wkst, (short) standardtaxonomyversion);
 		sizeColumn(wkst, (short) code);
 		sizeColumn(wkst, (short) version);
-		sizeColumn(wkst, (short) expansionProfile);
+		sizeColumn(wkst, (short) expansionIdentifier);
 		sizeColumn(wkst, (short) codedescription);
 	}
 	

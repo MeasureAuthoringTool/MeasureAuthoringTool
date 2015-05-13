@@ -27,7 +27,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 			"CodeSystemVersion_SVS",
 			"Code_SVS",
 			"Version_SVS",
-			"ExpansionProfile_SVS",
+			"ExpansionIdentifier_SVS",
 			"Descriptor_SVS"
 	};
 	

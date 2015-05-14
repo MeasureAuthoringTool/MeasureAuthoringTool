@@ -54,7 +54,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	/** The create new button. */
 	private Button createNewButton = new PrimaryButton("Add New User", "primaryGreyButton");
 	/** The generate csv file button. */
-	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
+	//private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	/** The main panel. */
@@ -71,8 +71,8 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
-		buttonPanel.add(generateCSVFileButton);
-		generateCSVFileButton.setTitle("Generate CSV file of Email Addresses.");
+		/*buttonPanel.add(generateCSVFileButton);
+		generateCSVFileButton.setTitle("Generate CSV file of Email Addresses.");*/
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
@@ -134,7 +134,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		};
 		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant(
 				"<span title=\"User Role\">" + "User Role" + "</span>"));
-
+		
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -207,10 +207,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getGenerateCSVFileButton()
 	 */
-	@Override
+	/*@Override
 	public Button getGenerateCSVFileButton() {
 		return generateCSVFileButton;
-	}
+	}*/
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()
 	 */

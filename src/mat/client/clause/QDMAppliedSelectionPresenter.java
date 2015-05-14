@@ -1237,7 +1237,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					updateAllQDMsWithExpProfile();
 				} else {
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getVsacExpansionProfileSelection());
+							.getMessageDelegate().getVsacExpansionIdentifierSelection());
 				}
 				
 			}
@@ -1275,7 +1275,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void updateAllInMeasureXml(List<QualityDataSetDTO> modifiedQDMList) {
 		String measureId =  MatContext.get().getCurrentMeasureId();
-		service.updateMeasureXMLForExpansionProfile(modifiedQDMList, measureId, expProfileToAllQDM,
+		service.updateMeasureXMLForExpansionIdentifier(modifiedQDMList, measureId, expProfileToAllQDM,
 				new AsyncCallback<Void>() {
 			
 			@Override

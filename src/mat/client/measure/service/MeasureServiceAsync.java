@@ -574,7 +574,7 @@ public interface MeasureServiceAsync {
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
 			AsyncCallback<Void> asyncCallback);
 	
-	void updateMeasureXMLForExpansionProfile(List<QualityDataSetDTO> list, String measureId, String expansionProfile,
+	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> list, String measureId, String expansionIdentifier,
 			AsyncCallback<Void> callback);
 		
 }

@@ -65,9 +65,9 @@ public class QualityDataModelWrapper implements IsSerializable{
 	}
 
 	/**
-	 * Sets the vsac profile.
+	 * Sets the vsac identifier.
 	 *
-	 * @param vsacProfile the new vsac profile
+	 * @param vsac Identifier the new vsac profile
 	 */
 	public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;

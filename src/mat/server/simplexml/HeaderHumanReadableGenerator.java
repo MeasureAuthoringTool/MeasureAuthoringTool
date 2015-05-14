@@ -1,7 +1,11 @@
 package mat.server.simplexml;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.server.util.XmlProcessor;
+
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
@@ -184,6 +188,16 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void createSubjectOf(XmlProcessor processor, Element table)
 			throws XPathExpressionException {
+		
+		String expansionId = getExpansionIdentifier(processor);
+		// add expansionId if set
+		if (expansionId != null && !expansionId.isEmpty() && !expansionId.equals("")){
+			// Expansion Profile
+			createRowAndColumns(table, "VSAC Value Set Expansion Identifier");
+			column.appendText(expansionId);
+			createDiv(getInfo(processor, "vsacExpIdentifier"), column);  
+		} 
+		
 		// Copyright
 		createRowAndColumns(table, "Copyright");
 		createDiv(getInfo(processor, "copyright"), column);
@@ -522,6 +536,19 @@ public class HeaderHumanReadableGenerator {
 		}
 		return returnVar;
 	}
+	
+	private static String getExpansionIdentifier(XmlProcessor processor) throws XPathExpressionException{
+		String vsacExpIdentifier = "";
+		// Finds the node
+		Node node = processor.findNode(processor.getOriginalDoc(), "/measure/elementLookUp/@vsacExpIdentifier");
+		
+		// If the node exists return the text value
+		if ((node != null) && (node.getTextContent()!=null)) {
+			vsacExpIdentifier = node.getTextContent();
+		}
+		return vsacExpIdentifier;
+	}
+
 	
 	/**
 	 * Creates the Item Count section of the header

@@ -489,9 +489,9 @@ MeasureService {
 	}
 
 	@Override
-	public void updateMeasureXMLForExpansionProfile(List<QualityDataSetDTO> modifyWithDTOList, 
-			String measureId, String expansionProfile) {
-		this.getMeasureLibraryService().updateMeasureXMLForExpansionProfile(modifyWithDTOList, measureId, expansionProfile);
+	public void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTOList, 
+			String measureId, String expansionIdentifier) {
+		this.getMeasureLibraryService().updateMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionIdentifier);
 		}
 
 }

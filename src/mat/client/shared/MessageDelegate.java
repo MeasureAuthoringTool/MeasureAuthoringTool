@@ -2282,12 +2282,13 @@ public class MessageDelegate {
 	 *
 	 * @return the vsac expansion profile selection
 	 */
-	public String getVsacExpansionProfileSelection() {
+	public String getVsacExpansionIdentifierSelection() {
 		return VSAC_EXPANSION_PROFILE_SELECTION;
 	}
 	
 	/**
 	 * Gets the vsac profile applied to qdm elements.
+	 *
 	 *
 	 * @return the vsac profile applied to qdm elements
 	 */

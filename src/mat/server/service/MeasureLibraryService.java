@@ -543,7 +543,7 @@ public interface MeasureLibraryService {
 
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
 
-	void updateMeasureXMLForExpansionProfile(
+	void updateMeasureXMLForExpansionIdentifier(
 			List<QualityDataSetDTO> modifyWithDTO, String measureId,
 			String expansionProfile);
 

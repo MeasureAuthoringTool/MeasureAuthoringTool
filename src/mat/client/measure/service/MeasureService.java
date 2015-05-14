@@ -506,6 +506,6 @@ public interface MeasureService extends RemoteService {
 
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id);
 	
-    void updateMeasureXMLForExpansionProfile(List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
+    void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionIdentifier);
 	
 }

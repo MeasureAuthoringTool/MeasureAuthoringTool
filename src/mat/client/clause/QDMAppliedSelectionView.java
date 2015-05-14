@@ -3,7 +3,6 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.codelist.HasListBox;
@@ -28,7 +27,6 @@ import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -76,7 +74,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class QDMAppliedSelectionView.
  */
 public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
-                                                           HasSelectionHandlers<Boolean> {
+HasSelectionHandlers<Boolean> {
 	
 	/**
 	 * The Interface Observer.
@@ -153,7 +151,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	private Button updateVSACButton = new PrimaryButton("Update From VSAC ","primaryButton");
 	
 	/** The apply button. */
-	private Button applyButton = new PrimaryButton("Apply", "primaryButton");
+	private Button applyDefaultExpansionIdButton = new PrimaryButton("Apply", "primaryButton");
 	
 	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
@@ -289,22 +287,22 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 		SimplePanel pasteTopPanel =  new SimplePanel();
 		copyQDMBottomButton.getElement().setId("copyQDMBottom_button");
 		clearQDMBottomButton.getElement().setId("clearQDMBottom_butotn");
-	
+		
 		copyQDMBottomButton.getElement().setAttribute("tabIndex", "0");
 		clearQDMBottomButton.getElement().setAttribute("tabIndex", "0");
-
+		
 		bottomButtonLayOut.getElement().setId("bottomButtonLayOut_HorzPanel");
 		pasteTopPanel.add(pasteQDMBottomButton);
 		
-        bottomButtonLayOut.add(copyQDMBottomButton);
-        bottomButtonLayOut.add(buildPasteBottomPanel(checkForEnable()));
-        bottomButtonLayOut.add(clearQDMBottomButton);
-        bottomButtonLayOut.setStyleName("continueButton");
+		bottomButtonLayOut.add(copyQDMBottomButton);
+		bottomButtonLayOut.add(buildPasteBottomPanel(checkForEnable()));
+		bottomButtonLayOut.add(clearQDMBottomButton);
+		bottomButtonLayOut.setStyleName("continueButton");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		hPanel.setWidth("930px");
 		hPanel.add(updateVSACButton);
-        hPanel.add(bottomButtonLayOut);
+		hPanel.add(bottomButtonLayOut);
 		
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
@@ -313,7 +311,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 		updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
 		verticalPanel.add(topButtonLayOut);
-//		verticalPanel.add(new SpacerWidget());
+		//		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
@@ -336,18 +334,18 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	@Override
 	public Widget buildPasteTopPanel(final boolean isEditable){
 		pasteTopButtonPanel.clear();
-		 if(isEditable){
-			 pasteQDMTopButton = (CustomButton) getImage("Paste",
-						ImageResources.INSTANCE.getPaste(), "Paste");
-		 } else {
-			 pasteQDMTopButton = (CustomButton) getImage("Paste",
-						ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
-		 }
-		 pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
-		 pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
-		 pasteTopButtonPanel.add(pasteQDMTopButton);
-		 
-		 pasteQDMTopButton.addClickHandler(new ClickHandler() {
+		if(isEditable){
+			pasteQDMTopButton = (CustomButton) getImage("Paste",
+					ImageResources.INSTANCE.getPaste(), "Paste");
+		} else {
+			pasteQDMTopButton = (CustomButton) getImage("Paste",
+					ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
+		}
+		pasteQDMTopButton.getElement().setId("pasteQDMTop_button");
+		pasteQDMTopButton.getElement().setAttribute("tabIndex", "0");
+		pasteTopButtonPanel.add(pasteQDMTopButton);
+		
+		pasteQDMTopButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -357,7 +355,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 				
 			}
 		});
-		 return pasteTopButtonPanel;
+		return pasteTopButtonPanel;
 	}
 	
 	
@@ -367,27 +365,27 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	@Override
 	public Widget buildPasteBottomPanel(final boolean isEditable){
 		pasteBottomButtonPanel.clear();
-		 if(isEditable){
-			 pasteQDMBottomButton = (CustomButton) getImage("Paste",
-				ImageResources.INSTANCE.getPaste(), "Paste");
-		 } else {
-			 pasteQDMBottomButton = (CustomButton) getImage("Paste",
-						ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
-		 }
-		 pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
-		 pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
-		 pasteBottomButtonPanel.add(pasteQDMBottomButton);
-		 pasteQDMBottomButton.addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					if(isEditable){
-						observer.onBottomQDMPasteClicked();
-					}
-					
+		if(isEditable){
+			pasteQDMBottomButton = (CustomButton) getImage("Paste",
+					ImageResources.INSTANCE.getPaste(), "Paste");
+		} else {
+			pasteQDMBottomButton = (CustomButton) getImage("Paste",
+					ImageResources.INSTANCE.getGrayScalePaste(), "Paste");
+		}
+		pasteQDMBottomButton.getElement().setId("pasteQDMBottom_button");
+		pasteQDMBottomButton.getElement().setAttribute("tabIndex", "0");
+		pasteBottomButtonPanel.add(pasteQDMBottomButton);
+		pasteQDMBottomButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(isEditable){
+					observer.onBottomQDMPasteClicked();
 				}
-			});
-		 return pasteBottomButtonPanel;
+				
+			}
+		});
+		return pasteBottomButtonPanel;
 	}
 	
 	
@@ -408,6 +406,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	
 	
 	
+	
 	/**
 	 * Builds the vsac exp identifier panel.
 	 *
@@ -418,8 +417,8 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 		defaultExpIdentifierListBox.setWidth("200px");
 		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
 		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
-		applyButton.setTitle("'Apply Expansion Identifier to all the QDM Element(s).");
-		applyButton.getElement().setId("applyToQDM_button");
+		applyDefaultExpansionIdButton.setTitle("'Apply Expansion Identifier to all the QDM Element(s).");
+		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpIdentifierListBox.addItem("--Select--");
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.setWidth("450px");
@@ -437,7 +436,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 		queryGrid.setWidget(1, 0, new SpacerWidget());
 		queryGrid.setWidget(2, 0, defaultExpIdentifierListBox);
 		queryGrid.setWidget(3, 0, new SpacerWidget());
-		queryGrid.setWidget(4, 0, applyButton);
+		queryGrid.setWidget(4, 0, applyDefaultExpansionIdButton);
 		queryGrid.setStyleName("secondLabel");
 		searchPanel.add(queryGrid);
 		return searchPanel;
@@ -565,16 +564,16 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied QDM Elements table Name in First Column"
-								 + "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
-								 + "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
-								 + "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
+										+ "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
+										+ "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
+										+ "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
 			} else {
 				invisibleLabel = (Label) LabelBuilder
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied QDM Elements table Name in First Column"
-								 + "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
-								 + "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
+										+ "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
+										+ "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -740,17 +739,17 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 							+ "</span>"));
 			
 			
-				// Modify by Delete Column
-				table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
-						getCompositeCellForQDMModifyAndDelete(isEditable)) {
-					
-					@Override
-					public QualityDataSetDTO getValue(QualityDataSetDTO object) {
-						return object;
-					}
-				}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
-						+ "Modify" + "</span>"));
+			// Modify by Delete Column
+			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
+					getCompositeCellForQDMModifyAndDelete(isEditable)) {
 				
+				@Override
+				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
+					+ "Modify" + "</span>"));
+			
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
@@ -1080,10 +1079,10 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 			dataTypeListBox.setEnabled(false);
 			searchWidget.getSearchInput().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
-			//saveButton.setEnabled(false); 
+			//saveButton.setEnabled(false);
 			pasteQDMTopButton.setEnabled(true);
 			pasteQDMBottomButton.setEnabled(true);
-		} else { 
+		} else {
 			pasteQDMTopButton.setEnabled(false);
 			pasteQDMBottomButton.setEnabled(false);
 		}
@@ -1476,8 +1475,8 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	 * @return the apply button
 	 */
 	@Override
-	public Button getApplyButton(){
-		return applyButton;
+	public Button getApplyDefaultExpansionIdButton(){
+		return applyDefaultExpansionIdButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1664,8 +1663,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 		if (itemList != null) {
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
-				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") 
-						&& ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")) {
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")) {
 					listBox.addItem(listBoxContent.getItem(),""+listBoxContent.getValue());
 				}
 			}
@@ -1888,52 +1886,52 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	}
 	
 	
-//	@Override
-//	public Button getYesButton(){
-//		return yesBtn;
-//	}
-//	
-//	@Override
-//	public Button getNoButton(){
-//		return noBtn;
-//	}
+	//	@Override
+	//	public Button getYesButton(){
+	//		return yesBtn;
+	//	}
+	//
+	//	@Override
+	//	public Button getNoButton(){
+	//		return noBtn;
+	//	}
 	
-//	@Override
-//	public void showPasteDialogBox(){
-//		dialogBox.setGlassEnabled(true);
-//		dialogBox.setAnimationEnabled(true);
-//		dialogBox.setText("Warning");
-//		//dialogBox.setVisible(true);
-//		// Create a table to layout the content
-//		VerticalPanel dialogContents = new VerticalPanel();
-//		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-//		dialogContents.setWidth("28em");
-//		dialogContents.setSpacing(5);
-//		dialogBox.setWidget(dialogContents);
-//		yesBtn.setStyleName("padLeft5px");
-//		noBtn.setStyleName("padLeft5px");
-//		HorizontalPanel buttonPanel = new HorizontalPanel();
-//		buttonPanel.add(yesBtn);
-//		buttonPanel.add(noBtn);
-//		WarningMessageDisplay warningMsgDispaly = new WarningMessageDisplay();
-//		warningMsgDispaly.setMessage(MatContext.get().getMessageDelegate()
-//				.getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS());
-//		
-//		dialogContents.add(warningMsgDispaly);
-//		dialogContents.setCellHorizontalAlignment(warningMsgDispaly,
-//				HasHorizontalAlignment.ALIGN_LEFT);
-//		dialogContents.add(buttonPanel);
-//		dialogContents.setCellHorizontalAlignment(buttonPanel,
-//				HasHorizontalAlignment.ALIGN_LEFT);
-//		dialogBox.center();
-//		dialogBox.show();
-//	}
+	//	@Override
+	//	public void showPasteDialogBox(){
+	//		dialogBox.setGlassEnabled(true);
+	//		dialogBox.setAnimationEnabled(true);
+	//		dialogBox.setText("Warning");
+	//		//dialogBox.setVisible(true);
+	//		// Create a table to layout the content
+	//		VerticalPanel dialogContents = new VerticalPanel();
+	//		dialogContents.getElement().setId("dialogContents_VerticalPanel");
+	//		dialogContents.setWidth("28em");
+	//		dialogContents.setSpacing(5);
+	//		dialogBox.setWidget(dialogContents);
+	//		yesBtn.setStyleName("padLeft5px");
+	//		noBtn.setStyleName("padLeft5px");
+	//		HorizontalPanel buttonPanel = new HorizontalPanel();
+	//		buttonPanel.add(yesBtn);
+	//		buttonPanel.add(noBtn);
+	//		WarningMessageDisplay warningMsgDispaly = new WarningMessageDisplay();
+	//		warningMsgDispaly.setMessage(MatContext.get().getMessageDelegate()
+	//				.getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS());
+	//
+	//		dialogContents.add(warningMsgDispaly);
+	//		dialogContents.setCellHorizontalAlignment(warningMsgDispaly,
+	//				HasHorizontalAlignment.ALIGN_LEFT);
+	//		dialogContents.add(buttonPanel);
+	//		dialogContents.setCellHorizontalAlignment(buttonPanel,
+	//				HasHorizontalAlignment.ALIGN_LEFT);
+	//		dialogBox.center();
+	//		dialogBox.show();
+	//	}
 	
 	
-//	@Override
-//	public DialogBoxWithCloseButton getDialogBox(){
-//		return dialogBox;
-//	}
+	//	@Override
+	//	public DialogBoxWithCloseButton getDialogBox(){
+	//		return dialogBox;
+	//	}
 	
 	
 }

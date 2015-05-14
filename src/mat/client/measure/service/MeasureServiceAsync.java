@@ -3,11 +3,10 @@ package mat.client.measure.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -19,7 +18,6 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -116,9 +114,9 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 * @return the applied qdm from measure xml
 	 */
-//	void getAppliedQDMFromMeasureXml(String measureId,
-//			boolean checkForSupplementData,
-//			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
+	//	void getAppliedQDMFromMeasureXml(String measureId,
+	//			boolean checkForSupplementData,
+	//			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
 	
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
@@ -490,7 +488,7 @@ public interface MeasureServiceAsync {
 	void validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
 	
-		
+	
 	/**
 	 * Validate for group.
 	 *
@@ -545,7 +543,7 @@ public interface MeasureServiceAsync {
 	 * @param subTreeUUID the sub tree uuid
 	 * @param callback the callback
 	 */
-	void isQDMVariableEnabled(String measureId, String subTreeUUID, AsyncCallback<Boolean> callback);	
+	void isQDMVariableEnabled(String measureId, String subTreeUUID, AsyncCallback<Boolean> callback);
 	
 	/**
 	 * Gets the sorted clause map.
@@ -556,7 +554,7 @@ public interface MeasureServiceAsync {
 	 */
 	void getSortedClauseMap(String measureId,
 			AsyncCallback<LinkedHashMap<String, String>> callback);
-
+	
 	/**
 	 * Gets the measure xml for measure and sorted sub tree map.
 	 *
@@ -567,14 +565,16 @@ public interface MeasureServiceAsync {
 	void getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId,
 			AsyncCallback<SortedClauseMapResult> Callback);
-
+	
 	void getUsedStewardAndDevelopersList(String measureId,
 			AsyncCallback<MeasureDetailResult> asyncCallback);
-
+	
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
 			AsyncCallback<Void> asyncCallback);
 	
-	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> list, String measureId, String expansionIdentifier,
+	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> list, String measureId, String expansionProfile,
 			AsyncCallback<Void> callback);
-		
+	
+	void getDefaultSDEFromMeasureXml(String measureId, AsyncCallback<QualityDataModelWrapper> callback);
+	
 }

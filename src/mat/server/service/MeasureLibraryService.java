@@ -5,11 +5,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -115,8 +114,8 @@ public interface MeasureLibraryService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-//	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
-//			boolean checkForSupplementData);
+	//	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+	//			boolean checkForSupplementData);
 	
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
@@ -523,7 +522,7 @@ public interface MeasureLibraryService {
 	 * @return true, if is QDM variable enabled
 	 */
 	boolean isQDMVariableEnabled(String measureId, String subTreeUUID);
-
+	
 	/**
 	 * Gets the sorted clause map.
 	 *
@@ -531,7 +530,7 @@ public interface MeasureLibraryService {
 	 * @return the sorted clause map
 	 */
 	LinkedHashMap<String, String> getSortedClauseMap(String measureId);
-
+	
 	/**
 	 * Gets the measure xml for measure and sorted sub tree map.
 	 *
@@ -540,17 +539,29 @@ public interface MeasureLibraryService {
 	 */
 	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String measureId);
-
+	
+	/**
+	 * Method to get User Steward and Developers List for measure.
+	 * @param measureId
+	 * @return
+	 */
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
-
+	
+	/**
+	 * Service to Update Expansion Profile in Measure Xml.
+	 * @param modifyWithDTO
+	 * @param measureId
+	 * @param expansionProfile
+	 */
 	void updateMeasureXMLForExpansionIdentifier(
 			List<QualityDataSetDTO> modifyWithDTO, String measureId,
 			String expansionProfile);
 
-	/**
-	 * Update steward and measure developers on deletion.
-	 *
-	 * @param measureId the measure id
-	 */
 	
+	/**
+	 * Method to Get Default 4 Supplemental Data Elements for give Measure.
+	 * @param measureId
+	 * @return QualityDataModelWrapper
+	 */
+	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
 }

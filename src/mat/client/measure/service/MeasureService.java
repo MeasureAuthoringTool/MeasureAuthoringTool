@@ -3,11 +3,10 @@ package mat.client.measure.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -20,7 +19,6 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -103,8 +101,8 @@ public interface MeasureService extends RemoteService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-//	List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
-//			boolean checkForSupplementData);
+	//	List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+	//			boolean checkForSupplementData);
 	
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
@@ -492,7 +490,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the sorted clause map
 	 */
 	LinkedHashMap<String, String> getSortedClauseMap(String measureId);
-
+	
 	/**
 	 * Gets the measure xml for measure and sorted sub tree map.
 	 *
@@ -501,11 +499,17 @@ public interface MeasureService extends RemoteService {
 	 */
 	SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId);
-
+	
 	MeasureDetailResult getUsedStewardAndDevelopersList(String measureId);
-
+	
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id);
 	
-    void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionIdentifier);
+	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
+	/**
+	 * Method to Get Default 4 Supplemental Data Elements for give Measure.
+	 * @param measureId
+	 * @return QualityDataModelWrapper
+	 */
+	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
 	
 }

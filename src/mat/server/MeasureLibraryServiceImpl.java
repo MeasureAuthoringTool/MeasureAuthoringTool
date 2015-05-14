@@ -740,13 +740,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#createAndSaveElementLookUp(java.util.ArrayList, java.lang.String)
 	 */
 	@Override
-	public final void createAndSaveElementLookUp(final List<QualityDataSetDTO> list, final String measureID, 
+	public final void createAndSaveElementLookUp(final List<QualityDataSetDTO> list, final String measureID,
 			String expProfileToAllQDM) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(list);
-		if(expProfileToAllQDM!=null && !expProfileToAllQDM.isEmpty()){
-			wrapper.setVsacExpIdentifier(expProfileToAllQDM);	
-			}
+		if((expProfileToAllQDM!=null) && !expProfileToAllQDM.isEmpty()){
+			wrapper.setVsacExpIdentifier(expProfileToAllQDM);
+		}
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
 		int startIndex = stream.toString().indexOf("<elementLookUp", 0);
 		int lastIndex = stream.toString().indexOf("</measure>", startIndex);
@@ -1224,43 +1224,43 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getAppliedQDMFromMeasureXml(java.lang.String, boolean)
 	 */
-//	@Override
-//	public final ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(final String measureId,
-//			final boolean checkForSupplementData) {
-//		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
-//		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
-//		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
-//		if (details != null) {
-//			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
-//				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
-//				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-//					if ((dataSetDTO.getOccurrenceText() != null)
-//							&& StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())
-//							&& StringUtils.isNotEmpty(dataSetDTO.getOccurrenceText())) {
-//						dataSetDTO.setSpecificOccurrence(true);
-//					}
-//					if (dataSetDTO.getCodeListName() != null) {
-//						if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
-//							continue;
-//						} else {
-//							finalList.add(dataSetDTO);
-//						}
-//					}
-//				}
-//			}
-//			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
-//				@Override
-//				public int compare(final QualityDataSetDTO o1, final QualityDataSetDTO o2) {
-//					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
-//				}
-//			});
-//		}
-//		
-//		finalList = findUsedQDMs(finalList, measureXmlModel);
-//		logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
-//		return finalList;
-//		
-//	}
+	//	@Override
+	//	public final ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(final String measureId,
+	//			final boolean checkForSupplementData) {
+	//		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+	//		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
+	//		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
+	//		if (details != null) {
+	//			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
+	//				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+	//				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+	//					if ((dataSetDTO.getOccurrenceText() != null)
+	//							&& StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())
+	//							&& StringUtils.isNotEmpty(dataSetDTO.getOccurrenceText())) {
+	//						dataSetDTO.setSpecificOccurrence(true);
+	//					}
+	//					if (dataSetDTO.getCodeListName() != null) {
+	//						if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
+	//							continue;
+	//						} else {
+	//							finalList.add(dataSetDTO);
+	//						}
+	//					}
+	//				}
+	//			}
+	//			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
+	//				@Override
+	//				public int compare(final QualityDataSetDTO o1, final QualityDataSetDTO o2) {
+	//					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+	//				}
+	//			});
+	//		}
+	//
+	//		finalList = findUsedQDMs(finalList, measureXmlModel);
+	//		logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
+	//		return finalList;
+	//
+	//	}
 	
 	@Override
 	public final QualityDataModelWrapper getAppliedQDMFromMeasureXml(final String measureId,
@@ -1314,7 +1314,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(model.getXml());
 			String XPATH_FOR_ELEMLOOKUP_ATTR = "/measure/elementLookUp/@vsacExpIdentifier";
 			try {
-				Node attrNode = (Node)xPath.evaluate(XPATH_FOR_ELEMLOOKUP_ATTR, 
+				Node attrNode = (Node)xPath.evaluate(XPATH_FOR_ELEMLOOKUP_ATTR,
 						processor.getOriginalDoc(), XPathConstants.NODE);
 				if(attrNode!=null){
 					vsacExpIdentifier = attrNode.getNodeValue();
@@ -2800,43 +2800,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
-	private void updateMeasureXmlForQDM(final QualityDataSetDTO modifyWithDTO, 
-			 XmlProcessor xmlprocessor, String expansionIdentifier){
-				//if (!modifyWithDTO.getDataType().equalsIgnoreCase("Attribute")) {
-					String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"
-							+ modifyWithDTO.getUuid() + "']";
-					NodeList nodesElementLookUp;
-					try {
-						nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, xmlprocessor.getOriginalDoc(),
-								XPathConstants.NODESET);
-
-					for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
-						Node newNode = nodesElementLookUp.item(i);
-						newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
-						if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-							if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
-								newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(
-										expansionIdentifier);
-							} else {
-								newNode.getAttributes().removeNamedItem("expansionIdentifier");
-							}
-						} else {
-							if (!StringUtils.isEmpty(expansionIdentifier)) {
-								Attr expansionIdentifierAttr = xmlprocessor.getOriginalDoc().createAttribute("expansionIdentifier");
-								expansionIdentifierAttr.setNodeValue(expansionIdentifier);
-								newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
-							}
-						}
+	private void updateMeasureXmlForQDM(final QualityDataSetDTO modifyWithDTO,
+			XmlProcessor xmlprocessor, String expansionIdentifier){
+		//if (!modifyWithDTO.getDataType().equalsIgnoreCase("Attribute")) {
+		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"
+				+ modifyWithDTO.getUuid() + "']";
+		NodeList nodesElementLookUp;
+		try {
+			nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, xmlprocessor.getOriginalDoc(),
+					XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
+				Node newNode = nodesElementLookUp.item(i);
+				newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
+				if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
+						newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(
+								expansionIdentifier);
+					} else {
+						newNode.getAttributes().removeNamedItem("expansionIdentifier");
 					}
-					}  catch (XPathExpressionException e) {
-						e.printStackTrace();
+				} else {
+					if (!StringUtils.isEmpty(expansionIdentifier)) {
+						Attr expansionIdentifierAttr = xmlprocessor.getOriginalDoc().createAttribute("expansionIdentifier");
+						expansionIdentifierAttr.setNodeValue(expansionIdentifier);
+						newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
 					}
-				//}
+				}
+			}
+		}  catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		//}
 	}
 	
 	@Override
-	public void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTOList, 
-			String measureId, String expansionIdentifier){
+	public void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTOList, String measureId, String expansionIdentifier) {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXMLForExpansionIdentifier Start : Measure Id :: " + measureId);
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
 		if (model != null) {
@@ -2846,23 +2845,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				Node nodesElementLookUp = (Node)xPath.evaluate(XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR, processor.getOriginalDoc(),
 						XPathConstants.NODE);
 				if(nodesElementLookUp!=null){
-				if (nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
-					if (!StringUtils.isBlank(expansionIdentifier)) {
-						nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier").setNodeValue(
-								expansionIdentifier);
+					if (nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
+						if (!StringUtils.isBlank(expansionIdentifier)) {
+							nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier").setNodeValue(
+									expansionIdentifier);
+						} else {
+							nodesElementLookUp.getAttributes().removeNamedItem("vsacExpIdentifier");
+						}
 					} else {
-						nodesElementLookUp.getAttributes().removeNamedItem("vsacExpIdentifier");
-					}
-				} else {
-					if (!StringUtils.isEmpty(expansionIdentifier)) {
-						Attr vsacExpIdentifierAttr = processor.getOriginalDoc().createAttribute("vsacExpIdentifier");
-						vsacExpIdentifierAttr.setNodeValue(expansionIdentifier);
-						nodesElementLookUp.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+						if (!StringUtils.isEmpty(expansionIdentifier)) {
+							Attr vsacExpIdentifierAttr = processor.getOriginalDoc().createAttribute("vsacExpIdentifier");
+							vsacExpIdentifierAttr.setNodeValue(expansionIdentifier);
+							nodesElementLookUp.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+						}
 					}
 				}
-			}
 				for(QualityDataSetDTO dto : modifyWithDTOList){
-					updateMeasureXmlForQDM(dto, processor, expansionIdentifier);	
+					updateMeasureXmlForQDM(dto, processor, expansionIdentifier);
 				}
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
@@ -3311,7 +3310,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			if(usedSubTreeIds.size()>0){
 				
-				for(int k=0; k < usedSubTreeIds.size() && !isInvalid; k++){
+				for(int k=0; (k < usedSubTreeIds.size()) && !isInvalid; k++){
 					String usedSubtreeRefId = usedSubTreeIds.get(k);
 					
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
@@ -3427,23 +3426,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							}
 							
 						}
-											
-					    for (int n = 0; (n < nodeSDE_dateTimeDiffElement.getLength()) && !isInvalid; n++) {
-					    	
-					    	if(usedSubtreeRefIdsMap.get("subTreeIDAtPop").contains(usedSubtreeRefId) ||
-							     usedSubtreeRefIdsMap.get("subTreeIDAtStrat").contains(usedSubtreeRefId)){
-							     isInvalid = true;
-							     break;
-					    	}
-					    	
-					       Node dateTimeDiffChildNode = nodeSDE_dateTimeDiffElement.item(n);
-					       if(dateTimeDiffChildNode.getChildNodes().getLength() < 2){
-					        isInvalid = true;
-					        break;
-					       }
-					      
-					       
-					     }
+						
+						for (int n = 0; (n < nodeSDE_dateTimeDiffElement.getLength()) && !isInvalid; n++) {
+							
+							if(usedSubtreeRefIdsMap.get("subTreeIDAtPop").contains(usedSubtreeRefId) ||
+									usedSubtreeRefIdsMap.get("subTreeIDAtStrat").contains(usedSubtreeRefId)){
+								isInvalid = true;
+								break;
+							}
+							
+							Node dateTimeDiffChildNode = nodeSDE_dateTimeDiffElement.item(n);
+							if(dateTimeDiffChildNode.getChildNodes().getLength() < 2){
+								isInvalid = true;
+								break;
+							}
+							
+							
+						}
 						
 					} catch (XPathExpressionException e) {
 						
@@ -3933,12 +3932,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		int setOperatorChildCount = SetOperatorchildNode.getChildNodes().getLength();
 		if(setOperatorChildCount < 2) {
 			flag = true;
-		} 
+		}
 		return flag;
 		
 	}
 	
-
+	
 	/**
 	 * Validate date and time operators nodes.
 	 *
@@ -3950,11 +3949,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		int dateTimeChildCount = dateTimeDiffChildNode.getChildNodes().getLength();
 		if(dateTimeChildCount < 2) {
 			flag = true;
-		} 
+		}
 		return flag;
 		
 	}
-
+	
 	
 	
 	
@@ -4286,6 +4285,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
 	}
-	
+	@Override
+	public final QualityDataModelWrapper getDefaultSDEFromMeasureXml(final String measureId) {
+		logger.info("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: Start");
+		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
+		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
+		if (details != null) {
+			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
+				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+					if (dataSetDTO.getCodeListName() != null) {
+						if (( dataSetDTO.isSuppDataElement())) {
+							finalList.add(dataSetDTO);	}
+					}
+				}
+			}
+		}
+		
+		details.setQualityDataDTO(finalList);
+		logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
+		logger.info("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: END");
+		return details;
+		
+	}
 }
 

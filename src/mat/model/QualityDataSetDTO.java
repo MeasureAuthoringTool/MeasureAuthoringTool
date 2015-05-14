@@ -375,9 +375,9 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Sets the version.
 	 * 
@@ -396,7 +396,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	public boolean isDataTypeHasRemoved() {
 		return dataTypeHasRemoved;
 	}
-
+	
 	/**
 	 * Sets the data type has removed.
 	 *
@@ -405,8 +405,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setDataTypeHasRemoved(boolean dataTypeHasRemoved) {
 		this.dataTypeHasRemoved = dataTypeHasRemoved;
 	}
-
-
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -452,37 +452,37 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setSpecificOccurrence(boolean specificOccurrence) {
 		this.specificOccurrence = specificOccurrence;
 	}
-
-
-
+	
+	
+	
 	/**
-	 * Gets the expansion profile.
+	 * Gets the expansion Identifier.
 	 *
-	 * @return the expansion profile
+	 * @return the expansion Identifier
 	 */
 	public String getExpansionIdentifier() {
 		return expansionIdentifier;
 	}
-
-
-
+	
+	
+	
 	/**
-	 * Sets the expansion profile.
+	 * Sets the expansion Identifier.
 	 *
-	 * @param expansionProfile the new expansion profile
+	 * @param expansionProfile the new expansion Identifier
 	 */
 	public void setExpansionIdentifier(String expansionIdentifier) {
 		this.expansionIdentifier = expansionIdentifier;
 	}
-
-
-
+	
+	
+	
 	public String getVsacExpIdentifier() {
 		return vsacExpIdentifier;
 	}
-
-
-
+	
+	
+	
 	public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;
 	}

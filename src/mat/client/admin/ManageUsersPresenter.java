@@ -1,10 +1,7 @@
 package mat.client.admin;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +19,6 @@ import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -33,7 +29,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -65,7 +60,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * 
 		 * @return the generate csv file button
 		 */
-		Button getGenerateCSVFileButton();
+		/*Button getGenerateCSVFileButton();*/
 		
 		/**
 		 * Gets the select id for edit tool.
@@ -304,9 +299,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		 *            the new title
 		 */
 		void setTitle(String title);
-
+		
 		//Label getExpLabel();
-
+		
 		InformationMessageDisplayInterface getInformationMessageDisplay();
 	}
 	
@@ -356,12 +351,12 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				generateCSVOfActiveUserEmails();
 			}
-		});
+		});*/
 		
 		/*searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			@Override
@@ -564,10 +559,10 @@ public class ManageUsersPresenter implements MatPresenter {
 	/**
 	 * Generate csv of active user emails.
 	 */
-	private void generateCSVOfActiveUserEmails() {
+	/*private void generateCSVOfActiveUserEmails() {
 		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
 		Window.open(url + "&type=save", "_self", "");
-	}
+	}*/
 	
 	/**
 	 * Edits the.

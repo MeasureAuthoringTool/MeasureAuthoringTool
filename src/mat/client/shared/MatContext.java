@@ -43,7 +43,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
-import mat.model.VSACProfile;
+import mat.model.VSACExpansionIdentifier;
 import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -55,6 +55,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+// TODO: Auto-generated Javadoc
 //import mat.client.measure.AdminManageMeasureSearchView;
 
 // TODO: Auto-generated Javadoc
@@ -150,7 +151,7 @@ public class MatContext implements IsSerializable {
 	private QDSCodeListSearchView qdsView;
 	
 	/** The vsac profile view. */
-	private QDMAppliedSelectionView vsacProfileView;
+	private QDMAppliedSelectionView qdmAppliedSelectionView;
 	
 	/** The modify qdm pop up widget. */
 	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
@@ -211,10 +212,12 @@ public class MatContext implements IsSerializable {
 	private List<String> dataTypeList = new ArrayList<String>();
 	
 	/** The profile list. */
-	private List<String> profileList = new ArrayList<String>();
+	private List<String> expIdentifierList = new ArrayList<String>();
 	
-	private List<VSACProfile> vsacProfList = new ArrayList<VSACProfile>();
+	/** The vsac exp identifier list. */
+	private List<VSACExpansionIdentifier> vsacExpIdentifierList = new ArrayList<VSACExpansionIdentifier>();
 	
+	/** The global copy paste. */
 	private GlobalCopyPasteObject globalCopyPaste;
 	
 	//private GlobalCopyPaste copyPaste;
@@ -280,8 +283,8 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param view the new VSAC profile view
 	 */
-	public void setVSACProfileView(QDMAppliedSelectionView view){
-		vsacProfileView = view;
+	public void setQDMAppliedSelectionView(QDMAppliedSelectionView view){
+		qdmAppliedSelectionView = view;
 	}
 	
 	/**
@@ -1512,7 +1515,7 @@ public class MatContext implements IsSerializable {
 			
 			@Override
 			public void onSuccess(VsacApiResult result) {
-				if (result.getVsacProfileResp() != null) {
+				if (result.getVsacExpIdentifierResp() != null) {
 					
 				}
 				
@@ -1531,16 +1534,16 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the all profile list
 	 */
-	public void getAllProfileList(){
+	public void getAllExpIdentifierList(){
 		vsacapiServiceAsync
-		.getAllProfileList(new AsyncCallback<VsacApiResult>() {
+		.getAllExpIdentifierList(new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onSuccess(
 					VsacApiResult result) {
-				if (result.getVsacProfileResp() != null) {
-					vsacProfList = result.getVsacProfileResp();
-					profileList = getProfileList(result.getVsacProfileResp());
+				if (result.getVsacExpIdentifierResp() != null) {
+					vsacExpIdentifierList = result.getVsacExpIdentifierResp();
+					expIdentifierList = getExpIdentifierList(result.getVsacExpIdentifierResp());
 				}
 			}
 			
@@ -1551,8 +1554,13 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
-	public List<VSACProfile> getVsacProfList() {
-		return vsacProfList;
+	/**
+	 * Gets the vsac exp identifier list.
+	 *
+	 * @return the vsac exp identifier list
+	 */
+	public List<VSACExpansionIdentifier> getVsacExpIdentifierList() {
+		return vsacExpIdentifierList;
 	}
 	
 	
@@ -1664,12 +1672,12 @@ public class MatContext implements IsSerializable {
 	 * public void setCopiedNode(CellTreeNode copiedNode) {
 		this.copiedNode = copiedNode;
 	}*/
-	private List<String> getProfileList(List<VSACProfile> list) {
-		List<String> profileList = new ArrayList<String>();
+	private List<String> getExpIdentifierList(List<VSACExpansionIdentifier> list) {
+		List<String> expIdentifier = new ArrayList<String>();
 		for (int i = 0; i < list.size(); i++) {
-			profileList.add(list.get(i).getName());
+			expIdentifier.add(list.get(i).getName());
 		}
-		return profileList;
+		return expIdentifier;
 	}
 	
 	
@@ -1678,8 +1686,8 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the profile list
 	 */
-	public List<String> getProfileList() {
-		return profileList;
+	public List<String> getExpIdentifierList() {
+		return expIdentifierList;
 	}
 	
 	
@@ -1688,14 +1696,24 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param profileList the new profile list
 	 */
-	public void setProfileList(List<String> profileList) {
-		this.profileList = profileList;
+	public void setExpIdentifierList(List<String> profileList) {
+		this.expIdentifierList = profileList;
 	}
 	
+	/**
+	 * Gets the global copy paste.
+	 *
+	 * @return the global copy paste
+	 */
 	public GlobalCopyPasteObject getGlobalCopyPaste() {
 		return globalCopyPaste;
 	}
 	
+	/**
+	 * Sets the global copy paste.
+	 *
+	 * @param globalCopyPaste the new global copy paste
+	 */
 	public void setGlobalCopyPaste(GlobalCopyPasteObject globalCopyPaste) {
 		this.globalCopyPaste = globalCopyPaste;
 	}

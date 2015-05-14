@@ -233,6 +233,18 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		boolean isQDSExist = false;
 		DataType dt = dataTypeDAO.find(matValueSetTransferObject.getDatatype());
 		String qdmCompareNameOrID = "";
+		String version = "";
+		String expansionIdentifier = "";
+		if(matValueSetTransferObject.isVersionDate()){
+		   version = matValueSetTransferObject.getMatValueSet().getVersion();	
+		} else {
+			version = "1.0";
+		}
+		
+		if(matValueSetTransferObject.isExpansionProfile()){
+		  expansionIdentifier = matValueSetTransferObject.getMatValueSet().getVersion();
+		}
+		 
 		if (isVSACValueSet) {
 			qdmCompareNameOrID = matValueSetTransferObject.getMatValueSet().getID();
 		} else {
@@ -251,6 +263,47 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				codeListNameOrOID = dataSetDTO.getCodeListName();
 			}
+			
+			//for Expansion Identifier 
+//			if (expansionIdentifier != null 
+//					&& !expansionIdentifier.isEmpty()) {
+//				
+//				if(codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID) 
+//					&& expansionIdentifier.equals(dataSetDTO.getExpansionIdentifier())) {
+//					
+//					if(dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())){
+//						isQDSExist = true;
+//						break;
+//					} else {
+//						isQDSExist = false;
+//						//break;
+//					}
+//				} /*else {
+//					isQDSExist = true;
+//					break;
+//				}*/
+//			} 
+//			
+//			//for Version
+//			if (version != null 
+//					&& !version.isEmpty() && expansionIdentifier.isEmpty()) {
+//				
+//				if(codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID) 
+//					&& version.equals(dataSetDTO.getVersion()) && dataSetDTO.getExpansionIdentifier()== null) {
+//					
+//					if(dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())){
+//						isQDSExist = true;
+//						break;
+//					} else {
+//						isQDSExist = false;
+//						//break;
+//					}
+//				} /*else {
+//					isQDSExist = true;
+//					break;
+//				}*/
+//			} 
+			
 			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
 					&& (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID))
 					&& StringUtils.isBlank(dataSetDTO.getOccurrenceText())) {
@@ -1340,7 +1393,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setVersion("1.0");
 		} 
 		 if(valueSetTransferObject.isExpansionProfile()){
-			qds.setExpansionProfile(valueSetTransferObject.getMatValueSet().getExpansionProfile());
+			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet().getExpansionProfile());
 		}
 		
 		
@@ -1801,9 +1854,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			
 		     if(matValueSetTransferObject.isExpansionProfile()){
-				qds.setExpansionProfile(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
+				qds.setExpansionIdentifier(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
 			} else {
-				qds.setExpansionProfile(null);
+				qds.setExpansionIdentifier(null);
 			}
 //			if (matValueSetTransferObject.isEffectiveDate()) {
 //				qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
@@ -1867,9 +1920,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setVersion("1.0");
 				}
 				if(matValueSetTransferObject.isExpansionProfile()){
-					qds.setExpansionProfile(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
+					qds.setExpansionIdentifier(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
 				} else {
-					qds.setExpansionProfile(null);
+					qds.setExpansionIdentifier(null);
 				}
 				
 //				if (matValueSetTransferObject.isEffectiveDate()) {

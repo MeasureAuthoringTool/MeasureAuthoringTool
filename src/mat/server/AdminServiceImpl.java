@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AdminServiceImpl.
  */
@@ -38,13 +39,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
 	
 	/**
-	 * 
-	 * @throws InCorrectUserRoleException the in correct user role exception
-		
 	 * Check admin user.
-	 * 
-	 * @throws InCorrectUserRoleException
-	 *             the in correct user role exception
+	 *
+	 * @throws InCorrectUserRoleException             the in correct user role exception
 	 */
 	private void checkAdminUser() throws InCorrectUserRoleException{
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
@@ -63,6 +60,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		getUserService().deleteUser(userId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#deleteOrganization(mat.client.admin.ManageOrganizationSearchModel.Result)
+	 */
 	@Override
 	public void deleteOrganization(ManageOrganizationSearchModel.Result organization) {
 		Organization org = getOrganizationDAO().findByOid(organization.getOid());
@@ -114,16 +114,28 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return model;
 	}
 	
+	/**
+	 * Gets the user pwd creation msg.
+	 *
+	 * @param userID the user id
+	 * @return the user pwd creation msg
+	 */
 	private String getUserPwdCreationMsg(String userID){
 		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
 		Date creationDate = userDetails.getUserPassword().getCreatedDate();
+		boolean tempPwd = userDetails.getUserPassword().isTemporaryPassword();
+		boolean initialPwd = userDetails.getUserPassword().isInitial();
 		Date currentDate = new Date();
 		String passwordExpiryMsg = "";
 		
 			Calendar calendar = GregorianCalendar.getInstance();
 			calendar.setTime(creationDate);
-			calendar.add(Calendar.DATE, 59);
+			if(tempPwd || initialPwd){
+				calendar.add(Calendar.DATE, 4);
+			} else {
+				calendar.add(Calendar.DATE, 59);
+			}
 			SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
 			
 			if(currentDate.before(calendar.getTime()) || 

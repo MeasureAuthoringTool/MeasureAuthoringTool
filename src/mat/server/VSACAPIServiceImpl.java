@@ -15,7 +15,7 @@ import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACProfileWrapper;
+import mat.model.VSACExpansionIdentifierWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.model.VSACVersionWrapper;
 import mat.server.service.MeasureLibraryService;
@@ -127,9 +127,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 * @param xmlPayLoad the xml pay load
 	 * @return the VSAC profile wrapper
 	 */
-	private VSACProfileWrapper convertXmlToProfileList(final String xmlPayLoad){
+	private VSACExpansionIdentifierWrapper convertXmlToProfileList(final String xmlPayLoad){
 		LOGGER.info("Start VSACAPIServiceImpl convertXmlToProfileList");
-		VSACProfileWrapper profileDetails = null;
+		VSACExpansionIdentifierWrapper profileDetails = null;
 		String xml = xmlPayLoad;
 		if ((xml != null) && StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
@@ -138,11 +138,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACProfileMapping.xml"));
 			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(VSACProfileWrapper.class);
+			unmar.setClass(VSACExpansionIdentifierWrapper.class);
 			unmar.setWhitespacePreserve(true);
-			profileDetails = (VSACProfileWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			profileDetails = (VSACExpansionIdentifierWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
 			LOGGER.info("unmarshalling complete..RetrieveVSACProfileListResponse"
-					+ profileDetails.getProfileList().get(0).getName());
+					+ profileDetails.getExpIdentifierList().get(0).getName());
 			
 		} catch (Exception e) {
 			if (e instanceof IOException) {
@@ -385,9 +385,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-						if (qualityDataSetDTO.getExpansionProfile() != null) {
+						if (qualityDataSetDTO.getExpansionIdentifier() != null) {
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
-									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
+									qualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
 						} else {
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 									qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);
@@ -427,9 +427,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
 								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								matValueSet.setVersion("Draft"); // If expansion Profile is used or most recent search is done , version should not show up in value set sheet.
-								if (qualityDataSetDTO.getExpansionProfile() != null) {
+								if (qualityDataSetDTO.getExpansionIdentifier() != null) {
 									matValueSet.setExpansionProfile(qualityDataSetDTO.
-											getExpansionProfile());
+											getExpansionIdentifier());
 								}
 								if (matValueSet.isGrouping()) {
 									qualityDataSetDTO.setTaxonomy(ConstantMessages.
@@ -503,9 +503,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 * @return the all profile list
 	 */
 	@Override
-	public final VsacApiResult getAllProfileList() {
+	public final VsacApiResult getAllExpIdentifierList() {
 		VsacApiResult result = new VsacApiResult();
-		LOGGER.info("Start VSACAPIServiceImpl getAllProfileList method :");
+		LOGGER.info("Start VSACAPIServiceImpl getAllExpIdentifierList method :");
 		if (isAlreadySignedIn()) {
 			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 					UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
@@ -514,12 +514,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			try {
 				vsacResponseResult = vGroovyClient.getProfileList(fiveMinuteServiceTicket);
 			} catch (Exception ex) {
-				LOGGER.info("VSACAPIServiceImpl ProfileList failed in method :: getAllProfileList");
+				LOGGER.info("VSACAPIServiceImpl ExpIdentifierList failed in method :: getAllProfileList");
 			}
 			if (vsacResponseResult != null && vsacResponseResult.getXmlPayLoad() != null) {
 				if (vsacResponseResult.getIsFailResponse()
 						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-					LOGGER.info("Profile List reterival failed at VSAC with Failure Reason: "
+					LOGGER.info("Expansion Identifier List reterival failed at VSAC with Failure Reason: "
 							+ vsacResponseResult.getFailReason());
 					result.setSuccess(false);
 					result.setFailureReason(vsacResponseResult.getFailReason());
@@ -528,17 +528,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				if ((vsacResponseResult.getXmlPayLoad() != null)
 						&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
 					// Caster conversion here.
-					VSACProfileWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
-					result.setVsacProfileResp(wrapper.getProfileList());
+					VSACExpansionIdentifierWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
+					result.setVsacExpIdentifierResp(wrapper.getExpIdentifierList());
 					return result;
 				}
 			}
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("VSACAPIServiceImpl getAllProfileList :: UMLS Login is required");
+			LOGGER.info("VSACAPIServiceImpl getAllExpIdentifierList :: UMLS Login is required");
 		}
-		LOGGER.info("End VSACAPIServiceImpl getAllProfileList method :");
+		LOGGER.info("End VSACAPIServiceImpl getAllExpIdentifierList method :");
 		return result;
 	}
 	
@@ -631,16 +631,16 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					continue;
 				} else if (("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion()))
-						&& (qualityDataSetDTO.getExpansionProfile()==null) ) {
+						&& (qualityDataSetDTO.getExpansionIdentifier()==null) ) {
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId())
 								);
-						if(qualityDataSetDTO.getExpansionProfile()!=null){
+						if(qualityDataSetDTO.getExpansionIdentifier()!=null){
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
-									qualityDataSetDTO.getExpansionProfile(), fiveMinuteServiceTicket);
+									qualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
 						} else {
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 									qualityDataSetDTO.getOid(), fiveMinuteServiceTicket);

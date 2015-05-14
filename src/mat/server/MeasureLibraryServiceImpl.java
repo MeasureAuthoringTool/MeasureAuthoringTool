@@ -745,7 +745,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(list);
 		if(expProfileToAllQDM!=null && !expProfileToAllQDM.isEmpty()){
-			wrapper.setVsacProfile(expProfileToAllQDM);	
+			wrapper.setVsacExpIdentifier(expProfileToAllQDM);	
 			}
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
 		int startIndex = stream.toString().indexOf("<elementLookUp", 0);
@@ -1270,7 +1270,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		//add expansion Profile if existing
 		String expProfilestr = getExpansionProfile(measureId);
 		if(!expProfilestr.isEmpty()){
-			details.setVsacProfile(expProfilestr);
+			details.setVsacExpIdentifier(expProfilestr);
 		}
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
 		if (details != null) {
@@ -2598,16 +2598,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if(nodesElementLookUp.getLength()>1){
 				Node parentNode = nodesElementLookUp.item(0).getParentNode();
 				if (parentNode.getAttributes().getNamedItem("vsacProfile") != null) {
-					if (!StringUtils.isBlank(modifyWithDTO.getVsacProfile())) {
+					if (!StringUtils.isBlank(modifyWithDTO.getVsacExpIdentifier())) {
 						parentNode.getAttributes().getNamedItem("vsacProfile").setNodeValue(
-								modifyWithDTO.getExpansionProfile());
+								modifyWithDTO.getExpansionIdentifier());
 					} else {
 						parentNode.getAttributes().removeNamedItem("vsacProfile");
 					}
 				} else {
-					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionProfile())) {
+					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
 						Attr vsacProfileAttr = processor.getOriginalDoc().createAttribute("vsacProfile");
-						vsacProfileAttr.setNodeValue(modifyWithDTO.getVsacProfile());
+						vsacProfileAttr.setNodeValue(modifyWithDTO.getVsacExpIdentifier());
 						parentNode.getAttributes().setNamedItem(vsacProfileAttr);
 					}
 				}
@@ -2668,16 +2668,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				
 				if (newNode.getAttributes().getNamedItem("expansionProfile") != null) {
-					if (!StringUtils.isBlank(modifyWithDTO.getExpansionProfile())) {
+					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
 						newNode.getAttributes().getNamedItem("expansionProfile").setNodeValue(
-								modifyWithDTO.getExpansionProfile());
+								modifyWithDTO.getExpansionIdentifier());
 					} else {
 						newNode.getAttributes().removeNamedItem("expansionProfile");
 					}
 				} else {
-					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionProfile())) {
+					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
 						Attr expansionProfileAttr = processor.getOriginalDoc().createAttribute("expansionProfile");
-						expansionProfileAttr.setNodeValue(modifyWithDTO.getExpansionProfile());
+						expansionProfileAttr.setNodeValue(modifyWithDTO.getExpansionIdentifier());
 						newNode.getAttributes().setNamedItem(expansionProfileAttr);
 					}
 				}
@@ -2814,7 +2814,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						Node newNode = nodesElementLookUp.item(i);
 						newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
 						if (newNode.getAttributes().getNamedItem("expansionProfile") != null) {
-							if (!StringUtils.isBlank(modifyWithDTO.getExpansionProfile())) {
+							if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
 								newNode.getAttributes().getNamedItem("expansionProfile").setNodeValue(
 										expansionProfile);
 							} else {

@@ -56,9 +56,9 @@ public class GlobalCopyPasteObject implements IsSerializable{
 				MatValueSet currentMatValueSet = new MatValueSet();
 				currentMatValueSet.setDisplayName(dataSetDTO.getCodeListName());
 				if (!((defaultExpansionProfile != null) && (defaultExpansionProfile != ""))) {
-					if ((dataSetDTO.getExpansionProfile() != null) && (dataSetDTO.getExpansionProfile() != "")) {
+					if ((dataSetDTO.getExpansionIdentifier() != null) && (dataSetDTO.getExpansionIdentifier() != "")) {
 						mvsto.setExpansionProfile(true);
-						currentMatValueSet.setExpansionProfile(dataSetDTO.getExpansionProfile());
+						currentMatValueSet.setExpansionProfile(dataSetDTO.getExpansionIdentifier());
 					} else {
 						mvsto.setExpansionProfile(false);
 					}

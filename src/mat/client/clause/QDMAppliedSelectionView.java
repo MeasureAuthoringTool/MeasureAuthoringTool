@@ -114,12 +114,12 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	/** The observer. */
 	private Observer observer;
 	
-	/** The profile sel. */
-	private CustomCheckBox expansionIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
+	/** The expansion Identifier selection. */
+	private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
 			"Use a default Expansion Identifier ?", 1);
 	
 	/** The vsac profile list box. */
-	private ListBoxMVP vsacIdentifierListBox = new ListBoxMVP();
+	private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
 	
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
@@ -159,7 +159,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	private List<String> versionList = new ArrayList<String>();
 	
 	/** The profile list. */
-	private List<String> profileList = new ArrayList<String>();
+	private List<String> expIdentifierList = new ArrayList<String>();
 	
 	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
@@ -171,7 +171,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	private QualityDataSetDTO lastSelectedObject;
 	
 	/** The expansion pro list box. */
-	ListBoxMVP expansionIdListBox = new ListBoxMVP();
+	ListBoxMVP qdmExpIdentifierListBox = new ListBoxMVP();
 	
 	/** The version list box. */
 	ListBoxMVP versionListBox = new ListBoxMVP();
@@ -195,7 +195,7 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	private  Label searchHeader = new Label("Search");
 	
 	/** The vsac profile header. */
-	private Label expansionIdentifierHeader = new Label("Apply Expansion Identifier");
+	private Label defaultExpIdentifierHeader = new Label("Apply Expansion Identifier");
 	
 	/** The spager. */
 	private MatSimplePager spager;
@@ -238,16 +238,8 @@ public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.Sea
 	private CustomButton clearQDMBottomButton = (CustomButton) getImage("Clear",
 			ImageResources.INSTANCE.getErase(), "Clear");
 	
-//	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
-//			StringUtils.EMPTY);
-//	
-//	public  Button yesBtn = new SecondaryButton("Yes");
-//	
-//	public  Button noBtn = new SecondaryButton("No");
-	
-	
 	/** The paste top button panel. */
-private SimplePanel pasteTopButtonPanel = new SimplePanel();
+	private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	
 	/** The paste bottom button panel. */
 	private SimplePanel pasteBottomButtonPanel = new SimplePanel();;
@@ -334,7 +326,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 				"subQDMAPPliedListContainerPanel");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
-		MatContext.get().setVSACProfileView(this);
+		MatContext.get().setQDMAppliedSelectionView(this);
 	}
 	
 	
@@ -408,12 +400,11 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
 		mainPanel.setWidth("95%");
-		mainPanel.add(buildVSAVExpIdentifierPanel());
+		mainPanel.add(buildDefaultExpIdentifierPanel());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;
 	}
-	
 	
 	
 	
@@ -422,29 +413,29 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 *
 	 * @return the widget
 	 */
-	private Widget buildVSAVExpIdentifierPanel() {
-		expansionIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");
-		vsacIdentifierListBox.setWidth("200px");
-		vsacIdentifierListBox.getElement().setId("VSACExpansionIdentifier_ListBox");
-		vsacIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
-		applyButton.setTitle("Apply expansion identifier to all the QDM Element's.");
+	private Widget buildDefaultExpIdentifierPanel() {
+		defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");
+		defaultExpIdentifierListBox.setWidth("200px");
+		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
+		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
+		applyButton.setTitle("'Apply Expansion Identifier to all the QDM Element(s).");
 		applyButton.getElement().setId("applyToQDM_button");
-		vsacIdentifierListBox.addItem("--Select--");
+		defaultExpIdentifierListBox.addItem("--Select--");
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.setWidth("450px");
 		searchPanel.setHeight("227px");
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("valueSetSearchPanel");
-		expansionIdentifierHeader.getElement().setId("searchHeader_Label");
-		expansionIdentifierHeader.setStyleName("valueSetHeader");
-		expansionIdentifierHeader.getElement().setAttribute("tabIndex", "0");
-		expansionIdentifierHeader.getElement().setTitle("Apply Expansion Identifier to measure.");
-		searchPanel.add(expansionIdentifierHeader);
+		defaultExpIdentifierHeader.getElement().setId("searchHeader_Label");
+		defaultExpIdentifierHeader.setStyleName("valueSetHeader");
+		defaultExpIdentifierHeader.getElement().setAttribute("tabIndex", "0");
+		defaultExpIdentifierHeader.getElement().setTitle("'Apply VSAC Expansion Identifier to Measure.");
+		searchPanel.add(defaultExpIdentifierHeader);
 		searchPanel.add(new SpacerWidget());
 		Grid queryGrid = new Grid(5, 1);
-		queryGrid.setWidget(0, 0, expansionIdentifierSel);
+		queryGrid.setWidget(0, 0, defaultExpIdentifierSel);
 		queryGrid.setWidget(1, 0, new SpacerWidget());
-		queryGrid.setWidget(2, 0, vsacIdentifierListBox);
+		queryGrid.setWidget(2, 0, defaultExpIdentifierListBox);
 		queryGrid.setWidget(3, 0, new SpacerWidget());
 		queryGrid.setWidget(4, 0, applyButton);
 		queryGrid.setStyleName("secondLabel");
@@ -499,10 +490,10 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		nameInput.setTitle("Enter Name");
 		nameInput.setWidth("200px");
 		
-		expansionIdListBox.getElement().setId("ExpansionProfile_ListBox");
-		expansionIdListBox.getElement().setTitle("Expansion Identifier Selection List");
-		expansionIdListBox.setEnabled(false);
-		expansionIdListBox.setWidth("200px");
+		qdmExpIdentifierListBox.getElement().setId("QDMExpansionIdentifier_ListBox");
+		qdmExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
+		qdmExpIdentifierListBox.setEnabled(false);
+		qdmExpIdentifierListBox.setWidth("200px");
 		versionListBox.getElement().setId("Version_ListBox");
 		versionListBox.getElement().setTitle("Version Selection List");
 		versionListBox.setEnabled(false);
@@ -525,7 +516,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		queryGrid.setWidget(1, 1, dataTypeListBox);
 		queryGrid.setWidget(2, 0, LabelBuilder.buildLabel("Expansion Identifier", "Expansion Identifier"));
 		queryGrid.setWidget(2, 1, LabelBuilder.buildLabel("Version", "Version"));
-		queryGrid.setWidget(3, 0, expansionIdListBox);
+		queryGrid.setWidget(3, 0, qdmExpIdentifierListBox);
 		queryGrid.setWidget(3, 1, versionListBox);
 		queryGrid.setWidget(4, 0, saveCancelButtonBar);
 		queryGrid.setWidget(4, 1, specificOcurChkBox);
@@ -574,16 +565,16 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied QDM Elements table Name in First Column"
-										+ "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
-										+ "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
-										+ "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
+								 + "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
+								 + "Version in Fifth Column and Modify in Sixth Column where the user can Edit and Delete "
+								 + "the existing QDM. The Applied QDM elements are listed alphabetically in a table.");
 			} else {
 				invisibleLabel = (Label) LabelBuilder
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied QDM Elements table Name in First Column"
-										+ "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
-										+ "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
+								 + "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
+								 + "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -699,12 +690,12 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 					new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
-					if (object.getExpansionProfile() != null) {
+					if (object.getExpansionIdentifier() != null) {
 						StringBuilder title = new StringBuilder();
 						title = title.append("Expansion Identifier : ").append(
-								object.getExpansionProfile());
+								object.getExpansionIdentifier());
 						return CellTableUtility.getColumnToolTip(
-								object.getExpansionProfile(), title.toString());
+								object.getExpansionIdentifier(), title.toString());
 					}
 					
 					return null;
@@ -723,7 +714,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 					String version = null;
 					if (!object.getOid().equalsIgnoreCase(
 							ConstantMessages.USER_DEFINED_QDM_OID) ) {
-						if(object.getExpansionProfile()==null){
+						if(object.getExpansionIdentifier()==null){
 							if ((object.getVersion()!=null)  &&
 									(object.getVersion().equalsIgnoreCase("1.0")
 											|| object.getVersion().equalsIgnoreCase("1"))) {
@@ -830,8 +821,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @return the VSAC profile input
 	 */
 	@Override
-	public HasValueChangeHandlers<Boolean> getVSACProfileInput() {
-		return expansionIdentifierSel;
+	public HasValueChangeHandlers<Boolean> getDefaultExpIDInput() {
+		return defaultExpIdentifierSel;
 	}
 	
 	/* (non-Javadoc)
@@ -933,7 +924,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 */
 	@Override
 	public ListBoxMVP getVSACExpansionIdentifierListBox() {
-		return vsacIdentifierListBox;
+		return defaultExpIdentifierListBox;
 	}
 	
 	/**
@@ -973,12 +964,12 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * Sets the vsac expansion identifier list box.
 	 */
 	@Override
-	public void setVSACExpansionIdentifierListBox() {
-		vsacIdentifierListBox.clear();
-		vsacIdentifierListBox.addItem("--Select--");
-		for (int i = 0; (i < getProfileList().size())
-				&& (getProfileList() != null); i++) {
-			vsacIdentifierListBox.addItem(getProfileList().get(i));
+	public void setDefaultExpansionIdentifierListBox() {
+		defaultExpIdentifierListBox.clear();
+		defaultExpIdentifierListBox.addItem("--Select--");
+		for (int i = 0; (i < getExpIdentifierList().size())
+				&& (getExpIdentifierList() != null); i++) {
+			defaultExpIdentifierListBox.addItem(getExpIdentifierList().get(i));
 		}
 		
 	}
@@ -992,8 +983,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @param texts the new VSAC profile list box
 	 */
 	@Override
-	public void setVSACIdentifierListBox(List<? extends HasListBox> texts){
-		setProfileListBoxItems(expansionIdListBox, texts, MatContext.PLEASE_SELECT);
+	public void setQDMExpIdentifierListBox(List<? extends HasListBox> texts){
+		setQDMExpIdentifierListBoxItems(qdmExpIdentifierListBox, texts, MatContext.PLEASE_SELECT);
 	}
 	
 	
@@ -1004,7 +995,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @param itemList the item list
 	 * @param defaultOption the default option
 	 */
-	private void setProfileListBoxItems(ListBoxMVP dataTypeListBox,
+	private void setQDMExpIdentifierListBoxItems(ListBoxMVP dataTypeListBox,
 			List<? extends HasListBox> itemList, String defaultOption) {
 		dataTypeListBox.clear();
 		dataTypeListBox.addItem(defaultOption, "");
@@ -1034,7 +1025,7 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @param texts the new VSAC version list box options
 	 */
 	@Override
-	public void setVSACVersionListBoxOptions(List<? extends HasListBox> texts){
+	public void setQDMVersionListBoxOptions(List<? extends HasListBox> texts){
 		setVersionListBoxItems(versionListBox, texts, MatContext.PLEASE_SELECT);
 	}
 	
@@ -1077,13 +1068,13 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 */
 	@Override
 	public void resetVSACValueSetWidget() {
-		expansionIdentifierSel.setValue(false);
-		vsacIdentifierListBox.clear();
-		vsacIdentifierListBox.setEnabled(false);
-		vsacIdentifierListBox.addItem("--Select--");
+		defaultExpIdentifierSel.setValue(false);
+		defaultExpIdentifierListBox.clear();
+		defaultExpIdentifierListBox.setEnabled(false);
+		defaultExpIdentifierListBox.addItem("--Select--");
 		
 		if(checkForEnable()){
-			expansionIdListBox.setEnabled(false);
+			qdmExpIdentifierListBox.setEnabled(false);
 			versionListBox.setEnabled(false);
 			specificOcurChkBox.setEnabled(false);
 			dataTypeListBox.setEnabled(false);
@@ -1532,8 +1523,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 *
 	 * @return the profile list
 	 */
-	public List<String> getProfileList() {
-		return profileList;
+	public List<String> getExpIdentifierList() {
+		return expIdentifierList;
 	}
 	
 	/* (non-Javadoc)
@@ -1542,11 +1533,11 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	/**
 	 * Sets the profile list.
 	 *
-	 * @param profileList the new profile list
+	 * @param expIdentifierList the new profile list
 	 */
 	@Override
-	public void setProfileList(List<String> profileList) {
-		this.profileList = profileList;
+	public void setExpIdentifierList(List<String> expIdentifierList) {
+		this.expIdentifierList = expIdentifierList;
 	}
 	
 	
@@ -1598,8 +1589,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 	 * @return the VSAC profile list box
 	 */
 	@Override
-	public ListBoxMVP getVSACProfileListBox() {
-		return expansionIdListBox;
+	public ListBoxMVP getQDMExpIdentifierListBox() {
+		return qdmExpIdentifierListBox;
 	}
 	
 	/* (non-Javadoc)
@@ -1673,7 +1664,8 @@ private SimplePanel pasteTopButtonPanel = new SimplePanel();
 		if (itemList != null) {
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
-				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")) {
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") 
+						&& ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")) {
 					listBox.addItem(listBoxContent.getItem(),""+listBoxContent.getValue());
 				}
 			}

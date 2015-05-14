@@ -70,7 +70,7 @@ public interface VSACAPIService extends RemoteService {
 	 */
 	boolean validateVsacUser(String userName, String password);
 
-	VsacApiResult getAllProfileList();
+	VsacApiResult getAllExpIdentifierList();
 
 	VsacApiResult getAllVersionListByOID(String oid);
 	

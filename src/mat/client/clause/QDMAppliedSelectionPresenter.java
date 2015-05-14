@@ -32,7 +32,7 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACProfile;
+import mat.model.VSACExpansionIdentifier;
 import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
 
@@ -74,7 +74,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * 
 		 * @return the VSAC profile input
 		 */
-		HasValueChangeHandlers<Boolean> getVSACProfileInput();
+		HasValueChangeHandlers<Boolean> getDefaultExpIDInput();
 		
 		/**
 		 * Gets the VSAC profile list box.
@@ -86,7 +86,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		/**
 		 * Sets the vsac profile list box.
 		 */
-		void setVSACExpansionIdentifierListBox();
+		void setDefaultExpansionIdentifierListBox();
 		
 		/**
 		 * Gets the error message display.
@@ -130,7 +130,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @param profileList
 		 *            the new profile list
 		 */
-		void setProfileList(List<String> profileList);
+		void setExpIdentifierList(List<String> profileList);
 		
 		/**
 		 * Gets the selected element to remove.
@@ -179,7 +179,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the expansion profile list box
 		 */
-		ListBoxMVP getVSACProfileListBox();
+		ListBoxMVP getQDMExpIdentifierListBox();
 		
 		/**
 		 * Gets the OID input.
@@ -207,14 +207,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @param texts the new VSAC version list box options
 		 */
-		void setVSACVersionListBoxOptions(List<? extends HasListBox> texts);
+		void setQDMVersionListBoxOptions(List<? extends HasListBox> texts);
 		
 		/**
 		 * Sets the VSAC profile list box options.
 		 *
 		 * @param texts the new VSAC profile list box options
 		 */
-		void setVSACIdentifierListBox(List<? extends HasListBox> texts);
+		void setQDMExpIdentifierListBox(List<? extends HasListBox> texts);
 		
 		/**
 		 * Gets the update from vsac button.
@@ -401,14 +401,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * @return the widget
 		 */
 		Widget buildPasteBottomPanel(boolean isEditable);
-
-//		Button getYesButton();
-//
-//		Button getNoButton();
-//		
-//		void showPasteDialogBox();
-//
-//		DialogBoxWithCloseButton getDialogBox();
 		
 	}
 	
@@ -507,36 +499,36 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							.checkForEditPermission());
 					//if UMLS is not logged in
 					if (!MatContext.get().isUMLSLoggedIn()) {
-						if(result.getVsacProfile()!=null){
+						if(result.getVsacExpIdentifier()!=null){
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(false);
 							searchDisplay.getVSACExpansionIdentifierListBox().clear();
-							searchDisplay.getVSACExpansionIdentifierListBox().addItem(result.getVsacProfile());
-							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+							searchDisplay.getVSACExpansionIdentifierListBox().addItem(result.getVsacExpIdentifier());
+							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
 							chkBox.setValue(true);
 							chkBox.setEnabled(false);
 							isExpansionProfile = true;
-							expProfileToAllQDM = result.getVsacProfile();
+							expProfileToAllQDM = result.getVsacExpIdentifier();
 						} else {
 							expProfileToAllQDM = "";
 							isExpansionProfile = false;
 						}
 					} else {
-						if(result.getVsacProfile()!=null){
+						if(result.getVsacExpIdentifier()!=null){
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(true);
-							searchDisplay.setProfileList(MatContext.get()
-									.getProfileList());
-							searchDisplay.setVSACExpansionIdentifierListBox();
+							searchDisplay.setExpIdentifierList(MatContext.get()
+									.getExpIdentifierList());
+							searchDisplay.setDefaultExpansionIdentifierListBox();
 							for(int i = 0; i < searchDisplay.getVSACExpansionIdentifierListBox().getItemCount(); i++){
 								if(searchDisplay.getVSACExpansionIdentifierListBox().getItemText(i)
-										.equalsIgnoreCase(result.getVsacProfile())) {
+										.equalsIgnoreCase(result.getVsacExpIdentifier())) {
 									searchDisplay.getVSACExpansionIdentifierListBox().setSelectedIndex(i);
 									break;
 								}
 							}
-							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
 							chkBox.setValue(true);
 							chkBox.setEnabled(true);
-							expProfileToAllQDM = result.getVsacProfile();
+							expProfileToAllQDM = result.getVsacExpIdentifier();
 							isExpansionProfile = true;
 						} else {
 							expProfileToAllQDM = "";
@@ -598,6 +590,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(final Void result) {
+				modifyValueSetDTO = null;
 				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay
 						.getCelltable().getVisibleRange(), true);
 				searchDisplay.getListDataProvider().getList().remove(indexOf);
@@ -625,7 +618,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Reset qds fields.
+	 * Resets the  message panel.
 	 */
 	private void resetQDSMsgPanel() {
 		searchDisplay.getSuccessMessageDisplay().clear();
@@ -688,12 +681,35 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getOIDInput().setTitle(oid);
 					searchDisplay.getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
 					searchDisplay.getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
-					searchDisplay.getVSACProfileListBox().setEnabled(true);
+					searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
 					searchDisplay.getVersionListBox().setEnabled(true);
 					searchDisplay.getDataTypesListBox().setEnabled(true);
 					searchDisplay.getSpecificOccChkBox().setEnabled(true);
 					searchDisplay.getSpecificOccChkBox().setValue(false);
-					getVSACVersionListByOID(oid);
+					
+                    searchDisplay.getSaveButton().setEnabled(true);
+					
+					if(searchDisplay.getDataTypeText(
+							searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")) {
+						searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					} else {
+						searchDisplay.getSpecificOccChkBox().setEnabled(true);
+					}
+					if(isExpansionProfile){
+						searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
+						searchDisplay.getVersionListBox().setEnabled(false);
+						searchDisplay.getQDMExpIdentifierListBox().clear();
+						searchDisplay.getQDMExpIdentifierListBox().addItem(expProfileToAllQDM,
+								expProfileToAllQDM);
+					} else {
+						getVSACVersionListByOID(oid);
+						searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
+						searchDisplay.getVersionListBox().setEnabled(true);
+					}
+					showSearchingBusy(false);
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+					
 				} else {
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
@@ -705,6 +721,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/**
 	 * Gets the VSAC version list by oid.
+	 * if the default Expansion Identifier is present then 
+	 * we are not making this VSAC call.
 	 * 
 	 * @param oid
 	 *            the oid
@@ -718,32 +736,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			public void onSuccess(VsacApiResult result) {
 				
 				if (result.getVsacVersionResp() != null) {
-					searchDisplay.setVSACVersionListBoxOptions(getVersionList(result
+					searchDisplay.setQDMVersionListBoxOptions(getVersionList(result
 							.getVsacVersionResp()));
-					searchDisplay.setVSACIdentifierListBox(getProfileList(
-							MatContext.get().getVsacProfList()));
-					searchDisplay.getSaveButton().setEnabled(true);
-					
-					if(searchDisplay.getDataTypeText(
-							searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")) {
-						searchDisplay.getSpecificOccChkBox().setEnabled(false);
-					} else {
-						searchDisplay.getSpecificOccChkBox().setEnabled(true);
-					}
-					if(isExpansionProfile){
-						searchDisplay.getVSACProfileListBox().setEnabled(false);
-						searchDisplay.getVersionListBox().setEnabled(false);
-						searchDisplay.getVSACProfileListBox().clear();
-						searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM,
-								expProfileToAllQDM);
-					} else {
-						searchDisplay.getVSACProfileListBox().setEnabled(true);
-						searchDisplay.getVersionListBox().setEnabled(true);
-					}
-					showSearchingBusy(false);
-					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
-					
+					searchDisplay.setQDMExpIdentifierListBox(getProfileList(
+							MatContext.get().getVsacExpIdentifierList()));
 				}
 			}
 			@Override
@@ -763,7 +759,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param list the list
 	 * @return the profile list
 	 */
-	private List<? extends HasListBox> getProfileList(List<VSACProfile> list){
+	private List<? extends HasListBox> getProfileList(List<VSACExpansionIdentifier> list){
 		return list;
 	}
 	
@@ -793,150 +789,66 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Adds the all handlers.
+	 * Add all the handlers.
 	 */
 	private void addAllHandlers() {
-		searchDisplay.getVSACProfileInput().addValueChangeHandler(
-				new ValueChangeHandler<Boolean>() {
-					@Override
-					public void onValueChange(ValueChangeEvent<Boolean> event) {
-						if (event.getValue().toString().equals("true")) {
-							if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
-								// Login
-								// Validation
-								searchDisplay
-								.getErrorMessageDisplay()
-								.setMessage(
-										MatContext.get()
-										.getMessageDelegate()
-										.getUMLS_NOT_LOGGEDIN());
-								return;
-							}
-							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
-									true);
-							searchDisplay.setProfileList(MatContext.get()
-									.getProfileList());
-							searchDisplay.setVSACExpansionIdentifierListBox();
-						} else if (event.getValue().toString().equals("false")) {
-							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
-									false);
-							searchDisplay.setVSACExpansionIdentifierListBox();
-						}
-						
-					}
-				});
 		
-		searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
+		addSearchPanelHandlers();
+		addExpIdentifierHandlers();
+	    addUpdateFromVSACHandler();
+		addObserverHandler();
+		
+	
+		searchDisplay.getQDMClearTopButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetQDSMsgPanel();
-				isModified = false;
-				searchDisplay.getSearchHeader().setText("Search");
-				searchDisplay.getOIDInput().setEnabled(true);
-				searchDisplay.getOIDInput().setValue("");
-				searchDisplay.getOIDInput().setTitle("Enter OID");
-				searchDisplay.getUserDefinedInput().setEnabled(true);
-				searchDisplay.getUserDefinedInput().setTitle("Enter Name");
-				searchDisplay.getUserDefinedInput().setValue("");
-				searchDisplay.getVSACProfileListBox().clear();
-				searchDisplay.getVersionListBox().clear();
-				searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-				searchDisplay.getSpecificOccChkBox().setValue(false);
-				searchDisplay.getVSACProfileListBox().setEnabled(false);
-				searchDisplay.getVersionListBox().setEnabled(false);
-				searchDisplay.getSpecificOccChkBox().setEnabled(false);
-				searchDisplay.getDataTypesListBox().setEnabled(false);
-				searchDisplay.getSaveButton().setEnabled(false);
-				
+				clear();
 			}
 		});
 		
-		searchDisplay.getApplyButton().addClickHandler(new ClickHandler() {
+		//Global Copying of QDM Elements
+		searchDisplay.getQDMCopyTopButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// code for adding profile to List to applied QDM
-				resetQDSMsgPanel();
-				if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
-					// Login
-					// Validation
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
-					return;
-				}
-				searchDisplay.getSearchHeader().setText("Search");
-				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
-				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
-					expProfileToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
-					updateAllQDMsWithExpProfile();
-				} else if(!chkBox.getValue()){
-					expProfileToAllQDM = "";
-					updateAllQDMsWithExpProfile();
-				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getVsacExpansionProfileSelection());
-				}
-				
+				copy();
 			}
 		});
 		
-		searchDisplay.getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
+        searchDisplay.getQDMClearBottomButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetQDSMsgPanel();
-				String version = null;
-				String expansionProfile = null;
-				searchValueSetInVsac(version, expansionProfile);
+				clear();
 			}
 		});
 		
-		searchDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+		//Global Copying of QDM Elements
+		searchDisplay.getQDMCopyBottomButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				MatContext.get().clearDVIMessages();
-				resetQDSMsgPanel();
-				if(isModified){
-					modifyQDM(isUSerDefined);
-				} else {
-					addSelectedCodeListtoMeasure(isUSerDefined);
-				}
-				
+				copy();
 			}
 		});
 		
-		searchDisplay.getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
-				resetQDSMsgPanel();
-				updateVSACValueSets();
-				
-			}
-		});
-		
-		searchDisplay.getUserDefinedInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				resetQDSMsgPanel();
-				validateUserDefinedInput();
-			}
-		});
-		
-		searchDisplay.getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				resetQDSMsgPanel();
-				validateOIDInput();
-			}
-		});
-		
+	}
+	
+	/**
+	 * Adding observer  for Modify, Delete, Copy, Paste and Clear buttons.
+	 */
+	
+	private void addObserverHandler() {
+
 		searchDisplay.setObserver(new QDMAppliedSelectionView.Observer() {
+			
+			/**
+			 * this functionality is used to modify the existing QDM Element with 
+			 *  and without value set.
+			 *  depending on the type of QDM Element the fields in the search Panel 
+			 *  are disabled for User defined and Value Set QDM elements. 
+			 * */
 			
 			@Override
 			public void onModifyClicked(QualityDataSetDTO result) {
@@ -962,14 +874,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getUserDefinedInput().setTitle(result.getCodeListName());
 					searchDisplay.getUserDefinedInput().setEnabled(true);
 					searchDisplay.getVersionListBox().setEnabled(false);
-					searchDisplay.getVSACProfileListBox().setEnabled(false);
+					searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
 					searchDisplay.getSpecificOccChkBox().setEnabled(false);
 					searchDisplay.getSaveButton().setEnabled(true);
 					searchDisplay.getOIDInput().setEnabled(true);
 					searchDisplay.getOIDInput().setValue("");
 					searchDisplay.getVersionListBox().clear();
-					searchDisplay.getVSACProfileListBox().clear();
+					searchDisplay.getQDMExpIdentifierListBox().clear();
+					searchDisplay.getDataTypesListBox().setEnabled(true);
 					
 				} else {
 					
@@ -983,16 +896,24 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getOIDInput().setTitle(result.getOid());
 					searchDisplay.getSaveButton().setEnabled(false);
 					searchDisplay.getSpecificOccChkBox().setEnabled(true);
-					
+					searchDisplay.getDataTypesListBox().setEnabled(false);
 					searchDisplay.getSpecificOccChkBox().setValue(result.isSpecificOccurrence());
 					searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 					searchDisplay.getVersionListBox().clear();
-					searchDisplay.getVSACProfileListBox().clear();
-					searchDisplay.getVSACProfileListBox().setEnabled(false);
+					searchDisplay.getQDMExpIdentifierListBox().clear();
+					searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 					searchDisplay.getVersionListBox().setEnabled(false);
+					
+					if(!expProfileToAllQDM.isEmpty()){
+						searchDisplay.getQDMExpIdentifierListBox().clear();
+						searchDisplay.getQDMExpIdentifierListBox().addItem(expProfileToAllQDM,
+								expProfileToAllQDM);
+					}
 				}
 				
-				searchDisplay.getDataTypesListBox().setEnabled(true);
+				/**
+				 * to display dataType value in the selection list box 
+				 */
 				for(int i = 0; i < searchDisplay.getDataTypesListBox().getItemCount(); i++){
 					if(searchDisplay.getDataTypesListBox().getItemText(i)
 							.equalsIgnoreCase(result.getDataType())) {
@@ -1000,6 +921,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						break;
 					}
 				}
+				
+				/**
+				 * if the datatype value is "attribute" then we are disabling specific occurrence
+				 * checkbox field on the Search Panel and enabling it for other datatypes. 
+				 * */ 
 				if(searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")){
 					searchDisplay.getSpecificOccChkBox().setEnabled(false);
@@ -1007,13 +933,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				
 				
-				if(!expProfileToAllQDM.isEmpty()){
-					searchDisplay.getVSACProfileListBox().clear();
-					searchDisplay.getVSACProfileListBox().addItem(expProfileToAllQDM,
-							expProfileToAllQDM);
-				}
 			}
 			
+			
+			/**
+			 * this functionality is to delete the existing QDM element 
+			 * from the Applied QDM elements 
+			 * */
 			@Override
 			public void onDeleteClicked(QualityDataSetDTO result, final int index) {
 				resetQDSMsgPanel();
@@ -1051,7 +977,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				});
 				
 			}
-
+			
 			@Override
 			public void onTopQDMPasteClicked() {
 				paste();
@@ -1063,6 +989,129 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 			
 		});
+		
+	}
+
+	/**
+	 * To update all the value sets in the applied QDM elements from VSAC.
+	 * */
+	private void addUpdateFromVSACHandler() {
+		
+		searchDisplay.getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
+				resetQDSMsgPanel();
+				updateVSACValueSets();
+				
+			}
+		});
+		
+	}
+
+	/**
+	 * Adds the search panel handlers.
+	 */
+	private void addSearchPanelHandlers() {
+ 
+		/**
+		 * this functionality is to clear the content on the Search Panel.
+		 * */
+		searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetQDSMsgPanel();
+				isModified = false;
+				searchDisplay.getSearchHeader().setText("Search");
+				searchDisplay.getOIDInput().setEnabled(true);
+				searchDisplay.getOIDInput().setValue("");
+				searchDisplay.getOIDInput().setTitle("Enter OID");
+				searchDisplay.getUserDefinedInput().setEnabled(true);
+				searchDisplay.getUserDefinedInput().setTitle("Enter Name");
+				searchDisplay.getUserDefinedInput().setValue("");
+				searchDisplay.getQDMExpIdentifierListBox().clear();
+				searchDisplay.getVersionListBox().clear();
+				searchDisplay.getDataTypesListBox().setSelectedIndex(0);
+				searchDisplay.getSpecificOccChkBox().setValue(false);
+				searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
+				searchDisplay.getVersionListBox().setEnabled(false);
+				searchDisplay.getSpecificOccChkBox().setEnabled(false);
+				searchDisplay.getDataTypesListBox().setEnabled(false);
+				searchDisplay.getSaveButton().setEnabled(false);
+				
+			}
+		});
+		
+		/**
+		 * this functionality is to retrieve the value set from VSAC with latest information which
+		 * consists of Expansion Identifier list and Version List.
+		 * */
+		searchDisplay.getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetQDSMsgPanel();
+				String version = null;
+				String expansionProfile = null;
+				searchValueSetInVsac(version, expansionProfile);
+			}
+		});
+		
+		
+		/**
+		 * this handler is invoked when apply button is clicked on search Panel in
+		 * QDM elements tab and this is to add new value set or user Defined QDM to the 
+		 * Applied QDM list.
+		 * */
+		searchDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				MatContext.get().clearDVIMessages();
+				resetQDSMsgPanel();
+				if(isModified && modifyValueSetDTO != null){
+					modifyQDM(isUSerDefined);
+				} else {
+					addSelectedCodeListtoMeasure(isUSerDefined);
+				}
+				
+			}
+		});
+		
+		
+		/**
+		 * Adding value Change handler for UserDefined Input in Search Panel in QDM Elements Tab
+		 * 
+		 * */
+		searchDisplay.getUserDefinedInput().addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				resetQDSMsgPanel();
+				validateUserDefinedInput();
+			}
+		});
+		
+		/**
+		 *  Adding value change handler for OID input in Search Panel in QDM elements Tab 
+		 */
+		
+		searchDisplay.getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				resetQDSMsgPanel();
+				validateOIDInput();
+			}
+		});
+	
+		/**
+		 * value change Handler for DataType Listbox in Search Panel in QDM Elemetns Tab
+		 * depending on the selection of the listbox we are enabling and disabling the 
+		 * fields in Search Panel. 
+		 * */
 		
 		searchDisplay.getDataTypesListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
@@ -1086,20 +1135,27 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 			}
 		});
-		
-		searchDisplay.getVSACProfileListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+
+
+		/**
+		 * value change handler for Expansion Identifier in Search Panel in QDM Elements Tab
+		 * */
+		searchDisplay.getQDMExpIdentifierListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				resetQDSMsgPanel();
 				if(!searchDisplay.getExpansionIdentifierValue(
-						searchDisplay.getVSACProfileListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+						searchDisplay.getQDMExpIdentifierListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getVersionListBox().setSelectedIndex(0);
 				}
 			}
 			
 		});
 		
+		/**
+		 * value Change Handler for Version listBox in Search Panel
+		 * */
 		searchDisplay.getVersionListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
@@ -1107,109 +1163,90 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				resetQDSMsgPanel();
 				if(!searchDisplay.getVersionValue(
 						searchDisplay.getVersionListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
-					searchDisplay.getVSACProfileListBox().setSelectedIndex(0);
+					searchDisplay.getQDMExpIdentifierListBox().setSelectedIndex(0);
 				}
 			}
 		});
-		
-		searchDisplay.getQDMClearTopButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				clear();
-			}
-		});
-		
-		//Global Copying of QDM Elements
-		searchDisplay.getQDMCopyTopButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				copy();
-			}
-		});
-		
-		
-//		searchDisplay.getQDMPasteTopButton().addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				paste();
-//			}
-//		});
-		
-        searchDisplay.getQDMClearBottomButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				clear();
-			}
-		});
-		
-		//Global Copying of QDM Elements
-		searchDisplay.getQDMCopyBottomButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				copy();
-			}
-		});
-		
-		
-//		searchDisplay.getQDMPasteBottomButton().addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				paste();
-//			}
-//		});
-		
-//		searchDisplay.getYesButton().addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				resetQDSMsgPanel();
-//				searchDisplay.getDialogBox().hide();
-//				GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
-//				if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
-//					gbCopyPaste.setMatValueSetListFromQDS(expProfileToAllQDM);
-//					MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
-//							new AsyncCallback<SaveUpdateCodeListResult>() {
-//						
-//						@Override
-//						public void onFailure(Throwable caught) {
-//							// TODO Auto-generated method stub
-//							
-//						}
-//						
-//						@Override
-//						public void onSuccess(
-//								SaveUpdateCodeListResult result) {
-//							Window.alert("I am success");
-//							getAppliedQDMList(true);
-//							
-//						}
-//					});
-//					
-//				} else {
-//					searchDisplay.getErrorMessageDisplay().setMessage("No QDM elements to be pasted.");
-//				}
-//			}
-//		});
-		
-		
-//		searchDisplay.getNoButton().addClickHandler(new ClickHandler() {
-//			
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				searchDisplay.getDialogBox().hide();	
-//			}
-//		});
 	}
 	
 	
 	/**
-	 * Update all qd ms with exp profile.
+	 * click Handlers for ExpansioN Identifier Panel in new QDM Elements Tab.
+	 */
+	private void addExpIdentifierHandlers() {
+		
+		/**
+		 * click handler for check box in apply Expansion Identifier Panel to fetch Expansion
+		 * Identifier List when Umls is active. 
+		   */ 
+		searchDisplay.getDefaultExpIDInput().addValueChangeHandler(
+				new ValueChangeHandler<Boolean>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<Boolean> event) {
+						if (event.getValue().toString().equals("true")) {
+							if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
+								// Login
+								// Validation
+								searchDisplay
+								.getErrorMessageDisplay()
+								.setMessage(
+										MatContext.get()
+										.getMessageDelegate()
+										.getUMLS_NOT_LOGGEDIN());
+								return;
+							}
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
+									true);
+							searchDisplay.setExpIdentifierList(MatContext.get()
+									.getExpIdentifierList());
+							searchDisplay.setDefaultExpansionIdentifierListBox();
+						} else if (event.getValue().toString().equals("false")) {
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
+									false);
+							searchDisplay.setDefaultExpansionIdentifierListBox();
+						}
+						
+					}
+				});
+		
+		/**
+		 * this handler is invoked when apply button in Apply Expansion Identifier for QDM Elements 
+		 * is clicked. This functionality will apply default Expansion Identifier to all the applied 
+		 * QDM Elements with valueset.
+		*/
+        searchDisplay.getApplyButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// code for adding profile to List to applied QDM
+				resetQDSMsgPanel();
+				if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
+					// Login
+					// Validation
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+					return;
+				}
+				searchDisplay.getSearchHeader().setText("Search");
+				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
+				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
+					expProfileToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
+					updateAllQDMsWithExpProfile();
+				} else if(!chkBox.getValue()){
+					expProfileToAllQDM = "";
+					updateAllQDMsWithExpProfile();
+				} else {
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getVsacExpansionProfileSelection());
+				}
+				
+			}
+		});
+	}
+	
+	
+	/**
+	 * Update all applied QDM Elements with default Expansion Identifier.
 	 */
 	private void updateAllQDMsWithExpProfile() {
 		List<QualityDataSetDTO> modifiedQDMList = new ArrayList<QualityDataSetDTO>();
@@ -1217,9 +1254,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
 				qualityDataSetDTO.setVersion("1.0");
 				if(!expProfileToAllQDM.isEmpty()){
-					qualityDataSetDTO.setExpansionProfile(expProfileToAllQDM);
+					qualityDataSetDTO.setExpansionIdentifier(expProfileToAllQDM);
 				}
-				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
 				if(chkBox.getValue()){
 					modifiedQDMList.add(qualityDataSetDTO);
 				}
@@ -1262,13 +1299,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/**
 	 * Validate user defined input.
+	 * In this functionality we are disabling all the fields in Search Panel
+	 * except Name and DataType Selection List Box which are required to create new 
+	 * UserDefined QDM Element.
 	 */
 	private void validateUserDefinedInput(){
 		if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUSerDefined = true;
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().toString());
-			searchDisplay.getVSACProfileListBox().setEnabled(false);
+			searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
@@ -1288,6 +1328,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/**
 	 * Validate oid input.
+	 * depending on the OID input we are disabling and 
+	 * enabling the fields in Search Panel
 	 */
 	private void validateOIDInput(){
 		if (searchDisplay.getOIDInput().getValue().length()>0) {
@@ -1299,7 +1341,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			isUSerDefined = true;
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setValue(false);
-			searchDisplay.getVSACProfileListBox().clear();
+			searchDisplay.getQDMExpIdentifierListBox().clear();
 			searchDisplay.getVersionListBox().clear();
 			searchDisplay.getUserDefinedInput().setEnabled(true);
 			if(!searchDisplay.getDataTypeText(
@@ -1497,7 +1539,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			String measureID) {
 		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
 		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
-				searchDisplay.getVSACProfileListBox());
+				searchDisplay.getQDMExpIdentifierListBox());
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
 		matValueSetTransferObject.setMeasureId(measureID);
 		matValueSetTransferObject.setDatatype(dataType);
@@ -1509,7 +1551,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				matValueSetTransferObject.setExpansionProfile(true);
 				matValueSetTransferObject.setVersionDate(false);
 				currentMatValueSet.setExpansionProfile(searchDisplay
-						.getVSACProfileListBox().getValue());
+						.getQDMExpIdentifierListBox().getValue());
 				
 			} else if (!version.equalsIgnoreCase(MatContext.PLEASE_SELECT)
 					&& !version.equalsIgnoreCase("")){
@@ -1550,10 +1592,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void modifyQDMWithOutValueSet() {
 		//Pseudo QDM Flow
-		//resetQDSMsgPanel();
+		
 		String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
 		boolean isValidUserDefinedInput = validateUserDefinedInput(userDefinedInput);
-		modifyValueSetDTO.setExpansionProfile("");
+		modifyValueSetDTO.setExpansionIdentifier("");
 		modifyValueSetDTO.setVersion("");
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).
@@ -1608,7 +1650,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		modifyQDMList(qualityDataSetDTO);
 		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
 		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
-				searchDisplay.getVSACProfileListBox());
+				searchDisplay.getQDMExpIdentifierListBox());
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
 		matValueSetTransferObject.setDatatype(dataType);
 		matValueSetTransferObject.setMatValueSet(matValueSet);
@@ -1622,7 +1664,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				matValueSetTransferObject.setExpansionProfile(true);
 				matValueSetTransferObject.setVersionDate(false);
 				currentMatValueSet.setExpansionProfile(searchDisplay
-						.getVSACProfileListBox().getValue());
+						.getQDMExpIdentifierListBox().getValue());
 				
 			} else if (!version.equalsIgnoreCase(MatContext.PLEASE_SELECT)
 					&& !version.equalsIgnoreCase("")){
@@ -1681,11 +1723,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setEnabled(true);
 		searchDisplay.getUserDefinedInput().setValue("");
-		searchDisplay.getVSACProfileListBox().clear();
+		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getVersionListBox().clear();
 		searchDisplay.getDataTypesListBox().setSelectedIndex(0);
 		searchDisplay.getSpecificOccChkBox().setValue(false);
-		searchDisplay.getVSACProfileListBox().setEnabled(false);
+		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 		searchDisplay.getVersionListBox().setEnabled(false);
 		searchDisplay.getSpecificOccChkBox().setEnabled(false);
 		searchDisplay.getDataTypesListBox().setEnabled(false);
@@ -1890,16 +1932,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void setWidgetToDefault() {
 		searchDisplay.getVersionListBox().clear();
-		searchDisplay.getVSACProfileListBox().clear();
+		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setValue("");
 		CustomCheckBox chkBox = searchDisplay.getSpecificOccChkBox();
 		chkBox.setEnabled(false);
 		chkBox.setValue(false);
 		searchDisplay.getSaveButton().setEnabled(false);
-		//will enable the apply button once done
-		//with the functionality
-		//searchDisplay.getApplyButton().setEnabled(false);
 	}
 	
 	/**
@@ -1941,7 +1980,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param editable the new widgets read only
 	 */
 	private void setWidgetsReadOnly(boolean editable){
-		searchDisplay.getVSACProfileListBox().setEnabled(editable);
+		searchDisplay.getQDMExpIdentifierListBox().setEnabled(editable);
 		searchDisplay.getVersionListBox().setEnabled(editable);
 		searchDisplay.getDataTypesListBox().setEnabled(editable);
 		searchDisplay.getOIDInput().setEnabled(editable);
@@ -1952,12 +1991,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);
-		CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getVSACProfileInput();
+		CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
 		chkBox.setEnabled(editable);
 		CustomCheckBox specificChkBox = searchDisplay.getSpecificOccChkBox();
 		specificChkBox.setEnabled(editable);
-//		searchDisplay.getQDMPasteTopButton().setEnabled(editable);
-//		searchDisplay.getQDMPasteBottomButton().setEnabled(editable);
 		searchDisplay.buildPasteBottomPanel(editable);
 		searchDisplay.buildPasteTopPanel(editable);
 		
@@ -2011,7 +2048,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	
 	/**
-	 * Copy.
+	 * Copy. This is to copy selected QDM elements from Applied QDM Elements and can be 
+	 * available to paste it globally for multiple measures.
+	 * the copied instance remains through out the session until or unless we make
+	 * a new copy or the session is out.
 	 */
 	private void copy() {
 		resetQDSMsgPanel();
@@ -2028,12 +2068,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	
 	/**
-	 * Paste.
+	 * Paste. This functionality is to paste all the QDM elements that have been copied 
+	 * from any Measure and can be pasted to any measure.
 	 */
 	private void paste() {
-		//searchDisplay.showPasteDialogBox();
+		
 		resetQDSMsgPanel();
-		//searchDisplay.getDialogBox().hide();
 		GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
 		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
 			gbCopyPaste.setMatValueSetListFromQDS(expProfileToAllQDM);
@@ -2058,13 +2098,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			});
 			
 		}
-//		else {
-//			searchDisplay.getErrorMessageDisplay().setMessage("No QDM elements to be pasted.");
-//		}
 	}
 	
 	/**
-	 * Clear.
+	 * This functionality is to clear all the checkBoxes in Applied 
+	 * QDM Elements Cell Table
 	 */
 	private void clear() {
 		resetQDSMsgPanel();

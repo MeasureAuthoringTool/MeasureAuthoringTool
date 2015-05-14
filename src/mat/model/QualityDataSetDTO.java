@@ -78,9 +78,9 @@ public class QualityDataSetDTO implements IsSerializable {
 	private boolean dataTypeHasRemoved;
 	
 	/** The expansion profile. */
-	private String expansionProfile;
+	private String expansionIdentifier;
 	
-	private String vsacProfile;
+	private String vsacExpIdentifier;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -460,8 +460,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	 *
 	 * @return the expansion profile
 	 */
-	public String getExpansionProfile() {
-		return expansionProfile;
+	public String getExpansionIdentifier() {
+		return expansionIdentifier;
 	}
 
 
@@ -471,20 +471,20 @@ public class QualityDataSetDTO implements IsSerializable {
 	 *
 	 * @param expansionProfile the new expansion profile
 	 */
-	public void setExpansionProfile(String expansionProfile) {
-		this.expansionProfile = expansionProfile;
+	public void setExpansionIdentifier(String expansionIdentifier) {
+		this.expansionIdentifier = expansionIdentifier;
 	}
 
 
 
-	public String getVsacProfile() {
-		return vsacProfile;
+	public String getVsacExpIdentifier() {
+		return vsacExpIdentifier;
 	}
 
 
 
-	public void setVsacProfile(String vsacProfile) {
-		this.vsacProfile = vsacProfile;
+	public void setVsacExpIdentifier(String vsacExpIdentifier) {
+		this.vsacExpIdentifier = vsacExpIdentifier;
 	}
 	
 	

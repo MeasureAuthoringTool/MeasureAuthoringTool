@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACProfile;
+import mat.model.VSACExpansionIdentifier;
 import mat.model.VSACVersion;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -37,7 +37,7 @@ public class VsacApiResult implements IsSerializable {
 	/** The vsac response. */
 	private List<MatValueSet> vsacResponse;
 	
-	private List<VSACProfile> vsacProfileResp;
+	private List<VSACExpansionIdentifier> vsacExpIdentifierResp;
 	
 	private List<VSACVersion> vsacVersionResp;
 	
@@ -123,15 +123,15 @@ public class VsacApiResult implements IsSerializable {
 	/**
 	 * @return the vsacProfileResp
 	 */
-	public List<VSACProfile> getVsacProfileResp() {
-		return vsacProfileResp;
+	public List<VSACExpansionIdentifier> getVsacExpIdentifierResp() {
+		return vsacExpIdentifierResp;
 	}
 
 	/**
 	 * @param vsacProfileResp the vsacProfileResp to set
 	 */
-	public void setVsacProfileResp(List<VSACProfile> vsacProfileResp) {
-		this.vsacProfileResp = vsacProfileResp;
+	public void setVsacExpIdentifierResp(List<VSACExpansionIdentifier> vsacExpIdentifierResp) {
+		this.vsacExpIdentifierResp = vsacExpIdentifierResp;
 	}
 
 	public List<VSACVersion> getVsacVersionResp() {

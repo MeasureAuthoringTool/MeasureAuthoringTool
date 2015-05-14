@@ -136,7 +136,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		}
 		try {
 			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACProfileMapping.xml"));
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACExpIdentifierMapping.xml"));
 			Unmarshaller unmar = new Unmarshaller(mapping);
 			unmar.setClass(VSACExpansionIdentifierWrapper.class);
 			unmar.setWhitespacePreserve(true);
@@ -146,7 +146,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			
 		} catch (Exception e) {
 			if (e instanceof IOException) {
-				LOGGER.info("Failed to load VSACProfileMapping.xml" + e);
+				LOGGER.info("Failed to load VSACExpIdentifierMapping.xml" + e);
 			} else if (e instanceof MappingException) {
 				LOGGER.info("Mapping Failed" + e);
 			} else if (e instanceof MarshalException) {

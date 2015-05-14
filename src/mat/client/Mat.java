@@ -2,6 +2,8 @@ package mat.client;
 
 import java.util.Date;
 import mat.client.admin.ManageAdminPresenter;
+import mat.client.admin.reports.ManageAdminReportingPresenter;
+import mat.client.admin.reports.ManageAdminReportingView;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
@@ -161,6 +163,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	
 	/** The measure library. */
 	private ManageMeasurePresenter measureLibrary;
+	
+	private ManageAdminReportingPresenter reportingPresenter;
 	
 	/** The tab index. */
 	private int tabIndex;
@@ -521,6 +525,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureLibrary = buildMeasureLibraryWidget(true);
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
+			
+			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
+			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);
+			title = "Admin Reports";
+			tabIndex = mainTabLayout.addPresenter(reportingPresenter, mainTabLayout.fmt.normalTitle(title));
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));

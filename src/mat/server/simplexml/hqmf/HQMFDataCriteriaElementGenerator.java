@@ -822,8 +822,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
-			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
-				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").getNodeValue();
+			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
@@ -1000,8 +1000,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				.getNodeValue();
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(version) || "1".equals(version)) {
-			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").getNodeValue();
+			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
@@ -1260,8 +1260,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				String version = attrVersion.getNodeValue();
 				boolean addVersionToValueTag = false;
 				if ("1.0".equals(version) || "1".equals(version)) {
-					if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
-						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile")
+					if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier")
 								.getNodeValue();
 						addVersionToValueTag = true;
 					} else {

@@ -117,8 +117,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				String version = attrVersion.getNodeValue();
 				boolean addVersionToValueTag = false;
 				if ("1.0".equals(version) || "1".equals(version)) {
-					if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
-						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile")
+					if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier")
 								.getNodeValue();
 						addVersionToValueTag = true;
 					} else {
@@ -1102,8 +1102,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				.getNodeValue();
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(version) || "1".equals(version)) {
-			if (qdmNode.getAttributes().getNamedItem("expansionProfile") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionProfile").
+			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").
 						getNodeValue();
 				addVersionToValueTag = true;
 			} else {

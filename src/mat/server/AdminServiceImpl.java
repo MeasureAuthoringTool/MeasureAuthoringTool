@@ -1,5 +1,6 @@
 package mat.server;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -138,10 +139,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			}
 			SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
 			
-			if(currentDate.before(calendar.getTime()) || 
-					currentDate.equals(calendar.getTime())){
+			if(getFormattedDate(currentDate).before(getFormattedDate(calendar.getTime())) || 
+					getFormattedDate(currentDate).equals(getFormattedDate(calendar.getTime()))) {
 				passwordExpiryMsg = "Password Expiry Date: " +
-			                  currentDateFormat.format(calendar.getTime())+" 23:59  ";
+						currentDateFormat.format(calendar.getTime())+" 23:59  ";
 			} else {
 				passwordExpiryMsg = "Password Expired on "+currentDateFormat.format(calendar.getTime());
 		}
@@ -149,6 +150,25 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	    return  passwordExpiryMsg;
 	}
 	
+	
+	/**
+	 * Gets the formatted date.
+	 *
+	 * @param currentDate the current date
+	 * @return the formatted date
+	 */
+	private Date getFormattedDate(Date currentDate){
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = new Date();
+		try {
+			date = formatter.parse(formatter.format(currentDate));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
+	}
 
 	
 	/* (non-Javadoc)

@@ -1317,7 +1317,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 			@Override
 			public void onSuccess(QualityDataModelWrapper result) {
-				updateAllQDMsWithExpProfile(result.getQualityDataDTO());
+				List<QualityDataSetDTO> modifiedQDMList = new ArrayList<QualityDataSetDTO>();
+				for (QualityDataSetDTO qualityDataSetDTO : result.getQualityDataDTO()) {
+					if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
+						qualityDataSetDTO.setVersion("1.0");
+						qualityDataSetDTO.setExpansionIdentifier(expIdentifierToAllQDM);
+						modifiedQDMList.add(qualityDataSetDTO);
+					}
+				}
+				updateAllInMeasureXml(modifiedQDMList);
 			}
 		});
 	}

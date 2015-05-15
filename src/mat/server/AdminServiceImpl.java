@@ -137,10 +137,11 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			} else {
 				calendar.add(Calendar.DATE, 59);
 			}
-			SimpleDateFormat currentDateFormat=new SimpleDateFormat("MM/dd/yyyy");
-			
-			if(getFormattedDate(currentDate).before(getFormattedDate(calendar.getTime())) || 
-					getFormattedDate(currentDate).equals(getFormattedDate(calendar.getTime()))) {
+			SimpleDateFormat currentDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			currentDate = getFormattedDate(currentDateFormat, currentDate);
+			Date pwdExpiryDate = getFormattedDate(currentDateFormat, calendar.getTime());
+			if(currentDate.before(pwdExpiryDate) || 
+					currentDate.equals(pwdExpiryDate)) {
 				passwordExpiryMsg = "Password Expiry Date: " +
 						currentDateFormat.format(calendar.getTime())+" 23:59  ";
 			} else {
@@ -157,17 +158,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @param currentDate the current date
 	 * @return the formatted date
 	 */
-	private Date getFormattedDate(Date currentDate){
+	private Date getFormattedDate(SimpleDateFormat currentDateFormat, 
+			Date currentDate){
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-		Date date = new Date();
 		try {
-			date = formatter.parse(formatter.format(currentDate));
+			currentDate = currentDateFormat.parse(currentDateFormat.format(currentDate));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return date;
+		return currentDate;
 	}
 
 	

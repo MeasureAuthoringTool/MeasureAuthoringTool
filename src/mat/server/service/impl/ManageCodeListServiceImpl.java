@@ -278,7 +278,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			//for Version
 			else if (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID)	
 					&& dataSetDTO.getVersion() != null) {
-				if(!version.equals(dataSetDTO.getVersion())){
+				if(!version.equals(dataSetDTO.getVersion()) || 
+						!expansionIdentifier.isEmpty()){
 					isExpOrVerNotEq = true;
                      break;
 				} 

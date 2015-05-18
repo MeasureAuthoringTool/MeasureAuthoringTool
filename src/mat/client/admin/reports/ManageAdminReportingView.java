@@ -5,10 +5,10 @@ import java.util.List;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MatButtonCell;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.util.CellTableUtility;
-import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Style.Unit;
@@ -44,7 +44,6 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	/** The observer. */
 	private Observer observer;
-	
 	/**
 	 * Constructor.
 	 */
@@ -99,24 +98,13 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		table.addColumn(nameColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title=\"Report Name\">" + "Report Name"
 						+ "</span>"));
-		ButtonCell buttonCell = new ButtonCell();
+		MatButtonCell buttonCell = new MatButtonCell("Generate CSV Report", "customReport");
 		Column<ReportModel, String> buttonColumn = new Column<ReportModel, String>(buttonCell) {
 			@Override
 			public String getValue(ReportModel object) {
 				// The value to display in the button.
 				return object.getButtonLabel();
 			}
-			/*@Override
-			public FieldUpdater<ReportModel, String> getFieldUpdater() {
-				return new FieldUpdater<ReportModel, String>() {
-					@Override
-					public void update(int index, ReportModel object, String value) {
-						if (object != null) {
-							observer.generateReport(object);
-						}
-					}
-				};
-			}*/
 		};
 		buttonColumn.setFieldUpdater(new FieldUpdater<ReportModel, String>() {
 			@Override

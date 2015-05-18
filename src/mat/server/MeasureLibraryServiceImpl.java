@@ -4339,28 +4339,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			User user = entry.getKey();
 			List<Measure> measureList = entry.getValue();
 			for (Measure measure : measureList) {
-				MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO();
-				ownerReportDTO.setFirstName(user.getFirstName());
-				ownerReportDTO.setLastName(user.getLastName());
-				ownerReportDTO.setOrganizationName(user.getOrganizationName());
-				ownerReportDTO.setMeasureDescription(measure.getDescription());
-				ownerReportDTO.setCmsNumber(measure.geteMeasureId());
+				logger.info("Start to evaluate measure id :::: " + measure.getId());
 				MeasureXML measureXML = getMeasureXMLDAO().findForMeasure(measure.getId());
-				String measureXml = measureXML.getMeasureXMLAsString();
-				XmlProcessor processor = new XmlProcessor(measureXml);
-				String xpathNqfId = "/measure/measureDetails/nqfid";
-				String xpathGuid = "/measure/measureDetails/guid";
-				Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
-				if (nqfNode != null) {
-					String nqfNumber = nqfNode.getAttributes().getNamedItem("root").getNodeValue();
-					ownerReportDTO.setNqfId(nqfNumber);
+				if (measureXML != null) {
+					String measureXmlString = measureXML.getMeasureXMLAsString();
+					if (measureXmlString != null) {
+						MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO();
+						ownerReportDTO.setFirstName(user.getFirstName());
+						ownerReportDTO.setLastName(user.getLastName());
+						ownerReportDTO.setOrganizationName(user.getOrganizationName());
+						ownerReportDTO.setMeasureDescription(measure.getDescription());
+						ownerReportDTO.setCmsNumber(measure.geteMeasureId());
+						XmlProcessor processor = new XmlProcessor(measureXmlString);
+						String xpathNqfId = "/measure/measureDetails/nqfid";
+						String xpathGuid = "/measure/measureDetails/guid";
+						Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
+						if (nqfNode != null) {
+							String nqfNumber = nqfNode.getAttributes().getNamedItem("root").getNodeValue();
+							ownerReportDTO.setNqfId(nqfNumber);
+						}
+						Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);
+						if (guidNode != null) {
+							String guidNumber = guidNode.getTextContent();
+							ownerReportDTO.setGuid(guidNumber);
+						}
+						measureOwnerReportDTOs.add(ownerReportDTO);
+					}
+				} else {
+					logger.info("Measure xml not found for measure id :::: " + measure.getId());
 				}
-				Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);
-				if (guidNode != null) {
-					String guidNumber = guidNode.getTextContent();
-					ownerReportDTO.setGuid(guidNumber);
-				}
-				measureOwnerReportDTOs.add(ownerReportDTO);
 			}
 		}
 		return measureOwnerReportDTOs;

@@ -1,10 +1,10 @@
 package mat.server.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.xml.xpath.XPathExpressionException;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -18,6 +18,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
+import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
@@ -556,7 +557,7 @@ public interface MeasureLibraryService {
 	void updateMeasureXMLForExpansionIdentifier(
 			List<QualityDataSetDTO> modifyWithDTO, String measureId,
 			String expansionProfile);
-
+	
 	
 	/**
 	 * Method to Get Default 4 Supplemental Data Elements for give Measure.
@@ -564,4 +565,6 @@ public interface MeasureLibraryService {
 	 * @return QualityDataModelWrapper
 	 */
 	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
+	
+	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
 }

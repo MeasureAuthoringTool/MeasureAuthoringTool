@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 import mat.model.MeasureNotes;
+import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.server.service.MeasureLibraryService;
@@ -155,12 +156,15 @@ public class ExportServlet extends HttpServlet {
 				exportActiveOrganizationListCSV(resp, fnu);
 			} else if (EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
 				export = exportMeasureNotesCSV(resp, id, measure, fnu);
+			} else if("exportMeasureOwner".equalsIgnoreCase(format)){
+				exportActiveUserMeasureOwnershipListCSV(resp,fnu);
+				
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 		if (!CODELIST.equals(format) && !EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format) && !EXPORT_ACTIVE_OID_CSV.equals(format)
-				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
+				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format) && !"exportMeasureOwner".equalsIgnoreCase(format)) {
 			resp.getOutputStream().println(export.export);
 		}
 	}
@@ -212,6 +216,22 @@ public class ExportServlet extends HttpServlet {
 			resp.getOutputStream().close();
 		}
 	}
+	
+	public void exportActiveUserMeasureOwnershipListCSV(HttpServletResponse resp,
+			FileNameUtility fnu) throws InCorrectUserRoleException, IOException, XPathExpressionException {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		if ("Administrator".equalsIgnoreCase(userRole)) {
+			String csvFileString = generateCSVOfMeasureOwnershipForActiveUser();
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String aCSVDate = formatter.format(new Date());
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCSVFileName("activeUsersMeasureOwnership", aCSVDate) + ";");
+			resp.setContentType("text/csv");
+			resp.getOutputStream().write(csvFileString.getBytes());
+			resp.getOutputStream().close();
+		}
+	}
+	
 	
 	public ExportResult exportValueSetListXLS(HttpServletResponse resp,
 			MeasureLibraryService measureLibraryService, String id,
@@ -508,6 +528,21 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	/**
+	 * Generate csv of active user emails.
+	 * 
+	 * @return the string
+	 * @throws InCorrectUserRoleException
+	 *             the in correct user role exception
+	 * @throws XPathExpressionException
+	 */
+	private String generateCSVOfMeasureOwnershipForActiveUser() throws InCorrectUserRoleException, XPathExpressionException {
+		logger.info("Generating CSV of Measure Ownership for all Active Non Admin Users...");
+		List<MeasureOwnerReportDTO> ownerReList = 	getMeasureLibraryService().getMeasuresForMeasureOwner();
+		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
+		return createCSVOfActiveUserMeasures(ownerReList);
+	}
+	
+	/**
 	 * Generate csv of active OIDs.
 	 * @return the string
 	 */
@@ -569,6 +604,34 @@ public class ExportServlet extends HttpServlet {
 					+ "\",\"" + user.getSecurityRole().getDescription()
 					+ "\",\"" + user.getOrgOID() + "\"");
 			csvStringBuilder.append("\r\n");
+		}
+		return csvStringBuilder.toString();
+	}
+	
+	/**
+	 * Creates the csv of all non admin active users.
+	 * 
+	 * @param allNonAdminActiveUsersList
+	 *            the all non admin active users list
+	 * @return the string
+	 */
+	private String createCSVOfActiveUserMeasures(
+			final List<MeasureOwnerReportDTO>ownerReList) {
+		
+		StringBuilder csvStringBuilder = new StringBuilder();
+		//Add the header row
+		csvStringBuilder.append("Last Name,First Name,Organization,Measure Description,Emeasure Id , GUID ,NQF Number");
+		csvStringBuilder.append("\r\n");
+		for (MeasureOwnerReportDTO measureOwnerReportDTO : ownerReList) {
+			
+			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\"" + measureOwnerReportDTO.getFirstName()
+					+ "\",\"" + measureOwnerReportDTO.getOrganizationName()
+					+ "\",\"" + measureOwnerReportDTO.getMeasureDescription()
+					+ "\",\"" + measureOwnerReportDTO.getCmsNumber() + "\",\"" + measureOwnerReportDTO.getGuid() + "\",\"" +
+					measureOwnerReportDTO.getNqfId() + "\""
+					);
+			csvStringBuilder.append("\r\n");
+			
 		}
 		return csvStringBuilder.toString();
 	}

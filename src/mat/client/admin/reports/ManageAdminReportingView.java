@@ -149,7 +149,7 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		orgModelReport.setToBeGenerated("Org");
 		modelList.add(orgModelReport);
 		ReportModel measureModelReport = new ReportModel();
-		measureModelReport.setReportName("Measure Report");
+		measureModelReport.setReportName("Measure Ownership Report");
 		measureModelReport.setButtonLabel("Generate CSV");
 		measureModelReport.setToBeGenerated("Measure");
 		modelList.add(measureModelReport);

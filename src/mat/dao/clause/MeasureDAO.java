@@ -1,8 +1,6 @@
 package mat.dao.clause;
 
 import java.util.List;
-
-import mat.client.measure.ManageMeasureSearchModel;
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -126,7 +124,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the max e measure id
 	 */
 	public int getMaxEMeasureId();
-		
+	
 	/**
 	 * Gets the measures for draft.
 	 *
@@ -134,7 +132,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @param user the user
 	 * @return the measures for draft
 	 */
-	List<MeasureShareDTO> getMeasuresForDraft(String text, User user);	
+	List<MeasureShareDTO> getMeasuresForDraft(String text, User user);
 	
 	/**
 	 * Gets the measures for draft.
@@ -148,7 +146,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the measures for draft
 	 */
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize);
-
+	
 	/**
 	 * Gets the measures for version.
 	 *
@@ -309,4 +307,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the measure
 	 */
 	public boolean getMeasure(String measureId);
+	
+	List<Measure> getMeasureListForMeasureOwner(User user);
 }

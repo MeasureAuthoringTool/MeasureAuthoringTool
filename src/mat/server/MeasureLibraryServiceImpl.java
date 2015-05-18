@@ -55,6 +55,7 @@ import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
+import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.Organization;
@@ -66,6 +67,7 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
 import mat.server.service.InvalidValueSetDateException;
@@ -4296,18 +4298,72 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
 				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
 					if (dataSetDTO.getCodeListName() != null) {
-						if (( dataSetDTO.isSuppDataElement())) {
-							finalList.add(dataSetDTO);	}
+						if ((dataSetDTO.isSuppDataElement())) {
+							finalList.add(dataSetDTO);
+						}
 					}
 				}
 			}
 		}
-		
 		details.setQualityDataDTO(finalList);
 		logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
 		logger.info("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: END");
 		return details;
-		
+	}
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getMeasuresForMeasureOwner()
+	 */
+	@Override
+	public List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException {
+		Map<User, List<Measure>> map = new HashMap<User, List<Measure>>();
+		List<User> nonAdminUserList = getUserService().getAllNonAdminActiveUsers();
+		for (User user : nonAdminUserList) {
+			List<Measure> measureList = getMeasureDAO().getMeasureListForMeasureOwner(user);
+			if ((measureList != null) && (measureList.size() > 0)) {
+				map.put(user, measureList);
+			}
+		}
+		List<MeasureOwnerReportDTO> ownerReList = populateMeasureOwnerReport(map);
+		return ownerReList;
+	}
+	
+	/**
+	 * Method to populate MeasureOwnerReport DTO.
+	 * @param map - User and List of Measures for User.
+	 * @return List<MeasureOwnerReportDTO>
+	 * @throws XPathExpressionException - {@link XPathExpressionException}
+	 */
+	private List<MeasureOwnerReportDTO> populateMeasureOwnerReport(Map<User, List<Measure>> map) throws XPathExpressionException {
+		List<MeasureOwnerReportDTO> measureOwnerReportDTOs = new ArrayList<MeasureOwnerReportDTO>();
+		for (Entry<User, List<Measure>> entry : map.entrySet()) {
+			User user = entry.getKey();
+			List<Measure> measureList = entry.getValue();
+			for (Measure measure : measureList) {
+				MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO();
+				ownerReportDTO.setFirstName(user.getFirstName());
+				ownerReportDTO.setLastName(user.getLastName());
+				ownerReportDTO.setOrganizationName(user.getOrganizationName());
+				ownerReportDTO.setMeasureDescription(measure.getDescription());
+				ownerReportDTO.setCmsNumber(measure.geteMeasureId());
+				MeasureXML measureXML = getMeasureXMLDAO().findForMeasure(measure.getId());
+				String measureXml = measureXML.getMeasureXMLAsString();
+				XmlProcessor processor = new XmlProcessor(measureXml);
+				String xpathNqfId = "/measure/measureDetails/nqfid";
+				String xpathGuid = "/measure/measureDetails/guid";
+				Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
+				if (nqfNode != null) {
+					String nqfNumber = nqfNode.getAttributes().getNamedItem("root").getNodeValue();
+					ownerReportDTO.setNqfId(nqfNumber);
+				}
+				Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);
+				if (guidNode != null) {
+					String guidNumber = guidNode.getTextContent();
+					ownerReportDTO.setGuid(guidNumber);
+				}
+				measureOwnerReportDTOs.add(ownerReportDTO);
+			}
+		}
+		return measureOwnerReportDTOs;
 	}
 }
 

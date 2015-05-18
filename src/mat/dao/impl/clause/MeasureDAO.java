@@ -186,6 +186,13 @@ mat.dao.clause.MeasureDAO {
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}
+	@Override
+	public List<Measure> getMeasureListForMeasureOwner(User user){
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(Measure.class);
+		mCriteria.add(Restrictions.eq("owner.id", user.getId()));
+		return mCriteria.list();
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#getComponentMeasureInfoForMeasures(java.util.List)

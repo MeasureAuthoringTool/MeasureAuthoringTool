@@ -417,7 +417,7 @@ HasSelectionHandlers<Boolean> {
 		defaultExpIdentifierListBox.setWidth("200px");
 		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
 		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
-		applyDefaultExpansionIdButton.setTitle("'Apply Expansion Identifier to all the QDM Element(s).");
+		applyDefaultExpansionIdButton.setTitle("Apply Expansion Identifier to all the QDM Element(s).");
 		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpIdentifierListBox.addItem("--Select--");
 		VerticalPanel searchPanel = new VerticalPanel();
@@ -428,7 +428,7 @@ HasSelectionHandlers<Boolean> {
 		defaultExpIdentifierHeader.getElement().setId("searchHeader_Label");
 		defaultExpIdentifierHeader.setStyleName("valueSetHeader");
 		defaultExpIdentifierHeader.getElement().setAttribute("tabIndex", "0");
-		defaultExpIdentifierHeader.getElement().setTitle("'Apply VSAC Expansion Identifier to Measure.");
+		defaultExpIdentifierHeader.getElement().setTitle("Apply VSAC Expansion Identifier to Measure.");
 		searchPanel.add(defaultExpIdentifierHeader);
 		searchPanel.add(new SpacerWidget());
 		Grid queryGrid = new Grid(5, 1);

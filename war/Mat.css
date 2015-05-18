@@ -230,6 +230,18 @@ left:50px;
   	cursor: hand;
 }
 
+.customReport {
+    background: url("images/report_small.jpg");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
 .customCascadeButton {
     background: url("images/application_cascade.png");
     background-position:center;

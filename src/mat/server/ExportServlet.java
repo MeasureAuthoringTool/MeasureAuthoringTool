@@ -608,30 +608,39 @@ public class ExportServlet extends HttpServlet {
 		return csvStringBuilder.toString();
 	}
 	
+	
 	/**
-	 * Creates the csv of all non admin active users.
-	 * 
-	 * @param allNonAdminActiveUsersList
-	 *            the all non admin active users list
-	 * @return the string
+	 * Generates Measure and Measure Owner report for Active Non Admin Users.
+	 * @param ownerReList - List.
+	 * @return CSV String
 	 */
 	private String createCSVOfActiveUserMeasures(
-			final List<MeasureOwnerReportDTO>ownerReList) {
+			final List<MeasureOwnerReportDTO> ownerReList) {
 		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
 		csvStringBuilder.append("Last Name,First Name,Organization,Measure Description,Emeasure Id , GUID ,NQF Number");
 		csvStringBuilder.append("\r\n");
 		for (MeasureOwnerReportDTO measureOwnerReportDTO : ownerReList) {
-			
 			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\"" + measureOwnerReportDTO.getFirstName()
 					+ "\",\"" + measureOwnerReportDTO.getOrganizationName()
-					+ "\",\"" + measureOwnerReportDTO.getMeasureDescription()
-					+ "\",\"" + measureOwnerReportDTO.getCmsNumber() + "\",\"" + measureOwnerReportDTO.getGuid() + "\",\"" +
-					measureOwnerReportDTO.getNqfId() + "\""
-					);
+					+ "\",\"" + measureOwnerReportDTO.getMeasureDescription() + "\",\"");
+			if (measureOwnerReportDTO.getCmsNumber() != 0) {
+				csvStringBuilder.append(measureOwnerReportDTO.getCmsNumber() + "\",\"");
+			} else {
+				csvStringBuilder.append("" + "\",\"");
+			}
+			if (measureOwnerReportDTO.getGuid() != null) {
+				csvStringBuilder.append(measureOwnerReportDTO.getGuid() + "\",\"");
+			} else {
+				csvStringBuilder.append("" + "\",\"");
+			}
+			if (measureOwnerReportDTO.getNqfId() != null) {
+				csvStringBuilder.append(measureOwnerReportDTO.getNqfId() + "\"");
+			} else {
+				csvStringBuilder.append("" + "\"");
+			}
 			csvStringBuilder.append("\r\n");
-			
 		}
 		return csvStringBuilder.toString();
 	}

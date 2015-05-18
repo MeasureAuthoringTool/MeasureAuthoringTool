@@ -316,7 +316,7 @@ public class MessageDelegate {
 	private final String DOESNT_FOLLOW_RULES = "The new password you entered does not match the following rules:";
 	
 	/** The duplicate applied qdm. */
-	private final String DUPLICATE_APPLIED_QDM = "Value set with selected datatype already exists in applied elements.";
+	private final String DUPLICATE_APPLIED_QDM = "OID is already applied in combination with Datatype, Version, or Expansion Identifier.";
 	
 	/** The duplicate codes msg. */
 	private final String DUPLICATE_CODES_MSG = "All code(s) were identified as duplicates to code(s) already in the value set and were ignored upon import.";

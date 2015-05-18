@@ -228,9 +228,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            the is vsac value set
 	 * @return true, if successful
 	 */
-	private boolean checkForDuplicates(MatValueSetTransferObject matValueSetTransferObject, boolean isVSACValueSet) {
+	private boolean checkForDuplicates(MatValueSetTransferObject matValueSetTransferObject, boolean isVSACValueSet,
+			 boolean isSpecificOccurrence) {
 		logger.info(" checkForDuplicates Method Call Start.");
 		boolean isQDSExist = false;
+		boolean isExpOrVerNotEq = false;
 		DataType dt = dataTypeDAO.find(matValueSetTransferObject.getDatatype());
 		String qdmCompareNameOrID = "";
 		String version = "";
@@ -242,7 +244,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		
 		if(matValueSetTransferObject.isExpansionProfile()){
-		  expansionIdentifier = matValueSetTransferObject.getMatValueSet().getVersion();
+		  expansionIdentifier = matValueSetTransferObject.getMatValueSet().getExpansionProfile();
 		}
 		 
 		if (isVSACValueSet) {
@@ -265,46 +267,25 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			
 			//for Expansion Identifier 
-//			if (expansionIdentifier != null 
-//					&& !expansionIdentifier.isEmpty()) {
-//				
-//				if(codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID) 
-//					&& expansionIdentifier.equals(dataSetDTO.getExpansionIdentifier())) {
-//					
-//					if(dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())){
-//						isQDSExist = true;
-//						break;
-//					} else {
-//						isQDSExist = false;
-//						//break;
-//					}
-//				} /*else {
-//					isQDSExist = true;
-//					break;
-//				}*/
-//			} 
-//			
-//			//for Version
-//			if (version != null 
-//					&& !version.isEmpty() && expansionIdentifier.isEmpty()) {
-//				
-//				if(codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID) 
-//					&& version.equals(dataSetDTO.getVersion()) && dataSetDTO.getExpansionIdentifier()== null) {
-//					
-//					if(dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())){
-//						isQDSExist = true;
-//						break;
-//					} else {
-//						isQDSExist = false;
-//						//break;
-//					}
-//				} /*else {
-//					isQDSExist = true;
-//					break;
-//				}*/
-//			} 
+			if (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID)
+					&& dataSetDTO.getExpansionIdentifier() != null) {
+				if(!expansionIdentifier.equals(dataSetDTO.getExpansionIdentifier())) {
+					isExpOrVerNotEq = true;
+				   break;
+				} 
+			} 
 			
-			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
+			//for Version
+			else if (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID)	
+					&& dataSetDTO.getVersion() != null) {
+				if(!version.equals(dataSetDTO.getVersion())){
+					isExpOrVerNotEq = true;
+                     break;
+				} 
+			} 
+			
+			if (!isSpecificOccurrence 
+					&& dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
 					&& (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID))
 					&& StringUtils.isBlank(dataSetDTO.getOccurrenceText())) {
 				// if the same dataType exists and the occurrenceText is also
@@ -315,8 +296,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 		}
 		logger.info("checkForDuplicates Method Call End.Check resulted in :"
-				+ isQDSExist);
-		return isQDSExist;
+				+ (isQDSExist || isExpOrVerNotEq));
+		return (isQDSExist || isExpOrVerNotEq);
 	}
 	/*
 	 * This method is used to find the number of occurrences that exist for the
@@ -1403,7 +1384,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		 
 		 ArrayList<QualityDataSetDTO> qualityDataSetDTOs = (ArrayList<QualityDataSetDTO>) 
 				 valueSetTransferObject.getAppliedQDMList();
-		if (valueSetTransferObject.isSpecificOccurrence()) {
+		
+		 if (valueSetTransferObject.isSpecificOccurrence()) {
+			 
+			if(checkForDuplicates(valueSetTransferObject, true, true)){
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+				return result;
+			} 
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet, qualityDataSetDTOs);
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
@@ -1416,9 +1404,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
-			}
+				}
 		} else { // Treat as regular QDM
-			if (!checkForDuplicates(valueSetTransferObject, true)) {
+			if (!checkForDuplicates(valueSetTransferObject, true, false)) {
 				wrapper.getQualityDataDTO().add(qds);
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
@@ -1433,6 +1421,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return result;
 	}
+	
+
 	/*
 	 * (non-Javadoc)
 	 * @see mat.server.service.CodeListService#saveUserDefinedQDStoMeasure
@@ -1800,7 +1790,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(MatValueSetTransferObject matValueSetTransferObject) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		if (!checkForDuplicates(matValueSetTransferObject, false)) {
+		if (!checkForDuplicates(matValueSetTransferObject, false, false)) {
 			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 			wrapper.setQualityDataDTO(qdsList);
 			QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
@@ -1832,10 +1822,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            - mat Value Set Transfer Object
 	 * @return SaveUpdateCodeListResult
 	 */
-	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(MatValueSetTransferObject matValueSetTransferObject
-			) {
+	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(MatValueSetTransferObject 
+			matValueSetTransferObject) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		if (matValueSetTransferObject.isSpecificOccurrence()) {
+			if(checkForDuplicates(matValueSetTransferObject, true, true)){
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+				return result;
+			}
 			QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
 			String dataType = matValueSetTransferObject.getDatatype();
 			MatValueSet matValueSet = matValueSetTransferObject.getMatValueSet();
@@ -1896,7 +1891,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			matValueSetTransferObject.setAppliedQDMList(tempAppliedQDMList);
 			
-			if (!checkForDuplicates(matValueSetTransferObject, true)) {
+			if (!checkForDuplicates(matValueSetTransferObject, true, false)) {
 				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
 				
 				QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();

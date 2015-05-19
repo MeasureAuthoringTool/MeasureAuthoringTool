@@ -619,7 +619,7 @@ public class ExportServlet extends HttpServlet {
 		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
-		csvStringBuilder.append("Last Name,First Name,Organization,Measure Description,Emeasure Id , GUID ,NQF Number");
+		csvStringBuilder.append("Last Name,First Name,Organization,Measure Name,Emeasure Id , GUID ,NQF Number");
 		csvStringBuilder.append("\r\n");
 		for (MeasureOwnerReportDTO measureOwnerReportDTO : ownerReList) {
 			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\"" + measureOwnerReportDTO.getFirstName()

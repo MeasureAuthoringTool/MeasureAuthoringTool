@@ -1249,10 +1249,6 @@ mat.dao.clause.MeasureDAO {
 				// }
 			}
 		}
-		// sort
-		for (List<Measure> mlist : measureLists) {
-			Collections.sort(mlist, new MeasureComparator());
-		}
 		Collections.sort(measureLists, new MeasureListComparator());
 		// compile list
 		List<Measure> retList = new ArrayList<Measure>();
@@ -1263,18 +1259,26 @@ mat.dao.clause.MeasureDAO {
 				measure = m;
 				if (m.isDraft()) {
 					isDraftAvailable = true;
-					System.out.println("Draft found for measure id :: "+ m.getId());
+					//System.out.println("Draft found for measure id :: "+ m.getId());
 					retList.add(m);
 					break;
 				}
 			}
 			if (!isDraftAvailable && (measure != null)) {
-				String maxVersion = findMaxVersion(measure.getMeasureSet().getId());
+				Criteria mCriteria = getSessionFactory().getCurrentSession()
+						.createCriteria(Measure.class);
+				mCriteria.add(Restrictions.eq("measureSet.id", measure.getMeasureSet().getId()));
+				mCriteria.add(Restrictions.eq("owner.id", measure.getOwner().getId()));
+				// add check to filter Draft's version number when finding max version
+				// number.
+				mCriteria.add(Restrictions.ne("draft", true));
+				mCriteria.setProjection(Projections.max("version"));
+				String maxVersion = (String) mCriteria.list().get(0);
 				for (Measure m : mlist) {
 					measure = m;
 					if (!m.isDraft()
 							&& m.getVersion().equalsIgnoreCase(maxVersion)) {
-						System.out.println("Max Version found for measure id :: "+ m.getId());
+						//System.out.println("Max Version found for measure id :: "+ m.getId());
 						retList.add(m);
 						break;
 					}

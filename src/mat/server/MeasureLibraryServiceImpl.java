@@ -4355,7 +4355,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						String xpathGuid = "/measure/measureDetails/guid";
 						Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
 						if (nqfNode != null) {
-							String nqfNumber = nqfNode.getAttributes().getNamedItem("root").getNodeValue();
+							String nqfNumber = nqfNode.getTextContent();
 							ownerReportDTO.setNqfId(nqfNumber);
 						}
 						Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);

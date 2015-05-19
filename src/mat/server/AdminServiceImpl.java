@@ -142,7 +142,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			Date pwdExpiryDate = getFormattedDate(currentDateFormat, calendar.getTime());
 			if(currentDate.before(pwdExpiryDate) || 
 					currentDate.equals(pwdExpiryDate)) {
-				passwordExpiryMsg = "Password Expiry Date: " +
+				passwordExpiryMsg = "Password Expiration Date: " +
 						currentDateFormat.format(calendar.getTime())+" 23:59  ";
 			} else {
 				passwordExpiryMsg = "Password Expired on "+currentDateFormat.format(calendar.getTime());

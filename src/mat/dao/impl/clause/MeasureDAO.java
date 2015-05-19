@@ -191,7 +191,8 @@ mat.dao.clause.MeasureDAO {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
 		mCriteria.add(Restrictions.eq("owner.id", user.getId()));
-		return mCriteria.list();
+		List<Measure> measureList = mCriteria.list();
+		return sortMeasureListForMeasureOwner(measureList);
 	}
 	
 	/* (non-Javadoc)
@@ -1212,6 +1213,72 @@ mat.dao.clause.MeasureDAO {
 		for (List<Measure> mlist : measureLists) {
 			for (Measure m : mlist) {
 				retList.add(m);
+			}
+		}
+		return retList;
+	}
+	
+	
+	/**
+	 * Group the measures with measure set id and find draft or highest version number which ever is available.
+	 * @param measureResultList
+	 * @return
+	 */
+	public List<Measure> sortMeasureListForMeasureOwner(List<Measure> measureResultList) {
+		// generate sortable lists
+		List<List<Measure>> measureLists = new ArrayList<List<Measure>>();
+		for (Measure m : measureResultList) {
+			boolean hasList = false;
+			/* if(m.getDeleted()==null){ */
+			for (List<Measure> mlist : measureLists) {
+				String msetId = mlist.get(0).getMeasureSet().getId();
+				if (m.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
+					mlist.add(m);
+					hasList = true;
+					break;
+				}
+			}
+			// }
+			if (!hasList) {
+				List<Measure> mlist = new ArrayList<Measure>();
+				// Check if Measure is softDeleted then dont include that into
+				// list.
+				// if(m.getDeleted()==null){
+				mlist.add(m);
+				measureLists.add(mlist);
+				// }
+			}
+		}
+		// sort
+		for (List<Measure> mlist : measureLists) {
+			Collections.sort(mlist, new MeasureComparator());
+		}
+		Collections.sort(measureLists, new MeasureListComparator());
+		// compile list
+		List<Measure> retList = new ArrayList<Measure>();
+		for (List<Measure> mlist : measureLists) {
+			boolean isDraftAvailable = false;
+			Measure measure = null;
+			for (Measure m : mlist) {
+				measure = m;
+				if (m.isDraft()) {
+					isDraftAvailable = true;
+					System.out.println("Draft found for measure id :: "+ m.getId());
+					retList.add(m);
+					break;
+				}
+			}
+			if (!isDraftAvailable && (measure != null)) {
+				String maxVersion = findMaxVersion(measure.getMeasureSet().getId());
+				for (Measure m : mlist) {
+					measure = m;
+					if (!m.isDraft()
+							&& m.getVersion().equalsIgnoreCase(maxVersion)) {
+						System.out.println("Max Version found for measure id :: "+ m.getId());
+						retList.add(m);
+						break;
+					}
+				}
 			}
 		}
 		return retList;

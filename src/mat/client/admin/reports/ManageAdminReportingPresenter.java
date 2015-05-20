@@ -2,8 +2,6 @@ package mat.client.admin.reports;
 import mat.client.MatPresenter;
 import mat.client.admin.reports.ManageAdminReportingView.Observer;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.SuccessMessageDisplay;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -21,8 +19,6 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 	public static interface Display {
 		Widget asWidget();
 		ContentWithHeadingWidget getContainerPanel();
-		ErrorMessageDisplayInterface getErrorMessageDisplay();
-		SuccessMessageDisplay getSuccessMessageDisplay();
 		void setObserver(Observer observer);
 	}
 	public ManageAdminReportingPresenter(ManageAdminReportingView adminReportingView) {

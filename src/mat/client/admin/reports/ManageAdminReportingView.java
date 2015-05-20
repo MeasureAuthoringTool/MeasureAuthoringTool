@@ -3,11 +3,9 @@ package mat.client.admin.reports;
 import java.util.ArrayList;
 import java.util.List;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.util.CellTableUtility;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -25,6 +23,7 @@ import com.google.gwt.view.client.ListDataProvider;
 
 
 public class ManageAdminReportingView implements ManageAdminReportingPresenter.Display {
+	private static final int PAGE_SIZE = 4;
 	public static interface Observer {
 		
 		/**
@@ -38,20 +37,16 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** Flow Panel.**/
 	private FlowPanel mainPanel = new FlowPanel();
-	/** The success message panel. */
-	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
-	/** The error message panel. */
-	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	/** The observer. */
 	private Observer observer;
 	/**
 	 * Constructor.
 	 */
-	public ManageAdminReportingView(){
-		CellTable<ReportModel> table = new CellTable<ReportModel> ();
+	public ManageAdminReportingView() {
+		CellTable<ReportModel> table = new CellTable<ReportModel>();
 		List<ReportModel> modelList = createReportModelList();
 		ListDataProvider<ReportModel> listDataProvider = new ListDataProvider<ReportModel>();
-		table.setPageSize(4);
+		table.setPageSize(PAGE_SIZE);
 		table.redraw();
 		listDataProvider.refresh();
 		listDataProvider.getList().addAll(modelList);
@@ -59,6 +54,15 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		listDataProvider.addDataDisplay(table);
 		VerticalPanel cellTablePanel = new VerticalPanel();
 		cellTablePanel.setStyleName("cellTablePanel_Report");
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"adminReportTableSummary",
+						"In the Following Report table Report Name in First Column"
+								+ "Generate CSV in Second Column.");
+		table.getElement().setAttribute("id", "reportQDMTable");
+		table.getElement().setAttribute("aria-describedby",
+				"adminReportTableSummary");
+		cellTablePanel.add(invisibleLabel);
 		cellTablePanel.add(table);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -72,7 +76,8 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		containerPanel.setHeading("Admin Reports", "");
 	}
 	/**
-	 * @param table
+	 * Add Columns to Report Table.
+	 * @param table - CellTable.
 	 */
 	private void addColumnToTable(CellTable<ReportModel> table) {
 		Label tableHeader = new Label("Generate Admin Reports");
@@ -122,7 +127,8 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		table.setColumnWidth(1, 50.0, Unit.PCT);
 	}
 	/**
-	 * @return
+	 * This method creates static list of Report Model which is used to set the content inside cell table.
+	 * @return List<ReportModel>
 	 */
 	private List<ReportModel> createReportModelList() {
 		List<ReportModel> modelList = new ArrayList<ReportModel>();
@@ -154,15 +160,6 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 	public void setContainerPanel(ContentWithHeadingWidget containerPanel) {
 		this.containerPanel = containerPanel;
 	}
-	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		return errorMessagePanel;
-	}
-	@Override
-	public SuccessMessageDisplay getSuccessMessageDisplay() {
-		return successMessagePanel;
-	}
-	
 	public Observer getObserver() {
 		return observer;
 	}

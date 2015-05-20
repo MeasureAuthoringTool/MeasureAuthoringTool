@@ -96,7 +96,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		profileService = System.getProperty("PROFILE_SERVICE");
 		versionService = System.getProperty("VERSION_SERVICE");
 		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
-		defaultExpId = getDefaultExpansionId();
+		defaultExpId = "VSAC Auto Expansion";
 	}
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through

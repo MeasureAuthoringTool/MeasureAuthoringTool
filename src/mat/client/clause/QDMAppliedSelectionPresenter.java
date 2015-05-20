@@ -1924,6 +1924,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
 					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 				
+				//to be modified
 				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
 					if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
 							&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
@@ -1944,14 +1945,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				
 			} else {
-				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())
-						&& modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
-						&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)){
-					searchDisplay.getSuccessMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-				} else {
 					updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
-				}
 			}
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().

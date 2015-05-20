@@ -27,7 +27,7 @@ public interface VSACAPIService extends RemoteService {
 	 */
 	/* VsacApiResult getValueSetByOIDAndVersion(String OID, String version); */
 	
-	VsacApiResult getValueSetByOIDAndVersionOrEffectiveDate(String oid, String version, String effectiveDate);
+	VsacApiResult getValueSetByOIDAndVersionOrExpansionId(String oid, String version, String effectiveDate);
 	
 	/**
 	 * In validate vsac user.
@@ -55,9 +55,10 @@ public interface VSACAPIService extends RemoteService {
 	 * 
 	 * @param measureId
 	 *            the measure id
+	 * @param defaultExpId TODO
 	 * @return the vsac api result
 	 */
-	VsacApiResult updateVSACValueSets(String measureId);
+	VsacApiResult updateVSACValueSets(String measureId, String defaultExpId);
 	
 	/**
 	 * Validate vsac user.
@@ -73,5 +74,7 @@ public interface VSACAPIService extends RemoteService {
 	VsacApiResult getAllExpIdentifierList();
 
 	VsacApiResult getAllVersionListByOID(String oid);
+
+	VsacApiResult getMostRecentValueSetByOID(String oid, String profile);
 	
 }

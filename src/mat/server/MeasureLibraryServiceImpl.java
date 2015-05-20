@@ -40,6 +40,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.client.umls.service.VSACAPIService;
 import mat.dao.AuthorDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
@@ -142,6 +143,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The is measure created. */
 	private boolean isMeasureCreated;
 	
+
 	
 	/**
 	 * Comparator.
@@ -4372,5 +4374,36 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return measureOwnerReportDTOs;
 	}
+	
+	/**
+	 * Gets the default expansion identifier.
+	 *
+	 * @param xmlprocessor the xmlprocessor
+	 * @param measureId the measure id
+	 * @return the default expansion identifier
+	 */
+	@Override
+	public String getDefaultExpansionIdentifier(String measureId){
+		String defaultExpId = null;
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		if (model != null) {
+			XmlProcessor processor = new XmlProcessor(model.getXml());
+			
+			String XPATH_VSAC_EXPANSION_IDENTIFIER = "/measure/elementLookUp/@vsacExpansionIdnetifier";
+			
+			try {
+				Node vsacExpIdAttr = (Node) xPath.evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(),
+						XPathConstants.NODE);
+				if(vsacExpIdAttr != null){
+					defaultExpId = vsacExpIdAttr.getNodeValue();
+				} 
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			}	
+		
+		return defaultExpId;
+	}
+	
 }
 

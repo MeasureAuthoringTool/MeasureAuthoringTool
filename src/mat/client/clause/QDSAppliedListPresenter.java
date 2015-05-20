@@ -401,7 +401,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 */
 	private void updateVSACValueSets() {
 		//showSearchingBusy(true);
-		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
+		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), null, new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {

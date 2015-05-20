@@ -567,4 +567,6 @@ public interface MeasureLibraryService {
 	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
 	
 	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
+
+	String getDefaultExpansionIdentifier(String measureId);
 }

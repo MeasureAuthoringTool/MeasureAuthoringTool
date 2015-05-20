@@ -20,7 +20,7 @@ public interface VSACAPIServiceAsync {
 	 *            the callback
 	 * @return the value set by oid and version or effective date
 	 */
-	void getValueSetByOIDAndVersionOrEffectiveDate(String oid, String version, String effectiveDate,
+	void getValueSetByOIDAndVersionOrExpansionId(String oid, String version, String effectiveDate,
 			AsyncCallback<VsacApiResult> callback);
 	
 	/**
@@ -58,7 +58,7 @@ public interface VSACAPIServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void updateVSACValueSets(String measureId,
+	void updateVSACValueSets(String measureId, String defaultExpId,
 			AsyncCallback<VsacApiResult> callback);
 	
 	/**
@@ -77,5 +77,8 @@ public interface VSACAPIServiceAsync {
 	void getAllExpIdentifierList(AsyncCallback<VsacApiResult> callback);
 	
 	void getAllVersionListByOID(String oid, AsyncCallback<VsacApiResult> callback);
+	
+    void getMostRecentValueSetByOID(final String oid, final String profile, 
+			AsyncCallback<VsacApiResult> callback);
 	
 }

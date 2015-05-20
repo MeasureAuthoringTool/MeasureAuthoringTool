@@ -541,7 +541,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							isExpansionProfile = false;
 						}
 					}
-					
 				}
 			});
 		}
@@ -659,8 +658,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		}
 		showSearchingBusy(true);
 		
-		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version,
+		if(expIdentifierToAllQDM.isEmpty()){
+			expansionProfile = null;
+		} else {
+			expansionProfile = expIdentifierToAllQDM;
+		}
+		
+		vsacapiService.getMostRecentValueSetByOID(oid,
 				expansionProfile, new AsyncCallback<VsacApiResult>() {
+			
 			@Override
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(
@@ -1206,7 +1212,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
 							.getMessageDelegate().getVsacExpansionIdentifierSelection());
 				}
-				
 			}
 		});
 		
@@ -2090,7 +2095,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Update vsac value sets.
 	 */
 	private void updateVSACValueSets() {
-		vsacapiService.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
+		
+		String expansionId = null;
+		if(expIdentifierToAllQDM.isEmpty()){
+			expansionId = null;
+		} else {
+			expansionId = expIdentifierToAllQDM;
+		}
+		vsacapiService.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId, 
+				new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {

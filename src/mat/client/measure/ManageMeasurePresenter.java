@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -42,7 +41,6 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -77,7 +75,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
-		/**
+	/**
 	 * The Interface BaseDisplay.
 	 */
 	public static interface BaseDisplay {
@@ -311,7 +309,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	public static interface HistoryDisplay extends BaseDisplay {
 		
-	   /**
+		/**
 		 * Clear error message.
 		 */
 		public void clearErrorMessage();
@@ -329,7 +327,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the measure name
 		 */
 		public String getMeasureName();
-	
+		
 		/**
 		 * Gets the return to link.
 		 * 
@@ -366,7 +364,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *
 		 * @param s the new return to link text
 		 */
-//		public void setPageSize(int pageNumber);
+		//		public void setPageSize(int pageNumber);
 		
 		/**
 		 * Sets the return to link text.
@@ -393,6 +391,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the widget
 		 */
+		@Override
 		public Widget asWidget();
 		
 		/**
@@ -421,6 +420,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
+		@Override
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
 		/**
@@ -450,7 +450,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the transfer button
 		 */
 		public HasClickHandlers getTransferButton();
-
+		
 		/**
 		 * Sets the admin observer.
 		 *
@@ -645,7 +645,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		/** Gets the zoom button.
 		 * 
 		 * @return the zoom button */
-		CustomButton getZoomButton();		
+		CustomButton getZoomButton();
 	}
 	
 	/**
@@ -1542,7 +1542,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				@Override
 				public void onSuccess(
 						TransferMeasureOwnerShipModel result) {
-				
+					
 					transferDisplay
 					.buildHTMLForMeasures(transferMeasureResults);
 					transferDisplay.buildCellTable(result);
@@ -1954,9 +1954,28 @@ public class ManageMeasurePresenter implements MatPresenter {
 			detailDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		}
+		if (valid) {
+			scrubForMarkUp(model);
+		}
 		return valid;
 	}
 	
+	private void scrubForMarkUp(ManageMeasureDetailModel model) {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = model.getName().trim().replaceAll(markupRegExp, "");
+		System.out.println("measure name:"+noMarkupText);
+		if(model.getName().trim().length() > noMarkupText.length()){
+			model.setName(noMarkupText);
+		}
+		
+		noMarkupText = model.getShortName().trim().replaceAll(markupRegExp, "");
+		System.out.println("measure short-name:"+noMarkupText);
+		if(model.getShortName().trim().length() > noMarkupText.length()){
+			model.setShortName(noMarkupText);
+		}
+		
+	}
 	/**
 	 * Verifies the valid value required for the list box.
 	 * 
@@ -2121,10 +2140,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onTransferSelectedClicked(Result result) {
 									searchDisplay
-								.getErrorMessageDisplay()
+									.getErrorMessageDisplay()
 									.clear();
 									searchDisplay
-								.getErrorMessagesForTransferOS()
+									.getErrorMessagesForTransferOS()
 									.clear();
 									updateTransferIDs(result,
 											manageMeasureSearchModel);
@@ -2135,13 +2154,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onHistoryClicked(Result result) {
 									historyDisplay
 									.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
-//									if (!result.isEditable()) {
-//										historyDisplay
-//										.setUserCommentsReadOnly(true);
-//									} else {
-//										historyDisplay
-//										.setUserCommentsReadOnly(false);
-//									}
+									//									if (!result.isEditable()) {
+									//										historyDisplay
+									//										.setUserCommentsReadOnly(true);
+									//									} else {
+									//										historyDisplay
+									//										.setUserCommentsReadOnly(false);
+									//									}
 									
 									displayHistory(
 											result.getId(),
@@ -2173,9 +2192,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 									lastSearchText);
 							searchDisplay
 							.buildDataTable(manageMeasureSearchModel, filter,searchText);
-					panel.setContent(searchDisplay
+							panel.setContent(searchDisplay
 									.asWidget());
-					showAdminSearchingBusy(false);
+							showAdminSearchingBusy(false);
 							
 						}
 					});
@@ -2304,11 +2323,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 									searchDisplay.getErrorMeasureDeletion().clear();
 									historyDisplay
 									.setReturnToLinkText("<< Return to Measure Library");
-//									if (!result.isEditable()) {
-//										historyDisplay.setUserCommentsReadOnly(true);
-//									} else {
-//										historyDisplay.setUserCommentsReadOnly(false);
-//									}
+									//									if (!result.isEditable()) {
+									//										historyDisplay.setUserCommentsReadOnly(true);
+									//									} else {
+									//										historyDisplay.setUserCommentsReadOnly(false);
+									//									}
 									
 									displayHistory(result.getId(), result.getName());
 								}
@@ -3058,7 +3077,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							MatContext.get().getMessageDelegate()
 							.getUserRequiredErrorMessage());
 				}
-
+				
 			}
 			
 		});

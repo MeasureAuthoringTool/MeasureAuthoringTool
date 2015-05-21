@@ -192,9 +192,12 @@ public class VSACApiServImpl implements VSACApiService{
 			unmar.setClass(VSACVersionWrapper.class);
 			unmar.setWhitespacePreserve(true);
 			versionDetails = (VSACVersionWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
-			LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse"
-					+ versionDetails.getVersionList().get(0).getName());
-			
+			if (versionDetails.getVersionList() != null) {
+				LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse"
+						+ versionDetails.getVersionList().get(0).getName());
+			} else {
+				LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse Empty Version List");
+			}
 		} catch (Exception e) {
 			if (e instanceof IOException) {
 				LOGGER.info("Failed to load VSACVersionMapping.xml" + e);
@@ -466,7 +469,7 @@ public class VSACApiServImpl implements VSACApiService{
 			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
 					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
 			ArrayList<QualityDataSetDTO> modifiedQDMList = new ArrayList<QualityDataSetDTO>();
-			if(defaultExpId == null){
+			if (defaultExpId == null) {
 				defaultExpId = getDefaultExpId();
 			}
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
@@ -499,21 +502,19 @@ public class VSACApiServImpl implements VSACApiService{
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(sessionId));
-						if ((qualityDataSetDTO.getVersion() != null) && (
-								!qualityDataSetDTO.getVersion().equals("1.0")
-								|| !qualityDataSetDTO.getVersion().equals("1"))) {
-							
-							if(qualityDataSetDTO.getExpansionIdentifier() != null){
-								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
-										qualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
-							} else {
+						if(qualityDataSetDTO.getExpansionIdentifier() != null){
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(qualityDataSetDTO.getOid(),
+									qualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
+						} else  {
+							if (!(qualityDataSetDTO.getVersion().equals("1.0")
+									|| qualityDataSetDTO.getVersion().equals("1"))) {
 								vsacResponseResult = vGroovyClient.
 										getMultipleValueSetsResponseByOIDAndVersion(qualityDataSetDTO.getOid(),
 												qualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+							} else {
+								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+										qualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 							}
-						}  else {
-							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
-									qualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 						}
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "

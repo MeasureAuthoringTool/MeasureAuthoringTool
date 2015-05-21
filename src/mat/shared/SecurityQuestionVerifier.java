@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import mat.client.shared.MatContext;
 
 /**
@@ -35,9 +34,11 @@ public class SecurityQuestionVerifier {
 	 *            the answer3
 	 */
 	public SecurityQuestionVerifier(String question1, String answer1,
-				String question2, String answer2, String question3, 
-				String answer3) {
-		
+			String question2, String answer2, String question3,
+			String answer3) {
+		if(!checkForMarkUp(answer1,answer2, answer3)){
+			message.add(MatContext.get().getMessageDelegate().getNoMarkupAllowedMessage());
+		}
 		if(answer1.trim().length() < 3) {
 			message.add(MatContext.get().getMessageDelegate().getSecurityAnswerTooShortMessage(1));
 		}
@@ -48,7 +49,7 @@ public class SecurityQuestionVerifier {
 			message.add(MatContext.get().getMessageDelegate().getSecurityAnswerTooShortMessage(3));
 		}
 		
-
+		
 		Set<String> questionTexts = new HashSet<String>();
 		questionTexts.add(question1);
 		questionTexts.add(question2);
@@ -56,12 +57,33 @@ public class SecurityQuestionVerifier {
 		if(questionTexts.size() < 3) {
 			message.add(MatContext.get().getMessageDelegate().getNotUniqueQuestions());
 		}
-				
+		
 		if(message.size() > 0) {
 			message.add(0, MatContext.get().getMessageDelegate().getSecurityQuestionHeeaderMessage());
 		}
 		
 		
+	}
+	
+	private boolean checkForMarkUp(String answer1, String answer2, String answer3) {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = answer1.trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(answer1.trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = answer2.trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(answer2.trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = answer3.trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(answer3.trim().length() > noMarkupText.length()){
+			return false;
+		}
+		return true;
 	}
 	
 	/**

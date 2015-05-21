@@ -26,6 +26,10 @@ public class AdminManageUserModelValidator {
 	public List<String> isValidUsersDetail(ManageUsersDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		
+		if(!checkForMarkUp(model)){
+			message.add(MatContext.get().getMessageDelegate().getNoMarkupAllowedMessage());
+		}
+		
 		if("".equals(model.getFirstName().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getFirstNameRequiredMessage());
 		}
@@ -76,5 +80,45 @@ public class AdminManageUserModelValidator {
 		}*/
 		return message;
 	}
-	
+	private boolean checkForMarkUp(ManageUsersDetailModel model) {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = model.getFirstName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getFirstName().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getLastName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getLastName().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getMiddleInitial().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getMiddleInitial().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getTitle().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getTitle().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getEmailAddress().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getEmailAddress().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getOid().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getOid().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		noMarkupText = model.getPhoneNumber().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(model.getPhoneNumber().trim().length() > noMarkupText.length()){
+			return false;
+		}
+		
+		return true;
+	}
 }

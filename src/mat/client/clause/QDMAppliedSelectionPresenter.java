@@ -1916,15 +1916,18 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
 			String dataType;
 			String dataTypeText;
+			String expansionId;
+			String version;
 			Boolean isSpecificOccurrence = false;
 			
 			dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+			expansionId = searchDisplay.getExpansionIdentifierValue(searchDisplay.getQDMExpIdentifierListBox());
+			version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
 			isSpecificOccurrence = searchDisplay.getSpecificOccChkBox().getValue();
 			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
 					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 				
-				//to be modified
 				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
 					if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
 							&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
@@ -1945,7 +1948,39 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				
 			} else {
+				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())
+						&& modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
+						&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)){
+					
+					/**
+					 * condition is to check if the Occurrence is associated with same 
+					 * expansion ID or Version or Most Recent then we are not incrementing the Occurence value
+					 * it remains the same and if the associated content is different then we are modifying the
+					 * QDM Element 
+					*/
+					if (!expansionId.isEmpty() && expansionId.equalsIgnoreCase(
+							modifyValueSetDTO.getExpansionIdentifier())) {
+						resetQDMSearchPanel();
+						searchDisplay.getSuccessMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+					} else if(!version.isEmpty() && version.equalsIgnoreCase(
+							modifyValueSetDTO.getVersion())){
+						resetQDMSearchPanel();
+						searchDisplay.getSuccessMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+					} else if((modifyValueSetDTO.getVersion().equals("1.0") ||
+							modifyValueSetDTO.getVersion().equals("1")) 
+							&& expansionId.isEmpty() && version.isEmpty()){
+						resetQDMSearchPanel();
+						searchDisplay.getSuccessMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+					} else {
+						updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+					}
+				
+				} else {
 					updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+				}
 			}
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().

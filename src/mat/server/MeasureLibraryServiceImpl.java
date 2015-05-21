@@ -40,7 +40,6 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
-import mat.client.umls.service.VSACAPIService;
 import mat.dao.AuthorDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
@@ -143,7 +142,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The is measure created. */
 	private boolean isMeasureCreated;
 	
-
+	
 	
 	/**
 	 * Comparator.
@@ -1902,7 +1901,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public final SaveMeasureResult save(ManageMeasureDetailModel model) {
-		
+		// Scrubing out Mark Up.
+		if(model != null){
+			scrubForMarkUp(model);
+		}
 		Measure pkg = null;
 		MeasureSet measureSet = null;
 		if (model.getId() != null) {
@@ -4399,13 +4401,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODE);
 				if(vsacExpIdAttr != null){
 					defaultExpId = vsacExpIdAttr.getNodeValue();
-				} 
+				}
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-			}	
+		}
 		
 		return defaultExpId;
+	}
+	private void scrubForMarkUp(ManageMeasureDetailModel model) {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = model.getName().trim().replaceAll(markupRegExp, "");
+		System.out.println("measure name:"+noMarkupText);
+		if(model.getName().trim().length() > noMarkupText.length()){
+			model.setName(noMarkupText);
+		}
+		
+		noMarkupText = model.getShortName().trim().replaceAll(markupRegExp, "");
+		System.out.println("measure short-name:"+noMarkupText);
+		if(model.getShortName().trim().length() > noMarkupText.length()){
+			model.setShortName(noMarkupText);
+		}
+		
 	}
 	
 }

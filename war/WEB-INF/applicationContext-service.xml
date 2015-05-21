@@ -70,6 +70,7 @@
     <property name="releaseDate" value="${mat.measure.release.date}"/>
     </bean>
     
-     <!--<bean id="vsacapiService" class="mat.server.VSACAPIServiceImpl">
-    </bean>-->    
+    <bean id="vsacapi" class="mat.server.VSACApiServImpl">
+    	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
+    </bean>    
 </beans>

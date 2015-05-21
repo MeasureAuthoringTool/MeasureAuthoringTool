@@ -48,6 +48,8 @@ public class MeasureNotesServiceImpl implements MeasureNotesService{
 	 */
 	@Override
 	public void saveMeasureNote(MeasureNotes measureNote) {
+		//code to scrub Measure notes for markup
+		scrubForMarkUp(measureNote);
 		measureNotesDAO.save(measureNote);
 	}
 
@@ -57,6 +59,21 @@ public class MeasureNotesServiceImpl implements MeasureNotesService{
 	@Override
 	public void deleteMeasureNote(MeasureNotes measureNote) {
 		measureNotesDAO.delete(measureNote);
+		
+	}
+	
+	private void scrubForMarkUp(MeasureNotes model) {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = model.getNoteTitle().trim().replaceAll(markupRegExp, "");
+		if(model.getNoteTitle().trim().length() > noMarkupText.length()){
+			model.setNoteTitle(noMarkupText);
+		}
+		
+		noMarkupText = model.getNoteDesc().trim().replaceAll(markupRegExp, "");
+		if(model.getNoteDesc().trim().length() > noMarkupText.length()){
+			model.setNoteDesc(noMarkupText);
+		}
 		
 	}
 	

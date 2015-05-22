@@ -1958,6 +1958,35 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					 * it remains the same and if the associated content is different then we are modifying the
 					 * QDM Element 
 					*/
+					
+//					if(modifyValueSetDTO.getExpansionIdentifier() != null && 
+//							!expansionId.isEmpty()) {
+//						
+//						if(expansionId.equals(modifyValueSetDTO.getExpansionIdentifier())) {
+//							searchDisplay.getSuccessMessageDisplay().setMessage(
+//									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+//							} else {
+//								updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, 
+//										dataType, isSpecificOccurrence, false);
+//							}
+//						} else if(modifyValueSetDTO.getVersion() != null && 
+//								!version.isEmpty()) {
+//							
+//							if(version.equals(modifyValueSetDTO.getVersion())){
+//								searchDisplay.getSuccessMessageDisplay().setMessage(
+//										MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+//							} else {
+//								updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, 
+//										dataType, isSpecificOccurrence, false);
+//							}
+//							
+//						} else if(modifyValueSetDTO.getVersion().equals("1.0") 
+//								&& modifyValueSetDTO.getVersion().equals("1.0")
+//								&& expansionId.isEmpty() && version.isEmpty()){
+//							
+//						}
+					
+					
 					if (!expansionId.isEmpty() && expansionId.equalsIgnoreCase(
 							modifyValueSetDTO.getExpansionIdentifier())) {
 						resetQDMSearchPanel();
@@ -1970,7 +1999,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
 					} else if((modifyValueSetDTO.getVersion().equals("1.0") ||
 							modifyValueSetDTO.getVersion().equals("1")) 
-							&& expansionId.isEmpty() && version.isEmpty()){
+							&& expansionId.isEmpty() && version.isEmpty()
+							&& modifyValueSetDTO.getExpansionIdentifier() == null){
 						resetQDMSearchPanel();
 						searchDisplay.getSuccessMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());

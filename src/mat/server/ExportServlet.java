@@ -631,14 +631,14 @@ public class ExportServlet extends HttpServlet {
 				csvStringBuilder.append("" + "\",\"");
 			}
 			if (measureOwnerReportDTO.getGuid() != null) {
-				csvStringBuilder.append(measureOwnerReportDTO.getGuid() + "\",\"");
-			} else {
-				csvStringBuilder.append("" + "\",\"");
-			}
-			if (measureOwnerReportDTO.getNqfId() != null) {
-				csvStringBuilder.append(measureOwnerReportDTO.getNqfId() + "\"");
+				csvStringBuilder.append(measureOwnerReportDTO.getGuid() + "\"");
 			} else {
 				csvStringBuilder.append("" + "\"");
+			}
+			if (measureOwnerReportDTO.getNqfId() != null) {
+				csvStringBuilder.append(",\"\t" + measureOwnerReportDTO.getNqfId() + "\"");
+			} else {
+				csvStringBuilder.append(",\"" + "" + "\"");
 			}
 			csvStringBuilder.append("\r\n");
 		}

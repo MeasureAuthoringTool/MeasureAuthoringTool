@@ -150,10 +150,10 @@ public class MessageDelegate {
 			+ " Numerator and Denominator must contain one association.";
 	
 	/** The vsac expansion profile selection. */
-	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to QDM Elements";
+	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
 	
 	/** The vsac profile applied to qdm elements. */
-	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "VSAC Profile Successfully Applied to QDM Elements.";
+	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully Applied VSAC Expansion Identifier to QDM Elements.";
 	
 	/** The successful oid retreival from vsac. */
 	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from the VSAC.";

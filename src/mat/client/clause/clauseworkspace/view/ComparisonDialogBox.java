@@ -283,7 +283,7 @@ public class ComparisonDialogBox {
 					.getSelectedIndex());
 			
 			// if non-comparision operator, disable operator/quantity/units
-			if (temporalNoOperatorList.contains(timing)) {
+			if (temporalNoOperatorList.contains(timing) || subSetFunctionsList.contains(timing.toUpperCase())) {
 				quantity.setEnabled(false);
 				quantity.setValue("");
 				listAllUnits.setItemSelected(0, true);
@@ -543,7 +543,7 @@ public class ComparisonDialogBox {
 		String timing = listAllTimeOrFunction.getItemText(listAllTimeOrFunction
 				.getSelectedIndex());
 		
-		if (temporalNoOperatorList.contains(timing)) {
+		if (temporalNoOperatorList.contains(timing) || subSetFunctionsList.contains(timing.toUpperCase())) {
 			quantity.setEnabled(false);
 			quantity.setValue("");
 			listAllUnits.setItemSelected(0, true);

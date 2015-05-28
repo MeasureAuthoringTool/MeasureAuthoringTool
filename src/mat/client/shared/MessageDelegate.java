@@ -171,7 +171,12 @@ public class MessageDelegate {
 	/** The successful qdm remove msg. */
 	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected QDM element has been removed successfully.";
 	
+	public final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " +
+			                                     "Please validate your measure logic in both Population Workspace and Clause Workspace.";
 	
+	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
+	
+
 
 	/**
 	 * Gets the measure save server error message.
@@ -2340,5 +2345,13 @@ public class MessageDelegate {
 	 */
 	public String getSUCCESSFUL_QDM_REMOVE_MSG() {
 		return SUCCESSFUL_QDM_REMOVE_MSG;
+	}
+	
+	public String getWARNING_MEASURE_PACKAGE_CREATION_GENERIC() {
+		return WARNING_MEASURE_PACKAGE_CREATION_GENERIC;
+	}
+	
+	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {
+		return WARNING_MEASURE_PACKAGE_CREATION_STRATA;
 	}
 }

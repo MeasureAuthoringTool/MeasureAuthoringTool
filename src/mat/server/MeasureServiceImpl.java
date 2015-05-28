@@ -389,7 +389,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#validatePackageGrouping(mat.client.measure.ManageMeasureDetailModel)
 	 */
 	@Override
-	public boolean validatePackageGrouping(
+	public ValidateMeasureResult validatePackageGrouping(
 			ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().validatePackageGrouping(
 				model);

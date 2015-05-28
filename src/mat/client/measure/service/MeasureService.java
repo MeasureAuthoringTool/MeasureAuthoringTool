@@ -421,7 +421,7 @@ public interface MeasureService extends RemoteService {
 	 * @param model the model
 	 * @return true, if successful
 	 */
-	boolean validatePackageGrouping(ManageMeasureDetailModel model);
+	ValidateMeasureResult validatePackageGrouping(ManageMeasureDetailModel model);
 	
 	/**
 	 * Validate measure xmlinpopulation workspace.

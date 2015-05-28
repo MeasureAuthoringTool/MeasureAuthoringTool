@@ -477,7 +477,7 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 */
 	void validatePackageGrouping(ManageMeasureDetailModel model,
-			AsyncCallback<Boolean> asyncCallback);
+			AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
 	/**
 	 * Validate measure xmlinpopulation workspace.

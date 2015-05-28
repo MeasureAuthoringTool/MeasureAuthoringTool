@@ -455,7 +455,7 @@ public interface MeasureLibraryService {
 	 * @param model the model
 	 * @return the string
 	 */
-	boolean validatePackageGrouping(ManageMeasureDetailModel model);
+	ValidateMeasureResult validatePackageGrouping(ManageMeasureDetailModel model);
 	
 	/**
 	 * Validate measure xmlinpopulation workspace.

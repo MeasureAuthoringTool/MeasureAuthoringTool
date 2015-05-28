@@ -1055,7 +1055,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void validatePackageGrouping(){
 		
-		MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
+		MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<ValidateMeasureResult>(){
 			
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1066,14 +1066,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 			
 			@Override
-			public void onSuccess(Boolean result) {
-				if (!result) {
+			public void onSuccess(ValidateMeasureResult result) {
+				if (result.isValid()) {
 					saveMeasureAtPackage();
 					
 				} else {
 					Mat.hideLoadingMessage();
 					view.getMeasurePackageWarningMsg().
-					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and Clause Workspace.");
+					setMessage(result.getValidationMessages().get(0));
 					view.getInProgressMessageDisplay().clear();
 					((Button) view.getPackageMeasureButton()).setEnabled(true);
 					((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);

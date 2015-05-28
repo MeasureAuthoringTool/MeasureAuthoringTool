@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -14,7 +15,6 @@ import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -618,13 +618,14 @@ public class ClauseWorkspaceContextMenu {
 			subMenuBarLHS.getElement().setAttribute("id","SubMenuFnxOpLHS");
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
 			
-			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
+			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(false);
 			subMenuBarLHS.getElement().setAttribute("id","SubMenuFnxOpRHS");
 			MenuBar relSetOpMenuBar = new MenuBar(true);
 			subMenuBarLHS.getElement().setAttribute("id","SubMenuRelOpLHS");
 			subMenuBarRHS.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
 			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 					, relSetOpMenuBar);
+			createAddClauseMenuItem(subMenuBarRHS);
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 			
 			//Disable  RHS by default.

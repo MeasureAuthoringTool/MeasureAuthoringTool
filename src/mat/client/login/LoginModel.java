@@ -2,19 +2,19 @@ package mat.client.login;
 
 
 
+import mat.model.BaseModel;
 import mat.model.SecurityRole;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class LoginModel.
  */
-public class LoginModel implements IsSerializable{
+public class LoginModel implements IsSerializable , BaseModel{
 	
 	/** The first name. */
 	private String firstName;
-
+	
 	/** The Role. */
 	private SecurityRole Role;
 	
@@ -23,7 +23,7 @@ public class LoginModel implements IsSerializable{
 	
 	/** The login id. */
 	private String loginId;
-
+	
 	/** The email. */
 	private String email;
 	
@@ -34,11 +34,11 @@ public class LoginModel implements IsSerializable{
 	private boolean loginFailedEvent;
 	
 	/** The initial password. */
-	private boolean initialPassword; 
+	private boolean initialPassword;
 	
 	/** The temporary password. */
-	private boolean temporaryPassword; 
-
+	private boolean temporaryPassword;
+	
 	/** The password. */
 	private String password;
 	
@@ -68,7 +68,7 @@ public class LoginModel implements IsSerializable{
 	public boolean isInitialPassword() {
 		return initialPassword;
 	}
-
+	
 	/**
 	 * Sets the initial password.
 	 * 
@@ -78,7 +78,7 @@ public class LoginModel implements IsSerializable{
 	public void setInitialPassword(boolean initialPassword) {
 		this.initialPassword = initialPassword;
 	}
-
+	
 	/**
 	 * Gets the role.
 	 * 
@@ -87,7 +87,7 @@ public class LoginModel implements IsSerializable{
 	public SecurityRole getRole() {
 		return Role;
 	}
-
+	
 	/**
 	 * Sets the role.
 	 * 
@@ -108,7 +108,7 @@ public class LoginModel implements IsSerializable{
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-
+	
 	/**
 	 * Gets the error message.
 	 * 
@@ -117,7 +117,7 @@ public class LoginModel implements IsSerializable{
 	public String getErrorMessage() {
 		return errorMessage;
 	}
-
+	
 	/**
 	 * Sets the login failed event.
 	 * 
@@ -127,7 +127,7 @@ public class LoginModel implements IsSerializable{
 	public void setLoginFailedEvent(boolean loginFailedEvent) {
 		this.loginFailedEvent = loginFailedEvent;
 	}
-
+	
 	/**
 	 * Checks if is login failed event.
 	 * 
@@ -136,7 +136,7 @@ public class LoginModel implements IsSerializable{
 	public boolean isLoginFailedEvent() {
 		return loginFailedEvent;
 	}
-
+	
 	/**
 	 * Sets the temporary password.
 	 * 
@@ -146,7 +146,7 @@ public class LoginModel implements IsSerializable{
 	public void setTemporaryPassword(boolean temporaryPassword) {
 		this.temporaryPassword = temporaryPassword;
 	}
-
+	
 	/**
 	 * Checks if is temporary password.
 	 * 
@@ -155,7 +155,7 @@ public class LoginModel implements IsSerializable{
 	public boolean isTemporaryPassword() {
 		return temporaryPassword;
 	}
-
+	
 	/**
 	 * Sets the user id.
 	 * 
@@ -165,7 +165,7 @@ public class LoginModel implements IsSerializable{
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
+	
 	/**
 	 * Gets the user id.
 	 * 
@@ -184,7 +184,7 @@ public class LoginModel implements IsSerializable{
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
 	}
-
+	
 	/**
 	 * Gets the login id.
 	 * 
@@ -193,7 +193,7 @@ public class LoginModel implements IsSerializable{
 	public String getLoginId() {
 		return loginId;
 	}
-
+	
 	/**
 	 * Gets the question1.
 	 * 
@@ -316,7 +316,7 @@ public class LoginModel implements IsSerializable{
 	 */
 	public void setPassword(String password) {
 		this.password = password;
-	}	
+	}
 	
 	/**
 	 * Gets the password.
@@ -326,7 +326,7 @@ public class LoginModel implements IsSerializable{
 	public String getPassword() {
 		return password;
 	}
-
+	
 	/**
 	 * Gets the email.
 	 * 
@@ -335,7 +335,7 @@ public class LoginModel implements IsSerializable{
 	public String getEmail() {
 		return email;
 	}
-
+	
 	/**
 	 * Sets the email.
 	 * 
@@ -345,7 +345,7 @@ public class LoginModel implements IsSerializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
 	/**
 	 * Gets the first name.
 	 *
@@ -354,7 +354,7 @@ public class LoginModel implements IsSerializable{
 	public String getFirstName() {
 		return firstName;
 	}
-
+	
 	/**
 	 * Sets the first name.
 	 *
@@ -362,6 +362,33 @@ public class LoginModel implements IsSerializable{
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = this.getQuestion1Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion1Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion1Answer(noMarkupText);
+		}
+		noMarkupText = this.getQuestion2Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion2Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion2Answer(noMarkupText);
+		}
+		noMarkupText = this.getQuestion3Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion3Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion3Answer(noMarkupText);
+		}
+		noMarkupText = this.getEmail().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getEmail().trim().length() > noMarkupText.length()) {
+			this.setEmail(noMarkupText);
+		}
+		
 	}
 	
 }

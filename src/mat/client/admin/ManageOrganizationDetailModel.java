@@ -1,9 +1,10 @@
 package mat.client.admin;
 
+import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /** The Class ManageUsersDetailModel. */
-public class ManageOrganizationDetailModel implements IsSerializable {
+public class ManageOrganizationDetailModel implements IsSerializable , BaseModel {
 	
 	/** The is existing Organization. */
 	private boolean isExistingOrg;
@@ -54,19 +55,36 @@ public class ManageOrganizationDetailModel implements IsSerializable {
 	public void setOrganization(String organization) {
 		this.organization = doTrim(organization);
 	}
-
+	
 	/** Checks if is existing org.
 	 * 
 	 * @return the isExistingOrg */
 	public boolean isExistingOrg() {
 		return isExistingOrg;
 	}
-
+	
 	/** Sets the existing org.
 	 * 
 	 * @param isExistingOrg the isExistingOrg to set */
 	public void setExistingOrg(boolean isExistingOrg) {
 		this.isExistingOrg = isExistingOrg;
 	}
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = this.getOrganization().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getOrganization().trim().length() > noMarkupText.length()) {
+			this.setOrganization(noMarkupText);
+		}
+		noMarkupText = getOid().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getOid().trim().length() > noMarkupText.length()) {
+			this.setOid(noMarkupText);
+		}
+	}
+	
 	
 }

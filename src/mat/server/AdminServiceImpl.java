@@ -130,25 +130,25 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		Date currentDate = new Date();
 		String passwordExpiryMsg = "";
 		
-			Calendar calendar = GregorianCalendar.getInstance();
-			calendar.setTime(creationDate);
-			if(tempPwd || initialPwd){
-				calendar.add(Calendar.DATE, 4);
-			} else {
-				calendar.add(Calendar.DATE, 59);
-			}
-			SimpleDateFormat currentDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-			currentDate = getFormattedDate(currentDateFormat, currentDate);
-			Date pwdExpiryDate = getFormattedDate(currentDateFormat, calendar.getTime());
-			if(currentDate.before(pwdExpiryDate) || 
-					currentDate.equals(pwdExpiryDate)) {
-				passwordExpiryMsg = "Password Expiration Date: " +
-						currentDateFormat.format(calendar.getTime())+" 23:59  ";
-			} else {
-				passwordExpiryMsg = "Password Expired on "+currentDateFormat.format(calendar.getTime());
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(creationDate);
+		if(tempPwd || initialPwd){
+			calendar.add(Calendar.DATE, 4);
+		} else {
+			calendar.add(Calendar.DATE, 59);
+		}
+		SimpleDateFormat currentDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		currentDate = getFormattedDate(currentDateFormat, currentDate);
+		Date pwdExpiryDate = getFormattedDate(currentDateFormat, calendar.getTime());
+		if(currentDate.before(pwdExpiryDate) ||
+				currentDate.equals(pwdExpiryDate)) {
+			passwordExpiryMsg = "Password Expiration Date: " +
+					currentDateFormat.format(calendar.getTime())+" 23:59  ";
+		} else {
+			passwordExpiryMsg = "Password Expired on "+currentDateFormat.format(calendar.getTime());
 		}
 		
-	    return  passwordExpiryMsg;
+		return  passwordExpiryMsg;
 	}
 	
 	
@@ -158,7 +158,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @param currentDate the current date
 	 * @return the formatted date
 	 */
-	private Date getFormattedDate(SimpleDateFormat currentDateFormat, 
+	private Date getFormattedDate(SimpleDateFormat currentDateFormat,
 			Date currentDate){
 		
 		try {
@@ -169,7 +169,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		}
 		return currentDate;
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#getAllOrganizations()
@@ -276,6 +276,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			ManageOrganizationDetailModel updatedModel) {
 		SaveUpdateOrganizationResult saveUpdateOrganizationResult = new SaveUpdateOrganizationResult();
 		Organization organization = null;
+		// Remove Mark Ups if any
+		updatedModel.scrubForMarkUp();
 		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
 		List<String> messages = test.isValidOrganizationDetail(updatedModel);
 		SaveUpdateUserResult result = new SaveUpdateUserResult();
@@ -288,6 +290,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			result.setMessages(messages);
 			result.setFailureReason(SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION);
 		} else {
+			
 			if (currentModel.isExistingOrg()) {
 				organization = getOrganizationDAO().findByOid(currentModel.getOid());
 				organization.setOrganizationName(updatedModel.getOrganization());
@@ -319,6 +322,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
 		checkAdminUser();
+		model.scrubForMarkUp();
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
 		List<String>  messages = test.isValidUsersDetail(model);
 		SaveUpdateUserResult result = new SaveUpdateUserResult();

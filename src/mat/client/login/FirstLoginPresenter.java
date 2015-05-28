@@ -4,11 +4,11 @@ package mat.client.login;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginServiceAsync;
+import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -16,7 +16,6 @@ import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.model.SecurityQuestions;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class FirstLoginPresenter {
 	
 	/** The login service. */
-	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
+	LoginServiceAsync loginService = MatContext.get().getLoginService();
 	/**
 	 * The Interface Display.
 	 */
@@ -193,10 +192,10 @@ public class FirstLoginPresenter {
 		 */
 		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
 	}
-
+	
 	/** The display. */
 	private final Display display;
-
+	
 	/**
 	 * Instantiates a new first login presenter.
 	 * 
@@ -204,8 +203,8 @@ public class FirstLoginPresenter {
 	 *            the display arg
 	 */
 	public FirstLoginPresenter(Display displayArg) {
-		this.display = displayArg;
-					
+		display = displayArg;
+		
 		/*{
 
 			@Override
@@ -232,14 +231,15 @@ public class FirstLoginPresenter {
 				}
 			}
 		});*/
-			
+		
 		display.getReset().addClickHandler(new ClickHandler() {
-
+			
+			@Override
 			public void onClick(ClickEvent event) {
 				reset();
 			}
 		});
-
+		
 		display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(FocusEvent event) {
@@ -251,8 +251,9 @@ public class FirstLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(
 						display.getSecurityQuestionsWidget().getAnswerText1()));
 			}
@@ -269,10 +270,11 @@ public class FirstLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-
-				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
+				
+				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
-					
+				}
+				
 				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(
 						display.getSecurityQuestionsWidget().getAnswerText2()));
 			}
@@ -288,55 +290,60 @@ public class FirstLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer3().setText(
 						display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
 			}
 		});
 		display.getSubmit().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				
-					PasswordVerifier verifier = null;
-					
-						verifier = new PasswordVerifier(
-								MatContext.get().getLoggedinLoginId(), 
-								display.getPassword().getValue(), 
-								display.getConfirmPassword().getValue());
-					
-
-					if(!verifier.isValid()) {
-						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
-					}else{
-						display.getPasswordErrorMessageDisplay().clear();
-					}
-
-					SecurityQuestionVerifier sverifier = 
-													new SecurityQuestionVerifier(display.getQuestion1Text().getValue(),
-																display.getQuestion1Answer().getValue(),
-																display.getQuestion2Text().getValue(),
-																display.getQuestion2Answer().getValue(),
-																display.getQuestion3Text().getValue(),
-																display.getQuestion3Answer().getValue());
-					if(!sverifier.isValid()) {
-						display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
-					}else{
-						display.getSecurityErrorMessageDisplay().clear();
-					}
-					
-					ValidateChangedPassword(verifier,sverifier);
+				PasswordVerifier verifier = null;
+				
+				verifier = new PasswordVerifier(
+						MatContext.get().getLoggedinLoginId(),
+						display.getPassword().getValue(),
+						display.getConfirmPassword().getValue());
+				
+				
+				if(!verifier.isValid()) {
+					display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
+				}else{
+					display.getPasswordErrorMessageDisplay().clear();
+				}
+				SecurityQuestionsModel securityQuestionsModel = new SecurityQuestionsModel(display.getQuestion1Text().getValue(),
+						display.getQuestion1Answer().getValue(),
+						display.getQuestion2Text().getValue(),
+						display.getQuestion2Answer().getValue(),
+						display.getQuestion3Text().getValue(),
+						display.getQuestion3Answer().getValue());
+				securityQuestionsModel.scrubForMarkUp();
+				SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(securityQuestionsModel.getQuestion1(),securityQuestionsModel.getQuestion1Answer(),
+						securityQuestionsModel.getQuestion2(),securityQuestionsModel.getQuestion2Answer(),securityQuestionsModel.getQuestion3(),
+						securityQuestionsModel.getQuestion3Answer());
+				if(!sverifier.isValid()) {
+					display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
+				}else{
+					display.getSecurityErrorMessageDisplay().clear();
+				}
+				
+				ValidateChangedPassword(verifier,sverifier);
 			}
 		});
-
+		
 		display.getReset().addClickHandler(new ClickHandler() {
-
+			
+			@Override
 			public void onClick(ClickEvent event) {
 				reset();
-				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());	
+				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());
 			}
 		});
 	}
-
+	
 	
 	/**
 	 * Validate changed password.
@@ -346,19 +353,19 @@ public class FirstLoginPresenter {
 	 */
 	public void ValidateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
 		
-		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), 
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(),
 				new AsyncCallback<HashMap<String,String>>(){
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
-
+			
 			@Override
 			public void onSuccess(HashMap<String, String> resultMap) {
 				
-				String result = (String)resultMap.get("result");
+				String result = resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
 							.getIS_NOT_PREVIOUS_PASSWORD());
@@ -408,42 +415,42 @@ public class FirstLoginPresenter {
 					}
 				}
 			});
-	}
+		}
 	}
 	
 	/**
 	 * Load security questions.
 	 */
 	private void loadSecurityQuestions(){
-			MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					//Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
-				}
-
-				@Override
-				public void onSuccess(List<SecurityQuestions> result) {
-					// TODO Auto-generated method stub
-					if(result != null){
-						List<NameValuePair> retList = new ArrayList<NameValuePair>();
-						for(int i=0; i < result.size();i++){
-								SecurityQuestions securityQues = result.get(i);
-								NameValuePair nvp = new NameValuePair();
-								nvp.setName(securityQues.getQuestion());
-								nvp.setValue(securityQues.getQuestion());
-								retList.add(nvp);
-						}
-							
-						if(retList!=null){
-							//display.addQuestionTexts(retList);
-							display.addSecurityQuestionTexts(retList);
-						}
+		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				//Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
+			}
+			
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				if(result != null){
+					List<NameValuePair> retList = new ArrayList<NameValuePair>();
+					for(int i=0; i < result.size();i++){
+						SecurityQuestions securityQues = result.get(i);
+						NameValuePair nvp = new NameValuePair();
+						nvp.setName(securityQues.getQuestion());
+						nvp.setValue(securityQues.getQuestion());
+						retList.add(nvp);
+					}
+					
+					if(retList!=null){
+						//display.addQuestionTexts(retList);
+						display.addSecurityQuestionTexts(retList);
 					}
 				}
-				
-			});
+			}
 			
+		});
+		
 		
 	}
 	
@@ -480,6 +487,7 @@ public class FirstLoginPresenter {
 		model.setQuestion2Answer(display.getSecurityQuestionsWidget().getAnswerText2());
 		model.setQuestion3(display.getSecurityQuestionsWidget().getSecurityQuestion3().getValue());
 		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswerText3());
+		model.scrubForMarkUp();
 		return model;
 	}
 	
@@ -495,5 +503,5 @@ public class FirstLoginPresenter {
 		container.add(display.asWidget());
 	}
 	
-
+	
 }

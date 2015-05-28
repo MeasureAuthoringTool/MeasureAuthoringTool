@@ -350,30 +350,6 @@ public class ManageUsersPresenter implements MatPresenter {
 				createNew();
 			}
 		});
-		
-		/*searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				generateCSVOfActiveUserEmails();
-			}
-		});*/
-		
-		/*searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			@Override
-			public void onPageSelection(PageSelectionEvent event) {
-				startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
-				search(lastSearchKey, startIndex, searchDisplay.getPageSize());
-			}
-		});
-
-		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
-			@Override
-			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				searchDisplay.getSearchString().setValue("");
-				search("", startIndex, searchDisplay.getPageSize());
-			}
-		});*/
-		
 		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
@@ -420,28 +396,6 @@ public class ManageUsersPresenter implements MatPresenter {
 				});
 			}
 		});
-		/*
-		detailDisplay.getDeleteUserButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				MatContext.get().getAdminService().deleteUser(currentDetails.getUserID(),
-						new AsyncCallback<Void>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-							}
-
-							@Override
-							public void onSuccess(Void result) {
-								displaySearch();
-							}
-				});
-			}
-		});
-		 */
-		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -512,6 +466,13 @@ public class ManageUsersPresenter implements MatPresenter {
 						//displaySearch();
 						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 								.getMessageDelegate().getUSER_SUCCESS_MESSAGE());
+						detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
+						detailDisplay.getLastName().setValue(currentDetails.getLastName());
+						detailDisplay.getTitle().setValue(currentDetails.getTitle());
+						detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
+						detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+						detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
+						detailDisplay.getOid().setValue(currentDetails.getOid());
 					} else {
 						List<String> messages = new ArrayList<String>();
 						switch(result.getFailureReason()) {
@@ -771,6 +732,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		} else {
 			currentDetails.setOrganization("");
 		}
+		currentDetails.scrubForMarkUp();
 	}
 	
 	/**

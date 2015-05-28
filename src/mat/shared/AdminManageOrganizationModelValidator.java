@@ -22,9 +22,6 @@ public class AdminManageOrganizationModelValidator {
 	 * @return the list */
 	public List<String> isValidOrganizationDetail(ManageOrganizationDetailModel model) {
 		List<String> message = new ArrayList<String>();
-		if(!checkForMarkUp(model)){
-			message.add(MatContext.get().getMessageDelegate().getNoMarkupAllowedMessage());
-		}
 		if ("".equals(model.getOrganization().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
 		}
@@ -36,24 +33,5 @@ public class AdminManageOrganizationModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getOIDTooLongMessage());
 		}
 		return message;
-	}
-	/**
-	 * @param model
-	 * @return
-	 */
-	private boolean checkForMarkUp(ManageOrganizationDetailModel model) {
-		String markupRegExp = "<[^>]+>";
-		
-		String noMarkupText = model.getOrganization().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
-		if(model.getOrganization().trim().length() > noMarkupText.length()){
-			return false;
-		}
-		noMarkupText = model.getOid().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
-		if(model.getOid().trim().length() > noMarkupText.length()){
-			return false;
-		}
-		return true;
 	}
 }

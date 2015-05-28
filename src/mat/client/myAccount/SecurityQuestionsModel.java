@@ -1,11 +1,12 @@
 package mat.client.myAccount;
 
+import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class SecurityQuestionsModel.
  */
-public class SecurityQuestionsModel implements IsSerializable {
+public class SecurityQuestionsModel implements IsSerializable , BaseModel {
 	
 	/** The question1. */
 	private String question1;
@@ -24,6 +25,20 @@ public class SecurityQuestionsModel implements IsSerializable {
 	
 	/** The question3 answer. */
 	private String question3Answer;
+	
+	public SecurityQuestionsModel(String question1, String question1Answer, String question2, String question2Answer, String question3, String question3Answer) {
+		this.question1 = question1;
+		this.question2 = question2;
+		this.question3 = question3;
+		this.question1Answer = question1Answer;
+		this.question2Answer = question2Answer;
+		this.question3Answer = question3Answer;
+		// TODO Auto-generated constructor stub
+	}
+	
+	public SecurityQuestionsModel() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	/**
 	 * Gets the question1.
@@ -137,6 +152,29 @@ public class SecurityQuestionsModel implements IsSerializable {
 	 */
 	public void setQuestion3Answer(String question3Answer) {
 		this.question3Answer = question3Answer;
+	}
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = this.getQuestion1Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion1Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion1Answer(noMarkupText);
+		}
+		noMarkupText = this.getQuestion2Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion2Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion2Answer(noMarkupText);
+		}
+		noMarkupText = this.getQuestion3Answer().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if (this.getQuestion3Answer().trim().length() > noMarkupText.length()) {
+			this.setQuestion3Answer(noMarkupText);
+		}
+		
+		
 	}
 	
 	

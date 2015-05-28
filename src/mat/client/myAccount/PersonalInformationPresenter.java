@@ -3,7 +3,6 @@ package mat.client.myAccount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
@@ -14,7 +13,6 @@ import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
 import mat.shared.MyAccountModelValidator;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -34,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class PersonalInformationPresenter implements MatPresenter {
 	
 	/** The login service. */
-	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
+	LoginServiceAsync loginService = MatContext.get().getLoginService();
 	
 	
 	/**
@@ -164,7 +162,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 			}
 		}
 	};
-
+	
 	
 	/** The display. */
 	private Display display;
@@ -172,8 +170,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 	/** The current model. */
 	private MyAccountModel currentModel;
 	
-
-
+	
+	
 	/*private HibernateUserDetailService  getHibernateUserService(){
 		return (HibernateUserDetailService)context.getBean("hibernateUserDetailService");
 	}
@@ -181,7 +179,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 	private UserService  getUserService(){
 		return (UserService)context.getBean("userService");
 	}
-		*/
+	 */
 	
 	/**
 	 * Instantiates a new personal information presenter.
@@ -190,9 +188,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 	 *            the display arg
 	 */
 	public PersonalInformationPresenter(Display displayArg) {
-		this.display = displayArg;
+		display = displayArg;
 		
 		display.getCancelButton().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				beforeDisplay();
 				//if(currentModel != null) {
@@ -201,6 +200,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 			}
 		});
 		display.getSaveButton().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				savePersonalInformation(display.getPassword().getValue());
 				display.getPassword().setValue("");
@@ -209,8 +209,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 		
 		// if the user enters the "Enter" key on the password field, do a save.
 		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
-
-	
+		
+		
 	}
 	
 	/**
@@ -219,48 +219,60 @@ public class PersonalInformationPresenter implements MatPresenter {
 	 * @param password
 	 *            the password
 	 */
-	private void savePersonalInformation(String password){
-			display.getErrorMessageDisplay().clear();
-			display.getSuccessMessageDisplay().clear();
-			
-		    loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){ 
+	private void savePersonalInformation(String password) {
+		display.getErrorMessageDisplay().clear();
+		display.getSuccessMessageDisplay().clear();
+		
+		loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String, String>>(){
 			@Override
 			public void onSuccess(HashMap<String,String> resultMap) {
-				String result = (String)resultMap.get("result");
-		    	if(result.equals("SUCCESS")){
-		    		currentModel = getValues();
-			    	if(isValid(currentModel)) {	
-		    			MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<SaveMyAccountResult>() {
+				String result = resultMap.get("result");
+				if(result.equals("SUCCESS")){
+					currentModel = getValues();
+					if(isValid(currentModel)) {
+						MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<SaveMyAccountResult>() {
+							@Override
 							public void onFailure(Throwable caught) {
 								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							}
-		
+							
 							@Override
 							public void onSuccess(SaveMyAccountResult result) {
-								if(result.isSuccess()){
+								if (result.isSuccess()) {
 									display.getErrorMessageDisplay().clear();
-									display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPersonalInfoUpdatedMessage());
-								}else{
+									display.getSuccessMessageDisplay().setMessage(MatContext.get()
+											.getMessageDelegate().getPersonalInfoUpdatedMessage());
+									display.getFirstName().setValue(currentModel.getFirstName());
+									display.getMiddleInitial().setValue(currentModel
+											.getMiddleInitial());
+									display.getLastName().setValue(currentModel.getLastName());
+									display.getTitle().setValue(currentModel.getTitle());
+									display.getEmailAddress().setValue(currentModel.getEmailAddress());
+									display.getPhoneNumber().setValue(currentModel.getPhoneNumber());
+									display.getOrganisation().setValue(currentModel.getOrganisation());
+									display.getOID().setValue(currentModel.getOid());
+								} else {
 									List<String> messages = new ArrayList<String>();
 									switch(result.getFailureReason()) {
 										case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
 											messages = result.getMessages();
 											break;
 										default:
-											messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+											messages.add(MatContext.get().getMessageDelegate().
+													getUnknownErrorMessage(result.getFailureReason()));
 									}
 									display.getErrorMessageDisplay().setMessages(messages);
 								}
 							}
 						});
-			    	}	
-				}else{
+					}
+				} else {
 					display.getErrorMessageDisplay().clear();
 					display.getSuccessMessageDisplay().clear();
-					String displayErrorMsg= (String)resultMap.get("message");
-					if(displayErrorMsg.equals("REDIRECT")){
+					String displayErrorMsg = resultMap.get("message");
+					if (displayErrorMsg.equals("REDIRECT")) {
 						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-					}else{
+					} else {
 						display.getErrorMessageDisplay().setMessage(displayErrorMsg);
 					}
 					
@@ -288,26 +300,28 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getSuccessMessageDisplay().clear();
 		MatContext.get().getMyAccountService().getMyAccount(new AsyncCallback<MyAccountModel>() {
 			
+			@Override
 			public void onSuccess(MyAccountModel result) {
 				currentModel = result;
 				setValues(currentModel);
 			}
 			
+			@Override
 			public void onFailure(Throwable caught) {
 				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
-		});	
+		});
 		Mat.focusSkipLists("PersonalInfo");
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
-	@Override 
+	@Override
 	public void beforeClosingDisplay() {
 	}
-
+	
 	/**
 	 * Sets the values.
 	 * 
@@ -336,10 +350,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 		length = (int) (length * 6.5);
 		if (length < 200) {
 			length = 200;
-		}		
+		}
 		return length+"px";
 	}
-
+	
 	/**
 	 * Gets the values.
 	 * 
@@ -356,12 +370,14 @@ public class PersonalInformationPresenter implements MatPresenter {
 		model.setOrganisation(display.getOrganisation().getValue());
 		model.setOid(display.getOID().getValue());
 		//model.setRootoid(display.getRootOID().getValue());
+		model.scrubForMarkUp();
 		return model;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
+	@Override
 	public Widget getWidget() {
 		return display.asWidget();
 	}

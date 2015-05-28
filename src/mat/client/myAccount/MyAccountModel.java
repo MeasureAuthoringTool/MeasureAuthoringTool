@@ -1,11 +1,12 @@
 package mat.client.myAccount;
 
+import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class MyAccountModel.
  */
-public class MyAccountModel implements IsSerializable {
+public class MyAccountModel implements IsSerializable, BaseModel {
 	
 	/** The first name. */
 	private String firstName;
@@ -208,5 +209,52 @@ public class MyAccountModel implements IsSerializable {
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = this.getFirstName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getFirstName().trim().length() > noMarkupText.length()){
+			this.setFirstName(noMarkupText);
+		}
+		noMarkupText = this.getLastName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getLastName().trim().length() > noMarkupText.length()){
+			this.setLastName(noMarkupText);
+		}
+		noMarkupText = this.getMiddleInitial().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getMiddleInitial().trim().length() > noMarkupText.length()){
+			this.setMiddleInitial(noMarkupText);
+		}
+		noMarkupText = this.getTitle().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getTitle().trim().length() > noMarkupText.length()){
+			this.setTitle(noMarkupText);
+		}
+		noMarkupText = this.getEmailAddress().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getEmailAddress().trim().length() > noMarkupText.length()){
+			this.setEmailAddress(noMarkupText);
+		}
+		noMarkupText = this.getOid().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getOid().trim().length() > noMarkupText.length()){
+			this.setOid(noMarkupText);
+		}
+		noMarkupText = this.getOrganisation().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getOrganisation().trim().length() > noMarkupText.length()){
+			this.setOrganisation(noMarkupText);
+		}
+		noMarkupText = this.getPhoneNumber().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getPhoneNumber().trim().length() > noMarkupText.length()){
+			this.setPhoneNumber(noMarkupText);
+		}
+		
 	}
 }

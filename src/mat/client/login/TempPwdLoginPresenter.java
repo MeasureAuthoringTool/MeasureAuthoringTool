@@ -3,12 +3,12 @@ package mat.client.login;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginServiceAsync;
+import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -17,7 +17,6 @@ import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,12 +37,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class TempPwdLoginPresenter {
 	
 	/** The login service. */
-	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
+	LoginServiceAsync loginService = MatContext.get().getLoginService();
 	
-    /**
-		 * The Interface Display.
-		 */
-		public static interface Display {
+	/**
+	 * The Interface Display.
+	 */
+	public static interface Display {
 		
 		/**
 		 * Gets the submit.
@@ -197,7 +196,7 @@ public class TempPwdLoginPresenter {
 		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
 		
 	}
-
+	
 	
 	/** The display. */
 	private final Display display;
@@ -210,10 +209,11 @@ public class TempPwdLoginPresenter {
 	 */
 	public TempPwdLoginPresenter(Display displayArg) {
 		
-		this.display = displayArg;
-							
+		display = displayArg;
+		
 		display.getReset().addClickHandler(new ClickHandler() {
-
+			
+			@Override
 			public void onClick(ClickEvent event) {
 				reset();
 			}
@@ -230,8 +230,9 @@ public class TempPwdLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(
 						display.getSecurityQuestionsWidget().getAnswerText1()));
 			}
@@ -248,10 +249,11 @@ public class TempPwdLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-
-				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
+				
+				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
-					
+				}
+				
 				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(
 						display.getSecurityQuestionsWidget().getAnswerText2()));
 			}
@@ -267,52 +269,61 @@ public class TempPwdLoginPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(
 						display.getSecurityQuestionsWidget().getAnswerText3()));
 			}
 		});
 		
 		display.getSubmit().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				
-					PasswordVerifier verifier = null;
-					
-						verifier = new PasswordVerifier(
-								MatContext.get().getLoggedinLoginId(), 
-								display.getPassword().getValue(), 
-								display.getConfirmPassword().getValue());
-					
-
-					if(!verifier.isValid()) {
-						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
-					}else{
-						display.getPasswordErrorMessageDisplay().clear();	
-					}
-
-					SecurityQuestionVerifier sverifier = 
-													new SecurityQuestionVerifier(display.getQuestion1Text().getValue(),
-															display.getAnswerText1(),
-																display.getQuestion2Text().getValue(),
-																display.getAnswerText2(),
-																display.getQuestion3Text().getValue(),
-																display.getAnswerText3());
-					if(!sverifier.isValid()) {
-						display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
-					}else{
-						display.getSecurityErrorMessageDisplay().clear();
-					}
-					
-					ValidateChangedPassword(verifier,sverifier);
+				PasswordVerifier verifier = null;
+				
+				verifier = new PasswordVerifier(
+						MatContext.get().getLoggedinLoginId(),
+						display.getPassword().getValue(),
+						display.getConfirmPassword().getValue());
+				
+				
+				if(!verifier.isValid()) {
+					display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
+				}else{
+					display.getPasswordErrorMessageDisplay().clear();
+				}
+				SecurityQuestionsModel model = new SecurityQuestionsModel(display.getQuestion1Text().getValue(),
+						display.getAnswerText1(),
+						display.getQuestion2Text().getValue(),
+						display.getAnswerText2(),
+						display.getQuestion3Text().getValue(),
+						display.getAnswerText3());
+				model.scrubForMarkUp();
+				SecurityQuestionVerifier sverifier =
+						new SecurityQuestionVerifier(model.getQuestion1(),
+								model.getQuestion1Answer(),
+								model.getQuestion2(),
+								model.getQuestion2Answer(),
+								model.getQuestion3(),
+								model.getQuestion3Answer());
+				if(!sverifier.isValid()) {
+					display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
+				}else{
+					display.getSecurityErrorMessageDisplay().clear();
+				}
+				
+				ValidateChangedPassword(verifier,sverifier);
 			}
 		});
-
+		
 		display.getReset().addClickHandler(new ClickHandler() {
-
+			
+			@Override
 			public void onClick(ClickEvent event) {
 				reset();
-				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());	
+				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());
 			}
 		});
 	}
@@ -327,19 +338,19 @@ public class TempPwdLoginPresenter {
 	 */
 	public void ValidateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
 		
-		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), 
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(),
 				new AsyncCallback<HashMap<String,String>>(){
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
-
+			
 			@Override
 			public void onSuccess(HashMap<String, String> resultMap) {
 				
-				String result = (String)resultMap.get("result");
+				String result = resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
 							.getIS_NOT_PREVIOUS_PASSWORD());
@@ -352,7 +363,7 @@ public class TempPwdLoginPresenter {
 		});
 	}
 	
-
+	
 	/**
 	 * On success temp pwd login.
 	 *
@@ -390,34 +401,34 @@ public class TempPwdLoginPresenter {
 					}
 				}
 			});
+		}
 	}
-	}
-
+	
 	/**
 	 * Load security questions.
 	 */
 	private void loadSecurityQuestions(){
-			MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
+		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				Window.alert("Error fetching security questions :: " + caught.getMessage());
 			}
-
+			
 			@Override
 			public void onSuccess(List<SecurityQuestions> result) {
 				// TODO Auto-generated method stub
 				if(result != null){
 					List<NameValuePair> retList = new ArrayList<NameValuePair>();
 					for(int i=0; i < result.size();i++){
-							SecurityQuestions securityQues = result.get(i);
-							NameValuePair nvp = new NameValuePair();
-							nvp.setName(securityQues.getQuestion());
-							nvp.setValue(securityQues.getQuestion());
-							retList.add(nvp);
+						SecurityQuestions securityQues = result.get(i);
+						NameValuePair nvp = new NameValuePair();
+						nvp.setName(securityQues.getQuestion());
+						nvp.setValue(securityQues.getQuestion());
+						retList.add(nvp);
 					}
-						
+					
 					if(retList!=null){
 						//display.addQuestionTexts(retList);
 						display.addSecurityQuestionTexts(retList);
@@ -426,7 +437,7 @@ public class TempPwdLoginPresenter {
 			}
 			
 		});
-		}
+	}
 	
 	
 	/**
@@ -443,7 +454,7 @@ public class TempPwdLoginPresenter {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
 	}
-
+	
 	/**
 	 * Gets the values.
 	 * 
@@ -461,6 +472,7 @@ public class TempPwdLoginPresenter {
 		model.setQuestion2Answer(display.getSecurityQuestionsWidget().getAnswerText2());
 		model.setQuestion3(display.getSecurityQuestionsWidget().getSecurityQuestion3().getValue());
 		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswerText3());
+		model.scrubForMarkUp();
 		return model;
 	}
 	
@@ -475,44 +487,44 @@ public class TempPwdLoginPresenter {
 		beforeDisplay();
 		loadSecurityQuestions();
 		container.add(display.asWidget());
-	}	
+	}
 	
 	/**
 	 * Before display.
 	 */
 	private void beforeDisplay() {
 		
-		MatContext.get().getLoginService().getSecurityQuestionsAnswers(MatContext.get().getLoggedinUserId(), 
+		MatContext.get().getLoginService().getSecurityQuestionsAnswers(MatContext.get().getLoggedinUserId(),
 				new AsyncCallback<List<UserSecurityQuestion>>(){
 			
+			@Override
 			public void onFailure(Throwable caught) {
 				display.getSecurityErrorMessageDisplay().clear();
 				display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
-
+			
 			@Override
 			public void onSuccess(List<UserSecurityQuestion> result) {
-				if(result !=null && result.size()>0){
-
+				if((result !=null) && (result.size()>0)){
 					display.setAnswerText1(result.get(0).getSecurityAnswer());
 					display.getQuestion1Answer().setValue(display.getSecurityQuestionsWidget()
 							.maskAnswers(result.get(0).getSecurityAnswer()));
 					display.getQuestion1Text().setValue(result.get(0).getSecurityQuestions().getQuestion());
-
-
+					
+					
 					display.setAnswerText2(result.get(1).getSecurityAnswer());
 					display.getQuestion2Answer().setValue(display.getSecurityQuestionsWidget()
 							.maskAnswers(result.get(1).getSecurityAnswer()));
 					display.getQuestion2Text().setValue(result.get(1).getSecurityQuestions().getQuestion());
-			
-
+					
+					
 					display.setAnswerText3(result.get(2).getSecurityAnswer());
 					display.getQuestion3Answer().setValue(display.getSecurityQuestionsWidget()
 							.maskAnswers(result.get(2).getSecurityAnswer()));
 					display.getQuestion3Text().setValue(result.get(2).getSecurityQuestions().getQuestion());
-
-
+					
+					
 				}
 			}
 		});

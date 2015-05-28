@@ -3,7 +3,6 @@ package mat.client.myAccount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
@@ -17,7 +16,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityQuestions;
 import mat.shared.SecurityQuestionVerifier;
-
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SecurityQuestionsPresenter implements MatPresenter {
 	
 	/** The login service. */
-	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
+	LoginServiceAsync loginService = MatContext.get().getLoginService();
 	
 	/**
 	 * The Interface Display.
@@ -196,7 +194,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * @return the password edit info widget
 		 */
 		PasswordEditInfoWidget getPasswordEditInfoWidget();
-
+		
 	}
 	
 	/** The submit on enter handler. */
@@ -223,28 +221,28 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	 *            the display arg
 	 */
 	public SecurityQuestionsPresenter(Display displayArg) {
-		this.display = displayArg;
-			
+		display = displayArg;
+		
 		loginService.getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
-
+			
 			@Override
 			public void onSuccess(List<SecurityQuestions> result) {
 				// TODO Auto-generated method stub
 				List<NameValuePair> retList = new ArrayList<NameValuePair>();
 				for(int i=0; i < result.size();i++){
-						SecurityQuestions securityQues = result.get(i);
-						NameValuePair nvp = new NameValuePair();
-						nvp.setName(securityQues.getQuestion());
-						nvp.setValue(securityQues.getQuestion());
-						retList.add(nvp);
+					SecurityQuestions securityQues = result.get(i);
+					NameValuePair nvp = new NameValuePair();
+					nvp.setName(securityQues.getQuestion());
+					nvp.setValue(securityQues.getQuestion());
+					retList.add(nvp);
 				}
-					
+				
 				if(retList!=null){
 					display.addQuestionTexts(retList);
 				}
@@ -264,8 +262,9 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
 			}
 		});
@@ -281,10 +280,11 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-
-				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
+				
+				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
-					
+				}
+				
 				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
 			}
 		});
@@ -299,8 +299,9 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
+				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
+				}
 				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
 			}
 		});
@@ -308,6 +309,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		
 		display.getCancelButton().addClickHandler(new ClickHandler() {
 			
+			@Override
 			public void onClick(ClickEvent event) {
 				display.getErrorMessageDisplay().clear();
 				display.getSuccessMessageDisplay().clear();
@@ -319,15 +321,20 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		
 		display.getSaveButton().addClickHandler(new ClickHandler() {
 			
+			@Override
 			public void onClick(ClickEvent event) {
 				display.getErrorMessageDisplay().clear();
-				SecurityQuestionVerifier sverifier = 
-					new SecurityQuestionVerifier(display.getQuestion1().getValue(),
-							display.getAnswer1().getValue(),
-							display.getQuestion2().getValue(),
-							display.getAnswer2().getValue(),
-							display.getQuestion3().getValue(),
-							display.getAnswer3().getValue());
+				SecurityQuestionsModel securityQuestionsModel = new SecurityQuestionsModel(display.getQuestion1().getValue(),
+						display.getAnswer1().getValue(),
+						display.getQuestion2().getValue(),
+						display.getAnswer2().getValue(),
+						display.getQuestion3().getValue(),
+						display.getAnswer3().getValue());
+				securityQuestionsModel.scrubForMarkUp();
+				SecurityQuestionVerifier sverifier =
+						new SecurityQuestionVerifier(securityQuestionsModel.getQuestion1(),securityQuestionsModel.getQuestion1Answer(),
+								securityQuestionsModel.getQuestion2(), securityQuestionsModel.getQuestion2Answer(),
+								securityQuestionsModel.getQuestion3(), securityQuestionsModel.getQuestion3Answer());
 				if(!sverifier.isValid()) {
 					display.getSuccessMessageDisplay().clear();
 					display.getErrorMessageDisplay().setMessages(sverifier.getMessages());
@@ -342,7 +349,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		// if the user enters the "Enter" key on the password field, do a save.
 		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
 	}
-
+	
 	/**
 	 * Save security questions.
 	 * 
@@ -350,53 +357,54 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	 *            the password
 	 */
 	private void saveSecurityQuestions(String password){
-		 loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){ 
-				@Override
-				public void onSuccess(HashMap<String,String> resultMap) {
-					String result = (String)resultMap.get("result");
-			    	if(result.equals("SUCCESS")){
-			    		currentValues = getValues();
-						MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<SaveMyAccountResult>() {
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-							@Override
-							public void onSuccess(SaveMyAccountResult result) {
-								if(result.isSuccess()){
-									display.getErrorMessageDisplay().clear();
-									display.getSuccessMessageDisplay().clear();
-									display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
-								}else{
-									List<String> messages = new ArrayList<String>();
-									switch(result.getFailureReason()) {
-										case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
-											messages = result.getMessages();
-											break;
-										default:
-											messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
-									}
-									display.getSuccessMessageDisplay().clear();
-									display.getErrorMessageDisplay().setMessages(messages);
-								}
-							}
-						});
-			    	}else{
-			    		display.getErrorMessageDisplay().clear();
-						display.getSuccessMessageDisplay().clear();
-						String displayErrorMsg= (String)resultMap.get("message");
-						if(displayErrorMsg.equals("REDIRECT")){
-							MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-						}else{
-							display.getErrorMessageDisplay().setMessage(displayErrorMsg);
+		loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){
+			@Override
+			public void onSuccess(HashMap<String,String> resultMap) {
+				String result = resultMap.get("result");
+				if(result.equals("SUCCESS")){
+					currentValues = getValues();
+					MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<SaveMyAccountResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
-			    	}
+						@Override
+						public void onSuccess(SaveMyAccountResult result) {
+							if(result.isSuccess()){
+								display.getErrorMessageDisplay().clear();
+								display.getSuccessMessageDisplay().clear();
+								display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
+							}else{
+								List<String> messages = new ArrayList<String>();
+								switch(result.getFailureReason()) {
+									case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
+										messages = result.getMessages();
+										break;
+									default:
+										messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+								}
+								display.getSuccessMessageDisplay().clear();
+								display.getErrorMessageDisplay().setMessages(messages);
+							}
+						}
+					});
+				}else{
+					display.getErrorMessageDisplay().clear();
+					display.getSuccessMessageDisplay().clear();
+					String displayErrorMsg= resultMap.get("message");
+					if(displayErrorMsg.equals("REDIRECT")){
+						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+					}else{
+						display.getErrorMessageDisplay().setMessage(displayErrorMsg);
+					}
 				}
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				}
-			});
-		 }
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+		});
+	}
 	
 	
 	/* (non-Javadoc)
@@ -407,6 +415,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		
 		MatContext.get().getMyAccountService().getSecurityQuestions(new AsyncCallback<SecurityQuestionsModel>() {
 			
+			@Override
 			public void onSuccess(SecurityQuestionsModel result) {
 				
 				display.getErrorMessageDisplay().clear();
@@ -415,6 +424,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				currentValues = result;
 			}
 			
+			@Override
 			public void onFailure(Throwable caught) {
 				display.getSuccessMessageDisplay().clear();
 				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -427,13 +437,14 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
-	@Override 
-	public void beforeClosingDisplay() {	
+	@Override
+	public void beforeClosingDisplay() {
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
+	@Override
 	public Widget getWidget() {
 		return display.asWidget();
 	}
@@ -451,6 +462,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		model.setQuestion2Answer(display.getAnswerText2());
 		model.setQuestion3(display.getQuestion3().getValue());
 		model.setQuestion3Answer(display.getAnswerText3());
+		model.scrubForMarkUp();
 		return model;
 	}
 	
@@ -465,7 +477,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		display.getAnswer1().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));
 		
 		display.getQuestion1().setValue(result.getQuestion1());
-
+		
 		display.setAnswerText2(result.getQuestion2Answer());
 		display.getAnswer2().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion2Answer()));
 		display.getQuestion2().setValue(result.getQuestion2());

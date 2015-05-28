@@ -370,6 +370,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						//displaySearch();
 						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
+						detailDisplay.getOid().setValue(currentDetails.getOid());
+						detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 					} else {
 						List<String> messages = new ArrayList<String>();
 						switch (result.getFailureReason()) {
@@ -396,5 +398,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		updatedDetails = new ManageOrganizationDetailModel();
 		updatedDetails.setOid(detailDisplay.getOid().getValue());
 		updatedDetails.setOrganization(detailDisplay.getOrganization().getValue());
+		updatedDetails.scrubForMarkUp();
 	}
 }

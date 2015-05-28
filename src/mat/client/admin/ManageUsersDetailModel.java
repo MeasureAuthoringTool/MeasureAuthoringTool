@@ -1,11 +1,12 @@
 package mat.client.admin;
 
+import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class ManageUsersDetailModel.
  */
-public class ManageUsersDetailModel implements IsSerializable {
+public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	
 	/** The user id. */
 	private String userID;
@@ -43,7 +44,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	//private String rootOid;
 	/** The role. */
 	private String role;
-
+	
 	/** The active. */
 	private boolean active = true;
 	
@@ -52,7 +53,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	
 	/** The is locked. */
 	private boolean isLocked;
-
+	
 	/** The current user can unlock. */
 	private boolean currentUserCanUnlock;
 	
@@ -61,7 +62,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	
 	private String passwordExpirationMsg;
 	
-
+	
 	/**
 	 * Checks if is current user can unlock.
 	 * 
@@ -97,7 +98,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	 *            the new current user can change account status
 	 */
 	public void setCurrentUserCanChangeAccountStatus(boolean currentUserCanChangeRole) {
-		this.currentUserCanChangeAccountStatus = currentUserCanChangeRole;
+		currentUserCanChangeAccountStatus = currentUserCanChangeRole;
 	}
 	
 	/**
@@ -360,7 +361,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	public void setRole(String role) {
 		this.role = doTrim(role);
 	}
-
+	
 	/**
 	 * Do trim.
 	 * 
@@ -394,32 +395,74 @@ public class ManageUsersDetailModel implements IsSerializable {
 	public String getLoginId() {
 		return loginId;
 	}
-
+	
 	/** Gets the organization id.
 	 * 
 	 * @return the organizationId */
 	public String getOrganizationId() {
 		return organizationId;
 	}
-
+	
 	/** Sets the organization id.
 	 * 
 	 * @param organizationId the organizationId to set */
 	public void setOrganizationId(String organizationId) {
 		this.organizationId = organizationId;
 	}
-
+	
 	/**
 	 * @return the passwordExpirationDate
 	 */
 	public String getPasswordExpirationMsg() {
 		return passwordExpirationMsg;
 	}
-
+	
 	/**
 	 * @param passwordExpirationDate the passwordExpirationDate to set
 	 */
 	public void setPasswordExpirationMsg(String passwordExpirationDate) {
-		this.passwordExpirationMsg = passwordExpirationDate;
+		passwordExpirationMsg = passwordExpirationDate;
+	}
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		
+		String noMarkupText = this.getFirstName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getFirstName().trim().length() > noMarkupText.length()){
+			this.setFirstName(noMarkupText);
+		}
+		noMarkupText = this.getLastName().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getLastName().trim().length() > noMarkupText.length()){
+			this.setLastName(noMarkupText);
+		}
+		noMarkupText = this.getMiddleInitial().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getMiddleInitial().trim().length() > noMarkupText.length()){
+			this.setMiddleInitial(noMarkupText);
+		}
+		noMarkupText = this.getTitle().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getTitle().trim().length() > noMarkupText.length()){
+			this.setTitle(noMarkupText);
+		}
+		noMarkupText = this.getEmailAddress().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getEmailAddress().trim().length() > noMarkupText.length()){
+			this.setEmailAddress(noMarkupText);
+		}
+		noMarkupText = this.getOid().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getOid().trim().length() > noMarkupText.length()){
+			this.setOid(noMarkupText);
+		}
+		noMarkupText = this.getPhoneNumber().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getPhoneNumber().trim().length() > noMarkupText.length()){
+			this.setPhoneNumber(noMarkupText);
+		}
+		
 	}
 }

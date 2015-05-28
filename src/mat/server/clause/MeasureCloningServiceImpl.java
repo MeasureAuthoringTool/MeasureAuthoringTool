@@ -171,7 +171,9 @@ implements MeasureCloningService {
 						.getLoggedInUser());
 				clonedMeasure.setOwner(currentUser);
 			}
+			// when creating a draft of a shared version  Measure then the Measure Owner should not change
 			if (creatingDraft) {
+				clonedMeasure.setOwner(measure.getOwner());
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
 				clonedMeasure.setVersion(measure.getVersion());
 				clonedMeasure.setRevisionNumber("000");
@@ -179,8 +181,13 @@ implements MeasureCloningService {
 				measureDAO.saveMeasure(clonedMeasure);
 				saveMeasureNotesInDraftMeasure(clonedMeasure.getId(), measure);
 				createNewMeasureDetailsForDraft();
-			} else {
+			} else { 
 				// Clear the measureDetails tag
+				if (LoggedInUserUtil.getLoggedInUser() != null) {
+					User currentUser = userDAO.find(LoggedInUserUtil
+							.getLoggedInUser());
+					clonedMeasure.setOwner(currentUser);
+				}
 				clearChildNodes(MEASURE_DETAILS);
 				clonedMeasure.setRevisionNumber("000");
 				MeasureSet measureSet = new MeasureSet();

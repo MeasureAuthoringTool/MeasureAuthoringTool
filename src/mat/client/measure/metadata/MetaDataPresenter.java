@@ -1762,6 +1762,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			updateModelDetailsFromView();
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
+			currentMeasureDetail.scrubForMarkUp();
 			MatContext.get().getMeasureService().saveMeasureDetails(currentMeasureDetail,
 					new AsyncCallback<SaveMeasureResult>() {
 				

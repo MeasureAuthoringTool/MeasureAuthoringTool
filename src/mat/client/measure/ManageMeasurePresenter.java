@@ -1954,27 +1954,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			detailDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		}
-		if (valid) {
-			scrubForMarkUp(model);
-		}
 		return valid;
-	}
-	
-	private void scrubForMarkUp(ManageMeasureDetailModel model) {
-		String markupRegExp = "<[^>]+>";
-		
-		String noMarkupText = model.getName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure name:"+noMarkupText);
-		if(model.getName().trim().length() > noMarkupText.length()){
-			model.setName(noMarkupText);
-		}
-		
-		noMarkupText = model.getShortName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure short-name:"+noMarkupText);
-		if(model.getShortName().trim().length() > noMarkupText.length()){
-			model.setShortName(noMarkupText);
-		}
-		
 	}
 	/**
 	 * Verifies the valid value required for the list box.
@@ -3189,14 +3169,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (isValidValue(measureScoring)) {
 			currentDetails.setMeasScoring(measureScoring);
 		}
-		
+		currentDetails.scrubForMarkUp();
 		MatContext.get().setCurrentMeasureName(
-				detailDisplay.getName().getValue().trim());
+				currentDetails.getName());
 		MatContext.get().setCurrentShortName(
-				detailDisplay.getShortName().getValue().trim());
+				currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureScoringType(
-				detailDisplay.getMeasScoringValue());
-		// MatContext.get().setCurrentMeasureVersion(detailDisplay.getMeasureVersion().getValue().trim());
+				currentDetails.getMeasScoring());
 	}
 	
 	/**

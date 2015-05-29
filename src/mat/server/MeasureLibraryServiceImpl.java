@@ -1909,7 +1909,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final SaveMeasureResult save(ManageMeasureDetailModel model) {
 		// Scrubing out Mark Up.
 		if(model != null){
-			scrubForMarkUp(model);
+			model.scrubForMarkUp();
 		}
 		Measure pkg = null;
 		MeasureSet measureSet = null;
@@ -2043,6 +2043,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = null;
+		model.scrubForMarkUp();
 		if (model.getId() != null) {
 			setMeasureCreated(true);
 			measure = getService().getById(model.getId());
@@ -4467,8 +4468,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Validate stratum for atleast one clause.
 	 * This validation is performed at the time of Measure Package Creation
-	 * where if the a stratification is part of grouping then we need to check if 
-	 * stratum has atleast one clause. If stratum does'nt have atleast one 
+	 * where if the a stratification is part of grouping then we need to check if
+	 * stratum has atleast one clause. If stratum does'nt have atleast one
 	 * clause then we throw a Warning Message.
 	 *
 	 * @param measureXmlModel the measure xml model
@@ -4483,34 +4484,34 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			
 			//validate only for Stratification where each startum should have atleast one Clause
-			String XAPTH_MEASURE_GROUPING_STRATIFICATION = "/measure/measureGrouping/group/packageClause[@type='stratification']" 
-			       + "[not(@uuid = preceding:: group/packageClause/@uuid)]/@uuid";
+			String XAPTH_MEASURE_GROUPING_STRATIFICATION = "/measure/measureGrouping/group/packageClause[@type='stratification']"
+					+ "[not(@uuid = preceding:: group/packageClause/@uuid)]/@uuid";
 			
 			List<String> stratificationClausesIDlist = null;
 			try {
-				NodeList startificationUuidList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING_STRATIFICATION, 
+				NodeList startificationUuidList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING_STRATIFICATION,
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 				
 				for(int i=0 ; i<startificationUuidList.getLength();i++){
-						String uuid = startificationUuidList.item(i).getNodeValue();
-					stratificationClausesIDlist = getStratificationClasuesIDList(uuid, xmlProcessor);	
-			}
+					String uuid = startificationUuidList.item(i).getNodeValue();
+					stratificationClausesIDlist = getStratificationClasuesIDList(uuid, xmlProcessor);
+				}
 				if (stratificationClausesIDlist != null) {
 					for(String clauseUUID: stratificationClausesIDlist){
 						String XPATH_VALIDATE_STRATIFICATION_CLAUSE = "/measure/strata/stratification/clause[@uuid='"
-					                                 +clauseUUID+"']//subTreeRef/@id";
-							NodeList strataClauseNodeList = (NodeList)xPath.evaluate(XPATH_VALIDATE_STRATIFICATION_CLAUSE,
-									xmlProcessor.getOriginalDoc(),XPathConstants.NODESET);
-							if(strataClauseNodeList != null && strataClauseNodeList.getLength()<=0){
-								message = MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_STRATA();
-								break;
-							}
+								+clauseUUID+"']//subTreeRef/@id";
+						NodeList strataClauseNodeList = (NodeList)xPath.evaluate(XPATH_VALIDATE_STRATIFICATION_CLAUSE,
+								xmlProcessor.getOriginalDoc(),XPathConstants.NODESET);
+						if((strataClauseNodeList != null) && (strataClauseNodeList.getLength()<=0)){
+							message = MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_STRATA();
+							break;
+						}
 					}
 				}
 			} catch (XPathExpressionException e2) {
 				e2.printStackTrace();
 			}
-		}	
+		}
 		return message;
 	}
 }

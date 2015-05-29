@@ -101,7 +101,7 @@ MyAccountService {
 	public MyAccountModel getMyAccount() throws IllegalArgumentException {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-		logger.info("Fetched User ....."+ user.getLoginId());
+		logger.info("Fetched User ....." + user.getLoginId());
 		return extractModel(user);
 	}
 	

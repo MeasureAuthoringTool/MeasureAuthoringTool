@@ -532,6 +532,7 @@ implements mat.client.codelist.service.CodeListService {
 		List<MatValueSetTransferObject> matValueSetTransferObjects = gbCopyPaste.getMatValueSetList();
 		StringBuilder finalXmlString = new StringBuilder("<elementLookUp>");
 		for (MatValueSetTransferObject  transferObject : matValueSetTransferObjects) {
+			transferObject.scrubForMarkUp();
 			transferObject.setAppliedQDMList(qdmList);
 			DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
 			DataType dataType = dataTypeDAO.findByDataTypeName(transferObject.getDatatype());

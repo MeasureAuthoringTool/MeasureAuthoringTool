@@ -2222,6 +2222,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 			List<String> referenceList = new ArrayList<String>();
 			for(int i=0; i< this.getReferencesList().size(); i++ ){
 				noMarkupText = this.getReferencesList().get(i).trim().replaceAll(markupRegExp, "");
+				System.out.println("measure Reference:"+i+ " index is :"+ noMarkupText);
 				if(this.getReferencesList().get(i).trim().length() > noMarkupText.length()){
 					referenceList.add(noMarkupText);
 				} else {

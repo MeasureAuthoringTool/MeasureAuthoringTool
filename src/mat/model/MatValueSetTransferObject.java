@@ -1,14 +1,13 @@
 package mat.model;
 
 import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 /**
  * The Class MatValueSetTransferObject.
  */
-public class MatValueSetTransferObject implements IsSerializable {
+public class MatValueSetTransferObject implements IsSerializable , BaseModel{
 	
 	/** The applied qdm list. */
 	List<QualityDataSetDTO> appliedQDMList;
@@ -257,9 +256,42 @@ public class MatValueSetTransferObject implements IsSerializable {
 	public boolean isExpansionProfile() {
 		return isExpansionProfile;
 	}
-
+	
 	public void setExpansionProfile(boolean isExpansionProfile) {
 		this.isExpansionProfile = isExpansionProfile;
 	}
-
+	
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		if ((this.getUserDefinedText() != null) && !this.getUserDefinedText().isEmpty()) {
+			String noMarkupText = this.getUserDefinedText().trim().replaceAll(markupRegExp, "");
+			System.out.println("QDM User defined name:" + noMarkupText);
+			if (this.getUserDefinedText().trim().length() > noMarkupText.length()) {
+				this.setUserDefinedText(noMarkupText);
+			}
+		}
+		if (this.getMatValueSet() != null) {
+			String noMarkupText = this.getMatValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
+			System.out.println("QDM VSAC Value set name:" + noMarkupText);
+			if (this.getMatValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
+				this.getMatValueSet().setDisplayName(noMarkupText);
+			}
+		}
+		if (this.getQualityDataSetDTO() != null) {
+			String noMarkupText = this.getQualityDataSetDTO().getCodeListName().trim().replaceAll(markupRegExp, "");
+			System.out.println("QDM To Be Modified VSAC Value set name:" + noMarkupText);
+			if (this.getQualityDataSetDTO().getCodeListName().trim().length() > noMarkupText.length()) {
+				this.getQualityDataSetDTO().setCodeListName(noMarkupText);
+			}
+		}
+		if (this.getCodeListSearchDTO() != null) {
+			String noMarkupText = this.getCodeListSearchDTO().getName().trim().replaceAll(markupRegExp, "");
+			System.out.println("QDM To Be Modified USD Value set name:" + noMarkupText);
+			if (this.getCodeListSearchDTO().getName().trim().length() > noMarkupText.length()) {
+				this.getCodeListSearchDTO().setName(noMarkupText);
+			}
+		}
+	}
+	
 }

@@ -1460,11 +1460,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Adds the qds with out value set.
 	 */
 	private void addQDSWithOutValueSet() {
-		String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
+		//String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
 		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, false,
 				MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.scrubForMarkUp();
-		boolean isValidUserDefinedInput = QDMAvailableValueSetPresenter.validateUserDefinedInput(userDefinedInput);
+		boolean isValidUserDefinedInput = validateUserDefinedInput(matValueSetTransferObject.getUserDefinedText());
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
@@ -1517,9 +1517,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							}
 						});
 			} else {
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate()
-						.getINVALID_CHARACTER_VALIDATION_ERROR());
+				if(matValueSetTransferObject.getUserDefinedText().isEmpty()) {
+					searchDisplay.getErrorMessageDisplay().setMessage("Value set name cannot be empty.");
+				} else {
+					searchDisplay.getErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate()
+							.getINVALID_CHARACTER_VALIDATION_ERROR());
+				}
 			}
 			
 		} else {
@@ -1835,8 +1839,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param userDefinedInput the user defined input
 	 * @return true, if successful
 	 */
-	public static boolean validateUserDefinedInput(String userDefinedInput) {
+	public  boolean validateUserDefinedInput(String userDefinedInput) {
 		boolean flag = true;
+		if(userDefinedInput.isEmpty()){
+			return flag = false;
+		}
 		for(int i = 0; i< userDefinedInput.length(); i++){
 			if((userDefinedInput.charAt(i) == '+')
 					|| (userDefinedInput.charAt(i) == '*')

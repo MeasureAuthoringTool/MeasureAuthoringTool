@@ -519,6 +519,7 @@ implements mat.client.codelist.service.CodeListService {
 	 */
 	@Override
 	public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject) {
+		matValueSetTransferObject.scrubForMarkUp();
 		return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
 	}
 	

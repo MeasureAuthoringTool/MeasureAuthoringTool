@@ -21,6 +21,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.QDMInputValidator;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -1460,17 +1461,21 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Adds the qds with out value set.
 	 */
 	private void addQDSWithOutValueSet() {
-		//String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
+		
 		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, false,
 				MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.scrubForMarkUp();
-		boolean isValidUserDefinedInput = validateUserDefinedInput(matValueSetTransferObject.getUserDefinedText());
-		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
+		/*boolean isValidUserDefinedInput = validateUserDefinedInput(matValueSetTransferObject);*/
+		
+		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			if(isValidUserDefinedInput){
+			QDMInputValidator qdmInputValidator = new QDMInputValidator();
+			List<String> messList = qdmInputValidator.validate(matValueSetTransferObject);
+			if (messList.size() == 0) {
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 				matValueSetTransferObject.setDatatype(dataType);
+				final String userDefinedInput = matValueSetTransferObject.getUserDefinedText();
 				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
 						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
 							@Override
@@ -1491,9 +1496,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 											.get()
 											.getMessageDelegate()
 											.getQDMSuccessMessage(
-													searchDisplay
-													.getUserDefinedInput()
-													.getText(),
+													userDefinedInput,
 													searchDisplay
 													.getDataTypeText(searchDisplay
 															.getDataTypesListBox()));
@@ -1517,13 +1520,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							}
 						});
 			} else {
-				if(matValueSetTransferObject.getUserDefinedText().isEmpty()) {
-					searchDisplay.getErrorMessageDisplay().setMessage("Value set name cannot be empty.");
-				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate()
-							.getINVALID_CHARACTER_VALIDATION_ERROR());
-				}
+				searchDisplay.getErrorMessageDisplay().setMessages(messList);
 			}
 			
 		} else {
@@ -1557,6 +1554,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
 					measureID);
 			matValueSetTransferObject.scrubForMarkUp();
+			final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
 			MatContext.get().getCodeListService().saveQDStoMeasure(
 					matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
 						
@@ -1584,8 +1582,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 											.get()
 											.getMessageDelegate()
 											.getQDMOcurrenceSuccessMessage(
-													currentMatValueSet
-													.getDisplayName(),
+													codeListName,
 													dataTypeText,
 													result.getOccurrenceMessage());
 								} else {
@@ -1593,15 +1590,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 											.get()
 											.getMessageDelegate()
 											.getQDMSuccessMessage(
-													currentMatValueSet
-													.getDisplayName(),
+													codeListName,
 													dataTypeText);
 								}
 								MatContext.get()
 								.getEventBus().fireEvent(
 										new QDSElementCreatedEvent(
-												currentMatValueSet
-												.getDisplayName()));
+												codeListName));
 								resetQDMSearchPanel();
 								searchDisplay
 								.getSuccessMessageDisplay()
@@ -1689,16 +1684,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Server call to modify QDM without VSAC value set.
 	 */
 	private void modifyQDMWithOutValueSet() {
-		//Pseudo QDM Flow
-		
-		String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
-		boolean isValidUserDefinedInput = validateUserDefinedInput(userDefinedInput);
 		modifyValueSetDTO.setExpansionIdentifier("");
 		modifyValueSetDTO.setVersion("");
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).
 				equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			if (isValidUserDefinedInput) {
+			MatValueSetTransferObject object = new MatValueSetTransferObject();
+			object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
+			QDMInputValidator qdmInputValidator = new QDMInputValidator();
+			List<String> meStrings = qdmInputValidator.validate(object);
+			if (meStrings.size() == 0) {
 				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
 				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
@@ -1722,9 +1717,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
 				}
 			} else {
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate()
-						.getINVALID_CHARACTER_VALIDATION_ERROR());
+				searchDisplay.getErrorMessageDisplay().setMessages(meStrings);
 			}
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(
@@ -1839,7 +1832,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param userDefinedInput the user defined input
 	 * @return true, if successful
 	 */
-	public  boolean validateUserDefinedInput(String userDefinedInput) {
+	/*	public  boolean validateUserDefinedInput(MatValueSetTransferObject matValueSetTransferObject) {
 		boolean flag = true;
 		if(userDefinedInput.isEmpty()){
 			return flag = false;
@@ -1860,7 +1853,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		}
 		return flag;
-	}
+	}*/
 	
 	/**
 	 * Update measure xml.

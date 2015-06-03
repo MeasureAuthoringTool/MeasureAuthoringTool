@@ -1489,33 +1489,41 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							@Override
 							public void onSuccess(
 									final SaveUpdateCodeListResult result) {
-								if (result.getXmlString() != null) {
-									saveMeasureXML(result.getXmlString());
-									
-									String message = MatContext
-											.get()
-											.getMessageDelegate()
-											.getQDMSuccessMessage(
-													userDefinedInput,
-													searchDisplay
-													.getDataTypeText(searchDisplay
-															.getDataTypesListBox()));
-									searchDisplay
-									.getSuccessMessageDisplay()
-									.setMessage(message);
-									searchDisplay.getUserDefinedInput()
-									.setText("");
-									searchDisplay.getDataTypesListBox()
-									.setSelectedIndex(0);
-									
-								} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
-									searchDisplay
-									.getErrorMessageDisplay()
-									.setMessage(
-											MatContext
-											.get()
-											.getMessageDelegate()
-											.getDuplicateAppliedQDMMsg());
+								if(result.isSuccess()) {
+									if (result.getXmlString() != null) {
+										saveMeasureXML(result.getXmlString());
+										
+										String message = MatContext
+												.get()
+												.getMessageDelegate()
+												.getQDMSuccessMessage(
+														userDefinedInput,
+														searchDisplay
+														.getDataTypeText(searchDisplay
+																.getDataTypesListBox()));
+										searchDisplay
+										.getSuccessMessageDisplay()
+										.setMessage(message);
+										searchDisplay.getUserDefinedInput()
+										.setText("");
+										searchDisplay.getDataTypesListBox()
+										.setSelectedIndex(0);
+										
+									}
+								} else {
+									if (result.getFailureReason() == result.ALREADY_EXISTS) {
+										searchDisplay
+										.getErrorMessageDisplay()
+										.setMessage(
+												MatContext
+												.get()
+												.getMessageDelegate()
+												.getDuplicateAppliedQDMMsg());
+									} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
+										searchDisplay
+										.getErrorMessageDisplay()
+										.setMessage("Invalid input data.");
+									}
 								}
 							}
 						});
@@ -1691,6 +1699,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			MatValueSetTransferObject object = new MatValueSetTransferObject();
 			object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
+			object.scrubForMarkUp();
 			QDMInputValidator qdmInputValidator = new QDMInputValidator();
 			List<String> meStrings = qdmInputValidator.validate(object);
 			if (meStrings.size() == 0) {
@@ -1787,19 +1796,25 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 			@Override
 			public void onSuccess(final SaveUpdateCodeListResult result) {
-				if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-					if (!isUSerDefined) {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-					} else {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-					}
-				} else {
+				
+				if(result.isSuccess()){
 					isModified = false;
 					appliedQDMList = result.getAppliedQDMList();
 					updateMeasureXML(result.getDataSetDTO() , qualityDataSetDTO, isUSerDefined);
 					resetQDMSearchPanel();
+				} else{
+					
+					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+						if (!isUSerDefined) {
+							searchDisplay.getErrorMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+						} else {
+							searchDisplay.getErrorMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+						}
+					} else if (result.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
+						searchDisplay.getErrorMessageDisplay().setMessage("Invalid Input data.");
+					}
 				}
 			}
 		});

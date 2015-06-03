@@ -537,7 +537,7 @@ implements mat.client.codelist.service.CodeListService {
 			transferObject.setAppliedQDMList(qdmList);
 			DataTypeDAO dataTypeDAO = (DataTypeDAO) context.getBean("dataTypeDAO");
 			DataType dataType = dataTypeDAO.findByDataTypeName(transferObject.getDatatype());
-			if(dataType == null){
+			if (dataType == null) {
 				continue;
 			}
 			transferObject.setDatatype(dataType.getId());

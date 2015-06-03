@@ -1,8 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
+import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +17,8 @@ public class HQMFFinalCleanUp {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(HQMFFinalCleanUp.class);
+	
+	private static final String reverseEntryCheckFile = "xsl/final_hqmf_entry_deletion_check.xsl";
 	
 	public static void clean(MeasureExport me) {
 		
@@ -32,6 +37,7 @@ public class HQMFFinalCleanUp {
 		
 		cleanExtensions(me);
 		cleanLocalVariableNames(me);
+		reverseEntryCheck(me);
 	}
 	
 	private static void cleanExtensions(MeasureExport me) {
@@ -97,6 +103,14 @@ public class HQMFFinalCleanUp {
 			logger.error("Exception in HQMFFinalCleanUp.cleanExtensions:"+e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	private static void reverseEntryCheck(MeasureExport me) {
+		XMLUtility xmlUtility = new XMLUtility();
+		String reverseEntryCheckResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().getOriginalXml(),
+				xmlUtility.getXMLResource(reverseEntryCheckFile));
+		System.out.println("Reverse Entry Check results syso: " + reverseEntryCheckResults);
+		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults); 
 	}
 	
 	private static String getReplaceString(String extValue) {

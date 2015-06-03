@@ -38,6 +38,7 @@ import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.AuthorDAO;
@@ -1911,56 +1912,66 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if(model != null){
 			model.scrubForMarkUp();
 		}
-		Measure pkg = null;
-		MeasureSet measureSet = null;
-		if (model.getId() != null) {
-			setMeasureCreated(true);
-			// editing an existing measure
-			pkg = getService().getById(model.getId());
-			model.setVersionNumber(pkg.getVersion());
-			if (pkg.isDraft()) {
-				model.setRevisionNumber(pkg.getRevisionNumber());
+		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		if(message.size() ==0) {
+			Measure pkg = null;
+			MeasureSet measureSet = null;
+			if (model.getId() != null) {
+				setMeasureCreated(true);
+				// editing an existing measure
+				pkg = getService().getById(model.getId());
+				model.setVersionNumber(pkg.getVersion());
+				if (pkg.isDraft()) {
+					model.setRevisionNumber(pkg.getRevisionNumber());
+				} else {
+					model.setRevisionNumber("000");
+				}
+				if (pkg.getMeasureSet().getId() != null) {
+					measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
+				}
+				if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+					// US 194 User is changing the measure scoring. Make sure to
+					// delete any groupings for that measure and save.
+					getMeasurePackageService().deleteExistingPackages(pkg.getId());
+				}
+				//updateComponentMeasures(model);
+				
 			} else {
+				// creating a new measure.
+				setMeasureCreated(false);
+				pkg = new Measure();
+				/*model.setMeasureStatus("In Progress");*/
 				model.setRevisionNumber("000");
+				measureSet = new MeasureSet();
+				measureSet.setId(UUID.randomUUID().toString());
+				getService().save(measureSet);
 			}
-			if (pkg.getMeasureSet().getId() != null) {
-				measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
-			}
-			if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
-				// US 194 User is changing the measure scoring. Make sure to
-				// delete any groupings for that measure and save.
-				getMeasurePackageService().deleteExistingPackages(pkg.getId());
-			}
-			//updateComponentMeasures(model);
 			
-		} else {
-			// creating a new measure.
-			setMeasureCreated(false);
-			pkg = new Measure();
-			/*model.setMeasureStatus("In Progress");*/
-			model.setRevisionNumber("000");
-			measureSet = new MeasureSet();
-			measureSet.setId(UUID.randomUUID().toString());
-			getService().save(measureSet);
-		}
-		
-		pkg.setMeasureSet(measureSet);
-		setValueFromModel(model, pkg);
-		SaveMeasureResult result = new SaveMeasureResult();
-		try {
-			getAndValidateValueSetDate(model.getValueSetDate());
-			pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
-			getService().save(pkg);
-		} catch (InvalidValueSetDateException e) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+			pkg.setMeasureSet(measureSet);
+			setValueFromModel(model, pkg);
+			SaveMeasureResult result = new SaveMeasureResult();
+			try {
+				getAndValidateValueSetDate(model.getValueSetDate());
+				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+				getService().save(pkg);
+			} catch (InvalidValueSetDateException e) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+				result.setId(pkg.getId());
+				return result;
+			}
+			result.setSuccess(true);
 			result.setId(pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			return result;
+		} else {
+			logger.info("Validation Failed for measure :: Invalid Data Issues.");
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(false);
+			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
 			return result;
 		}
-		result.setSuccess(true);
-		result.setId(pkg.getId());
-		saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
-		return result;
 	}
 	
 	/* (non-Javadoc)
@@ -2044,22 +2055,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = null;
 		model.scrubForMarkUp();
-		if (model.getId() != null) {
-			setMeasureCreated(true);
-			measure = getService().getById(model.getId());
-			/*if ((measure.getMeasureStatus() != null) && !measure.getMeasureStatus().
+		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		if(message.size() ==0) {
+			if (model.getId() != null) {
+				setMeasureCreated(true);
+				measure = getService().getById(model.getId());
+				/*if ((measure.getMeasureStatus() != null) && !measure.getMeasureStatus().
 					equalsIgnoreCase(model.getMeasureStatus())) {
 				measure.setMeasureStatus(model.getMeasureStatus());*/
-			getService().save(measure);
-			//}
+				getService().save(measure);
+				//}
+			}
+			model.setRevisionNumber(measure.getRevisionNumber());
+			logger.info("Saving Measure_Xml");
+			saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(true);
+			logger.info("Saving of Measure Details Success");
+			return result;
+		} else {
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(false);
+			logger.info("Saving of Measure Details Failed. Invalid Data issue.");
+			return result;
 		}
-		model.setRevisionNumber(measure.getRevisionNumber());
-		logger.info("Saving Measure_Xml");
-		saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
-		SaveMeasureResult result = new SaveMeasureResult();
-		result.setSuccess(true);
-		logger.info("Saving of Measure Details Success");
-		return result;
 	}
 	
 	/* (non-Javadoc)

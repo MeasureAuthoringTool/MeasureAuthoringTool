@@ -27,6 +27,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
@@ -1925,9 +1926,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the model
 	 * @return true, if is valid
 	 */
-	@SuppressWarnings("static-access")
 	public boolean isValid(ManageMeasureDetailModel model) {
-		List<String> message = new ArrayList<String>();
+		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		/*new ArrayList<String>();
 		if ((model.getName() == null) || "".equals(model.getName().trim())) {
 			message.add(MatContext.get().getMessageDelegate()
 					.getMeasureNameRequiredMessage());
@@ -1944,7 +1946,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if ((scoring == null) || !isValidValue(model.getMeasScoring())
 				|| enteredScoringValue.equals("--Select--")) {
 			message.add(MatContext.get().getMessageDelegate().s_ERR_MEASURE_SCORE_REQUIRED);
-		}
+		}*/
 		
 		boolean valid = message.size() == 0;
 		if (!valid) {
@@ -3143,6 +3145,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 					} else {
 						String message = null;
 						switch (result.getFailureReason()) {
+							case SaveMeasureResult.INVALID_DATA:
+								message = "Data Validation Failed.Please verify data.";
+								break;
 							default:
 								message = "Unknown Code "
 										+ result.getFailureReason();
@@ -3166,10 +3171,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String measureScoring = detailDisplay.getMeasScoringValue();
 		
 		// US 421. Update the Measure scoring choice from the UI.
-		if (isValidValue(measureScoring)) {
-			currentDetails.setMeasScoring(measureScoring);
-		}
+		//if (isValidValue(measureScoring)) {
+		currentDetails.setMeasScoring(measureScoring);
+		//}
 		currentDetails.scrubForMarkUp();
+		detailDisplay.getName().setValue(currentDetails.getName());
+		detailDisplay.getShortName().setValue(currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureName(
 				currentDetails.getName());
 		MatContext.get().setCurrentShortName(

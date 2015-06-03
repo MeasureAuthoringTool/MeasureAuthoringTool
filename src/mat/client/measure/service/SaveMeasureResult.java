@@ -1,7 +1,6 @@
 package mat.client.measure.service;
 
 import java.util.List;
-
 import mat.client.shared.GenericResult;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -26,6 +25,9 @@ public class SaveMeasureResult extends GenericResult {
 	
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_VALUE_SET_DATE = ConstantMessages.INVALID_VALUE_SET_DATE;
+	
+	/** The Constant INVALID_VALUE_SET_DATE. */
+	public static final int INVALID_DATA = ConstantMessages.INVALID_DATA;
 	
 	/** The id. */
 	private String id;

@@ -2073,146 +2073,148 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";
-		
-		String noMarkupText = this.getName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure name:"+noMarkupText);
-		if(this.getName().trim().length() > noMarkupText.length()){
-			this.setName(noMarkupText);
+		if(this.getName() != null) {
+			String noMarkupText = this.getName().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure name:"+noMarkupText);
+			if(this.getName().trim().length() > noMarkupText.length()){
+				this.setName(noMarkupText);
+			}
 		}
-		
-		noMarkupText = this.getShortName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure short-name:"+noMarkupText);
-		if(this.getShortName().trim().length() > noMarkupText.length()){
-			this.setShortName(noMarkupText);
+		if(this.getShortName() != null) {
+			String noMarkupText = this.getShortName().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure short-name:"+noMarkupText);
+			if(this.getShortName().trim().length() > noMarkupText.length()){
+				this.setShortName(noMarkupText);
+			}
 		}
 		if(this.getNqfId() != null) {
-			noMarkupText = this.getNqfId().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getNqfId().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure nqfid:"+noMarkupText);
 			if(this.getNqfId().trim().length() > noMarkupText.length()){
 				this.setNqfId(noMarkupText);
 			}
 		}
 		if(this.getDescription() != null) {
-			noMarkupText = this.getDescription().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getDescription().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Description:"+noMarkupText);
 			if(this.getDescription().trim().length() > noMarkupText.length()){
 				this.setDescription(noMarkupText);
 			}
 		}
 		if(this.getCopyright() != null) {
-			noMarkupText = this.getCopyright().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getCopyright().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure CopyRight:"+noMarkupText);
 			if(this.getCopyright().trim().length() > noMarkupText.length()){
 				this.setCopyright(noMarkupText);
 			}
 		}
 		if(this.getDisclaimer() != null) {
-			noMarkupText = this.getDisclaimer().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getDisclaimer().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Disclaimer:"+noMarkupText);
 			if(this.getDisclaimer().trim().length() > noMarkupText.length()){
 				this.setDisclaimer(noMarkupText);
 			}
 		}
 		if(this.getRiskAdjustment() != null) {
-			noMarkupText = this.getRiskAdjustment().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getRiskAdjustment().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure RiskAdjustment:"+noMarkupText);
 			if(this.getRiskAdjustment().trim().length() > noMarkupText.length()){
 				this.setRiskAdjustment(noMarkupText);
 			}
 		}
 		if(this.getRateAggregation() != null) {
-			noMarkupText = this.getRateAggregation().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getRateAggregation().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Rate Aggregation:"+noMarkupText);
 			if(this.getRateAggregation().trim().length() > noMarkupText.length()){
 				this.setRateAggregation(noMarkupText);
 			}
 		}
 		if(this.getRationale() != null) {
-			noMarkupText = this.getRationale().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getRationale().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Rationale:"+noMarkupText);
 			if(this.getRationale().trim().length() > noMarkupText.length()){
 				this.setRationale(noMarkupText);
 			}
 		}
 		if(this.getClinicalRecomms() != null) {
-			noMarkupText = this.getClinicalRecomms().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getClinicalRecomms().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure ClinicalRecomms:"+noMarkupText);
 			if(this.getClinicalRecomms().trim().length() > noMarkupText.length()){
 				this.setClinicalRecomms(noMarkupText);
 			}
 		}
 		if(this.getImprovNotations() != null) {
-			noMarkupText = this.getImprovNotations().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getImprovNotations().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure ImprovNotations:"+noMarkupText);
 			if(this.getImprovNotations().trim().length() > noMarkupText.length()){
 				this.setImprovNotations(noMarkupText);
 			}
 		}
 		if(this.getDefinitions() != null) {
-			noMarkupText = this.getDefinitions().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getDefinitions().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Definitions:"+noMarkupText);
 			if(this.getDefinitions().trim().length() > noMarkupText.length()){
 				this.setDefinitions(noMarkupText);
 			}
 		}
 		if(this.getGuidance() != null) {
-			noMarkupText = this.getGuidance().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getGuidance().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Guidance:"+noMarkupText);
 			if(this.getGuidance().trim().length() > noMarkupText.length()){
 				this.setGuidance(noMarkupText);
 			}
 		}
 		if(this.getTransmissionFormat() != null) {
-			noMarkupText = this.getTransmissionFormat().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getTransmissionFormat().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure TransmissionFormat:"+noMarkupText);
 			if(this.getTransmissionFormat().trim().length() > noMarkupText.length()){
 				this.setTransmissionFormat(noMarkupText);
 			}
 		}
 		if(this.getSupplementalData() != null) {
-			noMarkupText = this.getSupplementalData().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getSupplementalData().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure SupplementalData:"+noMarkupText);
 			if(this.getSupplementalData().trim().length() > noMarkupText.length()){
 				this.setSupplementalData(noMarkupText);
 			}
 		}
 		if(this.getGroupName() != null) {
-			noMarkupText = this.getGroupName().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getGroupName().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Measure Set:"+noMarkupText);
 			if(this.getGroupName().trim().length() > noMarkupText.length()){
 				this.setGroupName(noMarkupText);
 			}
 		}
 		if(this.getStratification() != null) {
-			noMarkupText = this.getStratification().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getStratification().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Stratification:"+noMarkupText);
 			if(this.getStratification().trim().length() > noMarkupText.length()){
 				this.setStratification(noMarkupText);
 			}
 		}
 		if(this.getInitialPop() != null) {
-			noMarkupText = this.getInitialPop().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getInitialPop().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure InitialPop:"+noMarkupText);
 			if(this.getInitialPop().trim().length() > noMarkupText.length()){
 				this.setInitialPop(noMarkupText);
 			}
 		}
 		if(this.getMeasurePopulation() != null) {
-			noMarkupText = this.getMeasurePopulation().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getMeasurePopulation().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Measure Population:"+noMarkupText);
 			if(this.getMeasurePopulation().trim().length() > noMarkupText.length()){
 				this.setMeasurePopulation(noMarkupText);
 			}
 		}
 		if(this.getMeasurePopulationExclusions() != null) {
-			noMarkupText = this.getMeasurePopulationExclusions().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getMeasurePopulationExclusions().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure MeasurePopulationExclusions:"+noMarkupText);
 			if(this.getMeasurePopulationExclusions().trim().length() > noMarkupText.length()){
 				this.setMeasurePopulationExclusions(noMarkupText);
 			}
 		}
 		if(this.getMeasureObservations() != null) {
-			noMarkupText = this.getMeasureObservations().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getMeasureObservations().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure MeasureObservations:"+noMarkupText);
 			if(this.getMeasureObservations().trim().length() > noMarkupText.length()){
 				this.setMeasureObservations(noMarkupText);
@@ -2221,7 +2223,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		if(this.getReferencesList() != null) {
 			List<String> referenceList = new ArrayList<String>();
 			for(int i=0; i< this.getReferencesList().size(); i++ ){
-				noMarkupText = this.getReferencesList().get(i).trim().replaceAll(markupRegExp, "");
+				String noMarkupText = this.getReferencesList().get(i).trim().replaceAll(markupRegExp, "");
 				System.out.println("measure Reference:"+i+ " index is :"+ noMarkupText);
 				if(this.getReferencesList().get(i).trim().length() > noMarkupText.length()){
 					referenceList.add(noMarkupText);

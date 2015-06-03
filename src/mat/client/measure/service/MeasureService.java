@@ -240,8 +240,8 @@ public interface MeasureService extends RemoteService {
 	 * @param string2
 	 *            the string2
 	 */
-	void saveMeasureNote(String noteTitle, String noteDescription,
-			String string, String string2);
+	SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
+			String measureId, String userId);
 	
 	/**
 	 * Save measure xml.

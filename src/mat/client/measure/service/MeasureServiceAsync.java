@@ -261,15 +261,15 @@ public interface MeasureServiceAsync {
 	 *            the note title
 	 * @param noteDescription
 	 *            the note description
-	 * @param string
-	 *            the string
-	 * @param string2
-	 *            the string2
+	 * @param measureId
+	 *            the measureId
+	 * @param userId
+	 *            the userId
 	 * @param callback
 	 *            the callback
 	 */
-	void saveMeasureNote(String noteTitle, String noteDescription,
-			String string, String string2, AsyncCallback<Void> callback);
+	void saveMeasureNote(MeasureNoteDTO model,
+			String measureId, String userId, AsyncCallback<SaveMeasureNotesResult> callback);
 	
 	/**
 	 * Save measure xml.

@@ -14,6 +14,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -249,8 +250,8 @@ public interface MeasureLibraryService {
 	 * @param string2
 	 *            the string2
 	 */
-	void saveMeasureNote(String noteTitle, String noteDescription,
-			String string, String string2);
+	SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
+			String measureId, String userId);
 	
 	/**
 	 * Save measure xml.
@@ -567,6 +568,6 @@ public interface MeasureLibraryService {
 	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
 	
 	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
-
+	
 	String getDefaultExpansionIdentifier(String measureId);
 }

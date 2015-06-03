@@ -36,9 +36,11 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.ManageMeasureModelValidator;
+import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.AuthorDAO;
@@ -2086,26 +2088,38 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveMeasureNote(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final void saveMeasureNote(final String noteTitle, final String noteDescription,
+	public final SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
 			final String measureId, final String userId) {
-		try {
-			MeasureNotes measureNote = new MeasureNotes();
-			measureNote.setNoteTitle(noteTitle);
-			measureNote.setNoteDesc(noteDescription);
-			Measure measure = getMeasureDAO().find(measureId);
-			if (measure != null) {
-				measureNote.setMeasure_id(measureId);
+		model.scrubForMarkUp();
+		ManageMeasureNotesModelValidator validator = new ManageMeasureNotesModelValidator();
+		List<String> message = validator.validation(model);
+		SaveMeasureNotesResult result = new SaveMeasureNotesResult();
+		if (message.size() == 0) {
+			try {
+				MeasureNotes measureNote = new MeasureNotes();
+				measureNote.setNoteTitle(model.getNoteTitle());
+				measureNote.setNoteDesc(model.getNoteDesc());
+				Measure measure = getMeasureDAO().find(measureId);
+				if (measure != null) {
+					measureNote.setMeasure_id(measureId);
+				}
+				User user = getUserService().getById(userId);
+				if (user != null) {
+					measureNote.setCreateUser(user);
+				}
+				measureNote.setLastModifiedDate(new Date());
+				getMeasureNotesService().saveMeasureNote(measureNote);
+				logger.info("MeasureNotes Saved Successfully.");
+				result.setSuccess(true);
+			} catch (Exception e) {
+				result.setSuccess(false);
+				logger.info("Failed to save MeasureNotes. Exception occured.");
 			}
-			User user = getUserService().getById(userId);
-			if (user != null) {
-				measureNote.setCreateUser(user);
-			}
-			measureNote.setLastModifiedDate(new Date());
-			getMeasureNotesService().saveMeasureNote(measureNote);
-			logger.info("MeasureNotes Saved Successfully.");
-		} catch (Exception e) {
-			logger.info("Failed to save MeasureNotes. Exception occured.");
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(SaveMeasureNotesResult.INVALID_DATA);
 		}
+		return result;
 	}
 	
 	/* (non-Javadoc)

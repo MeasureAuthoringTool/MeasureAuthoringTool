@@ -1,12 +1,15 @@
 package mat.client.measure;
 
+import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.measure.MeasureNotesView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.shared.ConstantMessages;
@@ -232,18 +235,34 @@ public class MeasureNotesPresenter implements MatPresenter{
 	private void saveMeasureNote(){
 		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
 		String noteDescription = notesDisplay.getMeasureNoteComposer().getHTML();
-		if((noteTitle != null) && !noteTitle.isEmpty() && (noteDescription != null) && !noteDescription.isEmpty()){
+		MeasureNoteDTO model = new MeasureNoteDTO();
+		model.setNoteTitle(noteTitle);
+		model.setNoteDesc(noteDescription);
+		model.scrubForMarkUp();
+		ManageMeasureNotesModelValidator modelValidator = new ManageMeasureNotesModelValidator();
+		List<String> messageList = modelValidator.validation(model);
+		if (messageList.size() == 0) {
 			showSearchingBusy(true);
-			service.saveMeasureNote(noteTitle, noteDescription,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
+			service.saveMeasureNote(model,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<SaveMeasureNotesResult>() {
 				
 				@Override
-				public void onSuccess(Void result) {
-					showSearchingBusy(false);
-					notesDisplay.getErrorMessageDisplay().clear();
-					notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
-					notesDisplay.getMeasureNoteComposer().setText("");
-					notesDisplay.getMeasureNoteTitle().setText("");
-					search();
+				public void onSuccess(SaveMeasureNotesResult result) {
+					if(result.isSuccess()) {
+						showSearchingBusy(false);
+						notesDisplay.getErrorMessageDisplay().clear();
+						notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
+						notesDisplay.getMeasureNoteComposer().setText("");
+						notesDisplay.getMeasureNoteTitle().setText("");
+						search();
+					} else {
+						if(result.getFailureReason() == SaveMeasureNotesResult.INVALID_DATA){
+							notesDisplay.getSuccessMessageDisplay().clear();
+							notesDisplay.getErrorMessageDisplay().setMessage("Invalid input data.");
+						} else {
+							notesDisplay.getSuccessMessageDisplay().clear();
+							notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+					}
 				}
 				
 				@Override
@@ -256,7 +275,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 			});
 		}else{
 			notesDisplay.getSuccessMessageDisplay().clear();
-			notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
+			notesDisplay.getErrorMessageDisplay().setMessages(messageList);
 		}
 	}
 	

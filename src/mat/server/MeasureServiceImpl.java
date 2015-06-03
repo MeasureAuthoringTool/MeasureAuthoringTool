@@ -13,6 +13,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
+import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -226,9 +227,9 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#saveMeasureNote(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void saveMeasureNote(String noteTitle, String noteDescription,
-			String string, String string2) {
-		this.getMeasureLibraryService().saveMeasureNote(noteTitle, noteDescription, string, string2);
+	public SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
+			String measureId, String userId) {
+		return this.getMeasureLibraryService().saveMeasureNote(model, measureId, userId);
 		
 	}
 	

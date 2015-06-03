@@ -1,15 +1,16 @@
 package mat.DTO;
 
+import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 /**
  * The Class MeasureNoteDTO.
  */
-public class MeasureNoteDTO implements IsSerializable{
+public class MeasureNoteDTO implements IsSerializable , BaseModel{
 	
 	/** The id. */
-	private String id;	
+	private String id;
 	
 	/** The note title. */
 	private String noteTitle;
@@ -25,7 +26,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	
 	/** The measure id. */
 	private String measureId;
-
+	
 	/**
 	 * Instantiates a new measure note dto.
 	 */
@@ -108,7 +109,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	public void setLastModifiedDate(String lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
-
+	
 	/**
 	 * Gets the last modified by email address.
 	 * 
@@ -117,7 +118,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	public String getLastModifiedByEmailAddress() {
 		return lastModifiedByEmailAddress;
 	}
-
+	
 	/**
 	 * Sets the last modified by email address.
 	 * 
@@ -127,7 +128,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	public void setLastModifiedByEmailAddress(String lastModifiedByEmailAddress) {
 		this.lastModifiedByEmailAddress = lastModifiedByEmailAddress;
 	}
-
+	
 	/**
 	 * Gets the measure id.
 	 * 
@@ -136,7 +137,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	public String getMeasureId() {
 		return measureId;
 	}
-
+	
 	/**
 	 * Sets the measure id.
 	 * 
@@ -145,5 +146,20 @@ public class MeasureNoteDTO implements IsSerializable{
 	 */
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
+	}
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		String noMarkupText = this.getNoteTitle().trim().replaceAll(markupRegExp, "");
+		System.out.println("MeasureNote Title:" + noMarkupText);
+		if (this.getNoteTitle().trim().length() > noMarkupText.length()) {
+			this.setNoteTitle(noMarkupText);
+		}
+		
+		/*noMarkupText = this.getNoteDesc().trim().replaceAll(markupRegExp, "");
+		System.out.println("MeasureNote Note Desc:" + noMarkupText);
+		if (this.getNoteDesc().trim().length() > noMarkupText.length()) {
+			this.setNoteDesc(noMarkupText);
+		}*/
 	}
 }

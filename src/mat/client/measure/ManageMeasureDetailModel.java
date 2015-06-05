@@ -2220,6 +2220,41 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 				this.setMeasureObservations(noMarkupText);
 			}
 		}
+		if(this.getDenominator() != null) {
+			String noMarkupText = this.getDenominator().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure Denominator:"+noMarkupText);
+			if(this.getDenominator().trim().length() > noMarkupText.length()){
+				this.setDenominator(noMarkupText);
+			}
+		}
+		if(this.getDenominatorExceptions() != null) {
+			String noMarkupText = this.getDenominatorExceptions().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure Denominator Excep:"+noMarkupText);
+			if(this.getDenominatorExceptions().trim().length() > noMarkupText.length()){
+				this.setDenominatorExceptions(noMarkupText);
+			}
+		}
+		if(this.getDenominatorExclusions() != null) {
+			String noMarkupText = this.getDenominatorExclusions().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure Denominator Exclu:"+noMarkupText);
+			if(this.getDenominatorExclusions().trim().length() > noMarkupText.length()){
+				this.setDenominatorExclusions(noMarkupText);
+			}
+		}
+		if(this.getNumerator() != null) {
+			String noMarkupText = this.getNumerator().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure Numerator :"+noMarkupText);
+			if(this.getNumerator().trim().length() > noMarkupText.length()){
+				this.setNumerator(noMarkupText);
+			}
+		}
+		if(this.getNumeratorExclusions() != null) {
+			String noMarkupText = this.getNumeratorExclusions().trim().replaceAll(markupRegExp, "");
+			System.out.println("measure Numerator Exclu :"+noMarkupText);
+			if(this.getNumeratorExclusions().trim().length() > noMarkupText.length()){
+				this.setNumeratorExclusions(noMarkupText);
+			}
+		}
 		if(this.getReferencesList() != null) {
 			List<String> referenceList = new ArrayList<String>();
 			for(int i=0; i< this.getReferencesList().size(); i++ ){

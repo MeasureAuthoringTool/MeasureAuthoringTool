@@ -217,6 +217,9 @@ MyAccountService {
 	@Override
 	public SaveMyAccountResult changePassword(String password) {
 		SaveMyAccountResult result = new SaveMyAccountResult();
+		String markupRegExp = "<[^>]+>";
+		String noMarkupTextPwd = password.trim().replaceAll(markupRegExp, "");
+		password = noMarkupTextPwd;
 		PasswordVerifier verifier = new PasswordVerifier(
 				LoggedInUserUtil.getLoggedInLoginId(),password,password);
 		

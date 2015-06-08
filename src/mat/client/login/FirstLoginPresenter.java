@@ -302,6 +302,12 @@ public class FirstLoginPresenter {
 			public void onClick(ClickEvent event) {
 				
 				PasswordVerifier verifier = null;
+				String markupRegExp = "<[^>]+>";
+				String noMarkupTextPwd = display.getPassword().getValue().trim().replaceAll(markupRegExp, "");
+				display.getPassword().setValue(noMarkupTextPwd);
+				
+				String noMarkupTextConfirm = display.getConfirmPassword().getValue().trim().replaceAll(markupRegExp, "");
+				display.getConfirmPassword().setValue(noMarkupTextConfirm);
 				
 				verifier = new PasswordVerifier(
 						MatContext.get().getLoggedinLoginId(),

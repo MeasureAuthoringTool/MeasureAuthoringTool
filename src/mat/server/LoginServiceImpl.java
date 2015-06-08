@@ -265,7 +265,9 @@ LoginService {
 				+ LoggedInUserUtil.getLoggedInLoginId());
 		logger.info("loginModel.getPassword()() ::::"
 				+ loginModel.getPassword());
-		
+		String markupRegExp = "<[^>]+>";
+		String noMarkupTextPwd = loginModel.getPassword().trim().replaceAll(markupRegExp, "");
+		loginModel.setPassword(noMarkupTextPwd);
 		PasswordVerifier verifier = new PasswordVerifier(
 				loginModel.getLoginId(), loginModel.getPassword(),
 				loginModel.getPassword());

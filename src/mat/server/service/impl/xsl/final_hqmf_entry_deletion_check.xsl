@@ -10,7 +10,8 @@
    <xsl:template match="/">
        <html>
            <body>
-      		<xsl:for-each select="//hl7:criteriaReference/hl7:id[@extension!='initialPopulation'][@extension!='measureperiod']">
+      		<xsl:for-each select="//hl7:criteriaReference/hl7:id[@extension!='initialPopulation'][@extension!='measureperiod']
+      		                         [@extension!='numerator'][@extension!='denominator']">
       		    <xsl:variable name="extension">
       		        <xsl:value-of select="@extension"/>
       		    </xsl:variable>

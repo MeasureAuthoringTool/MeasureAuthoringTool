@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -285,10 +282,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The include qdm varibale. */
 	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
 			"local variable.", "QDM Variable", true);
-	
-	/** The attribute service. */
-	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
-			.create(QDSAttributesService.class);
 	
 	/** The is valid. */
 	private boolean isValid = false;
@@ -1697,14 +1690,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 										copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 									}
 									
-									
-									String selectedFuncName = getSelectedNode().getName().toUpperCase();
-									@SuppressWarnings("unchecked")
-									HashMap<String, String> selectedNodeMap =  (HashMap<String, String>) selectedNode.getExtraInformation(
-											PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-									if (selectedNodeMap != null) {
-										selectedFuncName = selectedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
-									}
 									if(!isAllowedFunction(copiedFuncName)){
 										canPaste = false;
 									}

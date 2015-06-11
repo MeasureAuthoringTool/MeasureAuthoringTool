@@ -211,11 +211,11 @@ public class MessageDelegate {
 	private final String ABV_NAME_REQUIRED = "Abbreviated Name is required.";
 	
 	/** The account locked. */
-	private final String ACCOUNT_LOCKED = "Your account has been locked. Please contact Support.";
+	private final String ACCOUNT_LOCKED = "Please contact MAT Support. We are unable to complete your request at this time.";
 	
-	/** The ACCOUN t_ locke d2. */
+	/** The ACCOUN t_ locke d2. 
 	private final String ACCOUNT_LOCKED2 = "Your account has been locked. Please contact Support.";
-	
+*/
 	/** The account revoked. */
 	private final String ACCOUNT_REVOKED = "Your account has been revoked. Please contact Support.";
 	
@@ -366,7 +366,7 @@ public class MessageDelegate {
 	private final String LAST_MODIFIED_DATE_NOT_UNIQUE = "The Last Modified date and time entered is already is use for this value set.";
 	
 	/** The login failed. */
-	private final String LOGIN_FAILED = "Login failed. Please sign in again.";
+	private final String LOGIN_FAILED = "Invalid username and/or password. MAT accounts are locked after three invalid login attempts.";
 	
 	/** The login failed temp password expired. */
 	private final String LOGIN_FAILED_TEMP_PASSWORD_EXPIRED = "Unable to login. Your temporary password has expired. Please contact HelpDesk to renew your password.";
@@ -548,7 +548,7 @@ public class MessageDelegate {
 	// This makes denial of service attacks on accounts too easy.
 	// Perhaps make them answer a security question?
 	/** The seccond attempt failed. */
-	private final String SECCOND_ATTEMPT_FAILED = "Failed 2nd attempt. Next attempt will lock the account.";
+	//private final String SECCOND_ATTEMPT_FAILED = "Failed 2nd attempt. Next attempt will lock the account.";
 	
 	/** The security not answered. */
 	private final String SECURITY_NOT_ANSWERED = "Your security questions have not been answered.  You cannot continue. Please contact the Helpdesk";
@@ -662,15 +662,6 @@ public class MessageDelegate {
 	 */
 	public String getAbvNameRequiredMessage() {
 		return ABV_NAME_REQUIRED;
-	}
-	
-	/**
-	 * Gets the account locked2 message.
-	 * 
-	 * @return String
-	 */
-	public String getAccountLocked2Message() {
-		return ACCOUNT_LOCKED2;
 	}
 	
 	/**
@@ -1697,9 +1688,10 @@ public class MessageDelegate {
 	 * 
 	 * @return String
 	 */
-	public String getSecondAttemptFailedMessage() {
-		return SECCOND_ATTEMPT_FAILED;
+/*	public String getSecondAttemptFailedMessage() {
+		return SECCOND_ATTEMPT_FAILED; 
 	}
+	*/
 	
 	/**
 	 * Gets the security answer too short message.

@@ -247,7 +247,7 @@ public class ForgottenPasswordPresenter {
 				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
 			case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED:
-				message = MatContext.get().getMessageDelegate().getAccountLockedMessage();
+				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
 			case ForgottenPasswordResult.USER_NOT_FOUND:
 				message = MatContext.get().getMessageDelegate().getUserNotFoundMessage();
@@ -256,7 +256,7 @@ public class ForgottenPasswordPresenter {
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				break;
 			case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT:
-				message = MatContext.get().getMessageDelegate().getSecondAttemptFailedMessage();
+				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
 		}

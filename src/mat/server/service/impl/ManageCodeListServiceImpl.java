@@ -1971,8 +1971,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				result.setDataSetDTO(qds);
 			} else {
 				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
-				
-				result.setSuccess(true);
+				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 			}
 		}

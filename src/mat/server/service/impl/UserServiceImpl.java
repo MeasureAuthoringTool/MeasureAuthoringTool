@@ -260,9 +260,9 @@ public class UserServiceImpl implements UserService {
 			if(invalidUserCounter == 1){
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			}else if(invalidUserCounter == 2){
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			}else if(invalidUserCounter == 3){
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			}
 			result.setCounter(invalidUserCounter);
 			//			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
@@ -272,17 +272,17 @@ public class UserServiceImpl implements UserService {
 			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(user.getLockedOutDate() != null) {
-			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
 			if(lockCounter == 2) {
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			}
 			if(lockCounter == 3) {
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 				user.setLockedOutDate(new Date());
 				notifyUserOfAccountLocked(user);
 			}

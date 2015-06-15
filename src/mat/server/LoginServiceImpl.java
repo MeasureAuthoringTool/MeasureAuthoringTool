@@ -58,6 +58,8 @@ LoginService {
 	/** The Constant FAILURE. */
 	private static final String FAILURE = "FAILURE";
 	
+	/** The length of the CREATE_USER field in the audit_log db table */
+	static int AUDIT_LOG_USER_ID_LENGTH = 40;
 	/**
 	 * Gets the login credential service.
 	 * 
@@ -144,19 +146,25 @@ LoginService {
 		TransactionAuditService auditService = (TransactionAuditService) context
 				.getBean("transactionAuditService");
 		logger.info("Login ID --- " + loginId);
+		String truncatedLoginId;
+		if (loginId.length() > AUDIT_LOG_USER_ID_LENGTH) {
+			truncatedLoginId = loginId.substring(0, AUDIT_LOG_USER_ID_LENGTH);
+		} else {
+			truncatedLoginId = loginId;
+		}
 		if (forgottenPasswordResult.getFailureReason() > 0) {
 			logger.info("Forgot Password Failed ====> CLient IPAddress :: "
 					+ ipAddress);
 			auditService.recordTransactionEvent(UUID.randomUUID().toString(),
-					null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: " + ipAddress
-					+ " ]" + "Forgot Password Failed",
+					null, "FORGOT_PASSWORD_EVENT", truncatedLoginId, "[IP: " + ipAddress
+					+ " ]" + "Forgot Password Failed for " + loginId,
 					ConstantMessages.DB_LOG);
 		} else {
 			logger.info("Forgot Password Success ====> CLient IPAddress :: "
 					+ ipAddress);
 			auditService.recordTransactionEvent(UUID.randomUUID().toString(),
-					null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: " + ipAddress
-					+ " ]" + "Forgot Password Success",
+					null, "FORGOT_PASSWORD_EVENT", truncatedLoginId, "[IP: " + ipAddress
+					+ " ]" + "Forgot Password Success for" + loginId,
 					ConstantMessages.DB_LOG);
 		}
 		return forgottenPasswordResult;
@@ -175,6 +183,12 @@ LoginService {
 			String ipAddress = getClientIpAddr(getThreadLocalRequest());
 			logger.info("CLient IPAddress :: " + ipAddress);
 			String message = null;
+			String truncatedEmail = null;
+			if (email.length() > AUDIT_LOG_USER_ID_LENGTH) {
+				truncatedEmail = email.substring(0, AUDIT_LOG_USER_ID_LENGTH);
+			} else {
+				truncatedEmail = email;
+			}
 			TransactionAuditService auditService = (TransactionAuditService) context
 					.getBean("transactionAuditService");
 			if (forgottenLoginIDResult.getFailureReason() == 5) {
@@ -191,7 +205,7 @@ LoginService {
 				// Illegal activity is logged in Transaction Audit table with IP
 				// Address of client requesting for User Id.
 				auditService.recordTransactionEvent(UUID.randomUUID()
-						.toString(), null, "FORGOT_USER_EVENT", email, "[IP: "
+						.toString(), null, "FORGOT_USER_EVENT", truncatedEmail, "[IP: "
 								+ ipAddress + " ]" + "[EMAIL Entered: " + email + " ]"
 								+ message, ConstantMessages.DB_LOG);
 			} else if (forgottenLoginIDResult.getFailureReason() == 4) {
@@ -209,7 +223,7 @@ LoginService {
 				// Illegal activity is logged in Transaction Audit table with IP
 				// Address of client requesting for User Id.
 				auditService.recordTransactionEvent(UUID.randomUUID()
-						.toString(), null, "FORGOT_USER_EVENT", email, "[IP: "
+						.toString(), null, "FORGOT_USER_EVENT", truncatedEmail, "[IP: "
 								+ ipAddress + " ]" + "[EMAIL Entered: " + email + " ]"
 								+ message, ConstantMessages.DB_LOG);
 			}

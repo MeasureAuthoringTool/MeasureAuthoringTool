@@ -146,11 +146,9 @@ LoginService {
 		TransactionAuditService auditService = (TransactionAuditService) context
 				.getBean("transactionAuditService");
 		logger.info("Login ID --- " + loginId);
-		String truncatedLoginId;
+		String truncatedLoginId = loginId;
 		if (loginId.length() > AUDIT_LOG_USER_ID_LENGTH) {
 			truncatedLoginId = loginId.substring(0, AUDIT_LOG_USER_ID_LENGTH);
-		} else {
-			truncatedLoginId = loginId;
 		}
 		if (forgottenPasswordResult.getFailureReason() > 0) {
 			logger.info("Forgot Password Failed ====> CLient IPAddress :: "
@@ -183,11 +181,9 @@ LoginService {
 			String ipAddress = getClientIpAddr(getThreadLocalRequest());
 			logger.info("CLient IPAddress :: " + ipAddress);
 			String message = null;
-			String truncatedEmail = null;
+			String truncatedEmail = email;
 			if (email.length() > AUDIT_LOG_USER_ID_LENGTH) {
 				truncatedEmail = email.substring(0, AUDIT_LOG_USER_ID_LENGTH);
-			} else {
-				truncatedEmail = email;
 			}
 			TransactionAuditService auditService = (TransactionAuditService) context
 					.getBean("transactionAuditService");

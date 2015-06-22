@@ -38,22 +38,4 @@
 	</xsl:copy>
 </xsl:template>
 
-<xsl:template match="*" mode="encode">
-	<xsl:value-of select="concat('&lt;',name())" disable-output-escaping="yes"/>
-	<xsl:apply-templates select="@*" mode="encode"/>
-	<xsl:text>></xsl:text>
-	<xsl:apply-templates mode="encode"/>
-	<xsl:value-of select="concat('&lt;',name(),'>')" disable-output-escaping="yes"/>
-</xsl:template>
-
-<xsl:template match="*[not(node())]" mode="encode">
-	<xsl:value-of select="concat('&lt;',name())" disable-output-escaping="yes"/>
-	<xsl:apply-templates select="@*" mode="encode"/>
-	<xsl:text>/></xsl:text>
-</xsl:template>
-
-<xsl:template match="@*" mode="encode">
-	<xsl:value-of select="concat(' ',name(),'=&quot;',.,'&quot;')"/>
-</xsl:template>
-
- </xsl:stylesheet>
+</xsl:stylesheet>

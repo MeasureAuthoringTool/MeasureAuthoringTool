@@ -50,9 +50,10 @@ public class HQMFFinalCleanUp {
 		cleanExtensions(me);
 		cleanLocalVariableNames(me);
 		deleteUnusedEntry(me);
-		reverseEntryCheck(me);
+		
 	}
 	
+
 	/**
 	 * Clean extensions.
 	 *
@@ -133,12 +134,10 @@ public class HQMFFinalCleanUp {
 	 *
 	 * @param me the me
 	 */
-	private static void reverseEntryCheck(MeasureExport me) {
+	private static void reverseEntryCheck(String hqmfXML) {
 		XMLUtility xmlUtility = new XMLUtility();
-		String reverseEntryCheckResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().getOriginalXml(),
-				xmlUtility.getXMLResource(reverseEntryCheckFile));
-		//System.out.println("Reverse Entry Check results syso: " + reverseEntryCheckResults);
-		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults); 
+		String reverseEntryCheckResults = xmlUtility.applyXSL(hqmfXML,	xmlUtility.getXMLResource(reverseEntryCheckFile));
+		logger.info("Reverse Entry Check results: " + reverseEntryCheckResults);
 	}
 	
 	/**
@@ -181,8 +180,10 @@ public class HQMFFinalCleanUp {
 	 */
 	private static void deleteUnusedEntry(MeasureExport me) {
 		XMLUtility xmlUtility = new XMLUtility();
-		String delDupEntryResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().getOriginalXml(),
+		String delDupEntryResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc()),
 				xmlUtility.getXMLResource(deleteUnUsedEntryFile));
 		me.setHQMFXmlProcessor(new XmlProcessor(delDupEntryResults));
+		
+		reverseEntryCheck(delDupEntryResults);
 	}
 }

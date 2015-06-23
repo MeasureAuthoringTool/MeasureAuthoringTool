@@ -213,6 +213,11 @@
     </attribute>
     <attribute attribName="Target Outcome">
         <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
         <mode mode="ValueSet"/>
     </attribute>
     <attribute attribName="Time">

@@ -139,9 +139,10 @@ LoginService {
 			int invalidUserCounter) {
 		
 		UserService userService = (UserService) context.getBean("userService");
+		// don't pass invalidUserCounter to server anymore
 		ForgottenPasswordResult forgottenPasswordResult = userService
 				.requestForgottenPassword(loginId, securityQuestion,
-						securityAnswer, invalidUserCounter);
+						securityAnswer, 1);
 		String ipAddress = getClientIpAddr(getThreadLocalRequest());
 		TransactionAuditService auditService = (TransactionAuditService) context
 				.getBean("transactionAuditService");

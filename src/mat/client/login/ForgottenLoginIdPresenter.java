@@ -132,13 +132,7 @@ public class ForgottenLoginIdPresenter {
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {
-			case ForgottenLoginIDResult.SECURITY_QUESTIONS_NOT_SET:
-				message = MatContext.get().getMessageDelegate().getSecurityNotAnsweredMessage();
-				break;
 			case ForgottenLoginIDResult.SECURITY_QUESTION_MISMATCH:
-				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
-				break;
-			case ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED:
 				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
 			case ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG:
@@ -146,9 +140,6 @@ public class ForgottenLoginIdPresenter {
 				break;
 			case ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN:
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
-				break;
-			case ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT:
-				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
 			case ForgottenLoginIDResult.EMAIL_INVALID:
 				message = "Invalid Email Address.";

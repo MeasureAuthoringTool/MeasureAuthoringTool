@@ -13,17 +13,11 @@ public class ForgottenLoginIDResult implements IsSerializable {
 	/** The Constant SECURITY_QUESTION_MISMATCH. */
 	public static final int SECURITY_QUESTION_MISMATCH = 2;
 	
-	/** The Constant SECURITY_QUESTIONS_LOCKED. */
-	public static final int SECURITY_QUESTIONS_LOCKED = 3;
-	
 	/** The Constant EMAIL_NOT_FOUND_MSG. */
 	public static final int EMAIL_NOT_FOUND_MSG = 4;
 	
 	/** The Constant USER_ALREADY_LOGGED_IN. */
 	public static final int USER_ALREADY_LOGGED_IN = 5;
-	
-	/** The Constant SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT. */
-	public static final int SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT = 6;
 	
 	/** The Constant EMAIL_INVALID. */
 	public static final int EMAIL_INVALID = 7;

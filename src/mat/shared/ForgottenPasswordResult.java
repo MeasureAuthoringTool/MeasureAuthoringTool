@@ -16,45 +16,17 @@ public class ForgottenPasswordResult implements IsSerializable {
 	/** The Constant SECURITY_QUESTION_MISMATCH. */
 	public static final int SECURITY_QUESTION_MISMATCH = 3;
 	
-	/** The Constant SECURITY_QUESTIONS_LOCKED. */
-	public static final int SECURITY_QUESTIONS_LOCKED = 4;
-	
 	/** The Constant USER_NOT_FOUND. */
 	public static final int USER_NOT_FOUND = 5;
 	
 	/** The Constant USER_ALREADY_LOGGED_IN. */
 	public static final int USER_ALREADY_LOGGED_IN = 6;
-	
-	/** The Constant SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT. */
-	public static final int SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT = 7;
-	
+		
 	/** The email sent. */
 	private boolean emailSent;
 	
 	/** The failure reason. */
 	private int failureReason;
-	
-	/** The counter. */
-	private int counter;
-
-	/**
-	 * Gets the counter.
-	 * 
-	 * @return the counter
-	 */
-	public int getCounter() {
-		return counter;
-	}
-	
-	/**
-	 * Sets the counter.
-	 * 
-	 * @param counter
-	 *            the new counter
-	 */
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
 	
 	/**
 	 * Checks if is email sent.

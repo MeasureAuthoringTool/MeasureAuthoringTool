@@ -131,14 +131,15 @@ public class ForgottenPasswordPresenter {
 					}
 					display.getLoginId().setEnabled(false);
 					loadSecurityQuestionForUserId(display.getLoginId().getText());		
-				}else{
-					if(invalidUserCounter >= 3){
-						String message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
-						display.getErrorMessageDisplay().setMessage(message);
-						return;
-					}
-					requestForgottenPassword();
 				}
+				else{
+					if(invalidUserCounter >= 3){
+						//String message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+						//display.getErrorMessageDisplay().setMessage(message);
+						//return;
+					}
+					requestForgottenPassword(); 
+				} 
 				
 			}
 		});
@@ -174,7 +175,7 @@ public class ForgottenPasswordPresenter {
 
 			@Override
 			public void onSuccess(Boolean isLocked) {
-				if(!isLocked){
+				//if(!isLocked){
 					MatContext.get().getLoginService().getSecurityQuestion(userid, new AsyncCallback<String>() {
 
 						@Override
@@ -188,9 +189,9 @@ public class ForgottenPasswordPresenter {
 							display.addSecurityQuestionOptions(question);
 						}
 					});
-				}else{
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getAccountLockedMessage());
-				}
+				//} else{
+				//	display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getAccountLockedMessage());
+				//}
 				
 			}
 		
@@ -205,7 +206,7 @@ public class ForgottenPasswordPresenter {
 	private void requestForgottenPassword() {
 		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
 				display.getSecurityQuestion(), 
-				display.getSecurityAnswer(), invalidUserCounter, 
+				display.getSecurityAnswer(), 1,   // don't send count anymore for security reasons, always send a 1
 				new AsyncCallback<ForgottenPasswordResult>() {
 					
 					@Override
@@ -216,7 +217,7 @@ public class ForgottenPasswordPresenter {
 							String message = convertMessage(result.getFailureReason());
 							display.getErrorMessageDisplay().setMessage(message);
 						}
-						invalidUserCounter = result.getCounter();
+						//invalidUserCounter = result.getCounter();
 					}
 					
 					@Override
@@ -246,18 +247,18 @@ public class ForgottenPasswordPresenter {
 			case ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH:
 				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
 				break;
-			case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED:
-				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
-				break;
+			//case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED:
+			//	message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
+			//	break;
 			case ForgottenPasswordResult.USER_NOT_FOUND:
 				message = MatContext.get().getMessageDelegate().getUserNotFoundMessage();
 				break;
 			case ForgottenPasswordResult.USER_ALREADY_LOGGED_IN:
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				break;
-			case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT:
-				message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
-				break;
+			//case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT:
+			//	message = MatContext.get().getMessageDelegate().getSecurityQMismatchMessage();
+			//	break;
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
 		}
 		return message;

@@ -256,24 +256,13 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		if(user == null) {
-			invalidUserCounter += 1;
-			if(invalidUserCounter == 1){
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-			}else if(invalidUserCounter == 2){
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-			}else if(invalidUserCounter == 3){
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-			}
-			result.setCounter(invalidUserCounter);
-			//			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
+			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 		}
 		else if(user.getSecurityQuestions().size() != 3) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_NOT_SET);
-			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(user.getLockedOutDate() != null) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
@@ -287,7 +276,6 @@ public class UserServiceImpl implements UserService {
 				notifyUserOfAccountLocked(user);
 			}
 			user.getPassword().setForgotPwdlockCounter(lockCounter);
-			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 			userDAO.save(user);
 		}
 		else {
@@ -307,7 +295,6 @@ public class UserServiceImpl implements UserService {
 				sendResetPassword(user.getEmailAddress(), newPassword);
 				user.setLockedOutDate(null);
 				user.getPassword().setForgotPwdlockCounter(0);
-				result.setCounter(0);
 				userDAO.save(user);
 			}
 		}

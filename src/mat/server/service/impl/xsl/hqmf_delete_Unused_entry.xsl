@@ -7,25 +7,29 @@
 
 <xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
-<xsl:template match="hl7:dataCriteriaSection//hl7:entry">
+<xsl:template match="dataCriteriaSection//entry">
 	<xsl:variable name="qdm_root">
-		<xsl:value-of select="./*/hl7:id/@root"></xsl:value-of>
+		<xsl:value-of select="./*/id/@root"></xsl:value-of>
 	</xsl:variable>
 	<xsl:variable name="qdm_extension">
-		<xsl:value-of select="./*/hl7:id/@extension"></xsl:value-of>
+		<xsl:value-of select="./*/id/@extension"></xsl:value-of>
 	</xsl:variable>
 
 	<xsl:choose>
-		<xsl:when test="not(count(//hl7:criteriaReference/hl7:id[@root = $qdm_root and @extension = $qdm_extension]) > 0)">
+		<xsl:when test="not(count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension]) > 0)">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 			<xsl:copy>
-				<xsl:apply-templates select="node()|@*"></xsl:apply-templates>
+				<xsl:apply-templates select="node()|@*">
+					<xsl:with-param name="includeInternelComments">No</xsl:with-param>
+				</xsl:apply-templates>
 			</xsl:copy>
 			<xsl:text disable-output-escaping="yes">--&gt;</xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:copy>
-				<xsl:apply-templates select="node()|@*"></xsl:apply-templates>
+				<xsl:apply-templates select="node()|@*">
+					<xsl:with-param name="includeInternelComments">Yes</xsl:with-param>
+				</xsl:apply-templates>
 			</xsl:copy>
 		</xsl:otherwise>
 	</xsl:choose>
@@ -33,9 +37,25 @@
 </xsl:template> 
 
 <xsl:template match="@*|*|text()|comment()">
-	<xsl:copy>
-		<xsl:apply-templates select="@*|*|text()|comment()"/>
-	</xsl:copy>
+	<xsl:param name="includeInternelComments"/>
+	<xsl:choose>
+		<xsl:when test="$includeInternelComments = 'No'">
+		<xsl:copy>
+				<xsl:apply-templates select="@*|*|text()">
+					<xsl:with-param name="includeInternelComments">No</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:copy>
+			
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:copy>
+				<xsl:apply-templates select="@*|*|text()|comment()">
+					<xsl:with-param name="includeInternelComments">Yes</xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:copy>		
+		</xsl:otherwise>
+	</xsl:choose>
+	
 </xsl:template>
 
 </xsl:stylesheet>

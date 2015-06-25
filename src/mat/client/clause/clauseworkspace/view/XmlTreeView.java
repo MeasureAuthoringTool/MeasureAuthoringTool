@@ -1798,8 +1798,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
 						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
 								&& (selectedNode.getParent().getChilds().size() > 1))) {
-					if( selectedNode.getParent().getName().equals("SATISFIES ALL")
-							||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
+					if( selectedNode.getParent().getName().equalsIgnoreCase("SATISFIES ALL")
+							||  selectedNode.getParent().getName().equalsIgnoreCase("SATISFIES ANY")){
 						if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
 							removeNode();
 							isDirty = true;

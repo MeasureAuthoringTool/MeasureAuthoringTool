@@ -160,7 +160,7 @@ public class MessageDelegate {
 	
 	/** The warning pasting in applied qdm elements. */
 	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure." +
-			                          "If you want to continue say Yes or No to cancel.";
+			"If you want to continue say Yes or No to cancel.";
 	
 	/** The successfully pasted qdm elements in measure. */
 	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully";
@@ -172,12 +172,12 @@ public class MessageDelegate {
 	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected QDM element has been removed successfully.";
 	
 	public final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " +
-			                                     "Please validate your measure logic in both Population Workspace and Clause Workspace.";
+			"Please validate your measure logic in both Population Workspace and Clause Workspace.";
 	
 	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
 	
-
-
+	
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -213,9 +213,9 @@ public class MessageDelegate {
 	/** The account locked. */
 	private final String ACCOUNT_LOCKED = "Please contact MAT Support. We are unable to complete your request at this time.";
 	
-	/** The ACCOUN t_ locke d2. 
+	/** The ACCOUN t_ locke d2.
 	private final String ACCOUNT_LOCKED2 = "Your account has been locked. Please contact Support.";
-*/
+	 */
 	/** The account revoked. */
 	private final String ACCOUNT_REVOKED = "Your account has been revoked. Please contact Support.";
 	
@@ -643,6 +643,9 @@ public class MessageDelegate {
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE ="Invalid clause(s) used in logic.";
+	
+	/** The clause work space invalid nested clause. */
+	private final String CLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY ="Satisfies All and Satisfies Any LHS QDM element may not contain attributes.";
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE = "Clause Exceeds Maximum Number of Nested Logic Levels (10).";
@@ -1688,10 +1691,10 @@ public class MessageDelegate {
 	 * 
 	 * @return String
 	 */
-/*	public String getSecondAttemptFailedMessage() {
-		return SECCOND_ATTEMPT_FAILED; 
+	/*	public String getSecondAttemptFailedMessage() {
+		return SECCOND_ATTEMPT_FAILED;
 	}
-	*/
+	 */
 	
 	/**
 	 * Gets the security answer too short message.
@@ -2272,7 +2275,7 @@ public class MessageDelegate {
 	public static String getWelcomeMessage() {
 		return WELCOME_MESSAGE;
 	}
-
+	
 	
 	/**
 	 * Gets the vsac expansion profile selection.
@@ -2345,5 +2348,9 @@ public class MessageDelegate {
 	
 	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {
 		return WARNING_MEASURE_PACKAGE_CREATION_STRATA;
+	}
+
+	public String getCLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY() {
+		return CLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY;
 	}
 }

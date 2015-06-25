@@ -3966,8 +3966,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private boolean validateSatisfyNode(Node satisfyElementchildNode, boolean flag) {
 		int childCount = satisfyElementchildNode.getChildNodes().getLength();
-		if(childCount < 3){
+		if (childCount < 3) {
 			flag = true;
+		} else {
+			Node firstQDMNode = satisfyElementchildNode.getChildNodes().item(0);
+			if (firstQDMNode.hasChildNodes()
+					&& firstQDMNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase("attribute")) {
+				flag = true;
+			}
 		}
 		return flag;
 	}

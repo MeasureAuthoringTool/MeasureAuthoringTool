@@ -23,9 +23,7 @@ import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -56,6 +54,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -84,6 +83,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
+//import mat.client.clause.clauseworkspace.model.GlobalCopyPaste;
 
 
 // TODO: Auto-generated Javadoc
@@ -1096,7 +1096,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					boolean foundComment = false;
 					@SuppressWarnings("unchecked")
 					List<CellTreeNode> childNode = (List<CellTreeNode>) cellTreeNode.
-							getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+					getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
 					if (childNode != null) {
 						for (CellTreeNode treeNode : childNode) {
 							if ((treeNode.getNodeText() != null)
@@ -1211,7 +1211,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 *            the cell tree node
 	 * @return the style class
 	 */
-
+	
 	private String getStyleClass(CellTreeNode cellTreeNode) {
 		if (cellTreeNode.getValidNode()) {
 			switch (cellTreeNode.getNodeType()) {
@@ -1383,6 +1383,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		copiedNode = selectedNode.cloneNode();
 		copiedNode.setParent(selectedNode.getParent());//Setting Parent node
 	}
+	/*@Override
+	public void globalCopy(){
+		CellTreeNode globalCopiedNode = selectedNode.cloneNode();
+		globalCopiedNode.setParent(selectedNode.getParent());
+		GlobalCopyPaste globalCopyPaste = new GlobalCopyPaste();
+		globalCopyPaste.setCopiedNode(globalCopiedNode);
+		globalCopyPaste.setClauseXml(XmlConversionlHelper.createXmlFromTree(globalCopiedNode));
+		ArrayList<QualityDataSetDTO> elementsList = new ArrayList<QualityDataSetDTO>();
+		
+		globalCopyPaste.setElementLookUpXml(XmlConversionlHelper.createXmlElementLookUpGlobalCopy(globalCopiedNode , elementsList));
+		globalCopyPaste.setElementLookUpList(elementsList);
+		globalCopyPaste.setCopiedFromMeasureId(MatContext.get().getCurrentMeasureId());
+		MatContext.get().setCopyPaste(globalCopyPaste);
+	}*/
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#paste()
 	 */
@@ -1399,6 +1414,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 	}
 	
+	/*@Override
+	public void globalPaste() {
+		if (selectedNode != null) {
+			CellTreeNode pasteNode = MatContext.get().getCopyPaste().getCopiedNode().cloneNodeForGlobalPaste(); //It was calling copiedNode object before
+			selectedNode.appendChild(pasteNode);
+			closeSelectedOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode, true);
+			CellTreeNode clonedNode = pasteNode.cloneNode(); //created new instance for pasted node, prevent from overriding
+			clonedNode.setParent(pasteNode.getParent()); //set parent of the cloned node
+			copiedNode = clonedNode; //Assigning pasted value to the copiedNode
+		}
+		
+	}*/
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#moveUp()
 	 */
@@ -1571,9 +1599,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY
 					if ((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)
-						&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)) {
-							popupPanel.hide();
-							copy();
+							&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)) {
+						popupPanel.hide();
+						copy();
 					}
 					if((nodeType == CellTreeNode.ROOT_NODE) && selectedNode.getName().contains(STRATIFICATION)){
 						popupPanel.hide();
@@ -1600,10 +1628,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									isDirty = true;
 								}
 								break;
-							case CellTreeNode.LOGICAL_OP_NODE: 
+							case CellTreeNode.LOGICAL_OP_NODE:
 							case CellTreeNode.FUNCTIONS_NODE:
 							case CellTreeNode.SET_OP_NODE:
-								if(selectedNode.getName().contains("SATISFIES")){
+								if (selectedNode.getName().contains("SATISFIES")
+										|| (selectedNode.getName().contains("Satisfies"))) {
 									if((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()>=1)){
 										if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 											String funcName = copiedNode.getLabel().toUpperCase();
@@ -1666,7 +1695,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 											copiedFuncName = copiedNodeMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 										}
 										
-									if(!isAllowedFilterFunction(copiedFuncName)){
+										if(!isAllowedFilterFunction(copiedFuncName)){
 											canPaste = false;
 										} else {
 											canPaste = true;
@@ -1677,7 +1706,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							case CellTreeNode.TIMING_NODE:
 								if ((copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 										&& ((selectedNode.getChilds() == null)
-										|| (selectedNode.getChilds().size() < 2))) {
+												|| (selectedNode.getChilds().size() < 2))) {
 									canPaste = true;
 								}
 								if(copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
@@ -1698,7 +1727,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							case CellTreeNode.CLAUSE_NODE:
 								if (selectedNode.getParent().getName().contains(STRATIFICATION)) {
 									if ((copiedNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE)
-										|| (copiedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
+											|| (copiedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
 										canPaste = true;
 									} else if ((copiedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
 											&& !selectedNode.getName().contains(STRATUM)) {
@@ -2210,7 +2239,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					} else if (element.equalsIgnoreCase("invalidNeed2Children")) {
 						warningMessages.add(MatContext.get().getMessageDelegate().getAT_LEAST_TWO_CHILDREN_REQUIRED());
 					} else if (element.equalsIgnoreCase("invalidNeed3Children")) {
-						warningMessages.add(MatContext.get().getMessageDelegate().getAT_LEAST_THREE_CHILDREN_REQUIRED());
+						warningMessages.add(MatContext.get()
+								.getMessageDelegate().getAT_LEAST_THREE_CHILDREN_REQUIRED());
+					} else if (element.equalsIgnoreCase("invalidSATLhsChild")) {
+						warningMessages.add(MatContext.get().getMessageDelegate()
+								.getCLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY());
 					} else if (element.equalsIgnoreCase("invalidClauseLogic")) {
 						warningMessages.add(MatContext.get().getMessageDelegate()
 								.getCLAUSE_WORK_SPACE_INVALID_NESTED_CLAUSE());
@@ -2381,9 +2414,28 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					if (((node.getChilds() != null) && (node.getChilds().size() >= checkChildCount))) {
-						if (!node.getValidNode()
-								&& !inValidNodeList.contains("invalidAtFunction")) {
-							editNode(true, node);
+						if ((node.getName().equalsIgnoreCase(satisfiesAll))
+								|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+							CellTreeNode lhsQdmNode = node.getChilds().get(0);
+							List<CellTreeNode> lhsQdmNodeAttributeList = (List<CellTreeNode>)
+									lhsQdmNode.getExtraInformation("attributes");
+							if ((lhsQdmNodeAttributeList != null) && (lhsQdmNodeAttributeList.size() > 0)) {
+								invalidKeyForMap = "invalidSATLhsChild";
+								editNode(false, node);
+								if (!inValidNodeList.contains(invalidKeyForMap)) {
+									inValidNodeList.add(invalidKeyForMap);
+								}
+							} else {
+								if (!node.getValidNode()
+										&& !inValidNodeList.contains("invalidSATLhsChild")) {
+									editNode(true, node);
+								}
+							}
+						} else {
+							if (!node.getValidNode()
+									&& !inValidNodeList.contains("invalidAtFunction")) {
+								editNode(true, node);
+							}
 						}
 					} else {
 						editNode(false, node);
@@ -2421,6 +2473,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param strToConvert
 	 * @return Sentence Case String
 	 */
+	@SuppressWarnings("null")
 	private String capWords(String strToConvert) {
 		if ((strToConvert == null) && strToConvert.isEmpty()) {
 			return strToConvert;
@@ -3015,7 +3068,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	
-	
 	private boolean isAllowedFunction(String funcName) {
 		List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
 		boolean retValue = false;
@@ -3041,5 +3093,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		return retValue;
 	}
-
+	
+	
 }

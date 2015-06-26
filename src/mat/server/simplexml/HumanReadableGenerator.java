@@ -596,26 +596,28 @@ public class HumanReadableGenerator implements MatConstants{
 				}
 			}
 			for (int i = 0; i < childNodes.getLength(); i++) {
-				parseChild(childNodes.item(i), ulElement, item,
+				if (!isEmptyComment(childNodes.item(i))) {
+					parseChild(childNodes.item(i), ulElement, item,
 						populationOrSubtreeXMLProcessor, satisfiesAnyAll);
+				}
 			}
 		} else if (COMMENT.equals(nodeName)) {
-			String commentValue = item.getTextContent();
+			
 			//System.out.println("comment value:" + commentValue);
-			if ((commentValue != null) && (commentValue.trim().length() > 0)) {
+			if (!isEmptyComment(item)) {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				liElement.attr("style", "list-style-type: none");
 				Element italicElement = liElement.appendElement("i");
 				italicElement.appendText("# " + item.getTextContent());
-			}
-			if ((item.getParentNode().getChildNodes().getLength() == 1)
-					&& "AND".equalsIgnoreCase(item.getParentNode()
-							.getAttributes().getNamedItem("displayName")
-							.getNodeValue())) {
-				// Element ulElement = parentListElement.appendElement(HTML_UL);
-				// Element list = parentListElement.appendElement(HTML_LI);
-				displayNone(parentListElement, populationOrSubtreeXMLProcessor,
-						parentNode);
+			} else {
+				// it is an empty comment
+  				if ((item.getParentNode().getChildNodes().getLength() == 1)
+						&& "AND".equalsIgnoreCase(item.getParentNode()
+								.getAttributes().getNamedItem("displayName")
+								.getNodeValue())) {
+					displayNone(parentListElement, populationOrSubtreeXMLProcessor,
+							parentNode);
+				}
 			}
 			return;
 		} else if (SUB_TREE.equals(nodeName)) {
@@ -907,6 +909,19 @@ public class HumanReadableGenerator implements MatConstants{
 		
 	}
 	
+	private static boolean isEmptyComment(Node item) {
+		boolean isEmptyComment = false;
+		if(COMMENT.equals(item.getNodeName())){
+			String commentValue = item.getTextContent();
+			if ((commentValue == null)) {
+				isEmptyComment = true;
+			} else if (commentValue.trim().length() == 0) {
+				isEmptyComment = true;
+			}
+		}
+		return isEmptyComment;
+	}
+	
 	/**
 	 * Checks if the FUNCTION_OP is a subset type (FIRST-FIFTH, and MOST_RECENT).
 	 *
@@ -984,6 +999,7 @@ public class HumanReadableGenerator implements MatConstants{
 			XmlProcessor populationOrSubtreeXMLProcessor, Node parentNode) {
 		boolean retValue = false;
 		try {
+			// if the population displays "AND:Initial Population" then don't put a NONE
 			String scoring = populationOrSubtreeXMLProcessor.findNode(
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();

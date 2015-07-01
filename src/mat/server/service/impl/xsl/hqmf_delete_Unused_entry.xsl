@@ -14,6 +14,9 @@
 	<xsl:variable name="qdm_extension">
 		<xsl:value-of select="./*/id/@extension"></xsl:value-of>
 	</xsl:variable>
+	<xsl:variable name="qdm_value">
+       <xsl:value-of select="./localVariableName/@value"></xsl:value-of>
+    </xsl:variable>
     <xsl:variable name="criteriaRef">
         <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"></xsl:value-of>
     </xsl:variable>

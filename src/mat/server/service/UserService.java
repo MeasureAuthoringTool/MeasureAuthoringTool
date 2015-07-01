@@ -1,5 +1,6 @@
 package mat.server.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import mat.client.admin.ManageUsersDetailModel;
@@ -7,6 +8,7 @@ import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.model.Organization;
 import mat.model.User;
+import mat.model.UserPasswordHistory;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 
@@ -264,4 +266,8 @@ public interface UserService {
 	List<User> searchForNonTerminatedUsers();
 	
 	HashMap<String, Organization> searchForUsedOrganizations();
+	
+	Date getOldPwdCreatedDate(String userId);
+
+	List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd);
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import mat.dao.UserDAO;
 import mat.model.User;
+import mat.model.UserPasswordHistory;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 
@@ -419,6 +420,9 @@ public class CheckUserChangePasswordLimit {
 						|| lastPasswordCreatedDate.equals(passwordDaysAgo)){
 					logger.info("User:"+user.getEmailAddress()+" who's last password was more than "+ passwordDayLimit +" days ago.");
 					returnUserList.add(user);
+					//to maintain Password history
+					List<UserPasswordHistory> pwdHistoryList = getUserService().getUpdatedPasswordHistoryList(user, true);
+					user.setPasswordHistory(pwdHistoryList);
 					//user.getPassword().setInitial(true);
 					user.getPassword().setTemporaryPassword(true);
 					user.getPassword().setCreatedDate(DateUtils.truncate(new Date(),Calendar.DATE));

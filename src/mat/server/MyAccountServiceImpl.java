@@ -9,6 +9,7 @@ import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
@@ -234,7 +235,9 @@ MyAccountService {
 			if(resultMessage.equalsIgnoreCase("SUCCESS")){
 				UserService userService = getUserService();
 				User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-				
+				//to maintain user password History
+				List<UserPasswordHistory> pwdHistoryList = userService.getUpdatedPasswordHistoryList(user, false);
+				user.setPasswordHistory(pwdHistoryList);
 				userService.setUserPassword(user, password, false);
 				userService.saveExisting(user);
 				result.setSuccess(true);

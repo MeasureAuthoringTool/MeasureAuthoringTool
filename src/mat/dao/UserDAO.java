@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import mat.model.Organization;
 import mat.model.User;
+import mat.model.UserPassword;
+import mat.model.UserPasswordHistory;
 import mat.server.model.MatUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -157,5 +159,11 @@ public interface UserDAO extends IDAO<User, String> {
 	public List<User> getAllNonAdminActiveUsers();
 	
 	HashMap<String, Organization> searchAllUsedOrganizations();
+
+	Date getOldPasswordCreationDate(String userId);
+
+	List<String> getPasswordHistory(String userId);
+
+	List<String> getSaltHistory(String userId);
 	
 }

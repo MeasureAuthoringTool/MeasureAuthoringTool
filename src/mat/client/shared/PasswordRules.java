@@ -20,6 +20,7 @@ public class PasswordRules extends Composite {
 		Label rules = new Label("Password Rules");
 		rules.addStyleName("bold");
 		HTML desc = new HTML("Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br>" +
+				              "Password should not be same as previous 6 passwords.<br><br>" +
 		                     " Current password cannot be reused. <br><br>"+ " A Password needs to be at least one day old before you can change it again. <br><br>"+
 				            " Passwords must be between 8 and 16 characters and contain at least one of each of  the following:" 
 							);

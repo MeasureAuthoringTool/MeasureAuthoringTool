@@ -1,14 +1,22 @@
 package mat.dao.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserPassword;
+import mat.model.UserPasswordHistory;
 import mat.server.model.MatUserDetails;
+import mat.shared.UUIDUtilClient;
+import org.hibernate.id.UUIDHexGenerator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -409,6 +417,31 @@ mat.dao.UserDAO {
 		criteria.add(Restrictions.ne("status.id", "2"));
 		criteria.addOrder(Order.asc("lastName"));
 		return criteria.list();
+	}
+	
+	@Override
+	public Date getOldPasswordCreationDate(String userId){
+		String query = "select create_date from user_password_history where user_id=:userId";
+		query += " order by create_date LIMIT 1";
+		Session session = getSessionFactory().getCurrentSession();
+		List<Date> list= session.createSQLQuery(query).setParameter("userId", userId).list();
+		return list.get(0);
+	}
+	
+	@Override
+	public List<String> getPasswordHistory(String userId){
+		String query = "select password from user_password_history where user_id=:userId";
+		Session session = getSessionFactory().getCurrentSession();
+		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
+		return list;
+	}
+	
+	@Override
+	public List<String> getSaltHistory(String userId){
+		String query = "select salt from user_password_history where user_id=:userId";
+		Session session = getSessionFactory().getCurrentSession();
+		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
+		return list;
 	}
 	
 }

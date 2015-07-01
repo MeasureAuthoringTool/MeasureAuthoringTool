@@ -1,22 +1,26 @@
 package mat.server.service.impl;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPassword;
+import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see mat.server.service.LoginCredentialService#changePasswordSecurityAnswers(mat.client.login.LoginModel)
@@ -58,6 +63,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		logger.info("Changing password");
 		boolean result = false;
 		User user = userService.getById(model.getUserId());
+		
+		//before setting new Password we need to store the old password in password History
+		List<UserPasswordHistory> pwdHisList = userService.getUpdatedPasswordHistoryList(user, false);
+		
+		user.setPasswordHistory(pwdHisList);
 		userService.setUserPassword(user, model.getPassword(), false);
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");
@@ -98,6 +108,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return result;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see mat.server.service.LoginCredentialService#changeTempPassword(java.lang.String, java.lang.String)
@@ -593,6 +604,5 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
-	
 	
 }

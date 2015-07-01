@@ -30,6 +30,7 @@ import mat.model.Status;
 import mat.model.TransactionAuditLog;
 import mat.model.User;
 import mat.model.UserPassword;
+import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.CodeListService;
 import mat.server.service.UserIDNotUnique;
@@ -48,6 +49,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class UserServiceImpl.
  */
@@ -118,6 +120,9 @@ public class UserServiceImpl implements UserService {
 	/** The user guide url. */
 	private String userGuideUrl;
 	
+	/** The pawd history size. */
+	private final int PAWD_HISTORY_SIZE = 5;
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#generateRandomPassword()
 	 */
@@ -159,6 +164,12 @@ public class UserServiceImpl implements UserService {
 		if(user.getPassword() == null) {
 			UserPassword pwd = new UserPassword();
 			user.setPassword(pwd);
+		}
+		
+		//to maintain user password History
+		if(user.getPassword()!=null) {
+         List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
+         user.setPasswordHistory(pwdHistoryList);
 		}
 		setUserPassword(user, newPassword, true);
 		userDAO.save(user);
@@ -232,8 +243,7 @@ public class UserServiceImpl implements UserService {
 		user.setLockedOutDate(null);
 		user.getPassword().setForgotPwdlockCounter(0);
 		user.getPassword().setPasswordlockCounter(0);
-	}
-	
+	}	
 	
 	
 	/* (non-Javadoc)
@@ -289,6 +299,10 @@ public class UserServiceImpl implements UserService {
 			if(isAlreadySignedIn){
 				result.setFailureReason(ForgottenPasswordResult.USER_ALREADY_LOGGED_IN);
 			}else{
+				
+				//to maitain passwordHistory
+			    List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
+			    user.setPasswordHistory(pwdHistoryList);
 				String newPassword = generateRandomPassword();
 				setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);
@@ -451,6 +465,9 @@ public class UserServiceImpl implements UserService {
 		return userDAO.searchForUsersByName(orgId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.UserService#searchForUsedOrganizations()
+	 */
 	@Override
 	public HashMap<String, Organization> searchForUsedOrganizations() {
 		return userDAO.searchAllUsedOrganizations();
@@ -1022,9 +1039,83 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.UserService#searchForNonTerminatedUsers()
+	 */
 	@Override
 	public List<User> searchForNonTerminatedUsers() {
 		return userDAO.searchForNonTerminatedUser();
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.UserService#getOldPwdCreatedDate(java.lang.String)
+	 */
+	@Override
+	public Date getOldPwdCreatedDate(String userId) {
+		return userDAO.getOldPasswordCreationDate(userId);
+	}
+	
+	
+	/**
+	 * Update password history.
+	 *
+	 * @param passwordHistory the password history
+	 * @param user the user
+	 * @return the list
+	 */
+	private List<UserPasswordHistory> updatePasswordHistory(List<UserPasswordHistory> passwordHistory, 
+			User user) {
+		String oldPwdCreationDate = formatDate(getOldPwdCreatedDate(user.getId()));
+		for(UserPasswordHistory pwdHistory : passwordHistory){
+			String currPwdCreationDate = formatDate(pwdHistory.getCreatedDate());
+			if(currPwdCreationDate.equals(oldPwdCreationDate)){
+				pwdHistory.setCreatedDate(user.getPassword().getCreatedDate());
+				pwdHistory.setSalt(user.getPassword().getSalt());
+				pwdHistory.setPassword(user.getPassword().getPassword());
+				break;
+			}
+		}
+		return passwordHistory;
+	}
+	
+	
+	
+	/**
+	 * Format date.
+	 *
+	 * @param date the date
+	 * @return the string
+	 */
+	private String formatDate(Date date){
+		String newDate = "";
+		SimpleDateFormat currentDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+		newDate = currentDateFormat.format(date);
+		return newDate;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.UserService#getUpdatedPasswordHistoryList(mat.model.User)
+	 */
+	@Override
+	public List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd){
+       List<UserPasswordHistory> pwdHisList = user.getPasswordHistory();
+
+		//temporary password should not be stored in password History
+		if(isValidPwd || !user.getPassword().isInitial() 
+				|| !user.getPassword().isTemporaryPassword()) {
+			UserPasswordHistory passwordHistory = new UserPasswordHistory();
+			passwordHistory.setPassword(user.getPassword().getPassword());
+			passwordHistory.setSalt(user.getPassword().getSalt());
+			passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
+			if(pwdHisList.size()<5){
+				pwdHisList.add(passwordHistory);
+			} else {
+			   pwdHisList = updatePasswordHistory(pwdHisList, user);
+			}
+		}
+		
+		return pwdHisList;
 	}
 	
 }

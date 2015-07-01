@@ -83,6 +83,8 @@ public class User  {
 	
 	/** The login id. */
 	private String loginId;
+	
+	private List<UserPasswordHistory> passwordHistory = new  ArrayList<UserPasswordHistory>();
 
 	/**
 	 * Gets the id.
@@ -552,6 +554,20 @@ public class User  {
 	 * @param organization the new organization */
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
+	}
+
+	/**
+	 * @return the passwordHistory
+	 */
+	public List<UserPasswordHistory> getPasswordHistory() {
+		return passwordHistory;
+	}
+
+	/**
+	 * @param passwordHistory the passwordHistory to set
+	 */
+	public void setPasswordHistory(List<UserPasswordHistory> passwordHistory) {
+		this.passwordHistory = passwordHistory;
 	}
 
 }

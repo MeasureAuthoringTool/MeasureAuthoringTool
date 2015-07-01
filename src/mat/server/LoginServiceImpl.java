@@ -19,8 +19,10 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
+import mat.dao.UserPasswordHistoryDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
@@ -435,14 +437,28 @@ LoginService {
 		String ifMatched = FAILURE;
 		
 		if (userDetails != null) {
+			
 			UserService userService = (UserService) context
 					.getBean("userService");
 			String hashPassword = userService.getPasswordHash(userDetails
 					.getUserPassword().getSalt(), newPassword);
+			
 			if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword()
 					.getPassword())) {
 				ifMatched = SUCCESS;
 			}
+			List<String> passwordHistory = userDAO.getPasswordHistory(userDetails.getId());
+			List<String> saltHistory = userDAO.getSaltHistory(userID);
+			if(ifMatched.equals(FAILURE)){
+				for(int i=0; i<passwordHistory.size(); i++){
+					hashPassword = userService.getPasswordHash(saltHistory.get(i), 
+							newPassword);
+					if (hashPassword.equalsIgnoreCase(passwordHistory.get(i))) {
+						ifMatched = SUCCESS;
+						break;
+						}	
+					}
+				}
 		}
 		
 		resultMap.put("result", ifMatched);

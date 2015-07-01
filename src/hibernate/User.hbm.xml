@@ -43,6 +43,19 @@
 			<property name="securityAnswer" column="ANSWER"/>
 		</composite-element>
 	</list>
+	<list name="passwordHistory" table="USER_PASSWORD_HISTORY" cascade="all-delete-orphan">
+		<key column="USER_ID" not-null="true" update="false"/>
+		<index column="ROW_ID" type="integer"/>
+		<composite-element class="mat.model.UserPasswordHistory">
+			  <property name="password" column="PASSWORD"/>
+			 <property name="salt" column="SALT"/>
+			 <property name="createdDate" column="CREATE_DATE"/>
+		</composite-element>
+	</list>
+	<!-- <set name="passwordHistory" table="USER_PASSWORD_HISTORY" cascade="all-delete-orphan" inverse="true" >
+        <key column="USER_ID" not-null="true" update="false"/>
+        <one-to-many class="mat.model.UserPasswordHistory" />
+    </set> -->
 	<set name="measureShares" table="MEASURE_SHARE" cascade="all-delete-orphan" inverse="true" >
         <key column="SHARE_USER_ID" not-null="true" update="false"/>
         <one-to-many class="mat.model.clause.MeasureShare" />

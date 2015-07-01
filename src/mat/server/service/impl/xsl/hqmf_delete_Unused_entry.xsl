@@ -14,9 +14,18 @@
 	<xsl:variable name="qdm_extension">
 		<xsl:value-of select="./*/id/@extension"></xsl:value-of>
 	</xsl:variable>
+    <xsl:variable name="criteriaRef">
+        <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"></xsl:value-of>
+    </xsl:variable>
+    <xsl:variable name="valueValue">
+        <xsl:value-of select="count(//measureObservationDefinition//value[contains(@value, $qdm_value)])"></xsl:value-of>
+    </xsl:variable>
+    <xsl:variable name="expressionValue">
+        <xsl:value-of select="count(//measureObservationDefinition//value/expression[contains(@value, $qdm_value)])"></xsl:value-of>
+    </xsl:variable>
 
 	<xsl:choose>
-		<xsl:when test="not(count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension]) > 0)">
+		<xsl:when test="not(($criteriaRef > 0) or ($valueValue > 0) or ($expressionValue > 0))">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 			<xsl:copy>
 				<xsl:apply-templates select="node()|@*">

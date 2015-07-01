@@ -171,4 +171,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint_59_Revoked_User_Org_Change.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-63_US-5568_AlterCaseOfSetOpsAndFuncOps.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-65_USMAT-5666.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-69_USMAT-5828.xml"/>
 	</databaseChangeLog>

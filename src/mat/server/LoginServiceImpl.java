@@ -446,17 +446,17 @@ LoginService {
 				ifMatched = SUCCESS;
 			}
 			List<String> passwordHistory = userDAO.getPasswordHistory(userDetails.getId());
-			List<String> saltHistory = userDAO.getSaltHistory(userID);
+			List<String> saltHistory = userDAO.getSaltHistory(userDetails.getId());
 			if(ifMatched.equals(FAILURE)){
 				for(int i=0; i<passwordHistory.size(); i++){
-					hashPassword = userService.getPasswordHash(saltHistory.get(i), 
+					hashPassword = userService.getPasswordHash(saltHistory.get(i),
 							newPassword);
 					if (hashPassword.equalsIgnoreCase(passwordHistory.get(i))) {
 						ifMatched = SUCCESS;
 						break;
-						}	
 					}
 				}
+			}
 		}
 		
 		resultMap.put("result", ifMatched);

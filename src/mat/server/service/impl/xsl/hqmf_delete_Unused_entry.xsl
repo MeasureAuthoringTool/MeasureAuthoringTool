@@ -28,7 +28,7 @@
     </xsl:variable>
 
 	<xsl:choose>
-		<xsl:when test="not(($criteriaRef > 0) or ($valueValue > 0) or ($expressionValue > 0))">
+		<xsl:when test="($criteriaRef = 0) and ($valueValue = 0) and ($expressionValue = 0)">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 			<xsl:copy>
 				<xsl:apply-templates select="node()|@*">

@@ -11,8 +11,10 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
@@ -34,10 +36,12 @@ import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
@@ -445,8 +449,10 @@ LoginService {
 					.getPassword())) {
 				ifMatched = SUCCESS;
 			}
-			List<String> passwordHistory = userDAO.getPasswordHistory(userDetails.getId());
-			List<String> saltHistory = userDAO.getSaltHistory(userDetails.getId());
+
+			List<String> passwordHistory = userDAO.getPasswordHistory("password", userDetails.getId());
+			List<String> saltHistory = userDAO.getPasswordHistory("salt", userDetails.getId());
+			
 			if(ifMatched.equals(FAILURE)){
 				for(int i=0; i<passwordHistory.size(); i++){
 					hashPassword = userService.getPasswordHash(saltHistory.get(i),
@@ -578,9 +584,5 @@ LoginService {
 		logger.info("Found...." + context.getBean("securityQuestionsService"));
 		return securityQuestionsService.getSecurityQuestions();
 	}
-	
-	
-	
-	
 	
 }

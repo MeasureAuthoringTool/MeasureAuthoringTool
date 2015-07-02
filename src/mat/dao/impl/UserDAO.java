@@ -21,6 +21,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.userdetails.UserDetails;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class UserDAO.
  */
@@ -152,6 +153,10 @@ mat.dao.UserDAO {
 		}*/
 		return criteria.list();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#searchAllUsedOrganizations()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public
@@ -402,6 +407,9 @@ mat.dao.UserDAO {
 		return list.get(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#searchForNonTerminatedUser()
+	 */
 	@Override
 	public List<User> searchForNonTerminatedUser() {
 		Session session = getSessionFactory().getCurrentSession();
@@ -411,6 +419,9 @@ mat.dao.UserDAO {
 		return criteria.list();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getOldPasswordCreationDate(java.lang.String)
+	 */
 	@Override
 	public Date getOldPasswordCreationDate(String userId){
 		String query = "select create_date from USER_PASSWORD_HISTORY where user_id=:userId";
@@ -420,18 +431,15 @@ mat.dao.UserDAO {
 		return list.get(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getPasswordHistory(java.lang.String, java.lang.String)
+	 */
+	/**
+	 * gets the corresponding password history Column date by UserID
+	 * **/
 	@Override
-	public List<String> getPasswordHistory(String userId){
-		String query = "select password from USER_PASSWORD_HISTORY where user_id=:userId";
-		query += " order by create_date";
-		Session session = getSessionFactory().getCurrentSession();
-		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
-		return list;
-	}
-	
-	@Override
-	public List<String> getSaltHistory(String userId){
-		String query = "select salt from USER_PASSWORD_HISTORY where user_id=:userId";
+	public List<String> getPasswordHistory(String colName, String userId){
+		String query = "select "+colName+" from USER_PASSWORD_HISTORY where user_id=:userId";
 		query += " order by create_date";
 		Session session = getSessionFactory().getCurrentSession();
 		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();

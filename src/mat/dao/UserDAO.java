@@ -10,6 +10,7 @@ import mat.model.UserPasswordHistory;
 import mat.server.model.MatUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface UserDAO.
  */
@@ -24,6 +25,11 @@ public interface UserDAO extends IDAO<User, String> {
 	 */
 	public List<User> searchForUsersByName(String name);
 	
+	/**
+	 * Search for non terminated user.
+	 *
+	 * @return the list
+	 */
 	public List<User> searchForNonTerminatedUser();
 	
 	/**
@@ -158,12 +164,28 @@ public interface UserDAO extends IDAO<User, String> {
 	 */
 	public List<User> getAllNonAdminActiveUsers();
 	
+	/**
+	 * Search all used organizations.
+	 *
+	 * @return the hash map
+	 */
 	HashMap<String, Organization> searchAllUsedOrganizations();
 
+	/**
+	 * Gets the old password creation date.
+	 *
+	 * @param userId the user id
+	 * @return the old password creation date
+	 */
 	Date getOldPasswordCreationDate(String userId);
 
-	List<String> getPasswordHistory(String userId);
-
-	List<String> getSaltHistory(String userId);
+	/**
+	 * Gets the password history.
+	 *
+	 * @param colName the col name
+	 * @param userId the user id
+	 * @return the password history
+	 */
+	List<String> getPasswordHistory(String colName, String userId);
 	
 }

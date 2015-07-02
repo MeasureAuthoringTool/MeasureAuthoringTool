@@ -423,6 +423,7 @@ mat.dao.UserDAO {
 	@Override
 	public List<String> getPasswordHistory(String userId){
 		String query = "select password from USER_PASSWORD_HISTORY where user_id=:userId";
+		query += " order by create_date";
 		Session session = getSessionFactory().getCurrentSession();
 		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
 		return list;
@@ -431,6 +432,7 @@ mat.dao.UserDAO {
 	@Override
 	public List<String> getSaltHistory(String userId){
 		String query = "select salt from USER_PASSWORD_HISTORY where user_id=:userId";
+		query += " order by create_date";
 		Session session = getSessionFactory().getCurrentSession();
 		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
 		return list;

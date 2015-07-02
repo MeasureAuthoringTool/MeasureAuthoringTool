@@ -457,7 +457,7 @@ public class MessageDelegate {
 	private final String IS_NOT_CURRENT_PASSWORD="New password cannot be same as previous 6 passwords.";
 	
 	/** The is previous password cannot be reused. */
-	private final String IS_NOT_PREVIOUS_PASSWORD="Previous password cannot be reused. Try again.";
+	private final String IS_NOT_PREVIOUS_PASSWORD="Previous 6 passwords cannot be reused. Try again.";
 	
 	/** The change old password. */
 	private final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it. Try again.";

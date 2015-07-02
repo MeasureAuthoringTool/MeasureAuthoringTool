@@ -277,11 +277,7 @@ public class UserServiceImpl implements UserService {
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
-			if(lockCounter == 2) {
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-			}
 			if(lockCounter == 3) {
-				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 				user.setLockedOutDate(new Date());
 				notifyUserOfAccountLocked(user);
 			}
@@ -315,31 +311,6 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
-	/**
-	 * Send account locked mail.
-	 * 
-	 * @param email
-	 *            the email
-	 */
-	private void sendAccountLockedMail(String email) {
-		logger.info("In sendAccountLockedMail(String email).......");
-		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
-		msg.setTo(email);
-		//US 440. Re-factored to use template based framework
-		//		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
-		//		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
-		//		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
-		msg.setText("hello");
-		//		System.out.println("newPassword ==============="+newPassword);
-		logger.info("Sending email to " + email);
-		try {
-			mailSender.send(msg);
-		}
-		catch(MailException exc) {
-			logger.error(exc);
-		}
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#requestForgottenLoginID(java.lang.String)

@@ -454,7 +454,7 @@ public class MessageDelegate {
 	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
 	
 	/** The is not previous password. */
-	private final String IS_NOT_CURRENT_PASSWORD="New password cannot be same as current password.";
+	private final String IS_NOT_CURRENT_PASSWORD="New password cannot be same as previous 6 passwords.";
 	
 	/** The is previous password cannot be reused. */
 	private final String IS_NOT_PREVIOUS_PASSWORD="Previous password cannot be reused. Try again.";

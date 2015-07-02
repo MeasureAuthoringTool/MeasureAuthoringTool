@@ -1097,13 +1097,18 @@ public class UserServiceImpl implements UserService {
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#getUpdatedPasswordHistoryList(mat.model.User)
 	 */
+	/**
+	 *  temporary and initial sign in password should not be stored in password History
+	 *  isValidPwd boolean is set for special case where current valid password becomes temporary 
+	 *  password when it exceeds 60 days limit and it Should be added to password history.
+     * **/
 	@Override
 	public List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd){
        List<UserPasswordHistory> pwdHisList = user.getPasswordHistory();
 
-		//temporary password should not be stored in password History
-		if(isValidPwd || !user.getPassword().isInitial() 
-				|| !user.getPassword().isTemporaryPassword()) {
+		
+		if(isValidPwd || !(user.getPassword().isInitial() 
+				|| user.getPassword().isTemporaryPassword())) {
 			UserPasswordHistory passwordHistory = new UserPasswordHistory();
 			passwordHistory.setPassword(user.getPassword().getPassword());
 			passwordHistory.setSalt(user.getPassword().getSalt());

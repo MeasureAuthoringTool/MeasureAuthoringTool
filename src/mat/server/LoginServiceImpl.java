@@ -21,8 +21,10 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
+import mat.dao.UserPasswordHistoryDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
@@ -435,6 +437,7 @@ LoginService {
 	public HashMap<String, String> validateNewPassword(String userID,String newPassword) {
 		HashMap<String, String> resultMap = new HashMap<String, String>();
 		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		UserPasswordHistoryDAO userPasswordHistoryDAO = (UserPasswordHistoryDAO) context.getBean("userPasswordHistoryDAO");
 		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
 		String ifMatched = FAILURE;
 		
@@ -450,14 +453,13 @@ LoginService {
 				ifMatched = SUCCESS;
 			}
 
-			List<String> passwordHistory = userDAO.getPasswordHistory("password", userDetails.getId());
-			List<String> saltHistory = userDAO.getPasswordHistory("salt", userDetails.getId());
+			List<UserPasswordHistory> passwordHistory = userPasswordHistoryDAO.getPasswordHistory(userDetails.getId());
 			
 			if(ifMatched.equals(FAILURE)){
 				for(int i=0; i<passwordHistory.size(); i++){
-					hashPassword = userService.getPasswordHash(saltHistory.get(i),
+					hashPassword = userService.getPasswordHash(passwordHistory.get(i).getSalt(),
 							newPassword);
-					if (hashPassword.equalsIgnoreCase(passwordHistory.get(i))) {
+					if (hashPassword.equalsIgnoreCase(passwordHistory.get(i).getPassword())) {
 						ifMatched = SUCCESS;
 						break;
 					}

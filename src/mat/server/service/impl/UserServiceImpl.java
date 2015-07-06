@@ -24,6 +24,8 @@ import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
 import mat.dao.TransactionAuditLogDAO;
 import mat.dao.UserDAO;
+import mat.dao.UserPasswordHistoryDAO;
+import mat.dao.UserSecurityQuestionDAO;
 import mat.model.Organization;
 import mat.model.SecurityRole;
 import mat.model.Status;
@@ -122,6 +124,12 @@ public class UserServiceImpl implements UserService {
 	
 	/** The pawd history size. */
 	private final int PAWD_HISTORY_SIZE = 5;
+	
+	@Autowired
+	private UserPasswordHistoryDAO userPasswordHistoryDAO; 
+	
+	@Autowired
+	private UserSecurityQuestionDAO userSecurityQuestionDAO; 
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#generateRandomPassword()
@@ -1024,7 +1032,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public Date getOldPwdCreatedDate(String userId) {
-		return userDAO.getOldPasswordCreationDate(userId);
+		return userPasswordHistoryDAO.getOldPasswordCreationDate(userId);
 	}
 	
 	
@@ -1075,9 +1083,10 @@ public class UserServiceImpl implements UserService {
      * **/
 	@Override
 	public List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd){
-       List<UserPasswordHistory> pwdHisList = user.getPasswordHistory();
+     
+		//will get the UserPasswordHistory List
+		List<UserPasswordHistory> pwdHisList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
 
-		
 		if(isValidPwd || !(user.getPassword().isInitial() 
 				|| user.getPassword().isTemporaryPassword())) {
 			UserPasswordHistory passwordHistory = new UserPasswordHistory();

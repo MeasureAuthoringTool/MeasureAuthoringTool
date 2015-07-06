@@ -27,6 +27,7 @@ import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordDAO;
+import mat.dao.UserPasswordHistoryDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.dao.clause.AttributeDetailsDAO;
 import mat.dao.clause.MeasureDAO;
@@ -151,6 +152,8 @@ public class DAOService {
 	
 	/** The user security question dao. */
 	private UserSecurityQuestionDAO userSecurityQuestionDAO;
+	
+	private UserPasswordHistoryDAO userPasswordHistoryDAO;
 	
 	/**
 	 * Gets the attribute details dao.
@@ -830,6 +833,20 @@ public class DAOService {
 	 */
 	public void setOrganizationDAO(OrganizationDAO organizationDAO) {
 		this.organizationDAO = organizationDAO;
+	}
+
+	/**
+	 * @return the userPasswordHistoryDAO
+	 */
+	public UserPasswordHistoryDAO getUserPasswordHistoryDAO() {
+		return userPasswordHistoryDAO;
+	}
+
+	/**
+	 * @param userPasswordHistoryDAO the userPasswordHistoryDAO to set
+	 */
+	public void setUserPasswordHistoryDAO(UserPasswordHistoryDAO userPasswordHistoryDAO) {
+		this.userPasswordHistoryDAO = userPasswordHistoryDAO;
 	}
 	
 	/**

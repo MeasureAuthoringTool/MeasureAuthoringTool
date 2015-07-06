@@ -3,11 +3,11 @@ package mat.dao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.model.Organization;
 import mat.model.User;
-import mat.model.UserPassword;
-import mat.model.UserPasswordHistory;
 import mat.server.model.MatUserDetails;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 // TODO: Auto-generated Javadoc
@@ -171,21 +171,4 @@ public interface UserDAO extends IDAO<User, String> {
 	 */
 	HashMap<String, Organization> searchAllUsedOrganizations();
 
-	/**
-	 * Gets the old password creation date.
-	 *
-	 * @param userId the user id
-	 * @return the old password creation date
-	 */
-	Date getOldPasswordCreationDate(String userId);
-
-	/**
-	 * Gets the password history.
-	 *
-	 * @param colName the col name
-	 * @param userId the user id
-	 * @return the password history
-	 */
-	List<String> getPasswordHistory(String colName, String userId);
-	
 }

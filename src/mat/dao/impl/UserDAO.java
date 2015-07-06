@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -418,32 +420,6 @@ mat.dao.UserDAO {
 		criteria.addOrder(Order.asc("lastName"));
 		return criteria.list();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.UserDAO#getOldPasswordCreationDate(java.lang.String)
-	 */
-	@Override
-	public Date getOldPasswordCreationDate(String userId){
-		String query = "select create_date from USER_PASSWORD_HISTORY where user_id=:userId";
-		query += " order by create_date LIMIT 1";
-		Session session = getSessionFactory().getCurrentSession();
-		List<Date> list= session.createSQLQuery(query).setParameter("userId", userId).list();
-		return list.get(0);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.UserDAO#getPasswordHistory(java.lang.String, java.lang.String)
-	 */
-	/**
-	 * gets the corresponding password history Column date by UserID
-	 * **/
-	@Override
-	public List<String> getPasswordHistory(String colName, String userId){
-		String query = "select "+colName+" from USER_PASSWORD_HISTORY where user_id=:userId";
-		query += " order by create_date";
-		Session session = getSessionFactory().getCurrentSession();
-		List<String> list= session.createSQLQuery(query).setParameter("userId", userId).list();
-		return list;
-	}
-	
+
+
 }

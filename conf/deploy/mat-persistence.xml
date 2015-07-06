@@ -21,8 +21,7 @@
 	</bean>
 
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<!-- <property name="jndiName" value="jdbc/mat_app" /> -->
-		<property name="jndiName" value="java:/comp/env/jdbc/mat_app" />
+		<property name="jndiName" value="jdbc/mat_app" />
 	</bean>
 	<!-- TEMP TESTING ONLY 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -53,7 +52,7 @@
 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.default_batch_fetch_size">20</prop>
 				<prop key="hibernate.connection.release_mode">auto</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>

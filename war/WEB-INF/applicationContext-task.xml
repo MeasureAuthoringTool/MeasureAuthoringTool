@@ -99,7 +99,7 @@
 	
 	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
-		<property name="cronExpression" value="0 45 17 * * ?" />
+		<property name="cronExpression" value="0 50 18 * * ?" />
 		 <!-- <property name="cronExpression" value="0 10 15 * * ?" />-->
  	</bean> 
 

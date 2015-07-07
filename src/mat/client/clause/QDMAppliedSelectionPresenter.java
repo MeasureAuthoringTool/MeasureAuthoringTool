@@ -715,6 +715,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						searchDisplay.getQDMExpIdentifierListBox().addItem(expIdentifierToAllQDM,
 								expIdentifierToAllQDM);
 					} else {
+						searchDisplay.setQDMExpIdentifierListBox(getProfileList(
+								MatContext.get().getVsacExpIdentifierList()));
 						getVSACVersionListByOID(oid);
 						searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
 						searchDisplay.getVersionListBox().setEnabled(true);
@@ -751,8 +753,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				if (result.getVsacVersionResp() != null) {
 					searchDisplay.setQDMVersionListBoxOptions(getVersionList(result
 							.getVsacVersionResp()));
-					searchDisplay.setQDMExpIdentifierListBox(getProfileList(
-							MatContext.get().getVsacExpIdentifierList()));
 				}
 			}
 			@Override

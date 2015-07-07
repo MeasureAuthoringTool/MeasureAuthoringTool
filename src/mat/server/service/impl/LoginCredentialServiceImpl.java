@@ -66,8 +66,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		
 		//before setting new Password we need to store the old password in password History
 		List<UserPasswordHistory> pwdHisList = userService.getUpdatedPasswordHistoryList(user, false);
-		
-		user.setPasswordHistory(pwdHisList);
+		user.getPasswordHistory().clear();
+		user.getPasswordHistory().addAll(pwdHisList);
+		//user.setPasswordHistory(pwdHisList);
 		userService.setUserPassword(user, model.getPassword(), false);
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");

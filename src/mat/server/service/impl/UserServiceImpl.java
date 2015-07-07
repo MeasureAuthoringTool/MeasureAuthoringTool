@@ -177,7 +177,9 @@ public class UserServiceImpl implements UserService {
 		//to maintain user password History
 		if(user.getPassword()!=null) {
          List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
-         user.setPasswordHistory(pwdHistoryList);
+         user.getPasswordHistory().clear();
+ 		 user.getPasswordHistory().addAll(pwdHistoryList);
+        // user.setPasswordHistory(pwdHistoryList);
 		}
 		setUserPassword(user, newPassword, true);
 		userDAO.save(user);
@@ -306,7 +308,9 @@ public class UserServiceImpl implements UserService {
 				
 				//to maitain passwordHistory
 			    List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
-			    user.setPasswordHistory(pwdHistoryList);
+			    user.getPasswordHistory().clear();
+				user.getPasswordHistory().addAll(pwdHistoryList);
+			    //user.setPasswordHistory(pwdHistoryList);
 				String newPassword = generateRandomPassword();
 				setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);

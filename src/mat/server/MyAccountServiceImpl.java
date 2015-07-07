@@ -237,7 +237,9 @@ MyAccountService {
 				User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 				//to maintain user password History
 				List<UserPasswordHistory> pwdHistoryList = userService.getUpdatedPasswordHistoryList(user, false);
-				user.setPasswordHistory(pwdHistoryList);
+				user.getPasswordHistory().clear();
+				user.getPasswordHistory().addAll(pwdHistoryList);
+				//user.setPasswordHistory(pwdHistoryList);
 				userService.setUserPassword(user, password, false);
 				userService.saveExisting(user);
 				result.setSuccess(true);

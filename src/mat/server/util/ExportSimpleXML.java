@@ -256,7 +256,7 @@ public class ExportSimpleXML {
 	private static void addUUIDtoQDMAttribute(List<String> usedSubTreeIds,
 			Document originalDoc) throws XPathExpressionException {
 		
-		if(usedSubTreeIds.size() == 0){
+		if (usedSubTreeIds.size() == 0) {
 			return;
 		}
 		
@@ -481,11 +481,38 @@ public class ExportSimpleXML {
 			Node referencedSubTreeNode = (Node)xPath.evaluate("/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']", originalDoc.getDocumentElement(),XPathConstants.NODE);
 			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
 			Node mainChildClone = mainChild.cloneNode(true);
-			
 			qdmVariableNode.appendChild(mainChildClone);
+			findAllElementRefNodes(qdmVariableNode);
 		}
 	}
 	
+	/**
+	 * Logic copied to Occ Clause Logic Nodes in Simple xml from actual Clause
+	 * requires attrUUID to be updated to new in case there are elementRef's at
+	 * any level with Attributes. This method is doing the same.
+	 * @param qdmVariableNode - Node.
+	 */
+	private static void findAllElementRefNodes(Node qdmVariableNode) {
+		if ((qdmVariableNode != null) && qdmVariableNode.hasChildNodes()) {
+			for (int i = 0; i < qdmVariableNode.getChildNodes().getLength(); i++) {
+				Node childNode = qdmVariableNode.getChildNodes().item(i);
+				if (childNode.getNodeName().equalsIgnoreCase("elementRef")) {
+					if (childNode.hasChildNodes()) {
+						System.out.println(childNode.getFirstChild().getNodeName());
+						Node attrNode = childNode.getFirstChild();
+						if (attrNode.getAttributes().getNamedItem("attrUUID") != null) {
+							attrNode.getAttributes().getNamedItem("attrUUID")
+							.setNodeValue(UUIDUtilClient.uuid());
+						}
+					}
+				} else {
+					if (childNode.hasChildNodes()) {
+						findAllElementRefNodes(childNode);
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * Method to re order Measure Grouping Sequence.
 	 * @param originalDoc - Document.

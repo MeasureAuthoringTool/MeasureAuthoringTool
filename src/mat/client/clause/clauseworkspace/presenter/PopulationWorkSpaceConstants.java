@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.google.gwt.xml.client.Node;
 
 // TODO: Auto-generated Javadoc
@@ -23,7 +22,7 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {"Initial Populations", "Numerators", "Numerator Exclusions",
 		"Denominators", "Denominator Exclusions", "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"};
-	
+	private static final ArrayList<String> POPULATION_NAME = new ArrayList<String>();
 	/** The Constant LOG_OP. */
 	public static final String LOG_OP = "logicalOp";
 	
@@ -105,7 +104,7 @@ public class PopulationWorkSpaceConstants {
 	public static void setSubTreeLookUpNode(LinkedHashMap<String, Node> subTreeLookUpNode) {
 		PopulationWorkSpaceConstants.subTreeLookUpNode = subTreeLookUpNode;
 	}
-
+	
 	/** The Constant ELEMENT_REF. */
 	public static final String ELEMENT_REF = "elementRef";
 	
@@ -346,6 +345,19 @@ public class PopulationWorkSpaceConstants {
 	 */
 	public static  void setDatatypeMap(Map<String, List<String>> datatypeMap) {
 		PopulationWorkSpaceConstants.datatypeMap = datatypeMap;
+	}
+	public static ArrayList<String> getPopulationName() {
+		POPULATION_NAME.clear();
+		POPULATION_NAME.add("Initial Populations");
+		POPULATION_NAME.add("Numerators");
+		POPULATION_NAME.add("Numerator Exclusions");
+		POPULATION_NAME.add("Denominators");
+		POPULATION_NAME.add("Denominator Exclusions");
+		POPULATION_NAME.add("Denominator Exceptions");
+		POPULATION_NAME.add("Measure Populations");
+		POPULATION_NAME.add("Measure Population Exclusions");
+		
+		return POPULATION_NAME;
 	}
 	
 	/*public static Map<String, Node> getElementLookUps() {

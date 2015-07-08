@@ -740,6 +740,9 @@ public class XmlTreePresenter {
 					} else {
 						List<String> messageList = new ArrayList<String>();
 						for(String inValidNode: result){
+							if(inValidNode.equalsIgnoreCase("inValidAtLogicalOperatorNode")){
+								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR());
+							}
 							if(inValidNode.equalsIgnoreCase("inValidAtMeasureObservationLogicalNode")){
 								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR());
 							}

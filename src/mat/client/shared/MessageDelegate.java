@@ -649,6 +649,9 @@ public class MessageDelegate {
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE = "Clause Exceeds Maximum Number of Nested Logic Levels (10).";
+	
+	/** The clause work space invalid nested clause. */
+	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Any logical operator under a top-level logical operator must contain at least one logical operator or clause.";
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -2349,8 +2352,12 @@ public class MessageDelegate {
 	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {
 		return WARNING_MEASURE_PACKAGE_CREATION_STRATA;
 	}
-
+	
 	public String getCLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY() {
 		return CLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY;
+	}
+	
+	public String getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR() {
+		return CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR;
 	}
 }

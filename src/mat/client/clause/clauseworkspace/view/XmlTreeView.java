@@ -2117,6 +2117,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			case CellTreeNode.TIMING_NODE:
 			case CellTreeNode.RELATIONSHIP_NODE:
 			case CellTreeNode.ELEMENT_REF_NODE:
+			case CellTreeNode.SUBTREE_NODE:
 				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode,
 						PopulationWorkSpaceConstants.datatypeMap, inValideNodesList);
 				if (isValidHumanReadable) {
@@ -2232,7 +2233,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				validateClauseWorkspaceCellTreeNodes(node, PopulationWorkSpaceConstants.getDatatypeMap(), inValidNodeList);
-				if((node != null) && node.hasChildren()) {
+				if((node != null) && node.hasChildren() && inValidNodeList.size() == 0) {
 					validateClauseNodeNesting(node.getChilds().get(0),inValidNodeList,1);
 				}
 			}
@@ -2267,7 +2268,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					} else if (element.equalsIgnoreCase("nestedClauseLogic")) {
 						warningMessages.add(MatContext.get().getMessageDelegate()
 								.getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());
-					}
+					} else if (element.equalsIgnoreCase("emptyClauseLogic")) {
+					    warningMessages.add(MatContext.get().getMessageDelegate()
+							    .getCLAUSE_EMPTY());
+				}
+					
 				}
 				if (warningMessages.size() > 0) {
 					if (!warningMessages.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate()
@@ -2466,6 +2471,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if (checkForValidation) {
 						if (!inValidNodeList.contains("invalidClauseLogic")) {
 							inValidNodeList.add("invalidClauseLogic");
+						}
+						editNode(false, node);
+					}
+					
+					break;
+				case CellTreeNode.SUBTREE_NODE:
+					//validation for empty clause logic in clauseWorkspace
+					if(node.getChilds() == null){
+						if (!inValidNodeList.contains("emptyClauseLogic")) {
+							inValidNodeList.add("emptyClauseLogic");
 						}
 						editNode(false, node);
 					}

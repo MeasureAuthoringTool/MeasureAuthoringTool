@@ -272,6 +272,8 @@ public class MessageDelegate {
 	/** The code required. */
 	private final String CODE_REQUIRED = "Code is required.";
 	
+	private final String CLAUSE_EMPTY = "Clause must contain logic.";
+	
 	/**
 	 * Gets the population work space validation error.
 	 *
@@ -2359,5 +2361,12 @@ public class MessageDelegate {
 	
 	public String getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR() {
 		return CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR;
+	}
+
+	/**
+	 * @return the cLAUSE_EMPTY
+	 */
+	public String getCLAUSE_EMPTY() {
+		return CLAUSE_EMPTY;
 	}
 }

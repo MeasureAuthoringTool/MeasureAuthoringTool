@@ -429,7 +429,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureXmlModel the measure xml model
 	 * @return true, if successful
 	 */
-	boolean validateMeasureXmlinpopulationWorkspace(
+	ValidateMeasureResult validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel);
 	
 	/**

@@ -1072,8 +1072,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 					
 				} else {
 					Mat.hideLoadingMessage();
-					view.getMeasurePackageWarningMsg().
-					setMessage(result.getValidationMessages().get(0));
+					if (result.getValidationMessages() != null) {
+						view.getMeasurePackageWarningMsg().setMessages(result.getValidationMessages());
+					}
 					view.getInProgressMessageDisplay().clear();
 					((Button) view.getPackageMeasureButton()).setEnabled(true);
 					((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
@@ -1215,7 +1216,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				Mat.hideLoadingMessage();
 				if (updateVsacResult != null) {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
-						if(updateVsacResult.getRetrievalFailedOIDs().size() > 0){
+						if (updateVsacResult.getRetrievalFailedOIDs().size() > 0) {
 							if (isMeasurePackageExportSuccess) {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();

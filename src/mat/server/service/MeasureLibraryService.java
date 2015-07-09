@@ -464,7 +464,7 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel the measure xml model
 	 * @return the object
 	 */
-	boolean validateMeasureXmlAtCreateMeasurePackager(
+	ValidateMeasureResult validateMeasureXmlAtCreateMeasurePackager(
 			MeasureXmlModel measureXmlModel);
 	
 	/**

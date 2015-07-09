@@ -479,14 +479,7 @@ public interface MeasureServiceAsync {
 	void validatePackageGrouping(ManageMeasureDetailModel model,
 			AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
-	/**
-	 * Validate measure xmlinpopulation workspace.
-	 *
-	 * @param measureXmlModel the measure xml model
-	 * @param asyncCallback the async callback
-	 */
-	void validateMeasureXmlinpopulationWorkspace(
-			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
+	void validateMeasureXmlinpopulationWorkspace(MeasureXmlModel measureXmlModel, AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
 	
 	/**

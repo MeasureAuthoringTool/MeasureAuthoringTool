@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -86,6 +88,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -3577,7 +3580,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (operatorNode.getParentNode().getAttributes().getNamedItem("type")
 						.toString().equalsIgnoreCase("startum")) {
 					if (operatorNode.hasChildNodes()) {
-						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), false);
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
 					} else {
 						isInvalid = true;
 					}
@@ -3589,7 +3592,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				} else {
 					// Populations other than Stratification : dont check for default top level Logical Op.
 					if (operatorNode.hasChildNodes()) {
-						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), false);
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
 						if (isInvalid) {
 							message = MatContext.get().getMessageDelegate()
 									.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
@@ -3601,29 +3604,28 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return message;
 	}
-	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp, boolean isInvalid) {
-		
+	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp) {
+		boolean isInvalid = false;
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
-				if(!isInvalid) {
-					Node operatorNode = populationTopLevelLogicalOp.item(i);
-					if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
-						continue;
-					}
-					if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
-						isInvalid = false;
+				Node operatorNode = populationTopLevelLogicalOp.item(i);
+				if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
+					continue;
+				}
+				if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
+					isInvalid = false;
+				} else {
+					if (operatorNode.hasChildNodes()) {
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
 					} else {
-						if (operatorNode.hasChildNodes()) {
-							isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(),isInvalid);
-						} else {
-							isInvalid = true;
-						}
+						isInvalid = true;
 					}
 				}
+				if(isInvalid){
+					break;
+				}
 			}
-			
 		}
-		
 		return isInvalid;
 	}
 	

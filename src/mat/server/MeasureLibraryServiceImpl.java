@@ -3347,11 +3347,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				// Other Validations.
 				if(populationLogicalOp.getLength()>0){
-					for (int i = 0; (i <populationLogicalOp.getLength()) && !isInvalid; i++) {
+					for (int i = 0; (i <populationLogicalOp.getLength()); i++) {
 						Node childNode =populationLogicalOp.item(i);
 						String type = childNode.getParentNode().getAttributes().getNamedItem("type").getNodeValue();
 						if(type.equals("measureObservation")){
-							result.setValid(!isInvalid);
+							result.setValid(false);
 							message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 							result.setValidationMessages(message);
 							return result;
@@ -3361,20 +3361,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				
 				if((populationQdemElement.getLength()>0)){
-					result.setValid(!isInvalid);
+					result.setValid(false);
 					message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 					result.setValidationMessages(message);
 					return result;
 				}
 				
 				if((populationTimingElement.getLength()>0)){
-					result.setValid(!isInvalid);
+					result.setValid(false);
 					message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 					result.setValidationMessages(message);
 					return result;
 				}
 				if((populationFunctions.getLength()>0)){
-					result.setValid(!isInvalid);
+					result.setValid(false);
 					message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 					result.setValidationMessages(message);
 					return result;
@@ -3441,7 +3441,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						isInvalid = validateNestedClauseLogic(nodeSubTree , nestedClauseCounter
 								, isInvalid , xmlProcessor);
 						if(isInvalid) {
-							result.setValid(!isInvalid);
+							result.setValid(false);
 							message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 							result.setValidationMessages(message);
 							return result;
@@ -3453,7 +3453,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							Node timingElementchildNode =nodesSDE_timingElement.item(n);
 							isInvalid = validateTimingRelationshipNode(timingElementchildNode, operatorTypeList, isInvalid);
 							if(isInvalid) {
-								result.setValid(!isInvalid);
+								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 								result.setValidationMessages(message);
 								return result;
@@ -3465,7 +3465,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							Node satisfyElementchildNode = nodesSDE_satisfyElement.item(j);
 							isInvalid = validateSatisfyNode(satisfyElementchildNode, isInvalid);
 							if(isInvalid) {
-								result.setValid(!isInvalid);
+								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 								result.setValidationMessages(message);
 								return result;
@@ -3487,7 +3487,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								String attributeName = qdmWithAttributeNodeList.item(n).getAttributes().getNamedItem("name").getNodeValue();
 								isInvalid = !validateQdmNode(qdmNode, attributeName);
 								if(isInvalid){
-									result.setValid(!isInvalid);
+									result.setValid(false);
 									message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 									result.setValidationMessages(message);
 									return result;
@@ -3498,7 +3498,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								String attributeName ="";
 								isInvalid = !validateQdmNode(qdmNode, attributeName);
 								if(isInvalid){
-									result.setValid(!isInvalid);
+									result.setValid(false);
 									message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 									result.setValidationMessages(message);
 									return result;
@@ -3512,7 +3512,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							Node functionsChildNode =nodesSDE_functions.item(n);
 							isInvalid = validateFunctionNode(functionsChildNode, operatorTypeList, isInvalid);
 							if(isInvalid) {
-								result.setValid(!isInvalid);
+								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 								result.setValidationMessages(message);
 								return result;
@@ -3525,7 +3525,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							Node setOperatorChildNode = nodeSDE_setoperator.item(n);
 							isInvalid = validateSetOperatorNode(setOperatorChildNode, isInvalid);
 							if(isInvalid) {
-								result.setValid(!isInvalid);
+								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 								result.setValidationMessages(message);
 								return result;
@@ -3642,7 +3642,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			, XmlProcessor xmlProcessor) throws XPathExpressionException {
 		NodeList children = nodeSubTreeRef.getChildNodes();
 		String subTreeNodeName = nodeSubTreeRef.getNodeName();
-		if ((children.getLength() == 0) && subTreeNodeName.equalsIgnoreCase("subTree")) {
+		if ((children.getLength() == 0) && subTreeNodeName.equalsIgnoreCase("subTree")
+				&& (nodeSubTreeRef.getAttributes().getNamedItem("instanceOf")==null)) {
 			flag = true;
 			return flag;
 		}

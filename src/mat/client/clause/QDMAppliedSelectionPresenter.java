@@ -955,6 +955,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(QualityDataSetDTO result, final int index) {
 				resetQDSMsgPanel();
+				if(modifyValueSetDTO!=null && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
+					isModified = false;
+				}
 				service.getAppliedQDMFromMeasureXml(MatContext.get()
 						.getCurrentMeasureId(), false,
 						new AsyncCallback<QualityDataModelWrapper>() {
@@ -983,7 +986,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						
 						
 					}
 				});
@@ -1753,6 +1756,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
 				searchDisplay.getQDMExpIdentifierListBox());
 		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
+		matValueSetTransferObject.setMeasureId(MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.setDatatype(dataType);
 		matValueSetTransferObject.setMatValueSet(matValueSet);
 		matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);

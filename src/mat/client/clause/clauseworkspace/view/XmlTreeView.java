@@ -549,6 +549,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		//		savePanel.add(errorMessageDisplay);
 		vp.add(successMessageDisplay);
 		//		saveBtn.setTitle("Ctrl+Alt+s");
+		saveBtnClauseWorkSpace.getElement().setAttribute("id", "saveButton_CW");
 		savePanel.add(saveBtnClauseWorkSpace);
 		validateBtnClauseWorkSpace.setTitle("Validate");
 		clearClauseWorkSpace.setTitle("Clear Clause WorkSpace");
@@ -2233,7 +2234,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				validateClauseWorkspaceCellTreeNodes(node, PopulationWorkSpaceConstants.getDatatypeMap(), inValidNodeList);
-				if((node != null) && node.hasChildren() && inValidNodeList.size() == 0) {
+				if((node != null) && node.hasChildren() && (inValidNodeList.size() == 0)) {
 					validateClauseNodeNesting(node.getChilds().get(0),inValidNodeList,1);
 				}
 			}

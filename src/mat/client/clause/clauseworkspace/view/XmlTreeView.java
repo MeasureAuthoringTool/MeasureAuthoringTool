@@ -2478,7 +2478,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					break;
 				case CellTreeNode.SUBTREE_NODE:
 					//validation for empty clause logic in clauseWorkspace
-					if(node.getChilds() == null){
+					if(node.getChilds() == null || node.getChilds().size() == 0){
 						if (!inValidNodeList.contains("emptyClauseLogic")) {
 							inValidNodeList.add("emptyClauseLogic");
 						}

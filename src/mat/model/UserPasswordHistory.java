@@ -12,17 +12,15 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserPasswordHistory implements IsSerializable, Serializable{
 
-	
-	/**
-	 * 
-	 */
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -2972696565028280765L;
 
 	/** The id. */
-//	private String id;
+	private String id;
 	
 	/** The user. */
-	private String userId;
+	private User user;
 	
 	/** The password. */
 	private String password;
@@ -33,26 +31,24 @@ public class UserPasswordHistory implements IsSerializable, Serializable{
 	/** The created date. */
 	private Date createdDate;
 	
-	/** The row id. */
-	private String rowId;
-
 	/**
 	 * Gets the id.
 	 *
 	 * @return the id
 	 */
-//	public String getId() {
-//		return id;
-//	}
-//
-//	/**
-//	 * Sets the id.
-//	 *
-//	 * @param id the new id
-//	 */
-//	public void setId(String id) {
-//		this.id = id;
-//	}
+	public String getId() {
+		return id;
+	}
+
+	
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * Gets the password.
@@ -109,38 +105,21 @@ public class UserPasswordHistory implements IsSerializable, Serializable{
 	}
 
 	/**
-	 * Gets the user id.
+	 * Gets the user.
 	 *
-	 * @return the userId
+	 * @return the user
 	 */
-	public String getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
+	}
+	
+	/**
+	 * Sets the user.
+	 *
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	/**
-	 * Sets the user id.
-	 *
-	 * @param userId the userId to set
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	/**
-	 * Gets the row id.
-	 *
-	 * @return the rowId
-	 */
-	public String getRowId() {
-		return rowId;
-	}
-
-	/**
-	 * Sets the row id.
-	 *
-	 * @param rowId the rowId to set
-	 */
-	public void setRowId(String rowId) {
-		this.rowId = rowId;
-	}
 }

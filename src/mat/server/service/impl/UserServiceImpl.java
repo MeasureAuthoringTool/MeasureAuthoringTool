@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -25,7 +26,6 @@ import mat.dao.StatusDAO;
 import mat.dao.TransactionAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordHistoryDAO;
-import mat.dao.UserSecurityQuestionDAO;
 import mat.model.Organization;
 import mat.model.SecurityRole;
 import mat.model.Status;
@@ -43,6 +43,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
@@ -123,13 +124,12 @@ public class UserServiceImpl implements UserService {
 	private String userGuideUrl;
 	
 	/** The pawd history size. */
-	private final int PAWD_HISTORY_SIZE = 5;
+	private final int PASSWORD_HISTORY_SIZE = 5;
 	
+	/** The user password history dao. */
 	@Autowired
 	private UserPasswordHistoryDAO userPasswordHistoryDAO; 
 	
-	@Autowired
-	private UserSecurityQuestionDAO userSecurityQuestionDAO; 
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#generateRandomPassword()
@@ -176,10 +176,7 @@ public class UserServiceImpl implements UserService {
 		
 		//to maintain user password History
 		if(user.getPassword()!=null) {
-         List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
-         user.getPasswordHistory().clear();
- 		 user.getPasswordHistory().addAll(pwdHistoryList);
-        // user.setPasswordHistory(pwdHistoryList);
+			addByUpdateUserPasswordHistory(user,false);
 		}
 		setUserPassword(user, newPassword, true);
 		userDAO.save(user);
@@ -307,10 +304,7 @@ public class UserServiceImpl implements UserService {
 			}else{
 				
 				//to maitain passwordHistory
-			    List<UserPasswordHistory> pwdHistoryList = getUpdatedPasswordHistoryList(user, false);
-			    user.getPasswordHistory().clear();
-				user.getPasswordHistory().addAll(pwdHistoryList);
-			    //user.setPasswordHistory(pwdHistoryList);
+				addByUpdateUserPasswordHistory(user,false);
 				String newPassword = generateRandomPassword();
 				setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);
@@ -1030,81 +1024,33 @@ public class UserServiceImpl implements UserService {
 		return userDAO.searchForNonTerminatedUser();
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getOldPwdCreatedDate(java.lang.String)
-	 */
-	@Override
-	public Date getOldPwdCreatedDate(String userId) {
-		return userPasswordHistoryDAO.getOldPasswordCreationDate(userId);
-	}
 	
-	
-	/**
-	 * Update password history.
-	 *
-	 * @param passwordHistory the password history
-	 * @param user the user
-	 * @return the list
-	 */
-	private List<UserPasswordHistory> updatePasswordHistory(List<UserPasswordHistory> passwordHistory, 
-			User user) {
-		String oldPwdCreationDate = formatDate(getOldPwdCreatedDate(user.getId()));
-		for(UserPasswordHistory pwdHistory : passwordHistory){
-			String currPwdCreationDate = formatDate(pwdHistory.getCreatedDate());
-			if(currPwdCreationDate.equals(oldPwdCreationDate)){
-				pwdHistory.setCreatedDate(user.getPassword().getCreatedDate());
-				pwdHistory.setSalt(user.getPassword().getSalt());
-				pwdHistory.setPassword(user.getPassword().getPassword());
-				break;
-			}
-		}
-		return passwordHistory;
-	}
-	
-	
-	
-	/**
-	 * Format date.
-	 *
-	 * @param date the date
-	 * @return the string
-	 */
-	private String formatDate(Date date){
-		String newDate = "";
-		SimpleDateFormat currentDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-		newDate = currentDateFormat.format(date);
-		return newDate;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getUpdatedPasswordHistoryList(mat.model.User)
-	 */
 	/**
 	 *  temporary and initial sign in password should not be stored in password History
 	 *  isValidPwd boolean is set for special case where current valid password becomes temporary 
 	 *  password when it exceeds 60 days limit and it Should be added to password history.
-     * **/
+	 * *
+	 *
+	 * @param user the user
+	 * @param isValidPwd the is valid pwd
+	 */
 	@Override
-	public List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd){
-     
-		//will get the UserPasswordHistory List
-		List<UserPasswordHistory> pwdHisList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
-
+	public void addByUpdateUserPasswordHistory(User user, boolean isValidPwd){
+		List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
 		if(isValidPwd || !(user.getPassword().isInitial() 
 				|| user.getPassword().isTemporaryPassword())) {
 			UserPasswordHistory passwordHistory = new UserPasswordHistory();
+			passwordHistory.setUser(user);
 			passwordHistory.setPassword(user.getPassword().getPassword());
 			passwordHistory.setSalt(user.getPassword().getSalt());
 			passwordHistory.setCreatedDate(user.getPassword().getCreatedDate());
-			if(pwdHisList.size()<5){
-				pwdHisList.add(passwordHistory);
+			if(pwdHistoryList.size()<PASSWORD_HISTORY_SIZE){
+				user.getPasswordHistory().add(passwordHistory);
 			} else {
-			   pwdHisList = updatePasswordHistory(pwdHisList, user);
+			   userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
 			}
 		}
 		
-		return pwdHisList;
 	}
 	
 }

@@ -1,7 +1,6 @@
 package mat.server.service.impl;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -13,7 +12,6 @@ import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPassword;
-import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
@@ -65,10 +63,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		User user = userService.getById(model.getUserId());
 		
 		//before setting new Password we need to store the old password in password History
-		List<UserPasswordHistory> pwdHisList = userService.getUpdatedPasswordHistoryList(user, false);
-		user.getPasswordHistory().clear();
-		user.getPasswordHistory().addAll(pwdHisList);
-		//user.setPasswordHistory(pwdHisList);
+		userService.addByUpdateUserPasswordHistory(user,false);
 		userService.setUserPassword(user, model.getPassword(), false);
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");

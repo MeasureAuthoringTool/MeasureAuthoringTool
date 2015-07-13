@@ -1,17 +1,17 @@
 package mat.server.service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.model.Organization;
 import mat.model.User;
-import mat.model.UserPasswordHistory;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface UserService.
  */
@@ -263,11 +263,25 @@ public interface UserService {
 	 */
 	public boolean isLockedUser(String loginId);
 	
+	/**
+	 * Search for non terminated users.
+	 *
+	 * @return the list
+	 */
 	List<User> searchForNonTerminatedUsers();
 	
+	/**
+	 * Search for used organizations.
+	 *
+	 * @return the hash map
+	 */
 	HashMap<String, Organization> searchForUsedOrganizations();
-	
-	Date getOldPwdCreatedDate(String userId);
 
-	List<UserPasswordHistory> getUpdatedPasswordHistoryList(User user, boolean isValidPwd);
+	/**
+	 * Adds the by update user password history.
+	 *
+	 * @param user the user
+	 * @param isValidPwd the is valid pwd
+	 */
+	void addByUpdateUserPasswordHistory(User user, boolean isValidPwd);
 }

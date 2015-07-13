@@ -3,13 +3,13 @@ package mat.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.model.SecurityQuestions;
 import mat.model.User;
-import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
@@ -17,6 +17,7 @@ import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -236,10 +237,7 @@ MyAccountService {
 				UserService userService = getUserService();
 				User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 				//to maintain user password History
-				List<UserPasswordHistory> pwdHistoryList = userService.getUpdatedPasswordHistoryList(user, false);
-				user.getPasswordHistory().clear();
-				user.getPasswordHistory().addAll(pwdHistoryList);
-				//user.setPasswordHistory(pwdHistoryList);
+				userService.addByUpdateUserPasswordHistory(user,false);
 				userService.setUserPassword(user, password, false);
 				userService.saveExisting(user);
 				result.setSuccess(true);

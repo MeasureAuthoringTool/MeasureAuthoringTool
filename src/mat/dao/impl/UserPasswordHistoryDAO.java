@@ -1,17 +1,17 @@
 package mat.dao.impl;
 
-import java.util.Date;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
 import mat.dao.search.GenericDAO;
 import mat.model.User;
 import mat.model.UserPasswordHistory;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -20,22 +20,55 @@ import mat.model.UserPasswordHistory;
 public class UserPasswordHistoryDAO extends GenericDAO<UserPasswordHistory, String> implements mat.dao.UserPasswordHistoryDAO{
 
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserPasswordHistoryDAO#getPasswordHistory(java.lang.String)
+	 */
 	@Override
 	public List<UserPasswordHistory> getPasswordHistory(String userId){
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(UserPasswordHistory.class);
-		criteria.add(Restrictions.eq("userId", userId));
+		criteria.add(Restrictions.eq("user.id", userId));
 		return criteria.list();
 	}
-	
-	
+
+	/* (non-Javadoc)
+	 * @see mat.dao.UserPasswordHistoryDAO#addUpdatePasswordHistory(mat.model.User)
+	 */
 	@Override
-	public Date getOldPasswordCreationDate(String userId){
-		String query = "select create_date from USER_PASSWORD_HISTORY where user_id=:userId";
-		query += " order by create_date LIMIT 1";
+	public void addByUpdateUserPasswordHistory(User user) {
+		String userPasswordHistoryId = getOldPasswordHistoryIdByCreationDate();
+		Session session = getSessionFactory().openSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+		try {
+			String sql = "update mat.model.UserPasswordHistory m set m.password = :password, m.salt = :salt, m.createdDate = :createDate " +
+					"where m.id = :passwordHistoryId";
+			Query query = session.createQuery(sql);
+			query.setString("password", user.getPassword().getPassword());
+			query.setString("salt", user.getPassword().getSalt());
+			query.setDate("createDate", user.getPassword().getCreatedDate());
+			query.setString("passwordHistoryId", userPasswordHistoryId);
+			int rowCount = query.executeUpdate();
+			tx.commit();
+		} finally {
+			rollbackUncommitted(tx);
+			closeSession(session);
+		}
+		
+	}
+
+
+	/**
+	 * Gets the old password history id by creation date.
+	 *
+	 * @return the old password history id by creation date
+	 */
+	private String getOldPasswordHistoryIdByCreationDate() {
 		Session session = getSessionFactory().getCurrentSession();
-		List<Date> list= session.createSQLQuery(query).setParameter("userId", userId).list();
-		return list.get(0);
+		Criteria criteria = session.createCriteria(UserPasswordHistory.class);
+		criteria.addOrder(Order.asc("createdDate"));
+		criteria.setProjection(Projections.property("id"));
+	    String id = (String)criteria.list().get(0);
+		return id;
 	}
 
 

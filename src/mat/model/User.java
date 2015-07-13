@@ -84,7 +84,7 @@ public class User  {
 	/** The login id. */
 	private String loginId;
 	
-	private List<UserPasswordHistory> passwordHistory = new  ArrayList<UserPasswordHistory>();
+	private Set<UserPasswordHistory> passwordHistory = new  HashSet<UserPasswordHistory>();
 
 	/**
 	 * Gets the id.
@@ -559,14 +559,14 @@ public class User  {
 	/**
 	 * @return the passwordHistory
 	 */
-	public List<UserPasswordHistory> getPasswordHistory() {
+	public Set<UserPasswordHistory> getPasswordHistory() {
 		return passwordHistory;
 	}
 
 	/**
 	 * @param passwordHistory the passwordHistory to set
 	 */
-	public void setPasswordHistory(List<UserPasswordHistory> passwordHistory) {
+	public void setPasswordHistory(Set<UserPasswordHistory> passwordHistory) {
 		this.passwordHistory = passwordHistory;
 	}
 

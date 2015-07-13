@@ -393,7 +393,9 @@ public class CheckUserChangePasswordLimit {
 	    logger.info(passwordDayLimit + "passwordDaysAgo:"+passwordDaysAgo);
 		
 	    for(User user:users){
-	    	
+	    	if(user.getId().equals("8ae455ea4e4023fb014e40258ced0004")){
+	    		System.out.println("");
+	    	}
 			Date lastPasswordCreatedDate = user.getPassword().getCreatedDate();
 			
 			if(lastPasswordCreatedDate == null || !checkValidUser(user)){
@@ -421,9 +423,7 @@ public class CheckUserChangePasswordLimit {
 					logger.info("User:"+user.getEmailAddress()+" who's last password was more than "+ passwordDayLimit +" days ago.");
 					returnUserList.add(user);
 					//to maintain Password history
-					List<UserPasswordHistory> pwdHistoryList = getUserService().getUpdatedPasswordHistoryList(user, true);
-					user.setPasswordHistory(pwdHistoryList);
-					//user.getPassword().setInitial(true);
+					getUserService().addByUpdateUserPasswordHistory(user, true);
 					user.getPassword().setTemporaryPassword(true);
 					user.getPassword().setCreatedDate(DateUtils.truncate(new Date(),Calendar.DATE));
 					getUserService().saveExisting(user);

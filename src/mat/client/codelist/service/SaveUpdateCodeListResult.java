@@ -7,6 +7,7 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.shared.GenericResult;
 import mat.model.QualityDataSetDTO;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SaveUpdateCodeListResult.
  */
@@ -63,6 +64,10 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	/** The data set dto. */
 	QualityDataSetDTO dataSetDTO;
 	
+	/** The all oi ds updated. */
+	boolean allOIDsUpdated;
+
+
 	/**
 	 * Gets the xml string.
 	 * 
@@ -295,6 +300,24 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 */
 	public void setDataSetDTO(QualityDataSetDTO dataSetDTO) {
 		this.dataSetDTO = dataSetDTO;
+	}
+	
+	/**
+	 * Checks if is all oi ds updated.
+	 *
+	 * @return true, if is all oi ds updated
+	 */
+	public boolean isAllOIDsUpdated() {
+		return allOIDsUpdated;
+	}
+
+	/**
+	 * Sets the all oi ds updated.
+	 *
+	 * @param allOIDsUpdated the new all oi ds updated
+	 */
+	public void setAllOIDsUpdated(boolean allOIDsUpdated) {
+		this.allOIDsUpdated = allOIDsUpdated;
 	}
 
 	

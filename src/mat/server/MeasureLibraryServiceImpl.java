@@ -3355,7 +3355,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 							result.setValidationMessages(message);
 							return result;
-							//break;
 						}
 					}
 				}
@@ -3592,7 +3591,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				} else {
 					// Populations other than Stratification : dont check for default top level Logical Op.
 					if (operatorNode.hasChildNodes()) {
-						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
+						//ignore the first child of Top Level Logical operator which is comment
+						Node logicalOpChilNode = operatorNode.getChildNodes().item(1);
+						
+						if(logicalOpChilNode != null){
+							isInvalid = findInvalidLogicalOperators(logicalOpChilNode);
+						}
+						
 						if (isInvalid) {
 							message = MatContext.get().getMessageDelegate()
 									.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
@@ -3604,12 +3609,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return message;
 	}
+	
+	/**
+	 * Find invalid logical operators.
+	 *
+	 * @param populationTopLevelLogicalOp the population top level logical op
+	 * @return true, if successful
+	 */
+	private boolean findInvalidLogicalOperators(Node populationTopLevelLogicalOp){
+		return findInvalidLogicalOperators(populationTopLevelLogicalOp.getChildNodes());
+	}
+	
+	/**
+	 * Find invalid logical operators.
+	 *
+	 * @param populationTopLevelLogicalOp the population top level logical op
+	 * @return true, if successful
+	 */
 	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp) {
 		boolean isInvalid = false;
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
 				Node operatorNode = populationTopLevelLogicalOp.item(i);
 				if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
+					isInvalid = true;
 					continue;
 				}
 				if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
@@ -3629,14 +3652,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return isInvalid;
 	}
 	
+	
 	/**
 	 * Validate Clause should have depth up to 10 Levels.
-	 * @param nodeSubTreeRef
-	 * @param counter
-	 * @param flag
-	 * @param xmlProcessor
-	 * @return
-	 * @throws XPathExpressionException
+	 *
+	 * @param nodeSubTreeRef the node sub tree ref
+	 * @param counter the counter
+	 * @param flag the flag
+	 * @param xmlProcessor the xml processor
+	 * @return true, if successful
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private boolean validateNestedClauseLogic(Node nodeSubTreeRef, int counter, boolean flag
 			, XmlProcessor xmlProcessor) throws XPathExpressionException {

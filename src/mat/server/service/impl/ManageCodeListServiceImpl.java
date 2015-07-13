@@ -82,10 +82,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageCodeListServiceImpl.
  */
 public class ManageCodeListServiceImpl implements CodeListService {
+	
+	/** The context. */
 	@Autowired
 	private ApplicationContext context;
 	/** The Constant ASCII_END. */
@@ -229,11 +232,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	/**
 	 * Check for duplicates.
-	 * 
-	 * @param matValueSetTransferObject
-	 *            the mat Value Set Transfer Object
-	 * @param isVSACValueSet
-	 *            the is vsac value set
+	 *
+	 * @param matValueSetTransferObject            the mat Value Set Transfer Object
+	 * @param isVSACValueSet            the is vsac value set
+	 * @param isSpecificOccurrence the is specific occurrence
 	 * @return true if Found and false if not found.
 	 */
 	private boolean isDuplicate(
@@ -381,6 +383,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return occurrenceCount;
 	}
 
+	/**
+	 * Check for duplicates.
+	 *
+	 * @param matValueSetTransferObject the mat value set transfer object
+	 * @param isVSACValueSet the is vsac value set
+	 * @return true, if successful
+	 */
 	private boolean checkForDuplicates(
 			MatValueSetTransferObject matValueSetTransferObject,
 			boolean isVSACValueSet) {
@@ -2100,109 +2109,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	 
 	/**
 	 * Update vsac value set in element look up.
-	 * 
-	 * @param matValueSetTransferObject
-	 *            - mat Value Set Transfer Object
-	 * @return SaveUpdateCodeListResult
+	 *
+	 * @param matValueSetTransferObject the mat value set transfer object
+	 * @return the save update code list result
 	 */
-	
-	 /** private SaveUpdateCodeListResult
-	 * updateVSACValueSetInElementLookUp(MatValueSetTransferObject
-	 * matValueSetTransferObject) { SaveUpdateCodeListResult result = new
-	 * SaveUpdateCodeListResult(); if
-	 * (matValueSetTransferObject.isSpecificOccurrence()) { //Duplicate check
-	 * that will be OID and Data type only. //If Exists then exit //Else Find
-	 * all same OIDs // if(isDuplicate(matValueSetTransferObject, true, true)){
-	 * result.setSuccess(false);
-	 * result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS); return
-	 * result; } QualityDataSetDTO qds =
-	 * matValueSetTransferObject.getQualityDataSetDTO(); String dataType =
-	 * matValueSetTransferObject.getDatatype(); MatValueSet matValueSet =
-	 * matValueSetTransferObject.getMatValueSet();
-	 * qds.setOid(matValueSet.getID());
-	 * qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-	 * qds.setCodeListName(matValueSet.getDisplayName()); if
-	 * (matValueSet.isGrouping()) {
-	 * qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM); } else {
-	 * qds.setTaxonomy(matValueSet.getCodeSystemName()); } if
-	 * (matValueSetTransferObject.isVersionDate()) {
-	 * qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
-	 * } else { qds.setVersion("1.0"); }
-	 * 
-	 * if(matValueSetTransferObject.isExpansionProfile()){
-	 * qds.setExpansionIdentifier
-	 * (matValueSetTransferObject.getMatValueSet().getExpansionProfile()); }
-	 * else { qds.setExpansionIdentifier(null); } // if
-	 * (matValueSetTransferObject.isEffectiveDate()) { //
-	 * qds.setEffectiveDate(matValueSetTransferObject
-	 * .getMatValueSet().getRevisionDate()); // } else { //
-	 * qds.setEffectiveDate(null); // } int occurrenceCount =
-	 * checkForOccurrenceCountVsacApi(dataType, matValueSet,
-	 * (ArrayList<QualityDataSetDTO>)
-	 * matValueSetTransferObject.getAppliedQDMList()); if (occurrenceCount <
-	 * ASCII_END) { // Alphabet ASCII Integer Values. char occTxt = (char)
-	 * occurrenceCount; qds.setOccurrenceText("Occurrence" + " " + occTxt);
-	 * qds.setSpecificOccurrence(true); if (dataType != null) { DataType dt =
-	 * dataTypeDAO.find(dataType); qds.setDataType(dt.getDescription()); }
-	 * QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
-	 * (ArrayList<QualityDataSetDTO>)
-	 * matValueSetTransferObject.getAppliedQDMList());
-	 * result.setOccurrenceMessage(qds.getOccurrenceText());
-	 * result.setSuccess(true);
-	 * result.setAppliedQDMList(sortQualityDataSetList(wrapper
-	 * .getQualityDataDTO())); result.setDataSetDTO(qds); } } else { // Treat as
-	 * regular QDM List<QualityDataSetDTO> origAppliedQDMList =
-	 * matValueSetTransferObject.getAppliedQDMList(); List<QualityDataSetDTO>
-	 * tempAppliedQDMList = new ArrayList<QualityDataSetDTO>();
-	 * tempAppliedQDMList.addAll(matValueSetTransferObject.getAppliedQDMList());
-	 * //Removing the QDS that is being modified from the tempAppliedQDMList.
-	 * Iterator<QualityDataSetDTO> iterator = tempAppliedQDMList.iterator();
-	 * while (iterator.hasNext()) { QualityDataSetDTO qualityDataSetDTO =
-	 * iterator.next(); if
-	 * (qualityDataSetDTO.getUuid().equals(matValueSetTransferObject
-	 * .getQualityDataSetDTO().getUuid())) { iterator.remove(); break; } }
-	 * matValueSetTransferObject.setAppliedQDMList(tempAppliedQDMList);
-	 * 
-	 * if (!isDuplicate(matValueSetTransferObject, true, false)) {
-	 * matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
-	 * 
-	 * QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
-	 * String dataType = matValueSetTransferObject.getDatatype(); if (dataType
-	 * != null) { DataType dt = dataTypeDAO.find(dataType);
-	 * qds.setDataType(dt.getDescription()); } MatValueSet matValueSet =
-	 * matValueSetTransferObject.getMatValueSet();
-	 * qds.setOid(matValueSet.getID());
-	 * qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-	 * qds.setCodeListName(matValueSet.getDisplayName()); if
-	 * (matValueSet.isGrouping()) {
-	 * qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM); } else {
-	 * qds.setTaxonomy(matValueSet.getCodeSystemName()); } if
-	 * (matValueSetTransferObject.isVersionDate()) {
-	 * qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
-	 * } else { qds.setVersion("1.0"); }
-	 * if(matValueSetTransferObject.isExpansionProfile()){
-	 * qds.setExpansionIdentifier
-	 * (matValueSetTransferObject.getMatValueSet().getExpansionProfile()); }
-	 * else { qds.setExpansionIdentifier(null); }
-	 * 
-	 * // if (matValueSetTransferObject.isEffectiveDate()) { //
-	 * qds.setEffectiveDate
-	 * (matValueSetTransferObject.getMatValueSet().getRevisionDate()); // } else
-	 * { // qds.setEffectiveDate(null); // } qds.setOccurrenceText(null);
-	 * QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
-	 * (ArrayList<QualityDataSetDTO>)
-	 * matValueSetTransferObject.getAppliedQDMList());
-	 * result.setOccurrenceMessage(qds.getOccurrenceText());
-	 * result.setSuccess(true);
-	 * result.setAppliedQDMList(sortQualityDataSetList(wrapper
-	 * .getQualityDataDTO())); result.setDataSetDTO(qds); } else {
-	 * matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
-	 * result.setSuccess(false);
-	 * result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS); } }
-	 * return result; }*/
-	 
 	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(
 			MatValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
@@ -2255,13 +2168,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
 								.getAppliedQDMList());
 
-				findAndUpdateAllOids(oldQdm, qds, wrapper.getQualityDataDTO(),
+			    boolean isAllOIDsUpdated = findAndUpdateAllOids(oldQdm, qds, wrapper.getQualityDataDTO(),
 						matValueSetTransferObject.getMeasureId());
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
 				result.setDataSetDTO(qds);
+				result.setAllOIDsUpdated(isAllOIDsUpdated);
 			}
 		} else { // Treat as regular QDM
 			List<QualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject
@@ -2322,13 +2236,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
 								.getAppliedQDMList());
 
-				findAndUpdateAllOids(oldQdm, qds, wrapper.getQualityDataDTO(),
+				boolean isAllOIDsUpdated = findAndUpdateAllOids(oldQdm, qds, wrapper.getQualityDataDTO(),
 						matValueSetTransferObject.getMeasureId());
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
 				result.setDataSetDTO(qds);
+				result.setAllOIDsUpdated(isAllOIDsUpdated);
 			} else {
 				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
 				result.setSuccess(false);
@@ -2338,6 +2253,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	/**
+	 * Populated old qdm.
+	 *
+	 * @param oldQdm the old qdm
+	 * @param qualityDataSetDTO the quality data set dto
+	 */
 	private void populatedOldQDM(QualityDataSetDTO oldQdm,
 			QualityDataSetDTO qualityDataSetDTO) {
 		if(qualityDataSetDTO.isSpecificOccurrence()){
@@ -2353,14 +2274,23 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				.getExpansionIdentifier());
 	}
 
+	/**
+	 * Gets the measure service.
+	 *
+	 * @return the measure service
+	 */
 	public final MeasureLibraryService getMeasureService() {
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 
 	/**
-	 * @param oldQdm
-	 * @param qds
-	 * @param list
+	 * Find and update all oids.
+	 *
+	 * @param oldQdm the old qdm
+	 * @param qds the qds
+	 * @param list the list
+	 * @param measureId the measure id
+	 * @return true, if successful
 	 */
 	private boolean findAndUpdateAllOids(QualityDataSetDTO oldQdm,
 			QualityDataSetDTO qds, List<QualityDataSetDTO> list,
@@ -2374,13 +2304,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				.equalsIgnoreCase("1"))
 				&& (oldQdm.getVersion().equalsIgnoreCase("1.0") || oldQdm
 						.getVersion().equalsIgnoreCase("1"))) {
-
-			/*
-			 * if ((qds.getExpansionIdentifier() != null) &&
-			 * (!oldQdm.getExpansionIdentifier().equalsIgnoreCase(
-			 * qds.getExpansionIdentifier()))) { findAllOid = true; expansionId
-			 * = qds.getExpansionIdentifier(); }
-			 */
 
 			if ((qds.getExpansionIdentifier() != null)
 					&& oldQdm.getExpansionIdentifier() == null) {
@@ -2427,28 +2350,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 		}
 
-		// if (!oldQdm.getVersion().equalsIgnoreCase(qds.getVersion())) {
-		// findAllOid = true;
-		// version = qds.getVersion();
-		// }
-		//
-		// if (oldQdm.getExpansionIdentifier() == null) {
-		// if (qds.getExpansionIdentifier() != null) {
-		// findAllOid = true;
-		// expansionId = qds.getExpansionIdentifier();
-		// }
-		// } else {
-		// if ((qds.getExpansionIdentifier() != null)
-		// && (!oldQdm.getExpansionIdentifier().equalsIgnoreCase(
-		// qds.getExpansionIdentifier()))) {
-		// findAllOid = true;
-		// expansionId = qds.getExpansionIdentifier();
-		// } else {
-		// if (qds.getExpansionIdentifier() == null) {
-		// expansionId = "";
-		// }
-		// }
-		// }
 		if (findAllOid) {
 			String oid = qds.getOid();
 			String uuid = qds.getUuid();

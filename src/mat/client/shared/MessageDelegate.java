@@ -176,8 +176,9 @@ public class MessageDelegate {
 	
 	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
 	
-	
-	
+	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
+			                                 "to the selected Version and/or Expansion Identifier.";
+
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2368,5 +2369,9 @@ public class MessageDelegate {
 	 */
 	public String getCLAUSE_EMPTY() {
 		return CLAUSE_EMPTY;
+	}
+	
+	public String getSUCCESSFULLY_MODIFIED_ALL_OIDS() {
+		return SUCCESSFULLY_MODIFIED_ALL_OIDS;
 	}
 }

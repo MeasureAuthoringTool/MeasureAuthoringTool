@@ -2336,6 +2336,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						.getVersion().equalsIgnoreCase("1")) && !(oldQdm
 						.getVersion().equalsIgnoreCase("1.0") || oldQdm
 						.getVersion().equalsIgnoreCase("1")))) {
+			findAllOid = true;
 			version = true;
 
 			if ((qds.getExpansionIdentifier() != null)
@@ -2348,6 +2349,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				expansionId = true;
 			}
 
+		} else { //In case If it just a change from version to version.
+			findAllOid = true;
+			version = true;
 		}
 
 		if (findAllOid) {

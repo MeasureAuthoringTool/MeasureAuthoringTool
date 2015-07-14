@@ -3590,18 +3590,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				} else {
 					// Populations other than Stratification : dont check for default top level Logical Op.
-					if (operatorNode.hasChildNodes()) {
-						//ignore the first child of Top Level Logical operator which is comment
-						Node logicalOpChilNode = operatorNode.getChildNodes().item(1);
-						
-						if(logicalOpChilNode != null){
-							isInvalid = findInvalidLogicalOperators(logicalOpChilNode);
-						}
-						
-						if (isInvalid) {
-							message = MatContext.get().getMessageDelegate()
-									.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
-							break;
+					if (operatorNode.hasChildNodes() && 
+							operatorNode.getChildNodes().getLength()>1) {
+			                //removing comment child from topLevel Logical Operator
+							Node operatorCommentNode = operatorNode.getChildNodes().item(0);
+							operatorNode.removeChild(operatorCommentNode);
+							isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
+							
+							if (isInvalid) {
+								message = MatContext.get().getMessageDelegate()
+										.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
+								break;
 						}
 					}
 				}
@@ -3610,15 +3609,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return message;
 	}
 	
-	/**
-	 * Find invalid logical operators.
-	 *
-	 * @param populationTopLevelLogicalOp the population top level logical op
-	 * @return true, if successful
-	 */
-	private boolean findInvalidLogicalOperators(Node populationTopLevelLogicalOp){
-		return findInvalidLogicalOperators(populationTopLevelLogicalOp.getChildNodes());
-	}
 	
 	/**
 	 * Find invalid logical operators.
@@ -3631,7 +3621,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
 				Node operatorNode = populationTopLevelLogicalOp.item(i);
-				if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
+			    if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
 					isInvalid = true;
 					continue;
 				}

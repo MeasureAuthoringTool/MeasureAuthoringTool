@@ -108,6 +108,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 	/** The sub tree node in pop map. */
 	Map<String, Node> subTreeNodeInPOPMap = new HashMap<String,Node>();
 	
+	/** The sub tree node in RA map. */
+	Map<String, Node> subTreeNodeInRAMap = new HashMap<String,Node>();
 	
 	/** The Constant FUNCTIONAL_OP_RULES_IN_POP. */
 	private static final Map<String, List<String>> FUNCTIONAL_OP_RULES_IN_POP = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
@@ -164,8 +166,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Node subTreeNode = subTreeNodeList.item(i);
 			String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			String uuid = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
+			//TODO figure out rules for generatingSubTree and decide where to put subTreeNodeInRAMap
 			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
-					|| subTreeNodeInPOPMap.containsKey(uuid)){
+					|| subTreeNodeInPOPMap.containsKey(uuid) || subTreeNodeInRAMap.containsKey(uuid)){
 				generateSubTreeXML(subTreeNode, false);
 			}
 		}
@@ -205,7 +208,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String subTreeUUID = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-		
+		Boolean isRAV = isRiskAdjustmentVariable(subTreeUUID, clauseName);
+		System.out.println("SUBTREE UUID: " + subTreeUUID);
 		/**
 		 * Check the 'subTreeNodeMap' to make sure the clause isnt already generated.
 		 */
@@ -225,6 +229,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 		//generate comment
 		Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
 		dataCriteriaSectionElem.appendChild(comment);
+		if(isRAV){
+			Comment RAComment = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
+			dataCriteriaSectionElem.appendChild(RAComment);
+		}
 		Node entryElement = null;
 		switch (firstChildName) {
 			case SET_OP:
@@ -256,6 +264,28 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
+	 * This method is used to discover weither a given class name and UUID is a risk adjustment variable 
+	 * @param subTreeUUID
+	 * @param clauseName
+	 * @return
+	 */
+	private Boolean isRiskAdjustmentVariable(String subTreeUUID,
+			String clauseName) {
+		String xPath = "/measure/riskAdjustmentVariables/subTreeRef[@displayName='" + clauseName + "' and @id='" + subTreeUUID + "']";
+		boolean RAV = false;
+		try {
+			Node RA = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xPath);
+			if(RA != null){
+				RAV = true;
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return RAV;
+	}
+
+	/**
 	 * Generate occ hqmf.
 	 *
 	 * @param subTreeNode the sub tree node
@@ -272,7 +302,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String occSubTreeUUID = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		String qdmVariableSubTreeUUID = subTreeNode.getAttributes().getNamedItem(INSTANCE_OF).getNodeValue();
 		String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-		
+		Boolean isRAV = isRiskAdjustmentVariable(qdmVariableSubTreeUUID, clauseName);
 		/**
 		 * Check the 'subTreeNodeMap' to make sure the occ clause isnt already generated.
 		 */
@@ -363,9 +393,16 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			Node parentNode = cloneIDNode.getParentNode().cloneNode(false);			
 			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
+			if(isRAV){
+				Comment RAComment = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
+				dataCriteriaSectionElem.appendChild(RAComment);
+			}
 			dataCriteriaSectionElem.appendChild(comment);
 			Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 			entryElem.setAttribute(TYPE_CODE, "DRIV");
+			if(isRAV){
+				entryElem.setAttribute(RAV, "true");
+			}
 			Element idElement = hqmfXmlProcessor.getOriginalDoc().createElement(ID);
 			idElement.setAttribute(ROOT, subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue());
 			idElement.setAttribute(EXTENSION, extForOccurrenceNode);
@@ -632,6 +669,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 		// creating Entry Tag
 		Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
+		Node UUIDNode = subTreeRefNode.getParentNode().getAttributes().getNamedItem(UUID);
+		Node nameNode = subTreeRefNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME);
+		if(UUIDNode != null && nameNode != null){
+			boolean isRAV = isRiskAdjustmentVariable(UUIDNode.getNodeValue(), nameNode.getNodeValue());
+			if(isRAV){
+				entryElem.setAttribute(RAV, "true");
+			}
+		}		
+		
 		
 		String root = "0";
 		String ext = subTreeRefNode.getAttributes().getNamedItem(ID).getNodeValue();
@@ -708,6 +754,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 		// creating Entry Tag
 		Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
+		System.out.println("Node Name: " + setOpNode.getNodeName());
+		Node UUIDNode = setOpNode.getParentNode().getAttributes().getNamedItem(UUID);
+		Node nameNode = setOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME);
+		if(UUIDNode != null && nameNode != null){
+			boolean isRAV = isRiskAdjustmentVariable(UUIDNode.getNodeValue(), nameNode.getNodeValue());
+			if(isRAV){
+				entryElem.setAttribute(RAV, "true");
+			}
+		}		
 		
 		//creating grouperCriteria element
 		String root = "0";
@@ -1160,6 +1215,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 						// creating Entry Tag
 						Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 						entryElem.setAttribute(TYPE_CODE, "DRIV");
+						Node UUIDNode = relOpNode.getParentNode().getAttributes().getNamedItem(UUID);
+						Node nameNode = relOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME);
+						if(UUIDNode != null && nameNode != null){	
+							boolean isRAV = isRiskAdjustmentVariable(UUIDNode.getNodeValue(), nameNode.getNodeValue());
+							if(isRAV){
+								entryElem.setAttribute(RAV, "true");
+							}
+						}		
+						
 						// create empty grouperCriteria
 						Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, newExt);
 						
@@ -2541,12 +2605,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String typeXpathString = "";
 		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
 		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
+		List<String> usedSubTreeRefIDsRA = new ArrayList<String>();
 		for (String typeString : POPULATION_NAME_LIST) {
 			typeXpathString += "@type = '" + typeString + "' or";
 		}
 		typeXpathString = typeXpathString.substring(0, typeXpathString.lastIndexOf(" or"));
 		String xpathForSubTreeInPOPClause = "/measure/measureGrouping//clause[" + typeXpathString + "]//subTreeRef/@id";
 		String xpathForSubTreeInMOClause = "/measure/measureGrouping//clause[@type='measureObservation']//subTreeRef/@id";
+		String xpathForSubTreeInRAClause = "/measure//riskAdjustmentVariables/subTreeRef/@id";
 		try {
 			
 			//creating used Subtree Red Map in Populations
@@ -2577,6 +2643,23 @@ public class HQMFClauseLogicGenerator implements Generator {
 			for(String uuid: usedSubTreeRefIdsMO){
 				Node subTreeNode = createUsedSubTreeRefMap(simpleXmlProcessor, uuid);
 				subTreeNodeInMOMap.put(uuid, subTreeNode);
+			}
+			//creating used Subtree Red in Risk Adjustment
+			NodeList riskAdjSubTreeNode = simpleXmlProcessor.findNodeList(simpleXmlProcessor.getOriginalDoc(), xpathForSubTreeInRAClause);
+			for (int i=0;i<riskAdjSubTreeNode.getLength();i++) {
+				String uuid = riskAdjSubTreeNode.item(i).getNodeValue();
+				//TODO verify if need to call this instance function
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, simpleXmlProcessor);
+				if (!usedSubTreeRefIDsRA.contains(uuid)) {
+					usedSubTreeRefIDsRA.add(uuid);
+				}
+			}
+			//TODO verify if checkUnUsedSubTreeRef call needs to be changed
+			usedSubTreeRefIDsRA = checkUnUsedSubTreeRef(simpleXmlProcessor, usedSubTreeRefIDsRA);
+			for(String uuid: usedSubTreeRefIDsRA){
+				//TODO update createUsedSubTreeRefMap to look for RA
+				Node subTreeNode = createUsedSubTreeRefMap(simpleXmlProcessor, uuid);
+				subTreeNodeInRAMap.put(uuid, subTreeNode);
 			}
 			
 		} catch (XPathExpressionException e) {
@@ -2709,6 +2792,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param xmlProcessor the xml processor
 	 * @return the string
 	 */
+	//TODO edit for riskAdjustment?
 	private String checkIfQDMVarInstanceIsPresent(String usedSubtreeRefId,
 			XmlProcessor xmlProcessor){
 		
@@ -2770,6 +2854,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 */
 	public void setSubTreeNodeInMOMap(Map<String, Node> subTreeNodeInMOMap) {
 		this.subTreeNodeInMOMap = subTreeNodeInMOMap;
+	}
+	
+	/**
+	 * @return the subTreeNodeInMOMap
+	 */
+	public Map<String, Node> getSubTreeNodeInRAMap() {
+		return subTreeNodeInRAMap;
+	}
+	
+	/**
+	 * @param subTreeNodeInMOMap the subTreeNodeInMOMap to set
+	 */
+	public void setSubTreeNodeInRAMap(Map<String, Node> subTreeNodeInRAMap) {
+		this.subTreeNodeInRAMap = subTreeNodeInRAMap;
 	}
 	
 	/**

@@ -89,6 +89,11 @@ public interface Generator extends MatConstants {
 	/** The Constant TYPE_CODE. */
 	public static final String TYPE_CODE = "typeCode";
 	
+	/**
+	 * The Constant RAV
+	 */
+	public static final String RAV = "riskAdjVar";
+	
 	/** The Constant OBSERVATION_CRITERIA. */
 	public static final String OBSERVATION_CRITERIA = "observationCriteria";
 	

@@ -46,7 +46,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 *            the callback
 	 */
 	void forgotPassword(String email, 
-			String securityQuestion, String securityAnswer, int invalidUserCounter, 
+			String securityQuestion, String securityAnswer, 
 			AsyncCallback<ForgottenPasswordResult> callback);
 	
 	/**

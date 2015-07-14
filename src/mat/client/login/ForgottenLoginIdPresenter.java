@@ -141,9 +141,6 @@ public class ForgottenLoginIdPresenter {
 			case ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN:
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				break;
-			case ForgottenLoginIDResult.EMAIL_INVALID:
-				message = "Invalid Email Address.";
-				break;
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
 		}
 		return message;

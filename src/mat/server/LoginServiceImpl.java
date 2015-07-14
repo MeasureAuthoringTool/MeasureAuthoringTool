@@ -141,8 +141,7 @@ LoginService {
 	 */
 	@Override
 	public ForgottenPasswordResult forgotPassword(String loginId,
-			String securityQuestion, String securityAnswer,
-			int invalidUserCounter) {
+			String securityQuestion, String securityAnswer) {
 		
 		UserService userService = (UserService) context.getBean("userService");
 		// don't pass invalidUserCounter to server anymore

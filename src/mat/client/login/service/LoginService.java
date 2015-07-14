@@ -45,8 +45,7 @@ public interface LoginService extends RemoteService {
 	 * @return the forgotten password result
 	 */
 	ForgottenPasswordResult forgotPassword(String email,
-			String securityQuestion, String securityAnswer,
-			int invalidUserCounter);
+			String securityQuestion, String securityAnswer);
 	
 	/**
 	 * Change password security answers.

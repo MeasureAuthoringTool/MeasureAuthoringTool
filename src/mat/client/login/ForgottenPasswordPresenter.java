@@ -206,7 +206,7 @@ public class ForgottenPasswordPresenter {
 	private void requestForgottenPassword() {
 		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
 				display.getSecurityQuestion(), 
-				display.getSecurityAnswer(), 1,   // don't send count anymore for security reasons, always send a 1
+				display.getSecurityAnswer(),    
 				new AsyncCallback<ForgottenPasswordResult>() {
 					
 					@Override

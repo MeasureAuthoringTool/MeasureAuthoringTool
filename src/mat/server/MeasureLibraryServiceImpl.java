@@ -3579,7 +3579,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (operatorNode.getParentNode().getAttributes().getNamedItem("type")
 						.toString().equalsIgnoreCase("startum")) {
 					if (operatorNode.hasChildNodes()) {
-						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), false);
 					} else {
 						isInvalid = true;
 					}
@@ -3592,10 +3592,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// Populations other than Stratification : dont check for default top level Logical Op.
 					if (operatorNode.hasChildNodes() && 
 							operatorNode.getChildNodes().getLength()>1) {
-			                //removing comment child from topLevel Logical Operator
-							Node operatorCommentNode = operatorNode.getChildNodes().item(0);
-							operatorNode.removeChild(operatorCommentNode);
-							isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
+							isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), true);
 							
 							if (isInvalid) {
 								message = MatContext.get().getMessageDelegate()
@@ -3616,22 +3613,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param populationTopLevelLogicalOp the population top level logical op
 	 * @return true, if successful
 	 */
-	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp) {
+	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp, boolean isTopLevelLogicalOp) {
 		boolean isInvalid = false;
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
 				Node operatorNode = populationTopLevelLogicalOp.item(i);
-			    if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
-					isInvalid = true;
-					continue;
-				}
+			    if (operatorNode.getNodeName().equalsIgnoreCase("comment") && !isTopLevelLogicalOp) {
+			    	isInvalid = true;
+			    	continue; 
+				} 
+			    
 				if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
 					isInvalid = false;
 				} else {
 					if (operatorNode.hasChildNodes()) {
-						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes());
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), false);
 					} else {
-						isInvalid = true;
+						if(!isTopLevelLogicalOp){
+							isInvalid = true;
+						}
 					}
 				}
 				if(isInvalid){

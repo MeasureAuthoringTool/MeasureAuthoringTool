@@ -786,13 +786,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}else{
 					valueElem.setAttribute("valueSet", qdmOidValue);
 					addValueSetVersion(qdmNode, valueElem);
-					//Strip out 'Occurrence A_' at the start of qdmName If found.
-					String regExpression = "Occurrence [A-Z]_.*";
-					String newQdmName = qdmName;
-					if(newQdmName.matches(regExpression)){
-						newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
-					}
-					displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
+					displayNameElem.setAttribute(VALUE, removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 				}
 				if(displayNameElem.hasAttribute(VALUE)){
 					valueElem.appendChild(displayNameElem);
@@ -952,13 +946,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			if(codeDisplayName!=null){
 				displayName = codeDisplayName.getNodeValue();
 			} else {
-				//Strip out 'Occurrence A_' at the start of qdmName If found.
-				String regExpression = "Occurrence [A-Z]_.*";
-				String newQdmName = qdmName;
-				if(newQdmName.matches(regExpression)){
-					newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
-				}
-				displayName = newQdmName+" "+qdmTaxonomy+" Value Set";
+				displayName = removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set";
 			}
 			displayNameElem.setAttribute(VALUE, displayName);
 			codeElem.appendChild(displayNameElem);
@@ -970,13 +958,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(), qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			//Strip out 'Occurrence A_' at the start of qdmName If found.
-			String regExpression = "Occurrence [A-Z]_.*";
-			String newQdmName = qdmName;
-			if(newQdmName.matches(regExpression)){
-				newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
-			}
-			displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
+			displayNameElem.setAttribute(VALUE, removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 		} else if(isIntervention){
@@ -985,13 +967,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			codeElem.setAttribute("valueSet", qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			//Strip out 'Occurrence A_' at the start of qdmName If found.
-			String regExpression = "Occurrence [A-Z]_.*";
-			String newQdmName = qdmName;
-			if(newQdmName.matches(regExpression)){
-				newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
-			}
-			displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
+			displayNameElem.setAttribute(VALUE, removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 		}else {
@@ -1063,8 +1039,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					}
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
-					attributedToBeChangedInNode.getAttributes().getNamedItem("value").
-					setNodeValue(qdmName + " " + qdmTaxonomy + " value set");
+					attributedToBeChangedInNode.getAttributes().getNamedItem("value").					
+					setNodeValue(removeOccurrenceFromName(qdmName) + " " + qdmTaxonomy + " value set");
 				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("value").setNodeValue(qdmNameDataType);
 				}
@@ -1076,6 +1052,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
+	}
+	
+	//Strip out 'Occurrence A_' at the start of qdmName If found.
+	private String removeOccurrenceFromName(String qdmName){
+		String regExpression = "Occurrence [A-Z]_.*";
+		String newQdmName = qdmName;
+		if(newQdmName.matches(regExpression)){
+			newQdmName = newQdmName.substring(newQdmName.indexOf('_')+1);
+		}
+		return newQdmName;
 	}
 	
 	/**

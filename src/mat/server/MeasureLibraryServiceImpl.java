@@ -3618,8 +3618,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
 				Node operatorNode = populationTopLevelLogicalOp.item(i);
-			    if (operatorNode.getNodeName().equalsIgnoreCase("comment") && !isTopLevelLogicalOp) {
-			    	isInvalid = true;
+			    if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
+			    	//ignore the comment for the top Level Logical Operator
+			    	if(!isTopLevelLogicalOp) {
+			    		isInvalid = true;
+			    	}
 			    	continue; 
 				} 
 			    

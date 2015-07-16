@@ -2299,6 +2299,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		boolean findAllOid = false;
 		boolean version = false;
 		boolean expansionId = false;
+		boolean isAllOidsMod = false;
 
 		if ((qds.getVersion().equalsIgnoreCase("1.0") || qds.getVersion()
 				.equalsIgnoreCase("1"))
@@ -2363,6 +2364,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				populatedOldQDM(modifiableQDM, qdmToEval);
 				if (!uuid.equalsIgnoreCase(qdmToEval.getUuid())
 						&& qdmToEval.getOid().equalsIgnoreCase(oid)) {
+					isAllOidsMod = true;
 					if (version) {
 						modifiableQDM.setVersion(qds.getVersion());
 					}
@@ -2376,7 +2378,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 
 		}
-		return findAllOid;
+		return (findAllOid && isAllOidsMod);
 	}
 
 }

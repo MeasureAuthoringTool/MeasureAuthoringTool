@@ -163,7 +163,7 @@ public class MessageDelegate {
 			"If you want to continue say Yes or No to cancel.";
 	
 	/** The successfully pasted qdm elements in measure. */
-	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully";
+	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully.";
 	
 	/** The copy qdm select atleast one. */
 	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied QDM element to copy.";
@@ -572,7 +572,7 @@ public class MessageDelegate {
 	private final String STEWARD_REQUIRED = "Steward is required.";
 	
 	/** The successful modify applied qdm. */
-	private final String SUCCESSFUL_MODIFY_APPLIED_QDM = "Selected QDM element has been modified successfully";
+	private final String SUCCESSFUL_MODIFY_APPLIED_QDM = "Selected QDM element has been modified successfully.";
 	
 	/** The system error. */
 	private final String SYSTEM_ERROR = "Import failed due to system error. Please try again.";
@@ -654,7 +654,8 @@ public class MessageDelegate {
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE = "Clause Exceeds Maximum Number of Nested Logic Levels (10).";
 	
 	/** The clause work space invalid nested clause. */
-	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Any logical operator under a top-level logical operator must contain at least one logical operator or clause.";
+	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Measure logic is incomplete. Any logical operator under a top-level logical operator must contain at least one logical operator or clause. " +
+			"                         Any terminal logical operator under a top-level logical operator must contain at least one clause.";
 	/**
 	 * Gets the component measures added successfully.
 	 *

@@ -952,7 +952,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			if(codeDisplayName!=null){
 				displayName = codeDisplayName.getNodeValue();
 			} else {
-				displayName = qdmName+" "+qdmTaxonomy+" Value Set";
+				//Strip out 'Occurrence A_' at the start of qdmName If found.
+				String regExpression = "Occurrence [A-Z]_.*";
+				String newQdmName = qdmName;
+				if(newQdmName.matches(regExpression)){
+					newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
+				}
+				displayName = newQdmName+" "+qdmTaxonomy+" Value Set";
 			}
 			displayNameElem.setAttribute(VALUE, displayName);
 			codeElem.appendChild(displayNameElem);
@@ -964,7 +970,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			codeElem.setAttribute(templateNode.getAttributes().getNamedItem("valueSetId").getNodeValue(), qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			//Strip out 'Occurrence A_' at the start of qdmName If found.
+			String regExpression = "Occurrence [A-Z]_.*";
+			String newQdmName = qdmName;
+			if(newQdmName.matches(regExpression)){
+				newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
+			}
+			displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 		} else if(isIntervention){
@@ -973,7 +985,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			codeElem.setAttribute("valueSet", qdmOidValue);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+			//Strip out 'Occurrence A_' at the start of qdmName If found.
+			String regExpression = "Occurrence [A-Z]_.*";
+			String newQdmName = qdmName;
+			if(newQdmName.matches(regExpression)){
+				newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
+			}
+			displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);
 		}else {

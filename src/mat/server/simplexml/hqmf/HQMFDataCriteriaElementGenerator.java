@@ -1289,7 +1289,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
-				displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+				String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+				displayNameElem.setAttribute(VALUE, newQdmName
 						+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 				translationNode.appendChild(displayNameElem);
 				targetQuantityTag.appendChild(translationNode);
@@ -1528,7 +1529,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			addValueSetVersion(attributeQDMNode, valueElem);
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+			valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 			
 			valueElem.appendChild(valueDisplayNameElem);
 			observationCriteriaElem.appendChild(valueElem);
@@ -1764,7 +1765,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			addValueSetVersion(attributeQDMNode, dischargeDispositionElement);
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+			valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 			dischargeDispositionElement.appendChild(valueDisplayNameElem);
 			dataCriteriaElem.appendChild(dischargeDispositionElement);
 		}
@@ -1795,7 +1796,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		addValueSetVersion(attributeQDMNode, valueElem);
 		Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);
-		valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+		valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 		valueElem.appendChild(valueDisplayNameElem);
 		
 		return valueElem;
@@ -1956,7 +1957,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			addValueSetVersion(attributeQDMNode, valueElem);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+			String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			displayNameElem.setAttribute(VALUE, newQdmName
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			valueElem.appendChild(displayNameElem);
 			targetSiteCodeElement.appendChild(valueElem);
@@ -2006,7 +2008,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			addValueSetVersion(attributeQDMNode, targetSiteCodeElement);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+			String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			displayNameElem.setAttribute(VALUE, newQdmName
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			targetSiteCodeElement.appendChild(displayNameElem);
 			if (insertBeforeNodeName != null) {

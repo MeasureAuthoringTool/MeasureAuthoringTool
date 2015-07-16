@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -133,7 +135,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
-				displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+				String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+				displayNameElem.setAttribute(VALUE, newQdmName
 						+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 				translationNode.appendChild(displayNameElem);
 				targetQuantityTag.appendChild(translationNode);
@@ -372,7 +375,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			/*addValueSetVersion(attributeQDMNode, valueElem);*/
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+			valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 			
 			valueElem.appendChild(valueDisplayNameElem);
 			observationCriteriaElem.appendChild(valueElem);
@@ -597,7 +600,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			addValueSetVersion(attributeQDMNode, dischargeDispositionElement);
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+			valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 			dischargeDispositionElement.appendChild(valueDisplayNameElem);
 			dataCriteriaElem.appendChild(dischargeDispositionElement);
 		}
@@ -628,7 +631,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		addValueSetVersion(attributeQDMNode, valueElem);
 		Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(DISPLAY_NAME);
-		valueDisplayNameElem.setAttribute(VALUE, attributeValueSetName+" "+attributeTaxonomy+" Value Set");
+		valueDisplayNameElem.setAttribute(VALUE, removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 		valueElem.appendChild(valueDisplayNameElem);
 		
 		return valueElem;
@@ -785,7 +788,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			addValueSetVersion(attributeQDMNode, valueElem);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+			String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			displayNameElem.setAttribute(VALUE, newQdmName
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			valueElem.appendChild(displayNameElem);
 			targetSiteCodeElement.appendChild(valueElem);
@@ -835,7 +839,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			addValueSetVersion(attributeQDMNode, targetSiteCodeElement);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			displayNameElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue()
+			String newQdmName = removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			displayNameElem.setAttribute(VALUE, newQdmName
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			targetSiteCodeElement.appendChild(displayNameElem);
 			if (insertBeforeNodeName != null) {
@@ -1140,7 +1145,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("value").
-					setNodeValue(qdmName + " " + qdmTaxonomy + " value set");
+					setNodeValue(removeOccurrenceFromName(qdmName) + " " + qdmTaxonomy + " value set");
 				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
 					attributedToBeChangedInNode.getAttributes().getNamedItem("value").setNodeValue(qdmNameDataType);
 				}
@@ -1217,5 +1222,15 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor
 			, Node attributeQDMNode) throws XPathExpressionException{
 		createDataCriteriaForAttributes(qdmNode, excerptElement, dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+	}
+	
+	//Strip out 'Occurrence A_' at the start of qdmName If found.
+	private String removeOccurrenceFromName(String qdmName){
+		String regExpression = "Occurrence [A-Z]_.*";
+		String newQdmName = qdmName;
+		if(newQdmName.matches(regExpression)){
+			newQdmName = newQdmName.substring(newQdmName.indexOf('_')+1);
+		}
+		return newQdmName;
 	}
 }

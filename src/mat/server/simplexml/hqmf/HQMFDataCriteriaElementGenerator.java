@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -783,7 +786,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}else{
 					valueElem.setAttribute("valueSet", qdmOidValue);
 					addValueSetVersion(qdmNode, valueElem);
-					displayNameElem.setAttribute(VALUE, qdmName+" "+qdmTaxonomy+" Value Set");
+					//Strip out 'Occurrence A_' at the start of qdmName If found.
+					String regExpression = "Occurrence [A-Z]_.*";
+					String newQdmName = qdmName;
+					if(newQdmName.matches(regExpression)){
+						newQdmName = newQdmName.substring(qdmName.indexOf('_')+1);
+					}
+					displayNameElem.setAttribute(VALUE, newQdmName+" "+qdmTaxonomy+" Value Set");
 				}
 				if(displayNameElem.hasAttribute(VALUE)){
 					valueElem.appendChild(displayNameElem);
@@ -867,7 +876,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					occurrenceMap.put(occurString, refNode);
 					occurrenceMap.put(occName+occurString,cloneRefNode);
 				}
-				
+								
 				String refRootValue = cloneRefNode.getAttributes().getNamedItem(ID).getNodeValue();
 				
 				String refDatatype = cloneRefNode.getAttributes().getNamedItem("datatype").getNodeValue();

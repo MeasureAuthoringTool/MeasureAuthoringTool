@@ -18,7 +18,7 @@
        <xsl:value-of select="./localVariableName/@value"></xsl:value-of>
     </xsl:variable>
     <xsl:variable name="rav_count">
-       <xsl:value-of select="count(../entry[@riskAdjVar='true'])"></xsl:value-of>
+       <xsl:value-of select="count(../entry[@riskAdjVar='true']/*/id[@root=$qdm_root and @extension=$qdm_extension])"></xsl:value-of>
     </xsl:variable>
     <xsl:variable name="criteriaRef">
         <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"></xsl:value-of>

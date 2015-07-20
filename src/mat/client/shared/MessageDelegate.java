@@ -654,7 +654,7 @@ public class MessageDelegate {
 	private final String CLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE = "Clause Exceeds Maximum Number of Nested Logic Levels (10).";
 	
 	/** The clause work space invalid nested clause. */
-	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Measure logic is incomplete. Any logical operator under a top-level logical operator must contain at least one logical operator or clause. " +
+	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Any logical operator under a top-level logical operator must contain at least one logical operator or clause. " +
 			"                         Any terminal logical operator under a top-level logical operator must contain at least one clause.";
 	/**
 	 * Gets the component measures added successfully.

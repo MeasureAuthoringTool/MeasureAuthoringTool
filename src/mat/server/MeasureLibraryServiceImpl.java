@@ -3622,9 +3622,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			    	//ignore the comment for the top Level Logical Operator
 			    	if(!isTopLevelLogicalOp) {
 			    		isInvalid = true;
+			    	} else {
+			    		isTopLevelLogicalOp = false;
 			    	}
 			    	continue; 
-				} 
+				}
 			    
 				if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
 					isInvalid = false;
@@ -3634,7 +3636,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					} else {
 						if(!isTopLevelLogicalOp){
 							isInvalid = true;
-						}
+						} else {
+				    		isTopLevelLogicalOp = false;
+				    	}
 					}
 				}
 				if(isInvalid){

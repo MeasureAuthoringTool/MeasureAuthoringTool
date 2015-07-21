@@ -167,21 +167,15 @@ public class ExportSimpleXML {
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		//to get SubTreeRefIds from Population WorkSpace
 		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(usedClauseIds, originalDoc);
-		
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
-		
 		/*	usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
-		
 		usedSubTreeIds = checkUnUsedSubTreeRef(usedSubTreeIds, originalDoc);*/
-		
 		formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
-		
 		//to add UUID attribute for QDM Attribute
 		addUUIDtoQDMAttribute(usedSubTreeIds, originalDoc);
-		
 		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
 		//using the above list we need to traverse the originalDoc and remove the unused QDM's
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
@@ -193,8 +187,29 @@ public class ExportSimpleXML {
 		modifySubTreeLookUpForOccurances(originalDoc);
 		// re-order measure Grouping sequence.
 		modifyMeasureGroupingSequence(originalDoc);
+		//Remove Empty Comments nodes from population Logic.
+		removeEmptyCommentsFromPopulationLogic(originalDoc);
 		//addLocalVariableNameToQDMs(originalDoc);
 		return transform(originalDoc);
+	}
+	/**
+	 * This method will remove empty comments nodes from clauses which are part of Measure Grouping.
+	 * @param originalDoc - Document
+	 * @throws XPathExpressionException -Exception.
+	 */
+	private static void removeEmptyCommentsFromPopulationLogic(Document originalDoc) throws XPathExpressionException {
+		NodeList commentsNodeList = (NodeList) xPath.evaluate("/measure/measureGrouping//*/comment",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for (int i = 0; i < commentsNodeList.getLength(); i++) {
+			Node commentNode = commentsNodeList.item(i);
+			if ((commentNode.getTextContent() != null)
+					&& !commentNode.getTextContent().equalsIgnoreCase("")) {
+				continue;
+			} else {
+				Node parentNode = commentNode.getParentNode();
+				parentNode.removeChild(commentNode);
+			}
+		}
 	}
 	/**
 	 * Gets the used sub ref from risk adjustment variables.

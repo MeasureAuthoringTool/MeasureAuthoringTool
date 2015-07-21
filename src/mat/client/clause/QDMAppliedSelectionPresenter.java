@@ -956,7 +956,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(QualityDataSetDTO result, final int index) {
 				resetQDSMsgPanel();
-				if(modifyValueSetDTO!=null && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
+				if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 					isModified = false;
 				}
 				service.getAppliedQDMFromMeasureXml(MatContext.get()
@@ -1401,7 +1401,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUSerDefined = true;
 			searchDisplay.getOIDInput().setEnabled(true);
-			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().toString());
+			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().getValue());
 			searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getSpecificOccChkBox().setEnabled(false);

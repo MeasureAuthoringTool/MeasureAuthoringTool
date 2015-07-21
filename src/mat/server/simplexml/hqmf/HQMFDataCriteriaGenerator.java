@@ -41,4 +41,14 @@ public class HQMFDataCriteriaGenerator implements Generator {
 		xmlString = xmlString.replaceAll("<root>", "").replaceAll("</root>","");
 		return xmlString;
 	}
+
+	//Strip out 'Occurrence A_' at the start of qdmName If found.
+	public static String removeOccurrenceFromName(String qdmName){
+		String regExpression = "Occurrence [A-Z]_.*";
+		String newQdmName = qdmName;
+		if(newQdmName.matches(regExpression)){
+			newQdmName = newQdmName.substring(newQdmName.indexOf('_')+1);
+		}
+		return newQdmName;
+	}
 }

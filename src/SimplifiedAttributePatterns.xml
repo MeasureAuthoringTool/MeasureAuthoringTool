@@ -272,9 +272,65 @@
         <mode mode="ValueSet"/>
     </attribute>
     <attribute attribName="negation rationale">
-       <!--  <mode mode="IsPresent"/> -->
         <mode mode="ValueSet"/>
     </attribute>
+    <attribute attribName="relationship">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+     <attribute attribName="onset age">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="recorded datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="severity">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="onset datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="abatement datetime">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="reference range low">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    <attribute attribName="reference range low">
+        <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
+        <mode mode="GreaterThan"/>
+        <mode mode="GreaterThanEqualTo"/>
+        <mode mode="LessThan"/>
+        <mode mode="LessThanEqualTo"/>
+    </attribute>
+    
     
     <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Non-Order">
 
@@ -290,7 +346,7 @@
         <datatype>device, intolerance</datatype>
         <datatype>device, recommended</datatype>
         <datatype>diagnosis, active</datatype>
-        <datatype>diagnosis, family history</datatype>
+        <datatype>family history</datatype>
         <datatype>diagnosis, inactive</datatype>
         <datatype>diagnosis, resolved</datatype>
         <datatype>diagnostic study, adverse event</datatype>
@@ -338,10 +394,7 @@
         <datatype>substance, allergy</datatype>
         <datatype>substance, intolerance</datatype>
         <datatype>substance, recommended</datatype>
-        <datatype>symptom, active</datatype>
-        <datatype>symptom, assessed</datatype>
-        <datatype>symptom, inactive</datatype>
-        <datatype>symptom, resolved</datatype>
+        <datatype>symptom</datatype>
         <datatype>transfer from</datatype>
         <datatype>transfer to</datatype>
     </datatypes>

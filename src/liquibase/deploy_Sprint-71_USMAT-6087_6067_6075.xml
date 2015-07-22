@@ -16,45 +16,48 @@
 	    		
 	    		<!--Deleting Symptom, Assessed, Symptom, Inactive, Symptom, Resolved and Updating Symptom, Active to Symptom-->   
 	    		   
-	    		   <!-- DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "8";
-	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "71"; -->
+	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "8";
+	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "71";
 	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "72";
 	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "73";
 	    		   DELETE FROM DATA_TYPE WHERE DATA_TYPE_ID = "74";
 	    		
-	    		UPDATE DATA_TYPE SET DESCRIPTION = 'Symptom' WHERE DATA_TYPE_ID = '71';
+	    		
 	    		
 	    		<!--  Updating Diagnosis, Family History DataType to Family History DataType  -->
-	    		UPDATE DATA_TYPE SET DESCRIPTION = 'Family History' WHERE DATA_TYPE_ID = '8';
 	    		
+	    		INSERT INTO DATA_TYPE VALUES ((select concat(max(cast(aw.DATA_TYPE_ID as signed))+1,'') from DATA_TYPE aw),
+				 'Family History', '4');
+				 INSERT INTO DATA_TYPE VALUES ((select concat(max(cast(aw.DATA_TYPE_ID as signed))+1,'') from DATA_TYPE aw),
+				 'Symptom', '19');
 				
 				<!-- MAT- 6087 Adding Attributes to  Family History new DataType-->
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'relationship', 8, 'Data Type');
+				 'relationship', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'onset age', 8, 'Data Type');
+				 'onset age', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'recorded datetime', 8, 'Data Type');
+				 'recorded datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Health Record Field', 8, 'Data Type');
+				 'Health Record Field', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Source', 8, 'Data Type');
+				 'Source', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Recorded', 8, 'Data Type');
+				 'Recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Family History'), 'Data Type');
 				
 				<!-- MAT-6067 Adding Attributes to  Symptom new DataType-->
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'severity', 71, 'Data Type');
+				 'severity', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'onset datetime', 71, 'Data Type');
+				 'onset datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'abatement datetime', 71, 'Data Type');
+				 'abatement datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Health Record Field', 71, 'Data Type');
+				 'Health Record Field', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Source', 71, 'Data Type');
+				 'Source', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw),
-				 'Recorded', 71, 'Data Type');
+				 'Recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where  DESCRIPTION ='Symptom'), 'Data Type');
 				
 				<!--MAT-6075 Adding Attributes to  Laboratory Test, Performed DataType-->
 				INSERT INTO `QDM_ATTRIBUTES` VALUES ((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 

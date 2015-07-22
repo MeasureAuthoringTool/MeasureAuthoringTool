@@ -314,7 +314,7 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    <attribute attribName="reference range low">
+    <attribute attribName="reference range high">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/>
         <mode mode="GreaterThan"/>

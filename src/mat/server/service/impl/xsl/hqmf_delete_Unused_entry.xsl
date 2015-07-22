@@ -17,9 +17,6 @@
 	<xsl:variable name="qdm_value">
        <xsl:value-of select="./localVariableName/@value"></xsl:value-of>
     </xsl:variable>
-    <xsl:variable name="rav_count">
-       <xsl:value-of select="count(../entry[@riskAdjVar='true']/*/id[@root=$qdm_root and @extension=$qdm_extension])"></xsl:value-of>
-    </xsl:variable>
     <xsl:variable name="criteriaRef">
         <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"></xsl:value-of>
     </xsl:variable>
@@ -31,7 +28,7 @@
     </xsl:variable>
 
 	<xsl:choose>
-		<xsl:when test="($criteriaRef = 0) and ($valueValue = 0) and ($expressionValue = 0) and ($rav_count = 0)">
+		<xsl:when test="($criteriaRef = 0) and ($valueValue = 0) and ($expressionValue = 0) and (@riskAdjVar != 'true')">
 			<xsl:text disable-output-escaping="yes">&lt;!--</xsl:text>
 			<xsl:copy>
 				<xsl:apply-templates select="node()|@*">

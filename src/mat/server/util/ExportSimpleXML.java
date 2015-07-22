@@ -198,14 +198,12 @@ public class ExportSimpleXML {
 	 * @throws XPathExpressionException -Exception.
 	 */
 	private static void removeEmptyCommentsFromPopulationLogic(Document originalDoc) throws XPathExpressionException {
-		NodeList commentsNodeList = (NodeList) xPath.evaluate("/measure/measureGrouping//*/comment",
+		NodeList commentsNodeList = (NodeList) xPath.evaluate("/measure/measureGrouping//comment",
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < commentsNodeList.getLength(); i++) {
 			Node commentNode = commentsNodeList.item(i);
-			if ((commentNode.getTextContent() != null)
-					&& !commentNode.getTextContent().equalsIgnoreCase("")) {
-				continue;
-			} else {
+			if ((commentNode.getTextContent() == null)
+					|| (commentNode.getTextContent().trim().length() == 0)) {
 				Node parentNode = commentNode.getParentNode();
 				parentNode.removeChild(commentNode);
 			}

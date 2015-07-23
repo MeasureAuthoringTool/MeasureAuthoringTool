@@ -326,6 +326,10 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
+    <attribute attribName="reported">
+    	<mode mode="IsPresent"/>
+    	<mode mode="ValueSet"/>
+    </attribute>
     
     
     <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Non-Order">
@@ -363,6 +367,10 @@
         <datatype>patient characteristic sex</datatype>
         <datatype>patient characteristic clinical trial participant</datatype>
         <datatype>provider characteristic</datatype>
+        <datatype>immunization, administered</datatype>
+        <datatype>immunization, order</datatype>
+        <datatype>immunization, allergy</datatype>
+        <datatype>immunization, intolerance</datatype>
         <datatype>intervention, adverse event</datatype>
         <datatype>intervention, intolerance</datatype>
         <datatype>intervention, performed</datatype>

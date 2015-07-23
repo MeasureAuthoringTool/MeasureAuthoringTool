@@ -9,9 +9,11 @@ import java.util.TreeMap;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -32,7 +34,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	/** The measure grouping map. */
 //	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	
-	private TreeMap<String, NodeList> measureGroupingMap = new TreeMap<String, NodeList>();
+	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
 	
 	/** The scoring type. */
 	private String scoringType;
@@ -79,8 +81,8 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	 * @throws XPathExpressionException - Exception
 	 */
 	private void generatePopulationCriteria(MeasureExport me) throws XPathExpressionException {
-		for (String key : measureGroupingMap.keySet()) {
-			Node populationCriteriaComponentElement = createPopulationCriteriaSection(key , me.getHQMFXmlProcessor());
+		for (Integer key : measureGroupingMap.keySet()) {
+			Node populationCriteriaComponentElement = createPopulationCriteriaSection(key.toString() , me.getHQMFXmlProcessor());
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				String popType = groupingChildList.item(i).getAttributes().getNamedItem(TYPE).getNodeValue();
@@ -152,7 +154,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 						//No top Logical Op.
 						if(checkForRequiredClauseByScoring(me, popType, groupingChildList.item(i))){
 							generateStratifierCriteria(groupingChildList.item(i)
-									, populationCriteriaComponentElement, me, key);
+									, populationCriteriaComponentElement, me, key.toString());
 						}
 						break;
 					default:
@@ -502,7 +504,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		for (int i = 0; i < measureGroupings.getLength(); i++) {
 			String measureGroupingSequence = measureGroupings.item(i).getAttributes().getNamedItem("sequence").getNodeValue();
 			NodeList childNodeList = measureGroupings.item(i).getChildNodes();
-			measureGroupingMap.put(measureGroupingSequence, childNodeList);
+			measureGroupingMap.put(Integer.parseInt(measureGroupingSequence), childNodeList);
 		}
 	}
 	/**

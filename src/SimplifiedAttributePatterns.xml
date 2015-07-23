@@ -294,10 +294,6 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    <attribute attribName="severity">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
     <attribute attribName="onset datetime">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/>

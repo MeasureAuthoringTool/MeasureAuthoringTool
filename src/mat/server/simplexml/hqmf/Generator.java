@@ -146,6 +146,13 @@ public interface Generator extends MatConstants {
 	
 	/** The Constant REFILLS. */
 	public static final String REFILLS = "refills";
+	
+	/** The Constant CUMULATIVE_MEDICATION_DURATION. */
+	public static final String CUMULATIVE_MEDICATION_DURATION = "cumulative medication duration";
+	
+	/** The Constant FREQUENCY. */
+	public static final String FREQUENCY = "frequency";
+	
 	/** The Constant ADMISSION_DATETIME. */
 	public static final String ADMISSION_DATETIME = "admission datetime";
 	/**

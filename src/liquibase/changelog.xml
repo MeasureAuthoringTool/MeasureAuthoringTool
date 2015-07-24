@@ -175,4 +175,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-70_USMAT-5986.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6087_6067_6075_User_Story.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6071_6103_6095_6107.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint71_USMAT-6071_Delete_reported.xml"/>
+		
 	</databaseChangeLog>

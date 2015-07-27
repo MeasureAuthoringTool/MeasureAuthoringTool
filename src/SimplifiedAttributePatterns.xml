@@ -167,6 +167,7 @@
     </attribute>
     <attribute attribName="Signed Datetime">
         <mode mode="IsPresent"/>
+        <mode mode="Equals"/>
         <mode mode="GreaterThan"/>
         <mode mode="GreaterThanEqualTo"/>
         <mode mode="LessThan"/>
@@ -174,7 +175,7 @@
     </attribute>
     <attribute attribName="Start Datetime" datatypes="Non-Order">
         <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
+        <mode mode="Equals"/> <!-- added: 7/27/2015 2:02 P.M. -->
         <mode mode="GreaterThan"/>
         <mode mode="GreaterThanEqualTo"/>
         <mode mode="LessThan"/>
@@ -198,6 +199,7 @@
     </attribute>
     <attribute attribName="Stop Datetime" datatypes="Order">
         <mode mode="IsPresent"/>
+        <mode mode="Equals"/> <!-- added: 7/27/2015 2:02 P.M. -->
         <mode mode="GreaterThan"/>
         <mode mode="GreaterThanEqualTo"/>
         <mode mode="LessThan"/>

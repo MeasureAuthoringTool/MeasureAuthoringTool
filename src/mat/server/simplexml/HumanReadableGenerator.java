@@ -1494,7 +1494,9 @@ public class HumanReadableGenerator implements MatConstants{
 					.getNodeValue();
 		}
 		
-		if (unitValue.equals("years") || unitValue.equals("year")) {
+		if (unitValue.equals("L")) {
+			unitValue = "Liter";
+		} else if (unitValue.equals("years") || unitValue.equals("year")) {
 			unitValue = "year(s)";
 		} else if (unitValue.equals("month") || unitValue.equals("months")) {
 			unitValue = "month(s)";

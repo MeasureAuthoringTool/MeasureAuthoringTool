@@ -1493,9 +1493,8 @@ public class HumanReadableGenerator implements MatConstants{
 			unitValue = attributeNode.getAttributes().getNamedItem("unit")
 					.getNodeValue();
 		}
-		if (unitValue.equals("celsius")) {
-			unitValue = "\u2103";
-		} else if (unitValue.equals("years") || unitValue.equals("year")) {
+		
+		if (unitValue.equals("years") || unitValue.equals("year")) {
 			unitValue = "year(s)";
 		} else if (unitValue.equals("month") || unitValue.equals("months")) {
 			unitValue = "month(s)";
@@ -1529,12 +1528,11 @@ public class HumanReadableGenerator implements MatConstants{
 		
 		String typeAttribute = item.getAttributes().getNamedItem("type")
 				.getNodeValue().toUpperCase();
-		String functionDisplayName = item.getAttributes()
-				.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+		String functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		
 		if (MatConstants.AGE_AT.equalsIgnoreCase(typeAttribute)) {
 			functionDisplayName = item.getAttributes()
-					.getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase();
+					.getNamedItem(DISPLAY_NAME).getNodeValue();
 		} else if (functionDisplayName.startsWith("AVG")) {
 			functionDisplayName = functionDisplayName.replaceFirst("AVG",
 					"Average") + " of";
@@ -1576,8 +1574,8 @@ public class HumanReadableGenerator implements MatConstants{
 			functionDisplayName = functionDisplayName.replaceFirst(unit,
 					getUnitString(item));
 		}
-		functionDisplayName = StringUtils.capitalize(functionDisplayName
-				.toLowerCase());
+//		functionDisplayName = StringUtils.capitalize(functionDisplayName
+//				.toLowerCase());
 		
 		return functionDisplayName + ": ";
 	}

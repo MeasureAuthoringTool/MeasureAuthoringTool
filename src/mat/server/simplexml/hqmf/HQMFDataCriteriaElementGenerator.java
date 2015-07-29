@@ -2461,12 +2461,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			returnString = "s";
 		}else if(unitString.equals("bpm")){
 			returnString = "{H.B}/min";
-		}else if(unitString.equals("mmHG")){
+		}else if(unitString.equals("mmHg")){
 			returnString = "mm[Hg]";
 		}else if(unitString.equals("mEq")){
 			returnString = "meq";
 		}else if(unitString.equals("celsius")){
-			returnString = "cel";
+			returnString = "Cel";
 		}else if(unitString.equals("WBC/mm3")){
 			returnString = "{WBC}/mm3";
 		}else if(unitString.equals("WBC/hpf")){
@@ -2476,7 +2476,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}else if(unitString.equals("per mm3")){
 			returnString = "/mm3";
 		}else if(unitString.equals("copies/mL")){
-			returnString = "[copies]/mL";
+			returnString = "{copies}/mL";
 		}else if(unitString.equals("IU")){
 			returnString = "[iU]";
 		}

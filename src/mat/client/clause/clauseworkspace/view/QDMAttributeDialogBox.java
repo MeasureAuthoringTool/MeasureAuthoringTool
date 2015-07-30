@@ -291,7 +291,7 @@ public class QDMAttributeDialogBox {
 			CellTreeNode attributeNode = attributeNodeList.get(0);
 			attributeName = (String)attributeNode.getExtraInformation(NAME);
 		}
-		List<String> modeList = JSONAttributeModeUtility.getAttrModeList(attributeName, qdmDataType);
+		List<String> modeList = JSONAttributeModeUtility.getAttrModeList(attributeName);
 		modifyModeList(modeList);
 		Label opearorLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Mode");
 		dialogContents.add(opearorLabel);
@@ -357,7 +357,7 @@ public class QDMAttributeDialogBox {
 					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					//attributeListBox.setTitle(optionElement.getTitle());
-					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle(),qdmDataType));
+					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
 					modeListBox.setEnabled(true);
 					qdmAttributeDate.setValue("");
 					quantityTextBox.setValue("");

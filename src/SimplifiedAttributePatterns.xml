@@ -173,7 +173,7 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    <attribute attribName="Start Datetime" datatypes="Non-Order">
+    <attribute attribName="Start Datetime">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/> <!-- added: 7/27/2015 2:02 P.M. -->
         <mode mode="GreaterThan"/>
@@ -181,25 +181,9 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    <attribute attribName="Start Datetime" datatypes="Order">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/> <!-- added: 1/22/2015 4:23 P.M. -->
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Stop Datetime" datatypes="Non-Order">
+    <attribute attribName="Stop Datetime">
         <mode mode="IsPresent"/>
         <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Stop Datetime" datatypes="Order">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/> <!-- added: 7/27/2015 2:02 P.M. -->
         <mode mode="GreaterThan"/>
         <mode mode="GreaterThanEqualTo"/>
         <mode mode="LessThan"/>
@@ -329,87 +313,4 @@
         <mode mode="LessThanEqualTo"/>
     </attribute>
     
-    
-    <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Non-Order">
-
-        <datatype>care goal</datatype>
-        <datatype>patient care experience</datatype>
-        <datatype>provider care experience</datatype>
-        <datatype>communication: from patient to provider</datatype>
-        <datatype>communication: from provider to patient</datatype>
-        <datatype>communication: from provider to provider</datatype>
-        <datatype>device, adverse event</datatype>
-        <datatype>device, allergy</datatype>
-        <datatype>device, applied</datatype>
-        <datatype>device, intolerance</datatype>
-        <datatype>device, recommended</datatype>
-        <datatype>diagnosis, active</datatype>
-        <datatype>family history</datatype>
-        <datatype>diagnosis, inactive</datatype>
-        <datatype>diagnosis, resolved</datatype>
-        <datatype>diagnostic study, adverse event</datatype>
-        <datatype>diagnostic study, intolerance</datatype>
-        <datatype>diagnostic study, performed</datatype>
-        <datatype>diagnostic study, recommended</datatype>
-        <datatype>encounter, active</datatype>
-        <datatype>encounter, performed</datatype>
-        <datatype>encounter, recommended</datatype>
-        <datatype>functional status, performed</datatype>
-        <datatype>functional status, recommended</datatype>
-        <datatype>patient characteristic</datatype>
-        <datatype>patient characteristic birthdate</datatype>
-        <datatype>patient characteristic ethnicity</datatype>
-        <datatype>patient characteristic expired</datatype>
-        <datatype>patient characteristic payer</datatype>
-        <datatype>patient characteristic race</datatype>
-        <datatype>patient characteristic sex</datatype>
-        <datatype>patient characteristic clinical trial participant</datatype>
-        <datatype>provider characteristic</datatype>
-        <datatype>immunization, administered</datatype>
-        <datatype>immunization, order</datatype>
-        <datatype>immunization, allergy</datatype>
-        <datatype>immunization, intolerance</datatype>
-        <datatype>intervention, adverse event</datatype>
-        <datatype>intervention, intolerance</datatype>
-        <datatype>intervention, performed</datatype>
-        <datatype>intervention, recommended</datatype>
-        <datatype>laboratory test, adverse event</datatype>
-        <datatype>laboratory test, intolerance</datatype>
-        <datatype>laboratory test, performed</datatype>
-        <datatype>laboratory test, recommended</datatype>
-        <datatype>medication, active</datatype>
-        <datatype>medication, administered</datatype>
-        <datatype>medication, adverse effects</datatype>
-        <datatype>medication, allergy</datatype>
-        <datatype>medication, discharge</datatype>
-        <datatype>medication, dispensed</datatype>
-        <datatype>medication, intolerance</datatype>
-        <datatype>physical exam, performed</datatype>
-        <datatype>physical exam, recommended</datatype>
-        <datatype>procedure, adverse event</datatype>
-        <datatype>procedure, intolerance</datatype>
-        <datatype>procedure, performed</datatype>
-        <datatype>procedure, recommended</datatype>
-        <datatype>risk category assessment</datatype>
-        <datatype>substance, administered</datatype>
-        <datatype>substance, adverse event</datatype>
-        <datatype>substance, allergy</datatype>
-        <datatype>substance, intolerance</datatype>
-        <datatype>substance, recommended</datatype>
-        <datatype>symptom</datatype>
-        <datatype>transfer from</datatype>
-        <datatype>transfer to</datatype>
-    </datatypes>
-    <datatypes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="Order">
-        <datatype>device, order</datatype>
-        <datatype>diagnostic study, order</datatype>
-        <datatype>encounter, order</datatype>
-        <datatype>functional status, order</datatype>
-        <datatype>intervention, order</datatype>
-        <datatype>laboratory test, order</datatype>
-        <datatype>medication, order</datatype>
-        <datatype>physical exam, order</datatype>
-        <datatype>procedure, order</datatype>
-        <datatype>substance, order</datatype>
-    </datatypes>
 </matattributes>

@@ -81,26 +81,9 @@ public class JSONAttributeModeUtility {
 		if (jsonString != null) {
 			JSONValue jsonValue = JSONParser.parse(jsonString);
 			if (jsonValue.isObject() != null) {
-				JSONObject jsonObject = (JSONObject) jsonValue.isObject().get(
+				JSONArray attributeJsonArray = (JSONArray) jsonValue.isObject().get(
 						"matattributes");
-				JSONArray attributeJsonArray = jsonObject.get("attribute")
-						.isArray();
 				jsonObjectMap.put("attribute", attributeJsonArray);
-				
-				JSONArray dataTypesJsonArray = jsonObject.get("datatypes")
-						.isArray();
-				
-				for (int i = 0; i < dataTypesJsonArray.size(); i++) {
-					JSONObject attrJSONObject = (JSONObject) dataTypesJsonArray
-							.get(i);
-					JSONString dataTypekey = attrJSONObject.get(
-							"@type").isString();
-					String attributeName = dataTypekey.toString();
-					attributeName = attributeName.replace("\"", "");
-					if (attrJSONObject.get("datatype").isArray() != null) {
-						jsonObjectMap.put(attributeName, attrJSONObject.get("datatype").isArray());
-					}
-				}
 			}
 		}
 	}
@@ -111,7 +94,7 @@ public class JSONAttributeModeUtility {
 	 * @param dataType String qdmDataType.
 	 * @return the attr mode list
 	 */
-	public static List<String> getAttrModeList(String attrName , String dataType) {
+	public static List<String> getAttrModeList(String attrName) {
 		List<String> modeList = new ArrayList<String>();
 		if ((attrName != null) && (attrName != "")) {
 			if (jsonObjectMap.get("attribute").isArray() != null) {
@@ -122,31 +105,14 @@ public class JSONAttributeModeUtility {
 							.get(i);
 					JSONString attrObject = attrJSONObject.get(
 							"@attribName").isString();
-					String dataTypeObject = null;
+					//String dataTypeObject = null;
 					String attributeName = attrObject.toString();
 					attributeName = attributeName.replace("\"", "");
 					if (attrName.equalsIgnoreCase(attributeName)) {
-						boolean doEval = true;
-						if (attrJSONObject.get("@datatypes") != null) {
-							dataTypeObject = (attrJSONObject.get("@datatypes").isString()).toString();
-							dataTypeObject = dataTypeObject.replace("\"", "");
-							doEval = findDataType(dataType, jsonObjectMap.get(dataTypeObject));
-						}
-						if (doEval) {
-							if (attrJSONObject.get("mode").isArray() != null) {
-								JSONArray attrModeObject = attrJSONObject.get("mode").isArray();
-								for (int j = 0; j < attrModeObject.size(); j++) {
-									JSONObject modeObject = (JSONObject) attrModeObject.get(j);
-									JSONString modeStrObject = modeObject.get(
-											"@mode").isString();
-									String modeName = modeStrObject.toString();
-									modeName = modeName.replace("\"", "");
-									modeName = getAttrMode(modeName);
-									modeList.add(modeName);
-								}
-							} else if (attrJSONObject.get("mode").isObject() != null) {
-								JSONObject modeObject = attrJSONObject.get("mode")
-										.isObject();
+						if (attrJSONObject.get("mode").isArray() != null) {
+							JSONArray attrModeObject = attrJSONObject.get("mode").isArray();
+							for (int j = 0; j < attrModeObject.size(); j++) {
+								JSONObject modeObject = (JSONObject) attrModeObject.get(j);
 								JSONString modeStrObject = modeObject.get(
 										"@mode").isString();
 								String modeName = modeStrObject.toString();
@@ -154,6 +120,15 @@ public class JSONAttributeModeUtility {
 								modeName = getAttrMode(modeName);
 								modeList.add(modeName);
 							}
+						} else if (attrJSONObject.get("mode").isObject() != null) {
+							JSONObject modeObject = attrJSONObject.get("mode")
+									.isObject();
+							JSONString modeStrObject = modeObject.get(
+									"@mode").isString();
+							String modeName = modeStrObject.toString();
+							modeName = modeName.replace("\"", "");
+							modeName = getAttrMode(modeName);
+							modeList.add(modeName);
 						}
 					}
 				}
@@ -179,12 +154,13 @@ public class JSONAttributeModeUtility {
 		return false;
 	}*/
 	
-	private static boolean findDataType(String dataType, JSONArray jsonArray) {
+	/*private static boolean findDataType(String dataType, JSONArray jsonArray) {
 		boolean foundInArray = false;
 		if (jsonArray.isArray() != null) {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				String dataTypeInArray = (jsonArray.get(i).isString()).toString();
 				dataTypeInArray = dataTypeInArray.replace("\"", "");
+				System.out.println("array " + dataTypeInArray);
 				if(dataType.equalsIgnoreCase(dataTypeInArray)){
 					foundInArray = true;
 					break;
@@ -193,7 +169,7 @@ public class JSONAttributeModeUtility {
 		}
 		return foundInArray;
 		
-	}
+	}*/
 	private static  String getAttrMode(String mode){
 		String attrMode="";
 		if(mode.equals("IsPresent")){

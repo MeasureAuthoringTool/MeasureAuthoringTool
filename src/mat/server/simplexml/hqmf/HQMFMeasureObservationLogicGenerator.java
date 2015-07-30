@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -271,6 +268,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			String nodeName = node.getNodeName();
 			if ("subTree".equals(nodeName)) {
 				displayName = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+				if (node.getAttributes().getNamedItem("qdmVariable") != null) {
+					if (node.getAttributes().getNamedItem("qdmVariable").getNodeValue().equalsIgnoreCase("true")) {
+						displayName = "qdm_var_" + displayName.replace("$", "");
+					}
+				}
 			} else {
 				displayName = findSubTreeDisplayName(node.getParentNode());
 			}

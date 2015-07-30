@@ -2460,7 +2460,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}else if(unitString.equals("second") || unitString.equals("seconds")){
 			returnString = "s";
 		}else if(unitString.equals("bpm")){
-			returnString = "{H.B}/min";
+			returnString = "{H.B.}/min";
 		}else if(unitString.equals("mmHg")){
 			returnString = "mm[Hg]";
 		}else if(unitString.equals("mEq")){

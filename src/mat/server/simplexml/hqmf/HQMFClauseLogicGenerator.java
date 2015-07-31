@@ -2049,7 +2049,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		temporallyRelatedInfoNode.setAttribute(TYPE_CODE, attribMap.getNamedItem(TYPE).getNodeValue().toUpperCase());
 		
 		Element temporalInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:temporalInformation");
-		temporalInfoNode.setAttribute("precisionUnit", "min");
+		String precisionUnit = "min";  //use min by default
+		
 		
 		temporallyRelatedInfoNode.appendChild(temporalInfoNode);
 		
@@ -2058,8 +2059,15 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String quantity = attribMap.getNamedItem(QUANTITY).getNodeValue();
 			String unit = attribMap.getNamedItem(UNIT).getNodeValue();
 			
-			if(!"hours".equals(unit) && !"minutes".equals(unit)){
-				temporalInfoNode.setAttribute("precisionUnit", "d");
+			if("seconds".equals(unit)){
+				precisionUnit = "s";
+				unit = "s";
+			} else if("hours".equals(unit)) {
+				unit = "h";
+			} else if ("minutes".equals(unit)){
+				unit = "min";
+			} else {
+				precisionUnit = "d";
 				if("days".equals(unit)){
 					unit = "d";
 				}else if("weeks".equals(unit)){
@@ -2069,13 +2077,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}else if("years".equals(unit)){
 					unit = "a";
 				}
-			}else{
-				if("hours".equals(unit)){
-					unit = "h";
-				}else{
-					unit = "min";
-				}
 			}
+			temporalInfoNode.setAttribute("precisionUnit", precisionUnit);
 			
 			Element deltaNode = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:delta");
 			Element lowNode = hqmfXmlProcessor.getOriginalDoc().createElement("low");

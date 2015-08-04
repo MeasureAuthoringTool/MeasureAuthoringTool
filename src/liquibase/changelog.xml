@@ -176,5 +176,7 @@
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6087_6067_6075_User_Story.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6071_6103_6095_6107.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint71_USMAT-6071_Delete_reported.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-Adding_Release_Version_Column_To_Measure_Table.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-6079_6083_UserStory.xml"/>
 		
 	</databaseChangeLog>

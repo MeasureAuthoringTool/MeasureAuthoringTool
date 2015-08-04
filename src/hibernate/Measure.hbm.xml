@@ -33,6 +33,6 @@
 	<many-to-one name="measureSet" column="MEASURE_SET_ID" 
         class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
     <property name="isPrivate" column="PRIVATE"/>
-        
+    <property name="releaseVersion" column="RELEASE_VERSION" />
   </class>
 </hibernate-mapping>

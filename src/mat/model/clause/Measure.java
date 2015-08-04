@@ -65,6 +65,8 @@ public class Measure {
 	/** The is private. */
 	private boolean isPrivate;
 	
+	private String releaseVersion;
+	
 	/**
 	 * Gets the value set date.
 	 * 
@@ -477,5 +479,19 @@ public class Measure {
 	 */
 	public void setRevisionNumber(String revisionNumber) {
 		this.revisionNumber = revisionNumber;
+	}
+
+	/**
+	 * @return the releaseVersion
+	 */
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	/**
+	 * @param releaseVersion the releaseVersion to set
+	 */
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
 	}
 }

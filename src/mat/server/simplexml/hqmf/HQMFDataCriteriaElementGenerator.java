@@ -768,11 +768,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
 				Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
-				Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
 				Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
 				
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
+				displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 				
 				if((valueCode != null) && (valueCodeSystem != null)){
 					valueElem.setAttribute("code", valueCode.getNodeValue());
@@ -780,13 +780,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					if(valueCodeSystemName!=null){
 						valueElem.setAttribute("codeSystemName", valueCodeSystemName.getNodeValue());
 					}
-					if (valueDisplayName != null) {
-						displayNameElem.setAttribute(VALUE, valueDisplayName.getNodeValue());
-					}
 				}else{
 					valueElem.setAttribute("valueSet", qdmOidValue);
 					addValueSetVersion(qdmNode, valueElem);
-					displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 				}
 				if(displayNameElem.hasAttribute(VALUE)){
 					valueElem.appendChild(displayNameElem);
@@ -941,13 +937,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			addValueSetVersion(qdmNode, codeElem);
 			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
-			Node codeDisplayName = templateNode.getAttributes().getNamedItem(CODE_SYSTEM_DISPLAY_NAME);
 			String displayName = "";
-			if(codeDisplayName!=null){
-				displayName = codeDisplayName.getNodeValue();
-			} else {
-				displayName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set";
-			}
+			displayName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set";
 			displayNameElem.setAttribute(VALUE, displayName);
 			codeElem.appendChild(displayNameElem);
 			dataCriteriaElem.appendChild(codeElem);

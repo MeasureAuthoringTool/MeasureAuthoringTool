@@ -781,25 +781,30 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				Node valueCodeSystem = templateNode.getAttributes().getNamedItem("valueCodeSystem");
 				Node valueCode = templateNode.getAttributes().getNamedItem("valueCode");
+				Node valueDisplayName = templateNode.getAttributes().getNamedItem("valueDisplayName");
 				Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
 				
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
 				displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
-				
 				if((valueCode != null) && (valueCodeSystem != null)){
 					valueElem.setAttribute("code", valueCode.getNodeValue());
 					valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
 					if(valueCodeSystemName!=null){
 						valueElem.setAttribute("codeSystemName", valueCodeSystemName.getNodeValue());
 					}
+					if (valueDisplayName != null) {
+						displayNameElem.setAttribute(VALUE, valueDisplayName.getNodeValue());
+					}
 				}else{
 					valueElem.setAttribute("valueSet", qdmOidValue);
 					addValueSetVersion(qdmNode, valueElem);
+					displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 				}
 				if(displayNameElem.hasAttribute(VALUE)){
 					valueElem.appendChild(displayNameElem);
 				}
+				
 				dataCriteriaElem.appendChild(valueElem);
 			}
 			if(templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null){
@@ -937,8 +942,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		boolean isAddValueSetInCodeTrue =templateNode.getAttributes().getNamedItem("addValueSetInCode")!=null;
 		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
-		
-		
 		if (isAddValueSetInCodeTrue)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);

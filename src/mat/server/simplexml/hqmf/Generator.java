@@ -116,7 +116,9 @@ public interface Generator extends MatConstants {
 	public static final String CODE = "code";
 	
 	/** The Constant VERSIONID. */
-	public static final String VERSIONID = "2014-11-24";
+	public static final String VERSION_4_1_2_ID = "2014-11-24";
+	
+	public static final String VERSION_4_3_ID = "2015-09-30";
 	
 	/** The Constant VALUE_SET. */
 	public static final String VALUE_SET = "Value Set";

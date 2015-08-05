@@ -263,7 +263,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * This method is used to discover weither a given class name and UUID is a risk adjustment variable 
+	 * This method is used to discover weither a given class name and UUID is a risk adjustment variable
 	 * @param subTreeUUID
 	 * @param clauseName
 	 * @return
@@ -283,7 +283,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		}
 		return RAV;
 	}
-
+	
 	/**
 	 * Generate occ hqmf.
 	 *
@@ -1898,8 +1898,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 								attributeNode = attributeElement;
 								
 								HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
-								attributeGenerator.generateAttributeTagForFunctionalOp(qdmNode, criteriaElement, measureExport.getHQMFXmlProcessor()
-										, measureExport.getSimpleXMLProcessor(), attributeNode);
+								attributeGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
 								
 								
 							}
@@ -2050,7 +2049,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		Element temporalInfoNode = hqmfXmlProcessor.getOriginalDoc().createElement("qdm:temporalInformation");
 		String precisionUnit = "min";  //use min by default
-			
+		
 		if(attribMap.getNamedItem(OPERATOR_TYPE) != null){
 			String operatorType = attribMap.getNamedItem(OPERATOR_TYPE).getNodeValue();
 			String quantity = attribMap.getNamedItem(QUANTITY).getNodeValue();
@@ -2109,7 +2108,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			temporalInfoNode.appendChild(deltaNode);
 		}
 		temporalInfoNode.setAttribute("precisionUnit", precisionUnit);
-		temporallyRelatedInfoNode.appendChild(temporalInfoNode);	
+		temporallyRelatedInfoNode.appendChild(temporalInfoNode);
 		return temporallyRelatedInfoNode;
 	}
 	

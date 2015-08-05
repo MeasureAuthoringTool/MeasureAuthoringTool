@@ -151,6 +151,9 @@ public class MessageDelegate {
 	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
+
+	/** The vsac expansion profile selection. */
+	public final String DEFAULT_EXPANSION_PROFILE_REMOVED = "Successfully removed the default VSAC Expansion Identifier from the Applied QDM Elements list.";
 	
 	/** The vsac profile applied to qdm elements. */
 	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully Applied VSAC Expansion Identifier to QDM Elements.";
@@ -2301,6 +2304,16 @@ public class MessageDelegate {
 	 */
 	public String getVsacProfileAppliedToQdmElements() {
 		return VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS;
+	}
+	
+	/**
+	 * Gets the vsac profile applied to qdm elements.
+	 *
+	 *
+	 * @return the default expansion message
+	 */
+	public String getDefaultExpansionIdRemovedMessage() {
+		return DEFAULT_EXPANSION_PROFILE_REMOVED;
 	}
 	
 	/**

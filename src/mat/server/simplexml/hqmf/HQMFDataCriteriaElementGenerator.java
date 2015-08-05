@@ -786,7 +786,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
-				displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
+				//displayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+" Value Set");
 				if((valueCode != null) && (valueCodeSystem != null)){
 					valueElem.setAttribute("code", valueCode.getNodeValue());
 					valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());

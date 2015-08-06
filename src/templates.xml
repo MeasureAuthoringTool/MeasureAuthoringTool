@@ -22,7 +22,7 @@
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.3.10" class="ACT" mood="EVN" status="COMPLETED" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromProvider-ToProvider" addValueTag="false">communication: from provider to provider</template>
 
     <!-- device -->
-    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.11" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Adverse Reaction" addCodeTag="true" addValueTag="true" includeSubTemplate="device-adverseEvent">device, adverse event</template>
     <!-- 'Device, Allergy' has no status in QDM HQMF IG -->
      <template oid="2.16.840.1.113883.10.20.28.3.12" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="device-allergy">device, allergy</template>
     <template oid="2.16.840.1.113883.10.20.28.3.13" class="PROC" mood="EVN" status="COMPLETED" code="360030002" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Application of Device" addCodeTag="true" addValueTag="false" includeSubTemplate="device-allergy">device, applied</template>

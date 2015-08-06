@@ -438,10 +438,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/** The is modfied. */
 	private boolean isModified = false;
-	
-	/** Has the default expanion id been removed. */
-	private boolean isDefaultExpansionIdRemoved = false;
-	
+		
 	/** The modify value set dto. */
 	private QualityDataSetDTO modifyValueSetDTO;
 	
@@ -1206,7 +1203,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 					return ;
 				}
-				isDefaultExpansionIdRemoved = false;
 				searchDisplay.getSearchHeader().setText("Search");
 				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
 				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
@@ -1214,7 +1210,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					updateAllQDMsWithExpProfile(appliedQDMList);
 					updateAllSuppleDataElementsWithExpIdentifier();
 				} else if(!chkBox.getValue()){
-					isDefaultExpansionIdRemoved = true;
 					expIdentifierToAllQDM = "";
 					updateAllQDMsWithExpProfile(appliedQDMList);
 					updateAllSuppleDataElementsWithExpIdentifier();
@@ -1381,7 +1376,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Void result) {
 				getAppliedQDMList(true);
-				if (isDefaultExpansionIdRemoved) {
+				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
+				if (!chkBox.getValue()) {
 				searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 						.getMessageDelegate().getDefaultExpansionIdRemovedMessage());
 

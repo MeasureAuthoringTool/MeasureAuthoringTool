@@ -162,12 +162,17 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							cssClass = "customExportButton";
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
 									+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
-							} else {
+							} if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4")){
 								title = "Click to Export MATv4";
 								cssClass = "customExportButtonRed";
 								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
 										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
-								}
+							} else {
+								title = "Click to Export MATv4.3";
+								cssClass = "customExportButtonRed";
+								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
+										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
+							}
 						}
 					return sb.toSafeHtml();
 					}

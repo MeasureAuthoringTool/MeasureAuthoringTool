@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -35,15 +36,18 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
 import mat.shared.ValidationUtility;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -113,6 +117,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	/** The user dao. */
 	@Autowired
 	private UserDAO userDAO;
+	
+	private String currentReleaseVersion;
 	
 	//	@Override
 	//	public void clone(Measure measurePackage, String newCloneName) {
@@ -253,10 +259,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		export.setSimpleXML(exportedXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
+		measure.setReleaseVersion(getCurrentReleaseVersion());
 		measure.setExportedDate(new Date());
 		measureDAO.save(measure);
 		measureExportDAO.save(export);
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#getById(java.lang.String)
@@ -644,6 +652,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public boolean getMeasure(String measureId) {
 		return measurePackageDAO.getMeasure(measureId);
+	}
+
+	public String getCurrentReleaseVersion() {
+		return currentReleaseVersion;
+	}
+
+	public void setCurrentReleaseVersion(String currentReleaseVersion) {
+		this.currentReleaseVersion = currentReleaseVersion;
 	}
 	
 }

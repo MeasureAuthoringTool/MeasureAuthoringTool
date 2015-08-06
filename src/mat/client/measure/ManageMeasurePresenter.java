@@ -1153,6 +1153,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private String buildExportURL() {
 		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId
 				+ "&format=";
+		System.out.println("URL: " + url);
+		
 		url += (exportDisplay.isEMeasure() ? "emeasure" : exportDisplay
 				.isSimpleXML() ? "simplexml"
 						: exportDisplay.isCodeList() ? "codelist" : "zip");

@@ -157,7 +157,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					String title = "";
 					String cssClass = "";
 					if ((object != null) && object.isExportable()) {
-						if(object.isHQMFR1()){
+						if(object.getHqmfReleaseVersion().equals("v3")){
 							title = "Click to Export MATv3";
 							cssClass = "customExportButton";
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 

@@ -10,6 +10,7 @@ import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
@@ -26,11 +27,67 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 	 */
 	@Override
 	public String generate(MeasureExport me) {
+		
+		String simpleXML = me.getSimpleXML();
+		String releaseVersion = me.getMeasure().getReleaseVersion();
+		/*XmlProcessor test = new XmlProcessor(simpleXMLTemp);
+		String xpath = "/measure";
+		Document tempDoc = test.getOriginalDoc();
+		Node measure = test.findNode(tempDoc, xpath);
+		
+		String version = me.getMeasure().getReleaseVersion();
+		version = formatRealeaseVersion(version);
+		Node child = tempDoc.createElement("realeaseVersion");
+		Node attribute = tempDoc.createAttribute("version");
+		attribute.setNodeValue(version);
+		child.getAttributes().setNamedItem(attribute);
+		measure.appendChild(child);
+		
+		simpleXMLTemp = test.transform(measure);*/
+		
+		simpleXML = addReleaseVersionToSimpleXML(simpleXML,releaseVersion);
+		
 		XMLUtility xmlUtility = new XMLUtility();
-		String measureDetailsHQMF_XML = xmlUtility.applyXSL(me.getSimpleXML(),
+		String measureDetailsHQMF_XML = xmlUtility.applyXSL(simpleXML,
 				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
 		measureDetailsHQMF_XML = incrementEndDatebyOne(measureDetailsHQMF_XML);
 		return measureDetailsHQMF_XML.replaceAll("xmlns=\"\"", "");
+	}
+	
+	/**
+	  * This method will add a new tag '<measureReleaseVersion releaseVersion={version}/>' right under the '<measure>' tag.
+	  * This will contain the QDM version used in the measure.
+	  * If Measure Release Version is 'v4', then QDM Version is '4.1.2'; else it is '4.3'
+	  * The 'new_measureDetails.xsl' will then read the '<measureReleaseVersion releaseVersion={version}/>' tag and 
+	  * add a comment with the value of 'releaseVersion' attribute in it.
+	  * @param simpleXML
+	  * @param releaseVersion
+	  * @return
+	  */
+	 private String addReleaseVersionToSimpleXML(String simpleXML, String releaseVersion) {
+		 if(releaseVersion == null || releaseVersion.trim().length() == 0){
+			 return simpleXML;
+		 }
+		
+		 releaseVersion = formatRealeaseVersion(releaseVersion);
+		 int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
+		 if(measureDetailsTagIndex > -1){
+			 simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""+releaseVersion + "\"/>" + simpleXML.substring(measureDetailsTagIndex);
+			 System.out.println("SIMPLE XML: " + simpleXML);
+		 }
+	    
+		 return simpleXML;
+	 }
+	
+	private String formatRealeaseVersion(String version){
+		String formatVersion = null;
+		if("v4".equals(version)){
+			formatVersion = "4.1.2";
+		}else if("v4.3".equals(version)){
+			formatVersion = "4.3";
+		}
+		return formatVersion;
+		
 	}
 	
 	/**

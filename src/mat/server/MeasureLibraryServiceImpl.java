@@ -142,8 +142,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Constant XPATH Expression for Developers.
 	 */
 	private static final String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
-	/** The release date. */
-	private String releaseDate;
+		
+	private String currentReleaseVersion;
 	
 	/** The is measure created. */
 	private boolean isMeasureCreated;
@@ -947,11 +947,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setClonable(isOwner || isSuperUser);
 		detail.setEditable((isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());
 		detail.setExportable(dto.isPackaged());
-		detail.setHQMFR1((measure.getExportedDate() != null) && measure.getExportedDate()
-				.before(getFormattedReleaseDate(releaseDate)));
-		detail.setHQMFR2((measure.getExportedDate() != null) && (measure.getExportedDate()
-				.after(getFormattedReleaseDate(releaseDate))
-				|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
+		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
 		detail.setSharable(isOwner || isSuperUser);
 		detail.setMeasureLocked(dto.isLocked());
 		detail.setLockedUserInfo(dto.getLockedUserInfo());
@@ -1162,11 +1158,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setId(measure.getId());
 			detail.setDraft(measure.isDraft());
 			detail.setExportable(measure.getExportedDate() != null); // to show export icon.
-			detail.setHQMFR1((measure.getExportedDate() != null) && measure.getExportedDate()
-					.before(getFormattedReleaseDate(releaseDate)));
-			detail.setHQMFR2((measure.getExportedDate() != null) && (measure.getExportedDate()
-					.after(getFormattedReleaseDate(releaseDate))
-					|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
+			detail.setHqmfReleaseVersion(measure.getReleaseVersion());
 			/*detail.setStatus(measure.getMeasureStatus());*/
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(), measure.getRevisionNumber(),
 					measure.isDraft());
@@ -1929,6 +1921,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// delete any groupings for that measure and save.
 					getMeasurePackageService().deleteExistingPackages(pkg.getId());
 				}
+				
 				//updateComponentMeasures(model);
 				
 			} else {
@@ -1941,7 +1934,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measureSet.setId(UUID.randomUUID().toString());
 				getService().save(measureSet);
 			}
-			
 			pkg.setMeasureSet(measureSet);
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();
@@ -4444,19 +4436,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
 	 */
-	@Override
+	/*@Override
 	public String getReleaseDate() {
 		return releaseDate;
-	}
+	}*?
 	
 	/**
 	 * Sets the release date.
 	 *
 	 * @param releaseDate the new release date
 	 */
-	public void setReleaseDate(String releaseDate) {
+	/*public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getDefaultSDEFromMeasureXml(java.lang.String)
@@ -4651,5 +4643,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return message;
 	}
+
+	public String getCurrentReleaseVersion() {
+		return currentReleaseVersion;
+	}
+
+	public void setCurrentReleaseVersion(String releaseVersion) {
+		this.currentReleaseVersion = releaseVersion;
+	}
+
 }
 

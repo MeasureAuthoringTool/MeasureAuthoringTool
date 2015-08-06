@@ -37,7 +37,7 @@ public class ZipPackager {
 	 * @return the zip barr
 	 * @throws Exception             the exception
 	 */
-	public byte[] getZipBarr(String emeasureName,Date exportDate, Date releaseDate, byte[] wkbkbarr, String emeasureXMLStr, 
+	public byte[] getZipBarr(String emeasureName,Date exportDate, String releaseVersion, byte[] wkbkbarr, String emeasureXMLStr, 
 			String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr) throws Exception{
 		byte[] ret = null;
 		
@@ -64,16 +64,16 @@ public class ZipPackager {
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
-            String matVersion[] = {"_v3","_v4"};
-			if(exportDate.before(releaseDate)){
-				
+            String matVersion[] = {"_v3","_v4","_v4.3"};
+			if(releaseVersion.equals("v3")){
+	
 				parentPath = fnu.getParentPath(emeasureName + matVersion[0]);
 				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
 				emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + matVersion[0]);
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[0]);
 				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[0],packageDate);
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[0]);
-			} else if(exportDate.after(releaseDate) || exportDate.equals(releaseDate)){
+			} else if(releaseVersion.equals("v4")){
 				
 				parentPath = fnu.getParentPath(emeasureName + matVersion[1]);
 				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
@@ -81,6 +81,14 @@ public class ZipPackager {
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[1]);
 				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[1],packageDate);
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[1]);
+			} else if(releaseVersion.equals("v4.3")){
+				
+				parentPath = fnu.getParentPath(emeasureName + matVersion[2]);
+				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
+				emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + matVersion[2]);
+				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[2]);
+				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[2],packageDate);
+				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[2]);
 			}
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
@@ -136,8 +144,8 @@ public class ZipPackager {
 	 * @param seqNum            the seq num
 	 * @throws Exception             the exception
 	 */
-	public void createBulkExportZip(String emeasureName,Date exportDate, Date releaseDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum) throws Exception{
+	public void createBulkExportZip(String emeasureName,Date exportDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
+			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion) throws Exception{
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try{
@@ -163,8 +171,8 @@ public class ZipPackager {
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
-            String matVersion[] = {"_v3","_v4"};
-			if(exportDate.before(releaseDate)){
+            //String matVersion[] = {"_v3","_v4"};
+			/*if(exportDate.before(releaseDate)){
 				
 				parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + matVersion[0]);
 				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
@@ -180,7 +188,14 @@ public class ZipPackager {
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[1]);
 				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[1],packageDate);
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[1]);
-			}
+			}*/
+			
+			parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + "_" + releaseVersion);
+			emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
+			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + releaseVersion);
+			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion);
+			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName +"_" + releaseVersion,packageDate);
+			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + releaseVersion);
 		   
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureXSLPath, emeasureXSLBarr);

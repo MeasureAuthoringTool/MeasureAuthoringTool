@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -415,12 +417,6 @@ public interface MeasureLibraryService {
 	 */
 	Date getFormattedReleaseDate(String releaseDate);
 	
-	/**
-	 * Gets the release date.
-	 *
-	 * @return the release date
-	 */
-	String getReleaseDate();
 	
 	/**
 	 * Checks if is sub tree referred in logic.
@@ -570,4 +566,7 @@ public interface MeasureLibraryService {
 	List<MeasureOwnerReportDTO> getMeasuresForMeasureOwner() throws XPathExpressionException;
 	
 	String getDefaultExpansionIdentifier(String measureId);
+	
+	String getCurrentReleaseVersion();
+	void setCurrentReleaseVersion(String releaseVersion);
 }

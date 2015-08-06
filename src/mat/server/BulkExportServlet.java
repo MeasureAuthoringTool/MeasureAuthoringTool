@@ -51,7 +51,7 @@ public class BulkExportServlet extends HttpServlet {
 		String[] measureIds = req.getParameterValues("id");
 		MeasurePackageService service = getMeasurePackageService();
 		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
-		Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
+		//Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
 		Date[] exportDates = new Date[measureIds.length]; 
 		Measure measure;
 		int count = measureIds.length;
@@ -64,7 +64,7 @@ public class BulkExportServlet extends HttpServlet {
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try {
-				export = getService().getBulkExportZIP(measureIds,exportDates,releaseDate);
+				export = getService().getBulkExportZIP(measureIds,exportDates);
 				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getBulkZipName("Export"));
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);

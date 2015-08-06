@@ -487,12 +487,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @see mat.server.service.SimpleEMeasureService#getEMeasureZIP(java.lang.String)
 	 */
 	@Override
-	public final ExportResult getEMeasureZIP(final String measureId,final Date exportDate, final Date releaseDate) throws Exception {
+	public final ExportResult getEMeasureZIP(final String measureId,final Date exportDate) throws Exception {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		MeasureExport me = getMeasureExport(measureId);
-		if(exportDate.before(releaseDate)){
-			result.zipbarr = getZipBarr(measureId,exportDate,releaseDate, me);		
+		if(me.getMeasure().getReleaseVersion().equals("v3")){
+			result.zipbarr = getZipBarr(measureId,exportDate, me, me.getMeasure().getReleaseVersion());		
 		}else{
 			result.zipbarr = getZipBarr(measureId,me);
 		}
@@ -565,7 +565,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @return byte[].
 	 * @throws Exception             - Exception. *
 	 */
-	public final byte[] getZipBarr(final String measureId,Date exportDate, final Date releaseDate, final MeasureExport me)
+	public final byte[] getZipBarr(final String measureId,Date exportDate, final MeasureExport me, String releaseVersion)
 			throws Exception {
 		byte[] wkbkbarr = null;
 		if (me.getCodeList() == null) {
@@ -589,7 +589,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
-		return zp.getZipBarr(emeasureName,exportDate, releaseDate, wkbkbarr, emeasureXMLStr,
+		return zp.getZipBarr(emeasureName,exportDate, releaseVersion, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
 	}
 
@@ -694,7 +694,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @see mat.server.service.SimpleEMeasureService#getBulkExportZIP(java.lang.String[])
 	 */
 	@Override
-	public final ExportResult getBulkExportZIP(final String[] measureIds, final Date[] exportDates, final Date releasDate )
+	public final ExportResult getBulkExportZIP(final String[] measureIds, final Date[] exportDates)
 			throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(baos);
@@ -708,12 +708,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.measureName = getMeasureName(measureId).getaBBRName();
 			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
-			if(exportDate.before(releasDate)){
-				createFilesInBulkZip(measureId,exportDate, releasDate, me, filesMap,
+			if(me.getMeasure().getReleaseVersion().equals("v3")){
+				createFilesInBulkZip(measureId,exportDate, me, filesMap,
 					format.format(fileNameCounter++));
 			}
 			else{
-				createFilesInBulkZip(measureId,me, filesMap,
+				createFilesInBulkZip(measureId, me, filesMap,
 						format.format(fileNameCounter++));
 
 			}
@@ -780,7 +780,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * 
 	 *             *
 	 */
-	public final void createFilesInBulkZip(final String measureId,final Date exportDate, final Date releaseDate,
+	public final void createFilesInBulkZip(final String measureId,final Date exportDate,
 			final MeasureExport me, final Map<String, byte[]> filesMap,
 			final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
@@ -804,8 +804,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 		
 		ZipPackager zp = new ZipPackager();
-		zp.createBulkExportZip(emeasureName,exportDate,releaseDate, wkbkbarr, emeasureXMLStr,
+		zp.createBulkExportZip(emeasureName,exportDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum);
+				seqNum, me.getMeasure().getReleaseVersion());
 	}
 }

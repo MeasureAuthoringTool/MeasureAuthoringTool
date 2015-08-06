@@ -496,8 +496,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "";
 				String cssClass = "";
-				
-				if(object.isHQMFR1()){
+				if(object.getHqmfReleaseVersion().equals("v3")){
 					
 					cssClass = "customExportButton";
 					title = "Click to Export MAT v3";

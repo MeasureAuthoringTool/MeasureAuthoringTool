@@ -522,7 +522,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				//String emeasureXML = "";
 				String emeasureXML = getNewEMeasureXML(me);
 				ZipPackager zp = new ZipPackager();
-				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML);
+				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML, me.getMeasure().getReleaseVersion());
 		}
 	
 	
@@ -760,11 +760,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureXMLStr = getNewEMeasureXML(me);
 		//String emeasureXMLStr = "";
 		String emeasureName = me.getMeasure().getaBBRName();
-
+		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
+		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum);
+				seqNum,currentReleaseVersion);
 	}
 
 	/**

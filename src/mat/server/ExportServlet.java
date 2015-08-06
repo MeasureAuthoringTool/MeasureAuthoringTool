@@ -7,11 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
@@ -26,6 +28,7 @@ import mat.server.simplexml.MATCssUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -250,8 +253,14 @@ public class ExportServlet extends HttpServlet {
 					+ fnu.getValueSetXLSName(export.valueSetName + matVersion[1], export.lastModifiedDate));
 		}*/
 		
+		String currentReleaseVersion = measure.getReleaseVersion();
+		if(currentReleaseVersion.contains(".")){
+			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}
+		System.out.println("Release version zip " + currentReleaseVersion);
+		
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-				+ fnu.getValueSetXLSName(export.valueSetName + "_" + measure.getReleaseVersion(), export.lastModifiedDate));
+				+ fnu.getValueSetXLSName(export.valueSetName + "_" + currentReleaseVersion, export.lastModifiedDate));
 		resp.setContentType("application/vnd.ms-excel");
 		resp.getOutputStream().write(export.wkbkbarr);
 		resp.getOutputStream().close();
@@ -284,7 +293,13 @@ public class ExportServlet extends HttpServlet {
 						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[1]));
 		}*/
-		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + "_" + measure.getReleaseVersion()));
+		
+		String currentReleaseVersion = measure.getReleaseVersion();
+		if(currentReleaseVersion.contains(".")){
+			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}
+		System.out.println("Release version zip " + currentReleaseVersion);
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + "_" + currentReleaseVersion));
 		resp.setContentType("application/zip");
 		resp.getOutputStream().write(export.zipbarr);
 		resp.getOutputStream().close();
@@ -309,8 +324,13 @@ public class ExportServlet extends HttpServlet {
 					+ fnu.getEmeasureXLSName(export.measureName + matVersion[1], export.packageDate));
 		}*/
 		
+		String currentReleaseVersion = measure.getReleaseVersion();
+		if(currentReleaseVersion.contains(".")){
+			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}
+		System.out.println("Release version zip " + currentReleaseVersion);
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-				+ fnu.getEmeasureXLSName(export.measureName + "_" + measure.getReleaseVersion(), export.packageDate));
+				+ fnu.getEmeasureXLSName(export.measureName + "_" + currentReleaseVersion, export.packageDate));
 		resp.setContentType("application/vnd.ms-excel");
 		resp.getOutputStream().write(export.wkbkbarr);
 		resp.getOutputStream().close();
@@ -322,7 +342,13 @@ public class ExportServlet extends HttpServlet {
 			MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure,
 			ExportResult export, FileNameUtility fnu) throws Exception {
-		if (measure.getReleaseVersion().equals("v3")){
+		
+		String currentReleaseVersion = measure.getReleaseVersion();
+		if(currentReleaseVersion.contains(".")){
+			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}
+		System.out.println("Release version zip " + currentReleaseVersion);
+		if (currentReleaseVersion.equals("v3")){
 			if ("open".equals(type)) {
 				export = getService().getEMeasureHTML(id);
 				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
@@ -330,7 +356,7 @@ public class ExportServlet extends HttpServlet {
 				export = getService().getEMeasureXML(id);
 				//						if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getEmeasureXMLName(export.measureName + "_" + measure.getReleaseVersion()));
+						+ fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
 				//						}
 			}
 		}else{
@@ -340,7 +366,7 @@ public class ExportServlet extends HttpServlet {
 			}else if (SAVE.equals(type)) {
 				export = getService().getNewEMeasureXML(id);
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getEmeasureXMLName(export.measureName + "_" + measure.getReleaseVersion()));
+						+ fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
 			}
 		}
 		
@@ -365,8 +391,14 @@ public class ExportServlet extends HttpServlet {
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 						+ fnu.getSimpleXMLName(export.measureName + matVersion[1]));
 			}*/
+			
+			String currentReleaseVersion = measure.getReleaseVersion();
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+			}
+			System.out.println("Release version zip " + currentReleaseVersion);
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getSimpleXMLName(export.measureName + "_" + measure.getReleaseVersion()));
+					+ fnu.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
 		} else {
 			resp.setHeader(CONTENT_TYPE, TEXT_XML);
 		}

@@ -11,77 +11,78 @@
 	    		
 	    		DELETE FROM QDM_ATTRIBUTES where NAME like '%preference%';
 	    		
+	    		
 	    		<!-- Removing Negation Rationale from inappropriate DataTypes(24 Datatypes)-->
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Care Goal');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Device, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Device, Allergy');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Device, Intolerance');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Diagnosis, Active');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Diagnosis, Inactive');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Diagnosis, Resolved');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Diagnostic Study, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Encounter, Active');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Intervention, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Intervention, Intolerance');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Laboratory Test, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Laboratory Test, Intolerance');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Medication, Active');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Medication, Adverse Effects');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Medication, Allergy');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Medication, Intolerance');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Patient Care Experience');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Procedure, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Procedure, Intolerance');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Provider Care Experience');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Substance, Adverse Event');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Substance, Allergy');
 	    		
-	    		DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID in (
+	    		DELETE FROM QDM_ATTRIBUTES WHERE NAME='negation rationale' and DATA_TYPE_ID in (
 	    		SELECT DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Substance, Intolerance');
 	    		
 	    		

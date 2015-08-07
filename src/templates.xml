@@ -404,6 +404,39 @@
 		mood="EVN" status="COMPLETED" addValueTag="false" addCodeTag="false"
 		includeSubTemplate="transfer">transfer to</template>
 
+	<!--Family History -->
+	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS"
+		mood="EVN" status="COMPLETED" valueType="CD" code="10157-6"
+		codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" addValueTag="true"
+		addCodeTag="true">family history</template>
+
+	<!-- symptom -->
+	<template oid="2.16.840.1.113883.10.20.28.3.116" class="OBS"
+		mood="EVN" status="COMPLETED" valueType="CD" code="418799008"
+		codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+		codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom</template>
+
+	<!-- Immunization -->
+	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM"
+		mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96"
+		codeDisplayName="Administration" addCodeTag="true" addValueTag="false"
+		includeSubTemplate="immunization">immunization, administered</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM"
+		mood="RQO" status="COMPLETED" includeSubTemplate="immunization"
+		addCodeTag="false" addValueTag="false">immunization, order</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS"
+		mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION"
+		codeSystem="2.16.840.1.113883.5.4" valueCode="416098002"
+		valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT"
+		valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true"
+		includeSubTemplate="immunization">immunization, allergy</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS"
+		mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION"
+		codeSystem="2.16.840.1.113883.5.4" valueCode="59037007"
+		valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Drug Intolerance"
+		addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization,
+		intolerance</template>
+
 
 
 	<!-- attributes: -->
@@ -533,10 +566,12 @@
 		insertAfterNode="statusCode">length of stay</template>
 	<template oid="2.16.840.1.113883.10.20.28.3.105" class="OBS"
 		mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</template>
-	<template includeSubTemplate="reference-Low-Range" addTagInValueSet="low">reference range low</template>
-	<template includeSubTemplate="reference-High-Range" addTagInValueSet="high">reference range high</template>
+	<template includeSubTemplate="reference-Low-Range"
+		addTagInValueSet="low">reference range low</template>
+	<template includeSubTemplate="reference-High-Range"
+		addTagInValueSet="high">reference range high</template>
 	<subtemplates>
-	<communication-FromPatient-ToProvider>
+		<communication-FromPatient-ToProvider>
 			<participation typeCode="AUT">
 				<role classCode="PAT"></role>
 			</participation>
@@ -547,36 +582,36 @@
 					</code>
 				</role>
 			</participation>
-	</communication-FromPatient-ToProvider>
-	<reference-Low-Range changeAttribute="id,value">
-	<outboundRelationship typeCode="REFV">
-	   <observationCriteria classCode="OBS" moodCode="EVN">
-			<id root="{Attribute UUID}" extension="{Attribute UUID}" />
-			<code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
-			codeSystemName="LOINC">
-				<displayName value="Reference lab test reference range" />
-			</code>
-			<title value="Reference Range" />
-			<value xsi:type="IVL_PQ">
-			</value>
-		</observationCriteria>
-	</outboundRelationship>
-	</reference-Low-Range>
-	
-	<reference-High-Range changeAttribute="id,value">
-    <outboundRelationship typeCode="REFV">
-       <observationCriteria classCode="OBS" moodCode="EVN">
-            <id root="{Attribute UUID}" extension="{Attribute UUID}" />
-            <code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
-            codeSystemName="LOINC">
-                <displayName value="Reference lab test reference range" />
-            </code>
-            <title value="Reference Range" />
-            <value xsi:type="IVL_PQ">
-            </value>
-        </observationCriteria>
-    </outboundRelationship>
-    </reference-High-Range>
+		</communication-FromPatient-ToProvider>
+		<reference-Low-Range changeAttribute="id,value">
+			<outboundRelationship typeCode="REFV">
+				<observationCriteria classCode="OBS" moodCode="EVN">
+					<id root="{Attribute UUID}" extension="{Attribute UUID}" />
+					<code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
+						codeSystemName="LOINC">
+						<displayName value="Reference lab test reference range" />
+					</code>
+					<title value="Reference Range" />
+					<value xsi:type="IVL_PQ">
+					</value>
+				</observationCriteria>
+			</outboundRelationship>
+		</reference-Low-Range>
+
+		<reference-High-Range changeAttribute="id,value">
+			<outboundRelationship typeCode="REFV">
+				<observationCriteria classCode="OBS" moodCode="EVN">
+					<id root="{Attribute UUID}" extension="{Attribute UUID}" />
+					<code code="19147-8" codeSystem="2.16.840.1.113883.6.1"
+						codeSystemName="LOINC">
+						<displayName value="Reference lab test reference range" />
+					</code>
+					<title value="Reference Range" />
+					<value xsi:type="IVL_PQ">
+					</value>
+				</observationCriteria>
+			</outboundRelationship>
+		</reference-High-Range>
 
 		<communication-FromProvider-ToPatient>
 			<participation typeCode="IRCP">
@@ -869,7 +904,7 @@
 				</role>
 			</participation>
 		</facility-location>
-		
+
 		<facility-location-old changeAttribute="id,code,item">
 			<participation typeCode="LOC">
 				<role classCode="SDLOC">
@@ -1031,6 +1066,20 @@
 				</observationCriteria>
 			</outboundRelationship>
 		</radiation-dosage>
+
+
+		<immunization changeAttribute="code,displayName">
+			<participation typeCode="CSM">
+				<role classCode="MANU">
+					<playingManufacturedMaterial classCode="MMAT"
+						determinerCode="KIND">
+						<code valueSet="$QDMElementValueSetOID">
+							<displayName value="$valueSetName" />
+						</code>
+					</playingManufacturedMaterial>
+				</role>
+			</participation>
+		</immunization>
 
 	</subtemplates>
 	<attributeMappings>

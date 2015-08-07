@@ -436,6 +436,11 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				appendSubTemplateInFacilityAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
 			return;
+		} else if (attrName.contains("reference")){
+			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
+				appendSubTemplateAndAddValueTagBasedOnMode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
+			}
+			return;
 		}
 		Element outboundRelationshipElem = null;
 		Element observationCriteriaElem = null;
@@ -1225,6 +1230,109 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
 		generateDateTimeAttributesTag(timeNode, attrNode, dataCriteriaElem, dataCriteriaXMLProcessor, isOrder);
+	}
+	/** Append sub template and add value tag based on mode.
+	 * 
+	 * @param templateNode the template node
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param templateXMLProcessor the template xml processor
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param attrNode the attr node
+	 * @throws XPathExpressionException the x path expression exception */
+	private void appendSubTemplateAndAddValueTagBasedOnMode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor templateXMLProcessor, Element dataCriteriaElem, Node attrNode) throws XPathExpressionException {
+		
+		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
+		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+				+ subTemplateName);
+		
+		
+		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
+			NodeList  attributedToBeChangedInNode = null;
+			String[] tagToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
+			for (String changeAttribute : tagToBeModified) {
+				attributedToBeChangedInNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+						+ subTemplateName+"//"+changeAttribute);
+				if (changeAttribute.equalsIgnoreCase(ID)) {
+					String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
+					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
+					setNodeValue(rootId);
+					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
+					setNodeValue(UUIDUtilClient.uuid());
+				} else if(changeAttribute.equalsIgnoreCase(VALUE)){
+					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
+					if(CHECK_IF_PRESENT.equals(attrMode)){
+						if(attributedToBeChangedInNode.item(0).hasAttributes()){
+							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
+						}
+						if(attributedToBeChangedInNode.item(0).hasChildNodes()){
+							/*((Element)attributedToBeChangedInNode.item(0).getFirstChild()).setAttribute(FLAVOR_ID, "ANY.NONNULL");*/
+							if(templateNode.getAttributes().getNamedItem("addTagInValueSet") != null) {
+								String elementName = templateNode.getAttributes().getNamedItem("addTagInValueSet").getNodeValue();
+								Element childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
+								childElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
+								attributedToBeChangedInNode.item(0).appendChild(childElement);
+							}
+							
+						}
+					} else if (attrMode.startsWith(Generator.LESS_THAN)
+							|| attrMode.startsWith(Generator.GREATER_THAN)
+							|| attrMode.equals(Generator.EQUAL_TO)) {
+						String elementName = templateNode.getAttributes().getNamedItem("addTagInValueSet").getNodeValue();
+						Element childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
+						Node unitAttrib = attrNode.getAttributes().getNamedItem("unit");
+						if(attrMode.equals(Generator.EQUAL_TO)){
+							childElement.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+							if(unitAttrib!=null){
+								childElement.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+							}
+							attributedToBeChangedInNode.item(0).appendChild(childElement);
+						} else if(attrMode.startsWith(Generator.LESS_THAN)){
+							Element uncertainRangeNode=  childElement.getOwnerDocument().createElement("uncertainRange");
+							if(attrMode.equals(Generator.LESS_THAN) ){
+								uncertainRangeNode.setAttribute("highClosed", "false");
+							}
+							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
+							lowNode.setAttribute("nullFlavor", "NINF");
+							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
+							highNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+							if(unitAttrib!=null){
+								highNode.setAttribute("unit",  getUnitString(unitAttrib.getNodeValue()));
+							}
+							
+							uncertainRangeNode.appendChild(lowNode);
+							uncertainRangeNode.appendChild(highNode);
+							childElement.appendChild(uncertainRangeNode);
+							attributedToBeChangedInNode.item(0).appendChild(childElement);
+							
+						} else if(attrMode.startsWith(Generator.GREATER_THAN)){
+							Element uncertainRangeNode=  childElement.getOwnerDocument().createElement("uncertainRange");
+							if(attrMode.equals(Generator.GREATER_THAN)){
+								uncertainRangeNode.setAttribute("lowClosed", "false");
+							}
+							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
+							lowNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+							if(unitAttrib!=null){
+								lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+							}
+							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
+							
+							highNode.setAttribute("nullFlavor", "PINF");
+							uncertainRangeNode.appendChild(lowNode);
+							uncertainRangeNode.appendChild(highNode);
+							childElement.appendChild(uncertainRangeNode);
+							attributedToBeChangedInNode.item(0).appendChild(childElement);
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < subTemplateNode.getChildNodes().getLength(); i++) {
+			Node childNode = subTemplateNode.getChildNodes().item(i);
+			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+			XmlProcessor.clean(nodeToAttach);
+			dataCriteriaElem.appendChild(nodeToAttach);
+		}
 	}
 	@Override
 	public String generate(MeasureExport me) throws Exception {

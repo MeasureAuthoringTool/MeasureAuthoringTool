@@ -7,12 +7,13 @@
     extension-element-prefixes="exsl uuid math xs" exclude-result-prefixes="exsl uuid math xs msxsl">
     <xsl:output method="xml" indent="yes" encoding="UTF-8" />
     <xsl:preserve-space elements="content" />
+    
+    <xsl:variable name="qdmVersionNumber">
+      <xsl:value-of select="/measure/measureReleaseVersion/@releaseVersion"></xsl:value-of>
+   	</xsl:variable>
+    
    <xsl:template match="/">
-       
-       	<xsl:variable name="qdmVersionNumber">
-       		<xsl:value-of select="/measure/measureReleaseVersion/@releaseVersion"></xsl:value-of>
-    	</xsl:variable>
-       
+
         <xsl:comment> 
            ******************* 
            QDM Version Used: QDM <xsl:value-of select="$qdmVersionNumber"/> 
@@ -41,7 +42,14 @@
       </xsl:text>
         <typeId root="2.16.840.1.113883.1.3" extension="POQM_HD000001UV02" />
         <templateId>
-            <item root="2.16.840.1.113883.10.20.28.1.1" extension="2014-11-24"/>
+              <xsl:choose>
+	       		<xsl:when test="'4.1.2' = $qdmVersionNumber">
+						<item root="2.16.840.1.113883.10.20.28.1.1" extension="2014-11-24" />
+	       		</xsl:when>
+	       		<xsl:when test="'4.3' = $qdmVersionNumber">
+					<item root="2.16.840.1.113883.10.20.28.1.1" extension="2015-09-30" />
+	       		</xsl:when>
+	       </xsl:choose>
         </templateId>
         <id root="{normalize-space(uuid)}" />
         <code code="57024-2" codeSystem="2.16.840.1.113883.6.1">

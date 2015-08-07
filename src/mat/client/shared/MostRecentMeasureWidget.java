@@ -1,20 +1,9 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -34,6 +23,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
+
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 
 /** The Class MostRecentMeasureWidget.
  * 
@@ -156,7 +150,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title = "";
 					String cssClass = "";
-					if ((object != null) && object.isExportable()) {
+					if ((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
 						if(object.getHqmfReleaseVersion().equals("v3")){
 							title = "Click to Export MATv3";
 							cssClass = "customExportButton";
@@ -167,7 +161,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 								cssClass = "customExportButtonRed";
 								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
 										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
-							} else {
+							} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4.3")) {
 								title = "Click to Export MATv4.3";
 								cssClass = "customExportButtonRed";
 								sb.appendHtmlConstant("<button type=\"button\" title='" + title 

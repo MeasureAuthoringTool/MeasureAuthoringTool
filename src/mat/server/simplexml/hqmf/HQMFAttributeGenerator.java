@@ -62,7 +62,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(REFILLS)) {
-			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
+			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, "repeatNumber");
 		} else if (attributeName.equalsIgnoreCase(DISCHARGE_STATUS)) {
 			generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
@@ -436,7 +436,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				appendSubTemplateInFacilityAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
 			return;
-		} else if (attrName.contains("reference")){
+		} else if (attrName.contains("reference") || attrName.equalsIgnoreCase("relationship")){
 			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
 				appendSubTemplateAndAddValueTagBasedOnMode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
@@ -461,7 +461,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			
 			outboundRelationshipElem.appendChild(observationCriteriaElem);
 			
-			if(templateNode.getAttributes().getNamedItem(OID) != null){
+			if((templateNode.getAttributes().getNamedItem(OID) != null)
+					&& !attrName.equalsIgnoreCase("Onset Age")){
 				Element templateId = dataCriteriaXMLProcessor
 						.getOriginalDoc().createElement(TEMPLATE_ID);
 				observationCriteriaElem.appendChild(templateId);
@@ -497,10 +498,17 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				}
 			}
 			if(!isRadiation){
-				Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
-						.createElement(TITLE);
-				titleElem.setAttribute(VALUE, attrName);
-				observationCriteriaElem.appendChild(titleElem);
+				if(!attrName.equalsIgnoreCase("Onset Age")) {
+					Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(TITLE);
+					titleElem.setAttribute(VALUE, attrName);
+					observationCriteriaElem.appendChild(titleElem);
+				} else {
+					Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+							.createElement(TITLE);
+					titleElem.setAttribute(VALUE, "Age");
+					observationCriteriaElem.appendChild(titleElem);
+				}
 			}  if(isRadiation){//statusCode is added for Radiation Duration and Dosage
 				Element statusCodeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(STATUS_CODE);
@@ -510,20 +518,31 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				observationCriteriaElem.appendChild(statusCodeElem);
 			}
 		}
-		Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement(VALUE);
-		if(VALUE_SET.equals(attrMode)){
-			checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, templateNode,valueElem);
-		} else if(CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)){
-			checkIfSelectedModeIsPresent(dataCriteriaXMLProcessor, attributeQDMNode, templateNode, valueElem);
-		}else if(EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)){
-			checkIfSelectedModeIsArthimaticExpr(dataCriteriaXMLProcessor, attributeQDMNode, templateNode,valueElem);
-		}
-		if((outboundRelationshipElem!=null) && (observationCriteriaElem!=null)){
-			observationCriteriaElem.appendChild(valueElem);
+		if(attrName.equalsIgnoreCase("Onset Age")) {
+			generateRepeatNumber(templateNode, dataCriteriaXMLProcessor, observationCriteriaElem, attributeQDMNode, VALUE);
 			dataCriteriaElem.appendChild(outboundRelationshipElem);
 		} else {
-			dataCriteriaElem.appendChild(valueElem);
+			Element valueElem =  dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(VALUE);
+			if(VALUE_SET.equals(attrMode)){
+				checkIfSelectedModeIsValueSet(dataCriteriaXMLProcessor, attributeQDMNode, templateNode,valueElem);
+			} else if(CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)){
+				checkIfSelectedModeIsPresent(dataCriteriaXMLProcessor, attributeQDMNode, templateNode, valueElem);
+			}else if(EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)){
+				checkIfSelectedModeIsArthimaticExpr(dataCriteriaXMLProcessor, attributeQDMNode, templateNode,valueElem);
+			}
+			if((outboundRelationshipElem!=null) && (observationCriteriaElem!=null)){
+				observationCriteriaElem.appendChild(valueElem);
+				dataCriteriaElem.appendChild(outboundRelationshipElem);
+			} else {
+				NodeList outboundRelationshipList = dataCriteriaElem.getElementsByTagName("outboundRelationship");
+				if((outboundRelationshipList != null) && (outboundRelationshipList.getLength() > 0)){
+					Node outboundRelationshipNode = outboundRelationshipList.item(0);
+					dataCriteriaElem.insertBefore(valueElem, outboundRelationshipNode);
+				}else{
+					dataCriteriaElem.appendChild(valueElem);
+				}
+			}
 		}
 	}
 	
@@ -536,22 +555,29 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 */
 	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
-			Element dataCriteriaElem, Node attributeQDMNode) {
+			Element dataCriteriaElem, Node attributeQDMNode , String elementNameToCreate) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()
-				.createElement("repeatNumber");
+				.createElement(elementNameToCreate);
+		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
 		if (CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)) {
 			repeatNumberElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 			dataCriteriaElem.appendChild(repeatNumberElement);
 		}  else if (EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)) {
+			if(elementNameToCreate.equalsIgnoreCase(VALUE)){
+				repeatNumberElement.setAttribute("xsi:type", "IVL_PQ");
+			}
 			if (EQUAL_TO.equals(attrMode)) {
 				Element lowElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(LOW);
 				lowElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-				
 				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(HIGH);
 				highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				if(unitAttrib!=null){
+					lowElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+					highElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+				}
 				repeatNumberElement.appendChild(lowElem);
 				repeatNumberElement.appendChild(highElem);
 				dataCriteriaElem.appendChild(repeatNumberElement);
@@ -564,6 +590,10 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				repeatNumberElement.appendChild(lowElem);
 				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(HIGH);
 				highElem.setAttribute(NULL_FLAVOR, "PINF");
+				if(unitAttrib!=null){
+					lowElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+				}
+				
 				repeatNumberElement.appendChild(highElem);
 				dataCriteriaElem.appendChild(repeatNumberElement);
 			}else if(attrMode.startsWith(LESS_THAN)){
@@ -575,6 +605,9 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				repeatNumberElement.appendChild(lowElem);
 				Element highElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(HIGH);
 				highElem.setAttribute(VALUE, attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
+				if(unitAttrib!=null){
+					highElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
+				}
 				repeatNumberElement.appendChild(highElem);
 				dataCriteriaElem.appendChild(repeatNumberElement);
 			}
@@ -1259,7 +1292,16 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 					setNodeValue(rootId);
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
 					setNodeValue(UUIDUtilClient.uuid());
-				} else if(changeAttribute.equalsIgnoreCase(VALUE)){
+				}  else if(changeAttribute.equalsIgnoreCase(ITEM)) {
+					for (int count =0; count< attributedToBeChangedInNode.getLength();count++) {
+						Node itemNode = attributedToBeChangedInNode.item(count);
+						itemNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
+						String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
+						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
+						setNodeValue(rootId);
+					}
+					
+				}else if(changeAttribute.equalsIgnoreCase(VALUE)){
 					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
 					if(CHECK_IF_PRESENT.equals(attrMode)){
 						if(attributedToBeChangedInNode.item(0).hasAttributes()){
@@ -1273,7 +1315,6 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 								childElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 								attributedToBeChangedInNode.item(0).appendChild(childElement);
 							}
-							
 						}
 					} else if (attrMode.startsWith(Generator.LESS_THAN)
 							|| attrMode.startsWith(Generator.GREATER_THAN)
@@ -1299,15 +1340,13 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 							if(unitAttrib!=null){
 								highNode.setAttribute("unit",  getUnitString(unitAttrib.getNodeValue()));
 							}
-							
 							uncertainRangeNode.appendChild(lowNode);
 							uncertainRangeNode.appendChild(highNode);
 							childElement.appendChild(uncertainRangeNode);
 							attributedToBeChangedInNode.item(0).appendChild(childElement);
-							
-						} else if(attrMode.startsWith(Generator.GREATER_THAN)){
+						} else if (attrMode.startsWith(Generator.GREATER_THAN)) {
 							Element uncertainRangeNode=  childElement.getOwnerDocument().createElement("uncertainRange");
-							if(attrMode.equals(Generator.GREATER_THAN)){
+							if (attrMode.equals(Generator.GREATER_THAN)) {
 								uncertainRangeNode.setAttribute("lowClosed", "false");
 							}
 							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
@@ -1323,6 +1362,40 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 							childElement.appendChild(uncertainRangeNode);
 							attributedToBeChangedInNode.item(0).appendChild(childElement);
 						}
+					}
+				} else if(changeAttribute.equalsIgnoreCase(CODE)){
+					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
+					if(CHECK_IF_PRESENT.equals(attrMode)){
+						if(attributedToBeChangedInNode.item(0).hasAttributes()){
+							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
+						}
+						if(attributedToBeChangedInNode.item(0).hasChildNodes()){
+							attributedToBeChangedInNode.item(0).removeChild(attributedToBeChangedInNode.item(0).getFirstChild());
+						}
+						Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("flavorId");
+						attribute.setNodeValue("ANY.NONNULL");
+						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
+					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
+						if (attributedToBeChangedInNode.item(0).hasAttributes()) {
+							((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
+						}
+						if (attributedToBeChangedInNode.item(0).hasChildNodes()) {
+							((Element) attributedToBeChangedInNode.item(0)).removeChild(attributedToBeChangedInNode.item(0).getFirstChild());
+						}
+						String attributeValueSetName = attrNode.getAttributes()
+								.getNamedItem(NAME).getNodeValue();
+						String attributeOID = attrNode.getAttributes()
+								.getNamedItem(OID).getNodeValue();
+						String attributeTaxonomy = attrNode.getAttributes()
+								.getNamedItem(TAXONOMY).getNodeValue();
+						Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSet");
+						attribute.setNodeValue(attributeOID);
+						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
+						Element valueDisplayNameElem = attributedToBeChangedInNode.item(0).getOwnerDocument()
+								.createElement(DISPLAY_NAME);
+						valueDisplayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
+						attributedToBeChangedInNode.item(0).appendChild(valueDisplayNameElem);
+						
 					}
 				}
 			}

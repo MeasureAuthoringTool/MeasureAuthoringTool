@@ -224,6 +224,12 @@ public interface Generator extends MatConstants {
 	
 	public static final String STATUS_CODE = "statusCode";
 	
+	public static final String ONSET_DATETIME = "onset datetime";
+	
+	public static final String ABATEMENT_DATETIME = "abatement datetime";
+	
+	public static final String RECORDED_DATETIME = "recorded datetime";
+	
 	/**
 	 * Generate.
 	 *

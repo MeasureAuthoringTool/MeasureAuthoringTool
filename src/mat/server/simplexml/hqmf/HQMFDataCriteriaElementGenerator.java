@@ -528,7 +528,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				"and @name != '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' and @name != '"+FACILITY_LOCATION_DEPARTURE_DATETIME
 				+"' and  @name != '"+FACILITY_LOCATION+"' and @name != '"+ADMISSION_DATETIME
 				+"' and @name != '"+DISCHARGE_DATETIME +"' and @name != '"+ACTIVE_DATETIME+"' and @name != '"+INCISION_DATETIME+"' and @name != '"+DATE
-				+"' and @name != '"+TIME+"' and @name != '"+REMOVAL_DATETIME+"' and @name != '"+SIGNED_DATETIME+"']";
+				+"' and @name != '"+TIME+"' and @name != '"+REMOVAL_DATETIME+"' and @name != '"+SIGNED_DATETIME+"' and @name != '"+ABATEMENT_DATETIME+"'" +
+						"and @name != '"+RECORDED_DATETIME+"' and @name != '"+ONSET_DATETIME+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -572,7 +573,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ "[@name = '"+START_DATETIME+"' or @name='"+STOP_DATETIME +"' or @name = '"+FACILITY_LOCATION_ARRIVAL_DATETIME +"' or @name = '"+FACILITY_LOCATION_DEPARTURE_DATETIME
 				+"' or @name = '"+FACILITY_LOCATION+"' or @name ='"+ADMISSION_DATETIME+"' or @name ='"+DISCHARGE_DATETIME+"'" +
 				"or @name ='"+ACTIVE_DATETIME+"' or @name ='"+INCISION_DATETIME+"' or @name ='"+DATE+"' or @name ='"+TIME+"'" +
-				"or @name ='"+REMOVAL_DATETIME+"' or @name ='"+SIGNED_DATETIME+"']"
+				"or @name ='"+REMOVAL_DATETIME+"' or @name ='"+SIGNED_DATETIME+"' or @name ='"+ONSET_DATETIME+"' or @name ='"+ABATEMENT_DATETIME+"' " +
+						"or @name ='"+RECORDED_DATETIME+"']"
 				+ "[@mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than') or @mode='Check if Present']";
 		
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
@@ -1351,7 +1353,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateNegationRationalEntries(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}else if (START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)
-				|| SIGNED_DATETIME.equals(attributeName)) {
+				|| SIGNED_DATETIME.equals(attributeName)
+				|| RECORDED_DATETIME.equals(attributeName)
+				|| ABATEMENT_DATETIME.equals(attributeName)) {
 			generateOrderTypeAttributes(qdmNode, dataCriteriaElem, dataCriteriaXMLProcessor,
 					simpleXmlprocessor, attributeQDMNode);
 			//		} else if(SIGNED_DATETIME.equals(attributeName)){
@@ -1362,7 +1366,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| REMOVAL_DATETIME.equalsIgnoreCase(attributeName)
 				|| ACTIVE_DATETIME.equalsIgnoreCase(attributeName)
 				|| TIME.equalsIgnoreCase(attributeName)
-				|| DATE.equalsIgnoreCase(attributeName)) {
+				|| DATE.equalsIgnoreCase(attributeName)
+				|| ONSET_DATETIME.equalsIgnoreCase(attributeName)) {
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (FACILITY_LOCATION_ARRIVAL_DATETIME.equalsIgnoreCase(attributeName)
@@ -1595,7 +1600,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			return;
 		}
 		if((templateNode.getAttributes().getNamedItem("includeOtherSubTemplate") !=null)
-				|| attrName.equalsIgnoreCase(SIGNED_DATETIME)){
+				|| attrName.equalsIgnoreCase(SIGNED_DATETIME) ||  attrName.equalsIgnoreCase(RECORDED_DATETIME)){
 			appendSubTemplateWithOrderAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, qdmNode,attributeQDMNode);
 		} else {
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
@@ -2262,13 +2267,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| ACTIVE_DATETIME.equalsIgnoreCase(attrName)
 				|| DATE.equalsIgnoreCase(attrName)
 				|| TIME.equalsIgnoreCase(attrName)
-				|| INCISION_DATETIME.equalsIgnoreCase(attrName)) {
+				|| INCISION_DATETIME.equalsIgnoreCase(attrName)
+				|| ONSET_DATETIME.equalsIgnoreCase(attrName)) {
 			timeTagName = LOW;
 		} else if (attrName.equals(STOP_DATETIME)
 				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)
 				|| attrName.equalsIgnoreCase(DISCHARGE_DATETIME)
 				|| attrName.equalsIgnoreCase(REMOVAL_DATETIME)
-				|| attrName.equalsIgnoreCase(SIGNED_DATETIME)) {
+				|| attrName.equalsIgnoreCase(SIGNED_DATETIME)
+				|| attrName.equalsIgnoreCase(RECORDED_DATETIME)
+				|| attrName.equalsIgnoreCase(ABATEMENT_DATETIME)) {
 			timeTagName = HIGH;
 		}
 		

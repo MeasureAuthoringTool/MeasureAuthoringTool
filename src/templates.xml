@@ -674,7 +674,7 @@
                 <id>
                     <item root="{Random UUID}" extension="{Random Extension}" />
                 </id>
-                <code />
+                <code/>
             </role>
         </participation>
     </relationShip>
@@ -688,8 +688,7 @@
                     <displayName value="Reference lab test reference range" />
                 </code>
                 <title value="Reference Range" />
-                <value xsi:type="IVL_PQ">
-                </value>
+                <value xsi:type="IVL_PQ"/>
             </observationCriteria>
         </outboundRelationship>
     </reference-Low-Range>
@@ -703,8 +702,7 @@
                     <displayName value="Reference lab test reference range" />
                 </code>
                 <title value="Reference Range" />
-                <value xsi:type="IVL_PQ">
-                </value>
+                <value xsi:type="IVL_PQ"/>
             </observationCriteria>
         </outboundRelationship>
     </reference-High-Range>

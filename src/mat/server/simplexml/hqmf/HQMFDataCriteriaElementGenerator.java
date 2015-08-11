@@ -23,8 +23,6 @@ import org.w3c.dom.NodeList;
  * The Class HQMFDataCriteriaGenerator.
  */
 public class HQMFDataCriteriaElementGenerator implements Generator {
-	
-	
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
 	
@@ -529,7 +527,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+"' and  @name != '"+FACILITY_LOCATION+"' and @name != '"+ADMISSION_DATETIME
 				+"' and @name != '"+DISCHARGE_DATETIME +"' and @name != '"+ACTIVE_DATETIME+"' and @name != '"+INCISION_DATETIME+"' and @name != '"+DATE
 				+"' and @name != '"+TIME+"' and @name != '"+REMOVAL_DATETIME+"' and @name != '"+SIGNED_DATETIME+"' and @name != '"+ABATEMENT_DATETIME+"'" +
-						"and @name != '"+RECORDED_DATETIME+"' and @name != '"+ONSET_DATETIME+"']";
+				"and @name != '"+RECORDED_DATETIME+"' and @name != '"+ONSET_DATETIME+"']";
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
 		
 		if(usedAttributeNodeList == null){
@@ -574,7 +572,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+"' or @name = '"+FACILITY_LOCATION+"' or @name ='"+ADMISSION_DATETIME+"' or @name ='"+DISCHARGE_DATETIME+"'" +
 				"or @name ='"+ACTIVE_DATETIME+"' or @name ='"+INCISION_DATETIME+"' or @name ='"+DATE+"' or @name ='"+TIME+"'" +
 				"or @name ='"+REMOVAL_DATETIME+"' or @name ='"+SIGNED_DATETIME+"' or @name ='"+ONSET_DATETIME+"' or @name ='"+ABATEMENT_DATETIME+"' " +
-						"or @name ='"+RECORDED_DATETIME+"']"
+				"or @name ='"+RECORDED_DATETIME+"']"
 				+ "[@mode='Equal To' or starts-with(@mode,'Less Than') or starts-with(@mode, 'Greater Than') or @mode='Check if Present']";
 		
 		NodeList usedAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForAttributeUse);
@@ -1379,7 +1377,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(REFILLS)) {
-			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, "repeatNumber");
+			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, REPEAT_NUMBER);
 		} else if (attributeName.equalsIgnoreCase(DISCHARGE_STATUS)) {
 			generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
@@ -1758,7 +1756,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				appendSubTemplateInFacilityAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
 			return;
-		} else if (attrName.contains("reference") || attrName.equalsIgnoreCase("relationship")){
+		} else if (attrName.contains(REFERENCE) || attrName.equalsIgnoreCase(RELATIONSHIP)){
 			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
 				appendSubTemplateAndAddValueTagBasedOnMode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
@@ -1784,7 +1782,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			outboundRelationshipElem.appendChild(observationCriteriaElem);
 			
 			if((templateNode.getAttributes().getNamedItem(OID) != null)
-					&& !attrName.equalsIgnoreCase("Onset Age")){
+					&& !attrName.equalsIgnoreCase(ONSET_AGE)){
 				Element templateId = dataCriteriaXMLProcessor
 						.getOriginalDoc().createElement(TEMPLATE_ID);
 				observationCriteriaElem.appendChild(templateId);
@@ -1820,7 +1818,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 			}
 			if(!isRadiation){
-				if(!attrName.equalsIgnoreCase("Onset Age")) {
+				if(!attrName.equalsIgnoreCase(ONSET_AGE)) {
 					Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(TITLE);
 					titleElem.setAttribute(VALUE, attrName);
@@ -1840,7 +1838,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				observationCriteriaElem.appendChild(statusCodeElem);
 			}
 		}
-		if(attrName.equalsIgnoreCase("Onset Age")) {
+		if(attrName.equalsIgnoreCase(ONSET_AGE)) {
 			generateRepeatNumber(templateNode, dataCriteriaXMLProcessor, observationCriteriaElem, attributeQDMNode, VALUE);
 			dataCriteriaElem.appendChild(outboundRelationshipElem);
 		} else {

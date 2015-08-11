@@ -230,6 +230,14 @@ public interface Generator extends MatConstants {
 	
 	public static final String RECORDED_DATETIME = "recorded datetime";
 	
+	public static final String REPEAT_NUMBER = "repeatNumber";
+	
+	public static final String ONSET_AGE = "Onset Age";
+	
+	public static final String REFERENCE = "reference";
+	
+	public static final String RELATIONSHIP = "relationship";
+	
 	/**
 	 * Generate.
 	 *

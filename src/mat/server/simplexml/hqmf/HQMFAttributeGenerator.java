@@ -65,7 +65,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(REFILLS)) {
-			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, "repeatNumber");
+			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, REPEAT_NUMBER);
 		} else if (attributeName.equalsIgnoreCase(DISCHARGE_STATUS)) {
 			generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
 		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
@@ -439,7 +439,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				appendSubTemplateInFacilityAttribute(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
 			return;
-		} else if (attrName.contains("reference") || attrName.equalsIgnoreCase("relationship")){
+		} else if (attrName.contains(REFERENCE) || attrName.equalsIgnoreCase(RELATIONSHIP)){
 			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") !=null) {
 				appendSubTemplateAndAddValueTagBasedOnMode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem, attributeQDMNode);
 			}
@@ -465,7 +465,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			outboundRelationshipElem.appendChild(observationCriteriaElem);
 			
 			if((templateNode.getAttributes().getNamedItem(OID) != null)
-					&& !attrName.equalsIgnoreCase("Onset Age")){
+					&& !attrName.equalsIgnoreCase(ONSET_AGE)){
 				Element templateId = dataCriteriaXMLProcessor
 						.getOriginalDoc().createElement(TEMPLATE_ID);
 				observationCriteriaElem.appendChild(templateId);
@@ -501,7 +501,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				}
 			}
 			if(!isRadiation){
-				if(!attrName.equalsIgnoreCase("Onset Age")) {
+				if(!attrName.equalsIgnoreCase(ONSET_AGE)) {
 					Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
 							.createElement(TITLE);
 					titleElem.setAttribute(VALUE, attrName);

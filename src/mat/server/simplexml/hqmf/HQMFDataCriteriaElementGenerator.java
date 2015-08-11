@@ -1231,6 +1231,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					if(CHECK_IF_PRESENT.equals(attrMode)){
 						if(attributedToBeChangedInNode.item(0).hasAttributes()){
 							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
+							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
 						}
 						if(attributedToBeChangedInNode.item(0).hasChildNodes()){
 							/*((Element)attributedToBeChangedInNode.item(0).getFirstChild()).setAttribute(FLAVOR_ID, "ANY.NONNULL");*/
@@ -1244,8 +1245,23 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					} else if (attrMode.startsWith(Generator.LESS_THAN)
 							|| attrMode.startsWith(Generator.GREATER_THAN)
 							|| attrMode.equals(Generator.EQUAL_TO)) {
+						
 						String elementName = templateNode.getAttributes().getNamedItem("addTagInValueSet").getNodeValue();
-						Element childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
+						NodeList el = attributedToBeChangedInNode.item(0).getChildNodes();
+						Element childElement = null;
+						if(el.getLength() == 0){
+							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
+						} else {
+							childElement = (Element) el;
+							if(childElement.hasChildNodes()){
+								for(int j = childElement.getChildNodes().getLength();j>0;j--){
+									Node ChildNode = childElement.getChildNodes().item(j-1);
+									childElement.removeChild(ChildNode);
+								}
+								
+							}
+							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
+						}
 						Node unitAttrib = attrNode.getAttributes().getNamedItem("unit");
 						if(attrMode.equals(Generator.EQUAL_TO)){
 							childElement.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());

@@ -89,9 +89,7 @@ public interface Generator extends MatConstants {
 	/** The Constant TYPE_CODE. */
 	public static final String TYPE_CODE = "typeCode";
 	
-	/**
-	 * The Constant RAV
-	 */
+	/** The Constant RAV. */
 	public static final String RAV = "riskAdjVar";
 	
 	/** The Constant OBSERVATION_CRITERIA. */
@@ -118,6 +116,7 @@ public interface Generator extends MatConstants {
 	/** The Constant VERSIONID. */
 	public static final String VERSION_4_1_2_ID = "2014-11-24";
 	
+	/** The Constant VERSION_4_3_ID. */
 	public static final String VERSION_4_3_ID = "2015-09-30";
 	
 	/** The Constant VALUE_SET. */
@@ -176,8 +175,10 @@ public interface Generator extends MatConstants {
 	/** The Constant ACTIVE_DATETIME. */
 	public static final String ACTIVE_DATETIME = "active datetime";
 	
+	/** The Constant TIME. */
 	public static final String TIME = "time";
 	
+	/** The Constant DATE. */
 	public static final String DATE = "date";
 	
 	/** The Constant ATTRIBUTE_MODE. */
@@ -218,16 +219,22 @@ public interface Generator extends MatConstants {
 	/** The Constant NULL_FLAVOR. */
 	public static final String NULL_FLAVOR ="nullFlavor";
 	
+	/** The Constant RADIATION_DURATION. */
 	public static final String RADIATION_DURATION = "radiation duration";
 	
+	/** The Constant RADIATION_DOSAGE. */
 	public static final String RADIATION_DOSAGE = "radiation dosage";
 	
+	/** The Constant STATUS_CODE. */
 	public static final String STATUS_CODE = "statusCode";
 	
+	/** The Constant ONSET_DATETIME. */
 	public static final String ONSET_DATETIME = "onset datetime";
 	
+	/** The Constant ABATEMENT_DATETIME. */
 	public static final String ABATEMENT_DATETIME = "abatement datetime";
 	
+	/** The Constant RECORDED_DATETIME. */
 	public static final String RECORDED_DATETIME = "recorded datetime";
 	
 	public static final String REPEAT_NUMBER = "repeatNumber";

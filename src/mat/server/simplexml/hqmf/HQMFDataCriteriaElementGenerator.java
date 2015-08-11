@@ -2359,7 +2359,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			
 			if(attrName.equalsIgnoreCase(START_DATETIME)
 					||attrName.equalsIgnoreCase(STOP_DATETIME)
-					||attrName.equalsIgnoreCase(SIGNED_DATETIME)){
+					||attrName.equalsIgnoreCase(SIGNED_DATETIME)
+					||attrName.equalsIgnoreCase(RECORDED_DATETIME)){
 				NodeList nodeList = dataCriteriaElem.getElementsByTagName("participation");
 				if ((nodeList != null) && (nodeList.getLength() > 0) && isOrder) {
 					if(nodeList.getLength()>1){

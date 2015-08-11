@@ -133,7 +133,7 @@
     
     
     <!--Family History -->
-	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true" includeOtherSubTemplate="order-dateTime">family history</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">family history</template>
 
 	<!-- symptom -->
 	<template oid="2.16.840.1.113883.10.20.28.3.116" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom</template>

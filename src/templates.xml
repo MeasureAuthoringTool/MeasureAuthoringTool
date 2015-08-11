@@ -570,6 +570,8 @@
 		addTagInValueSet="low">reference range low</template>
 	<template includeSubTemplate="reference-High-Range"
 		addTagInValueSet="high">reference range high</template>
+	<template includeSubTemplate="relationShip">relationship</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.101" type="SUBJ" class="OBS" mood="EVN" code="445518008" codeSystem="2.16.840.1.113883.6.96" >onset age</template>
 	<subtemplates>
 		<communication-FromPatient-ToProvider>
 			<participation typeCode="AUT">
@@ -613,6 +615,16 @@
 			</outboundRelationship>
 		</reference-High-Range>
 
+<relationShip changeAttribute="item,code">
+	<participation typeCode="SBJ">
+		<role classCode="PRS">
+			<id>
+				<item root="{Random UUID}" extension="{Random Extension}" />
+			</id>
+			<code />
+		</role>
+	</participation>
+</relationShip>
 		<communication-FromProvider-ToPatient>
 			<participation typeCode="IRCP">
 				<role classCode="PAT" />

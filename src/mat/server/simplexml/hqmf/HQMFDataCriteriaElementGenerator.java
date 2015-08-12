@@ -42,6 +42,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	public String generate(MeasureExport me) throws Exception{
 		
 		String dataCriteria = "";
+		getExtensionValueBasedOnVersion(me);
 		dataCriteria = getHQMFXmlString(me);
 		/*dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);*/
 		return dataCriteria;
@@ -119,7 +120,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @return the string
 	 */
 	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
-		getExtensionValueBasedOnVersion(me);
 		//XPath String for only QDM's.
 		String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
 		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
@@ -1682,7 +1682,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(ITEM);
 			itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
-			itemChild.setAttribute("extension", extensionValue);
+			itemChild.setAttribute("extension", VERSION_4_1_2_ID);
 			templateId.appendChild(itemChild);
 			
 			Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -1816,7 +1816,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						.createElement(ITEM);
 				itemChild.setAttribute(ROOT, templateNode.getAttributes().getNamedItem(OID).getNodeValue());
 				if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
-					itemChild.setAttribute("extension", extensionValue);
+					itemChild.setAttribute("extension", VERSION_4_1_2_ID);
 				}
 				templateId.appendChild(itemChild);
 			}

@@ -46,7 +46,7 @@
 	       		<xsl:when test="'4.1.2' = $qdmVersionNumber">
 						<item root="2.16.840.1.113883.10.20.28.1.1" extension="2014-11-24" />
 	       		</xsl:when>
-	       		<xsl:when test="'4.3' = $qdmVersionNumber">
+	       		<xsl:when test="'4.2' = $qdmVersionNumber">
 					<item root="2.16.840.1.113883.10.20.28.1.1" extension="2015-09-30" />
 	       		</xsl:when>
 	       </xsl:choose>

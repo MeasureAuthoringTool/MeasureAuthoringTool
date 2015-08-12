@@ -1169,12 +1169,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					setNodeValue(rootId);
 					childNodes.getAttributes().getNamedItem("extension").
 					setNodeValue(StringUtils.deleteWhitespace((String) attrNode.getUserData(ATTRIBUTE_NAME)));
-				} else if(changeAttribute.equalsIgnoreCase(ITEM)) {
-					for (int count =0; count< attributedToBeChangedInNode.getLength();count++) {
+				} else if (changeAttribute.equalsIgnoreCase(ITEM)) {
+					for (int count = 0; count < attributedToBeChangedInNode.getLength(); count++) {
 						Node itemNode = attributedToBeChangedInNode.item(count);
 						itemNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
 					}
-					
 				}
 			}
 		}
@@ -1220,7 +1219,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}  else if(changeAttribute.equalsIgnoreCase(ITEM)) {
 					for (int count =0; count< attributedToBeChangedInNode.getLength();count++) {
 						Node itemNode = attributedToBeChangedInNode.item(count);
-						itemNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
+						itemNode.getAttributes().getNamedItem("extension").setNodeValue(UUIDUtilClient.uuid());
 						String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
 						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
 						setNodeValue(rootId);

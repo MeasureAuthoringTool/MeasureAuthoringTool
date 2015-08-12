@@ -133,16 +133,16 @@
     
     
     <!--Family History -->
-	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime">family history</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.111" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="10157-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Family History" addValueTag="true" addCodeTag="true" typeOrder="true" includeOtherSubTemplate="order-dateTime" addExtensionInTemplate="true">family history</template>
 
 	<!-- symptom -->
-	<template oid="2.16.840.1.113883.10.20.28.3.116" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true">symptom</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.116" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="418799008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Symptom" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">symptom</template>
 
 	<!-- Immunization -->
-	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization">immunization, administered</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="COMPLETED" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true">immunization, order</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, allergy</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, intolerance</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization" addExtensionInTemplate="true">immunization, administered</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="COMPLETED" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true" addExtensionInTemplate="true">immunization, order</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, allergy</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, intolerance</template>
     
     
 
@@ -512,7 +512,7 @@
 </participation>
  </facility-location>
 
- <facility-location-old changeAttribute="id,code,item">
+ <facility-location-old changeAttribute="id,code">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
         <templateId>
@@ -539,7 +539,7 @@
 </participation>
  </facility-location-ArrDeparture>
  
- <facility-location-ArrDeparture-old changeAttribute="id,item">
+ <facility-location-ArrDeparture-old changeAttribute="id">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
         <templateId>
@@ -589,7 +589,7 @@
 </participation>	
 </device-allergy>
 
-<incision-dateTime changeAttribute="id,item">
+<incision-dateTime changeAttribute="id">
 <outboundRelationship typeCode="REFR">
    <procedureCriteria classCode="PROC" moodCode="EVN">
       <templateId>
@@ -642,7 +642,7 @@
 </outboundRelationship>
 </diagnosticStudy-Intolerance>
 
-<radiation-duration changeAttribute="id,item">
+<radiation-duration changeAttribute="id">
 <outboundRelationship typeCode="REFR">
 	<observationCriteria classCode="OBS" moodCode="EVN">
 		<templateId>
@@ -655,7 +655,7 @@
 </outboundRelationship>
 </radiation-duration>
 
-<radiation-dosage changeAttribute="id,item">
+<radiation-dosage changeAttribute="id">
 <outboundRelationship typeCode="REFR">
 	<observationCriteria classCode="OBS" moodCode="EVN">
 		<templateId>

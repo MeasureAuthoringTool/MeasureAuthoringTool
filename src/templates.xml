@@ -710,7 +710,7 @@
     <immunization changeAttribute="code,displayName">
         <participation typeCode="CSM">
             <role classCode="MANU">
-                <playingManufacturedMaterial classCode="MAT" determinerCode="KIND">
+                <playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
                     <code valueSet="$QDMElementValueSetOID" >
 				      <displayName value="$displaynamevalue"/>
 				    </code>

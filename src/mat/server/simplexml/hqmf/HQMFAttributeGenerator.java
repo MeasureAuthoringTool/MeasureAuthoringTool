@@ -1302,7 +1302,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				}  else if(changeAttribute.equalsIgnoreCase(ITEM)) {
 					for (int count =0; count< attributedToBeChangedInNode.getLength();count++) {
 						Node itemNode = attributedToBeChangedInNode.item(count);
-						itemNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
+						itemNode.getAttributes().getNamedItem("extension").setNodeValue(UUIDUtilClient.uuid());
 						String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
 						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
 						setNodeValue(rootId);

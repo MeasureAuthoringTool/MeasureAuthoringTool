@@ -140,7 +140,7 @@
 
 	<!-- Immunization -->
 	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization">immunization, administered</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="COMPLETED" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime">immunization, order</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="COMPLETED" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true">immunization, order</template>
 	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, allergy</template>
 	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, intolerance</template>
     
@@ -205,7 +205,7 @@
     <template target="lengthOfStayQuantity" flavorId="ANY.NONNULL" insertAfterNode="statusCode">length of stay</template>
     <template oid="2.16.840.1.113883.10.20.28.3.105" class="OBS" mood="EVN" type="CAUS" valueType="CD" code="42752001" codeSystem="2.16.840.1.113883.6.96">cause</template>
     <template includeSubTemplate="relationShip">relationship</template>
-    <template oid="2.16.840.1.113883.10.20.28.3.101" type="SUBJ" class="OBS" mood="EVN" code="445518008" codeSystem="2.16.840.1.113883.6.96" >onset age</template>
+    <template oid="2.16.840.1.113883.10.20.28.3.101" type="SUBJ" class="OBS" mood="EVN" code="445518008" codeSystem="2.16.840.1.113883.6.96">onset age</template>
     <template includeSubTemplate="reference-Low-Range" addTagInValueSet="low">reference range low</template>
 	<template includeSubTemplate="reference-High-Range" addTagInValueSet="high">reference range high</template>
  
@@ -706,6 +706,18 @@
             </observationCriteria>
         </outboundRelationship>
     </reference-High-Range>
+    
+    <immunization changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingManufacturedMaterial classCode="MAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingManufacturedMaterial>
+            </role>
+        </participation>
+    </immunization>
 
 
     </subtemplates>
@@ -745,6 +757,13 @@
         <attributeMapping qdmAttribute="time" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="radiation dosage" dotNotation="reference.observation.value"/>
         <attributeMapping qdmAttribute="radiation duration" dotNotation="reference.observation.value"/>
+        <attributeMapping qdmAttribute="relationship" dotNotation="subject.personalRelationshipWith.code"/>
+        <attributeMapping qdmAttribute="onset age" dotNotation="subject.observation.value"/>
+        <attributeMapping qdmAttribute="onset datetime" dotNotation="effectiveTime.low"/>
+        <attributeMapping qdmAttribute="recorded datetime" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="abatement datetime" dotNotation="effectiveTime.high"/>
+        <attributeMapping qdmAttribute="reference range low" dotNotation="referenceRange.observation.value"/>
+        <attributeMapping qdmAttribute="reference range high" dotNotation="referenceRange.observation.value"/>
 
         <!-- datatype dependent .notation mappings-->
         <attributeMapping qdmAttribute="start datetime" datatypes="care goal" dotNotation="effectiveTime.low"/>
@@ -889,7 +908,7 @@
         <attributeMapping qdmAttribute="stop datetime" datatypes="transfer from" dotNotation="effectiveTime.high"/>
         <attributeMapping qdmAttribute="stop datetime" datatypes="transfer to" dotNotation="effectiveTime.high"/>
         
-         <attributeMapping qdmAttribute="stop datetime" datatypes="device, order" dotNotation="author.time.high"/>
+        <attributeMapping qdmAttribute="stop datetime" datatypes="device, order" dotNotation="author.time.high"/>
         <attributeMapping qdmAttribute="stop datetime" datatypes="diagnostic study, order" dotNotation="author.time.high"/>
         <attributeMapping qdmAttribute="stop datetime" datatypes="encounter, order" dotNotation="author.time.high"/>
         <attributeMapping qdmAttribute="stop datetime" datatypes="functional status, order" dotNotation="author.time.high"/>
@@ -966,7 +985,7 @@
         <attributeMapping qdmAttribute="result" datatypes="transfer from" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="transfer to" dotNotation="value"/>
         
-         <attributeMapping qdmAttribute="result" datatypes="device, order" dotNotation="value"/>
+        <attributeMapping qdmAttribute="result" datatypes="device, order" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="diagnostic study, order" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="encounter, order" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="functional status, order" dotNotation="value"/>

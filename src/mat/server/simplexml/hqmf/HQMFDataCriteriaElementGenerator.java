@@ -1196,7 +1196,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param attrNode the attr node
 	 * @throws XPathExpressionException the x path expression exception */
-	private void appendSubTemplateAndAddValueTagBasedOnMode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+	protected void appendSubTemplateAndAddValueTagBasedOnMode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor templateXMLProcessor, Element dataCriteriaElem, Node attrNode) throws XPathExpressionException {
 		
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
@@ -1283,8 +1283,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 								uncertainRangeNode.setAttribute("highClosed", "false");
 							}
 							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
+							lowNode.setAttribute(XSI_TYPE, "PQ");
 							lowNode.setAttribute("nullFlavor", "NINF");
+							
 							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
+							highNode.setAttribute(XSI_TYPE, "PQ");
 							highNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 							if(unitAttrib!=null){
 								highNode.setAttribute("unit",  getUnitString(unitAttrib.getNodeValue()));
@@ -1299,12 +1302,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 								uncertainRangeNode.setAttribute("lowClosed", "false");
 							}
 							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
+							lowNode.setAttribute(XSI_TYPE, "PQ");
 							lowNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
 							if(unitAttrib!=null){
 								lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 							}
 							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
-							
+							highNode.setAttribute(XSI_TYPE, "PQ");
 							highNode.setAttribute("nullFlavor", "PINF");
 							uncertainRangeNode.appendChild(lowNode);
 							uncertainRangeNode.appendChild(highNode);
@@ -1428,7 +1432,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateDoseTypeAttributes(Node qdmNode,
+	protected void generateDoseTypeAttributes(Node qdmNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		
@@ -1560,7 +1564,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
+	protected void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
@@ -1585,7 +1589,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	protected void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
@@ -1611,7 +1615,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateOrderTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	protected void generateOrderTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String attrName = (String)attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -1733,7 +1737,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateOtherAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	protected void generateOtherAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -1897,7 +1901,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+	protected void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode , String elementNameToCreate) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()
@@ -1969,7 +1973,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateDischargeStatus(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+	protected void generateDischargeStatus(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element dischargeDispositionElement =  dataCriteriaXMLProcessor.getOriginalDoc()
@@ -2004,7 +2008,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
+	protected Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem) {
 		String attributeValueSetName = attributeQDMNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
@@ -2036,7 +2040,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsPresent(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
+	protected Element checkIfSelectedModeIsPresent(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem){
 		valueElem.setAttribute(XSI_TYPE, "ANY");
 		valueElem.setAttribute(FLAVOR_ID, "ANY.NONNULL");
@@ -2260,7 +2264,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateDateTimeAttributes(Node childNode,
+	protected void generateDateTimeAttributes(Node childNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		
@@ -2279,7 +2283,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param isOrder the is order
 	 */
-	private void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
+	protected void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, boolean isOrder) {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);

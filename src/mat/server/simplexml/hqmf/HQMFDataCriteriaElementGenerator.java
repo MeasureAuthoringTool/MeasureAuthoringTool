@@ -1903,7 +1903,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(elementNameToCreate);
 		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
+		
 		if (CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)) {
+			if(elementNameToCreate.equalsIgnoreCase(VALUE)){
+				repeatNumberElement.setAttribute("xsi:type", "ANY");
+			}
 			repeatNumberElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 			dataCriteriaElem.appendChild(repeatNumberElement);
 		}  else if (EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)) {

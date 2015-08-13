@@ -3,12 +3,8 @@ package mat.server.simplexml.hqmf;
 import javax.xml.xpath.XPathExpressionException;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -92,7 +88,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateDoseTypeAttributes(Node qdmNode,
+	/*private void generateDoseTypeAttributes(Node qdmNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		
@@ -212,7 +208,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			}
 		}
 		
-	}
+	}*/
 	
 	/**
 	 * Generate facility location type attributes.
@@ -224,7 +220,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
+	/*private void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
@@ -237,7 +233,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		}
 		generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-	}
+	}*/
 	
 	/**
 	 * Generate incision date time type attributes.
@@ -249,7 +245,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
@@ -263,7 +259,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		}
 		generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 				dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-	}
+	}*/
 	
 	/**
 	 * Generate order type attributes.
@@ -274,7 +270,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
-	 */
+	 *//*
 	private void generateOrderTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
@@ -292,7 +288,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}
-	}
+	}*/
 	
 	/**
 	 * Generate negation rational entries.
@@ -304,7 +300,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateNegationRationalEntries(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void generateNegationRationalEntries(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		if(attributeQDMNode.getAttributes().getLength() > 0) {
 			
@@ -375,7 +371,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 					.createElement(VALUE);
 			valueElem.setAttribute(XSI_TYPE, templateNode.getAttributes().getNamedItem("valueType").getNodeValue());
 			valueElem.setAttribute("valueSet", attributeOID);
-			/*addValueSetVersion(attributeQDMNode, valueElem);*/
+			addValueSetVersion(attributeQDMNode, valueElem);
 			Element valueDisplayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(DISPLAY_NAME);
 			valueDisplayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
@@ -385,7 +381,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			
 			dataCriteriaElem.appendChild(outboundRelationshipElem);
 		}
-	}
+	}*/
 	
 	/**
 	 * Generate other attribute entries.
@@ -397,7 +393,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void generateOtherAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void generateOtherAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -547,7 +543,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				}
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Refills Attribute tags.
@@ -557,7 +553,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void generateRepeatNumber(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode , String elementNameToCreate) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element repeatNumberElement =  dataCriteriaXMLProcessor.getOriginalDoc()
@@ -618,7 +614,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 				dataCriteriaElem.appendChild(repeatNumberElement);
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Discharge Status Attribute tags.
@@ -628,7 +624,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param dataCriteriaElem the data criteria elem
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateDischargeStatus(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void generateDischargeStatus(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
 			Element dataCriteriaElem, Node attributeQDMNode) {
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Element dischargeDispositionElement =  dataCriteriaXMLProcessor.getOriginalDoc()
@@ -652,7 +648,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			dischargeDispositionElement.appendChild(valueDisplayNameElem);
 			dataCriteriaElem.appendChild(dischargeDispositionElement);
 		}
-	}
+	}*/
 	
 	/**
 	 * Check if selected mode is value set.
@@ -663,7 +659,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
+	/*private Element checkIfSelectedModeIsValueSet(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem) {
 		String attributeValueSetName = attributeQDMNode.getAttributes()
 				.getNamedItem(NAME).getNodeValue();
@@ -683,7 +679,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		valueElem.appendChild(valueDisplayNameElem);
 		
 		return valueElem;
-	}
+	}*/
 	
 	
 	/**
@@ -695,12 +691,12 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsPresent(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
+	/*private Element checkIfSelectedModeIsPresent(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode,Element valueElem){
 		valueElem.setAttribute(XSI_TYPE, "ANY");
 		valueElem.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 		return valueElem;
-	}
+	}*/
 	
 	/**
 	 * Check if selected mode is arthimatic expr.
@@ -711,7 +707,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param valueElem the value elem
 	 * @return the element
 	 */
-	private Element checkIfSelectedModeIsArthimaticExpr(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
+	/*private Element checkIfSelectedModeIsArthimaticExpr(XmlProcessor dataCriteriaXMLProcessor, Node attributeQDMNode,
 			Node templateNode, Element valueElem){
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -809,7 +805,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		
 		
 		return valueElem;
-	}
+	}*/
 	
 	/**
 	 * Adds the target site or priority code or route code element.
@@ -819,7 +815,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @param templateNode the template node
 	 */
-	private void addTargetSiteOrPriorityCodeOrRouteCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
+	/*private void addTargetSiteOrPriorityCodeOrRouteCodeElement(Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			Node attributeQDMNode, Node templateNode) {
 		String targetElementName = templateNode.getAttributes().getNamedItem("target").getNodeValue();
 		Element targetSiteCodeElement = dataCriteriaXMLProcessor.getOriginalDoc()
@@ -910,7 +906,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			}
 		}
 	}
-	
+	 */
 	/**
 	 * Method to generate HQMF XML for date time attributes.
 	 *
@@ -920,7 +916,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @param attributeQDMNode the attribute qdm node
 	 */
-	private void generateDateTimeAttributes(Node childNode,
+	/*private void generateDateTimeAttributes(Node childNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		
@@ -928,7 +924,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		effectiveTimeNode.setAttribute(XSI_TYPE, "IVL_TS");
 		generateDateTimeAttributesTag(effectiveTimeNode, attributeQDMNode, dataCriteriaElem, dataCriteriaXMLProcessor, false);
 	}
-	
+	 */
 	
 	/**
 	 * Generate date time attributes tag.
@@ -939,7 +935,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param isOrder the is order
 	 */
-	private void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
+	/*private void generateDateTimeAttributesTag(Node dateTimeNode, Node attributeQDMNode,
 			Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, boolean isOrder) {
 		
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -1024,9 +1020,9 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			}
 		}
 		
-		/**
-		 * If effectiveTimeNode has any child nodes then add it to the main dataCriteriaNode.
-		 */
+	 *//**
+	 * If effectiveTimeNode has any child nodes then add it to the main dataCriteriaNode.
+	 *//*
 		if(dateTimeNode.hasChildNodes()){
 			
 			if(attrName.equalsIgnoreCase(START_DATETIME)
@@ -1076,7 +1072,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			}
 		}
 		
-	}
+	}*/
 	
 	/**
 	 * Method to append Facility Location attribute template to data type. This attribute can only have value ser
@@ -1089,7 +1085,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attrNode the attr node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void appendSubTemplateInFacilityAttribute(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
+	/*private void appendSubTemplateInFacilityAttribute(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, Node attrNode) throws XPathExpressionException{
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
 		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
@@ -1145,7 +1141,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
-	}
+	}*/
 	
 	/**
 	 * Add SubTemplate defined in Template.xml to data criteria Element.
@@ -1158,7 +1154,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attributeQDMNode the attribute qdm node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
+	/*private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, Node qdmNode , Node attributeQDMNode) throws XPathExpressionException {
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
 		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
@@ -1227,7 +1223,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
-	}
+	}*/
 	
 	/**
 	 * Append sub template with order attribute.
@@ -1240,7 +1236,7 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 * @param attrNode the attr node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void appendSubTemplateWithOrderAttribute(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
+	/*private void appendSubTemplateWithOrderAttribute(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem,Node qdmNode, Node attrNode) throws XPathExpressionException{
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeOtherSubTemplate").getNodeValue();
 		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
@@ -1273,175 +1269,8 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
 		generateDateTimeAttributesTag(timeNode, attrNode, dataCriteriaElem, dataCriteriaXMLProcessor, isOrder);
-	}
-	/** Append sub template and add value tag based on mode.
-	 * 
-	 * @param templateNode the template node
-	 * @param dataCriteriaXMLProcessor the data criteria xml processor
-	 * @param templateXMLProcessor the template xml processor
-	 * @param dataCriteriaElem the data criteria elem
-	 * @param attrNode the attr node
-	 * @throws XPathExpressionException the x path expression exception */
-	private void appendSubTemplateAndAddValueTagBasedOnMode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
-			XmlProcessor templateXMLProcessor, Element dataCriteriaElem, Node attrNode) throws XPathExpressionException {
-		
-		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
-		Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
-				+ subTemplateName);
-		
-		
-		if(subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
-			NodeList  attributedToBeChangedInNode = null;
-			String[] tagToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
-			for (String changeAttribute : tagToBeModified) {
-				attributedToBeChangedInNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
-						+ subTemplateName+"//"+changeAttribute);
-				if (changeAttribute.equalsIgnoreCase(ID)) {
-					String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
-					setNodeValue(rootId);
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
-					setNodeValue(UUIDUtilClient.uuid());
-				}  else if(changeAttribute.equalsIgnoreCase(ITEM)) {
-					for (int count =0; count< attributedToBeChangedInNode.getLength();count++) {
-						Node itemNode = attributedToBeChangedInNode.item(count);
-						itemNode.getAttributes().getNamedItem("extension").setNodeValue(UUIDUtilClient.uuid());
-						String rootId = (String) attrNode.getUserData(ATTRIBUTE_UUID);
-						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
-						setNodeValue(rootId);
-					}
-					
-				}else if(changeAttribute.equalsIgnoreCase(VALUE)){
-					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
-					if(CHECK_IF_PRESENT.equals(attrMode)){
-						if(attributedToBeChangedInNode.item(0).hasAttributes()){
-							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
-							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
-						}
-						String elementName = templateNode.getAttributes().getNamedItem("addTagInValueSet").getNodeValue();
-						NodeList el = attributedToBeChangedInNode.item(0).getChildNodes();
-						Element childElement = null;
-						if(el.getLength() == 0){
-							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
-						} else {
-							childElement = (Element) el;
-							if(childElement.hasChildNodes()){
-								for(int j = childElement.getChildNodes().getLength();j>0;j--){
-									Node ChildNode = childElement.getChildNodes().item(j-1);
-									childElement.removeChild(ChildNode);
-								}
-								
-							}
-							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
-						}
-						childElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-						attributedToBeChangedInNode.item(0).appendChild(childElement);
-					} else if (attrMode.startsWith(Generator.LESS_THAN)
-							|| attrMode.startsWith(Generator.GREATER_THAN)
-							|| attrMode.equals(Generator.EQUAL_TO)) {
-						
-						String elementName = templateNode.getAttributes().getNamedItem("addTagInValueSet").getNodeValue();
-						NodeList el = attributedToBeChangedInNode.item(0).getChildNodes();
-						Element childElement = null;
-						if(el.getLength() == 0){
-							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
-						} else {
-							childElement = (Element) el;
-							if(childElement.hasChildNodes()){
-								for(int j = childElement.getChildNodes().getLength();j>0;j--){
-									Node ChildNode = childElement.getChildNodes().item(j-1);
-									childElement.removeChild(ChildNode);
-								}
-								
-							}
-							childElement = attributedToBeChangedInNode.item(0).getOwnerDocument().createElement(elementName);
-						}
-						Node unitAttrib = attrNode.getAttributes().getNamedItem("unit");
-						if(attrMode.equals(Generator.EQUAL_TO)){
-							childElement.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-							if(unitAttrib!=null){
-								childElement.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
-							}
-							attributedToBeChangedInNode.item(0).appendChild(childElement);
-						} else if(attrMode.startsWith(Generator.LESS_THAN)){
-							Element uncertainRangeNode=  childElement.getOwnerDocument().createElement("uncertainRange");
-							if(attrMode.equals(Generator.LESS_THAN) ){
-								uncertainRangeNode.setAttribute("highClosed", "false");
-							}
-							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
-							lowNode.setAttribute("nullFlavor", "NINF");
-							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
-							highNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-							if(unitAttrib!=null){
-								highNode.setAttribute("unit",  getUnitString(unitAttrib.getNodeValue()));
-							}
-							uncertainRangeNode.appendChild(lowNode);
-							uncertainRangeNode.appendChild(highNode);
-							childElement.appendChild(uncertainRangeNode);
-							attributedToBeChangedInNode.item(0).appendChild(childElement);
-						} else if (attrMode.startsWith(Generator.GREATER_THAN)) {
-							Element uncertainRangeNode=  childElement.getOwnerDocument().createElement("uncertainRange");
-							if (attrMode.equals(Generator.GREATER_THAN)) {
-								uncertainRangeNode.setAttribute("lowClosed", "false");
-							}
-							Element lowNode = childElement.getOwnerDocument().createElement(LOW);
-							lowNode.setAttribute("value", attrNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-							if(unitAttrib!=null){
-								lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
-							}
-							Element highNode = childElement.getOwnerDocument().createElement(HIGH);
-							
-							highNode.setAttribute("nullFlavor", "PINF");
-							uncertainRangeNode.appendChild(lowNode);
-							uncertainRangeNode.appendChild(highNode);
-							childElement.appendChild(uncertainRangeNode);
-							attributedToBeChangedInNode.item(0).appendChild(childElement);
-						}
-					}
-				} else if(changeAttribute.equalsIgnoreCase(CODE)){
-					String attrMode = (String) attrNode.getUserData(ATTRIBUTE_MODE);
-					if(CHECK_IF_PRESENT.equals(attrMode)){
-						if(attributedToBeChangedInNode.item(0).hasAttributes()){
-							((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
-						}
-						if(attributedToBeChangedInNode.item(0).hasChildNodes()){
-							attributedToBeChangedInNode.item(0).removeChild(attributedToBeChangedInNode.item(0).getFirstChild());
-						}
-						Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("flavorId");
-						attribute.setNodeValue("ANY.NONNULL");
-						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
-					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
-						if (attributedToBeChangedInNode.item(0).hasAttributes()) {
-							((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
-						}
-						if (attributedToBeChangedInNode.item(0).hasChildNodes()) {
-							((Element) attributedToBeChangedInNode.item(0)).removeChild(attributedToBeChangedInNode.item(0).getFirstChild());
-						}
-						String attributeValueSetName = attrNode.getAttributes()
-								.getNamedItem(NAME).getNodeValue();
-						String attributeOID = attrNode.getAttributes()
-								.getNamedItem(OID).getNodeValue();
-						String attributeTaxonomy = attrNode.getAttributes()
-								.getNamedItem(TAXONOMY).getNodeValue();
-						Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSet");
-						attribute.setNodeValue(attributeOID);
-						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
-						Element valueDisplayNameElem = attributedToBeChangedInNode.item(0).getOwnerDocument()
-								.createElement(DISPLAY_NAME);
-						valueDisplayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
-						attributedToBeChangedInNode.item(0).appendChild(valueDisplayNameElem);
-						
-					}
-				}
-			}
-		}
-		for (int i = 0; i < subTemplateNode.getChildNodes().getLength(); i++) {
-			Node childNode = subTemplateNode.getChildNodes().item(i);
-			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
-			XmlProcessor.clean(nodeToAttach);
-			dataCriteriaElem.appendChild(nodeToAttach);
-		}
-	}
+	}*/
+	
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		
@@ -1459,10 +1288,18 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 	 */
 	public void generateAttributeTagForFunctionalOp(MeasureExport measureExport, Node qdmNode, Element excerptElement
 			, Node attributeQDMNode) throws XPathExpressionException{
-		this.measureExport = measureExport;
+		this.setMeasureExport(measureExport);
 		getExtensionValueBasedOnVersion(measureExport);
 		createDataCriteriaForAttributes(qdmNode, excerptElement, measureExport.getHQMFXmlProcessor()
 				, measureExport.getSimpleXMLProcessor(), attributeQDMNode);
+	}
+
+	public MeasureExport getMeasureExport() {
+		return measureExport;
+	}
+
+	public void setMeasureExport(MeasureExport measureExport) {
+		this.measureExport = measureExport;
 	}
 	
 	

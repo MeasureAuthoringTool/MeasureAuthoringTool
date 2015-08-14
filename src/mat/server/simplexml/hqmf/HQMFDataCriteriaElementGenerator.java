@@ -1038,11 +1038,16 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
 					setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSet").setNodeValue(qdmOidValue);
+					attributedToBeChangedInNode.item(0).getAttributes().
+					getNamedItem("valueSet").setNodeValue(qdmOidValue);
 					if(addVersionToValueTag){
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(version);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
+					} else {
+						if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
+							attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
+						}
 					}
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
@@ -1475,6 +1480,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				if (addVersionToValueTag) {
 					translationNode.setAttribute("valueSetVersion", version);
+				} else {
+					if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
+						translationNode.getAttributes().removeNamedItem("valueSetVersion");
+					}
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);

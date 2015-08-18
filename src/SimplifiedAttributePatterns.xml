@@ -312,5 +312,12 @@
         <mode mode="LessThan"/>
         <mode mode="LessThanEqualTo"/>
     </attribute>
-    
+    <attribute attribName="principal diagnosis">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
+    <attribute attribName="diagnosis">
+        <mode mode="IsPresent"/>
+        <mode mode="ValueSet"/>
+    </attribute>
 </matattributes>

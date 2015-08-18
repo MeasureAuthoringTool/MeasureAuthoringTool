@@ -173,10 +173,11 @@
 		<include file="classpath:/liquibase/deploy_Sprint-65_USMAT-5666.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-69_USMAT-5828_Code_Review.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-70_USMAT-5986.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-73_BackUp_For_CATEGORY_DATA_TYPE_and_QDM_ATRIBUTES.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6087_6067_6075_User_Story.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-71_USMAT-6071_6103_6095_6107.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint71_USMAT-6071_Delete_reported.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-Adding_Release_Version_Column_To_Measure_Table.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-6079_6083_User_Story.xml"/>
-		
+		<include file="classpath:/liquibase/deploy_Sprint-73_USMAT-6083_6143_6187_User_Story.xml"/>
 	</databaseChangeLog>

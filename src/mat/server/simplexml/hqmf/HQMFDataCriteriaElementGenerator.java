@@ -1451,7 +1451,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ attrName.toLowerCase() + "']");
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
 		Element targetQuantityTag = null;
-		if (targetNode!=null) {
+		if (targetNode != null) {
 			targetQuantityTag = dataCriteriaElem.getOwnerDocument().createElement(targetNode.getNodeValue());
 		}
 		Node unitAttrib = attributeQDMNode.getAttributes().getNamedItem("unit");
@@ -1487,16 +1487,19 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
 						.createElement(DISPLAY_NAME);
-				String newQdmName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeQDMNode.getAttributes().getNamedItem(NAME).getNodeValue());
-				displayNameElem.setAttribute(VALUE, newQdmName
-						+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
+				String newQdmName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeQDMNode.
+						getAttributes().getNamedItem(NAME).getNodeValue());
+				displayNameElem.setAttribute(VALUE, newQdmName + " "
+						+ attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 				translationNode.appendChild(displayNameElem);
 				targetQuantityTag.appendChild(translationNode);
 			}
-		} else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
-			if(attrMode.equals(Generator.EQUAL_TO)){
-				targetQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().getNamedItem("comparisonValue").getNodeValue());
-				if(unitAttrib!=null){
+		} else if (attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN)
+				|| attrMode.equals(Generator.EQUAL_TO)) {
+			if (attrMode.equals(Generator.EQUAL_TO)) {
+				targetQuantityTag.setAttribute("value", attributeQDMNode.getAttributes().
+						getNamedItem("comparisonValue").getNodeValue());
+				if (unitAttrib != null) {
 					targetQuantityTag.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 			} else if(attrMode.startsWith(Generator.LESS_THAN)){
@@ -1505,9 +1508,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					uncertainRangeNode.setAttribute("highClosed", "false");
 				}
 				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
-				if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
-					lowNode.setAttribute("xsi:type", "PQ");
-				}
+				/*if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){*/
+				lowNode.setAttribute("xsi:type", "PQ");
+				//				}
 				lowNode.setAttribute("nullFlavor", "NINF");
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
 				highNode.setAttribute("xsi:type", "PQ");
@@ -1532,9 +1535,9 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
-					highNode.setAttribute("xsi:type", "PQ");
-				}
+				//if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
+				highNode.setAttribute("xsi:type", "PQ");
+				//}
 				highNode.setAttribute("nullFlavor", "PINF");
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);

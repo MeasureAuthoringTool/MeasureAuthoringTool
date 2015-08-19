@@ -1336,6 +1336,30 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						attribute.setNodeValue("ANY.NONNULL");
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
+						String version = attrNode.getAttributes().getNamedItem("version")
+								.getNodeValue();
+						boolean addVersionToValueTag = false;
+						if ("1.0".equals(version) || "1".equals(version)) {
+							if (attrNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+								version = "vsac:profile:" + attrNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+								addVersionToValueTag = true;
+							} else {
+								addVersionToValueTag = false;
+							}
+						} else {
+							addVersionToValueTag = true;
+							version = "vsac:version:" + attrNode.getAttributes().getNamedItem("version")
+									.getNodeValue();
+						}
+						if(addVersionToValueTag){
+							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
+							valuesetVersionAttr.setNodeValue(version);
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);
+						} else {
+							if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
+								attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
+							}
+						}
 						if (attributedToBeChangedInNode.item(0).hasAttributes()) {
 							((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
 						}
@@ -1821,6 +1845,30 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 							attributeXSIType.setNodeValue("ANY");
 							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attributeXSIType);
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
+							String version = attributeQDMNode.getAttributes().getNamedItem("version")
+									.getNodeValue();
+							boolean addVersionToValueTag = false;
+							if ("1.0".equals(version) || "1".equals(version)) {
+								if (attributeQDMNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+									version = "vsac:profile:" + attributeQDMNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+									addVersionToValueTag = true;
+								} else {
+									addVersionToValueTag = false;
+								}
+							} else {
+								addVersionToValueTag = true;
+								version = "vsac:version:" + attributeQDMNode.getAttributes().getNamedItem("version")
+										.getNodeValue();
+							}
+							if(addVersionToValueTag){
+								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
+								valuesetVersionAttr.setNodeValue(version);
+								attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);
+							} else {
+								if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
+									attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
+								}
+							}
 							if (attributedToBeChangedInNode.item(0).hasAttributes()) {
 								((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
 								((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");

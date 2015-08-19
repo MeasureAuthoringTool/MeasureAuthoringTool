@@ -23,6 +23,8 @@ import org.w3c.dom.NodeList;
  * The Class HQMFDataCriteriaGenerator.
  */
 public class HQMFDataCriteriaElementGenerator implements Generator {
+	
+	
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
 	
@@ -1416,7 +1418,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
 			generateIncisionDateTimeTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}else if (VALUE_SET.equals(attributeMode)
+		} else if (attributeName.equalsIgnoreCase(PRINCIPAL_DIAGNOSIS)
+				|| attributeName.equalsIgnoreCase(DIAGNOSIS)) {
+			generatePrincipalAndDiagnosisAttributes(qdmNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		} else if (VALUE_SET.equals(attributeMode)
 				|| CHECK_IF_PRESENT.equals(attributeMode)
 				|| attributeMode.startsWith(LESS_THAN)
 				|| attributeMode.startsWith(GREATER_THAN)
@@ -1426,6 +1432,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 		}
 	}
+	
+	
 	
 	/**
 	 * Generate dose type attributes.
@@ -1739,6 +1747,119 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 	}
 	
+	protected void generatePrincipalAndDiagnosisAttributes(Node qdmNode, Element dataCriteriaElem,
+			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
+		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
+		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
+		
+		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
+				+ attrName.toLowerCase() + "']");
+		if (templateNode == null) {
+			return;
+		} else {
+			Element outboundRelationshipElem = null;
+			Element actCriteriaElem = null;
+			outboundRelationshipElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(OUTBOUND_RELATIONSHIP);
+			outboundRelationshipElem.setAttribute(TYPE_CODE, templateNode.getAttributes().getNamedItem(TYPE).getNodeValue());
+			actCriteriaElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement("actCriteria");
+			actCriteriaElem.setAttribute(CLASS_CODE, templateNode.getAttributes().getNamedItem(CLASS).getNodeValue());
+			actCriteriaElem.setAttribute(MOOD_CODE, templateNode.getAttributes().getNamedItem(MOOD).getNodeValue());
+			Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(ID);
+			idElem.setAttribute(ROOT, UUIDUtilClient.uuid());
+			idElem.setAttribute("extension", UUIDUtilClient.uuid());
+			actCriteriaElem.appendChild(idElem);
+			Element codeElem = createCodeForDatatype(templateNode, dataCriteriaXMLProcessor);
+			actCriteriaElem.appendChild(codeElem);
+			Element titleElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(TITLE);
+			titleElem.setAttribute(VALUE, "Encounter " + attrName);
+			actCriteriaElem.appendChild(titleElem);
+			
+			outboundRelationshipElem.appendChild(actCriteriaElem);
+			
+			String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
+			Node  subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+					+ subTemplateName);
+			NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+					+ subTemplateName + "/child::node()");
+			
+			if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
+				String[] attributeToBeModified = subTemplateNode.getAttributes().
+						getNamedItem("changeAttribute").getNodeValue().split(",");
+				for (String changeAttribute : attributeToBeModified) {
+					NodeList  attributedToBeChangedInNode = null;
+					attributedToBeChangedInNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc()
+							, "/templates/subtemplates/" + subTemplateName + "//" + changeAttribute);
+					if (changeAttribute.equalsIgnoreCase(ID)) {
+						String rootId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").
+						setNodeValue(rootId);
+						attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
+						setNodeValue(UUIDUtilClient.uuid());
+					} else if (changeAttribute.equalsIgnoreCase(VALUE)) {
+						if (CHECK_IF_PRESENT.equals(attrMode)) {
+							if (attributedToBeChangedInNode.item(0).hasAttributes()) {
+								if (attributedToBeChangedInNode.item(0).hasAttributes()) {
+									((Element) attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
+									((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
+									((Element) attributedToBeChangedInNode.item(0)).removeAttribute("xsi:type");
+								}
+							}
+							if (attributedToBeChangedInNode.item(0).hasChildNodes()) {
+								attributedToBeChangedInNode.item(0).removeChild(
+										attributedToBeChangedInNode.item(0).getFirstChild());
+							}
+							Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("flavorId");
+							attribute.setNodeValue("ANY.NONNULL");
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
+							
+							Attr attributeXSIType = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("xsi:type");
+							attributeXSIType.setNodeValue("ANY");
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attributeXSIType);
+						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
+							if (attributedToBeChangedInNode.item(0).hasAttributes()) {
+								((Element)attributedToBeChangedInNode.item(0)).removeAttribute("valueSet");
+								((Element) attributedToBeChangedInNode.item(0)).removeAttribute("flavorId");
+								((Element)attributedToBeChangedInNode.item(0)).removeAttribute("xsi:type");
+							}
+							if (attributedToBeChangedInNode.item(0).hasChildNodes()) {
+								((Element) attributedToBeChangedInNode.item(0)).removeChild(attributedToBeChangedInNode.item(0).getFirstChild());
+							}
+							String attributeValueSetName =attributeQDMNode.getAttributes()
+									.getNamedItem(NAME).getNodeValue();
+							String attributeOID = attributeQDMNode.getAttributes()
+									.getNamedItem(OID).getNodeValue();
+							String attributeTaxonomy = attributeQDMNode.getAttributes()
+									.getNamedItem(TAXONOMY).getNodeValue();
+							Attr attribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSet");
+							attribute.setNodeValue(attributeOID);
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
+							Attr attributeXSIType = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("xsi:type");
+							attributeXSIType.setNodeValue("CD");
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attributeXSIType);
+							Element valueDisplayNameElem = attributedToBeChangedInNode.item(0).getOwnerDocument()
+									.createElement(DISPLAY_NAME);
+							valueDisplayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
+							attributedToBeChangedInNode.item(0).appendChild(valueDisplayNameElem);
+							
+						}
+					}
+				}
+			}
+			for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
+				Node childNode = subTemplateNodeChilds.item(i);
+				Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
+				XmlProcessor.clean(nodeToAttach);
+				actCriteriaElem.appendChild(nodeToAttach);
+			}
+			
+			dataCriteriaElem.appendChild(outboundRelationshipElem);
+		}
+	}
 	/**
 	 * Generate other attribute entries.
 	 *

@@ -244,7 +244,9 @@ public interface Generator extends MatConstants {
 	public static final String REFERENCE = "reference";
 	
 	public static final String RELATIONSHIP = "relationship";
+	public static final String DIAGNOSIS = "Diagnosis";
 	
+	public static final String PRINCIPAL_DIAGNOSIS = "Principal Diagnosis";
 	/**
 	 * Generate.
 	 *

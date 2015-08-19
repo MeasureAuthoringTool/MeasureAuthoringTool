@@ -1,5 +1,7 @@
 package mat.server.simplexml.hqmf;
 
+import static mat.server.simplexml.hqmf.HQMFDataCriteriaElementGenerator.DIAGNOSIS;
+import static mat.server.simplexml.hqmf.HQMFDataCriteriaElementGenerator.PRINCIPAL_DIAGNOSIS;
 import javax.xml.xpath.XPathExpressionException;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
@@ -67,7 +69,11 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
 			generateIncisionDateTimeTypeAttributes(qdmNode, dataCriteriaElem,
 					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		}else if (VALUE_SET.equals(attributeMode)
+		} else if (attributeName.equalsIgnoreCase(PRINCIPAL_DIAGNOSIS)
+				|| attributeName.equalsIgnoreCase(DIAGNOSIS)) {
+			generatePrincipalAndDiagnosisAttributes(qdmNode, dataCriteriaElem,
+					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		} else if (VALUE_SET.equals(attributeMode)
 				|| CHECK_IF_PRESENT.equals(attributeMode)
 				|| attributeMode.startsWith(LESS_THAN)
 				|| attributeMode.startsWith(GREATER_THAN)
@@ -1293,11 +1299,11 @@ public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator{
 		createDataCriteriaForAttributes(qdmNode, excerptElement, measureExport.getHQMFXmlProcessor()
 				, measureExport.getSimpleXMLProcessor(), attributeQDMNode);
 	}
-
+	
 	public MeasureExport getMeasureExport() {
 		return measureExport;
 	}
-
+	
 	public void setMeasureExport(MeasureExport measureExport) {
 		this.measureExport = measureExport;
 	}

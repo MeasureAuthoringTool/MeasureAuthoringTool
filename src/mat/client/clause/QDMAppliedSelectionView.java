@@ -623,17 +623,27 @@ HasSelectionHandlers<Boolean> {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
-					String value = null;
+					StringBuilder value = new StringBuilder();
 					if ((object.getOccurrenceText() != null)
 							&& !object.getOccurrenceText().equals("")) {
-						value = object.getOccurrenceText() + " of "
-								+ object.getCodeListName();
+						value = value.append(object.getOccurrenceText() + " of "
+								+ object.getCodeListName());
 						title = title.append("Name : ").append(value);
 					} else {
-						value = object.getCodeListName();
+						value = value.append(object.getCodeListName());
 						title = title.append("Name : ").append(value);
 					}
-					return CellTableUtility.getColumnToolTip(value,
+					//if object.getType().equalsIgnoreCase(anotherString)
+					// if the QDM element is not user defined, add (G) for Grouping or (E) for extension
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						if (object.getTaxonomy().equalsIgnoreCase("Grouping"))
+							value.append(" (G)");
+						else {
+							value.append(" (E)");
+						}
+					}
+					title.append("");
+					return CellTableUtility.getColumnToolTip(value.toString(),
 							title.toString());
 				}
 			};

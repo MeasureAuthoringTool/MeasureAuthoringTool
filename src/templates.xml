@@ -208,9 +208,26 @@
     <template oid="2.16.840.1.113883.10.20.28.3.101" type="SUBJ" class="OBS" mood="EVN" code="445518008" codeSystem="2.16.840.1.113883.6.96">onset age</template>
     <template includeSubTemplate="reference-Low-Range" addTagInValueSet="low">reference range low</template>
 	<template includeSubTemplate="reference-High-Range" addTagInValueSet="high">reference range high</template>
+	<template class="ACT" mood="EVN" type="REFR" code="52534-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Principal Diagnosis" includeSubTemplate="diagnosis-template">principal diagnosis</template>
+	<template class="ACT" mood="EVN" type="REFR" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-template">diagnosis</template>
  
     <subtemplates>
-
+    <diagnosis-template changeAttribute="id,value">
+        <outboundRelationship typeCode="SUBJ">
+             <observationCriteria classCode="OBS" moodCode="EVN">
+                 <templateId>
+                     <item root="2.16.840.1.113883.10.20.28.3.110"/>
+                 </templateId>
+                 <id root="{Attribute Root UUID}" extension="{Attribute Extension UUID}"/>
+                 <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                     <displayName value="Diagnosis"/>
+                 </code>
+                 <title value="Diagnosis"/>
+                 <statusCode code="COMPLETED"/>
+                 <value/>
+             </observationCriteria>
+       </outboundRelationship>
+    </diagnosis-template>
 	<communication-FromPatient-ToProvider>
 		<participation typeCode="AUT">
 			<role classCode="PAT"></role>

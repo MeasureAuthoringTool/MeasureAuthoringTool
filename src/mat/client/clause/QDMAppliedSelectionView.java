@@ -69,12 +69,18 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
 public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
 HasSelectionHandlers<Boolean> {
+	
+	static final String GROUPING_QDM = " (G)";
+	static final String EXTENSIONAL_QDM = " (E)";
 	
 	/**
 	 * The Interface Observer.
@@ -629,17 +635,21 @@ HasSelectionHandlers<Boolean> {
 						value = value.append(object.getOccurrenceText() + " of "
 								+ object.getCodeListName());
 						title = title.append("Name : ").append(value);
+						
 					} else {
 						value = value.append(object.getCodeListName());
 						title = title.append("Name : ").append(value);
 					}
-					//if object.getType().equalsIgnoreCase(anotherString)
-					// if the QDM element is not user defined, add (G) for Grouping or (E) for extension
+					
+					// if the QDM element is not user defined, add (G) for Grouping or (E) for extensional
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if (object.getTaxonomy().equalsIgnoreCase("Grouping"))
-							value.append(" (G)");
+						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
+							value.append(GROUPING_QDM);
+							title.append(GROUPING_QDM);
+						}	
 						else {
-							value.append(" (E)");
+							value.append(EXTENSIONAL_QDM);
+							title.append(EXTENSIONAL_QDM);
 						}
 					}
 					title.append("");

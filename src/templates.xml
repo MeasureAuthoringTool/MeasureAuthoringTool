@@ -144,6 +144,9 @@
 	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, allergy</template>
 	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, intolerance</template>
     
+    <!-- Diagnosis new Datatype -->
+    
+    <template oid="2.16.840.1.113883.10.20.28.3.110" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Diagnosis" addCodeTag="true" addValueTag="true" addExtensionInTemplate="true">diagnosis</template>
     
 
     
@@ -779,8 +782,10 @@
         <attributeMapping qdmAttribute="onset datetime" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="recorded datetime" dotNotation="author.time.high"/>
         <attributeMapping qdmAttribute="abatement datetime" dotNotation="effectiveTime.high"/>
-        <attributeMapping qdmAttribute="reference range low" dotNotation="referenceRange.observation.value"/>
-        <attributeMapping qdmAttribute="reference range high" dotNotation="referenceRange.observation.value"/>
+        <attributeMapping qdmAttribute="reference range low" dotNotation="referenceRange.observation.value.low"/>
+        <attributeMapping qdmAttribute="reference range high" dotNotation="referenceRange.observation.value.high"/>
+        <attributeMapping qdmAttribute="diagnosis" dotNotation="reference.act.subject.observation.value"/>
+        <attributeMapping qdmAttribute="principal diagnosis" dotNotation="reference.act.subject.observation.value"/>
 
         <!-- datatype dependent .notation mappings-->
         <attributeMapping qdmAttribute="start datetime" datatypes="care goal" dotNotation="effectiveTime.low"/>

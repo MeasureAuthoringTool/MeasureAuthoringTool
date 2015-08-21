@@ -278,9 +278,6 @@ left:50px;
     cursor: pointer;
     cursor: hand;
 }
-
-
-
 .customEditButton {
     background: url("images/g_package_edit.png");
     background-position:center;
@@ -292,6 +289,7 @@ left:50px;
     cursor: pointer;
     cursor: hand;
 }
+
 .customLockedButton {
     background: url("images/g_lock.gif");
     background-position:center;
@@ -303,6 +301,7 @@ left:50px;
     cursor: pointer;
     cursor: hand;
 }
+
 .customReadOnlyButton {
     background: url("images/application_view_detail_1.png");
     background-position:center;
@@ -402,6 +401,18 @@ left:50px;
     cursor: hand;
 }
 
+.customGrayedShareButton {
+    background: url("images/g_package_share_grayed.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    font-size: 0;
+    border: 0px;
+    cursor: pointer;
+    cursor: text;
+}
+
 .customCloneButton {
     background: url("images/g_page_copy.gif");
     background-position:center;
@@ -414,6 +425,17 @@ left:50px;
     cursor: hand;
 }
 
+.customGrayedCloneButton {
+    background: url("images/g_page_copy_grayed.gif");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: text;
+}
 
 .primaryGreyButton {
     background: url("images/bg_btnGrey-secondary.png");

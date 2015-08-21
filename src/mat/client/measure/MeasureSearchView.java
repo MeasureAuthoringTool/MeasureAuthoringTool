@@ -292,17 +292,17 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 				
 				//Share
-				Cell<String> shareButton = new MatButtonCell("Click to view sharable", "customShareButton");
-				Column<ManageMeasureSearchModel.Result, String> shareColumn = new Column<ManageMeasureSearchModel.Result, 
-						String>(shareButton) {
+				//Cell<String> shareButton = new MatButtonCell("Click to view sharable", "customShareButton");
+				Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn = new Column<ManageMeasureSearchModel.Result, 
+						SafeHtml>(new ClickableSafeHtmlCell()) {
 					@Override
-					public String getValue(Result object) {						
-						return "Share";
+					public SafeHtml getValue(Result object) {						
+						return getShareColumnToolTip(object);
 					}
 				};
-				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 						if(object.isSharable())
 							observer.onShareClicked(object);
 					}
@@ -310,17 +310,17 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
 				
 				//Clone
-				Cell<String> cloneButton = new MatButtonCell("Click to view cloneable", "customCloneButton");
-				Column<ManageMeasureSearchModel.Result, String> cloneColumn = new Column<ManageMeasureSearchModel.Result, 
-						String>(cloneButton) {
+				//Cell<String> cloneButton = new MatButtonCell("Click to view cloneable", "customCloneButton");
+				Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn = new Column<ManageMeasureSearchModel.Result, 
+						SafeHtml>(new ClickableSafeHtmlCell()) {
 							@Override
-							public String getValue(Result object) {
-								return "Clone";
+							public SafeHtml getValue(Result object) {
+								return getCloneColumnToolTip(object);
 							}
 				};
-				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 						if(object.isClonable())
 							observer.onCloneClicked(object);
 					}
@@ -397,6 +397,55 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		} else {
 			title = "ReadOnly";
 			cssClass = "customReadOnlyButton";
+			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+		}
+		
+		return sb.toSafeHtml();
+	}
+	
+	/**
+	 * Gets the history column tool tip.
+	 *
+	 * @param object the object
+	 * @return the history column tool tip
+	 */
+	private SafeHtml getShareColumnToolTip(Result object){
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title;
+		String cssClass;
+		if (object.isSharable()) {
+			title = "Share";
+			cssClass = "customShareButton";
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+		} else {
+			title = "Not Shareable";
+			cssClass = "customGrayedShareButton";
+			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+		}
+		
+		return sb.toSafeHtml();
+	}
+
+	/**
+	 * Gets the history column tool tip.
+	 *
+	 * @param object the object
+	 * @return the history column tool tip
+	 */
+	private SafeHtml getCloneColumnToolTip(Result object){
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title;
+		String cssClass;
+		
+		if (object.isClonable()) {
+			title = "Cloneable";
+			cssClass = "customCloneButton"; 
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+		} else {
+			title = "Not Cloneable";
+			cssClass = "customGrayedCloneButton";
 			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
 		}
 		

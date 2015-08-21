@@ -630,27 +630,23 @@ HasSelectionHandlers<Boolean> {
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					StringBuilder value = new StringBuilder();
+					String qdmType = new String();
+					// if the QDM element is not user defined, add (G) for Grouping or (E) for extensional.
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
+							qdmType = GROUPING_QDM;
+						} else {
+							qdmType = EXTENSIONAL_QDM;
+						}
+					}
 					if ((object.getOccurrenceText() != null)
 							&& !object.getOccurrenceText().equals("")) {
 						value = value.append(object.getOccurrenceText() + " of "
-								+ object.getCodeListName());
+								+ object.getCodeListName()).append(qdmType);
 						title = title.append("Name : ").append(value);
-						
 					} else {
-						value = value.append(object.getCodeListName());
+						value = value.append(object.getCodeListName()).append(qdmType);
 						title = title.append("Name : ").append(value);
-					}
-					
-					// if the QDM element is not user defined, add (G) for Grouping or (E) for extensional
-					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
-							value.append(GROUPING_QDM);
-							title.append(GROUPING_QDM);
-						}	
-						else {
-							value.append(EXTENSIONAL_QDM);
-							title.append(EXTENSIONAL_QDM);
-						}
 					}
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value.toString(),

@@ -292,7 +292,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 				
 				//Share
-				//Cell<String> shareButton = new MatButtonCell("Click to view sharable", "customShareButton");
 				Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn = new Column<ManageMeasureSearchModel.Result, 
 						SafeHtml>(new ClickableSafeHtmlCell()) {
 					@Override
@@ -310,7 +309,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
 				
 				//Clone
-				//Cell<String> cloneButton = new MatButtonCell("Click to view cloneable", "customCloneButton");
 				Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn = new Column<ManageMeasureSearchModel.Result, 
 						SafeHtml>(new ClickableSafeHtmlCell()) {
 							@Override
@@ -397,7 +395,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		} else {
 			title = "ReadOnly";
 			cssClass = "customReadOnlyButton";
-			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		}
 		
 		return sb.toSafeHtml();
@@ -414,14 +413,15 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		String title;
 		String cssClass;
 		if (object.isSharable()) {
-			title = "Share";
+			title = "Shareable";
 			cssClass = "customShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
-			title = "Not Shareable";
+			title = "Shareable";
 			cssClass = "customGrayedShareButton";
-			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		}
 		
 		return sb.toSafeHtml();
@@ -439,14 +439,15 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		String cssClass;
 		
 		if (object.isClonable()) {
-			title = "Cloneable";
+			title = "Clonable";
 			cssClass = "customCloneButton"; 
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		} else {
-			title = "Not Cloneable";
+			title = "Clonable";
 			cssClass = "customGrayedCloneButton";
-			sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 		}
 		
 		return sb.toSafeHtml();

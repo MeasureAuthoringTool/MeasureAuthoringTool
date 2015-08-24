@@ -1807,7 +1807,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 					}
 				}
 				attribute.setAttribute("bound", boundValue);
-				temporallyRelatedInfoNode.getFirstChild().appendChild(attribute);
+			    Node temporalInformation = temporallyRelatedInfoNode.getFirstChild();
+			    if(temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0)!=null){
+			    	Node qdmDeltaNode = temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0);
+			    	temporalInformation.insertBefore(attribute, qdmDeltaNode);
+			    } else {
+			    	temporalInformation.appendChild(attribute);
+			    }
+			    
 				return attribute;
 			}
 		}

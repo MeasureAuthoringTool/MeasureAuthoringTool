@@ -1139,7 +1139,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
 			XmlProcessor.clean(nodeToAttach);
-			dataCriteriaElem.appendChild(nodeToAttach);
+			checkIfOutBoundOcc(dataCriteriaElem, nodeToAttach);
 		}
 	}
 	
@@ -1189,7 +1189,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
 			XmlProcessor.clean(nodeToAttach);
-			dataCriteriaElem.appendChild(nodeToAttach);
+			checkIfOutBoundOcc(dataCriteriaElem, nodeToAttach);
 		}
 		Element timeNode = dataCriteriaXMLProcessor.getOriginalDoc().createElement(TIME);
 		generateDateTimeAttributesTag(timeNode, attrNode, dataCriteriaElem, dataCriteriaXMLProcessor, isOrder);
@@ -1388,7 +1388,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			Node childNode = subTemplateNode.getChildNodes().item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
 			XmlProcessor.clean(nodeToAttach);
-			dataCriteriaElem.appendChild(nodeToAttach);
+			checkIfOutBoundOcc(dataCriteriaElem, nodeToAttach);
 		}
 	}
 	/**
@@ -1584,15 +1584,15 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
 				} else {
 					if(!isLengthOfStayValueSet){
-						dataCriteriaElem.appendChild(targetQuantityTag);
+						checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
 					}
 				}
 			} else {
-				dataCriteriaElem.appendChild(targetQuantityTag);
+				checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
 			}
 		} else {
 			if(!isLengthOfStayValueSet){
-				dataCriteriaElem.appendChild(targetQuantityTag);
+				checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
 			}
 		}
 		
@@ -2094,7 +2094,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				repeatNumberElement.setAttribute("xsi:type", "ANY");
 			}
 			repeatNumberElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-			dataCriteriaElem.appendChild(repeatNumberElement);
+			checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 		}  else if (EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)) {
 			if(elementNameToCreate.equalsIgnoreCase(VALUE)){
 				repeatNumberElement.setAttribute("xsi:type", "IVL_PQ");
@@ -2112,7 +2112,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				repeatNumberElement.appendChild(lowElem);
 				repeatNumberElement.appendChild(highElem);
-				dataCriteriaElem.appendChild(repeatNumberElement);
+				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			} else if(attrMode.startsWith(GREATER_THAN)) {
 				if (attrMode.equals(GREATER_THAN)) {
 					repeatNumberElement.setAttribute("lowClosed", "false");
@@ -2127,7 +2127,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				
 				repeatNumberElement.appendChild(highElem);
-				dataCriteriaElem.appendChild(repeatNumberElement);
+				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			}else if(attrMode.startsWith(LESS_THAN)){
 				if(attrMode.equals(LESS_THAN)){
 					repeatNumberElement.setAttribute("highClosed", "false");
@@ -2141,7 +2141,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					highElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 				repeatNumberElement.appendChild(highElem);
-				dataCriteriaElem.appendChild(repeatNumberElement);
+				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			}
 		}
 	}
@@ -2161,7 +2161,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				.createElement("dischargeDispositionCode");
 		if (CHECK_IF_PRESENT.equalsIgnoreCase(attrMode)) {
 			dischargeDispositionElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-			dataCriteriaElem.appendChild(dischargeDispositionElement);
+			checkIfOutBoundOcc(dataCriteriaElem, dischargeDispositionElement);
 		}  else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 			String attributeValueSetName = attributeQDMNode.getAttributes()
 					.getNamedItem(NAME).getNodeValue();
@@ -2176,7 +2176,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					.createElement(DISPLAY_NAME);
 			valueDisplayNameElem.setAttribute(VALUE, HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeValueSetName)+" "+attributeTaxonomy+" Value Set");
 			dischargeDispositionElement.appendChild(valueDisplayNameElem);
-			dataCriteriaElem.appendChild(dischargeDispositionElement);
+			checkIfOutBoundOcc(dataCriteriaElem, dischargeDispositionElement);
 		}
 	}
 	
@@ -2372,44 +2372,28 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			valueElem.appendChild(displayNameElem);
 			targetSiteCodeElement.appendChild(valueElem);
-			if (insertBeforeNodeName != null) {
+			if (insertBeforeNodeName != null && dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				if (outBoundElement != null) {
-					Node parentOfOutBoundElement = outBoundElement.getParentNode();
-					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
-				} else {
-					dataCriteriaElem.appendChild(targetSiteCodeElement);
-				}
-			} else if (insertAfterNodeName != null) {
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+			} else if (insertAfterNodeName != null && dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0)!=null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
-				if (outBoundElement != null) {
-					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
-				} else {
-					dataCriteriaElem.appendChild(targetSiteCodeElement);
-				}
+				outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
 			} else {
-				dataCriteriaElem.appendChild(targetSiteCodeElement);
+				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}
 		} else if (templateNode.getAttributes().getNamedItem(FLAVOR_ID) != null) {
 			String flavorIdValue = templateNode.getAttributes().getNamedItem(FLAVOR_ID).getNodeValue();
 			targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
-			if (insertBeforeNodeName != null) {
+			if (insertBeforeNodeName != null && dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				if (outBoundElement != null) {
-					Node parentOfOutBoundElement = outBoundElement.getParentNode();
-					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
-				} else {
-					dataCriteriaElem.appendChild(targetSiteCodeElement);
-				}
-			} else if (insertAfterNodeName != null) {
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+			} else if (insertAfterNodeName != null && dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0)!=null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
-				if (outBoundElement != null) {
-					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
-				} else {
-					dataCriteriaElem.appendChild(targetSiteCodeElement);
-				}
+				outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
 			} else {
-				dataCriteriaElem.appendChild(targetSiteCodeElement);
+				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}
 		} else if (templateNode.getAttributes().getNamedItem("addValueSet") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID)
@@ -2422,16 +2406,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			displayNameElem.setAttribute(VALUE, newQdmName
 					+ " " + attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
 			targetSiteCodeElement.appendChild(displayNameElem);
-			if (insertBeforeNodeName != null) {
+			if (insertBeforeNodeName != null && dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				if (outBoundElement != null) {
-					Node parentOfOutBoundElement = outBoundElement.getParentNode();
-					parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
-				} else {
-					dataCriteriaElem.appendChild(targetSiteCodeElement);
-				}
+				Node parentOfOutBoundElement = outBoundElement.getParentNode();
+				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
 			} else {
-				dataCriteriaElem.appendChild(targetSiteCodeElement);
+				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}
 		}
 	}
@@ -2575,7 +2555,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 							dataCriteriaElem.insertBefore(dateTimeNode
 									, statusCodeNodeList.item(0).getNextSibling());
 						} else {
-							dataCriteriaElem.appendChild(dateTimeNode);
+							checkIfOutBoundOcc(dataCriteriaElem, dateTimeNode);
 						}
 					}
 				}
@@ -2600,7 +2580,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						if ((nodeListParticipation != null) && (nodeListParticipation.getLength() > 0)) {
 							dataCriteriaElem.insertBefore(dateTimeNode, nodeListParticipation.item(0));
 						} else {
-							dataCriteriaElem.appendChild(dateTimeNode);
+							checkIfOutBoundOcc(dataCriteriaElem, dateTimeNode);
 						}
 					}
 				}
@@ -2902,4 +2882,23 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		return returnString;
 	}
+	
+	
+	/**
+	 * Check if out bound is occurrence and append the Attribute entry
+	 * before Temporal and outBoundRelationShip Tag.
+	 *
+	 * @param dataCriteriaElem the data criteria elem
+	 * @param dateTimeNode the date time node
+	 */
+	private void checkIfOutBoundOcc(Element dataCriteriaElem, Node dateTimeNode){
+		Node outBoundOccNode = dataCriteriaElem.getElementsByTagName("outboundRelationship").item(0);
+		if (outBoundOccNode.getAttributes().getNamedItem("typeCode")
+				.getNodeValue().equalsIgnoreCase("OCCR")) {
+			dataCriteriaElem.insertBefore(dateTimeNode, outBoundOccNode);
+		} else {
+			dataCriteriaElem.appendChild(dateTimeNode);
+		}
+	}
+	
 }

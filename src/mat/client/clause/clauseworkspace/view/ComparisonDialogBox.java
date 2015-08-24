@@ -67,7 +67,7 @@ public class ComparisonDialogBox {
 		aggregateFunctionsList.add(MatConstants.AVG.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.COUNT.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.SUM.toUpperCase());
-		aggregateFunctionsList.add(MatConstants.AGE_AT.toUpperCase());
+		/*aggregateFunctionsList.add(MatConstants.AGE_AT.toUpperCase());*/
 		
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH);
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH_END_OF);

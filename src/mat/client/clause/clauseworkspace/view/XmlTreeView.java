@@ -1656,13 +1656,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									}
 									
 									if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName)
-											|| ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+											|| ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
+											|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
 										if(selectedNode.hasChildren()){
 											canPaste = false;
-										}else{
+										} else {
 											canPaste = true;
 										}
-									}else{
+									} else {
 										canPaste = true;
 									}
 									if(canPaste && (copiedNode.getNodeType() == CellTreeNode.FUNCTIONS_NODE)){
@@ -2270,9 +2271,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						warningMessages.add(MatContext.get().getMessageDelegate()
 								.getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());
 					} else if (element.equalsIgnoreCase("emptyClauseLogic")) {
-					    warningMessages.add(MatContext.get().getMessageDelegate()
-							    .getCLAUSE_EMPTY());
-				}
+						warningMessages.add(MatContext.get().getMessageDelegate()
+								.getCLAUSE_EMPTY());
+					}
 					
 				}
 				if (warningMessages.size() > 0) {
@@ -2479,7 +2480,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					break;
 				case CellTreeNode.SUBTREE_NODE:
 					//validation for empty clause logic in clauseWorkspace
-					if(node.getChilds() == null || node.getChilds().size() == 0){
+					if((node.getChilds() == null) || (node.getChilds().size() == 0)){
 						if (!inValidNodeList.contains("emptyClauseLogic")) {
 							inValidNodeList.add("emptyClauseLogic");
 						}

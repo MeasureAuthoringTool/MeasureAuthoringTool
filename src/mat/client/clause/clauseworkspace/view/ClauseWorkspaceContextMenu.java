@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -12,9 +11,11 @@ import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.event.ClauseSpecificOccurenceEvent;
 import mat.client.shared.MatContext;
+import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -701,7 +702,8 @@ public class ClauseWorkspaceContextMenu {
 				selectedFunctionName = attribMap.get(PopulationWorkSpaceConstants.TYPE).toUpperCase();
 			}
 			
-			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
+					|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
 				}
@@ -710,7 +712,8 @@ public class ClauseWorkspaceContextMenu {
 			popupMenuBar.addItem(addMenu);
 			
 			if(xmlTreeDisplay.getCopiedNode() != null){
-				if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)){
+				if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
+						|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
 					if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 						pasteMenu.setEnabled(false);
 					}else if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) ) {

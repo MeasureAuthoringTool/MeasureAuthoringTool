@@ -151,7 +151,7 @@ public class MessageDelegate {
 	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
-
+	
 	/** The vsac expansion profile selection. */
 	public final String DEFAULT_EXPANSION_PROFILE_REMOVED = "Successfully removed the default VSAC Expansion Identifier from the Applied QDM Elements list.";
 	
@@ -180,8 +180,8 @@ public class MessageDelegate {
 	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
 	
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
-			                                 "to the selected Version and/or Expansion Identifier.";
-
+			"to the selected Version and/or Expansion Identifier.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -640,6 +640,9 @@ public class MessageDelegate {
 	
 	/** The comparison diloag box error display. */
 	private final String COMPARISON_DILOAG_BOX_ERROR_DISPLAY="Please enter Quantity field.";
+	
+	/** The comparison diloag box error display. */
+	private final String COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY="Please select Unit.";
 	
 	/** The component measures added successfully. */
 	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Component Measures updated successfully. Changes must be saved on the previous page.";
@@ -2377,7 +2380,7 @@ public class MessageDelegate {
 	public String getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR() {
 		return CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR;
 	}
-
+	
 	/**
 	 * @return the cLAUSE_EMPTY
 	 */
@@ -2387,5 +2390,9 @@ public class MessageDelegate {
 	
 	public String getSUCCESSFULLY_MODIFIED_ALL_OIDS() {
 		return SUCCESSFULLY_MODIFIED_ALL_OIDS;
+	}
+
+	public String getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY() {
+		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
 	}
 }

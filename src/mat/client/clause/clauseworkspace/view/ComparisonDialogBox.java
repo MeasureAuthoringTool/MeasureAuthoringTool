@@ -66,7 +66,7 @@ public class ComparisonDialogBox {
 		aggregateFunctionsList.add(MatConstants.MEDIAN.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.AVG.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.COUNT.toUpperCase());
-		aggregateFunctionsList.add(MatConstants.SUM.toUpperCase());  
+		aggregateFunctionsList.add(MatConstants.SUM.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.AGE_AT.toUpperCase());
 		
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH);
@@ -314,6 +314,7 @@ public class ComparisonDialogBox {
 				hPanel.clear();
 				hPanel.removeStyleName("alertMessageDialogBox");
 				quantity.removeStyleName("gwt-TextBoxRed");
+				listAllUnits.removeStyleName("gwt-TextBoxRed");
 				if (listAllOperator.getValue().contains("Select")) {
 					quantity.setEnabled(false);
 					listAllUnits.setEnabled(false);
@@ -324,7 +325,13 @@ public class ComparisonDialogBox {
 				updateQuantityandUnits(quantity, listAllUnits);
 			}
 		});
-		
+		listAllUnits.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				//hPanel.clear();
+				listAllUnits.removeStyleName("gwt-TextBoxRed");
+			}
+		});
 		quantity.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -339,17 +346,41 @@ public class ComparisonDialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				hPanel.clear();
-				if (validateQuantity(listAllOperator.getValue(), quantity,
-						listAllUnits)) {
-					dialogContents.clear();
-					dialogBox.hide();
-					saveAttributesToNode(listAllTimeOrFunction.getValue(),
-							listAllOperator.getValue(), quantity.getValue(),
-							listAllUnits.getValue(), xmlTreeDisplay);
-					xmlTreeDisplay.setDirty(true);
-				} else {
-					hPanel.clear();
-					getWidget(hPanel);
+				// Unit check is performed only for Timing and not for functions.
+				if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
+					if (validateQuantity(listAllOperator.getValue(), quantity,
+							listAllUnits)) {
+						if (validateUnit(listAllUnits)) {
+							dialogContents.clear();
+							dialogBox.hide();
+							saveAttributesToNode(listAllTimeOrFunction.getValue(),
+									listAllOperator.getValue(), quantity.getValue(),
+									listAllUnits.getValue(), xmlTreeDisplay);
+							xmlTreeDisplay.setDirty(true);
+						} else {
+							hPanel.clear();
+							getWidget(hPanel, MatContext.get().getMessageDelegate()
+									.getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY());
+						}
+					} else {
+						hPanel.clear();
+						getWidget(hPanel, MatContext.get().getMessageDelegate()
+								.getComparisonDiloagBoxErrorDisplay());
+					}
+				}  else {
+					if (validateQuantity(listAllOperator.getValue(), quantity,
+							listAllUnits)) {
+						dialogContents.clear();
+						dialogBox.hide();
+						saveAttributesToNode(listAllTimeOrFunction.getValue(),
+								listAllOperator.getValue(), quantity.getValue(),
+								listAllUnits.getValue(), xmlTreeDisplay);
+						xmlTreeDisplay.setDirty(true);
+					} else {
+						hPanel.clear();
+						getWidget(hPanel, MatContext.get().getMessageDelegate()
+								.getComparisonDiloagBoxErrorDisplay());
+					}
 				}
 			}
 		});
@@ -403,6 +434,22 @@ public class ComparisonDialogBox {
 				isValid = false;
 			}
 		}
+		return isValid;
+	}
+	
+	/**
+	 * Validate Units.
+	 * @param listAllUnits
+	 *            the list all units
+	 * @return true, if successful
+	 */
+	private static boolean validateUnit(final ListBoxMVP listAllUnits) {
+		boolean isValid = true;
+		if (listAllUnits.getValue().contains("Select")) {
+			listAllUnits.setStyleName("gwt-TextBoxRed");
+			isValid = false;
+		}
+		
 		return isValid;
 	}
 	
@@ -602,13 +649,12 @@ public class ComparisonDialogBox {
 	 *            the h panel
 	 * @return the widget
 	 */
-	public static Widget getWidget(HorizontalPanel hPanel) {
+	public static Widget getWidget(HorizontalPanel hPanel , String errorMessage) {
 		hPanel.clear();
 		FlowPanel imagePanel = new FlowPanel();
 		FlowPanel msgPanel = new FlowPanel();
 		Image errorIcon = new Image(ImageResources.INSTANCE.msg_error());
-		Label label = new Label(MatContext.get().getMessageDelegate()
-				.getComparisonDiloagBoxErrorDisplay());
+		Label label = new Label(errorMessage);
 		errorIcon.getElement().setAttribute("alt", "ErrorMessage");
 		imagePanel.getElement().setId("imagePanel_FlowPanel");
 		imagePanel.setTitle("Error");

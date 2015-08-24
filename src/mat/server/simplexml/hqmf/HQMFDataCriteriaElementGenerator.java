@@ -822,7 +822,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
 			}
 			dataCriteriaSectionElem.appendChild(entryElem);
-			addCommentNode(dataCriteriaXMLProcessor, entryCommentText, entryElem);
+			//addCommentNode(dataCriteriaXMLProcessor, entryCommentText, entryElem);
 		}
 		
 	}

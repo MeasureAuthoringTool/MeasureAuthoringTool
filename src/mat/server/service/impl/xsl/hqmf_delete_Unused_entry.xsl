@@ -3,8 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:func="http://exslt.org/functions"
  	extension-element-prefixes="func"
- 	xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1" xmlns:hl7="urn:hl7-org:v3" version="1.0"
- 	xmlns:fn="http://example.com/namespace" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ 	xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1" xmlns:hl7="urn:hl7-org:v3" version="1.0">
 
 <xsl:output method="xml" encoding="UTF-8" indent="no"/>
 
@@ -37,12 +36,6 @@
 	</xsl:if>
 
 </xsl:template> 
-
-
-<xsl:function name="fn:removeComment" as="xs:string">
-	<xsl:param name="pNode" as="node()"/>
-		<xsl:value-of select="$pNode/preceding-sibling::component"/>
-</xsl:function>
 
 <xsl:template match="@*|*|text()|comment()">
 	<xsl:copy>

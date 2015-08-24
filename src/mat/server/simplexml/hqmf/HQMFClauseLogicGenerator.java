@@ -222,8 +222,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc().getElementsByTagName(DATA_CRITERIA_SECTION).item(0);
 		
 		//generate comment
-		Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
-		dataCriteriaSectionElem.appendChild(comment);
+		//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
+		//dataCriteriaSectionElem.appendChild(comment);
 		if(isRAV){
 			Comment RAComment = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
 			dataCriteriaSectionElem.appendChild(RAComment);
@@ -396,17 +396,17 @@ public class HQMFClauseLogicGenerator implements Generator {
 			
 			Element dataCriteriaSectionElem = (Element) hqmfXmlProcessor.getOriginalDoc()
 					.getElementsByTagName(DATA_CRITERIA_SECTION).item(0);
-			Comment occComment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause (Main entry)'"+clauseName+"'");
-			dataCriteriaSectionElem.appendChild(occComment);
+			//Comment occComment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause (Main entry)'"+clauseName+"'");
+			//dataCriteriaSectionElem.appendChild(occComment);
 			dataCriteriaSectionElem.appendChild(cloneMainEntryNode);
 			
 			Node parentNode = cloneIDNode.getParentNode().cloneNode(false);
-			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
+			//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("Clause '"+clauseName+"'");
 			if(isRAV){
 				Comment RAComment = hqmfXmlProcessor.getOriginalDoc().createComment("Risk Adjustment Variable");
 				dataCriteriaSectionElem.appendChild(RAComment);
 			}
-			dataCriteriaSectionElem.appendChild(comment);
+			//dataCriteriaSectionElem.appendChild(comment);
 			Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 			entryElem.setAttribute(TYPE_CODE, "DRIV");
 			Element idElement = hqmfXmlProcessor.getOriginalDoc().createElement(ID);
@@ -542,9 +542,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element excerpt = generateExcerptEntryForFunctionalNode(parentNode, null, measureExport.getHQMFXmlProcessor(), entryElement);
 		if(excerpt != null) {
 			//create comment node
-			Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().
-					createComment("entry for " + parentNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			firstChild.appendChild(comment);
+			//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().
+			//		createComment("entry for " + parentNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			//firstChild.appendChild(comment);
 			firstChild.appendChild(excerpt);
 		}
 		dataCriteriaSectionElem.appendChild(entryElement);
@@ -652,13 +652,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 				
 				if(excerptElement != null){
-					Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+parNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-					firstChild.appendChild(comment);
+					//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+parNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+					//firstChild.appendChild(comment);
 					firstChild.appendChild(excerptElement);
 				}
 				//create comment node
-				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+elementRefNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-				parentNode.appendChild(comment);
+				//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+elementRefNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+				//parentNode.appendChild(comment);
 				parentNode.appendChild(clonedEntryNodeForElementRef);
 				//				clonedEntryNodeForElementRef.appendChild(excerptElement);
 				node = clonedEntryNodeForElementRef;
@@ -867,8 +867,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Node grouperEntryNode = grouperElem.cloneNode(true);
 		if (FUNCTIONAL_OP.equals(setOpNode.getParentNode().getNodeName())) {
 			Element excerptElement = generateExcerptEntryForFunctionalNode(setOpNode.getParentNode(), null, hqmfXmlProcessor, grouperEntryNode);
-			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+setOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-			grouperElem.appendChild(comment);
+			//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+setOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+			//grouperElem.appendChild(comment);
 			grouperElem.appendChild(excerptElement);
 		}
 		Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement(LOCAL_VARIABLE_NAME);
@@ -998,8 +998,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 						if(LOCAL_VARIABLE_NAME.equals(firstNode.getNodeName())){
 							firstNode = firstNode.getNextSibling();
 						}
-						Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-						firstNode.appendChild(comment);
+						//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+						//firstNode.appendChild(comment);
 						firstNode.appendChild(excerptElement);
 					}
 				}
@@ -1015,8 +1015,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 						if(LOCAL_VARIABLE_NAME.equals(firstNode.getNodeName())){
 							firstNode = firstNode.getNextSibling();
 						}
-						Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-						firstNode.appendChild(comment);
+						//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getParentNode().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+						//firstNode.appendChild(comment);
 						firstNode.appendChild(excerptElement);
 					}
 				}
@@ -1049,8 +1049,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 			throws XPathExpressionException {
 		Node entryNode = generateFunctionalOpHQMF(lhsNode, (Element) dataCriteriaSectionElem,clauseName);
 		
-		Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-		dataCriteriaSectionElem.appendChild(comment);
+		//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+		//dataCriteriaSectionElem.appendChild(comment);
 		if(entryNode != null) {
 			Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
 			Node idNode = findNode(entryNode,"ID");
@@ -1325,14 +1325,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 						Element excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode,
 								measureExport.getHQMFXmlProcessor(), newEntryNode.getFirstChild());
 						if(excerptElement != null) {
-							Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-							firstNode.appendChild(comment);
+							//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+							//firstNode.appendChild(comment);
 							firstNode.appendChild(excerptElement);
 						}
 					}
 					//create comment node
-					Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-					dataCriteriaSectionElem.appendChild(comment);
+					//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+					//dataCriteriaSectionElem.appendChild(comment);
 					dataCriteriaSectionElem.appendChild(newEntryNode);
 					return newEntryNode;
 					
@@ -1412,8 +1412,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 			
 			//create comment node
-			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-			dataCriteriaSectionElem.appendChild(comment);
+			//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+			//dataCriteriaSectionElem.appendChild(comment);
 			dataCriteriaSectionElem.appendChild(setOpEntryNode);
 			return setOpEntryNode;
 			
@@ -1495,8 +1495,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 				firstChild.appendChild(temporallyRelatedInfoNode);
 			}
 			//create comment node
-			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-			dataCriteriaSectionElem.appendChild(comment);
+			//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+			//dataCriteriaSectionElem.appendChild(comment);
 			dataCriteriaSectionElem.appendChild(relOpEntryNode);
 			return relOpEntryNode;
 			
@@ -1590,13 +1590,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}
 			
 			if(excerptElement != null){
-				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-				firstChild.appendChild(comment);
+				//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("excerpt for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+				//firstChild.appendChild(comment);
 				firstChild.appendChild(excerptElement);
 			}
 			//create comment node
-			Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-			dataCriteriaSectionElem.appendChild(comment);
+			//Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("entry for "+relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+			//dataCriteriaSectionElem.appendChild(comment);
 			dataCriteriaSectionElem.appendChild(clonedEntryNodeForElementRef);
 			return clonedEntryNodeForElementRef;
 		}
@@ -1741,6 +1741,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				validAttribNames.add("incision datetime");
 				validAttribNames.add("facility location arrival datetime");
 				validAttribNames.add("facility location departure datetime");
+				validAttribNames.add("recorded datetime");
 				validAttribNames.add("signed datetime");
 				validAttribNames.add("start datetime");
 				validAttribNames.add("stop datetime");
@@ -1796,12 +1797,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 							qdmId.setAttribute(EXTENSION, itemNode.getAttributes().getNamedItem(EXTENSION).getNodeValue());
 							attribute.appendChild(qdmId);
 							
-							if("start datetime".equals(value)){
-								boundValue = "time.low";
-							}else if("stop datetime".equals(value) || "signed datetime".equals(value)){
-								boundValue = "time.high";
-							}else if("facility location departure datetime".equals(value)){
-								boundValue = "effectiveTime.high";
+							if("facility location departure datetime".equals(value) || 
+								"stop datetime".equals(value) || "signed datetime".equals(value) 
+								|| "recorded datetime".equals(value)){
+									boundValue = "effectiveTime.high";
 							}
 						}
 					}

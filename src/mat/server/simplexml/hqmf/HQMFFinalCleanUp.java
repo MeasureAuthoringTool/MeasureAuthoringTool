@@ -182,6 +182,7 @@ public class HQMFFinalCleanUp {
 		XMLUtility xmlUtility = new XMLUtility();
 		String delDupEntryResults = xmlUtility.applyXSL(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc()),
 				xmlUtility.getXMLResource(deleteUnUsedEntryFile));
+		
 		me.setHQMFXmlProcessor(new XmlProcessor(delDupEntryResults));
 		
 		reverseEntryCheck(delDupEntryResults);

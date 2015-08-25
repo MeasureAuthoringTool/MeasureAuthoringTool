@@ -1664,7 +1664,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String attrName = (String)attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
-		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
+		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ qdmName.toLowerCase() + "']");
 		if(templateNode == null){
 			return;
@@ -2893,7 +2893,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void checkIfOutBoundOcc(Element dataCriteriaElem, Node dateTimeNode){
 		Node outBoundOccNode = dataCriteriaElem.getElementsByTagName("outboundRelationship").item(0);
-		if (outBoundOccNode.getAttributes().getNamedItem("typeCode")
+		if (outBoundOccNode != null && outBoundOccNode.getAttributes().getNamedItem("typeCode")
 				.getNodeValue().equalsIgnoreCase("OCCR")) {
 			dataCriteriaElem.insertBefore(dateTimeNode, outBoundOccNode);
 		} else {

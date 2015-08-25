@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -12,6 +13,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
+
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -337,7 +339,7 @@ public class ComparisonDialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				quantity.removeStyleName("gwt-TextBoxRed");
-				
+				listAllUnits.removeStyleName("gwt-TextBoxRed");
 			}
 		});
 		
@@ -346,41 +348,34 @@ public class ComparisonDialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				hPanel.clear();
-				// Unit check is performed only for Timing and not for functions.
-				if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
-					if (validateQuantity(listAllOperator.getValue(), quantity,
-							listAllUnits)) {
-						if (validateUnit(listAllUnits)) {
-							dialogContents.clear();
-							dialogBox.hide();
-							saveAttributesToNode(listAllTimeOrFunction.getValue(),
-									listAllOperator.getValue(), quantity.getValue(),
-									listAllUnits.getValue(), xmlTreeDisplay);
-							xmlTreeDisplay.setDirty(true);
-						} else {
+				quantity.removeStyleName("gwt-TextBoxRed");
+				listAllUnits.removeStyleName("gwt-TextBoxRed");
+				
+				// Unit check is performed only for Timing and not for functions.				
+				if (validateQuantity(listAllOperator.getValue(), quantity,
+						listAllUnits)) {
+					
+					if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){						
+						if (!validateUnit(quantity, listAllUnits)) {
+							
 							hPanel.clear();
 							getWidget(hPanel, MatContext.get().getMessageDelegate()
 									.getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY());
+							return;
+							
 						}
-					} else {
-						hPanel.clear();
-						getWidget(hPanel, MatContext.get().getMessageDelegate()
-								.getComparisonDiloagBoxErrorDisplay());
-					}
-				}  else {
-					if (validateQuantity(listAllOperator.getValue(), quantity,
-							listAllUnits)) {
-						dialogContents.clear();
-						dialogBox.hide();
-						saveAttributesToNode(listAllTimeOrFunction.getValue(),
-								listAllOperator.getValue(), quantity.getValue(),
-								listAllUnits.getValue(), xmlTreeDisplay);
-						xmlTreeDisplay.setDirty(true);
-					} else {
-						hPanel.clear();
-						getWidget(hPanel, MatContext.get().getMessageDelegate()
-								.getComparisonDiloagBoxErrorDisplay());
-					}
+					}					
+					dialogContents.clear();
+					dialogBox.hide();
+					saveAttributesToNode(listAllTimeOrFunction.getValue(),
+							listAllOperator.getValue(), quantity.getValue(),
+							listAllUnits.getValue(), xmlTreeDisplay);
+					xmlTreeDisplay.setDirty(true);
+					
+				} else {
+					hPanel.clear();
+					getWidget(hPanel, MatContext.get().getMessageDelegate()
+							.getComparisonDiloagBoxErrorDisplay());
 				}
 			}
 		});
@@ -443,15 +438,16 @@ public class ComparisonDialogBox {
 	 *            the list all units
 	 * @return true, if successful
 	 */
-	private static boolean validateUnit(final ListBoxMVP listAllUnits) {
+	private static boolean validateUnit(final TextBox quantity,final ListBoxMVP listAllUnits) {
 		boolean isValid = true;
-		if (listAllUnits.getValue().contains("Select")) {
+		if (!quantity.getValue().equals("") && listAllUnits.getValue().contains("Select")) {
 			listAllUnits.setStyleName("gwt-TextBoxRed");
 			isValid = false;
 		}
 		
 		return isValid;
 	}
+
 	
 	/**
 	 * Method to set attributes to CellTreeNode extraInformation.

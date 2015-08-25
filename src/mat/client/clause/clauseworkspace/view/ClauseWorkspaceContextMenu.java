@@ -703,7 +703,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 			
 			if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
-					|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
+					|| selectedFunctionName.contains(MatConstants.AGE_AT.toUpperCase())){
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
 				}
@@ -712,8 +712,9 @@ public class ClauseWorkspaceContextMenu {
 			popupMenuBar.addItem(addMenu);
 			
 			if(xmlTreeDisplay.getCopiedNode() != null){
-				if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName) || ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
-						|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
+				if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName)
+						|| ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
+						|| selectedFunctionName.contains(MatConstants.AGE_AT.toUpperCase())) {
 					if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 						pasteMenu.setEnabled(false);
 					}else if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) ) {

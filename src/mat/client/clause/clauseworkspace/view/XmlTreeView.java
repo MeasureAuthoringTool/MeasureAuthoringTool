@@ -1657,7 +1657,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									
 									if(ComparisonDialogBox.getAggregateFunctionsList().contains(selectedFunctionName)
 											|| ComparisonDialogBox.getSubSetFunctionsList().contains(selectedFunctionName)
-											|| selectedFunctionName.toUpperCase().contains(MatConstants.AGE_AT.toUpperCase())){
+											|| selectedFunctionName.contains(MatConstants.AGE_AT.toUpperCase())){
 										if(selectedNode.hasChildren()){
 											canPaste = false;
 										} else {

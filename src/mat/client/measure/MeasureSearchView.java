@@ -391,12 +391,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				cssClass = "customEditButton";
 			}
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Edit</button>");
 		} else {
-			title = "ReadOnly";
+			title = "Read-Only";
 			cssClass = "customReadOnlyButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Read-Only</button>");
 		}
 		
 		return sb.toSafeHtml();
@@ -416,12 +416,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			title = "Shareable";
 			cssClass = "customShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Shareable</button>");
 		} else {
 			title = "Shareable";
 			cssClass = "customGrayedShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Shareable</button>");
 		}
 		
 		return sb.toSafeHtml();
@@ -442,12 +442,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			title = "Clonable";
 			cssClass = "customCloneButton"; 
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Clonable</button>");
 		} else {
 			title = "Clonable";
 			cssClass = "customGrayedCloneButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Clonable</button>");
 		}
 		
 		return sb.toSafeHtml();

@@ -122,11 +122,12 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							cssClass = "customEditButton";
 						}
 						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Edit</button>");
 					} else {
-						title = "ReadOnly";
+						title = "Read-Only";
 						cssClass = "customReadOnlyButton";
-						sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Read-Only</button>");
 					}
 					return sb.toSafeHtml();
 				}
@@ -155,17 +156,17 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							title = "Click to Export MATv3";
 							cssClass = "customExportButton";
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv3</button>");	
 							} if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4")){
 								title = "Click to Export MATv4";
 								cssClass = "customExportButtonRed";
 								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
+										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv4</button>");	
 							} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4.3")) {
 								title = "Click to Export MATv4.3";
 								cssClass = "customExportButtonRed";
 								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
+										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv4.3</button>");	
 							}
 						}
 					return sb.toSafeHtml();

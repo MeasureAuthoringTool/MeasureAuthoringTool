@@ -6,7 +6,7 @@
  	xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1" xmlns:hl7="urn:hl7-org:v3" version="1.0">
 
 <xsl:output method="xml" encoding="UTF-8" indent="no"/>
-
+<xsl:strip-space  elements="*"/>
 <xsl:template match="dataCriteriaSection//entry">
 	<xsl:variable name="qdm_root">
 		<xsl:value-of select="./*/id/@root"></xsl:value-of>
@@ -26,14 +26,11 @@
     <xsl:variable name="expressionValue">
         <xsl:value-of select="count(//measureObservationDefinition//value/expression[contains(@value, $qdm_value)])"></xsl:value-of>
     </xsl:variable>
-
-	
 		<xsl:if test="($criteriaRef != 0) or ($valueValue != 0) or ($expressionValue != 0) or (@riskAdjVar)">
 			<xsl:copy>
-				<xsl:apply-templates select="node()|@*"/>
-				
+				<xsl:apply-templates select="node()|@*"/>	
 			</xsl:copy>
-	</xsl:if>
+		</xsl:if>
 
 </xsl:template> 
 

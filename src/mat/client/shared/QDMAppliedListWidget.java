@@ -1,10 +1,8 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
-
 import mat.client.clause.QDSAppliedListModel;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -26,7 +24,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class QDMAppliedListWidget.
  */
 public class QDMAppliedListWidget {
-
+	
 	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	
@@ -46,7 +44,7 @@ public class QDMAppliedListWidget {
 	private CellList<QualityDataSetDTO> cellList;
 	
 	/** The pager panel. */
-	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
+	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel("QDMPanel");
 	
 	/** The range label pager. */
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
@@ -88,31 +86,31 @@ public class QDMAppliedListWidget {
 	 * @return the cell list
 	 */
 	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel){
-
+		
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		//final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
-		 final SingleSelectionModel<QualityDataSetDTO> selectionModel = new SingleSelectionModel<QualityDataSetDTO>();
+		final SingleSelectionModel<QualityDataSetDTO> selectionModel = new SingleSelectionModel<QualityDataSetDTO>();
 		// cellList.setSelectionModel(selectionModel);
 		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
-
-		//	private MatCheckBoxCell cbCell = new MatCheckBoxCell();
+			
+			//	private MatCheckBoxCell cbCell = new MatCheckBoxCell();
 			private RadioButtonCell cbCell = new RadioButtonCell(true,true);
 			@Override
 			public Cell<Boolean> getCell() {
 				return cbCell;
 			}
-
+			
 			
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				cbCell.setUsed(object.isUsed());
 				return selectionModel.isSelected(object);
 			}
-
+			
 			@Override
 			public FieldUpdater<QualityDataSetDTO, Boolean> getFieldUpdater() {
 				return new FieldUpdater<QualityDataSetDTO, Boolean>() {
-
+					
 					@Override
 					public void update(int index, QualityDataSetDTO object,Boolean value) {
 						//appliedListModel.setLastSelected(object);
@@ -134,26 +132,27 @@ public class QDMAppliedListWidget {
 			private TextCell cell = new TextCell();
 			@Override
 			public Cell<String> getCell() {
-				return (Cell)cell;
+				return cell;
 			}
-
+			
 			@Override
 			public FieldUpdater<QualityDataSetDTO, String> getFieldUpdater() {
 				return null;
 			}
-
+			
 			@Override
 			public String getValue(QualityDataSetDTO object) {
 				String value;
-				if(object.getOccurrenceText()!= null && !object.getOccurrenceText().equals(""))
+				if((object.getOccurrenceText()!= null) && !object.getOccurrenceText().equals("")) {
 					value = object.getOccurrenceText() + " of "+object.getCodeListName() + ": " + object.getDataType() ;
-				else
+				} else {
 					value= object.getCodeListName() + ": " + object.getDataType() ;
+				}
 				
 				return value;
 			}});
-
-
+		
+		
 		Cell<QualityDataSetDTO> myClassCell = new CompositeCell<QualityDataSetDTO>(hasCells){
 			@Override
 			public void render(Context context, QualityDataSetDTO value, SafeHtmlBuilder sb)
@@ -168,7 +167,7 @@ public class QDMAppliedListWidget {
 				// Return the first TR element in the table.
 				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
 			}
-
+			
 			@Override
 			protected <X> void render(Context context, QualityDataSetDTO value, SafeHtmlBuilder sb, HasCell<QualityDataSetDTO, X> hasCell)
 			{
@@ -178,9 +177,9 @@ public class QDMAppliedListWidget {
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
 			}
-
+			
 		};
-
+		
 		CellList<QualityDataSetDTO> cellsList =  new CellList<QualityDataSetDTO>(myClassCell);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
@@ -206,7 +205,7 @@ public class QDMAppliedListWidget {
 		//removeButton.setEnabled(checkForEnable());
 		return cellsList;
 	}
-
+	
 	/**
 	 * Check for enable.
 	 * 
@@ -215,7 +214,7 @@ public class QDMAppliedListWidget {
 	private boolean checkForEnable(){
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
-
+	
 	/**
 	 * Builds the cell list.
 	 * 
@@ -227,14 +226,14 @@ public class QDMAppliedListWidget {
 			cellList = initializeCellListContent(appliedListModel);
 			cellList.setPageSize(15);
 			cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 
-			dataProvider.addDataDisplay(cellList); 
+			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs());
+			dataProvider.addDataDisplay(cellList);
 			pagerPanel.addStyleName("scrollable");
 			pagerPanel.setDisplay(cellList);
 			rangeLabelPager.setDisplay(cellList);
 		}
 	}
-
+	
 	/**
 	 * Gets the main applied qdm panel.
 	 * 
@@ -252,7 +251,7 @@ public class QDMAppliedListWidget {
 	public QualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
-
+	
 	/**
 	 * Gets the removes the button.
 	 * 
@@ -261,7 +260,7 @@ public class QDMAppliedListWidget {
 	public Button getRemoveButton() {
 		return removeButton;
 	}
-
+	
 	/**
 	 * Gets the error message panel.
 	 * 
@@ -270,7 +269,7 @@ public class QDMAppliedListWidget {
 	public ErrorMessageDisplay getErrorMessagePanel() {
 		return errorMessagePanel;
 	}
-
+	
 	/**
 	 * Gets the success message panel.
 	 * 

@@ -101,9 +101,9 @@ public class MeasurePackageClauseCellListWidget {
 	/** The Association cell list. */
 	private CellList<MeasurePackageClauseDetail> associatedCellList;
 	/** The Right cell LIst pager panel. */
-	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightPackagePanel");
 	/** The Left cell LIst pager panel. */
-	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel("LeftPackagePanel");
 	/** The range label pager. */
 	private RangeLabelPager rightRangeLabelPager = new RangeLabelPager();
 	/** The range label pager. */
@@ -888,7 +888,7 @@ public class MeasurePackageClauseCellListWidget {
 						} else if(detail.getType().equals(NUMERATOR)){
 							numClauseType = detail.getName();
 						}
-						if ((detail.getAssociatedPopulationUUID() != null)  
+						if ((detail.getAssociatedPopulationUUID() != null)
 								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
@@ -900,10 +900,10 @@ public class MeasurePackageClauseCellListWidget {
 							groupingClausesMap.put(detail.getName(), detail);
 							isAssociated = true;
 						}
-						if(denomClauseType != null  && isAssociated){
+						if((denomClauseType != null)  && isAssociated){
 							groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-						} 
-						if(numClauseType!=null && isAssociated){
+						}
+						if((numClauseType!=null) && isAssociated){
 							groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
 						}
 						if ((otherClauseType != null)
@@ -974,7 +974,7 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
-
+	
 	/**
 	 * Check for number of starification.
 	 *
@@ -985,18 +985,18 @@ public class MeasurePackageClauseCellListWidget {
 			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
 			List<String> messages) {
 		int count = 0;
-		for (MeasurePackageClauseDetail clause : validateGroupingList) {			
+		for (MeasurePackageClauseDetail clause : validateGroupingList) {
 			if (clause.getType().equalsIgnoreCase(STRATIFICATION)) {
 				count++;
 			}
 		}
-		if (count > 1 && messages.size() == 0) {
+		if ((count > 1) && (messages.size() == 0)) {
 			messages.add(MatContext.get().getMessageDelegate()
 					.getSTRATIFICATION_VALIDATION_FOR_GROUPING());
-
+			
 		}
 	}
-
+	
 	/**
 	 * Method to count number of Clause types.
 	 * 

@@ -197,10 +197,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			new SingleSelectionModel<QualityDataSetDTO>();
 	
 	/** The left pager panel. */
-	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel("LeftSidePanel");
 	
 	/** The right pager panel. */
-	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightSidePanel");
 	
 	
 	//RiskAdjustment UI Components
@@ -232,10 +232,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private PrimaryButton addRiskAdjVariablesToMeasure = new PrimaryButton("Save Risk Adjustment Variables", "primaryButton");
 	
 	/** The left risk adj panel. */
-	private ShowMorePagerPanel leftRiskAdjPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel leftRiskAdjPanel = new ShowMorePagerPanel("LeftRiskAdjPanel");
 	
 	/** The right risk adj panel. */
-	private ShowMorePagerPanel rightRiskAdjPanel = new ShowMorePagerPanel();
+	private ShowMorePagerPanel rightRiskAdjPanel = new ShowMorePagerPanel("RightRiskAdjPanel");
 	
 	/** The Risk adj cell list. */
 	private CellList<RiskAdjustmentDTO> riskAdjClauseCellList;
@@ -571,6 +571,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		sPanel.add(new HTML("<b style='margin-left:15px;'> QDM Elements </b>"));
 		
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
+		leftPagerPanel.getElement().setId("LeftPanelSuppQDMList");
 		leftPagerPanel.setSize("320px", "200px");
 		/*leftPagerPanel.setAlwaysShowScrollBars(true);
 		leftPagerPanel.add(getQdmCellList());*/
@@ -582,6 +583,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		/*rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
 		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
+		rightPagerPanel.getElement().setId("RightPanelSuppQDMList");
 		rightPagerPanel.setSize("320px", "200px");
 		/*rightPagerPanel.setAlwaysShowScrollBars(true);
 		rightPagerPanel.add(getSupCellList());*/

@@ -1797,23 +1797,23 @@ public class HQMFClauseLogicGenerator implements Generator {
 							qdmId.setAttribute(EXTENSION, itemNode.getAttributes().getNamedItem(EXTENSION).getNodeValue());
 							attribute.appendChild(qdmId);
 							
-							if("facility location departure datetime".equals(value) || 
-								"stop datetime".equals(value) || "signed datetime".equals(value) 
-								|| "recorded datetime".equals(value)){
-									boundValue = "effectiveTime.high";
+							if("facility location departure datetime".equals(value) ||
+									"stop datetime".equals(value) || "signed datetime".equals(value)
+									|| "recorded datetime".equals(value)){
+								boundValue = "effectiveTime.high";
 							}
 						}
 					}
 				}
 				attribute.setAttribute("bound", boundValue);
-			    Node temporalInformation = temporallyRelatedInfoNode.getFirstChild();
-			    if(temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0)!=null){
-			    	Node qdmDeltaNode = temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0);
-			    	temporalInformation.insertBefore(attribute, qdmDeltaNode);
-			    } else {
-			    	temporalInformation.appendChild(attribute);
-			    }
-			    
+				Node temporalInformation = temporallyRelatedInfoNode.getFirstChild();
+				if(temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0)!=null){
+					Node qdmDeltaNode = temporallyRelatedInfoNode.getElementsByTagName("qdm:delta").item(0);
+					temporalInformation.insertBefore(attribute, qdmDeltaNode);
+				} else {
+					temporalInformation.appendChild(attribute);
+				}
+				
 				return attribute;
 			}
 		}
@@ -1903,10 +1903,8 @@ public class HQMFClauseLogicGenerator implements Generator {
 								}
 								attributeNode = attributeElement;
 								
-								HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
-								attributeGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
-								
-								
+								HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
+								hqmfDataCriteriaElementGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
 							}
 						}
 					}

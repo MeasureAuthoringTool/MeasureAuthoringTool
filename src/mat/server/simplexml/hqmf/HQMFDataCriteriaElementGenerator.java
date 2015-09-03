@@ -699,8 +699,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		// Local variable changes.
 		String qdmLocalVariableName = qdmName + "_" + dataType;
 		String localVariableName = qdmLocalVariableName;
-		if(qdmNode.getAttributes().getNamedItem("instance") != null){
-			qdmLocalVariableName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() +"_" + qdmLocalVariableName;
+		if (qdmNode.getAttributes().getNamedItem("instance") != null) {
+			qdmLocalVariableName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + "_" + qdmLocalVariableName;
 			localVariableName = qdmNode.getAttributes().getNamedItem("instance").getNodeValue() + "of" + localVariableName;
 		}
 		qdmLocalVariableName = StringUtils.deleteWhitespace(qdmLocalVariableName);
@@ -1003,6 +1003,25 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
+	 * This method is called for populating version/expansion Identifier of value set when value set attribute
+	 * mode is applied. If version is most recent, 1.0 or 1 is returned.
+	 * @param qdmNode
+	 * @return version
+	 */
+	private String valueSetVersionStringValue(Node qdmNode){
+		String version = qdmNode.getAttributes().getNamedItem("version")
+				.getNodeValue();
+		if ("1.0".equals(version) || "1".equals(version)) {
+			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+			}
+		} else {
+			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version")
+					.getNodeValue();
+		}
+		return version;
+	}
+	/**
 	 * Add SubTemplate defined in Template.xml to data criteria Element.
 	 *
 	 * @param templateNode - Node
@@ -1022,21 +1041,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				+ subTemplateName + "/child::node()");
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID)
 				.getNodeValue();
-		String version = qdmNode.getAttributes().getNamedItem("version")
-				.getNodeValue();
-		boolean addVersionToValueTag = false;
-		if ("1.0".equals(version) || "1".equals(version)) {
-			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
-				addVersionToValueTag = true;
-			} else {
-				addVersionToValueTag = false;
-			}
-		} else {
-			addVersionToValueTag = true;
-			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version")
-					.getNodeValue();
-		}
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
@@ -1056,9 +1060,10 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					attributedToBeChangedInNode.item(0).getAttributes().
 					getNamedItem("valueSet").setNodeValue(qdmOidValue);
-					if(addVersionToValueTag){
+					String valueSetVersion = valueSetVersionStringValue(qdmNode);
+					if (valueSetVersion.contains("vsac")) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
-						attrNode.setNodeValue(version);
+						attrNode.setNodeValue(valueSetVersion);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
 					} else {
 						if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -1350,24 +1355,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						attribute.setNodeValue("ANY.NONNULL");
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attribute);
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
-						String version = attrNode.getAttributes().getNamedItem("version")
-								.getNodeValue();
-						boolean addVersionToValueTag = false;
-						if ("1.0".equals(version) || "1".equals(version)) {
-							if (attrNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-								version = "vsac:profile:" + attrNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
-								addVersionToValueTag = true;
-							} else {
-								addVersionToValueTag = false;
-							}
-						} else {
-							addVersionToValueTag = true;
-							version = "vsac:version:" + attrNode.getAttributes().getNamedItem("version")
-									.getNodeValue();
-						}
-						if(addVersionToValueTag){
+						
+						String valueSetVersion = valueSetVersionStringValue(attrNode);
+						if (valueSetVersion.contains("vsac")) {
 							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
-							valuesetVersionAttr.setNodeValue(version);
+							valuesetVersionAttr.setNodeValue(valueSetVersion);
 							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);
 						} else {
 							if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -1489,8 +1481,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Node attrOID = attributeQDMNode.getAttributes().getNamedItem(OID);
-		Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");
-		boolean isLengthOfStayValueSet = false;
+		/*Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");*/
+		//boolean isLengthOfStayValueSet = false;
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attrName.toLowerCase() + "']");
@@ -1503,42 +1495,30 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (CHECK_IF_PRESENT.equals(attrMode)) {
 			targetQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 		}  else if (VALUE_SET.equals(attrMode)) {
-			if (attrName.equalsIgnoreCase(LENGTH_OF_STAY)) {
+			/*if (attrName.equalsIgnoreCase(LENGTH_OF_STAY)) {
 				isLengthOfStayValueSet = true;
+			} else {*/
+			targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
+			Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
+			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
+			
+			String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
+			if (valueSetVersion.contains("vsac")) {
+				translationNode.setAttribute("valueSetVersion", valueSetVersion);
 			} else {
-				targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
-				Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
-				translationNode.setAttribute("valueSet", attrOID.getNodeValue());
-				String version = attrVersion.getNodeValue();
-				boolean addVersionToValueTag = false;
-				if ("1.0".equals(version) || "1".equals(version)) {
-					if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-						version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier")
-								.getNodeValue();
-						addVersionToValueTag = true;
-					} else {
-						addVersionToValueTag = false;
-					}
-				} else {
-					addVersionToValueTag = true;
-					version = "vsac:version:" + attrVersion.getNodeValue();
+				if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
+					translationNode.getAttributes().removeNamedItem("valueSetVersion");
 				}
-				if (addVersionToValueTag) {
-					translationNode.setAttribute("valueSetVersion", version);
-				} else {
-					if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
-						translationNode.getAttributes().removeNamedItem("valueSetVersion");
-					}
-				}
-				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-						.createElement(DISPLAY_NAME);
-				String newQdmName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeQDMNode.
-						getAttributes().getNamedItem(NAME).getNodeValue());
-				displayNameElem.setAttribute(VALUE, newQdmName + " "
-						+ attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
-				translationNode.appendChild(displayNameElem);
-				targetQuantityTag.appendChild(translationNode);
 			}
+			Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+					.createElement(DISPLAY_NAME);
+			String newQdmName = HQMFDataCriteriaGenerator.removeOccurrenceFromName(attributeQDMNode.
+					getAttributes().getNamedItem(NAME).getNodeValue());
+			displayNameElem.setAttribute(VALUE, newQdmName + " "
+					+ attributeQDMNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue() + " Value Set");
+			translationNode.appendChild(displayNameElem);
+			targetQuantityTag.appendChild(translationNode);
+			//}
 		} else if (attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN)
 				|| attrMode.equals(Generator.EQUAL_TO)) {
 			if (attrMode.equals(Generator.EQUAL_TO)) {
@@ -1596,17 +1576,17 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				if (outBoundElement != null) {
 					outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
 				} else {
-					if(!isLengthOfStayValueSet){
-						checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
-					}
+					//if(!isLengthOfStayValueSet){
+					checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
+					//}
 				}
 			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
 			}
 		} else {
-			if(!isLengthOfStayValueSet){
-				checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
-			}
+			//if(!isLengthOfStayValueSet){
+			checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
+			//}
 		}
 		
 	}
@@ -1784,6 +1764,15 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 	}
 	
+	/**
+	 * Method is used to generate HQMF logic for Principle Diagnosis and Diagnosis attributes.
+	 * @param qdmNode
+	 * @param dataCriteriaElem
+	 * @param dataCriteriaXMLProcessor
+	 * @param simpleXmlprocessor
+	 * @param attributeQDMNode
+	 * @throws XPathExpressionException
+	 */
 	protected void generatePrincipalAndDiagnosisAttributes(Node qdmNode, Element dataCriteriaElem,
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
@@ -1858,24 +1847,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 							attributeXSIType.setNodeValue("ANY");
 							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attributeXSIType);
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
-							String version = attributeQDMNode.getAttributes().getNamedItem("version")
-									.getNodeValue();
-							boolean addVersionToValueTag = false;
-							if ("1.0".equals(version) || "1".equals(version)) {
-								if (attributeQDMNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-									version = "vsac:profile:" + attributeQDMNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
-									addVersionToValueTag = true;
-								} else {
-									addVersionToValueTag = false;
-								}
-							} else {
-								addVersionToValueTag = true;
-								version = "vsac:version:" + attributeQDMNode.getAttributes().getNamedItem("version")
-										.getNodeValue();
-							}
-							if(addVersionToValueTag){
+							
+							String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
+							if(valueSetVersion.contains("vsac")){
 								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
-								valuesetVersionAttr.setNodeValue(version);
+								valuesetVersionAttr.setNodeValue(valueSetVersion);
 								attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);
 							} else {
 								if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -2465,7 +2441,31 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrDate = (String) attributeQDMNode.getUserData(ATTRIBUTE_DATE);
 		
 		String timeTagName = "";
-		if (attrName.equals(START_DATETIME)
+		switch (attrName.toLowerCase()) {
+			case START_DATETIME:
+			case FACILITY_LOCATION_ARRIVAL_DATETIME:
+			case ADMISSION_DATETIME:
+			case ACTIVE_DATETIME:
+			case DATE:
+			case TIME:
+			case INCISION_DATETIME:
+			case ONSET_DATETIME:
+				timeTagName = LOW;
+				break;
+			case STOP_DATETIME:
+			case FACILITY_LOCATION_DEPARTURE_DATETIME:
+			case DISCHARGE_DATETIME:
+			case REMOVAL_DATETIME:
+			case SIGNED_DATETIME:
+			case RECORDED_DATETIME:
+			case ABATEMENT_DATETIME:
+				timeTagName = HIGH;
+				break;
+			default :
+				timeTagName = "";
+				break;
+		}
+		/*if (attrName.equals(START_DATETIME)
 				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_ARRIVAL_DATETIME)
 				|| ADMISSION_DATETIME.equalsIgnoreCase(attrName)
 				|| ACTIVE_DATETIME.equalsIgnoreCase(attrName)
@@ -2482,7 +2482,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| attrName.equalsIgnoreCase(RECORDED_DATETIME)
 				|| attrName.equalsIgnoreCase(ABATEMENT_DATETIME)) {
 			timeTagName = HIGH;
-		}
+		}*/
 		
 		if(CHECK_IF_PRESENT.equals(attrMode)){
 			
@@ -2491,8 +2491,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				timeTagNode.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 				dateTimeNode.appendChild(timeTagNode);
 			}
-		}else if(attrMode.startsWith(Generator.LESS_THAN) || attrMode.startsWith(Generator.GREATER_THAN) || attrMode.equals(Generator.EQUAL_TO)){
-			
+		} else {
 			if(attrMode.equals(Generator.EQUAL_TO)){
 				if(timeTagName.length() > 0){
 					Element timeTagNode = dataCriteriaElem.getOwnerDocument().createElement(timeTagName);

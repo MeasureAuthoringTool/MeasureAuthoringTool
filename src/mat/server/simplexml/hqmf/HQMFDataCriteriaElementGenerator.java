@@ -1422,6 +1422,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				break;
 			case START_DATETIME:
+			case STOP_DATETIME:
 			case SIGNED_DATETIME:
 			case RECORDED_DATETIME:
 			case ABATEMENT_DATETIME:
@@ -2480,24 +2481,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				timeTagName = "";
 				break;
 		}
-		/*if (attrName.equals(START_DATETIME)
-				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_ARRIVAL_DATETIME)
-				|| ADMISSION_DATETIME.equalsIgnoreCase(attrName)
-				|| ACTIVE_DATETIME.equalsIgnoreCase(attrName)
-				|| DATE.equalsIgnoreCase(attrName)
-				|| TIME.equalsIgnoreCase(attrName)
-				|| INCISION_DATETIME.equalsIgnoreCase(attrName)
-				|| ONSET_DATETIME.equalsIgnoreCase(attrName)) {
-			timeTagName = LOW;
-		} else if (attrName.equals(STOP_DATETIME)
-				|| attrName.equalsIgnoreCase(FACILITY_LOCATION_DEPARTURE_DATETIME)
-				|| attrName.equalsIgnoreCase(DISCHARGE_DATETIME)
-				|| attrName.equalsIgnoreCase(REMOVAL_DATETIME)
-				|| attrName.equalsIgnoreCase(SIGNED_DATETIME)
-				|| attrName.equalsIgnoreCase(RECORDED_DATETIME)
-				|| attrName.equalsIgnoreCase(ABATEMENT_DATETIME)) {
-			timeTagName = HIGH;
-		}*/
 		
 		if(CHECK_IF_PRESENT.equals(attrMode)){
 			

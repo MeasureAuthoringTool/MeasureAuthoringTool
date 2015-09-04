@@ -1413,57 +1413,72 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attributeMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
-		// Negation Rational attribute is not valid for function/attribute flow.
-		if (NEGATION_RATIONALE.equals(attributeName) && !isFunctionAttributeFlow) {
-			generateNegationRationalEntries(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (START_DATETIME.equals(attributeName) || STOP_DATETIME.equals(attributeName)
-				|| SIGNED_DATETIME.equals(attributeName)
-				|| RECORDED_DATETIME.equals(attributeName)
-				|| ABATEMENT_DATETIME.equals(attributeName)) {
-			generateOrderTypeAttributes(qdmNode, dataCriteriaElem, dataCriteriaXMLProcessor,
-					simpleXmlprocessor, attributeQDMNode);
-		} else if (ADMISSION_DATETIME.equalsIgnoreCase(attributeName)
-				|| DISCHARGE_DATETIME.equalsIgnoreCase(attributeName)
-				|| REMOVAL_DATETIME.equalsIgnoreCase(attributeName)
-				|| ACTIVE_DATETIME.equalsIgnoreCase(attributeName)
-				|| TIME.equalsIgnoreCase(attributeName)
-				|| DATE.equalsIgnoreCase(attributeName)
-				|| ONSET_DATETIME.equalsIgnoreCase(attributeName)) {
-			generateDateTimeAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (FACILITY_LOCATION_ARRIVAL_DATETIME.equalsIgnoreCase(attributeName)
-				|| FACILITY_LOCATION_DEPARTURE_DATETIME.equalsIgnoreCase(attributeName)) {
-			generateFacilityLocationTypeAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (DOSE.equalsIgnoreCase(attributeName)
-				|| LENGTH_OF_STAY.equalsIgnoreCase(attributeName)) {
-			generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (attributeName.equalsIgnoreCase(REFILLS)) {
-			generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, REPEAT_NUMBER);
-		} else if (attributeName.equalsIgnoreCase(DISCHARGE_STATUS)) {
-			generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
-		} else if (attributeName.equalsIgnoreCase(INCISION_DATETIME)) {
-			generateIncisionDateTimeTypeAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (attributeName.equalsIgnoreCase(PRINCIPAL_DIAGNOSIS)
-				|| attributeName.equalsIgnoreCase(DIAGNOSIS)) {
-			generatePrincipalAndDiagnosisAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
-		} else if (VALUE_SET.equals(attributeMode)
-				|| CHECK_IF_PRESENT.equals(attributeMode)
-				|| attributeMode.startsWith(LESS_THAN)
-				|| attributeMode.startsWith(GREATER_THAN)
-				|| EQUAL_TO.equals(attributeMode)) {
-			//handle "Value Set", "Check If Present" and comparison(less than, greater than, equals) mode
-			generateOtherAttributes(qdmNode, dataCriteriaElem,
-					dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+		boolean checkForMode = false;
+		switch (attributeName.toLowerCase()) {
+			case NEGATION_RATIONALE:
+				if (!isFunctionAttributeFlow) {
+					generateNegationRationalEntries(qdmNode, dataCriteriaElem,
+							dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				}
+				break;
+			case START_DATETIME:
+			case SIGNED_DATETIME:
+			case RECORDED_DATETIME:
+			case ABATEMENT_DATETIME:
+				generateOrderTypeAttributes(qdmNode, dataCriteriaElem, dataCriteriaXMLProcessor,
+						simpleXmlprocessor, attributeQDMNode);
+				break;
+			case ADMISSION_DATETIME:
+			case DISCHARGE_DATETIME:
+			case REMOVAL_DATETIME:
+			case ACTIVE_DATETIME:
+			case TIME:
+			case DATE:
+			case ONSET_DATETIME:
+				generateDateTimeAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				break;
+			case FACILITY_LOCATION_ARRIVAL_DATETIME:
+			case FACILITY_LOCATION_DEPARTURE_DATETIME:
+				generateFacilityLocationTypeAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				break;
+			case DOSE:
+			case LENGTH_OF_STAY:
+				generateDoseTypeAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				break;
+			case REFILLS:
+				generateRepeatNumber(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode, REPEAT_NUMBER);
+				break;
+			case DISCHARGE_STATUS:
+				generateDischargeStatus(qdmNode, dataCriteriaXMLProcessor, dataCriteriaElem, attributeQDMNode);
+				break;
+			case INCISION_DATETIME:
+				generateIncisionDateTimeTypeAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				break;
+			case PRINCIPAL_DIAGNOSIS:
+			case DIAGNOSIS:
+				generatePrincipalAndDiagnosisAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+				break;
+			default:
+				checkForMode = true;
+				break;
+		}
+		if (checkForMode) {
+			if (VALUE_SET.equals(attributeMode)
+					|| CHECK_IF_PRESENT.equals(attributeMode)
+					|| attributeMode.startsWith(LESS_THAN)
+					|| attributeMode.startsWith(GREATER_THAN)
+					|| EQUAL_TO.equals(attributeMode)) {
+				//handle "Value Set", "Check If Present" and comparison(less than, greater than, equals) mode
+				generateOtherAttributes(qdmNode, dataCriteriaElem,
+						dataCriteriaXMLProcessor, simpleXmlprocessor, attributeQDMNode);
+			}
 		}
 	}
-	
-	
-	
 	/**
 	 * Generate dose type attributes.
 	 *

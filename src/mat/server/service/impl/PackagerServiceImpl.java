@@ -25,6 +25,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
+import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -443,7 +444,6 @@ public class PackagerServiceImpl implements PackagerService {
 			return riskMap;
 		}
 		try{
-		
 		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE,
 				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
@@ -470,11 +470,20 @@ public class PackagerServiceImpl implements PackagerService {
 		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForSubTree,
 				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
-			Node newNode = nodesSubTreeLookUpAll.item(i);					
-			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
-			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
-			subTreeList.add(riskDTO);
+			//This is where we check for datetime diff
+			Node newNode = nodesSubTreeLookUpAll.item(i);	
+			String uuid = newNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			
+			
+			boolean dateTimeDif = checkForDateTimeDif(uuid, processor);
+			
+			if(!dateTimeDif){
+				System.out.println("IN THE IF STATMENT");
+				RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+				riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
+				riskDTO.setUuid(uuid);
+				subTreeList.add(riskDTO);
+			}
 		}
 		
 		riskMap.put("RISKADJ", riskAdkVariableList);
@@ -483,6 +492,46 @@ public class PackagerServiceImpl implements PackagerService {
 			e.printStackTrace();
 		}
 		return riskMap;
+	}
+	
+	/**
+	 * This function takes a subtree id and then recursively evaluates that subtree and
+	 * nested child subtrees to verify that no datetimeDif function is used in that clause
+	 * @param subtreeId the subtree id to evaluate
+	 * @param processor the xml processor that evaluates the subtree
+	 * @return true: the subtree or nested subtrees contains a datetimeDif 
+	 * 		   false: the subtree and nested subtrees contain no datetimeDif
+	 */
+	private boolean checkForDateTimeDif(String subtreeId, XmlProcessor  processor){
+		Boolean datetimeDif = true;
+		try {
+			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+			String xpathStringForDateTimeDif = "/measure/subTreeLookUp/subTree[@uuid='"+subtreeId+"']//functionalOp[@displayName='Datetimediff']";
+			Node difNode = (Node) xPath.evaluate(xpathStringForDateTimeDif,
+					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if(difNode != null){
+				datetimeDif = true;
+			}else{
+				String xpathStringForSubTrees = "/measure/subTreeLookUp/subTree[@uuid='"+subtreeId+"']//subTreeRef";
+				NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForSubTrees,
+						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+				if(nodesSubTreeLookUpAll.getLength() == 0){
+					datetimeDif = false;
+				}else{
+					for(int i = 0; i<nodesSubTreeLookUpAll.getLength();i++){
+						Node newNode = nodesSubTreeLookUpAll.item(i);	
+						String uuid = newNode.getAttributes().getNamedItem("id").getNodeValue();
+						datetimeDif = checkForDateTimeDif(uuid, processor);
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return datetimeDif;
+	
+	
 	}
 	
 	/**

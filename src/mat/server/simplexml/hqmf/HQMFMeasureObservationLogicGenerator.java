@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
  * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
+	private static final int DATETIMEDIFF_CHILD_COUNT = 2;
 	private static final String ASSOCIATED_POP_UUID = "associatedPopulationUUID";
 	/** The clause logic map. */
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
@@ -338,50 +339,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		String firstChildNodeName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		switch (firstChildNode.getNodeName()) {
 			case "setOp":
-				Node setOpsNode = firstChildNode.cloneNode(true);
-				parentSubTreeNode.appendChild(setOpsNode);
-				if (isClauseLogicGeneratable) {
-					localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
-				}
-				if (localVariableName != null) {
-					Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
-					valueElement.setAttribute(XSI_TYPE, "PQ");
-					Element expressionElement = measureObDefinitionElement.getOwnerDocument()
-							.createElement("expression");
-					expressionElement.setAttribute(VALUE, localVariableName);
-					valueElement.appendChild(expressionElement);
-					measureObDefinitionElement.appendChild(valueElement);
-				}
+				generateForSetOp(measureObDefinitionElement, isClauseLogicGeneratable, checkIfDateTimeDiff, localVariableName,
+						firstChildNode, parentSubTreeNode);
 				break;
 			case "relationalOp" :
-				Node relOpsNode = firstChildNode.cloneNode(true);
-				parentSubTreeNode.appendChild(relOpsNode);
-				Node relOpsFirstChild = relOpsNode.getFirstChild();
-				//will not generate clause logic with timing LHS as DATETIMEDIFF
-				if (!relOpsFirstChild.getAttributes().getNamedItem(DISPLAY_NAME)
-						.getNodeValue().equalsIgnoreCase(DATETIMEDIFF)) {
-					if (isClauseLogicGeneratable) {
-						localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
-					}
-					if (localVariableName != null) {
-						List<Node> relOpLHSQdm = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
-								, measureObDefinitionElement);
-						if ((relOpLHSQdm != null) && (relOpLHSQdm.size() > 0)) {
-							clauseLogicHasElementRef = true;
-							preCodExp = generateValueAndExpressionTag(relOpLHSQdm, measureObDefinitionElement
-									, firstChildNode, localVariableName);
-						} else {
-							Element valueElementRelOp = measureObDefinitionElement.getOwnerDocument()
-									.createElement("value");
-							valueElementRelOp.setAttribute(XSI_TYPE, "PQ");
-							Element expressionElementRelOp = measureObDefinitionElement.getOwnerDocument()
-									.createElement("expression");
-							expressionElementRelOp.setAttribute(VALUE, localVariableName);
-							valueElementRelOp.appendChild(expressionElementRelOp);
-							measureObDefinitionElement.appendChild(valueElementRelOp);
-						}
-					}
-				}
+				preCodExp = generateForRelationalOperator(measureObDefinitionElement, isClauseLogicGeneratable, checkIfDateTimeDiff,
+						localVariableName, firstChildNode, parentSubTreeNode);
 				break;
 			case "elementRef":
 				elementRefList.add(firstChildNode);
@@ -394,60 +357,165 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				break;
 			case "functionalOp":
 				if (INCLUDED_FUNCTIONAL_NAMES.containsKey(firstChildNodeName)) {
-					if (DATETIMEDIFF.equalsIgnoreCase(firstChildNodeName)) {
-						generateMOClauseLogicForDateTimeDiff(firstChildNode, elementRefList
-								, measureObDefinitionElement);
-					} else {
-						Node childNode = firstChildNode.getFirstChild().getFirstChild();
-						String childNodeName = "";
-						boolean isDateTimeDiff = false;
-						if (childNode != null) {
-							childNodeName = childNode.getAttributes().getNamedItem(DISPLAY_NAME)
-									.getNodeValue();
-						}
-						if (childNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
-							isDateTimeDiff = true;
-						}
-						if (!isDateTimeDiff) {
-							Node functionalOp = firstChildNode.cloneNode(true);
-							parentSubTreeNode.appendChild(functionalOp);
-							localVariableName = generateClauseLogicForChildsInsideFnxOp(
-									parentSubTreeNode, false);
-							preCodExp = generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
-									, measureObDefinitionElement, false, localVariableName,checkIfDateTimeDiff);
-						}
-					}
+					preCodExp = generateForFunctionalOperator(elementRefList, measureObDefinitionElement, checkIfDateTimeDiff,
+							firstChildNode, parentSubTreeNode, firstChildNodeName);
 				}
 				break;
 			case "subTreeRef":
-				Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
-						.getNamedItem("id").getNodeValue());
-				Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
-				subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
-				String firstSubTreeNodeName = subTreeRefNodeLogic.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-				if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("functionalOp")) {
-					if (firstSubTreeNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
-						generateMOClauseLogicForDateTimeDiff(subTreeRefNodeLogic, elementRefList
-								, measureObDefinitionElement);
-					} else {
-						if (isClauseLogicGeneratable) {
-							localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
-						}
-						generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
-								, false, localVariableName, checkIfDateTimeDiff);
-					}
-				} else {
-					if (isClauseLogicGeneratable) {
-						localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
-					}
-					generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
-							, false, localVariableName, checkIfDateTimeDiff);
-				}
+				generateForSubTreeRef(elementRefList, measureObDefinitionElement, isClauseLogicGeneratable, checkIfDateTimeDiff,
+						localVariableName, firstChildNode, parentSubTreeNode);
 				break;
 			default:
 				break;
 		}
 		return preCodExp;
+	}
+	/**
+	 * @param elementRefList
+	 * @param measureObDefinitionElement
+	 * @param isClauseLogicGeneratable
+	 * @param checkIfDateTimeDiff
+	 * @param localVariableName
+	 * @param firstChildNode
+	 * @param parentSubTreeNode
+	 * @throws XPathExpressionException
+	 */
+	private void generateForSubTreeRef(List<Node> elementRefList, Element measureObDefinitionElement,
+			boolean isClauseLogicGeneratable, boolean checkIfDateTimeDiff, String localVariableName, Node firstChildNode,
+			Node parentSubTreeNode) throws XPathExpressionException {
+		Node subTreeRefNodeLogic = clauseLogicMap.get(firstChildNode.getAttributes()
+				.getNamedItem("id").getNodeValue());
+		Node subTreeRefParentNode = parentSubTreeNode.cloneNode(false);
+		subTreeRefParentNode.appendChild(subTreeRefNodeLogic.cloneNode(true));
+		String firstSubTreeNodeName = subTreeRefNodeLogic.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+		if (subTreeRefNodeLogic.getNodeName().equalsIgnoreCase("functionalOp")) {
+			if (firstSubTreeNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
+				generateMOClauseLogicForDateTimeDiff(subTreeRefNodeLogic, elementRefList
+						, measureObDefinitionElement);
+			} else {
+				if (isClauseLogicGeneratable) {
+					localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
+				}
+				generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
+						, false, localVariableName, checkIfDateTimeDiff);
+			}
+		} else {
+			if (isClauseLogicGeneratable) {
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(subTreeRefParentNode, checkIfDateTimeDiff);
+			}
+			generateMOClauseLogic(subTreeRefParentNode, elementRefList, measureObDefinitionElement
+					, false, localVariableName, checkIfDateTimeDiff);
+		}
+	}
+	/**
+	 * @param elementRefList
+	 * @param measureObDefinitionElement
+	 * @param checkIfDateTimeDiff
+	 * @param firstChildNode
+	 * @param parentSubTreeNode
+	 * @param firstChildNodeName
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private String generateForFunctionalOperator(List<Node> elementRefList, Element measureObDefinitionElement,
+			boolean checkIfDateTimeDiff, Node firstChildNode, Node parentSubTreeNode, String firstChildNodeName)
+					throws XPathExpressionException {
+		String localVariableName;
+		String preCodExp = null;
+		if (DATETIMEDIFF.equalsIgnoreCase(firstChildNodeName)) {
+			generateMOClauseLogicForDateTimeDiff(firstChildNode, elementRefList
+					, measureObDefinitionElement);
+		} else {
+			Node childNode = firstChildNode.getFirstChild().getFirstChild();
+			String childNodeName = "";
+			boolean isDateTimeDiff = false;
+			if (childNode != null) {
+				childNodeName = childNode.getAttributes().getNamedItem(DISPLAY_NAME)
+						.getNodeValue();
+			}
+			if (childNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
+				isDateTimeDiff = true;
+			}
+			if (!isDateTimeDiff) {
+				Node functionalOp = firstChildNode.cloneNode(true);
+				parentSubTreeNode.appendChild(functionalOp);
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(
+						parentSubTreeNode, false);
+				preCodExp = generateMOClauseLogic(parentSubTreeNode.getFirstChild(), elementRefList
+						, measureObDefinitionElement, false, localVariableName, checkIfDateTimeDiff);
+			}
+		}
+		return preCodExp;
+	}
+	/**
+	 * @param measureObDefinitionElement
+	 * @param isClauseLogicGeneratable
+	 * @param checkIfDateTimeDiff
+	 * @param localVariableName
+	 * @param firstChildNode
+	 * @param parentSubTreeNode
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private String generateForRelationalOperator(Element measureObDefinitionElement, boolean isClauseLogicGeneratable,
+			boolean checkIfDateTimeDiff, String localVariableName, Node firstChildNode, Node parentSubTreeNode)
+					throws XPathExpressionException {
+		String preConditionExpressionValue = null;
+		Node relOpsNode = firstChildNode.cloneNode(true);
+		parentSubTreeNode.appendChild(relOpsNode);
+		Node relOpsFirstChild = relOpsNode.getFirstChild();
+		//will not generate clause logic with timing LHS as DATETIMEDIFF
+		if (!relOpsFirstChild.getAttributes().getNamedItem(DISPLAY_NAME)
+				.getNodeValue().equalsIgnoreCase(DATETIMEDIFF)) {
+			if (isClauseLogicGeneratable) {
+				localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
+			}
+			if (localVariableName != null) {
+				List<Node> relOpLHSQdm = findFirstLHSElementRef(firstChildNode, new ArrayList<Node>()
+						, measureObDefinitionElement);
+				if ((relOpLHSQdm != null) && (relOpLHSQdm.size() > 0)) {
+					clauseLogicHasElementRef = true;
+					preConditionExpressionValue = generateValueAndExpressionTag(relOpLHSQdm, measureObDefinitionElement
+							, firstChildNode, localVariableName);
+				} else {
+					Element valueElementRelOp = measureObDefinitionElement.getOwnerDocument()
+							.createElement("value");
+					valueElementRelOp.setAttribute(XSI_TYPE, "PQ");
+					Element expressionElementRelOp = measureObDefinitionElement.getOwnerDocument()
+							.createElement("expression");
+					expressionElementRelOp.setAttribute(VALUE, localVariableName);
+					valueElementRelOp.appendChild(expressionElementRelOp);
+					measureObDefinitionElement.appendChild(valueElementRelOp);
+				}
+			}
+		}
+		return preConditionExpressionValue;
+	}
+	/**
+	 * @param measureObDefinitionElement
+	 * @param isClauseLogicGeneratable
+	 * @param checkIfDateTimeDiff
+	 * @param localVariableName
+	 * @param firstChildNode
+	 * @param parentSubTreeNode
+	 * @throws XPathExpressionException
+	 */
+	private void generateForSetOp(Element measureObDefinitionElement, boolean isClauseLogicGeneratable, boolean checkIfDateTimeDiff,
+			String localVariableName, Node firstChildNode, Node parentSubTreeNode) throws XPathExpressionException {
+		Node setOpsNode = firstChildNode.cloneNode(true);
+		parentSubTreeNode.appendChild(setOpsNode);
+		if (isClauseLogicGeneratable) {
+			localVariableName = generateClauseLogicForChildsInsideFnxOp(parentSubTreeNode, checkIfDateTimeDiff);
+		}
+		if (localVariableName != null) {
+			Element valueElement = measureObDefinitionElement.getOwnerDocument().createElement("value");
+			valueElement.setAttribute(XSI_TYPE, "PQ");
+			Element expressionElement = measureObDefinitionElement.getOwnerDocument()
+					.createElement("expression");
+			expressionElement.setAttribute(VALUE, localVariableName);
+			valueElement.appendChild(expressionElement);
+			measureObDefinitionElement.appendChild(valueElement);
+		}
 	}
 	/** method to get the subTree parent Node.
 	 * @param parentNode - Node
@@ -469,13 +537,12 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @param clauseNodes - CLause Logic Nodes
 	 * @param elementRefList - Element Ref List
 	 * @param measureObDefinitionElement - DOM Element.
-	 * @param variableName - Local Variable Name.
 	 * @throws XPathExpressionException - Exception.
 	 */
 	private void generateMOClauseLogicForDateTimeDiff(Node clauseNodes, List<Node> elementRefList
 			, Element measureObDefinitionElement) throws XPathExpressionException {
 		NodeList childNodes = clauseNodes.getChildNodes();
-		if (childNodes.getLength() >= 2) { // DATETIMEDIFF SHOULD HAVE TWO OR MORE CHILD.
+		if (childNodes.getLength() >= DATETIMEDIFF_CHILD_COUNT) { // DATETIMEDIFF SHOULD HAVE TWO OR MORE CHILD.
 			boolean generateValueExpression = false;
 			String localVariableName = null;
 			Node firstChildNode = null;
@@ -664,7 +731,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			, List<Node> elementRefList) {
 		//precondition is created if and only if more than 1 qdm is applied.
 		if (((elementRefList.size() > 1) && (preConditionJoinExpressionValue != null)
-				&& (preConditionJoinExpressionValue.length() > 0)) || (clauseLogicHasElementRef == true)) {
+				&& (preConditionJoinExpressionValue.length() > 0)) || (clauseLogicHasElementRef)) {
 			Element preConditionElement = measureObDefinitionElement.getOwnerDocument().createElement("precondition");
 			preConditionElement.setAttribute(TYPE_CODE, "PRCN");
 			Element joinElement = measureObDefinitionElement.getOwnerDocument().createElement("join");

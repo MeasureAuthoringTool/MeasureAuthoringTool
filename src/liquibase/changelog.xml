@@ -70,7 +70,7 @@
 		<include file="classpath:/liquibase/deploy_01.00.60_20111220.xml"/> 
 		<include file="classpath:/liquibase/deploy_01.00.61_20111223.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.64_20120112.xml"/>
-		<!-- <include file="classpath:/liquibase/deploy_01.00.63_20120112.xml"/>-->
+		<include file="classpath:/liquibase/deploy_01.00.63_20120112.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.62_20120110.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.65_20120124.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.66_20120125.xml"/>

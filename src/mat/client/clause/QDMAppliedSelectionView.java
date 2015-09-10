@@ -71,8 +71,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
@@ -317,7 +315,6 @@ HasSelectionHandlers<Boolean> {
 		updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
 		verticalPanel.add(topButtonLayOut);
-		//		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
@@ -486,10 +483,6 @@ HasSelectionHandlers<Boolean> {
 		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());
 		
-		//oidInput.getElement().setId("oidInput_TextBox");
-		// oidInput.getElement().setAttribute("tabIndex", "0");
-		// oidInput.setTitle("Enter OID");
-		// oidInput.setWidth("200px");
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
 		nameInput.setTitle("Enter Name");
@@ -1900,54 +1893,6 @@ HasSelectionHandlers<Boolean> {
 	public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
 		this.qdmSelectedList = qdmSelectedList;
 	}
-	
-	
-	//	@Override
-	//	public Button getYesButton(){
-	//		return yesBtn;
-	//	}
-	//
-	//	@Override
-	//	public Button getNoButton(){
-	//		return noBtn;
-	//	}
-	
-	//	@Override
-	//	public void showPasteDialogBox(){
-	//		dialogBox.setGlassEnabled(true);
-	//		dialogBox.setAnimationEnabled(true);
-	//		dialogBox.setText("Warning");
-	//		//dialogBox.setVisible(true);
-	//		// Create a table to layout the content
-	//		VerticalPanel dialogContents = new VerticalPanel();
-	//		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-	//		dialogContents.setWidth("28em");
-	//		dialogContents.setSpacing(5);
-	//		dialogBox.setWidget(dialogContents);
-	//		yesBtn.setStyleName("padLeft5px");
-	//		noBtn.setStyleName("padLeft5px");
-	//		HorizontalPanel buttonPanel = new HorizontalPanel();
-	//		buttonPanel.add(yesBtn);
-	//		buttonPanel.add(noBtn);
-	//		WarningMessageDisplay warningMsgDispaly = new WarningMessageDisplay();
-	//		warningMsgDispaly.setMessage(MatContext.get().getMessageDelegate()
-	//				.getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS());
-	//
-	//		dialogContents.add(warningMsgDispaly);
-	//		dialogContents.setCellHorizontalAlignment(warningMsgDispaly,
-	//				HasHorizontalAlignment.ALIGN_LEFT);
-	//		dialogContents.add(buttonPanel);
-	//		dialogContents.setCellHorizontalAlignment(buttonPanel,
-	//				HasHorizontalAlignment.ALIGN_LEFT);
-	//		dialogBox.center();
-	//		dialogBox.show();
-	//	}
-	
-	
-	//	@Override
-	//	public DialogBoxWithCloseButton getDialogBox(){
-	//		return dialogBox;
-	//	}
 	
 	
 }

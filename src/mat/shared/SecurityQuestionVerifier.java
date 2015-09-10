@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+//import java.util.logging.Logger;
+
 import mat.client.shared.MatContext;
 
 /**
@@ -11,6 +13,11 @@ import mat.client.shared.MatContext;
  */
 public class SecurityQuestionVerifier {
 	
+	
+	/** The Constant logger. */
+//	private final Logger fLogger=Logger.getLogger("SecurityQuestionVerifier.class");
+	//private static final Log logger = LogFactory.getLog(SecurityQuestionVerifier.class);
+
 	/** The message. */
 	private List<String> message = new ArrayList<String>();
 	
@@ -34,9 +41,9 @@ public class SecurityQuestionVerifier {
 	 *            the answer3
 	 */
 	public SecurityQuestionVerifier(String question1, String answer1,
-			String question2, String answer2, String question3,
-			String answer3) {
-		if(!checkForMarkUp(answer1,answer2, answer3)){
+			String question2, String answer2, 
+			String question3, String answer3) {
+		if(!checkForMarkUp(answer1, answer2, answer3)){
 			message.add(MatContext.get().getMessageDelegate().getNoMarkupAllowedMessage());
 		}
 		if(answer1.trim().length() < 3) {
@@ -49,6 +56,13 @@ public class SecurityQuestionVerifier {
 			message.add(MatContext.get().getMessageDelegate().getSecurityAnswerTooShortMessage(3));
 		}
 		
+/*		fLogger.info(question1);
+		fLogger.info(answer1);
+		fLogger.info(question2);
+		fLogger.info(answer2);
+		fLogger.info(question3);
+		fLogger.info(answer3);
+*/
 		
 		Set<String> questionTexts = new HashSet<String>();
 		questionTexts.add(question1);
@@ -61,7 +75,6 @@ public class SecurityQuestionVerifier {
 		if(message.size() > 0) {
 			message.add(0, MatContext.get().getMessageDelegate().getSecurityQuestionHeeaderMessage());
 		}
-		
 		
 	}
 	

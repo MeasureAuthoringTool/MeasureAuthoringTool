@@ -70,7 +70,7 @@
 		<include file="classpath:/liquibase/deploy_01.00.60_20111220.xml"/> 
 		<include file="classpath:/liquibase/deploy_01.00.61_20111223.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.64_20120112.xml"/>
-		<include file="classpath:/liquibase/deploy_01.00.63_20120112.xml"/>
+		<!-- <include file="classpath:/liquibase/deploy_01.00.63_20120112.xml"/>-->
 		<include file="classpath:/liquibase/deploy_01.00.62_20120110.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.65_20120124.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.66_20120125.xml"/>
@@ -180,4 +180,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-Adding_Release_Version_Column_To_Measure_Table.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-72_USMAT-6079_6083_User_Story.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-73_USMAT-6083_6143_6187_User_Story.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-74_USMAT-6255.xml"/>
 	</databaseChangeLog>

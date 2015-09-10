@@ -20,14 +20,14 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	private final String[] svsNameString = {
 			"ValueSetDeveloper_SVS",
 			"ValueSetOID_SVS",
+			"Version_SVS",
+			"ExpansionIdentifier_SVS",
 			"LastModified_SVS",
 			"ValueSetName_SVS",
 			"QDMCategory_SVS",
 			"CodeSystem_SVS",
 			"CodeSystemVersion_SVS",
 			"Code_SVS",
-			"Version_SVS",
-			"ExpansionIdentifier_SVS",
 			"Descriptor_SVS"
 	};
 	

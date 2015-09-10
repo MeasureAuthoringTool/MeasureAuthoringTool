@@ -63,50 +63,56 @@ public abstract class XLSGenerator {
 	/** The author. */
 	protected final String AUTHOR = "eMeasureTool";
 	
-	/** The code. */
-	protected final int code = 6;
-	
-	/** The codedescription. */
-	protected final int codedescription = 9;
-	protected final int version = 7;
-	protected final int expansionIdentifier = 8;
 	/**
 	 * WorkBook Header.
 	 * **/
 	private final String[] HEADER_STRINGS = { "Value Set Developer",
-			"Value Set OID", "Revision Date", "Value Set Name",
-			"Code System", "Code System Version", "Code" ,"Version" ,"Expansion Identifier" , "Descriptor"};
+			"Value Set OID", "Version" ,"Expansion Identifier", "Revision Date", "Value Set Name",
+			"Code System", "Code System Version", "Code" , "Descriptor"};
 	
 	/** The keywords. */
 	protected final String KEYWORDS = "Value Set, OID, Export, Measure, Code, Descriptor";
 	
-	/** The measuredeveloper. */
-	protected final int measuredeveloper = 0;
 	/**
 	 * WorkBook Content.
 	 * **/
 	private final String[] NAME_STRINGS = { "ValueSetDeveloper",
-			"ValueSetOID", "RevisionDate", "ValueSetName", "QDMCategory",
-			"CodeSystem", "CodeSystemVersion", "Code" ,"Version" , "ExpansionIdentifier", "Descriptor"};
-	
-	/** The oid. */
-	protected final int oid = 1;
-	
-	/** The revision date. */
-	protected final int revisionDate = 2;
+			"ValueSetOID", "Version", "ExpansionIdentifier", "RevisionDate", "ValueSetName", "QDMCategory",
+			"CodeSystem", "CodeSystemVersion", "Code" , "Descriptor"};
 	
 	/** The row cache. */
 	protected ArrayList<RowCacheItem> rowCache = new ArrayList<RowCacheItem>();
 	
+	/** The measuredeveloper. */
+	protected final int measuredeveloper = 0;
+
+	/** The oid. */
+	protected final int oid = 1;
+
+	/** The version */
+	protected final int version = 2;
+	
+	/** The expansionIdentifier */
+	protected final int expansionIdentifier = 3;
+	
+	/** The revision date. */
+	protected final int revisionDate = 4;	
+
 	/** The standardconcept. */
-	protected final int standardconcept = 3;
-	/* protected final int standardcategory = 4; */
+	protected final int standardconcept = 5;
+	
 	/** The standardtaxonomy. */
-	protected final int standardtaxonomy = 4;
+	protected final int standardtaxonomy = 6;
 	
 	/** The standardtaxonomyversion. */
-	protected final int standardtaxonomyversion = 5;
+	protected final int standardtaxonomyversion = 7;
 	
+	/** The code. */
+	protected final int code = 8;	
+	
+	/** The codedescription. */
+	protected final int codedescription = 9;
+		
 	/** The subject. */
 	protected final String SUBJECT = "Value Set Export";
 	
@@ -181,6 +187,11 @@ public abstract class XLSGenerator {
 		generateName(wkbk, names[measuredeveloper], "'" + wkst.getSheetName()
 				+ "'!$A$1");
 		generateName(wkbk, names[oid], "'" + wkst.getSheetName() + "'!$B$1");
+		generateName(wkbk, names[version], "'" + wkst.getSheetName()
+		+ "'!$H$1");
+		generateName(wkbk, names[expansionIdentifier], "'" + wkst.getSheetName()
+		+ "'!$I$1");
+
 		generateName(wkbk, names[revisionDate], "'" + wkst.getSheetName()
 				+ "'!$C$1");
 		generateName(wkbk, names[standardconcept], "'" + wkst.getSheetName()
@@ -194,10 +205,6 @@ public abstract class XLSGenerator {
 		generateName(wkbk, names[standardtaxonomyversion],
 				"'" + wkst.getSheetName() + "'!$F$1");
 		generateName(wkbk, names[code], "'" + wkst.getSheetName() + "'!$G$1");
-		generateName(wkbk, names[version], "'" + wkst.getSheetName()
-				+ "'!$H$1");
-		generateName(wkbk, names[expansionIdentifier], "'" + wkst.getSheetName()
-				+ "'!$I$1");
 		generateName(wkbk, names[codedescription], "'" + wkst.getSheetName()
 				+ "'!$J$1");
 		
@@ -270,6 +277,10 @@ public abstract class XLSGenerator {
 		.setCellValue(values[measuredeveloper]);
 		row.createCell(oid, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[oid]);
+		row.createCell(version, HSSFCell.CELL_TYPE_STRING)
+		.setCellValue(values[version]);
+		row.createCell(expansionIdentifier, HSSFCell.CELL_TYPE_STRING)
+		.setCellValue(values[expansionIdentifier]);
 		row.createCell(revisionDate, HSSFCell.CELL_TYPE_STRING).setCellValue(
 				values[revisionDate]);
 		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
@@ -284,23 +295,18 @@ public abstract class XLSGenerator {
 		.setCellValue(values[standardtaxonomyversion]);
 		row.createCell(code, HSSFCell.CELL_TYPE_STRING).setCellValue(
 				values[code]);
-		row.createCell(version, HSSFCell.CELL_TYPE_STRING)
-		.setCellValue(values[version]);
-		row.createCell(expansionIdentifier, HSSFCell.CELL_TYPE_STRING)
-		.setCellValue(values[expansionIdentifier]);
 		row.createCell(codedescription, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[codedescription]);
 		if (style != null) {
 			row.getCell(measuredeveloper).setCellStyle(style);
 			row.getCell(oid).setCellStyle(style);
+			row.getCell(version).setCellStyle(style);
+			row.getCell(expansionIdentifier).setCellStyle(style);
 			row.getCell(revisionDate).setCellStyle(style);
 			row.getCell(standardconcept).setCellStyle(style);
-			/* row.getCell(standardcategory).setCellStyle(style); */
 			row.getCell(standardtaxonomy).setCellStyle(style);
 			row.getCell(standardtaxonomyversion).setCellStyle(style);
 			row.getCell(code).setCellStyle(style);
-			row.getCell(version).setCellStyle(style);
-			row.getCell(expansionIdentifier).setCellStyle(style);
 			row.getCell(codedescription).setCellStyle(style);
 		}
 		return row;
@@ -477,16 +483,16 @@ public abstract class XLSGenerator {
 						.getCodeSystemVersion();
 			}
 			if (lo.getGroupedValueSet().size() == 0) {
-				cacheRow(new String[] {measureDeveloper, oid,
+				cacheRow(new String[] {measureDeveloper, oid, version, expansionProfile,
 						valueSetLastModified, standardConcept, taxonomy,
-						taxonomyVersion, code,version,expansionProfile, description }, null);
+						taxonomyVersion, code, description }, null);
 			}
 			for (MatValueSet gcl : lo.getGroupedValueSet()) {
 				code = gcl.getID();
 				// description = gcl.getDescription();
-				cacheRow(new String[] {measureDeveloper, oid,
+				cacheRow(new String[] {measureDeveloper, oid, version, expansionProfile,
 						valueSetLastModified, standardConcept,
-						taxonomy, taxonomyVersion, code ,version,expansionProfile, description}, null);
+						taxonomy, taxonomyVersion, code , description}, null);
 				cacheXLSRow(gcl);
 			}
 		} else {
@@ -499,17 +505,17 @@ public abstract class XLSGenerator {
 				taxonomyVersion = lo.getConceptList().getConceptList().get(0)
 						.getCodeSystemVersion();
 				if ((lo.getConceptList().getConceptList().size() == 0)) {
-					cacheRow(new String[] {measureDeveloper, oid,
+					cacheRow(new String[] {measureDeveloper, oid, version, expansionProfile,
 							valueSetLastModified, standardConcept,
-							taxonomy, taxonomyVersion, code ,version,expansionProfile, description}, null);
+							taxonomy, taxonomyVersion, code , description}, null);
 				}
 				
 				for (MatConcept concept : lo.getConceptList().getConceptList()) {
 					code = concept.getCode();
 					description = concept.getDisplayName();
-					cacheRow(new String[] {measureDeveloper, oid,
+					cacheRow(new String[] {measureDeveloper, oid, version, expansionProfile ,
 							valueSetLastModified, standardConcept,
-							taxonomy, taxonomyVersion, code,version,expansionProfile , description}, null);
+							taxonomy, taxonomyVersion, code, description}, null);
 				}
 			}
 		}
@@ -535,7 +541,6 @@ public abstract class XLSGenerator {
 		sizeColumn(wkst, (short) oid);
 		sizeColumn(wkst, (short) revisionDate);
 		sizeColumn(wkst, (short) standardconcept);
-		/* sizeColumn(wkst, (short) standardcategory); */
 		sizeColumn(wkst, (short) standardtaxonomy);
 		sizeColumn(wkst, (short) standardtaxonomyversion);
 		sizeColumn(wkst, (short) code);

@@ -704,7 +704,10 @@ public class UserServiceImpl implements UserService {
 		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getId().equals("1")) {
 			reactivatingUser = true;
 		}
-		
+		if(userDAO.userExists(model.getEmailAddress()) && (userDAO.findByEmail(model.getEmailAddress()) != user)) {
+			throw new UserIDNotUnique();
+		}
+
 		setModelFieldsOnUser(model, user);
 		
 		
@@ -712,11 +715,9 @@ public class UserServiceImpl implements UserService {
 				if(reactivatingUser) {
 					requestResetLockedPassword(user.getId());
 				}
-				if(userDAO.userExists(user.getEmailAddress()) && (userDAO.findByEmail(user.getEmailAddress()) != user)) {
-					throw new UserIDNotUnique();
-				}else{
-					//saveExisting(user);
-				}
+				
+				saveExisting(user);
+			
 			}
 			else {
 				saveNew(user);

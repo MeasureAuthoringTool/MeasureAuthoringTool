@@ -9,6 +9,7 @@ import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.SaveMyAccountResult;
+import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
@@ -22,6 +23,7 @@ import mat.shared.SecurityQuestionVerifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The server side implementation of the RPC service.
@@ -118,6 +120,7 @@ MyAccountService {
 		MyAccountModelValidator validator = new MyAccountModelValidator();
 		model.scrubForMarkUp();
 		List<String> messages = validator.validate(model);
+		UserDAO userDAO = (UserDAO)context.getBean("userDAO");
 		if(messages.size()!=0){
 			logger.info("Server-Side Validation for saveMyAccount Failed for User :: "+ LoggedInUserUtil.getLoggedInUser());
 			result.setSuccess(false);
@@ -128,8 +131,13 @@ MyAccountService {
 			//TODO Add database constraint for OID to be non-nullable
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-			setModelFieldsOnUser(user, model);
+			
 			try {
+				if(userDAO.userExists(model.getEmailAddress()) && (userDAO.findByEmail(model.getEmailAddress()) != user)) {
+					throw new UserIDNotUnique();
+				}
+				setModelFieldsOnUser(user, model);
+			
 				userService.saveExisting(user);
 			} catch (UserIDNotUnique e) {
 				result.setSuccess(false);

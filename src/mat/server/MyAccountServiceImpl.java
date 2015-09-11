@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
@@ -12,6 +13,7 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
+import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.MyAccountModelValidator;
@@ -127,7 +129,13 @@ MyAccountService {
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 			setModelFieldsOnUser(user, model);
-			userService.saveExisting(user);
+			try {
+				userService.saveExisting(user);
+			} catch (UserIDNotUnique e) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveMyAccountResult.ID_NOT_UNIQUE);
+				return result;
+			}
 			result.setSuccess(true);
 		}
 		return result;
@@ -207,7 +215,12 @@ MyAccountService {
 			secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
 			user.setSecurityQuestions(secQuestions);
 			
-			userService.saveExisting(user);
+			try {
+				userService.saveExisting(user);
+			} catch (UserIDNotUnique e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			result.setSuccess(true);
 		}
 		return result;
@@ -239,7 +252,12 @@ MyAccountService {
 				//to maintain user password History
 				userService.addByUpdateUserPasswordHistory(user,false);
 				userService.setUserPassword(user, password, false);
-				userService.saveExisting(user);
+				try {
+					userService.saveExisting(user);
+				} catch (UserIDNotUnique e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				result.setSuccess(true);
 			}
 			else if(resultMessage.equalsIgnoreCase("FAILURE")){

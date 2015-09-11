@@ -12,5 +12,7 @@ public class SaveMyAccountResult extends GenericResult {
 	
 	/** The Constant DICTIONARY_EXCEPTION. */
 	public static final int DICTIONARY_EXCEPTION=2;
+	
+	public static final int ID_NOT_UNIQUE = 3;
 
 }

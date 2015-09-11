@@ -55,7 +55,6 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 	 */
 	public void save(T entity) {
 		if(isEmpty(entity)) return;
-		
 		Session session = getSessionFactory().getCurrentSession();
 		session.saveOrUpdate(entity);
 	}

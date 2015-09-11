@@ -3,8 +3,10 @@ package mat.client.myAccount;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -13,6 +15,7 @@ import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
 import mat.shared.MyAccountModelValidator;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -254,6 +257,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 								} else {
 									List<String> messages = new ArrayList<String>();
 									switch(result.getFailureReason()) {
+										case SaveMyAccountResult.ID_NOT_UNIQUE:
+											messages.add(MatContext.get().getMessageDelegate()
+													.getEmailAlreadyExistsMessage());
+											break;
 										case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
 											messages = result.getMessages();
 											break;

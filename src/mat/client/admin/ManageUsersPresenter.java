@@ -458,6 +458,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		updateUserDetailsFromView();
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
+		System.out.println("In the update!!!");
 		if (isValid(currentDetails)) {
 			MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
 				@Override

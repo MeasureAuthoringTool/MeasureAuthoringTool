@@ -59,8 +59,9 @@ public interface UserService {
 	 * 
 	 * @param user
 	 *            the user
+	 * @throws UserIDNotUnique 
 	 */
-	public void saveExisting(User user);
+	public void saveExisting(User user) throws UserIDNotUnique;
 	
 	/**
 	 * Save update user.

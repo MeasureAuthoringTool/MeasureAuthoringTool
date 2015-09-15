@@ -238,8 +238,8 @@ public class MessageDelegate {
 	/** The lhs rhs required. */
 	private final String LHS_RHS_REQUIRED = " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	
-	/** The at least one child required. */
-	private final String ATLEAST_ONE_CHILD_REQUIRED = "Measure logic is incorrect. Functions must contain at least one child node.";
+	/** The atleast one child required. */
+	private final String ATLEAST_ONE_CHILD_REQUIRED = " Functions must contain at least one child node.";
 	
 	/** The at least three children are required. */
 	private final String AT_LEAST_TWO_CHILDREN_REQUIRED = "Union, Intersection, and Datetimediff must contain at least two or more child nodes.";

@@ -792,7 +792,8 @@ public class VSACApiServImpl implements VSACApiService{
 						
 						VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 						MatValueSet valueSetGrouping = wrapperGrouped.getValueSetList().get(0);
-						valueSetGrouping.setVersion("Draft"); // Grouping members should not show version value in value set sheet.
+						valueSetGrouping.setVersion(valueSet.getVersion()); 
+						valueSetGrouping.setExpansionProfile(valueSet.getExpansionProfile());
 						valueSet.getGroupedValueSet().add(valueSetGrouping);
 					}
 				}

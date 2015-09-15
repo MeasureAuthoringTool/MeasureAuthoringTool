@@ -3,6 +3,7 @@ package mat.server.service.impl;
 import junit.framework.TestCase;
 
 import mat.model.User;
+import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 
 import org.springframework.context.ApplicationContext;
@@ -20,7 +21,7 @@ public class ResetUserPasswordTest extends TestCase {
 		ctx = new FileSystemXmlApplicationContext(locations);
 	}
 	
-	public void testResetPassword() {
+	public void testResetPassword() throws UserIDNotUnique {
 		String userid = "Admin";
 		String password = "Admin";
 		boolean isTemporary = false;

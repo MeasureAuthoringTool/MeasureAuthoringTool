@@ -69,9 +69,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");
 		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
-		for (UserSecurityQuestion question: secQuestions) {
-			logger.info("Question ID: " +  question.getSecurityQuestionId()  + "Question Answer: " + question.getSecurityAnswer());
-		}
+//		for (UserSecurityQuestion question: secQuestions) {
+//			logger.info("Question ID: " +  question.getSecurityQuestionId()  + "Question Answer: " + question.getSecurityAnswer());
+//		}
 		while (secQuestions.size() < 3) {
 			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
 			secQuestions.add(newQuestion);

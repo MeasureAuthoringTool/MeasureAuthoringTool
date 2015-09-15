@@ -95,12 +95,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		secQuestions.get(2).setSecurityQuestions(secQue3);
 		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
 		user.setSecurityQuestions(secQuestions);
-		try {
-			userService.saveExisting(user);
-		} catch (UserIDNotUnique e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		userService.saveExisting(user);
 		MatUserDetails userDetails = (MatUserDetails) hibernateUserService
 				.loadUserByUsername(user.getLoginId());
 		if (userDetails != null) {

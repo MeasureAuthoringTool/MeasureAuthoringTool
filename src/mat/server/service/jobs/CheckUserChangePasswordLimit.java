@@ -427,12 +427,8 @@ public class CheckUserChangePasswordLimit {
 					getUserService().addByUpdateUserPasswordHistory(user, true);
 					user.getPassword().setTemporaryPassword(true);
 					user.getPassword().setCreatedDate(DateUtils.truncate(new Date(),Calendar.DATE));
-					try {
-						getUserService().saveExisting(user);
-					} catch (UserIDNotUnique e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					getUserService().saveExisting(user);
+
 					/*returnUserList.add(user);
 					 * MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());*/
 					}else{

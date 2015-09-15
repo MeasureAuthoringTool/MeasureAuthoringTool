@@ -52,7 +52,7 @@ public interface UserService {
 	 * @throws UserIDNotUnique
 	 *             the user id not unique
 	 */
-	public void saveNew(User user) throws UserIDNotUnique;
+	public void saveNew(User user);
 	
 	/**
 	 * Save existing.
@@ -61,7 +61,7 @@ public interface UserService {
 	 *            the user
 	 * @throws UserIDNotUnique 
 	 */
-	public void saveExisting(User user) throws UserIDNotUnique;
+	public void saveExisting(User user);
 	
 	/**
 	 * Save update user.

@@ -131,20 +131,19 @@ MyAccountService {
 			//TODO Add database constraint for OID to be non-nullable
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-			
-			try {
-				if(userDAO.userExists(model.getEmailAddress()) && (userDAO.findByEmail(model.getEmailAddress()) != user)) {
-					throw new UserIDNotUnique();
-				}
-				setModelFieldsOnUser(user, model);
-			
-				userService.saveExisting(user);
-			} catch (UserIDNotUnique e) {
+			User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
+			if(exsitingUser != null && (!(exsitingUser.getId().equals(user.getId()) ) )) {
 				result.setSuccess(false);
 				result.setFailureReason(SaveMyAccountResult.ID_NOT_UNIQUE);
-				return result;
 			}
-			result.setSuccess(true);
+			else{
+				setModelFieldsOnUser(user, model);
+		
+				userService.saveExisting(user);
+				result.setSuccess(true);
+			}
+			
+			
 		}
 		return result;
 	}
@@ -223,12 +222,9 @@ MyAccountService {
 			secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
 			user.setSecurityQuestions(secQuestions);
 			
-			try {
-				userService.saveExisting(user);
-			} catch (UserIDNotUnique e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+			userService.saveExisting(user);
+
 			result.setSuccess(true);
 		}
 		return result;
@@ -260,12 +256,9 @@ MyAccountService {
 				//to maintain user password History
 				userService.addByUpdateUserPasswordHistory(user,false);
 				userService.setUserPassword(user, password, false);
-				try {
-					userService.saveExisting(user);
-				} catch (UserIDNotUnique e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+				userService.saveExisting(user);
+
 				result.setSuccess(true);
 			}
 			else if(resultMessage.equalsIgnoreCase("FAILURE")){

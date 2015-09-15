@@ -77,13 +77,8 @@ public class UserServiceImplMockedTest extends BaseServiceMockedTest {
 		userDAO.save(user);
 		EasyMock.replay(userDAO);
 		
-		try {
-			userService.saveNew(user);
-			fail();
-		}
-		catch(UserIDNotUnique exc) {
-			// expected result
-		}
+		userService.saveNew(user);
+		fail();
 	}
 
 }

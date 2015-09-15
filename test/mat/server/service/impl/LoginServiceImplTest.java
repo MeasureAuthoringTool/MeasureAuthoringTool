@@ -31,11 +31,9 @@ public class LoginServiceImplTest extends SpringInitializationTest {
 			sRole.setId("1");
 			user.setSecurityRole(sRole);
 			getUserService().setUserPassword(user, password, false);
-			try {
-				getUserService().saveNew(user);
-			} catch (UserIDNotUnique e) {
-				e.printStackTrace();
-			}
+			
+			getUserService().saveNew(user);
+			
 		}
 	}
 	

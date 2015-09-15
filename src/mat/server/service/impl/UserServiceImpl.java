@@ -498,11 +498,8 @@ public class UserServiceImpl implements UserService {
 	 * @see mat.server.service.UserService#saveNew(mat.model.User)
 	 */
 	@Override
-	public void saveNew(User user) throws UserIDNotUnique {
+	public void saveNew(User user) {
 		logger.info("In saveNew(User user)..........");
-		if(userDAO.userExists(user.getEmailAddress())) {
-			throw new UserIDNotUnique();
-		}
 		if(user.getPassword() == null) {
 			UserPassword pwd = new UserPassword();
 			user.setPassword(pwd);
@@ -614,11 +611,7 @@ public class UserServiceImpl implements UserService {
 	 * @see mat.server.service.UserService#saveExisting(mat.model.User)
 	 */
 	@Override
-	public void saveExisting(User user) throws UserIDNotUnique {
-		/*if(userDAO.userExists(user.getEmailAddress()) && (userDAO.findByEmail(user.getEmailAddress()) != user)) {
-			throw new UserIDNotUnique();
-		}*/
-		//TODO figure out why it's still saving after exception thrown.
+	public void saveExisting(User user) {
 		userDAO.save(user);
 	}
 	
@@ -691,7 +684,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) {
 		SaveUpdateUserResult result = new SaveUpdateUserResult();
-		try {
 		User user = null;
 		if(model.isExistingUser()) {
 			user = getById(model.getKey());
@@ -704,11 +696,13 @@ public class UserServiceImpl implements UserService {
 		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getId().equals("1")) {
 			reactivatingUser = true;
 		}
-		if(userDAO.userExists(model.getEmailAddress()) && (userDAO.findByEmail(model.getEmailAddress()) != user)) {
-			throw new UserIDNotUnique();
+		User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
+		if(exsitingUser != null && (!(exsitingUser.getId().equals(user.getId()) ) )) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
 		}
-
-		setModelFieldsOnUser(model, user);
+		else{
+			setModelFieldsOnUser(model, user);
 		
 		
 			if(model.isExistingUser()) {
@@ -726,13 +720,6 @@ public class UserServiceImpl implements UserService {
 			}
 			result.setSuccess(true);
 		}
-		catch(UserIDNotUnique exc) {
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
-		}/*catch(CodeListNotUniqueException exp){
-			result.setSuccess(false);
-			result.setFailureReason(SaveUpdateCodeListResult.NOT_UNIQUE);
-		}*/
 		
 		return result;
 	}

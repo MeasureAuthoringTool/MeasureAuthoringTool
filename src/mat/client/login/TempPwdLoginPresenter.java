@@ -438,8 +438,8 @@ public class TempPwdLoginPresenter {
 						//display.addQuestionTexts(retList);
 						display.addSecurityQuestionTexts(retList);
 					}
-					beforeDisplay();
 				}
+				beforeDisplay();
 			}
 			
 		});

@@ -1613,6 +1613,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					popupPanel.hide();
 					if (copiedNode != null) {
 						switch (selectedNode.getNodeType()) {
+							case CellTreeNode.SUBTREE_NODE:
+								canPaste = true;
+								break;
 							case CellTreeNode.MASTER_ROOT_NODE:
 								if (selectedNode.getName().equalsIgnoreCase(STRATIFICATION)) {
 									if ((copiedNode.getParent().getNodeType() == CellTreeNode.MASTER_ROOT_NODE)

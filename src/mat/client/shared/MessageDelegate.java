@@ -176,7 +176,8 @@ public class MessageDelegate {
 	
 	public final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " +
 			"Please validate your measure logic in both Population Workspace and Clause Workspace.";
-	
+	public final String WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT = "Unable to create measure package. " +
+			"Please validate that Risk Adjustment Vairable clauses do not contain a datetimediff function or a QDM Variable.";
 	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
 	
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
@@ -2367,6 +2368,10 @@ public class MessageDelegate {
 	
 	public String getWARNING_MEASURE_PACKAGE_CREATION_GENERIC() {
 		return WARNING_MEASURE_PACKAGE_CREATION_GENERIC;
+	}
+	
+	public String getWARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT(){
+		return WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT;
 	}
 	
 	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {

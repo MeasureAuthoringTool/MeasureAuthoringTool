@@ -105,6 +105,7 @@ import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -3385,13 +3386,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			List<String> operatorTypeList = getAllOperatorsTypeList();
 			
 			if(usedSubTreeIds.size()>0){
-				
 				for(int k=0; (k < usedSubTreeIds.size()); k++){
 					String usedSubtreeRefId = usedSubTreeIds.get(k);
 					
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 					String dateTimeDiffFunction = "@type='DATETIMEDIFF'";
+					String qdmVariable = "@qdmVariable='true'";
 					//geting list of IDs
 					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
 					//geting Unique Ids only
@@ -3404,6 +3405,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String XPATH_DATE_TIME_DIFF_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+dateTimeDiffFunction+"]";
 					
 					String XPATH_SUBTREE ="//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']";
+					String XPATH_QDMVARAIBLES = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"'and "+qdmVariable+"]";
 					/*System.out.println("MEASURE_XML: "+xmlModel.getXml());*/
 					try {
 						
@@ -3419,6 +3421,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						NodeList nodeSDE_setoperator =(NodeList) xPath.evaluate(XPATH_SETOPERATOR, xmlProcessor.getOriginalDoc(),
 								XPathConstants.NODESET);
 						NodeList nodeSDE_dateTimeDiffElement =(NodeList) xPath.evaluate(XPATH_DATE_TIME_DIFF_ELEMENT, xmlProcessor.getOriginalDoc(),
+								XPathConstants.NODESET);
+						NodeList nodesSDE_qdmVariables =(NodeList) xPath.evaluate(XPATH_QDMVARAIBLES, xmlProcessor.getOriginalDoc(),
 								XPathConstants.NODESET);
 						Node nodeSubTree =(Node) xPath.evaluate(XPATH_SUBTREE, xmlProcessor.getOriginalDoc(),
 								XPathConstants.NODE);
@@ -3542,8 +3546,33 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								return result;
 							}
 							
+							//Verifying no datetime dif funcitons are not in riskAdjustmentVariables
+							String parentNodeUUID = dateTimeDiffChildNode.getParentNode().getAttributes().getNamedItem("uuid").getNodeValue();
+							String RISK_ADJUSTMENT_DATETIMEDIF_RETRIVAL = "/measure/riskAdjustmentVariables/subTreeRef[@id='"+ parentNodeUUID +"']";
+							NodeList riskAdjustmentNodes = (NodeList) xPath.evaluate(RISK_ADJUSTMENT_DATETIMEDIF_RETRIVAL, xmlProcessor.getOriginalDoc(),
+									XPathConstants.NODESET);
+							if(riskAdjustmentNodes.getLength() > 0){
+								result.setValid(false);
+								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT());
+								result.setValidationMessages(message);
+								return result;
+							}
 							
 						}
+						//verifying no qdm variables are in riskAjustmentVariables
+						for(int p = 0; p<nodesSDE_qdmVariables.getLength(); p++){
+							String nodeUUID = nodesSDE_qdmVariables.item(p).getAttributes().getNamedItem("uuid").getNodeValue();
+							String RISK_ADJUSTMENT_QDM_RETRIVAL = "/measure/riskAdjustmentVariables/subTreeRef[@id='"+ nodeUUID +"']";
+							NodeList riskAdjustmentNodes = (NodeList) xPath.evaluate(RISK_ADJUSTMENT_QDM_RETRIVAL, xmlProcessor.getOriginalDoc(),
+									XPathConstants.NODESET);
+							if(riskAdjustmentNodes.getLength()>0){
+								result.setValid(false);
+								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT());
+								result.setValidationMessages(message);
+								return result;
+							}
+						}
+						
 						
 					} catch (XPathExpressionException e) {
 						
@@ -3745,6 +3774,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		//to get Used SubTreeRef form Risk Adjustment Variables
 		subTreeIdsAtStrat.removeAll(subTreeIdsAtRAV);
 		subTreeIdsAtRAV.addAll(subTreeIdsAtStrat);
+		
+		for(int i=0; i<subTreeIdsAtRAV.size();i++){
+			System.out.println("SUBTREE NODES " + subTreeIdsAtRAV.get(i));
+		}
 		
 		return subTreeIdsAtRAV;
 	}

@@ -572,7 +572,7 @@ HasSelectionHandlers<Boolean> {
 								"appliedQDMTableSummary",
 								"In the Following Applied QDM Elements table Name in First Column"
 										+ "OID in Second Column, DataType in Third Column, Expansion Identifier in Fourth Column,"
-										+ "Version in Fifth Column. The Applied QDM elements are listed alphabetically in a table.");
+										+ "Version in Fifth Column and Select in Sixth Column. The Applied QDM elements are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -747,6 +747,11 @@ HasSelectionHandlers<Boolean> {
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
 			
+			String colName = "Modify"; 
+			
+			if(!isEditable){
+				colName = "Select";
+			}
 			
 			// Modify by Delete Column
 			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
@@ -756,8 +761,8 @@ HasSelectionHandlers<Boolean> {
 				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>"
-					+ "Modify" + "</span>"));
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+					+ colName + "</span>"));
 			
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);

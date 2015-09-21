@@ -1607,14 +1607,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						popupPanel.hide();
 						copy();
 					}
-					
 				} else if (keyCode == PopulationWorkSpaceConstants.PASTE_V) { //PASTE
 					boolean canPaste = false;
 					popupPanel.hide();
 					if (copiedNode != null) {
 						switch (selectedNode.getNodeType()) {
 							case CellTreeNode.SUBTREE_NODE:
-								canPaste = true;
+								if(!((selectedNode.getChilds()!=null) && (selectedNode.getChilds().size()==1))){
+									canPaste = true;
+								} 
 								break;
 							case CellTreeNode.MASTER_ROOT_NODE:
 								if (selectedNode.getName().equalsIgnoreCase(STRATIFICATION)) {

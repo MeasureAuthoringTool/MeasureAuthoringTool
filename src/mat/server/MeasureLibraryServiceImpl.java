@@ -3547,8 +3547,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							}
 							
 							//Verifying no datetime dif funcitons are not in riskAdjustmentVariables
-							String parentNodeUUID = dateTimeDiffChildNode.getParentNode().getAttributes().getNamedItem("uuid").getNodeValue();
-							String RISK_ADJUSTMENT_DATETIMEDIF_RETRIVAL = "/measure/riskAdjustmentVariables/subTreeRef[@id='"+ parentNodeUUID +"']";
+							String RISK_ADJUSTMENT_DATETIMEDIF_RETRIVAL = "/measure/riskAdjustmentVariables/subTreeRef[@id='"+ usedSubtreeRefId +"']";
 							NodeList riskAdjustmentNodes = (NodeList) xPath.evaluate(RISK_ADJUSTMENT_DATETIMEDIF_RETRIVAL, xmlProcessor.getOriginalDoc(),
 									XPathConstants.NODESET);
 							if(riskAdjustmentNodes.getLength() > 0){

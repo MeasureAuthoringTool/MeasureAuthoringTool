@@ -144,6 +144,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private static final String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
 		
+	/** The current release version. */
 	private String currentReleaseVersion;
 	
 	/** The is measure created. */
@@ -3506,13 +3507,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							
 							Node functionsChildNode =nodesSDE_functions.item(n);
 							isInvalid = validateFunctionNode(functionsChildNode, operatorTypeList, isInvalid);
-							if(isInvalid) {
+							
+							if(isInvalid || (usedSubtreeRefIdsMap.get("subTreeIDAtMO").contains(usedSubtreeRefId) && 
+									validateFunctionNodeInMO(functionsChildNode))) {
 								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
 								result.setValidationMessages(message);
 								return result;
 							}
-							
 						}
 						
 						for (int n = 0; (n < nodeSDE_setoperator.getLength()); n++) {
@@ -3585,6 +3587,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
+	 * Validate function node in measure observation.
+	 *
+	 * @param functionsChildNode the functions child node
+	 * @return true, if successful
+	 */
+	private boolean validateFunctionNodeInMO(Node functionsChildNode) {
+	
+		String displayName = functionsChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		if(!MatContext.get().functions.equals(displayName)) {
+			return true;
+			}
+		return false;
+	}
+
+	/**
 	 * This method will evaluate Logical Operators and checks if Logical operators has child nodes or not.
 	 * Default Top Level Logical Operators are not considered for this validation.
 	 * @param populationTopLevelLogicalOp - NodeList.
@@ -3631,6 +3648,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Find invalid logical operators.
 	 *
 	 * @param populationTopLevelLogicalOp the population top level logical op
+	 * @param isTopLevelLogicalOp the is top level logical op
 	 * @return true, if successful
 	 */
 	private boolean findInvalidLogicalOperators(NodeList populationTopLevelLogicalOp, boolean isTopLevelLogicalOp) {
@@ -3807,7 +3825,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		
-		return subTreeRefRAVList;
+		return checkUnUsedSubTreeRef(xmlProcessor, subTreeRefRAVList);
 	}
 	
 	
@@ -4676,10 +4694,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return message;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getCurrentReleaseVersion()
+	 */
 	public String getCurrentReleaseVersion() {
 		return currentReleaseVersion;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#setCurrentReleaseVersion(java.lang.String)
+	 */
 	public void setCurrentReleaseVersion(String releaseVersion) {
 		this.currentReleaseVersion = releaseVersion;
 	}

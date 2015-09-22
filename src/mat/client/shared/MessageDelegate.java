@@ -174,12 +174,18 @@ public class MessageDelegate {
 	/** The successful qdm remove msg. */
 	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected QDM element has been removed successfully.";
 	
+	/** The warning measure package creation generic. */
 	public final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " +
 			"Please validate your measure logic in both Population Workspace and Clause Workspace.";
+	
+	/** The warning measure package creation risk adjustment. */
 	public final String WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT = "Unable to create measure package. " +
 			"Please validate that Risk Adjustment Vairable clauses do not contain a datetimediff function or a QDM Variable.";
+	
+	/** The warning measure package creation strata. */
 	public final String WARNING_MEASURE_PACKAGE_CREATION_STRATA = "Unable to create measure package. Stratum must contain at least one clause.";
 	
+	/** The successfully modified all oids. */
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
@@ -277,6 +283,7 @@ public class MessageDelegate {
 	/** The code required. */
 	private final String CODE_REQUIRED = "Code is required.";
 	
+	/** The clause empty. */
 	private final String CLAUSE_EMPTY = "Clause must contain logic.";
 	
 	/**
@@ -662,7 +669,26 @@ public class MessageDelegate {
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Any logical operator under a top-level logical operator must contain at least one logical operator or clause. " +
-			"                         Any terminal logical operator under a top-level logical operator must contain at least one clause.";
+			                                                        "Any terminal logical operator under a top-level logical operator must contain at least one clause.";
+	
+	/** The measure observation validation for functions. */
+	private final String MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS = "Measure logic is invalid. Contents of the clause logic are not permitted for Measure Observations.";
+	
+	private final String ONLY_ONE_CHILD_REQUIRED = " Functions must contain only one child node.";
+	
+	public String getONLY_ONE_CHILD_REQUIRED() {
+		return ONLY_ONE_CHILD_REQUIRED;
+	}
+
+	/**
+	 * Gets the measure observation validation for functions.
+	 *
+	 * @return the measure observation validation for functions
+	 */
+	public String getMEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS() {
+		return MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS;
+	}
+
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -1702,7 +1728,8 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the second attempt failed message.
-	 * 
+	 *
+	 * @param index the index
 	 * @return String
 	 */
 	/*	public String getSecondAttemptFailedMessage() {
@@ -2366,37 +2393,74 @@ public class MessageDelegate {
 		return SUCCESSFUL_QDM_REMOVE_MSG;
 	}
 	
+	/**
+	 * Gets the warning measure package creation generic.
+	 *
+	 * @return the warning measure package creation generic
+	 */
 	public String getWARNING_MEASURE_PACKAGE_CREATION_GENERIC() {
 		return WARNING_MEASURE_PACKAGE_CREATION_GENERIC;
 	}
 	
+	/**
+	 * Gets the warning measure package creation risk adjustment.
+	 *
+	 * @return the warning measure package creation risk adjustment
+	 */
 	public String getWARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT(){
 		return WARNING_MEASURE_PACKAGE_CREATION_RISK_ADJUSTMENT;
 	}
 	
+	/**
+	 * Gets the warning measure package creation strata.
+	 *
+	 * @return the warning measure package creation strata
+	 */
 	public String getWARNING_MEASURE_PACKAGE_CREATION_STRATA() {
 		return WARNING_MEASURE_PACKAGE_CREATION_STRATA;
 	}
 	
+	/**
+	 * Gets the clause work space invalid attribute in sat all any.
+	 *
+	 * @return the clause work space invalid attribute in sat all any
+	 */
 	public String getCLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY() {
 		return CLAUSE_WORK_SPACE_INVALID_ATTRIBUTE_IN_SAT_ALL_ANY;
 	}
 	
+	/**
+	 * Gets the clause work space invalid logical operator.
+	 *
+	 * @return the clause work space invalid logical operator
+	 */
 	public String getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR() {
 		return CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR;
 	}
 	
 	/**
+	 * Gets the clause empty.
+	 *
 	 * @return the cLAUSE_EMPTY
 	 */
 	public String getCLAUSE_EMPTY() {
 		return CLAUSE_EMPTY;
 	}
 	
+	/**
+	 * Gets the successfully modified all oids.
+	 *
+	 * @return the successfully modified all oids
+	 */
 	public String getSUCCESSFULLY_MODIFIED_ALL_OIDS() {
 		return SUCCESSFULLY_MODIFIED_ALL_OIDS;
 	}
 
+	/**
+	 * Gets the comparison diloag box unit error display.
+	 *
+	 * @return the comparison diloag box unit error display
+	 */
 	public String getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY() {
 		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
 	}

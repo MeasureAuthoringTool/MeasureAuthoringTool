@@ -222,6 +222,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The success message display. */
 	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
 	
+	/** The is clause work space. */
 	private boolean isClauseWorkSpace = false;
 	
 	/** The add comment panel. */
@@ -298,6 +299,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is measure observations. */
 	private boolean isMeasureObservations = false;
+	
+	/** The is func with op in mo. */
+	boolean isFuncWithOpInMO = false;
 	
 	/**
 	 * Instantiates a new xml tree view.
@@ -2046,15 +2050,23 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						.add("inValidAtPopulationAndStratificationNode");
 					}
 					isDateTimeDiffNotInMO = false;
-				} else if(isSubTreeLogicValidInPopulationWorkSpace){
+				} else if(isFuncWithOpInMO){
 					if (!inValidNodeAtPopulationWorkspace
-							.contains("invalidClauseLogic") && checkValidation
-							) {
+						.contains("isFunctionInvalidInMO") && checkValidation
+						) {
 						inValidNodeAtPopulationWorkspace
-						.add("invalidClauseLogic");
+						.add("isFunctionInvalidInMO");
+						}
+					isFuncWithOpInMO = false;
+					} else if(isSubTreeLogicValidInPopulationWorkSpace){
+						if (!inValidNodeAtPopulationWorkspace
+								.contains("invalidClauseLogic") && checkValidation
+								) {
+							inValidNodeAtPopulationWorkspace
+							.add("invalidClauseLogic");
 					}
 					/*isSubTreeLogicValidInPopulationWorkSpace = false;*/
-				}
+				} 
 				//}
 				break;
 			default:
@@ -2161,11 +2173,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if(!isValid) {
 					setValid(!(inValideNodesList.size() == 0));
 				}
-				if(!isClauseWorkSpace) { // Check for measure Ob and datetimediff is to be performed on Population workspace only.
+				if(!isClauseWorkSpace) { 
+					// Check for measure Ob and datetimediff is to be performed on Population workspace only.
 					if (!isMeasureObservations
 							&& (subTreeCellTreeNode.getName().toUpperCase().contains("DATETIMEDIFF"))) {
 						setValid(true);
 						isDateTimeDiffNotInMO = true;
+						setValidHumanReadable(false);
+					
+						//validate functions with Operator which is not valid in Measure Observation  
+					} else if(isMeasureObservations 
+							&& !MatContext.get().functions.contains(capWords(subTreeCellTreeNode.getName()))){
+						setValid(true);
+						isFuncWithOpInMO = true;
 						setValidHumanReadable(false);
 					}
 				}
@@ -2277,6 +2297,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					} else if (element.equalsIgnoreCase("emptyClauseLogic")) {
 						warningMessages.add(MatContext.get().getMessageDelegate()
 								.getCLAUSE_EMPTY());
+					} else if(element.equalsIgnoreCase("invalidChildsATFunction")){
+						warningMessages.add(MatContext.get().getMessageDelegate()
+								.getONLY_ONE_CHILD_REQUIRED());
 					}
 					
 				}
@@ -2309,187 +2332,32 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@SuppressWarnings("unchecked")
 	private  List<String> validateClauseWorkspaceCellTreeNodes(CellTreeNode treeNode, Map<String,
 			List<String>> dataTypeMap, List<String> inValidNodeList) {
-		String timingElement = "timing element";
-		String timingElementMeasurementEndDate = "Measurement End Date : Timing Element";
-		String timingElementMeasurementStartDate = "Measurement Start Date : Timing Element";
-		String patientCharBirthDate = "Patient characteristic Birthdate";
-		String patientCharExpired = "Patient characteristic Expired";
-		String satisfiesAll = "SATISFIES ALL";
-		String satisfiesAny = "SATISFIES ANY";
-		String intersection = "INTERSECTION";
-		String union = "Union";
+		
+		
 		//String dateTimeDiff = "DateTimeDiff";
 		if (treeNode != null) {
-			String attributeValue = "";
 			CellTreeNode node = treeNode;
 			switch (node.getNodeType()) {
 				case CellTreeNode.ELEMENT_REF_NODE :
-					String nodeName = node.getName();
-					List<CellTreeNode> attributeList = (List<CellTreeNode>)
-							node.getExtraInformation("attributes");
-					if ((attributeList != null) && (attributeList.size() > 0)) {
-						CellTreeNode attributeNode = attributeList.get(0);
-						attributeValue = attributeNode.getExtraInformation("name").toString();
-					}
-					String nodeDataType = PopulationWorkSpaceConstants.getElementLookUpDataTypeName()
-							.get(node.getUUID());
-					if (nodeDataType.equalsIgnoreCase(timingElement)) {
-						if (nodeName.equalsIgnoreCase(timingElementMeasurementEndDate)
-								|| nodeName.equalsIgnoreCase(timingElementMeasurementStartDate)) {
-							inValidAtQdmNode(node, inValidNodeList);
-						} else {
-							if (!node.getValidNode()) {
-								editNode(true, node);
-							}
-						}
-					} else {
-						if (nodeDataType.equalsIgnoreCase(patientCharBirthDate)
-								|| nodeDataType.equalsIgnoreCase(patientCharExpired)) {
-							validateNodeForOldBirthDateAndExpiredElement(nodeDataType,
-									node, inValidNodeList);
-						} else if (attributeValue.isEmpty()) {
-							if (!dataTypeMap.containsKey(nodeDataType)) {
-								inValidAtQdmNode(node, inValidNodeList);
-							} else { //Removed attributes when
-								//replaced with blank still showing red.Added else to set text to black.
-								if (!node.getValidNode()) {
-									editNode(true, node);
-								}
-							}
-						} else if (!attributeValue.isEmpty() && (attributeValue.length() > 0)) {
-							if (!dataTypeMap.containsKey(nodeDataType)) {
-								inValidAtQdmNode(node, inValidNodeList);
-							} else {
-								List<String> attribList = dataTypeMap.get(nodeDataType);
-								if (!attribList.contains(attributeValue)) {
-									inValidAtQdmNode(node, inValidNodeList);
-								} else { //Removed attributes when
-									//replaced with valid attributes still showing red.
-									//Added else to set text to black.
-									if (!node.getValidNode()) {
-										editNode(true, node);
-									}
-								}
-							}
-						} else {
-							if (!node.getValidNode()) {
-								editNode(true, node);
-							}
-						}
-					}
+					validateClauseWorkspaceElementRefNode(node, dataTypeMap, inValidNodeList );
 					break;
 				case CellTreeNode.TIMING_NODE:
 				case CellTreeNode.RELATIONSHIP_NODE:
-					if (((node.getChilds() != null) && (node.getChilds().size() == 2))) {
-						if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName())
-								|| (node.getNodeType() == CellTreeNode.TIMING_NODE))) {
-							editNode(true, node);
-						} else if (!MatContext.get().relationships.contains(node.getName())
-								&& (node.getNodeType() != CellTreeNode.TIMING_NODE)) {
-							editNode(false, node);
-							if (!inValidNodeList.contains("inValidAtRelationshipNode")) {
-								inValidNodeList.add("inValidAtRelationshipNode");
-							}
-						}
-					} else {
-						editNode(false, node);
-						if (!inValidNodeList.contains("inValidAtTimingRelationShip")) {
-							inValidNodeList.add("inValidAtTimingRelationShip");
-						}
-					}
+					validateClauseWorkspaceTimingAndRelNode(node, inValidNodeList);
 					break;
 				case CellTreeNode.SET_OP_NODE:
-					int checkOpChildCount = 0;
-					String invalidKeyForOpMap = null;
-					if ((node.getName().equalsIgnoreCase(intersection)) ||
-							(node.getName().equalsIgnoreCase(union))) {
-						checkOpChildCount = 2;
-						invalidKeyForOpMap = "invalidNeed2Children";
-					}
-					if (((node.getChilds() != null) && (node.getChilds().size() >= checkOpChildCount))) {
-						if (!node.getValidNode()) {
-							editNode(true, node);
-						}
-					} else {
-						editNode(false, node);
-						if ((invalidKeyForOpMap != null) && !inValidNodeList.contains(invalidKeyForOpMap)) {
-							inValidNodeList.add(invalidKeyForOpMap);
-						}
-					}
+					validateClauseWorkspaceForSetOpNode(inValidNodeList, node);
 					break;
 				case CellTreeNode.FUNCTIONS_NODE:
-					int checkChildCount = 1;
-					String invalidKeyForMap = "inValidAtSetoperatorAndOrFunction";
-					Map<String, String> map = (Map<String, String>) node.getExtraInformation("extraAttributes");
-					String funcType;
-					if (map!=null) {
-						funcType = map.get("type");
-					} else {
-						funcType = node.getName();
-					}
-					if ((node.getName().equalsIgnoreCase(satisfiesAll))
-							|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
-						checkChildCount = 3;
-						invalidKeyForMap = "invalidNeed3Children";
-					} else if (node.getName().equalsIgnoreCase(MatConstants.DATETIMEDIFF)) {
-						checkChildCount = 2;
-						invalidKeyForMap = "invalidNeed2Children";
-					} else if (!MatContext.get().functions.contains(capWords(funcType))) {
-						invalidKeyForMap = "invalidAtFunction";
-						editNode(false, node);
-						if (!inValidNodeList.contains(invalidKeyForMap)) {
-							inValidNodeList.add(invalidKeyForMap);
-						}
-					}
-					if (((node.getChilds() != null) && (node.getChilds().size() >= checkChildCount))) {
-						if ((node.getName().equalsIgnoreCase(satisfiesAll))
-								|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
-							CellTreeNode lhsQdmNode = node.getChilds().get(0);
-							List<CellTreeNode> lhsQdmNodeAttributeList = (List<CellTreeNode>)
-									lhsQdmNode.getExtraInformation("attributes");
-							if ((lhsQdmNodeAttributeList != null) && (lhsQdmNodeAttributeList.size() > 0)) {
-								invalidKeyForMap = "invalidSATLhsChild";
-								editNode(false, node);
-								if (!inValidNodeList.contains(invalidKeyForMap)) {
-									inValidNodeList.add(invalidKeyForMap);
-								}
-							} else {
-								if (!node.getValidNode()
-										&& !inValidNodeList.contains("invalidSATLhsChild")) {
-									editNode(true, node);
-								}
-							}
-						} else {
-							if (!node.getValidNode()
-									&& !inValidNodeList.contains("invalidAtFunction")) {
-								editNode(true, node);
-							}
-						}
-					} else {
-						editNode(false, node);
-						if (!inValidNodeList.contains(invalidKeyForMap)) {
-							inValidNodeList.add(invalidKeyForMap);
-						}
-					}
+				validateClauseWorkspaceFunctionNode(inValidNodeList, node);
 					break;
 				case CellTreeNode.SUBTREE_REF_NODE:
-					boolean checkForValidation = validateSubTreeRefNode(node);
-					if (checkForValidation) {
-						if (!inValidNodeList.contains("invalidClauseLogic")) {
-							inValidNodeList.add("invalidClauseLogic");
-						}
-						editNode(false, node);
-					}
+				validateClauseWorkspaceSubTreeRefNode(inValidNodeList, node);
 					
 					break;
 				case CellTreeNode.SUBTREE_NODE:
 					//validation for empty clause logic in clauseWorkspace
-					if((node.getChilds() == null) || (node.getChilds().size() == 0)){
-						if (!inValidNodeList.contains("emptyClauseLogic")) {
-							inValidNodeList.add("emptyClauseLogic");
-						}
-						editNode(false, node);
-					}
+				validateClauseWorkspaceSubTreeNode(inValidNodeList, node);
 					
 					break;
 				default:
@@ -2505,10 +2373,148 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		return inValidNodeList;
 	}
+
+	/**
+	 * Validate clause workspace sub tree node.
+	 *
+	 * @param inValidNodeList the in valid node list
+	 * @param node the node
+	 */
+	private void validateClauseWorkspaceSubTreeNode(
+			List<String> inValidNodeList, CellTreeNode node) {
+		if((node.getChilds() == null) || (node.getChilds().size() == 0)){
+			if (!inValidNodeList.contains("emptyClauseLogic")) {
+				inValidNodeList.add("emptyClauseLogic");
+			}
+			editNode(false, node);
+		}
+	}
+
+	/**
+	 * Validate clause workspace sub tree ref node.
+	 *
+	 * @param inValidNodeList the in valid node list
+	 * @param node the node
+	 */
+	private void validateClauseWorkspaceSubTreeRefNode(
+			List<String> inValidNodeList, CellTreeNode node) {
+		boolean checkForValidation = validateSubTreeRefNode(node);
+		if (checkForValidation) {
+			if (!inValidNodeList.contains("invalidClauseLogic")) {
+				inValidNodeList.add("invalidClauseLogic");
+			}
+			editNode(false, node);
+		}
+	}
+
+	/**
+	 * Validate clause workspace function node.
+	 *
+	 * @param inValidNodeList the in valid node list
+	 * @param node the node
+	 */
+	private void validateClauseWorkspaceFunctionNode(
+			List<String> inValidNodeList, CellTreeNode node) {
+		String satisfiesAll = "SATISFIES ALL";
+		String satisfiesAny = "SATISFIES ANY";
+		int checkChildCount = 1;
+		String invalidKeyForMap = "inValidAtSetoperatorAndOrFunction";
+		Map<String, String> map = (Map<String, String>) node.getExtraInformation("extraAttributes");
+		String funcType;
+		if (map!=null) {
+			funcType = map.get("type");
+		} else {
+			funcType = node.getName();
+		}
+		if ((node.getName().equalsIgnoreCase(satisfiesAll))
+				|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+			checkChildCount = 3;
+			invalidKeyForMap = "invalidNeed3Children";
+		} else if (node.getName().equalsIgnoreCase(MatConstants.DATETIMEDIFF)) {
+			checkChildCount = 2;
+			invalidKeyForMap = "invalidNeed2Children";
+		} else if (!MatContext.get().functions.contains(capWords(funcType))) {
+			invalidKeyForMap = "invalidAtFunction";
+			editNode(false, node);
+			if (!inValidNodeList.contains(invalidKeyForMap)) {
+				inValidNodeList.add(invalidKeyForMap);
+			}
+		}
+		
+		if (((node.getChilds() != null) && (node.getChilds().size() >= checkChildCount))) {
+			if ((node.getName().equalsIgnoreCase(satisfiesAll))
+					|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
+				CellTreeNode lhsQdmNode = node.getChilds().get(0);
+				List<CellTreeNode> lhsQdmNodeAttributeList = (List<CellTreeNode>)
+						lhsQdmNode.getExtraInformation("attributes");
+				if ((lhsQdmNodeAttributeList != null) && (lhsQdmNodeAttributeList.size() > 0)) {
+					invalidKeyForMap = "invalidSATLhsChild";
+					editNode(false, node);
+					if (!inValidNodeList.contains(invalidKeyForMap)) {
+						inValidNodeList.add(invalidKeyForMap);
+					}
+				} else {
+					if (!node.getValidNode()
+							&& !inValidNodeList.contains("invalidSATLhsChild")) {
+						editNode(true, node);
+					}
+				}
+			} else if(MatContext.get().functions.contains(capWords(funcType)) 
+					&& !(node.getName().contains(MatConstants.DATETIMEDIFF))
+					&& node.getChilds().size() != checkChildCount){
+				invalidKeyForMap = "invalidChildsATFunction";
+				editNode(false, node);
+				if (!inValidNodeList.contains(invalidKeyForMap)) {
+					inValidNodeList.add(invalidKeyForMap);
+				}
+			} else {
+				if (!node.getValidNode()
+						&& !inValidNodeList.contains("invalidAtFunction")) {
+					editNode(true, node);
+				}
+			}
+		} else {
+			editNode(false, node);
+			if (!inValidNodeList.contains(invalidKeyForMap)) {
+				inValidNodeList.add(invalidKeyForMap);
+			}
+		}
+	}
+
+	/**
+	 * Validate clause workspace for set op node.
+	 *
+	 * @param inValidNodeList the in valid node list
+	 * @param node the node
+	 */
+	private void validateClauseWorkspaceForSetOpNode(
+			List<String> inValidNodeList, CellTreeNode node) {
+		String intersection = "INTERSECTION";
+		String union = "Union";
+		int checkOpChildCount = 0;
+		String invalidKeyForOpMap = null;
+		if ((node.getName().equalsIgnoreCase(intersection)) ||
+				(node.getName().equalsIgnoreCase(union))) {
+			checkOpChildCount = 2;
+			invalidKeyForOpMap = "invalidNeed2Children";
+		}
+		if (((node.getChilds() != null) && (node.getChilds().size() >= checkOpChildCount))) {
+			if (!node.getValidNode()) {
+				editNode(true, node);
+			}
+		} else {
+			editNode(false, node);
+			if ((invalidKeyForOpMap != null) && !inValidNodeList.contains(invalidKeyForOpMap)) {
+				inValidNodeList.add(invalidKeyForOpMap);
+			}
+		}
+	}
 	
+
 	/**
 	 * Method to convert String into Sentence/Title Case.
-	 * @param strToConvert
+	 *
+	 * @param strToConvert the str to convert
 	 * @return Sentence Case String
 	 */
 	@SuppressWarnings("null")
@@ -2535,10 +2541,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			return sb.toString();
 		}
 	}
+	
 	/**
-	 * @param treeNode
-	 * @param inValidNodeList
-	 * @param counter
+	 * Validate clause node nesting.
+	 *
+	 * @param treeNode the tree node
+	 * @param inValidNodeList the in valid node list
+	 * @param counter the counter
+	 * @return true, if successful
 	 */
 	private boolean validateClauseNodeNesting(CellTreeNode treeNode , List<String> inValidNodeList, int counter) {
 		//List <Node> subTreeRefList = new ArrayList<Node>();
@@ -2560,11 +2570,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
-	 * @param treeNode
-	 * @param subTreeRefList
-	 * @param counter
-	 * @param isValidDepth
-	 * @return
+	 * Find child count.
+	 *
+	 * @param treeNode the tree node
+	 * @param counter the counter
+	 * @param flag the flag
+	 * @return true, if successful
 	 *//*
 	private boolean validateNestedSubTreeDepth(CellTreeNode treeNode,List<Node> subTreeRefList, int counter , boolean isValidDepth) {
 		Node parentNode = null;
@@ -3106,6 +3117,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	
+	/**
+	 * Checks if is allowed function.
+	 *
+	 * @param funcName the func name
+	 * @return true, if is allowed function
+	 */
 	private boolean isAllowedFunction(String funcName) {
 		List<String> allowedFunctionsList = ComparisonDialogBox.getAllowedFunctionsList(MatContext.get().functions, selectedNode.getLabel());
 		boolean retValue = false;
@@ -3119,6 +3136,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return retValue;
 	}
 	
+	/**
+	 * Checks if is allowed filter function.
+	 *
+	 * @param funcName the func name
+	 * @return true, if is allowed filter function
+	 */
 	private boolean isAllowedFilterFunction(String funcName) {
 		List<String> allowedFunctionsList = ComparisonDialogBox.filterFunctions(selectedNode, MatContext.get().functions);
 		boolean retValue = false;
@@ -3131,6 +3154,104 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		return retValue;
 	}
+
+	/**
+	 * Validate clause workspace element ref node.
+	 *
+	 * @param node the node
+	 * @param dataTypeMap the data type map
+	 * @param inValidNodeList the in valid node list
+	 */
+	private void validateClauseWorkspaceElementRefNode(CellTreeNode node, 
+			Map<String, List<String>> dataTypeMap, List<String> inValidNodeList){
+		
+		String timingElement = "timing element";
+		String timingElementMeasurementEndDate = "Measurement End Date : Timing Element";
+		String timingElementMeasurementStartDate = "Measurement Start Date : Timing Element";
+		String patientCharBirthDate = "Patient characteristic Birthdate";
+		String patientCharExpired = "Patient characteristic Expired";
+		String attributeValue = "";
+		
+		String nodeName = node.getName();
+		List<CellTreeNode> attributeList = (List<CellTreeNode>)
+				node.getExtraInformation("attributes");
+		if ((attributeList != null) && (attributeList.size() > 0)) {
+			CellTreeNode attributeNode = attributeList.get(0);
+			attributeValue = attributeNode.getExtraInformation("name").toString();
+		}
+		String nodeDataType = PopulationWorkSpaceConstants.getElementLookUpDataTypeName()
+				.get(node.getUUID());
+		if (nodeDataType.equalsIgnoreCase(timingElement)) {
+			if (nodeName.equalsIgnoreCase(timingElementMeasurementEndDate)
+					|| nodeName.equalsIgnoreCase(timingElementMeasurementStartDate)) {
+				inValidAtQdmNode(node, inValidNodeList);
+			} else {
+				if (!node.getValidNode()) {
+					editNode(true, node);
+				}
+			}
+		} else {
+			if (nodeDataType.equalsIgnoreCase(patientCharBirthDate)
+					|| nodeDataType.equalsIgnoreCase(patientCharExpired)) {
+				validateNodeForOldBirthDateAndExpiredElement(nodeDataType,
+						node, inValidNodeList);
+			} else if (attributeValue.isEmpty()) {
+				if (!dataTypeMap.containsKey(nodeDataType)) {
+					inValidAtQdmNode(node, inValidNodeList);
+				} else { //Removed attributes when
+					//replaced with blank still showing red.Added else to set text to black.
+					if (!node.getValidNode()) {
+						editNode(true, node);
+					}
+				}
+			} else if (!attributeValue.isEmpty() && (attributeValue.length() > 0)) {
+				if (!dataTypeMap.containsKey(nodeDataType)) {
+					inValidAtQdmNode(node, inValidNodeList);
+				} else {
+					List<String> attribList = dataTypeMap.get(nodeDataType);
+					if (!attribList.contains(attributeValue)) {
+						inValidAtQdmNode(node, inValidNodeList);
+					} else { //Removed attributes when
+						//replaced with valid attributes still showing red.
+						//Added else to set text to black.
+						if (!node.getValidNode()) {
+							editNode(true, node);
+						}
+					}
+				}
+			} else {
+				if (!node.getValidNode()) {
+					editNode(true, node);
+				}
+			}
+		}
+	}
 	
+	/**
+	 * Validate clause workspace timing and rel node.
+	 *
+	 * @param node the node
+	 * @param inValidNodeList the in valid node list
+	 */
+	private void validateClauseWorkspaceTimingAndRelNode(CellTreeNode node, List<String> inValidNodeList) {
+		if (((node.getChilds() != null) && (node.getChilds().size() == 2))) {
+			if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName())
+					|| (node.getNodeType() == CellTreeNode.TIMING_NODE))) {
+				editNode(true, node);
+			} else if (!MatContext.get().relationships.contains(node.getName())
+					&& (node.getNodeType() != CellTreeNode.TIMING_NODE)) {
+				editNode(false, node);
+				if (!inValidNodeList.contains("inValidAtRelationshipNode")) {
+					inValidNodeList.add("inValidAtRelationshipNode");
+				}
+			}
+		} else {
+			editNode(false, node);
+			if (!inValidNodeList.contains("inValidAtTimingRelationShip")) {
+				inValidNodeList.add("inValidAtTimingRelationShip");
+			}
+		}
+		
+	}
 	
 }

@@ -758,6 +758,9 @@ public class XmlTreePresenter {
 							if(inValidNode.equalsIgnoreCase("nestedClauseLogic")){
 								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());
 							}
+							if(inValidNode.equalsIgnoreCase("isFunctionInvalidInMO")){
+								messageList.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS());
+							}
 						}
 						if(messageList.size()>=1){
 							if(!messageList.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT())){

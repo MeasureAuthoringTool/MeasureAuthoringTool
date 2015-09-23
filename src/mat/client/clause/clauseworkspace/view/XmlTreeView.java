@@ -2430,7 +2430,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
 			checkChildCount = 3;
 			invalidKeyForMap = "invalidNeed3Children";
-		} else if (node.getName().equalsIgnoreCase(MatConstants.DATETIMEDIFF)) {
+		} else if (node.getName().contains(MatConstants.DATETIMEDIFF)) {
 			checkChildCount = 2;
 			invalidKeyForMap = "invalidNeed2Children";
 		} else if (!MatContext.get().functions.contains(capWords(funcType))) {

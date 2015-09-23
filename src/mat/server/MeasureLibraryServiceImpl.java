@@ -3595,7 +3595,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean validateFunctionNodeInMO(Node functionsChildNode) {
 	
 		String displayName = functionsChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
-		if(!MatContext.get().functions.equals(displayName)) {
+		String type = functionsChildNode.getAttributes().getNamedItem("type").getNodeValue();
+		if(!type.equalsIgnoreCase(displayName)) {
 			return true;
 			}
 		return false;

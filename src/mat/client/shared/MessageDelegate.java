@@ -672,7 +672,7 @@ public class MessageDelegate {
 			                                                        "Any terminal logical operator under a top-level logical operator must contain at least one clause.";
 	
 	/** The measure observation validation for functions. */
-	private final String MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS = "Measure logic is invalid. Contents of the clause logic are not permitted for Measure Observations.";
+	private final String MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS = "Contents of the clause logic are not permitted for Measure Observations.";
 	
 	private final String ONLY_ONE_CHILD_REQUIRED = " Functions must contain only one child node.";
 	

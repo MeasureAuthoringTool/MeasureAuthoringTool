@@ -1250,11 +1250,11 @@ HasSelectionHandlers<Boolean> {
 				String cssClass = "customEditButton";
 				if(isEditable){
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\"/>");
+							+ "' class=\" " + cssClass + "\">Editable</button>");
 				} else {
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\" disabled/>");
-				}
+							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
+				} 
 				
 				return sb.toSafeHtml();
 			}
@@ -1304,12 +1304,12 @@ HasSelectionHandlers<Boolean> {
 					cssClass = "customDeleteDisableButton";
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass
-							+ "\"disabled/>");
+							+ "\"disabled/>Delete</button>");
 				} else {
 					cssClass = "customDeleteButton";
 					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
 							+ title + "' class=\" " + cssClass
-							+ "\"/>");
+							+ "\"/>Delete</button>");
 				}
 				return sb.toSafeHtml();
 			}

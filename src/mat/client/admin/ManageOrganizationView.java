@@ -179,12 +179,12 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 			title = "Delete";
 			cssClass = "customDeleteButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Delete</button>");
 		} else {
-			title = "Organization already in use.";
+			title = "Organization in use.";
 			cssClass = "customDeleteDisableButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\" disabled>Organization already in use.</button>");
 		}
 		return sb.toSafeHtml();
 	}

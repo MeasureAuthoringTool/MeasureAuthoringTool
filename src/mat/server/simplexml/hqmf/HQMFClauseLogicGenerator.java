@@ -1164,11 +1164,21 @@ public class HQMFClauseLogicGenerator implements Generator {
 		try{
 			String subTreeUUID = lhsNode.getAttributes().getNamedItem(ID).getNodeValue();
 			String root = subTreeUUID;
+			
 			Node relOpParentNode = relOpNode.getParentNode();
 			
 			String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
 			Node subTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 			if(subTreeNode != null ) {
+				/**
+				 * Check if the Clause has already been generated.
+				 * If it is not generated yet, then generate it by
+				 * calling the 'generateSubTreeXML' method.
+				 */
+				
+				if(!subTreeNodeMap.containsKey(subTreeUUID)){
+					generateSubTreeXML(subTreeNode, false);
+				}
 				String isQdmVariable = subTreeNode.getAttributes()
 						.getNamedItem(QDM_VARIABLE).getNodeValue();
 				Node firstChild = subTreeNode.getFirstChild();
@@ -1214,14 +1224,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					}
 				}
 				
-				/**
-				 * Check if the Clause has already been generated.
-				 * If it is not generated yet, then generate it by
-				 * calling the 'generateSubTreeXML' method.
-				 */
-				if(!subTreeNodeMap.containsKey(subTreeUUID)){
-					generateSubTreeXML(subTreeNode, false);
-				}
+				
 				
 				Node idNodeQDM = measureExport.getHQMFXmlProcessor().findNode(measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
 				if(idNodeQDM != null){
@@ -1244,6 +1247,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 									newExt = "qdm_var_"+newExt;
 								}
 							}
+						}
+					} else {
+						Node tempParentNode = checkIfParentSubTree(relOpParentNode);
+						if(tempParentNode != null){
+							root = tempParentNode.getAttributes().getNamedItem(UUID).getNodeValue();
 						}
 					}
 					
@@ -1323,7 +1331,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					// Entry for Functional Op.
 					if (FUNCTIONAL_OP.equals(relOpParentNode.getNodeName())) {
 						Element excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode,
-								measureExport.getHQMFXmlProcessor(), newEntryNode.getFirstChild());
+								measureExport.getHQMFXmlProcessor(), firstNode);
 						if(excerptElement != null) {
 							//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
 							//firstNode.appendChild(comment);
@@ -1886,7 +1894,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 								attributeNode.setUserData(ATTRIBUTE_NAME, attributeNode.getAttributes().getNamedItem(NAME).getNodeValue(), null);
 								attributeNode.setUserData(ATTRIBUTE_MODE,attributeMap.getNamedItem(OPERATOR_TYPE).getNodeValue(), null);
 								attributeNode.setUserData(ATTRIBUTE_UUID, attributeNode.getAttributes().getNamedItem(ATTR_UUID).getNodeValue(), null);
-								Element attributeElement = (Element)attributeNode;
+								Element attributeElement = (Element) attributeNode;
 								
 								attributeElement.setAttribute(MODE, attributeMap.getNamedItem(OPERATOR_TYPE).getNodeValue());
 								if(attributeElement.getAttributes().getNamedItem(ATTR_DATE) != null){
@@ -1903,8 +1911,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 								}
 								attributeNode = attributeElement;
 								
-								HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
-								hqmfDataCriteriaElementGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
+								//HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
+								//hqmfDataCriteriaElementGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
+								HQMFAttributeGenerator attributeGenerator = new HQMFAttributeGenerator();
+								attributeGenerator.generateAttributeTagForFunctionalOp(measureExport,qdmNode, criteriaElement, attributeNode);
 							}
 						}
 					}
@@ -2297,6 +2307,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				}
 			}
 			//}
+			
 			if(TRUE.equalsIgnoreCase(isQdmVariable)){
 				if (occText != null) {
 					ext = occText + "qdm_var_"+ext;

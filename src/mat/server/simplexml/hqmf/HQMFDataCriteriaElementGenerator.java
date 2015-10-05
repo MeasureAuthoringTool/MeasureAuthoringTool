@@ -260,7 +260,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
 			String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
-					qdmUUID+"'][@extension='"+qdmExtension+"']";
+					qdmUUID+"'][@extension=\""+qdmExtension+"\"]";
 			Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(),
 					xpathForQDMEntry);
 			if (qmdEntryIDNode==null) {
@@ -335,7 +335,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String datatype = occurNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String oid = occurNode.getAttributes().getNamedItem(OID).getNodeValue();
 			
-			String xpath = "/measure/elementLookUp/qdm[@datatype != 'attribute'][not(@instance)][@oid = '"+oid+"'][@datatype = '"+datatype+"']";
+			String xpath = "/measure/elementLookUp/qdm[@datatype != 'attribute'][not(@instance)][@oid = '"+oid+"'][@datatype = \""+datatype+"\"]";
 			Node nodeToUse = simpleXmlprocessor.findNode(simpleXmlprocessor.getOriginalDoc(), xpath);
 			boolean forceGenerate = true;
 			if(nodeToUse == null){

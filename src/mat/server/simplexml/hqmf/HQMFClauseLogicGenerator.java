@@ -568,7 +568,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String ext = getElementRefExt(elementRefNode, measureExport.getSimpleXMLProcessor());
 		String root = elementRefNode.getAttributes().getNamedItem(ID).getNodeValue();
 		String localVariableName = clauseName;
-		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
 		if(idNodeQDM != null){
 			Node entryElem = idNodeQDM.getParentNode().getParentNode().cloneNode(true);
 			Node newIdNode = getTagFromEntry(entryElem, ID);
@@ -2325,7 +2325,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
 				generateSubTreeXML( subTreeNode, false);
 			}
-			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
 			
 			if(idNodeQDM != null){
 				Node parent = idNodeQDM.getParentNode();
@@ -2422,7 +2422,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
 		String ext = getElementRefExt(elementRefNode, me.getSimpleXMLProcessor());
 		String root = elementRefNode.getAttributes().getNamedItem(ID).getNodeValue();
-		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
 		if(idNodeQDM != null){
 			Node parent = idNodeQDM.getParentNode();
 			if(parent != null){

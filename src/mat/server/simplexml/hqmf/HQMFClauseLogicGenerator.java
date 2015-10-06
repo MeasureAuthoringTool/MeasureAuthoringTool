@@ -270,7 +270,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 */
 	private Boolean isRiskAdjustmentVariable(String subTreeUUID,
 			String clauseName) {
-		String xPath = "/measure/riskAdjustmentVariables/subTreeRef[@displayName='" + clauseName + "' and @id='" + subTreeUUID + "']";
+		String xPath = "/measure/riskAdjustmentVariables/subTreeRef[@displayName=\"" + clauseName + "\" and @id='" + subTreeUUID + "']";
 		boolean RAV = false;
 		try {
 			Node RA = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xPath);
@@ -375,10 +375,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 				"instance").getNodeValue() + "of_"+ext;
 		ext = StringUtils.deleteWhitespace(ext);
 		localVarName = StringUtils.deleteWhitespace(localVarName);
-		logger.info("generateOccHQMF "+"//entry/*/id[@root='" + root + "'][@extension='" + baseExt + "']");
+		logger.info("generateOccHQMF "+"//entry/*/id[@root='" + root + "'][@extension=\"" + baseExt + "\"]");
 		
 		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(),
-				"//entry/*/id[@root='" + root + "'][@extension='" + baseExt + "']");
+				"//entry/*/id[@root='" + root + "'][@extension=\"" + baseExt + "\"]");
 		logger.info("idNodeQDM == null?"+(idNodeQDM == null));
 		
 		if (idNodeQDM != null) {
@@ -1080,7 +1080,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				// Updated Excerpt tag idNode root and extension.
 				//String hqmfXmlString = measureExport.getHQMFXmlProcessor().getOriginalXml();
 				Node idNodeExcerpt = measureExport.getHQMFXmlProcessor().findNode(
-						measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/excerpt/*/id[@root='"+idRoot+"'][@extension='"+idExtension+"']");
+						measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/excerpt/*/id[@root='"+idRoot+"'][@extension=\""+idExtension+"\"]");
 				if(idNodeExcerpt!=null){
 					idNodeExcerpt.getAttributes().getNamedItem(ROOT).setNodeValue(root);
 					idNodeExcerpt.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
@@ -1226,7 +1226,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 				
 				
 				
-				Node idNodeQDM = measureExport.getHQMFXmlProcessor().findNode(measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+				Node idNodeQDM = measureExport.getHQMFXmlProcessor().findNode(measureExport.getHQMFXmlProcessor().getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
 				if(idNodeQDM != null){
 					String newExt = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_" + relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
 					if((relOpParentNode != null) && SUB_TREE.equals(relOpParentNode.getNodeName())){
@@ -1535,7 +1535,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
 		Node relOpParentNode = relOpNode.getParentNode();
 		Element excerptElement = null;
-		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+		Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
 		
 		if ((relOpParentNode != null) && (idNodeQDM != null)) {
 			ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_" + relOpNode.getAttributes().getNamedItem(UUID).getNodeValue()) ;

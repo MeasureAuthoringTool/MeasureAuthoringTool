@@ -88,11 +88,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName) throws XPathExpressionException {
 		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
-		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute='" + attributeName + "']";
+		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {
 			xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute='"
-					+ attributeName + "'  and @datatypes = '" + dataTypeName.toLowerCase() + "']";
+					+ attributeName + "'  and @datatypes = \"" + dataTypeName.toLowerCase() + "\"]";
 			attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		}
 		if (attributeMappingNode != null) {
@@ -820,7 +820,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				qdmAttributeName = node.getFirstChild().getAttributes().getNamedItem(NAME).getNodeValue();
 			}
 			Node idNodeQDM = me.getHQMFXmlProcessor().findNode(me.getHQMFXmlProcessor().getOriginalDoc()
-					, "//entry/*/id[@root='" + root + "'][@extension='" + ext + "']");
+					, "//entry/*/id[@root='" + root + "'][@extension=\"" + ext + "\"]");
 			if (idNodeQDM != null) {
 				Node entryNodeForElementRef = idNodeQDM.getParentNode().getParentNode();
 				String localVariableName = clauseLocalVariableName;

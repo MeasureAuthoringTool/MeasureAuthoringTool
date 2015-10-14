@@ -2,7 +2,6 @@ package mat.client.history;
 
 import java.util.Date;
 import java.util.List;
-
 import mat.DTO.AuditLogDTO;
 import mat.client.CustomPager;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -14,11 +13,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -30,9 +25,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -112,7 +105,7 @@ public abstract class HistoryBaseView {
 	public Widget asWidget() {
 		return mainPanel;
 	}
-
+	
 	/**
 	 * Sets the parent name.
 	 * 
@@ -127,7 +120,7 @@ public abstract class HistoryBaseView {
 		containerPanel.setCodeListInfo(parentLabel);
 		containerPanel.setCodeListInfo(parentName);
 	}
-
+	
 	/**
 	 * Gets the success message display.
 	 * 
@@ -136,7 +129,7 @@ public abstract class HistoryBaseView {
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
 	}
-
+	
 	
 	/**
 	 * Gets the error message display.
@@ -146,13 +139,13 @@ public abstract class HistoryBaseView {
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
-
+	
 	/**
 	 * Gets the page selection tool.
 	 * 
 	 * @return the page selection tool
 	 */
-		/**
+	/**
 	 * Adds the column to table.
 	 *
 	 * @param cellTable the cell table
@@ -205,13 +198,13 @@ public abstract class HistoryBaseView {
 			@Override
 			public SafeHtml getValue(AuditLogDTO object) {
 				if(object.getAdditionlInfo()!=null){
-				return CellTableUtility.getColumnToolTip(object.getAdditionlInfo());
+					return CellTableUtility.getColumnToolTip(object.getAdditionlInfo());
 				}
 				return null;
 			}
 		};
 		cellTable.addColumn(additionalInfo, SafeHtmlUtils
-				.fromSafeConstant("<span title='Additional Info'>" + "Additional Info"
+				.fromSafeConstant("<span title='Additional Information'>" + "Additional Information"
 						+ "</span>"));
 		
 		
@@ -300,5 +293,5 @@ public abstract class HistoryBaseView {
 	
 }
 
-	
+
 

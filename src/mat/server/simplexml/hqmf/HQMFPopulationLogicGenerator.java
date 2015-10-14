@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -32,7 +29,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	private Map<String, String> clauseLogicMap = new HashMap<String, String>();
 	
 	/** The measure grouping map. */
-//	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
+	//	private Map<String, NodeList> measureGroupingMap = new HashMap<String, NodeList>();
 	
 	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
 	
@@ -740,7 +737,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 					throws XPathExpressionException {
 		Node idNodeQDM = hqmfXmlProcessor.findNode(
 				hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='" + id
-				+ "'][@extension='" + extension + "']");
+				+ "'][@extension=\"" + extension + "\"]");
 		if (idNodeQDM != null) {
 			Node parent = idNodeQDM.getParentNode();
 			if (parent != null) {

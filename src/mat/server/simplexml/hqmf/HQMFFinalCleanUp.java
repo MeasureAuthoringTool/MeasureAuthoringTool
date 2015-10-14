@@ -1,11 +1,9 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,7 +51,7 @@ public class HQMFFinalCleanUp {
 		
 	}
 	
-
+	
 	/**
 	 * Clean extensions.
 	 *
@@ -167,13 +165,16 @@ public class HQMFFinalCleanUp {
 		if(extValue.contains(",")) {
 			extValue = StringUtils.remove(extValue, ',');
 		}
+		if(extValue.contains("'")) {
+			extValue = StringUtils.remove(extValue, "'");
+		}
 		return extValue;
 	}
 	
 	
 	/**
 	 * Delete unused entry.
-	 * This method is to check and delete Unused QDM Entries 
+	 * This method is to check and delete Unused QDM Entries
 	 * in HQMF
 	 *
 	 * @param me the me

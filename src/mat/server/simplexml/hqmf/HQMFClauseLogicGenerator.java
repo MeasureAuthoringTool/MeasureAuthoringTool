@@ -1331,7 +1331,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					// Entry for Functional Op.
 					if (FUNCTIONAL_OP.equals(relOpParentNode.getNodeName())) {
 						Element excerptElement = generateExcerptEntryForFunctionalNode(relOpParentNode, lhsNode,
-								measureExport.getHQMFXmlProcessor(), firstNode);
+								measureExport.getHQMFXmlProcessor(), firstNode.getParentNode());
 						if(excerptElement != null) {
 							//Comment comment = measureExport.getHQMFXmlProcessor().getOriginalDoc().createComment("entry for "+relOpParentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
 							//firstNode.appendChild(comment);

@@ -502,7 +502,7 @@
                 <xsl:value-of select="initialPopDescription/text()" />
             </xsl:with-param>
             <xsl:with-param name="code">IPOP</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
 
         <xsl:variable name="scoring_value">
@@ -519,7 +519,7 @@
                     <xsl:value-of select="denominatorDescription/text()" />
                 </xsl:with-param>
                 <xsl:with-param name="code">DENOM</xsl:with-param>
-                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
             </xsl:call-template>
     
             <!-- Denominator Exclusions Description -->
@@ -531,7 +531,7 @@
                     <xsl:value-of select="denominatorExclusionsDescription/text()" />
                 </xsl:with-param>
                 <xsl:with-param name="code">DENEX</xsl:with-param>
-                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
             </xsl:call-template>
     
             <!-- Numerator Description -->
@@ -543,7 +543,7 @@
                     <xsl:value-of select="numeratorDescription/text()" />
                 </xsl:with-param>
                 <xsl:with-param name="code">NUMER</xsl:with-param>
-                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
             </xsl:call-template>
             <!-- Numerator Exclusions Description -->
             <xsl:call-template name="subjOfOrigText">
@@ -554,7 +554,7 @@
                     <xsl:value-of select="numeratorExclusionsDescription/text()" />
                 </xsl:with-param>
                 <xsl:with-param name="code">NUMEX</xsl:with-param>
-                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
             </xsl:call-template>
         </xsl:if>  
         <!-- Denominator Exceptions Description -->
@@ -567,7 +567,7 @@
                     <xsl:value-of select="denominatorExceptionsDescription/text()" />
                 </xsl:with-param>
                 <xsl:with-param name="code">DENEXCEP</xsl:with-param>
-                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+                <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
             </xsl:call-template>
         </xsl:if>
         <xsl:if test="$scoring_value ='Continuous Variable'">
@@ -580,7 +580,7 @@
                 <xsl:value-of select="measurePopulationDescription/text()" />
             </xsl:with-param>
             <xsl:with-param name="code">MSRPOPL</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
         <!-- Measure Population Exclusions -->
         <xsl:call-template name="subjOfOrigText">
@@ -591,7 +591,7 @@
                 <xsl:value-of select="measurePopulationExclusionsDescription/text()" />
             </xsl:with-param>
             <xsl:with-param name="code">MSRPOPLEX</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
         </xsl:if>
         <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Continuous Variable'">
@@ -614,7 +614,7 @@
                 <xsl:value-of select="supplementalData/text()" />
             </xsl:with-param>
             <xsl:with-param name="code">SDE</xsl:with-param>
-            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.1063</xsl:with-param>
+            <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
 
         <xsl:variable name="qms_uuid">

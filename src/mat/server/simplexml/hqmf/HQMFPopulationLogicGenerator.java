@@ -57,7 +57,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			     1.Generate component tag as child of populationCriteriaSection with typeCode COMP.
 			     2.Generate for ex : initialPopulationCriteria tag for IP with classCode="OBS" moodCode="EVN" as attributes.
 			     3.Generate id tag with root and extension as attributes
-			     4. Generate code tag with ccodeSystem="2.16.840.1.113883.5.1063" codeSystemName="HL7 Observation Value"
+			     4. Generate code tag with ccodeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7 Observation Value"
             	    code="IPOP" as attributes.
                  5.Generate displayName as child tag of code with value = name of population as in Simple Xml.
                  6. Generate precondition tag typeCode="PRCN".
@@ -203,7 +203,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 			stratCriteriaElement.appendChild(idElement);
 			Element codeElem = doc.createElement(CODE);
 			codeElem.setAttribute(CODE, "STRAT");
-			codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
+			codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 			codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
 			Element displayNameElement = doc.createElement(DISPLAY_NAME);
 			displayNameElement.setAttribute(VALUE, "Stratification");
@@ -252,7 +252,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		initialPopCriteriaElement.appendChild(idElement);
 		Element codeElem = doc.createElement(CODE);
 		codeElem.setAttribute(CODE, criteriaTagCodeName);
-		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
+		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 		codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
 		Element displayNameElement = doc.createElement(DISPLAY_NAME);
 		displayNameElement.setAttribute(VALUE, item.getAttributes().getNamedItem(TYPE).getNodeValue());
@@ -525,7 +525,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		Element codeElem = outputProcessor.getOriginalDoc()
 				.createElement(CODE);
 		codeElem.setAttribute(CODE, "STRAT");
-		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.1063");
+		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 		codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
 		Element displayNameElement = outputProcessor.getOriginalDoc().createElement(DISPLAY_NAME);
 		displayNameElement.setAttribute(VALUE, "Stratification");

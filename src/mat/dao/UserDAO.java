@@ -3,11 +3,9 @@ package mat.dao;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.model.Organization;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
-
 import org.springframework.security.core.userdetails.UserDetails;
 
 // TODO: Auto-generated Javadoc
@@ -170,5 +168,7 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @return the hash map
 	 */
 	HashMap<String, Organization> searchAllUsedOrganizations();
-
+	
+	public List<User> getAllUsers();
+	
 }

@@ -137,6 +137,13 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		userModelReport.setButtonLabel("Generate CSV");
 		userModelReport.setToBeGenerated("User");
 		modelList.add(userModelReport);
+		
+		ReportModel allUserModelReport = new ReportModel();
+		allUserModelReport.setReportName("All Users Report");
+		allUserModelReport.setButtonLabel("Generate CSV");
+		allUserModelReport.setToBeGenerated("AllUser");
+		modelList.add(allUserModelReport);
+		
 		ReportModel orgModelReport = new ReportModel();
 		orgModelReport.setReportName("Active Organization Report");
 		orgModelReport.setButtonLabel("Generate CSV");

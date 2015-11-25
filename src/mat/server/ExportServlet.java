@@ -7,13 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
@@ -28,7 +26,6 @@ import mat.server.simplexml.MATCssUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +45,7 @@ public class ExportServlet extends HttpServlet {
 	
 	/** The Constant EXPORT_ACTIVE_NON_ADMIN_USERS_CSV. */
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
+	private static final String EXPORT_ALL_USERS_CSV = "exportAllUsersCSV";
 	
 	/** The Constant EXPORT_ACTIVE_OID_CSV. */
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
@@ -138,21 +136,21 @@ public class ExportServlet extends HttpServlet {
 		try {
 			if (SIMPLEXML.equals(format)) {
 				export = exportSimpleXML(resp, measureLibraryService, id, type,
-						 measure, fnu);
+						measure, fnu);
 			} else if (EMEASURE.equals(format)) {
 				export = exportEmeasureXML(resp, measureLibraryService, id,
 						type,  measure, export, fnu);
 			} else if (CODELIST.equals(format)) {
 				export = exportCodeListXLS(resp, measureLibraryService, id,
-						 measure, fnu);
+						measure, fnu);
 			} else if (ZIP.equals(format)) {
 				export = exportEmeasureZip(resp, measureLibraryService, id,
-						 measure, exportDate, fnu);
+						measure, exportDate, fnu);
 			} else if (SUBTREE_HTML.equals(format)){
 				export = exportSubTreeHumanReadable(req, resp, id);
 			} else if (VALUESET.equals(format)) {
 				export = exportValueSetListXLS(resp, measureLibraryService, id,
-						 measure, fnu);
+						measure, fnu);
 			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
 				exportActiveUserListCSV(resp, fnu);
 			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
@@ -162,15 +160,19 @@ public class ExportServlet extends HttpServlet {
 			} else if("exportMeasureOwner".equalsIgnoreCase(format)){
 				exportActiveUserMeasureOwnershipListCSV(resp,fnu);
 				
+			}else if (EXPORT_ALL_USERS_CSV.equals(format)) {
+				exportAllUserCSV(resp, fnu);
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		if (!CODELIST.equals(format) && !EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format) && !EXPORT_ACTIVE_OID_CSV.equals(format)
+		if (!CODELIST.equals(format) && !EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)&& !EXPORT_ALL_USERS_CSV.equals(format) && !EXPORT_ACTIVE_OID_CSV.equals(format)
 				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format) && !"exportMeasureOwner".equalsIgnoreCase(format)) {
 			resp.getOutputStream().println(export.export);
 		}
 	}
+	
+	
 	
 	public ExportResult exportMeasureNotesCSV(HttpServletResponse resp,
 			String id, Measure measure, FileNameUtility fnu) throws Exception,
@@ -219,7 +221,20 @@ public class ExportServlet extends HttpServlet {
 			resp.getOutputStream().close();
 		}
 	}
-	
+	private void exportAllUserCSV(HttpServletResponse resp, FileNameUtility fnu) throws InCorrectUserRoleException, IOException {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		if ("Administrator".equalsIgnoreCase(userRole)) {
+			String csvFileString = generateCSVOfAllUser();
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String activeUserCSVDate = formatter.format(new Date());
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
+			resp.setContentType("text/csv");
+			resp.getOutputStream().write(csvFileString.getBytes());
+			resp.getOutputStream().close();
+		}
+		
+	}
 	public void exportActiveUserMeasureOwnershipListCSV(HttpServletResponse resp,
 			FileNameUtility fnu) throws InCorrectUserRoleException, IOException, XPathExpressionException {
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
@@ -569,6 +584,15 @@ public class ExportServlet extends HttpServlet {
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
 	
+	private String generateCSVOfAllUser() throws InCorrectUserRoleException {
+		logger.info("Generating CSV For All Users...");
+		//Get all the active users
+		List<User> allUsersList = getUserService().getAllUsers();
+		
+		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
+		return createCSVOfUsers(allUsersList);
+	}
+	
 	/**
 	 * Generate csv of active user emails.
 	 * 
@@ -650,6 +674,26 @@ public class ExportServlet extends HttpServlet {
 		return csvStringBuilder.toString();
 	}
 	
+	private String createCSVOfUsers(
+			final List<User> allNonAdminActiveUsersList) {
+		
+		StringBuilder csvStringBuilder = new StringBuilder();
+		//Add the header row
+		csvStringBuilder.append("Last Name,First Name,Organization,Organization Id,User Status,Date Of Termination");
+		csvStringBuilder.append("\r\n");
+		
+		
+		//Add data rows
+		for (User user:allNonAdminActiveUsersList) {
+			csvStringBuilder.append("\"" + user.getLastName() + "\",\"" + user.getFirstName()
+					+ "\",\"" + user.getOrganizationName()
+					+ "\",\"" + user.getOrgOID()
+					+ "\",\"" + user.getStatus().getDescription()
+					+ "\",\"" + user.getTerminationDate() + "\"");
+			csvStringBuilder.append("\r\n");
+		}
+		return csvStringBuilder.toString();
+	}
 	
 	/**
 	 * Generates Measure and Measure Owner report for Active Non Admin Users.

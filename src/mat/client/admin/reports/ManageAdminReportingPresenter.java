@@ -36,6 +36,8 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 					generateCSVForActiveOids();
 				} else if (model.getToBeGenerated().equalsIgnoreCase("User")) {
 					generateCSVOfActiveUserEmails();
+				}else if (model.getToBeGenerated().equalsIgnoreCase("AllUser")) {
+					generateCSVOfAllUser();
 				} else if (model.getToBeGenerated().equalsIgnoreCase("Measure")) {
 					generateCSVOfActiveUserMeasureOwnership();
 				}
@@ -53,6 +55,12 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
 		Window.open(url + "&type=save", "_self", "");
 	}
+	
+	private void generateCSVOfAllUser() {
+		String url = GWT.getModuleBaseURL() + "export?format=exportAllUsersCSV";
+		Window.open(url + "&type=save", "_self", "");
+	}
+	
 	private void generateCSVOfActiveUserMeasureOwnership() {
 		String url = GWT.getModuleBaseURL() + "export?format=exportMeasureOwner";
 		Window.open(url + "&type=save", "_self", "");

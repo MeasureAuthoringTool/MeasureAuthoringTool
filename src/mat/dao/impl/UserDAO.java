@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -420,6 +418,14 @@ mat.dao.UserDAO {
 		criteria.addOrder(Order.asc("lastName"));
 		return criteria.list();
 	}
-
-
+	
+	
+	@Override
+	public List<User> getAllUsers() {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		return criteria.list();
+	}
+	
+	
 }

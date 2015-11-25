@@ -14,7 +14,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -35,7 +34,6 @@ import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.CodeListService;
-import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.server.util.TemplateUtil;
@@ -43,7 +41,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
@@ -128,7 +125,7 @@ public class UserServiceImpl implements UserService {
 	
 	/** The user password history dao. */
 	@Autowired
-	private UserPasswordHistoryDAO userPasswordHistoryDAO; 
+	private UserPasswordHistoryDAO userPasswordHistoryDAO;
 	
 	
 	/* (non-Javadoc)
@@ -250,7 +247,7 @@ public class UserServiceImpl implements UserService {
 		user.setLockedOutDate(null);
 		user.getPassword().setForgotPwdlockCounter(0);
 		user.getPassword().setPasswordlockCounter(0);
-	}	
+	}
 	
 	
 	/* (non-Javadoc)
@@ -697,21 +694,21 @@ public class UserServiceImpl implements UserService {
 			reactivatingUser = true;
 		}
 		User exsitingUser = userDAO.findByEmail(model.getEmailAddress());
-		if(exsitingUser != null && (!(exsitingUser.getId().equals(user.getId()) ) )) {
+		if((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId()) ) )) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
 		}
 		else{
 			setModelFieldsOnUser(model, user);
-		
-		
+			
+			
 			if(model.isExistingUser()) {
 				if(reactivatingUser) {
 					requestResetLockedPassword(user.getId());
 				}
 				
 				saveExisting(user);
-			
+				
 			}
 			else {
 				saveNew(user);
@@ -981,6 +978,11 @@ public class UserServiceImpl implements UserService {
 		return userDAO.getAllNonAdminActiveUsers();
 	}
 	
+	@Override
+	public List<User> getAllUsers(){
+		return userDAO.getAllUsers();
+	}
+	
 	/**
 	 * Notify user of account locked.
 	 * 
@@ -1024,7 +1026,7 @@ public class UserServiceImpl implements UserService {
 	
 	/**
 	 *  temporary and initial sign in password should not be stored in password History
-	 *  isValidPwd boolean is set for special case where current valid password becomes temporary 
+	 *  isValidPwd boolean is set for special case where current valid password becomes temporary
 	 *  password when it exceeds 60 days limit and it Should be added to password history.
 	 * *
 	 *
@@ -1034,7 +1036,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void addByUpdateUserPasswordHistory(User user, boolean isValidPwd){
 		List<UserPasswordHistory> pwdHistoryList = userPasswordHistoryDAO.getPasswordHistory(user.getId());
-		if(isValidPwd || !(user.getPassword().isInitial() 
+		if(isValidPwd || !(user.getPassword().isInitial()
 				|| user.getPassword().isTemporaryPassword())) {
 			UserPasswordHistory passwordHistory = new UserPasswordHistory();
 			passwordHistory.setUser(user);
@@ -1044,7 +1046,7 @@ public class UserServiceImpl implements UserService {
 			if(pwdHistoryList.size()<PASSWORD_HISTORY_SIZE){
 				user.getPasswordHistory().add(passwordHistory);
 			} else {
-			   userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
+				userPasswordHistoryDAO.addByUpdateUserPasswordHistory(user);
 			}
 		}
 		

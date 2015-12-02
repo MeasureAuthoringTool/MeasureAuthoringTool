@@ -307,6 +307,10 @@ public class ManageUsersPresenter implements MatPresenter {
 		
 		InformationMessageDisplayInterface getInformationMessageDisplay();
 
+		Label getRevokeDate();
+
+		void setRevokeDate(Label revokeDate);
+
 		TextArea getAddInfoArea();
 
 		void setAddInfoArea(TextArea addInfoArea);
@@ -781,7 +785,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setActive(detailDisplay.getIsActive().getValue());
 		//currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
 		currentDetails.setRole(detailDisplay.getRole().getValue());
-		
+		currentDetails.setRevokeDate(detailDisplay.getRevokeDate().getText());
 		currentDetails.setOid(detailDisplay.getOid().getValue());
 		String orgId = detailDisplay.getOrganizationListBox().getValue();
 		currentDetails.setOrganizationId(orgId);

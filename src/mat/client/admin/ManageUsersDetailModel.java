@@ -62,7 +62,17 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	
 	private String passwordExpirationMsg;
 	
+	private String revokeDate;
 	
+	public String getRevokeDate() {
+		return revokeDate;
+	}
+		
+	public void setRevokeDate(String revokeDate) {
+		this.revokeDate = revokeDate;
+
+	}
+
 	/**
 	 * Checks if is current user can unlock.
 	 * 

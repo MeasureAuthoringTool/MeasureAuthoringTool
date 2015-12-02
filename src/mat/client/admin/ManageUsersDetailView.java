@@ -116,6 +116,9 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The revoked status. */
 	private RadioButton revokedStatus = new RadioButton("status", "Revoked");
 	
+	/* The revoked date, past or future */
+	private Label revokeDate = new Label();
+	
 	/** The role label. */
 	private String roleLabel = "Role";
 	
@@ -264,6 +267,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		rightPanel.add(LabelBuilder.buildLabel(activeStatus, statusLabel));
 		activeStatus.addStyleName("block");
 		revokedStatus.addStyleName("block");
+		revokeDate.addStyleName("block");
 		SimplePanel sPanel = new SimplePanel();
 		sPanel.setWidth("10px");
 		hzPanel.add(activeStatus);
@@ -272,6 +276,8 @@ implements ManageUsersPresenter.DetailDisplay {
 		hzPanel.addStyleName("inline");
 		rightPanel.add(hzPanel);
 		rightPanel.add(revokedStatus);
+		//revokeDate.setText("Hey Stupid");
+		rightPanel.add(revokeDate);
 		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -295,10 +301,10 @@ implements ManageUsersPresenter.DetailDisplay {
 				}
 			}
 		});
+		
 		rightPanel.add(new SpacerWidget());
 		
 		rightPanel.add(resetPassword);
-		
 		SimplePanel buttonPanel = new SimplePanel();
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
@@ -554,7 +560,12 @@ implements ManageUsersPresenter.DetailDisplay {
 		listBox.addItem(defaultOption, "");
 		if (organizations != null) {
 			for (Result organization : organizations) {
-				listBox.insertItem(organization.getOrgName(), "" + organization.getId(), organization.getOrgName());
+				// truncate the org names to 60 chars, so fields don't wrap
+				String orgName = organization.getOrgName();
+				if (orgName.length() > 60) {
+					orgName = organization.getOrgName().substring(0,60);
+				}
+				listBox.insertItem(orgName, "" + organization.getId(), organization.getOrgName());
 			}
 		}
 	}
@@ -633,6 +644,17 @@ implements ManageUsersPresenter.DetailDisplay {
 		this.addInfoArea = addInfoArea;
 	}
 	
+	@Override
+	public Label getRevokeDate() {
+		return revokeDate;
+	}
+	
+	@Override
+	public void setRevokeDate(Label revokeDate) {
+		this.revokeDate = revokeDate;
+	}
+
+
 //	@Override
 //	public Label getExpLabel() {
 //		return expLabel;

@@ -218,6 +218,7 @@ public class ForgottenPasswordPresenter {
 							display.getErrorMessageDisplay().setMessage(message);
 						}
 						//invalidUserCounter = result.getCounter();
+						MatContext.get().recordUserEvent(display.getLoginId().getValue(), "Forgot Password", "", false);
 					}
 					
 					@Override

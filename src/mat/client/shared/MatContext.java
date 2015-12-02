@@ -1203,6 +1203,22 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
+	
+	//recording the User Events
+	public void recordUserEvent(String userId, String event, String additionalInfo, boolean isChildLogRequired) {
+		MatContext.get()
+		.getAuditService().recordUserEvent(userId, event, additionalInfo, isChildLogRequired, new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+			}
+		});		
+	}
+	
 	/**
 	 * Gets the synchronization delegate.
 	 * 

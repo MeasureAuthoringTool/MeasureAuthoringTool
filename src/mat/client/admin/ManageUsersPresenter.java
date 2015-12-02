@@ -35,8 +35,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import elemental.html.DetailsElement;
 
 /**
  * The Class ManageUsersPresenter.
@@ -303,6 +306,10 @@ public class ManageUsersPresenter implements MatPresenter {
 		//Label getExpLabel();
 		
 		InformationMessageDisplayInterface getInformationMessageDisplay();
+
+		TextArea getAddInfoArea();
+
+		void setAddInfoArea(TextArea addInfoArea);
 	}
 	
 	/** The panel. */
@@ -322,6 +329,9 @@ public class ManageUsersPresenter implements MatPresenter {
 	
 	/** The last search key. */
 	private String lastSearchKey;
+	
+	private boolean isPersonalInfoModified = false;
+	
 	
 	/**
 	 * Instantiates a new manage users presenter.
@@ -384,6 +394,9 @@ public class ManageUsersPresenter implements MatPresenter {
 					public void onSuccess(Void result) {
 						detailDisplay.getSuccessMessageDisplay()
 						.setMessage("Temporary Password E-mail has been sent.");
+						//saveUserAuditLog("Reset Password");
+						MatContext
+						.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Reset Password", detailDisplay.getAddInfoArea().getText().toString(), false);
 					}
 					
 					@Override
@@ -458,6 +471,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		updateUserDetailsFromView();
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
+		isUserDetailsModified();
 		if (isValid(currentDetails)) {
 			MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
 				@Override
@@ -473,6 +487,17 @@ public class ManageUsersPresenter implements MatPresenter {
 						detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 						detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 						detailDisplay.getOid().setValue(currentDetails.getOid());
+						
+						if(isPersonalInfoModified){
+							MatContext
+							.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Personal Inforamtion", "", false);
+						} 
+						
+						if(detailDisplay.getAddInfoArea().getText().length()>0){
+							MatContext
+							.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Additional Information", detailDisplay.getAddInfoArea().getText().toString(), false);
+						}
+						
 					} else {
 						List<String> messages = new ArrayList<String>();
 						switch(result.getFailureReason()) {
@@ -489,8 +514,10 @@ public class ManageUsersPresenter implements MatPresenter {
 						}
 						detailDisplay.getErrorMessageDisplay().setMessages(messages);
 					}
+					isPersonalInfoModified = false;
 				}
 				
+
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
@@ -499,6 +526,38 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 	}
 	
+	//For saving User Audit Log
+	/*private void saveUserAuditLog(String info) {
+		MatContext
+		.get().recordUserEvent(info, detailDisplay.getAddInfoArea().getText().toString(), false);		
+	}*/
+	
+	private void isUserDetailsModified() {
+		
+		if(currentDetails!=null){
+			if(!currentDetails.getFirstName().equalsIgnoreCase(detailDisplay.getFirstName().getValue())){
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getLastName().equalsIgnoreCase(detailDisplay.getLastName().getValue())){
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getMiddleInitial().equalsIgnoreCase(detailDisplay.getMiddleInitial().getValue())){
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getTitle().equalsIgnoreCase(detailDisplay.getTitle().getValue())){
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getEmailAddress().equalsIgnoreCase(detailDisplay.getEmailAddress().getValue())) {
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getPhoneNumber().equalsIgnoreCase(detailDisplay.getPhoneNumber().getValue())) {
+				isPersonalInfoModified = true;
+			} else if(!(currentDetails.isActive() && detailDisplay.getIsActive().getValue())) {
+				isPersonalInfoModified = true;
+			} else if (!currentDetails.getRole().equalsIgnoreCase(detailDisplay.getRole().getValue())){
+				isPersonalInfoModified = true;
+			} else if(!currentDetails.getOrganization().equalsIgnoreCase(detailDisplay.getOrganizationListBox().getValue())){
+				isPersonalInfoModified = true;
+			}
+		}
+		
+	}
+
 	/**
 	 * Reset messages.
 	 */

@@ -115,4 +115,8 @@ public interface AuditServiceAsync extends AsynchronousService {
 	 */
 	void recordTransactionEvent(String primaryId, String secondaryId, String activityType, String userId,
 			String additionalInfo, int logLevel, AsyncCallback<Boolean> callback);
+	
+	
+	void recordUserEvent(String userId, String event, String additionalInfo, boolean isChildLogRequired,
+			AsyncCallback<Boolean> callback);
 }

@@ -37,6 +37,7 @@ import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
+import mat.dao.UserAuditLogDAO;
 
 
 /**
@@ -154,6 +155,8 @@ public class DAOService {
 	private UserSecurityQuestionDAO userSecurityQuestionDAO;
 	
 	private UserPasswordHistoryDAO userPasswordHistoryDAO;
+	
+	private UserAuditLogDAO userAuditLogDAO;
 	
 	/**
 	 * Gets the attribute details dao.
@@ -847,6 +850,14 @@ public class DAOService {
 	 */
 	public void setUserPasswordHistoryDAO(UserPasswordHistoryDAO userPasswordHistoryDAO) {
 		this.userPasswordHistoryDAO = userPasswordHistoryDAO;
+	}
+
+	public UserAuditLogDAO getUserAuditLogDAO() {
+		return userAuditLogDAO;
+	}
+
+	public void setUserAuditLogDAO(UserAuditLogDAO userAuditLogDAO) {
+		this.userAuditLogDAO = userAuditLogDAO;
 	}
 	
 	/**

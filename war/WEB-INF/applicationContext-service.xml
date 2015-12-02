@@ -56,6 +56,9 @@
     </bean> -->
     <bean id="measureAuditService" class="mat.server.service.impl.MeasureAuditServiceImpl">
     </bean>
+    
+    <bean id="userAuditService" class="mat.server.service.impl.UserAuditServiceImpl">
+    </bean>
     <bean id="codeListAuditService" class="mat.server.service.impl.CodeListAuditServiceImpl">
     </bean>
    <!--  <bean id="suppDataElementsGenerator" class="mat.server.export.SuppDataElementsGenerator"> 

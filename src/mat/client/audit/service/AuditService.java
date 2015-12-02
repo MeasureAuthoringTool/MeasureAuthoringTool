@@ -106,4 +106,7 @@ public interface AuditService extends RemoteService {
 	 */
 	public boolean recordTransactionEvent(String primaryId, String secondaryId, String activityType,
 			String userId, String additionalInfo, int logLevel);
+
+	boolean recordUserEvent(String userId, String event, String additionalInfo,
+			boolean isChildLogRequired);
 }

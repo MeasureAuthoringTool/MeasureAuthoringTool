@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -129,6 +130,11 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The title label. */
 	private String titleLabel = "Title";
 	
+	private String addInfoLabel = "Additional Information";
+	
+	private TextArea addInfoArea = new TextArea();
+	
+	
 	//Label expLabel = new Label("Expires");
 	
 	InformationMessageDisplay informationMessage = new InformationMessageDisplay();
@@ -184,6 +190,16 @@ implements ManageUsersPresenter.DetailDisplay {
 		leftPanel.add(new SpacerWidget());
 		
 		leftPanel.add(phoneWidget);
+		leftPanel.add(new SpacerWidget());
+		
+		addInfoArea.getElement().setAttribute("maxlength", "250");
+		addInfoArea.setText("");
+		addInfoArea.setHeight("80px");
+		addInfoArea.setWidth("250px");
+		
+		leftPanel.add(LabelBuilder.buildLabel(addInfoArea, addInfoLabel));
+		addInfoArea.setTitle("Additional Information");
+		leftPanel.add(addInfoArea);
 		leftPanel.add(new SpacerWidget());
 		
 		lockedLabel.addStyleName("floatRight");
@@ -605,6 +621,16 @@ implements ManageUsersPresenter.DetailDisplay {
 	@Override
 	public void setUserLocked(boolean b) {
 		MatContext.get().setVisible(lockedLabel, b);
+	}
+
+	@Override
+	public TextArea getAddInfoArea() {
+		return addInfoArea;
+	}
+
+	@Override
+	public void setAddInfoArea(TextArea addInfoArea) {
+		this.addInfoArea = addInfoArea;
 	}
 	
 //	@Override

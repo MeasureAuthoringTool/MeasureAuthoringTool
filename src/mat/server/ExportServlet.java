@@ -679,7 +679,7 @@ public class ExportServlet extends HttpServlet {
 		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
-		csvStringBuilder.append("Last Name,First Name,Organization,Organization Id,Email Address,User Status,Date Of Termination");
+		csvStringBuilder.append("Last Name,First Name,Organization,Organization Id,Email Address,User Status,Role,Date Of Termination");
 		csvStringBuilder.append("\r\n");
 		
 		
@@ -690,6 +690,7 @@ public class ExportServlet extends HttpServlet {
 					+ "\",\"" + user.getOrgOID()
 					+ "\",\"" + user.getEmailAddress()
 					+ "\",\"" + user.getStatus().getDescription()
+					+ "\",\"" + user.getSecurityRole().getDescription()
 					+ "\",\"" + user.getTerminationDate() + "\"");
 			csvStringBuilder.append("\r\n");
 		}

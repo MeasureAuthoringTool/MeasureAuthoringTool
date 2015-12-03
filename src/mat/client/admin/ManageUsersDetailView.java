@@ -265,9 +265,9 @@ implements ManageUsersPresenter.DetailDisplay {
 		hzPanel.getElement().setId("HorizontalPanel_UserExpiryDate");
 		//expLabel.getElement().setId("UserPasswordExpiry_Label");
 		rightPanel.add(LabelBuilder.buildLabel(activeStatus, statusLabel));
-		activeStatus.addStyleName("block");
-		revokedStatus.addStyleName("block");
-		revokeDate.addStyleName("block");
+		activeStatus.addStyleName("userStatus");
+		revokedStatus.addStyleName("userStatus");
+		revokeDate.addStyleName("revokeDate");
 		SimplePanel sPanel = new SimplePanel();
 		sPanel.setWidth("5px");
 		hzPanel.add(activeStatus);
@@ -279,7 +279,8 @@ implements ManageUsersPresenter.DetailDisplay {
 		HorizontalPanel hzRevokePanel = new HorizontalPanel();
 		hzRevokePanel.add(revokedStatus);
 		hzRevokePanel.add(sPanel);
-		hzRevokePanel.setWidth("50%");
+		//hzRevokePanel.setWidth("35%");
+		//hzPanel.addStyleName("inline");
 		hzRevokePanel.add(revokeDate);
 		rightPanel.add(hzRevokePanel);
 		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {

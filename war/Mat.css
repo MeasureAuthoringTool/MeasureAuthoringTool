@@ -47,6 +47,26 @@ body#main select, body#main input, body#main textarea {
 	
 }
 
+.userStatus {
+    color: black;
+    display: block;
+    padding: 6px 6px 6px 10px;
+    text-align: left;
+    height:30px;
+    display: inline;
+    vertical-align: bottom;
+}
+
+.revokeDate {
+    color: black;
+    display: block;
+    padding: 10px 0px 0px 0px;
+    text-align: left;
+    height:30px;
+    display: inline;
+    vertical-align: bottom;
+}
+
 .labelStyling{
 	font-weight:bold;
 }

@@ -114,7 +114,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		if (user.getStatus().getId().equals("2")) {
 			revoked = true;
 		} 
-		model.setRevokeDate(getUserRevokeDate(revoked, user.getSignOutDate(), user.getTerminationDate()));
+		model.setRevokeDate(getUserRevokeDate(revoked, user.getSignInDate(), user.getTerminationDate()));
 		model.setCurrentUserCanUnlock(v);
 		model.setPasswordExpirationMsg(getUserPwdCreationMsg(user.getLoginId()));
 		return model;
@@ -127,7 +127,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		
 		if (revoked) {
 			calendar.setTime(terminationDate);
-			revokedDate = dateFormat.format(calendar.getTime());
+			revokedDate = "(" + dateFormat.format(calendar.getTime()) + ")";
 		} else {
 			if (signOutDate != null) {
 				
@@ -135,7 +135,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 				//String tempDate = dateFormat.format(calendar.getTime());
 				//System.out.println("Last Signed In Date: " + tempDate);
 				calendar.add(Calendar.DATE, 180);
-				revokedDate = dateFormat.format(calendar.getTime());
+				revokedDate = "(" + dateFormat.format(calendar.getTime()) + ")";
 				//System.out.println("Revoked Date: " + revokedDate);
 			}
 		}

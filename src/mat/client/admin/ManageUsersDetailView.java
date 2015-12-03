@@ -269,15 +269,19 @@ implements ManageUsersPresenter.DetailDisplay {
 		revokedStatus.addStyleName("block");
 		revokeDate.addStyleName("block");
 		SimplePanel sPanel = new SimplePanel();
-		sPanel.setWidth("10px");
+		sPanel.setWidth("5px");
 		hzPanel.add(activeStatus);
 		hzPanel.add(sPanel);
 		//hzPanel.add(expLabel);
 		hzPanel.addStyleName("inline");
 		rightPanel.add(hzPanel);
-		rightPanel.add(revokedStatus);
-		//revokeDate.setText("Hey Stupid");
-		rightPanel.add(revokeDate);
+		
+		HorizontalPanel hzRevokePanel = new HorizontalPanel();
+		hzRevokePanel.add(revokedStatus);
+		hzRevokePanel.add(sPanel);
+		hzRevokePanel.setWidth("50%");
+		hzRevokePanel.add(revokeDate);
+		rightPanel.add(hzRevokePanel);
 		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -560,7 +564,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		listBox.addItem(defaultOption, "");
 		if (organizations != null) {
 			for (Result organization : organizations) {
-				// truncate the org names to 60 chars, so fields don't wrap
+				// truncate the org names to 60 chars, so fields on screen don't wrap
 				String orgName = organization.getOrgName();
 				if (orgName.length() > 60) {
 					orgName = organization.getOrgName().substring(0,60);

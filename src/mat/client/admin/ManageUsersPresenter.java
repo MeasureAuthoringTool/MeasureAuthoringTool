@@ -758,6 +758,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.setUserLocked(currentDetails.isLocked());
 		if (currentDetails.isExistingUser()) {
 			detailDisplay.setShowRevokedStatus(currentDetails.isCurrentUserCanChangeAccountStatus());
+			if (!currentDetails.isCurrentUserCanChangeAccountStatus()) {
+				detailDisplay.getRevokeDate().setText("");
+			}
 			// detailDisplay.setUserIsDeletable(currentDetails.isCurrentUserCanChangeAccountStatus());
 		} else {
 			detailDisplay.setShowRevokedStatus(false);

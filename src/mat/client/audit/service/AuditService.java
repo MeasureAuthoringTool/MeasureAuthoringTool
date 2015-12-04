@@ -5,6 +5,8 @@ package mat.client.audit.service;
 import java.util.List;
 
 import mat.DTO.SearchHistoryDTO;
+import mat.DTO.UserAuditLogDTO;
+import mat.model.UserAuditLog;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -107,6 +109,8 @@ public interface AuditService extends RemoteService {
 	public boolean recordTransactionEvent(String primaryId, String secondaryId, String activityType,
 			String userId, String additionalInfo, int logLevel);
 
-	boolean recordUserEvent(String userId, String event, String additionalInfo,
+	boolean recordUserEvent(String userId, List<String> event, String additionalInfo,
 			boolean isChildLogRequired);
+
+	List<UserAuditLogDTO> executeUserLogSearch(String userId);
 }

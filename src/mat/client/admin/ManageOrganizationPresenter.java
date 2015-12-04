@@ -376,7 +376,9 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						detailDisplay.getOid().setValue(currentDetails.getOid());
 						detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 						if(isOrgDetailsModified){
-							MatContext.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Oraganization Modified", "", false);
+							List<String> event = new ArrayList<String>();
+							event.add("Oraganization Modified");
+							MatContext.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), event, "", false);
 							isOrgDetailsModified = false;
 						}
 					} else {

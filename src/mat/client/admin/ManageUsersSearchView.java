@@ -2,10 +2,12 @@ package mat.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.admin.ManageUsersSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
@@ -13,7 +15,10 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+import mat.model.UserAuditLog;
 import mat.shared.ClickableSafeHtmlCell;
+
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -65,6 +70,14 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private Button searchButton = new SecondaryButton("Search");
 	/** The search label. */
 	private Widget searchLabel = LabelBuilder.buildLabel(search, "Search for a User");
+	private Observer observer;
+	
+	
+	public static interface Observer {
+		
+		void onHistoryClicked(Result result);
+	}
+	
 	/**Constructor.**/
 	public ManageUsersSearchView() {
 		search.setWidth("256px");
@@ -126,6 +139,26 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
 				"<span title=\"Organization\">" + "Organization" + "</span>"));
+		
+		
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+		Column<Result, String> historyColumn = new Column<Result, 
+				String>(historyButton) {
+			@Override
+			public String getValue(Result object) {
+				return "History";
+			}
+				};
+				historyColumn.setFieldUpdater(new FieldUpdater<Result, String>() {
+					@Override
+					public void update(int index, Result object, String value) {
+						observer.onHistoryClicked(object);
+					}
+				});
+			cellTable.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
+						+ "History" + "</span>"));
+				
+		
 		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -231,5 +264,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	@Override
 	public HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool() {
 		return this;
+	}
+	
+	@Override
+	public void setObserver(Observer observer){
+		this.observer = observer;
 	}
 }

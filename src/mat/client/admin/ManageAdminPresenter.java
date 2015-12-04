@@ -28,7 +28,8 @@ public class ManageAdminPresenter implements MatPresenter {
 	public ManageAdminPresenter() {
 		ManageUsersSearchView musd = new ManageUsersSearchView();
 		ManageUsersDetailView mudd = new ManageUsersDetailView();
-		manageUsersPresenter = new ManageUsersPresenter(musd, mudd);
+		ManageUserHistoryView muhd = new ManageUserHistoryView();
+		manageUsersPresenter = new ManageUsersPresenter(musd, mudd, muhd);
 		ManageOrganizationView manageOrganizationView = new ManageOrganizationView();
 		ManageOrganizationDetailView manageOrganizationDetailView = new ManageOrganizationDetailView();
 		manageOrganizationPresenter = new ManageOrganizationPresenter(manageOrganizationView, manageOrganizationDetailView);

@@ -5,10 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import mat.DTO.AuditLogDTO;
+import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.admin.ManageUsersSearchView.Observer;
 import mat.client.admin.service.SaveUpdateUserResult;
+import mat.client.history.HistoryModel;
+import mat.client.measure.ManageMeasurePresenter.HistoryDisplay;
+import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InformationMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
@@ -17,6 +24,8 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.model.UserAuditLog;
+import mat.DTO.UserAuditLogDTO;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -100,6 +109,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * @return the search string
 		 */
 		HasValue<String> getSearchString();
+
+		void setObserver(Observer observer);
 	}
 	
 	/**
@@ -316,14 +327,76 @@ public class ManageUsersPresenter implements MatPresenter {
 		void setAddInfoArea(TextArea addInfoArea);
 	}
 	
+	
+	public static interface HistoryDisplay {
+		
+		
+		public Widget asWidget();
+		
+		
+        public String getUserId();
+		
+		/**
+		 * Gets the measure name.
+		 * 
+		 * @return the measure name
+		 */
+		public String getUserName();
+		
+		/**
+		 * Gets the return to link.
+		 * 
+		 * @return the return to link
+		 */
+		public HasClickHandlers getReturnToLink();
+		
+        
+		public void setUserId(String id);
+		
+		/**
+		 * Sets the measure name.
+		 * 
+		 * @param name
+		 *            the new measure name
+		 */
+		public void setUserName(String name);
+		
+		/**
+		 * Sets the page size.
+		 *
+		 * @param s the new return to link text
+		 */
+		//		public void setPageSize(int pageNumber);
+		
+		/**
+		 * Sets the return to link text.
+		 * 
+		 * @param s
+		 *            the new return to link text
+		 */
+		public void setReturnToLinkText(String s);
+		
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param results the results
+		 */
+
+		void buildCellTable(List<UserAuditLogDTO> results);
+		
+		
+	}
+	
 	/** The panel. */
-	private SimplePanel panel = new SimplePanel();
+	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	
 	/** The search display. */
 	private SearchDisplay searchDisplay;
 	
 	/** The detail display. */
 	private DetailDisplay detailDisplay;
+	
+	private HistoryDisplay historyDisplay;
 	
 	/** The current details. */
 	private ManageUsersDetailModel currentDetails;
@@ -336,6 +409,8 @@ public class ManageUsersPresenter implements MatPresenter {
 	
 	private boolean isPersonalInfoModified = false;
 	
+	private ManageUsersDetailModel updatedDetails;
+	
 	
 	/**
 	 * Instantiates a new manage users presenter.
@@ -345,11 +420,25 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * @param dDisplayArg
 	 *            the d display arg
 	 */
-	public ManageUsersPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
+	public ManageUsersPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, HistoryDisplay hDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
+		historyDisplay = hDisplayArg;
 		displaySearch();
 		
+		if (historyDisplay != null) {
+			historyDisplayHandlers(historyDisplay);
+		}
+		
+		searchDisplay.setObserver(new ManageUsersSearchView.Observer() {
+			
+			@Override
+			public void onHistoryClicked(
+					mat.client.admin.ManageUsersSearchModel.Result result) {
+				historyDisplay.setReturnToLinkText("<< Return to Manage Users");
+				displayHistory(result.getKey(), result.getFirstName());
+			}
+		});
 		
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageUsersSearchModel.Result>() {
 			@Override
@@ -398,9 +487,10 @@ public class ManageUsersPresenter implements MatPresenter {
 					public void onSuccess(Void result) {
 						detailDisplay.getSuccessMessageDisplay()
 						.setMessage("Temporary Password E-mail has been sent.");
-						//saveUserAuditLog("Reset Password");
+						List<String> event = new ArrayList<String>();
+						event.add("Reset Password");
 						MatContext
-						.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Reset Password", detailDisplay.getAddInfoArea().getText().toString(), false);
+						.get().recordUserEvent(currentDetails.getUserID(), event, detailDisplay.getAddInfoArea().getText().toString(), false);
 					}
 					
 					@Override
@@ -426,8 +516,8 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * Display search.
 	 */
 	private void displaySearch() {
-		panel.clear();
-		panel.add(searchDisplay.asWidget());
+		//panel.clear();
+		panel.setContent(searchDisplay.asWidget());
 		search("");
 	}
 	
@@ -437,8 +527,8 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displayDetail() {
 		resetMessages();
 		populateOrganizations();
-		panel.clear();
-		panel.add(detailDisplay.asWidget());
+		//panel.clear();
+		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Users");
 	}
 	
@@ -473,15 +563,55 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateUserDetailsFromView();
+		isUserDetailsModified();
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
-		isUserDetailsModified();
-		if (isValid(currentDetails)) {
-			MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
+		if (isValid(updatedDetails)) {
+			MatContext.get().getAdminService().saveUpdateUser(updatedDetails, new AsyncCallback<SaveUpdateUserResult>() {
 				@Override
 				public void onSuccess(SaveUpdateUserResult result) {
 					if (result.isSuccess()) {
+						
+						List<String> event = new ArrayList<String>();
+						String addInfo = "";
+						//adding logs for change in personal Information
+						if(isPersonalInfoModified){
+							event.add("Personal Information Modified");
+							isPersonalInfoModified = false;
+						} 
+						
+						//maintaining logs for adding additional Info 
+						if(detailDisplay.getAddInfoArea().getText().length()>0){
+							event.add("Additional Information");
+							addInfo = detailDisplay.getAddInfoArea().getText();
+							detailDisplay.getAddInfoArea().setText("");
+						}
+						
+						//maintaining logs for change in organization
+						if(!(updatedDetails.getOrganization().equalsIgnoreCase(currentDetails.getOrganization()))){
+							event.add("Organization Modified");
+						}
+
+						//maintaining logs for change in security role
+						if(!(updatedDetails.getRole().equalsIgnoreCase(currentDetails.getRole()))){
+							event.add("Security Role Modified");
+						}
+						
+						//maintaining logs for active and revoked activity
+						if(!(detailDisplay.getIsActive().getValue()==currentDetails.isActive())){
+							if(detailDisplay.getIsActive().getValue()){
+								event.add("Activated");
+							} else {
+								event.add("Revoked");
+							}
+						}
+						
+						MatContext
+						.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
+						
+						
 						//displaySearch();
+						currentDetails = updatedDetails;
 						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 								.getMessageDelegate().getUSER_SUCCESS_MESSAGE());
 						detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
@@ -492,15 +622,7 @@ public class ManageUsersPresenter implements MatPresenter {
 						detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 						detailDisplay.getOid().setValue(currentDetails.getOid());
 						
-						if(isPersonalInfoModified){
-							MatContext
-							.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Personal Inforamtion", "", false);
-						} 
 						
-						if(detailDisplay.getAddInfoArea().getText().length()>0){
-							MatContext
-							.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), "Additional Information", detailDisplay.getAddInfoArea().getText().toString(), false);
-						}
 						
 					} else {
 						List<String> messages = new ArrayList<String>();
@@ -518,7 +640,7 @@ public class ManageUsersPresenter implements MatPresenter {
 						}
 						detailDisplay.getErrorMessageDisplay().setMessages(messages);
 					}
-					isPersonalInfoModified = false;
+					
 				}
 				
 
@@ -530,12 +652,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 	}
 	
-	//For saving User Audit Log
-	/*private void saveUserAuditLog(String info) {
-		MatContext
-		.get().recordUserEvent(info, detailDisplay.getAddInfoArea().getText().toString(), false);		
-	}*/
-	
+	//check if personal info is changed
 	private void isUserDetailsModified() {
 		
 		if(currentDetails!=null){
@@ -551,11 +668,7 @@ public class ManageUsersPresenter implements MatPresenter {
 				isPersonalInfoModified = true;
 			} else if(!currentDetails.getPhoneNumber().equalsIgnoreCase(detailDisplay.getPhoneNumber().getValue())) {
 				isPersonalInfoModified = true;
-			} else if(!(currentDetails.isActive() && detailDisplay.getIsActive().getValue())) {
-				isPersonalInfoModified = true;
-			} else if (!currentDetails.getRole().equalsIgnoreCase(detailDisplay.getRole().getValue())){
-				isPersonalInfoModified = true;
-			} else if(!currentDetails.getOrganization().equalsIgnoreCase(detailDisplay.getOrganizationListBox().getValue())){
+			} else if(!(currentDetails.getRole().equals(detailDisplay.getRole().getValue()))){
 				isPersonalInfoModified = true;
 			}
 		}
@@ -779,26 +892,29 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * Update user details from view.
 	 */
 	private void updateUserDetailsFromView() {
-		currentDetails.setFirstName(detailDisplay.getFirstName().getValue());
-		currentDetails.setLastName(detailDisplay.getLastName().getValue());
-		currentDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());
-		currentDetails.setTitle(detailDisplay.getTitle().getValue());
-		currentDetails.setEmailAddress(detailDisplay.getEmailAddress().getValue());
-		currentDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
-		currentDetails.setActive(detailDisplay.getIsActive().getValue());
+		updatedDetails = new ManageUsersDetailModel();
+		updatedDetails.setUserID(currentDetails.getKey());
+		updatedDetails.setExistingUser(true);
+		updatedDetails.setFirstName(detailDisplay.getFirstName().getValue());
+		updatedDetails.setLastName(detailDisplay.getLastName().getValue());
+		updatedDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());
+		updatedDetails.setTitle(detailDisplay.getTitle().getValue());
+		updatedDetails.setEmailAddress(detailDisplay.getEmailAddress().getValue());
+		updatedDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
+		updatedDetails.setActive(detailDisplay.getIsActive().getValue());
 		//currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
-		currentDetails.setRole(detailDisplay.getRole().getValue());
-		currentDetails.setRevokeDate(detailDisplay.getRevokeDate().getText());
-		currentDetails.setOid(detailDisplay.getOid().getValue());
+		updatedDetails.setRole(detailDisplay.getRole().getValue());
+		updatedDetails.setRevokeDate(detailDisplay.getRevokeDate().getText());
+		updatedDetails.setOid(detailDisplay.getOid().getValue());
 		String orgId = detailDisplay.getOrganizationListBox().getValue();
-		currentDetails.setOrganizationId(orgId);
+		updatedDetails.setOrganizationId(orgId);
 		Result organization =  detailDisplay.getOrganizationsMap().get(orgId);
 		if (organization != null) {
-			currentDetails.setOrganization(organization.getOrgName());
+			updatedDetails.setOrganization(organization.getOrgName());
 		} else {
-			currentDetails.setOrganization("");
+			updatedDetails.setOrganization("");
 		}
-		currentDetails.scrubForMarkUp();
+		updatedDetails.scrubForMarkUp();
 	}
 	
 	/**
@@ -822,6 +938,18 @@ public class ManageUsersPresenter implements MatPresenter {
 		return vPanel;
 	}
 	
+	
+ private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
+		
+		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				displaySearch();
+			}
+		});
+		
+	}
+	
 	/**
 	 * Checks if is valid.
 	 * 
@@ -841,4 +969,38 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 		return valid;
 	}
+	
+	
+	private void displayHistory(String userId, String userName) {
+	   
+		searchUserHistory(userId);
+		historyDisplay.setUserName(userName);
+		panel.getButtonPanel().clear();
+		panel.setHeading("Users > History", "UserLibrary");
+		panel.setContent(historyDisplay.asWidget());
+		Mat.focusSkipLists("UserLibrary");
+	}
+	
+	
+	private void searchUserHistory(String userId) {
+		
+		MatContext
+		.get()
+		.getAuditService()
+		.executeUserLogSearch(userId, new AsyncCallback<List<UserAuditLogDTO>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<UserAuditLogDTO> result) {
+				historyDisplay.buildCellTable(result);
+			}
+		});
+		
+	}
+	
 }

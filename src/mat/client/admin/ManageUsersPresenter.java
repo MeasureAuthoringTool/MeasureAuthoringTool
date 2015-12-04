@@ -504,11 +504,7 @@ public class ManageUsersPresenter implements MatPresenter {
 														.recordUserEvent(
 																currentDetails
 																		.getUserID(),
-																event,
-																detailDisplay
-																		.getAddInfoArea()
-																		.getText()
-																		.toString(),
+																event, updatedDetails.getAdditionalInfo(),
 																false);
 											}
 
@@ -622,8 +618,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										if (detailDisplay.getAddInfoArea()
 												.getText().length() > 0) {
 											event.add("Additional Information");
-											addInfo = detailDisplay
-													.getAddInfoArea().getText();
+											addInfo = updatedDetails.getAdditionalInfo();
 											detailDisplay.getAddInfoArea()
 													.setText("");
 										} else {

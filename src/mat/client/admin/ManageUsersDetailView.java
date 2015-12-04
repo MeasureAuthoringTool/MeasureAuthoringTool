@@ -15,6 +15,7 @@ import mat.client.shared.FocusableImageButton;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
@@ -135,7 +136,10 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	private String addInfoLabel = "Additional Information";
 	
-	private TextArea addInfoArea = new TextArea();
+	
+	private static final int ADD_INFO_MAX_LENGTH = 250;
+	
+	private CustomTextAreaWithMaxLength addInfoArea = new CustomTextAreaWithMaxLength(ADD_INFO_MAX_LENGTH);
 	
 	
 	//Label expLabel = new Label("Expires");
@@ -640,12 +644,12 @@ implements ManageUsersPresenter.DetailDisplay {
 	}
 
 	@Override
-	public TextArea getAddInfoArea() {
+	public CustomTextAreaWithMaxLength getAddInfoArea() {
 		return addInfoArea;
 	}
 
 	@Override
-	public void setAddInfoArea(TextArea addInfoArea) {
+	public void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea) {
 		this.addInfoArea = addInfoArea;
 	}
 	

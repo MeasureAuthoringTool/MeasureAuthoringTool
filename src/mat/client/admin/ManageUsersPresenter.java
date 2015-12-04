@@ -20,6 +20,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InformationMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
@@ -322,9 +323,9 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		void setRevokeDate(Label revokeDate);
 
-		TextArea getAddInfoArea();
+		CustomTextAreaWithMaxLength getAddInfoArea();
 
-		void setAddInfoArea(TextArea addInfoArea);
+		void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea);
 	}
 	
 	

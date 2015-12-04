@@ -353,7 +353,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		isOrganizationDetailModified();
+		//isOrganizationDetailModified();
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 		if (isValid(updatedDetails)) {
@@ -398,8 +398,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						}
 						detailDisplay.getErrorMessageDisplay().setMessages(messages);
 						
-						List<String> event = new ArrayList<String>();
-						event.add("Oraganization Modified");
+//						List<String> event = new ArrayList<String>();
+//						event.add("Oraganization Modified");
 						
 						
 					}
@@ -411,9 +411,11 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	
 	private void isOrganizationDetailModified() {
 			
-		if(!currentDetails.getOrganization().equalsIgnoreCase(updatedDetails.getOrganization())){
+		if(currentDetails.getOrganization()!=null && 
+				!currentDetails.getOrganization().equalsIgnoreCase(updatedDetails.getOrganization())){
 			isOrgDetailsModified = true;
-		} else if(!currentDetails.getOid().equalsIgnoreCase(updatedDetails.getOid()) ) {
+		} else if(currentDetails.getOid()!=null && 
+				!currentDetails.getOid().equalsIgnoreCase(updatedDetails.getOid()) ) {
 			isOrgDetailsModified = true;
 		}
 	}

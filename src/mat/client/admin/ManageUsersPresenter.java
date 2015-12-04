@@ -589,12 +589,14 @@ public class ManageUsersPresenter implements MatPresenter {
 						}
 						
 						//maintaining logs for change in organization
-						if(!(updatedDetails.getOrganization().equalsIgnoreCase(currentDetails.getOrganization()))){
+						if(currentDetails.getOrganization()!=null && 
+								!(updatedDetails.getOrganization().equalsIgnoreCase(currentDetails.getOrganization()))){
 							event.add("Organization Modified");
 						}
 
 						//maintaining logs for change in security role
-						if(!(updatedDetails.getRole().equalsIgnoreCase(currentDetails.getRole()))){
+						if(currentDetails.getRole()!=null && 
+								!(updatedDetails.getRole().equalsIgnoreCase(currentDetails.getRole()))){
 							event.add("Security Role Modified");
 						}
 						
@@ -607,8 +609,10 @@ public class ManageUsersPresenter implements MatPresenter {
 							}
 						}
 						
-						MatContext
-						.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
+						if(event.size()>0){
+							MatContext
+							.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
+						}
 						
 						
 						//displaySearch();
@@ -657,19 +661,26 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void isUserDetailsModified() {
 		
 		if(currentDetails!=null){
-			if(!currentDetails.getFirstName().equalsIgnoreCase(detailDisplay.getFirstName().getValue())){
+			if(currentDetails.getFirstName()!=null && 
+					!currentDetails.getFirstName().equalsIgnoreCase(detailDisplay.getFirstName().getValue())){
 				isPersonalInfoModified = true;
-			} else if(!currentDetails.getLastName().equalsIgnoreCase(detailDisplay.getLastName().getValue())){
+			} else if(currentDetails.getLastName()!=null && 
+					!currentDetails.getLastName().equalsIgnoreCase(detailDisplay.getLastName().getValue())){
 				isPersonalInfoModified = true;
-			} else if(!currentDetails.getMiddleInitial().equalsIgnoreCase(detailDisplay.getMiddleInitial().getValue())){
+			} else if(currentDetails.getMiddleInitial()!=null &&
+					!currentDetails.getMiddleInitial().equalsIgnoreCase(detailDisplay.getMiddleInitial().getValue())){
 				isPersonalInfoModified = true;
-			} else if(!currentDetails.getTitle().equalsIgnoreCase(detailDisplay.getTitle().getValue())){
+			} else if(currentDetails.getTitle()!=null && 
+					!currentDetails.getTitle().equalsIgnoreCase(detailDisplay.getTitle().getValue())){
 				isPersonalInfoModified = true;
-			} else if(!currentDetails.getEmailAddress().equalsIgnoreCase(detailDisplay.getEmailAddress().getValue())) {
+			} else if(currentDetails.getEmailAddress()!=null && 
+					!currentDetails.getEmailAddress().equalsIgnoreCase(detailDisplay.getEmailAddress().getValue())) {
 				isPersonalInfoModified = true;
-			} else if(!currentDetails.getPhoneNumber().equalsIgnoreCase(detailDisplay.getPhoneNumber().getValue())) {
+			} else if(currentDetails.getPhoneNumber()!=null && 
+					!currentDetails.getPhoneNumber().equalsIgnoreCase(detailDisplay.getPhoneNumber().getValue())) {
 				isPersonalInfoModified = true;
-			} else if(!(currentDetails.getRole().equals(detailDisplay.getRole().getValue()))){
+			} else if(currentDetails.getRole()!=null && 
+					!(currentDetails.getRole().equals(detailDisplay.getRole().getValue()))){
 				isPersonalInfoModified = true;
 			}
 		}
@@ -894,8 +905,11 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void updateUserDetailsFromView() {
 		updatedDetails = new ManageUsersDetailModel();
-		updatedDetails.setUserID(currentDetails.getKey());
-		updatedDetails.setExistingUser(true);
+		if(currentDetails.getKey()!=null) {
+			updatedDetails.setUserID(currentDetails.getKey());
+			updatedDetails.setExistingUser(true);
+		}
+		
 		updatedDetails.setFirstName(detailDisplay.getFirstName().getValue());
 		updatedDetails.setLastName(detailDisplay.getLastName().getValue());
 		updatedDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());

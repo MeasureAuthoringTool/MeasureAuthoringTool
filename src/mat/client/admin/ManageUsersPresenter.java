@@ -679,10 +679,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			} else if(currentDetails.getPhoneNumber()!=null && 
 					!currentDetails.getPhoneNumber().equalsIgnoreCase(detailDisplay.getPhoneNumber().getValue())) {
 				isPersonalInfoModified = true;
-			} else if(currentDetails.getRole()!=null && 
-					!(currentDetails.getRole().equals(detailDisplay.getRole().getValue()))){
-				isPersonalInfoModified = true;
-			}
+			} 
 		}
 		
 	}

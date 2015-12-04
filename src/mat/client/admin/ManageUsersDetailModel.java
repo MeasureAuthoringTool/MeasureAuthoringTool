@@ -3,6 +3,7 @@ package mat.client.admin;
 import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageUsersDetailModel.
  */
@@ -60,14 +61,29 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	/** The current user can change account status. */
 	private boolean currentUserCanChangeAccountStatus;
 	
+	/** The password expiration msg. */
 	private String passwordExpirationMsg;
 	
+	/** The revoke date. */
 	private String revokeDate;
 	
+	/** The additional info. */
+	private String additionalInfo;
+	
+	/**
+	 * Gets the revoke date.
+	 *
+	 * @return the revoke date
+	 */
 	public String getRevokeDate() {
 		return revokeDate;
 	}
 		
+	/**
+	 * Sets the revoke date.
+	 *
+	 * @param revokeDate the new revoke date
+	 */
 	public void setRevokeDate(String revokeDate) {
 		this.revokeDate = revokeDate;
 
@@ -421,6 +437,8 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	}
 	
 	/**
+	 * Gets the password expiration msg.
+	 *
 	 * @return the passwordExpirationDate
 	 */
 	public String getPasswordExpirationMsg() {
@@ -428,12 +446,37 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	}
 	
 	/**
+	 * Sets the password expiration msg.
+	 *
 	 * @param passwordExpirationDate the passwordExpirationDate to set
 	 */
 	public void setPasswordExpirationMsg(String passwordExpirationDate) {
 		passwordExpirationMsg = passwordExpirationDate;
 	}
 	
+	
+	/**
+	 * Gets the additional info.
+	 *
+	 * @return the additional info
+	 */
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+
+	/**
+	 * Sets the additional info.
+	 *
+	 * @param additionalInfo the new additional info
+	 */
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.model.BaseModel#scrubForMarkUp()
+	 */
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";
@@ -472,6 +515,11 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 		System.out.println(noMarkupText);
 		if(this.getPhoneNumber().trim().length() > noMarkupText.length()){
 			this.setPhoneNumber(noMarkupText);
+		}
+		noMarkupText = this.getAdditionalInfo().trim().replaceAll(markupRegExp, "");
+		System.out.println(noMarkupText);
+		if(this.getAdditionalInfo().trim().length() > noMarkupText.length()){
+			this.setAdditionalInfo(noMarkupText);
 		}
 		
 	}

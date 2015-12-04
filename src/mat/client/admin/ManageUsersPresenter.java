@@ -1053,6 +1053,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		} else {
 			updatedDetails.setOrganization("");
 		}
+		updatedDetails.setAdditionalInfo(detailDisplay.getAddInfoArea().getText());
 		updatedDetails.scrubForMarkUp();
 	}
 

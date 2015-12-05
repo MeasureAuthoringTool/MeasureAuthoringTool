@@ -632,11 +632,11 @@ public class ManageUsersPresenter implements MatPresenter {
 											// maintaining logs for change in
 											// organization
 											if (currentDetails
-													.getOrganization() != null
+													.getOid() != null
 													&& !(updatedDetails
-															.getOrganization()
+															.getOid()
 															.equalsIgnoreCase(currentDetails
-																	.getOrganization()))) {
+																	.getOid()))) {
 												event.add("Organization Changed");
 											}
 
@@ -786,6 +786,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
 		detailDisplay.getInformationMessageDisplay().clear();
+		detailDisplay.getAddInfoArea().setEnabled(false);
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}
@@ -807,6 +808,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");
+		detailDisplay.getAddInfoArea().setEnabled(true);
 		MatContext.get().getAdminService()
 				.getUser(name, new AsyncCallback<ManageUsersDetailModel>() {
 					@Override

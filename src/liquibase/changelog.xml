@@ -183,5 +183,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-74_USMAT-6255.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-74_USMAT-6272_User_Story.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-80_USMAT-6559.xml"/>	
-		<include file="classpath:/liquibase/deploy_Sprint-80_USMAT-6559_ADD_INFO_CHARLEN_CHANGE.xml/>
+		<include file="classpath:/liquibase/deploy_Sprint-80_USMAT-6559_ADD_INFO_CHARLEN_CHANGE.xml"/>
 	</databaseChangeLog>

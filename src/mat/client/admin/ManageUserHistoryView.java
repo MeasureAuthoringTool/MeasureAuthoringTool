@@ -165,8 +165,8 @@ public class ManageUserHistoryView implements
 			}
 		};
 		cellTable.addColumn(additionalInfo, SafeHtmlUtils
-				.fromSafeConstant("<span title='Additional Information'>"
-						+ "Additional Information" + "</span>"));
+				.fromSafeConstant("<span title='Administrator Notes'>"
+						+ "Administrator Notes" + "</span>"));
 
 		return cellTable;
 	}
@@ -203,17 +203,17 @@ public class ManageUserHistoryView implements
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);
 			cellTable.setWidth("100%");
-			cellTable.setColumnWidth(0, 20.0, Unit.PCT);
+			cellTable.setColumnWidth(0, 15.0, Unit.PCT);
 			cellTable.setColumnWidth(1, 20.0, Unit.PCT);
-			cellTable.setColumnWidth(2, 20.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 15.0, Unit.PCT);
 			cellTable.setColumnWidth(3, 20.0, Unit.PCT);
-			cellTable.setColumnWidth(4, 20.0, Unit.PCT);
+			cellTable.setColumnWidth(4, 30.0, Unit.PCT);
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"historySearchSummary",
 							"In the following Log Entry table, User Action is given in first column,"
 									+ " User Activity in second column, Last Modified By in third column,"
-									+ "Last Modified Date in fourth column and Additional Information in last column.");
+									+ "Last Modified Date in fourth column and Administrator Notes in last column.");
 			cellTable.getElement().setAttribute("id", "HistorySearchCellTable");
 			cellTable.getElement().setAttribute("aria-describedby",
 					"historySearchSummary");

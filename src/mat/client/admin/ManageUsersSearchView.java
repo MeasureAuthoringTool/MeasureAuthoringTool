@@ -138,7 +138,16 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 			}
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
-				"<span title=\"Organization\">" + "Organization" + "</span>"));
+				"<span title=\"Organization\">" + "Organization" + "</span>"));				
+		
+		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
+			}
+		};
+		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant(
+				"<span title=\"User Role\">" + "User Role" + "</span>"));
 		
 		
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
@@ -157,16 +166,6 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				});
 			cellTable.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
 						+ "History" + "</span>"));
-				
-		
-		Column<Result, SafeHtml> userRoleColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(Result object) {
-				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
-			}
-		};
-		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant(
-				"<span title=\"User Role\">" + "User Role" + "</span>"));
 		
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override

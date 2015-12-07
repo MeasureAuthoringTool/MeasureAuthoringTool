@@ -134,13 +134,15 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The title label. */
 	private String titleLabel = "Title";
 	
-	private String addInfoLabel = "Additional Information";
+//	private String addInfoLabel = "Additional Information";
 	
 	
-	private static final int ADD_INFO_MAX_LENGTH = 250;
+	private static final int ADD_INFO_MAX_LENGTH = 2000;
 	
 	private CustomTextAreaWithMaxLength addInfoArea = new CustomTextAreaWithMaxLength(ADD_INFO_MAX_LENGTH);
 	
+	
+	private Label addInfoLabel = new Label("Notes");
 	
 	//Label expLabel = new Label("Expires");
 	
@@ -203,9 +205,9 @@ implements ManageUsersPresenter.DetailDisplay {
 		addInfoArea.setText("");
 		addInfoArea.setHeight("80px");
 		addInfoArea.setWidth("250px");
-		
-		leftPanel.add(LabelBuilder.buildLabel(addInfoArea, addInfoLabel));
-		addInfoArea.setTitle("Additional Information");
+		addInfoLabel.getElement().setId("Admin_AddtionalInfo_Label");
+		leftPanel.add(addInfoLabel);
+		addInfoArea.setTitle("Notes");
 		leftPanel.add(addInfoArea);
 		leftPanel.add(new SpacerWidget());
 		
@@ -661,6 +663,12 @@ implements ManageUsersPresenter.DetailDisplay {
 	@Override
 	public void setRevokeDate(Label revokeDate) {
 		this.revokeDate = revokeDate;
+	}
+	
+	@Override
+	public void setShowAdminNotes(boolean b) {
+		MatContext.get().setVisible(addInfoLabel, b);
+		MatContext.get().setVisible(addInfoArea, b);
 	}
 
 

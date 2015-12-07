@@ -5,29 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.DTO.AuditLogDTO;
-import mat.DTO.SearchHistoryDTO;
+import mat.DTO.UserAuditLogDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageUsersSearchView.Observer;
 import mat.client.admin.service.SaveUpdateUserResult;
-import mat.client.history.HistoryModel;
-import mat.client.measure.ManageMeasurePresenter.HistoryDisplay;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InformationMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
-import mat.model.UserAuditLog;
-import mat.DTO.UserAuditLogDTO;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -43,12 +39,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-
-import elemental.html.DetailsElement;
 
 /**
  * The Class ManageUsersPresenter.
@@ -330,6 +322,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		CustomTextAreaWithMaxLength getAddInfoArea();
 
 		void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea);
+
+		void setShowAdminNotes(boolean b);
 	}
 
 	public static interface HistoryDisplay {
@@ -504,7 +498,7 @@ public class ManageUsersPresenter implements MatPresenter {
 														.recordUserEvent(
 																currentDetails
 																		.getUserID(),
-																event, updatedDetails.getAdditionalInfo(),
+																event, null,
 																false);
 											}
 
@@ -546,6 +540,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displaySearch() {
 		// panel.clear();
 		panel.setContent(searchDisplay.asWidget());
+		panel.setHeading("", "");
 		search("");
 	}
 
@@ -613,7 +608,7 @@ public class ManageUsersPresenter implements MatPresenter {
 									if (result.isSuccess()) {
 
 										List<String> event = new ArrayList<String>();
-										String addInfo = "";
+										String addInfo = null;
 
 										if (detailDisplay.getAddInfoArea()
 												.getText().length() > 0) {
@@ -786,8 +781,6 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
 		detailDisplay.getInformationMessageDisplay().clear();
-		detailDisplay.getAddInfoArea().setText("");
-		detailDisplay.getAddInfoArea().setEnabled(false);
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}
@@ -1000,12 +993,14 @@ public class ManageUsersPresenter implements MatPresenter {
 		if (currentDetails.isExistingUser()) {
 			detailDisplay.setShowRevokedStatus(currentDetails
 					.isCurrentUserCanChangeAccountStatus());
+			detailDisplay.setShowAdminNotes(true);
 			if (!currentDetails.isCurrentUserCanChangeAccountStatus()) {
 				detailDisplay.getRevokeDate().setText("");
 			}
 			// detailDisplay.setUserIsDeletable(currentDetails.isCurrentUserCanChangeAccountStatus());
 		} else {
 			detailDisplay.setShowRevokedStatus(false);
+			detailDisplay.setShowAdminNotes(false);
 			// detailDisplay.setUserIsDeletable(false);
 		}
 		detailDisplay.setUserIsActiveEditable(currentDetails

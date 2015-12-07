@@ -40,7 +40,7 @@ public class UserAuditLogDAO extends GenericDAO<UserAuditLog, String> implements
 			for (int i = 0; i < event.size(); i++) {
 
 				UserAuditLog userAuditLog = new UserAuditLog();
-				userAuditLog.setActionType("Admin");
+				userAuditLog.setActionType("Administrator");
 				userAuditLog.setTime(new Date());
 				userAuditLog.setUser(user);
 				userAuditLog.setUserEmail(LoggedInUserUtil

@@ -786,6 +786,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
 		detailDisplay.getInformationMessageDisplay().clear();
+		detailDisplay.getAddInfoArea().setText("");
 		detailDisplay.getAddInfoArea().setEnabled(false);
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
@@ -808,6 +809,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");
+		detailDisplay.getAddInfoArea().setText("");
 		detailDisplay.getAddInfoArea().setEnabled(true);
 		MatContext.get().getAdminService()
 				.getUser(name, new AsyncCallback<ManageUsersDetailModel>() {

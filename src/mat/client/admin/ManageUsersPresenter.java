@@ -612,7 +612,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 										if (detailDisplay.getAddInfoArea()
 												.getText().length() > 0) {
-											event.add("Additional Information");
+											event.add("Administrator Notes");
 											addInfo = updatedDetails.getAdditionalInfo();
 											detailDisplay.getAddInfoArea()
 													.setText("");

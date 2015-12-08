@@ -24,7 +24,6 @@ import org.w3c.dom.NodeList;
  * The Class HQMFPopulationLogicGenerator.
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
-	
 	/** The clause logic map. */
 	private Map<String, String> clauseLogicMap = new HashMap<String, String>();
 	
@@ -426,7 +425,7 @@ public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 		popCriteriaElem.appendChild(templateId);
 		Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.1");
-		/*itemChild.setAttribute("extension", UUIDUtilClient.uuid());*/
+		itemChild.setAttribute("extension", POPULATION_CRITERIA_EXTENSION);
 		templateId.appendChild(itemChild);
 		Element idElement = outputProcessor.getOriginalDoc()
 				.createElement(ID);

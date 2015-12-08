@@ -73,14 +73,14 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		mainPanel.add(new SpacerWidget());
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		containerPanel.setHeading("Admin Reports", "");
+		containerPanel.setHeading("Administrator Reports", "");
 	}
 	/**
 	 * Add Columns to Report Table.
 	 * @param table - CellTable.
 	 */
 	private void addColumnToTable(CellTable<ReportModel> table) {
-		Label tableHeader = new Label("Generate Admin Reports");
+		Label tableHeader = new Label("Generate Administrator Reports");
 		tableHeader.getElement().setId("AdminReportHeader_Label");
 		tableHeader.setStyleName("measureGroupingTableHeader");
 		tableHeader.getElement().setAttribute("tabIndex", "0");

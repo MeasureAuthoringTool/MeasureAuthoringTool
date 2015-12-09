@@ -528,7 +528,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			
 			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
 			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);
-			title = "Administrative Reports";
+			title = "Administrator Reports";
 			tabIndex = mainTabLayout.addPresenter(reportingPresenter, mainTabLayout.fmt.normalTitle(title));
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;

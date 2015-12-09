@@ -226,9 +226,9 @@ public class ExportServlet extends HttpServlet {
 		if ("Administrator".equalsIgnoreCase(userRole)) {
 			String csvFileString = generateCSVOfAllUser();
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String activeUserCSVDate = formatter.format(new Date());
+			String allUserCSVDate = formatter.format(new Date());
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
+					+ fnu.getCSVFileName("allUsersReport", allUserCSVDate) + ";");
 			resp.setContentType("text/csv");
 			resp.getOutputStream().write(csvFileString.getBytes());
 			resp.getOutputStream().close();

@@ -99,4 +99,7 @@ public interface AdminService extends RemoteService {
 	ManageOrganizationSearchModel getAllOrganizations();
 	
 	void deleteOrganization(Result organization) throws InCorrectUserRoleException;
+
+	ManageUsersDetailModel getUserByEmail(String emailId)
+			throws InCorrectUserRoleException;
 }

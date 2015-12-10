@@ -4,6 +4,8 @@ import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
+import mat.model.User;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -89,4 +91,6 @@ public interface AdminServiceAsync {
 	void getAllOrganizations(AsyncCallback<ManageOrganizationSearchModel> callback);
 	
 	void deleteOrganization(ManageOrganizationSearchModel.Result organization, AsyncCallback<Void> callback);
+	
+	void getUserByEmail(String emailId, AsyncCallback<ManageUsersDetailModel> callback);
 }

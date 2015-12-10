@@ -292,6 +292,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		getUserService().requestResetLockedPassword(userid);
 	}
 	
+	
 	/** Save update organization.
 	 * 
 	 * @param currentModel the current model
@@ -425,5 +426,13 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		logger.info("Searching users on " + key);
 		
 		return model;
+	}
+	
+	@Override
+	public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException{
+		checkAdminUser();
+		logger.info("Retrieving user " + emailId);
+		User user = getUserService().findByEmailID(emailId);
+		return extractUserModel(user);
 	}
 }

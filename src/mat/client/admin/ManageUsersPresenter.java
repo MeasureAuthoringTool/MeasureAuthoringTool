@@ -606,74 +606,81 @@ public class ManageUsersPresenter implements MatPresenter {
 								public void onSuccess(
 										SaveUpdateUserResult result) {
 									if (result.isSuccess()) {
-
+										
 										List<String> event = new ArrayList<String>();
 										String addInfo = null;
+										
+										if(currentDetails.getKey()!=null){
+											if (detailDisplay.getAddInfoArea()
+													.getText().length() > 0) {
+												event.add("Administrator Notes");
+												addInfo = updatedDetails.getAdditionalInfo();
+												detailDisplay.getAddInfoArea()
+														.setText("");
+											} else {
+												// adding logs for change in
+												// personal Information
+												if (isPersonalInfoModified) {
+													event.add("Personal Information Modified");
+													isPersonalInfoModified = false;
+												}
 
-										if (detailDisplay.getAddInfoArea()
-												.getText().length() > 0) {
-											event.add("Administrator Notes");
-											addInfo = updatedDetails.getAdditionalInfo();
-											detailDisplay.getAddInfoArea()
-													.setText("");
-										} else {
-											// adding logs for change in
-											// personal Information
-											if (isPersonalInfoModified) {
-												event.add("Personal Information Modified");
-												isPersonalInfoModified = false;
-											}
+												// maintaining logs for change in
+												// organization
+												if (currentDetails
+														.getOid() != null
+														&& !(updatedDetails
+																.getOid()
+																.equalsIgnoreCase(currentDetails
+																		.getOid()))) {
+													event.add("Organization Changed");
+												}
 
-											// maintaining logs for change in
-											// organization
-											if (currentDetails
-													.getOid() != null
-													&& !(updatedDetails
-															.getOid()
-															.equalsIgnoreCase(currentDetails
-																	.getOid()))) {
-												event.add("Organization Changed");
-											}
+												// maintaining logs for change in
+												// security role
+												if (currentDetails.getRole() != null
+														&& !(updatedDetails
+																.getRole()
+																.equalsIgnoreCase(currentDetails
+																		.getRole()))) {
+													event.add("Security Role Changed");
+												}
 
-											// maintaining logs for change in
-											// security role
-											if (currentDetails.getRole() != null
-													&& !(updatedDetails
-															.getRole()
-															.equalsIgnoreCase(currentDetails
-																	.getRole()))) {
-												event.add("Security Role Changed");
-											}
-
-											// maintaining logs for active and
-											// revoked activity
-											if (!(detailDisplay.getIsActive()
-													.getValue() == currentDetails
-													.isActive())) {
-												if (detailDisplay.getIsActive()
-														.getValue()) {
-													event.add("Activated");
-												} else {
-													event.add("Revoked");
+												// maintaining logs for active and
+												// revoked activity
+												if (!(detailDisplay.getIsActive()
+														.getValue() == currentDetails
+														.isActive())) {
+													if (detailDisplay.getIsActive()
+															.getValue()) {
+														event.add("Activated");
+													} else {
+														event.add("Revoked");
+													}
 												}
 											}
-										}
 
-										if (event.size() > 0) {
-											MatContext.get().recordUserEvent(
-													currentDetails.getUserID(),
-													event, addInfo, false);
+											if (event.size() > 0) {
+												MatContext.get().recordUserEvent(
+														currentDetails.getUserID(),
+														event, addInfo, false);
+											}
+											 
+											detailDisplay
+											.getSuccessMessageDisplay()
+											.setMessage(
+													MatContext
+															.get()
+															.getMessageDelegate()
+															.getUSER_SUCCESS_MESSAGE());
+										} else {
+											onNewUserCreation(updatedDetails.getEmailAddress());
 										}
+										
 
 										// displaySearch();
 										currentDetails = updatedDetails;
-										detailDisplay
-												.getSuccessMessageDisplay()
-												.setMessage(
-														MatContext
-																.get()
-																.getMessageDelegate()
-																.getUSER_SUCCESS_MESSAGE());
+										
 										detailDisplay.getFirstName().setValue(
 												currentDetails.getFirstName());
 										detailDisplay.getLastName().setValue(
@@ -732,6 +739,33 @@ public class ManageUsersPresenter implements MatPresenter {
 								}
 							});
 		}
+	}
+	
+	
+	public void onNewUserCreation(String emailId){
+		detailDisplay.setTitle("Update a User");
+		detailDisplay.getAddInfoArea().setText("");
+		detailDisplay.getAddInfoArea().setEnabled(true);
+		MatContext.get().getAdminService().getUserByEmail(emailId, new AsyncCallback<ManageUsersDetailModel>() {
+			
+			@Override
+			public void onSuccess(ManageUsersDetailModel result) {
+				currentDetails = result;
+				displayDetail();
+				detailDisplay
+				.getSuccessMessageDisplay()
+				.setMessage(
+						MatContext
+								.get()
+								.getMessageDelegate()
+								.getUSER_SUCCESS_MESSAGE());
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
 	}
 
 	// check if personal info is changed

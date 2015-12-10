@@ -760,6 +760,12 @@ public class ManageUsersPresenter implements MatPresenter {
 								.getMessageDelegate()
 								.getUSER_SUCCESS_MESSAGE());
 				
+				List<String> event = new ArrayList<String>();
+				event.add("User Created");
+				MatContext.get().recordUserEvent(
+						currentDetails.getUserID(),
+						event , null, false);
+				
 			}
 			
 			@Override

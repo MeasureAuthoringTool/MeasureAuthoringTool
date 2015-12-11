@@ -763,13 +763,14 @@ public class UserServiceImpl implements UserService {
 			user.setOrganization(organizationRevoked);
 		}
 		
-		if(model.isActive() && (user.getActivationDate() == null)) {
+		// if the user was activated, set term date to null and set the activation date
+		if(model.isBeingActivated()) {
 			user.setTerminationDate(null);
 			user.setActivationDate(new Date());
 		}
-		else if(!model.isActive() &&
-				((user.getTerminationDate() == null) ||
-						user.getTerminationDate().before(user.getActivationDate()))) {
+		
+		// if the user is being revoked/terminated, update the termination date 
+		else if(model.isBeingRevoked()) {
 			user.setTerminationDate(new Date());
 		}
 	}

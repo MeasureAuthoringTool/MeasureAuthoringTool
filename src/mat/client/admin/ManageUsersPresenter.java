@@ -596,6 +596,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		isUserDetailsModified();
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
+		
 		if (isValid(updatedDetails)) {
 			MatContext
 					.get()
@@ -1086,6 +1087,16 @@ public class ManageUsersPresenter implements MatPresenter {
 			updatedDetails.setOrganization(organization.getOrgName());
 		} else {
 			updatedDetails.setOrganization("");
+		}
+		if (!(detailDisplay.getIsActive()
+				.getValue() == currentDetails
+				.isActive())) {
+			if (detailDisplay.getIsActive()
+					.getValue()) {
+				updatedDetails.setBeingActivated(true);
+			} else {
+				updatedDetails.setBeingRevoked(true);
+			}
 		}
 		updatedDetails.setAdditionalInfo(detailDisplay.getAddInfoArea().getText());
 		updatedDetails.scrubForMarkUp();

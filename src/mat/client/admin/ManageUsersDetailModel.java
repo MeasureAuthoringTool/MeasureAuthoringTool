@@ -70,6 +70,28 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	/** The additional info. */
 	private String additionalInfo;
 	
+	/** Is the user being activated?  */
+	private boolean beingActivated = false;
+	
+	/** Is the user being revoked? */
+	private boolean beingRevoked = false;
+	
+	public boolean isBeingActivated() {
+		return beingActivated;
+	}
+
+	public void setBeingActivated(boolean beingActivated) {
+		this.beingActivated = beingActivated;
+	}
+
+	public boolean isBeingRevoked() {
+		return beingRevoked;
+	}
+
+	public void setBeingRevoked(boolean beingRevoked) {
+		this.beingRevoked = beingRevoked;
+	}
+
 	/**
 	 * Gets the revoke date.
 	 *

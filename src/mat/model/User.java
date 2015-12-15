@@ -437,8 +437,11 @@ public class User  {
 	 *            the new sign in date
 	 */
 	public void setSignInDate(Date signInDate) {
-		if (signInDate != null)
+		if (signInDate != null) {
 			this.signInDate = new Timestamp(signInDate.getTime());
+		} else {
+			this.signInDate = null;
+		}
 	}
 	
 	/**
@@ -457,8 +460,11 @@ public class User  {
 	 *            the new sign out date
 	 */
 	public void setSignOutDate(Date signOutDate) {
-		if (signOutDate != null)
+		if (signOutDate != null) {
 			this.signOutDate = new Timestamp(signOutDate.getTime());
+		} else {
+			this.signOutDate = null;
+		}
 	}
 	
 	/**

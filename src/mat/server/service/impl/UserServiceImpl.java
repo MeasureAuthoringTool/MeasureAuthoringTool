@@ -766,6 +766,8 @@ public class UserServiceImpl implements UserService {
 		// if the user was activated, set term date to null and set the activation date
 		if(model.isBeingActivated()) {
 			user.setTerminationDate(null);
+			user.setSignInDate(null);
+			user.setSignOutDate(null);
 			user.setActivationDate(new Date());
 		}
 		

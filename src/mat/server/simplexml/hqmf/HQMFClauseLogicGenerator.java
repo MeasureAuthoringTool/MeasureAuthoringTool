@@ -527,7 +527,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String firstChildNameOfSubTree = subTreeNode.getFirstChild().getNodeName();
 		if(FUNCTIONAL_OP.equals(firstChildNameOfSubTree)){
 			String firstChildNodeName = parentNode.getAttributes().getNamedItem(TYPE).getNodeValue();
-			if(!SATISFIES_ALL.equals(firstChildNodeName)||!SATISFIES_ANY.equals(firstChildNodeName)
+			if(!SATISFIES_ALL.equalsIgnoreCase(firstChildNodeName)||!SATISFIES_ANY.equalsIgnoreCase(firstChildNodeName)
 					|| !AGE_AT.equals(firstChildNodeName)){
 				return null;
 			}
@@ -931,14 +931,14 @@ public class HQMFClauseLogicGenerator implements Generator {
 			String type) {
 		Node templateIdNode = null;
 		
-		if(SATISFIES_ALL.equals(type) || SATISFIES_ANY.equals(type)){
+		if(SATISFIES_ALL.equalsIgnoreCase(type) || SATISFIES_ANY.equalsIgnoreCase(type)){
 			templateIdNode = hqmfXmlProcessor.getOriginalDoc().createElement(TEMPLATE_ID);
 			Element itemNode = hqmfXmlProcessor.getOriginalDoc().createElement(ITEM);
 			
 			//initialize rootOID with the OID for SATISFIES ALL
 			String rootOID = "2.16.840.1.113883.10.20.28.3.109";
 			//if we are dealing with SATISFIES ANY change the OID
-			if(SATISFIES_ANY.equals(type)){
+			if(SATISFIES_ANY.equalsIgnoreCase(type)){
 				rootOID = "2.16.840.1.113883.10.20.28.3.108";
 			}
 			itemNode.setAttribute(ROOT, rootOID);

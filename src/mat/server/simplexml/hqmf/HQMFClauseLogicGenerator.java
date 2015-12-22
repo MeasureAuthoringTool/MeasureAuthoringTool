@@ -1052,7 +1052,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * When we have a case of "(First: “Encounter, Performed: Inpatient”) During Measurement Period"; we 
+	 * When we have a case of "First:(Encounter,Performed:Inpatient) During Measurement Period"; we 
 	 * need to generate a entry with Grouper 
 	 * @param relOpNode
 	 * @param functionEntryNode

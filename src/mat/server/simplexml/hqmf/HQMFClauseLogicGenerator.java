@@ -1194,10 +1194,11 @@ public class HQMFClauseLogicGenerator implements Generator {
 		
 		String nodeName = node.getNodeName();
 		if(FUNCTIONAL_OP.equalsIgnoreCase(nodeName)){
-			Node childNode = node.getFirstChild();
+			returnFunctionalNode = node;
+			/*Node childNode = node.getFirstChild();
 			if(childNode != null && ELEMENT_REF.equals(childNode.getNodeName())){
 				returnFunctionalNode = node;
-			}
+			}*/
 		}else if(SUB_TREE_REF.equals(nodeName)){
 			String subTreeUUID = node.getAttributes().getNamedItem(ID).getNodeValue();
 						

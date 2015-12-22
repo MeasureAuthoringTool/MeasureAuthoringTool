@@ -1149,6 +1149,13 @@ public class HQMFClauseLogicGenerator implements Generator {
 			Element outBoundForFunction = measureExport.getHQMFXmlProcessor().getOriginalDoc().createElement(OUTBOUND_RELATIONSHIP);
 			outBoundForFunction.setAttribute(TYPE_CODE, "COMP");
 			Node idNodeForFunctionEntryNode = findNode(functionEntryNode,"ID");
+			Node excerptNodeForFunctionEntryNode = findNode(functionEntryNode,"excerpt");
+			Node idNodeInExcerptNode = findNode(excerptNodeForFunctionEntryNode, "id"); 
+			String newExtension = StringUtils.deleteWhitespace(clauseName) + "_" + idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
+			
+			idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
+			idNodeInExcerptNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
+			
 			if(idNodeForFunctionEntryNode != null){
 								
 				Node firstChildOfFunctionEntryElem = functionEntryNode.getFirstChild();
@@ -1168,8 +1175,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					outBoundForFunction.appendChild(criteriaReference);
 					grouperElem.appendChild(outBoundForFunction);
 				}
-			}
-			
+			}			
 			dataCriteriaSectionElem.appendChild(entryElem);
 		}
 		return entryElem;

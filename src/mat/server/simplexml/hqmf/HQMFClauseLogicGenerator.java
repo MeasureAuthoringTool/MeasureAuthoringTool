@@ -1166,7 +1166,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 					criteriaReference.appendChild(idNodeForFunctionEntryNode_Clone);
 					
 					outBoundForFunction.appendChild(criteriaReference);
-					entryElem.appendChild(outBoundForFunction);
+					grouperElem.appendChild(outBoundForFunction);
 				}
 			}
 			

@@ -875,7 +875,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			grouperElem.appendChild(excerptElement);
 		}
 		Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement(LOCAL_VARIABLE_NAME);
-		localVarElem.setAttribute(VALUE, localVariableName);
+		localVarElem.setAttribute(VALUE, StringUtils.deleteWhitespace(localVariableName));
 		entryElem.appendChild(localVarElem);
 		
 		entryElem.appendChild(grouperElem);
@@ -1209,8 +1209,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(childNode != null){
 				returnFunctionalNode = checkLHSFunctionalOpWithChildQDM(childNode);
 			}
-		}
-		
+		}		
 		return returnFunctionalNode;
 	}
 

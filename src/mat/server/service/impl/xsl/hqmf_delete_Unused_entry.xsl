@@ -8,29 +8,47 @@
 <xsl:output method="xml" encoding="UTF-8" indent="no"/>
 <xsl:strip-space  elements="*"/>
 <xsl:template match="dataCriteriaSection//entry">
+	
 	<xsl:variable name="qdm_root">
-		<xsl:value-of select="./*/id/@root"></xsl:value-of>
+		<xsl:value-of select="./*/id/@root"/>
 	</xsl:variable>
+	
 	<xsl:variable name="qdm_extension">
-		<xsl:value-of select="./*/id/@extension"></xsl:value-of>
+		<xsl:value-of select="./*/id/@extension"/>
 	</xsl:variable>
-	<xsl:variable name="qdm_value">
-       <xsl:value-of select="./localVariableName/@value"></xsl:value-of>
+	
+	<xsl:variable name="qdm_localVarName_value">
+       <xsl:value-of select="./localVariableName/@value"/>
     </xsl:variable>
+    
     <xsl:variable name="criteriaRef">
-        <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"></xsl:value-of>
+        <xsl:value-of select="count(//criteriaReference/id[@root = $qdm_root and @extension = $qdm_extension])"/>
     </xsl:variable>
-    <xsl:variable name="valueValue">
-        <xsl:value-of select="count(//measureObservationDefinition//value[contains(@value, $qdm_value)])"></xsl:value-of>
+    
+    <xsl:variable name="msrObs_value">
+        <xsl:value-of select="count(//measureObservationDefinition//value[contains(@value, $qdm_localVarName_value)])"/>
     </xsl:variable>
-    <xsl:variable name="expressionValue">
-        <xsl:value-of select="count(//measureObservationDefinition//value/expression[contains(@value, $qdm_value)])"></xsl:value-of>
+    
+    <xsl:variable name="msrObs_expressionValue">
+        <xsl:value-of select="count(//measureObservationDefinition//value/expression[contains(@value, $qdm_localVarName_value)])"/>
     </xsl:variable>
-		<xsl:if test="($criteriaRef != 0) or ($valueValue != 0) or ($expressionValue != 0) or (@riskAdjVar)">
-			<xsl:copy>
-				<xsl:apply-templates select="node()|@*"/>	
-			</xsl:copy>
-		</xsl:if>
+    
+    <xsl:variable name="header_ItemCount">
+    	<xsl:value-of select="count(/QualityMeasureDocument/subjectOf/measureAttribute[code/@code='ITMCNT']/value[@root = $qdm_root and @extension = $qdm_extension])"/>
+    </xsl:variable>
+    
+    <xsl:variable name="population_ItemCount">
+   
+    	<xsl:value-of select="count(/QualityMeasureDocument/component/populationCriteriaSection/component/*/component/measureAttribute[code/@code='ITMCNT']
+    								/value[@root = $qdm_root and @extension = $qdm_extension])"/>
+    		
+    </xsl:variable>
+    
+	<xsl:if test="($criteriaRef != 0) or ($msrObs_value != 0) or ($msrObs_expressionValue != 0) or ($header_ItemCount != 0) or ($population_ItemCount != 0) or (@riskAdjVar)">
+		<xsl:copy>
+			<xsl:apply-templates select="node()|@*"/>	
+		</xsl:copy>
+	</xsl:if>
 
 </xsl:template> 
 

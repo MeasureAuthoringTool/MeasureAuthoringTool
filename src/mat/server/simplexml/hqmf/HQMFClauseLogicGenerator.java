@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -707,7 +704,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 		Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
 		
-		String root = "0";
+		//String root = "0";
+		String root =  UUIDUtilClient.uuid();
+		
 		String ext = subTreeRefNode.getAttributes().getNamedItem(ID).getNodeValue();
 		String localVarName = clauseName;
 		localVarName = localVarName.replace("$", "");
@@ -1038,10 +1037,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 					finalNode = getrelOpLHSSubtree(relOpNode, dataCriteriaSectionElem,lhsNode, rhsNode,clauseName);
 				}
 				
-			} 
-//			else if(FUNCTIONAL_OP.equalsIgnoreCase(lhsName)) {
-//				finalNode = getFunctionalOpLHS(relOpNode, dataCriteriaSectionElem, lhsNode, rhsNode, clauseName);
-//			}
+			}
+			//			else if(FUNCTIONAL_OP.equalsIgnoreCase(lhsName)) {
+			//				finalNode = getFunctionalOpLHS(relOpNode, dataCriteriaSectionElem, lhsNode, rhsNode, clauseName);
+			//			}
 			if(parentNode.getNodeName().equalsIgnoreCase("subTree")){
 				updateLocalVar(finalNode, localVarName);
 			}
@@ -1052,22 +1051,22 @@ public class HQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * When we have a case of "First:(Encounter,Performed:Inpatient) During Measurement Period"; we 
-	 * need to generate a entry with Grouper 
+	 * When we have a case of "First:(Encounter,Performed:Inpatient) During Measurement Period"; we
+	 * need to generate a entry with Grouper
 	 * @param relOpNode
 	 * @param functionEntryNode
 	 * @param rhsNode
-	 * @param dataCriteriaSectionElem 
+	 * @param dataCriteriaSectionElem
 	 * @param clauseName
 	 */
 	private Node createSpecialGrouperForRelOp(Node relOpNode,
 			Node functionEntryNode, Node rhsNode, Node dataCriteriaSectionElem, String clauseName) throws XPathExpressionException {
 		XmlProcessor hqmfXmlProcessor = measureExport.getHQMFXmlProcessor();
-
+		
 		// creating Entry Tag
 		Element entryElem = hqmfXmlProcessor.getOriginalDoc().createElement(ENTRY);
 		entryElem.setAttribute(TYPE_CODE, "DRIV");
-				
+		
 		String localVariableName = relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		Element localVarElem = hqmfXmlProcessor.getOriginalDoc().createElement(LOCAL_VARIABLE_NAME);
 		localVariableName = localVariableName + "_" + UUIDUtilClient.uuid(5);
@@ -1078,9 +1077,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 		String root = relOpNode.getAttributes().getNamedItem(UUID).getNodeValue();
 		String ext = StringUtils.deleteWhitespace(relOpNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + "_" + relOpNode.getAttributes().getNamedItem(UUID).getNodeValue());
 		
-		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);			
+		Node grouperElem = generateEmptyGrouper(hqmfXmlProcessor, root, ext);
 		entryElem.appendChild(grouperElem);
-
+		
 		if(entryElem != null) {
 			Node subTreeParentNode = checkIfSubTree(relOpNode.getParentNode());
 			Node idNode = findNode(entryElem,"ID");
@@ -1115,9 +1114,9 @@ public class HQMFClauseLogicGenerator implements Generator {
 					idNodeExcerpt.getAttributes().getNamedItem(ROOT).setNodeValue(root);
 					idNodeExcerpt.getAttributes().getNamedItem(EXTENSION).setNodeValue(ext);
 				}
-
+				
 			}
-
+			
 			//Element temporallyRelatedInfoNode = createBaseTemporalNode(relOpNode, measureExport.getHQMFXmlProcessor());
 			Element temporallyRelatedInfoNode = null;
 			if(!FULFILLS.equalsIgnoreCase(relOpNode.getAttributes().getNamedItem(TYPE).getNodeValue())) {
@@ -1150,20 +1149,20 @@ public class HQMFClauseLogicGenerator implements Generator {
 			outBoundForFunction.setAttribute(TYPE_CODE, "COMP");
 			Node idNodeForFunctionEntryNode = findNode(functionEntryNode,"ID");
 			Node excerptNodeForFunctionEntryNode = findNode(functionEntryNode,"excerpt");
-			Node idNodeInExcerptNode = findNode(excerptNodeForFunctionEntryNode, "id"); 
+			Node idNodeInExcerptNode = findNode(excerptNodeForFunctionEntryNode, "id");
 			String newExtension = StringUtils.deleteWhitespace(clauseName) + "_" + idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).getNodeValue();
 			
 			idNodeForFunctionEntryNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
 			idNodeInExcerptNode.getAttributes().getNamedItem(EXTENSION).setNodeValue(newExtension);
 			
 			if(idNodeForFunctionEntryNode != null){
-								
+				
 				Node firstChildOfFunctionEntryElem = functionEntryNode.getFirstChild();
 				if(LOCAL_VARIABLE_NAME.equals(firstChildOfFunctionEntryElem.getNodeName())){
 					firstChildOfFunctionEntryElem = firstChildOfFunctionEntryElem.getNextSibling();
 				}
 				NamedNodeMap criteriaNodeAttributeMap = firstChildOfFunctionEntryElem.getAttributes();
-				if(criteriaNodeAttributeMap.getNamedItem(CLASS_CODE) != null && criteriaNodeAttributeMap.getNamedItem(MOOD_CODE) != null){
+				if((criteriaNodeAttributeMap.getNamedItem(CLASS_CODE) != null) && (criteriaNodeAttributeMap.getNamedItem(MOOD_CODE) != null)){
 					//create criteriaRef
 					Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement(CRITERIA_REFERENCE);
 					criteriaReference.setAttribute(CLASS_CODE, criteriaNodeAttributeMap.getNamedItem(CLASS_CODE).getNodeValue());
@@ -1175,19 +1174,19 @@ public class HQMFClauseLogicGenerator implements Generator {
 					outBoundForFunction.appendChild(criteriaReference);
 					grouperElem.appendChild(outBoundForFunction);
 				}
-			}			
+			}
 			dataCriteriaSectionElem.appendChild(entryElem);
 		}
 		return entryElem;
 	}
-
+	
 	/**
 	 * This is to be called when you want to check If the node passed is a FunctionOp with it's child being an elementRef/QDM.
-	 * If the node passed is a SubTree/Clause node then this will "recursively" look into the child of that SubTree/Clause 
+	 * If the node passed is a SubTree/Clause node then this will "recursively" look into the child of that SubTree/Clause
 	 * node to see if that child is a FunctionOp with child being an elementRef/QDM.
 	 * @param lhsNode
 	 * @return
-	 * @throws XPathExpressionException 
+	 * @throws XPathExpressionException
 	 */
 	private Node checkLHSFunctionalOpWithChildQDM(Node node) throws XPathExpressionException {
 		Node returnFunctionalNode = null;
@@ -1201,7 +1200,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 			}*/
 		}else if(SUB_TREE_REF.equals(nodeName)){
 			String subTreeUUID = node.getAttributes().getNamedItem(ID).getNodeValue();
-						
+			
 			String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
 			Node subTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 			
@@ -1209,10 +1208,10 @@ public class HQMFClauseLogicGenerator implements Generator {
 			if(childNode != null){
 				returnFunctionalNode = checkLHSFunctionalOpWithChildQDM(childNode);
 			}
-		}		
+		}
 		return returnFunctionalNode;
 	}
-
+	
 	/**
 	 * Gets the functional op lhs.
 	 *

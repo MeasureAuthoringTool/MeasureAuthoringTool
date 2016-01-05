@@ -34,20 +34,22 @@
     </xsl:variable>
     
     <xsl:variable name="header_ItemCount">
-    	<xsl:value-of select="count(/QualityMeasureDocument/subjectOf/measureAttribute[code/@code='ITMCNT']/value[@root = $qdm_root and @extension = $qdm_extension])"/>
+    	<xsl:value-of select="count(//subjectOf/measureAttribute[code/@code='ITMCNT']/value[@root = $qdm_root and @extension = $qdm_extension])"/>
     </xsl:variable>
     
     <xsl:variable name="population_ItemCount">
    
-    	<xsl:value-of select="count(/QualityMeasureDocument/component/populationCriteriaSection/component/*/component/measureAttribute[code/@code='ITMCNT']
+    	<xsl:value-of select="count(//component/populationCriteriaSection/component/*/component/measureAttribute[code/@code='ITMCNT']
     								/value[@root = $qdm_root and @extension = $qdm_extension])"/>
     		
     </xsl:variable>
     
-	<xsl:if test="($criteriaRef != 0) or ($msrObs_value != 0) or ($msrObs_expressionValue != 0) or ($header_ItemCount != 0) or ($population_ItemCount != 0) or (@riskAdjVar)">
+    <xsl:if test="($criteriaRef != 0) or ($msrObs_value != 0) or ($msrObs_expressionValue != 0) or 
+    							($header_ItemCount != 0) or ($population_ItemCount != 0) or (@riskAdjVar)">
 		<xsl:copy>
 			<xsl:apply-templates select="node()|@*"/>	
 		</xsl:copy>
+		
 	</xsl:if>
 
 </xsl:template> 

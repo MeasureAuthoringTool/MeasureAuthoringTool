@@ -131,6 +131,8 @@ public class LoginNewPresenter {
 	
 	public void go(HasWidgets container) {
 		container.add(view.asWidget());
+		view.getWelcomeHeading().setVisible(true);
+		view.getSuccessMessagePanel().setVisible(false);
 		Login.hideLoadingMessage();
 		
 	}

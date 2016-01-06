@@ -2205,27 +2205,27 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 				this.setInitialPop(noMarkupText);
 			}
 		}*/
-		if(this.getMeasurePopulation() != null) {
+		/*if(this.getMeasurePopulation() != null) {
 			String noMarkupText = this.getMeasurePopulation().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Measure Population:"+noMarkupText);
 			if(this.getMeasurePopulation().trim().length() > noMarkupText.length()){
 				this.setMeasurePopulation(noMarkupText);
 			}
-		}
-		if(this.getMeasurePopulationExclusions() != null) {
+		}*/
+		/*if(this.getMeasurePopulationExclusions() != null) {
 			String noMarkupText = this.getMeasurePopulationExclusions().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure MeasurePopulationExclusions:"+noMarkupText);
 			if(this.getMeasurePopulationExclusions().trim().length() > noMarkupText.length()){
 				this.setMeasurePopulationExclusions(noMarkupText);
 			}
-		}
-		if(this.getMeasureObservations() != null) {
+		}*/
+		/*if(this.getMeasureObservations() != null) {
 			String noMarkupText = this.getMeasureObservations().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure MeasureObservations:"+noMarkupText);
 			if(this.getMeasureObservations().trim().length() > noMarkupText.length()){
 				this.setMeasureObservations(noMarkupText);
 			}
-		}
+		}*/
 		/*if(this.getDenominator() != null) {
 			String noMarkupText = this.getDenominator().trim().replaceAll(markupRegExp, "");
 			System.out.println("measure Denominator:"+noMarkupText);

@@ -16,14 +16,14 @@ import mat.client.login.ForgottenLoginIdPresenter;
 import mat.client.login.ForgottenLoginIdView;
 import mat.client.login.ForgottenPasswordPresenter;
 import mat.client.login.ForgottenPasswordView;
+import mat.client.login.LoginNewPresenter;
+import mat.client.login.LoginNewView;
 import mat.client.login.LoginPresenter;
-import mat.client.login.LoginView;
 import mat.client.login.TempPwdLoginPresenter;
 import mat.client.login.TempPwdView;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Panel;
  * The Class Login.
  */
 public class Login extends MainLayout implements EntryPoint {
-
+	
 	/** The content. */
 	private Panel content;
 	
@@ -46,30 +46,32 @@ public class Login extends MainLayout implements EntryPoint {
 	/** The login presenter. */
 	private LoginPresenter loginPresenter;
 	
+	private LoginNewPresenter loginNewPresenter;
+	
 	/** The security questions presenter. */
 	private FirstLoginPresenter securityQuestionsPresenter;
 	
 	/** The temp pwd loging presenter. */
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
-
+	
 	//US 439.  Signing out and redirects to Login.html
 	/**
 	 * Call sign out.
 	 */
 	private void callSignOut(){
 		MatContext.get().setUMLSLoggedIn(false);
-		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-
-				@Override
-				public void onFailure(final Throwable arg0) {
-					redirectToLogin();
-				}
-
-				@Override
-				public void onSuccess(final Void arg0) {
-					redirectToLogin();
-				}
-			});
+		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onFailure(final Throwable arg0) {
+				redirectToLogin();
+			}
+			
+			@Override
+			public void onSuccess(final Void arg0) {
+				redirectToLogin();
+			}
+		});
 	}
 	
 	/* (non-Javadoc)
@@ -81,14 +83,14 @@ public class Login extends MainLayout implements EntryPoint {
 		showLoadingMessage();
 		content = getContentPanel();
 		initPresenters();
-		loginPresenter.go(content);
-		
+		//loginPresenter.go(content);
+		loginNewPresenter.go(content);
 		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, new PasswordEmailSentEvent.Handler() {
 			
 			@Override
 			public void onPasswordEmailSent(final PasswordEmailSentEvent event) {
 				content.clear();
-				loginPresenter.go(content);
+				loginNewPresenter.go(content);
 				loginPresenter.displayForgottenPasswordMessage();
 			}
 		});
@@ -98,8 +100,8 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onForgotLoginIdEmailSent(final ForgotLoginIDEmailSentEvent event) {
 				content.clear();
-				loginPresenter.go(content);
-				loginPresenter.displayForgottenLoginIDMessage();
+				loginNewPresenter.go(content);
+				loginNewPresenter.displayForgottenLoginIDMessage();
 			}
 		});
 		MatContext.get().getEventBus().addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
@@ -125,7 +127,7 @@ public class Login extends MainLayout implements EntryPoint {
 			
 			@Override
 			public void onSuccessfulLogin(final SuccessfulLoginEvent event) {
-//				MatContext.get().openNewHtmlPage("/Mat.html");
+				//				MatContext.get().openNewHtmlPage("/Mat.html");
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 			}
 		});
@@ -135,7 +137,8 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onReturnToLogin(final ReturnToLoginEvent event) {
 				content.clear();
-				loginPresenter.go(content);
+				//loginPresenter.go(content);
+				loginNewPresenter.go(content);
 			}
 		});
 		
@@ -146,7 +149,7 @@ public class Login extends MainLayout implements EntryPoint {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 			}
 		});
-        
+		
 		MatContext.get().getEventBus().addHandler(FirstLoginPageEvent.TYPE, new FirstLoginPageEvent.Handler() {
 			
 			@Override
@@ -157,7 +160,7 @@ public class Login extends MainLayout implements EntryPoint {
 		});
 		
 		MatContext.get().getEventBus().addHandler(TemporaryPasswordLoginEvent.TYPE, new TemporaryPasswordLoginEvent.Handler() {
-
+			
 			@Override
 			public void onTempPasswordLogin(final TemporaryPasswordLoginEvent event) {
 				content.clear();
@@ -167,24 +170,27 @@ public class Login extends MainLayout implements EntryPoint {
 			
 		});
 		
-		//US 439. Call signout when logoff event fired. 
+		//US 439. Call signout when logoff event fired.
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
-
+			
 			@Override
 			public void onLogoff(final LogoffEvent event) {
-	    		 callSignOut();
+				callSignOut();
 			}
 		});
-
-
+		
+		
 	}
-
+	
 	/**
 	 * Inits the presenters.
 	 */
 	private void initPresenters() {
-		final LoginView unamePasswordView = new LoginView();
-		loginPresenter = new LoginPresenter(unamePasswordView);
+		/*final LoginView unamePasswordView = new LoginView();
+		loginPresenter = new LoginPresenter(unamePasswordView);*/
+		LoginNewView loginView = new LoginNewView();
+		loginNewPresenter = new LoginNewPresenter(loginView);
+		
 		
 		final FirstLoginView securityQuesView = new FirstLoginView();
 		securityQuestionsPresenter = new FirstLoginPresenter(securityQuesView);
@@ -199,15 +205,15 @@ public class Login extends MainLayout implements EntryPoint {
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
 		
 	}
-
-
+	
+	
 	
 	/**
 	 * Redirects to the Login.html
 	 */
 	private void redirectToLogin() {
 		/*
-		 * Added a timer to have a delay before redirect since 
+		 * Added a timer to have a delay before redirect since
 		 * this was causing the firefox javascript exception.
 		 */
 		final Timer timer = new Timer() {
@@ -216,7 +222,7 @@ public class Login extends MainLayout implements EntryPoint {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 			}
 		};
-		timer.schedule(1000);		
+		timer.schedule(1000);
 	}
 	
 }

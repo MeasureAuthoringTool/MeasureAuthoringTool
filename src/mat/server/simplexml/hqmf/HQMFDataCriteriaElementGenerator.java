@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -142,7 +145,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
 		String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
-		String xpathForMeasureGroupingItemCount = "/measure/measureGrouping//itemCount/elementRef/@id";
+		String xpathForMeasureGroupingItemCount = "/measure//itemCount/elementRef/@id";
+		
 		
 		try {
 			

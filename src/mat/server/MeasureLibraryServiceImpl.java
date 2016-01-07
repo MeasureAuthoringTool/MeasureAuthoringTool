@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -88,7 +86,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -105,7 +102,6 @@ import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -143,7 +139,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Constant XPATH Expression for Developers.
 	 */
 	private static final String XPATH_EXPRESSION_DEVELOPERS = "/measure//measureDetails//developers";
-		
+	
 	/** The current release version. */
 	private String currentReleaseVersion;
 	
@@ -2974,7 +2970,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String dataType = new String();
 				String oid = new String();
 				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
-					instance = instance.concat(modifyWithDTO.getOccurrenceText() + " of ");
+					instance = instance.concat(modifyWithDTO.getOccurrenceText());
 					newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
 				}
 				name = modifyWithDTO.getCodeListName();
@@ -3080,7 +3076,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String dataType = new String();
 				String oid = new String();
 				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
-					instance = instance.concat(modifyWithDTO.getOccurrenceText() + " of ");
+					instance = instance.concat(modifyWithDTO.getOccurrenceText());
 					if (newNode.getAttributes().getNamedItem("instance") != null) {
 						newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
 					} else {
@@ -3508,7 +3504,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							Node functionsChildNode =nodesSDE_functions.item(n);
 							isInvalid = validateFunctionNode(functionsChildNode, operatorTypeList, isInvalid);
 							
-							if(isInvalid || (usedSubtreeRefIdsMap.get("subTreeIDAtMO").contains(usedSubtreeRefId) && 
+							if(isInvalid || (usedSubtreeRefIdsMap.get("subTreeIDAtMO").contains(usedSubtreeRefId) &&
 									validateFunctionNodeInMO(functionsChildNode))) {
 								result.setValid(false);
 								message.add(MatContext.get().getMessageDelegate().getWARNING_MEASURE_PACKAGE_CREATION_GENERIC());
@@ -3593,15 +3589,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @return true, if successful
 	 */
 	private boolean validateFunctionNodeInMO(Node functionsChildNode) {
-	
+		
 		String displayName = functionsChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
 		String type = functionsChildNode.getAttributes().getNamedItem("type").getNodeValue();
 		if(!type.equalsIgnoreCase(displayName)) {
 			return true;
-			}
+		}
 		return false;
 	}
-
+	
 	/**
 	 * This method will evaluate Logical Operators and checks if Logical operators has child nodes or not.
 	 * Default Top Level Logical Operators are not considered for this validation.
@@ -3628,14 +3624,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				} else {
 					// Populations other than Stratification : dont check for default top level Logical Op.
-					if (operatorNode.hasChildNodes() && 
-							operatorNode.getChildNodes().getLength()>1) {
-							isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), true);
-							
-							if (isInvalid) {
-								message = MatContext.get().getMessageDelegate()
-										.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
-								break;
+					if (operatorNode.hasChildNodes() &&
+							(operatorNode.getChildNodes().getLength()>1)) {
+						isInvalid = findInvalidLogicalOperators(operatorNode.getChildNodes(), true);
+						
+						if (isInvalid) {
+							message = MatContext.get().getMessageDelegate()
+									.getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR();
+							break;
 						}
 					}
 				}
@@ -3657,16 +3653,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if((populationTopLevelLogicalOp != null)){
 			for (int i=0; i < populationTopLevelLogicalOp.getLength();i++) {
 				Node operatorNode = populationTopLevelLogicalOp.item(i);
-			    if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
-			    	//ignore the comment for the top Level Logical Operator
-			    	if(!isTopLevelLogicalOp) {
-			    		isInvalid = true;
-			    	} else {
-			    		isTopLevelLogicalOp = false;
-			    	}
-			    	continue; 
+				if (operatorNode.getNodeName().equalsIgnoreCase("comment")) {
+					//ignore the comment for the top Level Logical Operator
+					if(!isTopLevelLogicalOp) {
+						isInvalid = true;
+					} else {
+						isTopLevelLogicalOp = false;
+					}
+					continue;
 				}
-			    
+				
 				if (operatorNode.getNodeName().equalsIgnoreCase("subTreeRef")) {
 					isInvalid = false;
 				} else {
@@ -3676,8 +3672,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if(!isTopLevelLogicalOp){
 							isInvalid = true;
 						} else {
-				    		isTopLevelLogicalOp = false;
-				    	}
+							isTopLevelLogicalOp = false;
+						}
 					}
 				}
 				if(isInvalid){
@@ -4694,20 +4690,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return message;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getCurrentReleaseVersion()
 	 */
+	@Override
 	public String getCurrentReleaseVersion() {
 		return currentReleaseVersion;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#setCurrentReleaseVersion(java.lang.String)
 	 */
+	@Override
 	public void setCurrentReleaseVersion(String releaseVersion) {
-		this.currentReleaseVersion = releaseVersion;
+		currentReleaseVersion = releaseVersion;
 	}
-
+	
 }
 

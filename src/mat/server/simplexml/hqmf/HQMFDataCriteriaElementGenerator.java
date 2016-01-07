@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -217,7 +214,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		
 		NodeList measureGroupingElementRefNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathforElementLookUpElements);
-		generateSupplementalDataQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingElementRefNodeList);
+		generateItemCountQDMEntries(me, dataCriteriaXMLProcessor, measureGroupingElementRefNodeList);
 	}
 	
 	/**
@@ -263,6 +260,37 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
+			String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
+					qdmUUID+"'][@extension=\""+qdmExtension+"\"]";
+			Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(),
+					xpathForQDMEntry);
+			if (qmdEntryIDNode==null) {
+				createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor(), null);
+			}
+		}
+	}
+	
+	/**
+	 * Generate supplemental data qdm entries.
+	 *
+	 * @param me the me
+	 * @param dataCriteriaXMLProcessor the data criteria xml processor
+	 * @param qdmNodeList the qdm node list
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void generateItemCountQDMEntries(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
+			NodeList qdmNodeList) throws XPathExpressionException{
+		for(int j=0; j<qdmNodeList.getLength(); j++){
+			Node qdmNode = qdmNodeList.item(j);
+			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
+			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String qdmExtension = qdmName.replaceAll("\\s", "") +"_"+ qdmDatatype.replaceAll("\\s", "");
+			if(qdmNode.getAttributes().getNamedItem("instance") != null){
+				String instanceOfValue = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
+				String newExtension = instanceOfValue.replaceAll("\\s", "") + "_" + qdmExtension;
+				qdmExtension = newExtension;
+			}
 			String xpathForQDMEntry = "/root/component/dataCriteriaSection/entry/*/id[@root='"+
 					qdmUUID+"'][@extension=\""+qdmExtension+"\"]";
 			Node qmdEntryIDNode = dataCriteriaXMLProcessor.findNode(dataCriteriaXMLProcessor.getOriginalDoc(),

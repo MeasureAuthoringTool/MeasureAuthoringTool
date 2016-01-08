@@ -271,7 +271,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
-	 * Generate supplemental data qdm entries.
+	 * Generate Item Count qdm entries.
 	 *
 	 * @param me the me
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor

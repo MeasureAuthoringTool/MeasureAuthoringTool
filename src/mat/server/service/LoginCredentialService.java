@@ -18,7 +18,7 @@ public interface LoginCredentialService {
 	 *            the password
 	 * @return the login model
 	 */
-	public LoginModel isValidUser(String userId,String password);
+	public LoginModel isValidUser(String userId,String password, String oneTimePassword);
 	
 	/**
 	 * Sign out.

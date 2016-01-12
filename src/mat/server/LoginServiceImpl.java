@@ -108,10 +108,10 @@ LoginService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.login.service.LoginService#isValidUser(java.lang.String, java.lang.String)
+	 * @see mat.client.login.service.LoginService#isValidUser(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public LoginModel isValidUser(String userId, String password) {
+	public LoginModel isValidUser(String userId, String password, String oneTimePassword) {
 		// Code to create New session ID everytime user log's in. Story Ref -
 		// MAT1222
 		HttpSession session = getThreadLocalRequest().getSession(false);
@@ -120,7 +120,7 @@ LoginService {
 		}
 		session = getThreadLocalRequest().getSession(true);
 		LoginModel loginModel = getLoginCredentialService().isValidUser(userId,
-				password);
+				password, oneTimePassword);
 		return loginModel;
 	}
 	

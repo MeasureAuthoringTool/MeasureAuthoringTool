@@ -27,9 +27,11 @@ public interface LoginService extends RemoteService {
 	 *            the username
 	 * @param password
 	 *            the password
+	 * @param oneTimePassword
+	 * 		  2 factor one time password/security-code           
 	 * @return the login model
 	 */
-	public LoginModel  isValidUser(String username, String password); 
+	public LoginModel  isValidUser(String username, String password, String oneTimePassword); 
 	
 	/**
 	 * Forgot password.

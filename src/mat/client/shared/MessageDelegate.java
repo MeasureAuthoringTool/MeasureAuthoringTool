@@ -380,7 +380,7 @@ public class MessageDelegate {
 	private final String LAST_MODIFIED_DATE_NOT_UNIQUE = "The Last Modified date and time entered is already is use for this value set.";
 	
 	/** The login failed. */
-	private final String LOGIN_FAILED = "Invalid username and/or password. MAT accounts are locked after three invalid login attempts.";
+	private final String LOGIN_FAILED = "Invalid username and/or password and/or One Time Security code. MAT accounts are locked after three invalid login attempts.";
 	
 	/** The login failed temp password expired. */
 	private final String LOGIN_FAILED_TEMP_PASSWORD_EXPIRED = "Unable to login. Your temporary password has expired. Please contact HelpDesk to renew your password.";

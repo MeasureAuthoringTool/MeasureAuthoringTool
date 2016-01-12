@@ -52,6 +52,9 @@ public class LoginView implements LoginPresenter.Display  {
 	/** The password. */
 	private TextBox password;
 	
+	/** One time password */
+	private TextBox oneTimePassword;
+	
 	/** The submit button. */
 	private Button submitButton;
 	
@@ -111,6 +114,12 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(LabelBuilder.buildLabel(password, "Password"));
 		loginPanel.add(password);
 		loginPanel.add(new SpacerWidget());
+		
+		oneTimePassword = new EmailAddressTextBox();
+		oneTimePassword.getElement().setAttribute("id", "OneTimePassword");
+		loginPanel.add(LabelBuilder.buildLabel(oneTimePassword, "Security Code"));
+		loginPanel.add(oneTimePassword);
+		loginPanel.add(new SpacerWidget());  
 		
 		submitButton = new PrimaryButton("Sign In","primaryButton");
 		loginPanel.add(submitButton);
@@ -175,6 +184,11 @@ public class LoginView implements LoginPresenter.Display  {
 	@Override
 	public HasValue<String> getPassword() {
 		return password;
+	}
+	
+	@Override
+	public HasValue<String> getOneTimePassword() {
+		return oneTimePassword;
 	}
 
 	/* (non-Javadoc)

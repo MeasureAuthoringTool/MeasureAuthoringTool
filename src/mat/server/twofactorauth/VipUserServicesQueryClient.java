@@ -50,12 +50,12 @@ public class VipUserServicesQueryClient {
 	}
 	
 	public static void main(String[] args) throws RemoteException {
-		String pathToP12File = "vip_cert.p12";
+		/*String pathToP12File = "vip_cert.p12";
 		String password = "HCIs0001";
 		
 		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
 		System.setProperty("javax.net.ssl.keyStore", pathToP12File);
-		System.setProperty("javax.net.ssl.keyStorePassword", password);
+		System.setProperty("javax.net.ssl.keyStorePassword", password);*/
 		
 		AuthenticationServiceStub authenticationServiceStub = new AuthenticationServiceStub("https://userservices-auth.vip.symantec.com/"
 				+ "vipuserservices/AuthenticationService_1_3");
@@ -73,7 +73,7 @@ public class VipUserServicesQueryClient {
 		
 		OtpAuthDataType otpAuthDataType = new OtpAuthDataType();
 		OtpType otpType = new OtpType();
-		otpType.setOtpType("226193");
+		otpType.setOtpType("453483");
 		otpAuthDataType.setOtp(otpType);
 		
 		BaseRequestWithAccountIdTypeChoice_type2 baseRequestWithAccountIdTypeChoice_type2 = new BaseRequestWithAccountIdTypeChoice_type2();

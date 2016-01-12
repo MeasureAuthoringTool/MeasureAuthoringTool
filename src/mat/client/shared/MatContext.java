@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -45,6 +46,7 @@ import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACExpansionIdentifier;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
@@ -625,8 +627,8 @@ public class MatContext implements IsSerializable {
 	 * @param callback
 	 *            the callback
 	 */
-	public void isValidUser(String username, String Password,AsyncCallback<LoginModel> callback){
-		getLoginService().isValidUser(username, Password, callback);
+	public void isValidUser(String username, String Password, String oneTimePassword, AsyncCallback<LoginModel> callback){
+		getLoginService().isValidUser(username, Password, oneTimePassword, callback);
 	}
 	
 	/**

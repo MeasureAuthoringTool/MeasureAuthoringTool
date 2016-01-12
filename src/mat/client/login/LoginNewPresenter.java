@@ -7,6 +7,7 @@ import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
 import mat.client.shared.MatContext;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -18,6 +19,7 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -164,7 +166,7 @@ public class LoginNewPresenter {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			MatContext.get().isValidUser(view.getUserIdText().getText(),
-					view.getPasswordInput().getText(), contextcallback);
+					view.getPasswordInput().getText(),  null, contextcallback);
 		}
 	}
 	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){

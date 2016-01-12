@@ -124,6 +124,8 @@ public class LoginPresenter {
 		 * Sets the initial focus.
 		 */
 		public void setInitialFocus();
+
+		HasValue<String> getOneTimePassword();
 	}
 	
 	/** The display. */
@@ -227,7 +229,7 @@ public class LoginPresenter {
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{
-			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), contextcallback);
+			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), display.getOneTimePassword().getValue(), contextcallback);
 		}
 	}
 

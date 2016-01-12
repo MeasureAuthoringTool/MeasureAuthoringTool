@@ -25,10 +25,12 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 *            the username
 	 * @param password
 	 *            the password
+	 * @param oneTimePassword
+	 * 			  one time password/security-code           
 	 * @param callback
 	 *            the callback
 	 */
-	void isValidUser(String username, String password,
+	void isValidUser(String username, String password, String oneTimePassword,
 			AsyncCallback<LoginModel> callback);
 	
 	/**

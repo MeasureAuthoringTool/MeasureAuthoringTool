@@ -1,11 +1,9 @@
 package mat.server.service.impl;
 
 import junit.framework.TestCase;
-
 import mat.model.User;
 import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -26,8 +24,8 @@ public class ResetUserPasswordTest extends TestCase {
 		String password = "Admin";
 		boolean isTemporary = false;
 		
-		UserService userService = 
-			(UserService)ctx.getBean("userService");
+		UserService userService =
+				(UserService)ctx.getBean("userService");
 		User user = userService.getById(userid);
 		if(user != null) {
 			userService.setUserPassword(user, password, isTemporary);

@@ -1,7 +1,5 @@
 package mat.shared;
 
-import mat.shared.PasswordVerifier;
-
 import junit.framework.TestCase;
 
 
@@ -21,6 +19,10 @@ public class PasswordVerifierTest extends TestCase {
 	}
 	
 	private boolean isValid(String userid, String password) {
+		String markupRegExp = "<[^>]+>";
+		String noMarkupTextPwd = password.trim().replaceAll(markupRegExp, "");
+		password = noMarkupTextPwd;
+		
 		PasswordVerifier v = new PasswordVerifier(userid, password, password);
 		return v.isValid();
 	}

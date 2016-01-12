@@ -20,12 +20,12 @@ package mat.server.twofactorauth;
 //import com.symantec.vip.schemas._2006._08.vipservice.VipSoapInterfaceServiceLocator;
 
 public class Credential {
-
+	
 	/*VipSoapInterfaceService service;
 	VipSoapInterface port;
 	String m_url;
 	String version = "2.0";
-	String nonce = "abcd1234";// unique per transaction – maybe use uuid
+	String nonce = "abcd1234";// unique per transaction
 	String authAccount = null;
 	String certFile = "vip_cert.p12"; // replace with your cert file
 	String password = "HCIs0001"; // replace with the password for the cert
@@ -250,6 +250,6 @@ public class Credential {
 		System.out.println("Server Time = " + c1.getServerTime());
 		c1.validateOTPMultipleCredentials(tokenIdArray, otp1);
 	}
-*/
-
+	 */
+	
 }

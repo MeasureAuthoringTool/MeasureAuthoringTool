@@ -488,6 +488,9 @@ public class MessageDelegate {
 	/** The password wrong length. */
 	private final String PASSWORD_WRONG_LENGTH = "Must be between 8 and 16 characters long.";
 	
+	/** Security-code/OneTimePassword required. */
+	private final String SECURITYCODE_REQUIRED = "Security Code is required.";
+	
 	/** The PHON e_10_ digit. */
 	private final String PHONE_10_DIGIT = "Phone Number is required to be 10 digits.";
 	
@@ -1539,6 +1542,15 @@ public class MessageDelegate {
 	 */
 	public String getPasswordRequiredMessage() {
 		return PASSWORD_REQUIRED;
+	}
+	
+	/**
+	 * Gets the security code required message.
+	 * 
+	 * @return String
+	 */
+	public String getSecurityCodeRequiredMessage() {
+		return SECURITYCODE_REQUIRED;
 	}
 	
 	/**

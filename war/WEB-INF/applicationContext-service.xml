@@ -12,7 +12,7 @@
 		<property name="location" value="classpath:MAT.properties"/>
 	</bean>
 	
-	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">
+	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">	    
 	</bean>
 	
     <bean id="userService" class="mat.server.service.impl.UserServiceImpl">
@@ -20,7 +20,7 @@
 	    <property name="termsOfUseUrl" value="${mat.termsofuse.url}"/>
 	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
 	    <property name="userGuideUrl" value="${mat.userguide.url}"/>
-    </bean>
+	</bean>
         
     <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
     </bean>    
@@ -78,5 +78,12 @@
     
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
-    </bean>    
+    </bean>
+    
+    <bean id="matOtpValidator" class="${2FA_AUTH_CLASS}"/>
+    
+    <bean id="matOtpValidatorService" class="mat.server.twofactorauth.TwoFactorValidationService">
+        <property name="otpValidatorInterfaceForUser" ref="matOtpValidator"/>
+    </bean>
+    
 </beans>

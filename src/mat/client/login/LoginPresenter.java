@@ -228,6 +228,8 @@ public class LoginPresenter {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
+		}else if(display.getOneTimePassword().getValue().isEmpty()) {
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityCodeRequiredMessage());
 		}else{
 			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), display.getOneTimePassword().getValue(), contextcallback);
 		}

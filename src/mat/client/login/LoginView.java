@@ -10,7 +10,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.user.client.ui.Anchor;
@@ -32,8 +31,8 @@ import com.google.gwt.user.client.ui.Widget;
  * The Class LoginView.
  */
 public class LoginView implements LoginPresenter.Display  {
-
-
+	
+	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
@@ -119,7 +118,7 @@ public class LoginView implements LoginPresenter.Display  {
 		oneTimePassword.getElement().setAttribute("id", "OneTimePassword");
 		loginPanel.add(LabelBuilder.buildLabel(oneTimePassword, "Security Code"));
 		loginPanel.add(oneTimePassword);
-		loginPanel.add(new SpacerWidget());  
+		loginPanel.add(new SpacerWidget());
 		
 		submitButton = new PrimaryButton("Sign In","primaryButton");
 		loginPanel.add(submitButton);
@@ -143,11 +142,11 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(hPanel);
 		
 		password.setWidth("200px");
-		
+		oneTimePassword.setWidth("200px");
 		mainPanel.add(loginPanel);
 		
 	}
-
+	
 	/**
 	 * Wrap in spacer.
 	 * 
@@ -161,7 +160,7 @@ public class LoginView implements LoginPresenter.Display  {
 		spacer.add(w);
 		return spacer;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getSubmit()
 	 */
@@ -169,7 +168,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasClickHandlers getSubmit() {
 		return submitButton;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getUserid()
 	 */
@@ -177,7 +176,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasValue<String> getUserid() {
 		return userid;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getPassword()
 	 */
@@ -190,7 +189,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasValue<String> getOneTimePassword() {
 		return oneTimePassword;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#asWidget()
 	 */
@@ -198,7 +197,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public Widget asWidget() {
 		return mainPanel;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getForgotPassword()
 	 */
@@ -206,7 +205,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasClickHandlers getForgotPassword() {
 		return forgotPassword;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getInfoMessage()
 	 */
@@ -214,7 +213,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasHTML getInfoMessage() {
 		return infoMessage;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#setWelcomeVisible(boolean)
 	 */
@@ -222,7 +221,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public void setWelcomeVisible(boolean value) {
 		MatContext.get().setVisible(welcomePanel,value);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getErrorMessageDisplay()
 	 */
@@ -243,7 +242,7 @@ public class LoginView implements LoginPresenter.Display  {
 		}
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getUseridField()
 	 */
@@ -251,7 +250,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasKeyDownHandlers getUseridField() {
 		return userid;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getPasswordField()
 	 */
@@ -259,7 +258,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public HasKeyDownHandlers getPasswordField() {
 		return password;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#setInitialFocus()
 	 */
@@ -267,7 +266,7 @@ public class LoginView implements LoginPresenter.Display  {
 	public void setInitialFocus() {
 		userid.setFocus(false);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getForgotLoginId()
 	 */

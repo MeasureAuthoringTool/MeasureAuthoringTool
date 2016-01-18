@@ -32,6 +32,7 @@ keytool -storepasswd -keystore keystore.jks
 keytool -keypasswd -alias s1as -keystore keystore.jks
 keytool -keypasswd -alias 'glassfish-instance' -keystore keystore.jks
 keytool -exportcert -keystore vip_cert.p12 -storepass HCIs0001 -storetype PKCS12 -alias 'cms mat initial test cert 1' -file public_vip_cert.cer
+keytool -storepasswd -new HCIs0001 -keystore cacerts.jks
 
 //Try '-trustcacerts' below
 keytool -importcert -keystore cacerts.jks -storepass changeit -alias 'cms mat initial test cert 1' -file public_vip_cert.cer

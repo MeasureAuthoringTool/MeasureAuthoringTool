@@ -2411,11 +2411,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			targetSiteCodeElement.appendChild(valueElem);
 			if ((insertBeforeNodeName != null) && (dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null)) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				Node parentOfOutBoundElement = outBoundElement.getParentNode();
-				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				if(outBoundElement != null){
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
+				}
 			} else if ((insertAfterNodeName != null) && (dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0)!=null)) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
-				outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				if(outBoundElement != null){
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
+				}
 			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}
@@ -2424,11 +2431,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			targetSiteCodeElement.setAttribute(FLAVOR_ID, flavorIdValue);
 			if ((insertBeforeNodeName != null) && (dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null)) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				Node parentOfOutBoundElement = outBoundElement.getParentNode();
-				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				if(outBoundElement != null){
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
+				}
 			} else if ((insertAfterNodeName != null) && (dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0)!=null)) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertAfterNodeName).item(0).getNextSibling();
-				outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				if(outBoundElement!=null){
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
+				}
 			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}
@@ -2445,8 +2459,11 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			targetSiteCodeElement.appendChild(displayNameElem);
 			if ((insertBeforeNodeName != null) && (dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0)!=null)) {
 				Node outBoundElement =  dataCriteriaElem.getElementsByTagName(insertBeforeNodeName).item(0);
-				Node parentOfOutBoundElement = outBoundElement.getParentNode();
-				parentOfOutBoundElement.insertBefore(targetSiteCodeElement, outBoundElement);
+				if(outBoundElement != null){
+					outBoundElement.getParentNode().insertBefore(targetSiteCodeElement, outBoundElement);
+				} else {
+					checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
+				}
 			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, targetSiteCodeElement);
 			}

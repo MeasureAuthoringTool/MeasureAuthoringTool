@@ -9,6 +9,7 @@
        http://www.springframework.org/schema/task/spring-task-3.0.xsd"
 >
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="systemPropertiesMode" value="2"/> <!-- SYSTEM_PROPERTIES_MODE_OVERRIDE -->
 		<property name="location" value="classpath:MAT.properties"/>
 	</bean>
 	

@@ -14,6 +14,14 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -46,8 +54,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,7 +86,7 @@ public class UserServiceImpl implements UserService {
 	
 	/** The mail sender. */
 	@Autowired
-	private MailSender mailSender;
+	private JavaMailSender mailSender;
 	
 	/** The template message. */
 	@Autowired
@@ -532,13 +540,12 @@ public class UserServiceImpl implements UserService {
 	 *            the user
 	 */
 	public void notifyUserOfNewAccount(User user) {
-		logger.info("In notifyUserOfNewAccount(User user)..........");
+		/*logger.info("In notifyUserOfNewAccount(User user)..........");
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
-		
 		msg.setTo(user.getEmailAddress());
 		msg.setText(text);
 		
@@ -547,7 +554,28 @@ public class UserServiceImpl implements UserService {
 		}
 		catch(MailException exc) {
 			logger.error(exc);
+		}*/
+		logger.info("In notifyUserOfNewAccount(User user)..........");
+		MimeMessage message = mailSender.createMimeMessage();
+		try {
+			message.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
+			BodyPart body = new MimeBodyPart();
+			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+			paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+			String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
+			body.setContent(text, "text/html");
+			Multipart multipart = new MimeMultipart();
+			multipart.addBodyPart(body);
+			message.setFrom(new InternetAddress("NO-REPLY-Support@emeasuretool.org"));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmailAddress()));
+			message.setContent(multipart);
+			
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	
 	/**
@@ -771,7 +799,7 @@ public class UserServiceImpl implements UserService {
 			user.setActivationDate(new Date());
 		}
 		
-		// if the user is being revoked/terminated, update the termination date 
+		// if the user is being revoked/terminated, update the termination date
 		else if(model.isBeingRevoked()) {
 			user.setTerminationDate(new Date());
 		}

@@ -226,8 +226,7 @@ public class LoginPresenter {
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
-		display.getUserid().setValue("Liwisham0001");
-		display.getPassword().setValue("Newpassword123?");
+		
 		if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {

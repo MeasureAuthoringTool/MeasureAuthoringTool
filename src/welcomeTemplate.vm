@@ -1,4 +1,7 @@
 <html>
+<head>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+</head>
 <body>
 <p style="font-family: 'Tahoma'; font-size: 10pt;">You have been granted access to the Measure Authoring Tool. Your User ID is $paramsMap.get("loginId"). Your temporary password will be sent in a separate email. This password expires in 5 days. To access the Measure Authoring Tool, please go to www.emeasuretool.cms.gov. 
 </br></br>

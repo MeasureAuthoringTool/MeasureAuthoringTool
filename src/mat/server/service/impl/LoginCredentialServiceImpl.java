@@ -350,7 +350,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		validateUserLoginModel = isValidUserIdPassword(userId, password, validateUserLoginModel,
 				validateUserMatUserDetails);
 		logger.info("loginModel.isLoginFailedEvent() for userId/password matching:" + validateUserLoginModel.isLoginFailedEvent());
-		validateUserLoginModel = isValid2FactorOTP(userId,oneTimePassword,validateUserLoginModel, validateUserMatUserDetails);
+		if (!validateUserLoginModel.isLoginFailedEvent()) {
+			validateUserLoginModel = isValid2FactorOTP(userId,oneTimePassword,validateUserLoginModel, validateUserMatUserDetails);
+		}
 		if (!validateUserLoginModel.isLoginFailedEvent()) {
 			onSuccessLogin(userId, validateUserMatUserDetails);
 		}

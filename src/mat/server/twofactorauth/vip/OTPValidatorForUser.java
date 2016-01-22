@@ -6,6 +6,8 @@ import java.rmi.RemoteException;
 import mat.server.twofactorauth.OTPValidatorInterfaceForUser;
 
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.http.HttpTransportProperties;
 
 import com.symantec.vipuserservices.wsclient.AuthenticationServiceStub;
 import com.symantec.vipuserservices.wsclient.AuthenticationServiceStub.AuthenticateUserRequest;
@@ -23,13 +25,20 @@ public class OTPValidatorForUser implements OTPValidatorInterfaceForUser{
 		boolean status = false;
 
 		String authenticationServiceURL = System.getProperty("2FA_VIP_COMMUNICATION_URL");
-		System.out.println("authenticationServiceURL:"+authenticationServiceURL);
-		System.out.println("2FA Certificate file name:"+System.getProperty("javax.net.ssl.keyStore")+"!");
-
+		/*System.out.println("authenticationServiceURL:"+authenticationServiceURL);
+		System.out.println("2FA Certificate file name:"+System.getProperty("javax.net.ssl.keyStore")+"!");*/
+		
+		/*String pathToP12File = "vip_cert.p12";
+		String password = "HCIs0001";
+		
+		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+		System.setProperty("javax.net.ssl.keyStore", pathToP12File);
+		System.setProperty("javax.net.ssl.keyStorePassword", password);*/
+		System.out.println("Communicating with Symantec VIP now.....");
 		AuthenticationServiceStub authenticationServiceStub;
 		try {
 			authenticationServiceStub = new AuthenticationServiceStub(authenticationServiceURL);
-
+			
 			AuthenticateUserRequest authenticateUserRequest = new AuthenticateUserRequest();
 			AuthenticateUserRequestType authenticateUserRequestType = new AuthenticateUserRequestType();
 
@@ -52,7 +61,19 @@ public class OTPValidatorForUser implements OTPValidatorInterfaceForUser{
 			authenticateUserRequestType.setBaseRequestWithAccountIdTypeChoice_type2(baseRequestWithAccountIdTypeChoice_type2);
 
 			authenticateUserRequest.setAuthenticateUserRequest(authenticateUserRequestType);
-
+			
+			String PROXY_HOST = System.getProperty("vsac_proxy_host");
+			if(PROXY_HOST !=null) {
+				
+				int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+				HttpTransportProperties.ProxyProperties pp = 
+						new HttpTransportProperties.ProxyProperties();
+					 pp.setProxyName(PROXY_HOST);
+					 pp.setProxyPort(PROXY_PORT);
+					 
+				authenticationServiceStub._getServiceClient().getOptions().setProperty(HTTPConstants.PROXY,pp);
+			}
+			
 			AuthenticateUserResponse authenticateUserResponse = authenticationServiceStub.authenticateUser(authenticateUserRequest);
 			
 			BigInteger statusCode = new BigInteger(authenticateUserResponse.getAuthenticateUserResponse().getStatus().getBytes());

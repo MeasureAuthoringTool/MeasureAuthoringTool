@@ -2937,6 +2937,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			returnString = "{copies}/mL";
 		}else if(unitString.equals("IU")){
 			returnString = "[iU]";
+		}else if(unitString.equals("iU/L")){
+			returnString = "[iU]/L";
 		}
 		
 		return returnString;

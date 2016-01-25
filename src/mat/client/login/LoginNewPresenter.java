@@ -7,7 +7,6 @@ import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
 import mat.client.shared.MatContext;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -19,7 +18,6 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -133,40 +131,51 @@ public class LoginNewPresenter {
 	
 	public void go(HasWidgets container) {
 		container.add(view.asWidget());
-		view.getWelcomeHeading().setVisible(true);
 		view.getSuccessMessagePanel().setVisible(false);
+		view.getWelcomeHeading().setVisible(true);
 		Login.hideLoadingMessage();
 		
 	}
 	
 	public void reset() {
-		view.getHelpBlock().setText("");;
+		view.getHelpBlock().setText("");
+		view.getUserIdText().setText("");
+		view.getPasswordInput().setText("");
+		view.getSecurityCodeInput().setText("");
 		view.getUserIdGroup().setValidationState(ValidationState.NONE);
 		view.getPasswordGroup().setValidationState(ValidationState.NONE);
-		
-		view.getPasswordInput().setText("");
-		view.getUserIdText().setText("");
+		view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
 	}
+	/**
+	 * Method called when Sign In Button on Login View is clicked.
+	 */
 	private void submit() {
-		
 		view.getHelpBlock().setText("");
 		
-		if(view.getUserIdText().getText().isEmpty()) {
+		if (view.getUserIdText().getText().isEmpty()) {
 			view.getUserIdGroup().setValidationState(ValidationState.ERROR);
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
-		}else if(view.getPasswordInput().getText().isEmpty()) {
+		} else if (view.getPasswordInput().getText().isEmpty()) {
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.ERROR);
-		}else{
+		} else if (view.getSecurityCodeInput().getText().isEmpty()) {
+			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getSecurityCodeRequiredMessage());
+			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
-			MatContext.get().isValidUser(view.getUserIdText().getText(),
-					view.getPasswordInput().getText(),  null, contextcallback);
+			view.getAuthTokenGroup().setValidationState(ValidationState.ERROR);
+		} else {
+			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
+			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
+			view.getAuthTokenGroup().setValidationState(ValidationState.SUCCESS);
+			MatContext.get().isValidUser(view.getUserIdText().getText(), view.getPasswordInput().getText(),
+					view.getSecurityCodeInput().getText(), contextcallback);
 		}
 	}
 	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){
@@ -174,8 +183,6 @@ public class LoginNewPresenter {
 		@Override
 		public void onFailure(Throwable cause) {
 			cause.printStackTrace();
-			//			display.getErrorMessageDisplay().setMessage(cause.getMessage());
-			//view.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			view.getUserIdGroup().setValidationState(ValidationState.NONE);
 			view.getPasswordGroup().setValidationState(ValidationState.NONE);
@@ -230,7 +237,5 @@ public class LoginNewPresenter {
 		view.getSuccessMessageBody().clear();
 		view.getSuccessMessageBody().add(html);
 		view.getSuccessMessagePanel().setVisible(true);
-		/*display.setInfoMessageVisible(true);
-		display.getInfoMessage().setHTML();*/
 	}
 }

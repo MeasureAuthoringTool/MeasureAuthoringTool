@@ -16,6 +16,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -125,6 +126,8 @@ public class LoginPresenter {
 		public void setInitialFocus();
 		
 		HasValue<String> getOneTimePassword();
+		
+		Button getSubmitButton();
 	}
 	
 	/** The display. */
@@ -151,6 +154,7 @@ public class LoginPresenter {
 			cause.printStackTrace();
 			//			display.getErrorMessageDisplay().setMessage(cause.getMessage());
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			display.getSubmitButton().setEnabled(true);
 		}
 		
 		@Override
@@ -175,6 +179,7 @@ public class LoginPresenter {
 			else {
 				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getServerCallNullMessage());
 			}
+			display.getSubmitButton().setEnabled(true);
 			
 		}
 		
@@ -194,6 +199,7 @@ public class LoginPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				
 				submit();
 			}
 			
@@ -227,12 +233,16 @@ public class LoginPresenter {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		
+		display.getSubmitButton().setEnabled(false);
 		if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+			display.getSubmitButton().setEnabled(true);
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
+			display.getSubmitButton().setEnabled(true);
 		}else if(display.getOneTimePassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityCodeRequiredMessage());
+			display.getSubmitButton().setEnabled(true);
 		}else{
 			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), display.getOneTimePassword().getValue(), contextcallback);
 		}

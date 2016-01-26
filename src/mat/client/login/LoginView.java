@@ -57,6 +57,7 @@ public class LoginView implements LoginPresenter.Display  {
 	/** The submit button. */
 	private Button submitButton;
 	
+	
 	/** The forgot login id. */
 	private Anchor forgotLoginId;
 	
@@ -275,5 +276,8 @@ public class LoginView implements LoginPresenter.Display  {
 		// TODO Auto-generated method stub
 		return forgotLoginId;
 	}
-	
+	@Override
+	public Button getSubmitButton() {
+		return submitButton;
+	}
 }

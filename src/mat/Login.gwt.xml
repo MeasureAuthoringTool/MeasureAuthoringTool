@@ -17,7 +17,7 @@
 	<set-property name="log_WindowLogger" value="DISABLED" /> 
     <set-property name="log_DivLogger" value="DISABLED" />
     -->
-   <!-- <inherits name="org.gwtbootstrap3.GwtBootstrap3" />
+   <inherits name="org.gwtbootstrap3.GwtBootstrap3" />
 	 <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
 	<public path="resource">
 		<include name="css/*.*" />
@@ -26,7 +26,7 @@
 		<include name="js/*.*" />
 	</public>
 	
-    <stylesheet src="css/mat-bootstrap-3.3.2.min.cache.css"/> -->
+    <stylesheet src="css/mat-bootstrap-3.3.2.min.cache.css"/>
 	<entry-point class="mat.client.Login" />
     <source path='client' />
     <source path='model'/>

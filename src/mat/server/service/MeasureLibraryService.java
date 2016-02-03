@@ -29,6 +29,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLModel;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLValidationResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -577,4 +578,5 @@ public interface MeasureLibraryService {
 
 	CQLModel getCQLData(String measureId);
 	
+	CQLValidationResult validateCQL(CQLModel cqlModel);
 }

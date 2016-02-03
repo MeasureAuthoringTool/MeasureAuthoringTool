@@ -89,6 +89,7 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -4780,6 +4781,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public CQLValidationResult validateCQL(CQLModel cqlModel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

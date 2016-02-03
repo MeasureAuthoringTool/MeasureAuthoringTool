@@ -212,7 +212,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public String currentSelectedClause = null;
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLPresenterNavBarWithList.ViewDisplay#getDefineCollapse()
+	 * @see mat.client.clause.CQLWorkSpaceView.ViewDisplay#getDefineCollapse()
 	 */
 	@Override
 	public PanelCollapse getDefineCollapse() {
@@ -432,23 +432,51 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		});*/
 	}
 	
+
+	public void clearNameTxtAreas() {
+		getDefineNameTxtArea().clear();
+		getParameterNameTxtArea().clear();
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLPresenterNavBarWithList.ViewDisplay#setParameterIntoList(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void setParameterIntoList(String parameterName, String parameterLogic) {
-		//getParameterNameTxtArea().clear();
-		//getParameterAceEditor().setText("");;
-		if (!parameterName.isEmpty() && !parameterLogic.isEmpty()) {
+
+		if (parameterName.isEmpty() && parameterLogic.isEmpty()) return;
+		
+		if (!parameterName.isEmpty() && !parameterName.contains(" ") && !parameterLogic.isEmpty()) {
+			boolean alreadyExists = false;
+			String currentId = null; 
+			List<CQLParameterModelObject> parameters = getViewParameterList();
+			for (CQLParameterModelObject parameterInList : parameters) {
+				if (parameterInList.getIdentifier().equals(parameterName)) {
+					alreadyExists = true;
+					currentId = parameterInList.getId();
+				}
+			}
 			CQLParameterModelObject parameter = new CQLParameterModelObject();
 			parameter.setTypeSpecifier(parameterLogic);
 			parameter.setIdentifier(parameterName);
-			parameter.setId(UUIDUtilClient.uuid(5));
-			getViewParameterList().add(parameter);
-			clearAndAddParameterNamesToListBox();
+			if (!alreadyExists) {
+				parameter.setId(UUIDUtilClient.uuid(5));
+				getViewParameterList().add(parameter);
+			} else {
+				parameter.setId(currentId);
+			}
+			
+			addParameterNamesToListBox();
 			updateParamMap();
 		} else {
-			Window.alert("Parameter Name and Logic cannot be empty");
+			if (parameterName.isEmpty()) {
+				Window.alert("Parameter Name cannot be empty");
+			} else if (parameterName.contains(" ")) {
+				Window.alert("Parameter Name cannot contain spaces");
+			} else if (parameterLogic.isEmpty()) {
+				Window.alert("Parameter Name and Logic cannot be empty");
+			}	
 		}
 	}
 	
@@ -496,7 +524,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				define.setId(currentId);
 			}
 
-			clearAndAddDefinitionNamesToListBox();
+			addDefinitionNamesToListBox();
 			updateDefineMap();
 
 
@@ -706,7 +734,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameListBox.setVisibleItemCount(10);
 		parameterNameListBox.getElement().setAttribute("id", "paramListBox");
 
-		clearAndAddParameterNamesToListBox();
+		addParameterNamesToListBox();
 
 		addSuggestHandler(searchSuggestTextBox, parameterNameListBox);
 		addListBoxHandler(parameterNameListBox, searchSuggestTextBox);
@@ -765,7 +793,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineNameListBox.setVisibleItemCount(10);
 		defineNameListBox.getElement().setAttribute("id", "defineListBox");
 
-		clearAndAddDefinitionNamesToListBox();
+		addDefinitionNamesToListBox();
 
 		addSuggestHandler(searchSuggestDefineTextBox, defineNameListBox);
 		addListBoxHandler(defineNameListBox, searchSuggestDefineTextBox);
@@ -844,6 +872,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		parameterAceEditor.setSize("500px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
+		parameterAceEditor.setText("");
 
 		//addParameterButton = new Button();
 		addParameterButton.setType(ButtonType.PRIMARY);
@@ -932,7 +961,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.CQLPresenterNavBarWithList.ViewDisplay#clearAndAddParameterNamesToListBox()
 	 */
 	@Override
-	public void clearAndAddParameterNamesToListBox() {
+	public void addParameterNamesToListBox() {
 		if (parameterNameListBox != null) {
 			parameterNameListBox.clear();
 			for (CQLParameterModelObject param : viewParameterList) {
@@ -976,6 +1005,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		defineAceEditor.setSize("500px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
+		defineAceEditor.setText("");
 
 		addDefineButton.setType(ButtonType.PRIMARY);
 		addDefineButton.setSize(ButtonSize.DEFAULT);
@@ -1029,11 +1059,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLPresenterNavBarWithList.ViewDisplay#clearAndAddDefinitionNamesToListBox()
-	 */
 	@Override
-	public void clearAndAddDefinitionNamesToListBox() {
+	public void addDefinitionNamesToListBox() {
 		if (defineNameListBox != null) {
 			defineNameListBox.clear();
 			for (CQLDefinitionModelObject define : viewDefinitions) {

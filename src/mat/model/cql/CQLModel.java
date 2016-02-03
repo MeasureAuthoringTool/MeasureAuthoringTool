@@ -66,7 +66,6 @@ public class CQLModel implements IsSerializable{
 	public void setFunctionsList(List<CQLFunctionModelObject> functionsList) {
 		this.functionsList = functionsList;
 	}
-
 	public List<CQLLibraryModelObject> getIncludeLibraryList() {
 		return includeLibraryList;
 	}
@@ -79,6 +78,18 @@ public class CQLModel implements IsSerializable{
 	public void setCodeList(List<CQLQualityDataSetDTO> codeList) {
 		this.codeList = codeList;
 	}
-
+	public void printCQL() {
+		System.out.println("CQL Model Info:");
+		System.out.println(this);
+		System.out.println("Library: " + library.getIdentifier() +  " " + library.getVersion() != null ? library.getVersion(): " ");
+		System.out.println("Parameters: ");
+		for (CQLParameterModelObject param: getCqlParameters()) {
+			System.out.println(param.getIdentifier() +  " " + param.getTypeSpecifier());
+		}
+		System.out.println("Definitions: ");
+		for (CQLDefinitionModelObject definition: getDefinitionList()) {
+			System.out.println(definition.getIdentifier() +  " " + definition.getExpression());
+		}
+	}
 
 }

@@ -132,7 +132,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		/**
 		 * Clear and add parameter names to list box.
 		 */
-		void clearAndAddParameterNamesToListBox();
+		void addParameterNamesToListBox();
 
 		/**
 		 * Gets the adds the parameter button.
@@ -199,7 +199,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		/**
 		 * Clear and add definition names to list box.
 		 */
-		void clearAndAddDefinitionNamesToListBox();
+		void addDefinitionNamesToListBox();
 
 		/**
 		 * Gets the define name map.
@@ -358,13 +358,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setDefinitionIntoList(String definitionName, String definitionLogic);
 		
 		void setCQLValuesInLists(CQLModel cqlModel);
-
+		
 		void unsetActiveMenuItem(String menuClickedBefore);
 
 		AceEditor getCqlAceEditor();
 
 		void setCqlAceEditor(AceEditor cqlAceEditor);
-
+		
+		void clearNameTxtAreas();
 	}
 	
 	/** The search display. */
@@ -443,12 +444,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-//			searchDisplay.setClickedMenu("general");
-//			searchDisplay.setCurrentSelectedClause(null);
-//			searchDisplay.buildCQLView();
-//			getCQLData();
-//			panel.add(searchDisplay.getMainVPanel());
 		searchDisplay.buildView();
+		searchDisplay.clearNameTxtAreas();
 		getCQLData();
 		panel.add(searchDisplay.getMainPanel());
 
@@ -521,7 +518,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			cqlStr = cqlStr.append("\n\n");			
 		}
 		
-		//cqlStr.append(org.antlr.v4.runtime.Token.EOF);
+		//cqlStr.append("\n" + org.antlr.v4.runtime.Token.EOF);
+		// \n is skipped by the CQL.g4 file, try carriage return
+		cqlStr.append("\r" + "<EOF>");
+		cqlStr.append("\r" + org.antlr.v4.runtime.Token.EOF);
 		return cqlStr.toString();
 	}
 	
@@ -551,11 +551,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Get CQL data.
 	 */
 	public void getCQLData(){
-		// set the measure id into the cql model
-		cqlModel.setMeasureId(MatContext.get().getCurrentMeasureId());
 		
 		//get the CQL file from the database
-		MatContext.get().getMeasureService().getCQLData(cqlModel.getMeasureId(), new AsyncCallback<CQLModel>() {
+		MatContext.get().getMeasureService().getCQLData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<CQLModel>() {
 			
 		@Override
 			public void onFailure(Throwable caught) {
@@ -564,7 +562,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onSuccess(CQLModel result) {
-				
+				//System.out.println("In CQLPresenterNavBarWithList getCqlData onSuccess (result).");
+				//result.printCQL();
 				if (result != null) {
 					cqlModel = result;
 					searchDisplay.setCQLValuesInLists(cqlModel);

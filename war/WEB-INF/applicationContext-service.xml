@@ -71,9 +71,14 @@
     <bean id="measureNotesService" class="mat.server.service.impl.MeasureNotesServiceImpl">
     	<property name="measureNotesDAO" ref="measureNotesDAO"/>
     </bean>  
+    
+    <bean id="cqlService" class="mat.server.CQLServiceImpl">
+    </bean>  
+    
     <bean id="measureLibraryService" class="mat.server.MeasureLibraryServiceImpl">
     <!--  <property name="releaseDate" value="${mat.measure.release.date}"/>-->
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
+    	<property name="cqlService" ref="cqlService"/>
     
     </bean>
     

@@ -19,6 +19,8 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLModel;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -511,5 +513,11 @@ public interface MeasureService extends RemoteService {
 	 * @return QualityDataModelWrapper
 	 */
 	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
+	
+	CQLModel parseCQL(String cqlBuilder);
+
+	Boolean saveCQLData(CQLModel cqlDataModel);
+	
+	CQLModel getCQLData(String measureId);
 	
 }

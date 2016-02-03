@@ -27,6 +27,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLModel;
 import mat.server.util.XmlProcessor;
 
 // TODO: Auto-generated Javadoc
@@ -569,4 +570,11 @@ public interface MeasureLibraryService {
 	
 	String getCurrentReleaseVersion();
 	void setCurrentReleaseVersion(String releaseVersion);
+	
+    CQLModel parseCQL(String cqlBuilder);
+
+	Boolean saveCQLData(CQLModel cqlDataModel);
+
+	CQLModel getCQLData(String measureId);
+	
 }

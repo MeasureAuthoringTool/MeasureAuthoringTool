@@ -18,6 +18,8 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLModel;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -569,5 +571,13 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	
 	void getDefaultSDEFromMeasureXml(String measureId, AsyncCallback<QualityDataModelWrapper> callback);
+	
+	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
+
+	void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
+	
+	void getCQLData(String measureId, AsyncCallback<CQLModel> callback);
+	
+	
 	
 }

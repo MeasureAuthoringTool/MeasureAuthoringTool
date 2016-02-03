@@ -36,6 +36,7 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -67,12 +68,18 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
+import mat.model.clause.CQLData;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLModel;
+import mat.server.cqlparser.CQLErrorListener;
+import mat.server.cqlparser.MATCQLListener;
+import mat.server.cqlparser.cqlLexer;
+import mat.server.cqlparser.cqlParser;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
@@ -106,6 +113,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -195,6 +205,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private OrganizationDAO organizationDAO;
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	
+	private CQLService cqlService;
 	
 	
 	/* (non-Javadoc)
@@ -4706,6 +4718,70 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public void setCurrentReleaseVersion(String releaseVersion) {
 		currentReleaseVersion = releaseVersion;
 	}
+
+	public CQLService getCqlService() {
+		return cqlService;
+	}
+
+	public void setCqlService(CQLService cqlService) {
+		this.cqlService = cqlService;
+	}
+	
+	
+	
+	@Override
+	public CQLModel parseCQL(String cqlBuilder){
+		
+		//CQLValidationResult result = new CQLValidationResult();
+		CQLModel cqlModel = new CQLModel();
+		cqlModel.setCqlBuilder(cqlBuilder);
+		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
+		System.out.println(cqlBuilder);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		cqlParser parser = new cqlParser(tokens);
+		CQLErrorListener cqlErrorListener = new CQLErrorListener();
+		MATCQLListener cqlListener = new MATCQLListener();
+		cqlListener.setCqlModel(cqlModel);
+		cqlListener.setParser(cqlListener);
+		cqlListener.setLexer(lexer);
+		parser.addParseListener(cqlListener);
+		((MATCQLListener) cqlListener).setTokens(tokens);
+		parser.setBuildParseTree(true);
+
+		ParserRuleContext tree = parser.logic();
+		parser.notifyErrorListeners("");
+				
+		System.out.println(parser.getNumberOfSyntaxErrors());
+		System.out.println(cqlErrorListener.getErrors());
+
+//		if(cqlErrorListener.getErrors().size() != 0){
+//			result.setValid(false);
+//			result.setErrorList(cqlErrorListener.getErrors());
+//		} else {
+//			result.setValid(true);
+//		}
+
+	  	//tree.inspect(parser);
+	  	cqlModel = cqlListener.getCqlModel();
+		return cqlModel;
+	}
+	
+	@Override
+	public Boolean saveCQLData(CQLModel cqlDataModel){
+		return getCqlService().saveCQL(cqlDataModel);
+	}
+	
+	
+	@Override
+	public CQLModel getCQLData(String measureId) {
+		CQLData cqlData = getCqlService().getCQL(measureId);
+		if (cqlData != null) {
+			return parseCQL(cqlData.getCQLAsString());
+		} else {
+			return null;
+		}
+	}
+
 	
 }
 

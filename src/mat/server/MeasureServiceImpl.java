@@ -23,6 +23,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLModel;
 import mat.server.service.MeasureLibraryService;
 
 // TODO: Auto-generated Javadoc
@@ -483,21 +484,54 @@ MeasureService {
 		return this.getMeasureLibraryService().getMeasureXmlForMeasureAndSortedSubTreeMap(currentMeasureId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getUsedStewardAndDevelopersList(java.lang.String)
+	 */
 	@Override
 	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {
 		return this.getMeasureLibraryService().getUsedStewardAndDevelopersList(measureId);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTOList,
 			String measureId, String expansionProfile) {
 		this.getMeasureLibraryService().updateMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionProfile);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getDefaultSDEFromMeasureXml(java.lang.String)
+	 */
 	@Override
 	public QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId) {
 		// TODO Auto-generated method stub
 		return this.getMeasureLibraryService().getDefaultSDEFromMeasureXml(measureId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#parseCQL(java.lang.String)
+	 */
+	@Override
+	public CQLModel parseCQL(String cqlBuilder) {
+		return this.getMeasureLibraryService().parseCQL(cqlBuilder);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveCQLData(mat.model.cql.CQLModel)
+	 */
+	@Override
+	public Boolean saveCQLData(CQLModel cqlDataModel) {
+		return getMeasureLibraryService().saveCQLData(cqlDataModel);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
+	 */
+	@Override
+	public CQLModel getCQLData(String measureId) {
+			return this.getMeasureLibraryService().getCQLData(measureId);
 	}
 	
 }

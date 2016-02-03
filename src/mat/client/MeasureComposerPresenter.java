@@ -1,5 +1,7 @@
 package mat.client;
 
+import mat.client.clause.CQLWorkSpacePresenter;
+import mat.client.clause.CQLWorkSpaceView;
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
@@ -32,6 +34,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+// TODO: Auto-generated Javadoc
 //MAT-4898
 //import mat.client.measure.metadata.AddEditAuthorsView;
 
@@ -140,6 +143,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
+		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
@@ -373,6 +377,20 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 				new QDMAppliedSelectionPresenter(vascProfileSelectionView);
 		vsacProfileSelectionPresenter.getWidget();
 		return vsacProfileSelectionPresenter;
+	}
+	
+	
+	/**
+	 * Builds the cql work space tab.
+	 *
+	 * @return the mat presenter
+	 */
+	private MatPresenter buildCQLWorkSpaceTab(){
+		CQLWorkSpaceView cqlView = new CQLWorkSpaceView();
+		CQLWorkSpacePresenter cqlPresenter =
+				new CQLWorkSpacePresenter(cqlView);
+		cqlPresenter.getWidget();
+		return cqlPresenter;
 	}
 	
 	/**

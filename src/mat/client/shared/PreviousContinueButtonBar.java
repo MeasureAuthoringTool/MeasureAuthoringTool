@@ -49,7 +49,7 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} */else if (state == 2) {
-			setPageNames("QDM Elements", "Population Workspace");
+			setPageNames("QDM Elements", "CQL Workspace");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
@@ -63,20 +63,27 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.add(continueButton);//commented to hide the Old Measure Packager from PreviousContinueButtonBar
 		} */else if (state == 3) {
 			state = 3;
-			setPageNames("Clause Workspace", "Measure Packager");
+			setPageNames("Clause Workspace", "Population Workspace");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} else if (state == 4) {
 			state = 4;
+			setPageNames("CQL Workspace", "Measure Packager");
+			buttonPanel.remove(previousButton);
+			buttonPanel.remove(continueButton);
+			buttonPanel.add(previousButton);
+			buttonPanel.add(continueButton);
+		} else if (state == 5) {
+			state = 5;
 			setPageNames("Population Workspace", "Measure Notes");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
-		} else if (state >= 5) {
-			state = 5;
+		} else if (state >= 6) {
+			state = 6;
 			setPageNames("Measure Packager", "UNDEFINED");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);

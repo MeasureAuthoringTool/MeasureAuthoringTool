@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
@@ -24,6 +23,7 @@ import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -159,8 +159,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private ErrorMessageDisplay saveErrorMessageDisplay = new ErrorMessageDisplay();
 	
 	/** The include vsac data. */
-	private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
-			+ "a measure package with VSAC data.", "Include VSAC value set data", true);
+	/*private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
+			+ "a measure package with VSAC data.", "Include VSAC value set data", true);*/
+	private CheckBox includeVSACData = new CheckBox("Include VSAC value set data");
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSaveErrorMessageDisplay()
@@ -290,6 +291,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(topRiskAdjContainer);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
+		includeVSACData.setTitle("Select 'Include VSAC value set data' to create "
+				+ "a measure package with VSAC data.");
 		content.add(includeVSACData);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
@@ -1361,7 +1364,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getIncludeVSACData()
 	 */
 	@Override
-	public CustomCheckBox getIncludeVSACData() {
+	public CheckBox getIncludeVSACData() {
 		return includeVSACData;
 	}
 	

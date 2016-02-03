@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -37,6 +38,9 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -651,7 +655,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the calender year
 		 */
-		CustomCheckBox getCalenderYear();
+		ToggleSwitch getCalenderYear();
 		
 		/**
 		 * Sets the measurement period buttons visible.

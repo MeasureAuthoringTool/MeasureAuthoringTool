@@ -8,7 +8,6 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -29,6 +28,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.shared.MeasurePackageClauseValidator;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -313,7 +313,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * 
 		 * @return the include vsac data
 		 */
-		CustomCheckBox getIncludeVSACData();
+		CheckBox getIncludeVSACData();
 		/**
 		 * Gets the measure error message display.
 		 *

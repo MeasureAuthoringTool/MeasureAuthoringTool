@@ -5007,7 +5007,7 @@ select[multiple].input-group-sm>.form-control,select[multiple].input-group-sm>.i
 .label {
 	display: inline;
 	padding: .2em .6em .3em;
-	font-size: 75%;
+	font-size: 90%;
 	font-weight: 700;
 	line-height: 1;
 	color: #fff;
@@ -5057,7 +5057,7 @@ a.label:focus,a.label:hover {
 }
 
 .label-info {
-	background-color: #5bc0de
+	background-color: #0964A2
 }
 
 .label-info[href]:focus,.label-info[href]:hover {
@@ -5518,9 +5518,9 @@ a.list-group-item .list-group-item-heading {
 }
 
 a.list-group-item:focus,a.list-group-item:hover {
-	color: #555;
+	color: #fff;
 	text-decoration: none;
-	background-color: #f5f5f5
+	background-color: dark blue
 }
 
 .list-group-item.disabled,.list-group-item.disabled:focus,.list-group-item.disabled:hover

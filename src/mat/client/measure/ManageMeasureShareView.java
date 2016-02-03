@@ -5,7 +5,6 @@ import java.util.List;
 
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -16,6 +15,10 @@ import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -58,10 +61,11 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
 	/** The private check. */
-	// private CheckBox privateCheck = new CheckBox("Private Measure");
-	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
-			+ "a Measure Private.", "Private Measure", true);
-	/** The search view. */
+//	private CheckBox privateCheck = new CheckBox("Private Measure");
+	private ToggleSwitch privateCheck = new ToggleSwitch();
+//	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
+//			+ "a Measure Private.", "Private Measure", true);
+//	/** The search view. */
 //	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	/** The selection model. */
 	/*
@@ -77,6 +81,14 @@ public class ManageMeasureShareView implements ShareDisplay {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		horizontalPanel.add(measureNameLabel);
+		
+		privateCheck.setSize(SizeType.MINI);
+		privateCheck.setLabelText("Private Measure");
+		privateCheck.setLabelWidth("120");
+		privateCheck.setOnText("Yes");
+		privateCheck.setOnColor(ColorType.SUCCESS);
+		privateCheck.setOffText("No");
+		privateCheck.setOffColor(ColorType.DEFAULT);
 		horizontalPanel.add(privateCheck);
 		// content.add(measureNameLabel);
 		content.add(horizontalPanel);

@@ -3,10 +3,10 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
@@ -405,7 +405,7 @@ public interface XmlTreeDisplay {
 	 *
 	 * @return the include qdm varibale
 	 */
-	CustomCheckBox getIncludeQdmVaribale();
+	CheckBox getIncludeQdmVaribale();
 	
 	/**
 	 * Sets the qdm variable.

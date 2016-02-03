@@ -1,5 +1,7 @@
 package mat.client.measure;
 
+import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
 import mat.client.shared.CustomButton;
@@ -10,7 +12,7 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.util.RichTextToolbar;
+//import mat.client.util.RichTextToolbar;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -79,9 +81,16 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	/** The observer. */
 	private Observer observer;
 	
-	private RichTextArea textArea = new RichTextArea();
+	//private RichTextArea textArea = new RichTextArea();
 	
-	private RichTextToolbar toolBar = new RichTextToolbar(textArea);
+	//private RichTextToolbar toolBar = new RichTextToolbar(textArea);
+	
+	private Summernote toolBar = new Summernote();
+	@Override
+	public Summernote getToolBar() {
+		return toolBar;
+	}
+
 	/**
 	 * The Interface Observer.
 	 */
@@ -139,11 +148,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getMeasureNoteComposer()
 	 */
-	@Override
-	public RichTextArea getMeasureNoteComposer() {
-		//return measureNoteComposer;
-		return textArea;
-	}
+//	@Override
+//	public RichTextArea getMeasureNoteComposer() {
+//		//return measureNoteComposer;
+//		return textArea;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getMeasureNoteTitle()
@@ -281,12 +290,12 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		VerticalPanel vp = new VerticalPanel();
 		vp.setWidth("70%");
 		vp.setStylePrimaryName("recentSearchHeader");
-		textArea.setHeight("100px");
-		textArea.setWidth("100%");
-		textArea.setTitle("Description");
+//		textArea.setHeight("100px");
+//		textArea.setWidth("100%");
+//		textArea.setTitle("Description");
 		vp.setTitle("Description Text area");
 		vp.add(toolBar);
-		vp.add(textArea);
+	//	vp.add(textArea);
 		composerPanel.add(vp);
 		
 		composerPanel.add(new SpacerWidget());
@@ -348,7 +357,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 */
 	@Override
 	public void cancelComposedNote() {
-		getMeasureNoteComposer().setText("");
+		//getMeasureNoteComposer().setText("");
 		getMeasureNoteTitle().setText("");
 	}
 	
@@ -527,9 +536,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		measureNoteDesc.setHeight("70px");
 		measureNoteDesc.setMaxLength(3000);*/
 		
-		RichTextArea editTextArea = new RichTextArea();
-		RichTextToolbar editToolbar = new RichTextToolbar(editTextArea);
-		
+		//RichTextArea editTextArea = new RichTextArea();
+		//RichTextToolbar editToolbar = new RichTextToolbar(editTextArea);
+		Summernote editToolbar = new Summernote();
 		Label titleLabel = (Label) LabelBuilder.buildRequiredLabel(new Label(), "Title");
 		titleLabel.setStyleName("bold");
 		Label descLabel = (Label) LabelBuilder.buildRequiredLabel(new Label(), "Description");
@@ -539,8 +548,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(titleLabel);
 		vPanel.add(new SpacerWidget());
 		title.setText(result.getNoteTitle());
-		editTextArea.setHTML(result.getNoteDesc());
-		editTextArea.setTitle("Decription");
+		//editTextArea.setHTML(result.getNoteDesc());
+		//editTextArea.setTitle("Decription");
+		//editToolbar.setText(result.getNoteDesc());
+		editToolbar.setCode(result.getNoteDesc());
 		vPanel.setTitle("Description Area");
 		//measureNoteDesc.setText(result.getNoteDesc());
 		vPanel.add(title);
@@ -553,10 +564,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vp.setWidth("70%");
 		vp.setStylePrimaryName("recentSearchHeader");
 		vp.getElement().setAttribute("id", "NoteDesc_"+result.getId());
-		editTextArea.setWidth("100%");
-		editTextArea.setHeight("100px");
+		editToolbar.setWidth("100%");
+		editToolbar.setHeight("100px");
 		vp.add(editToolbar);
-		vp.add(editTextArea);
+//		vp.add(editTextArea);
 		vPanel.add(vp);
 		
 		vPanel.add(new SpacerWidget());

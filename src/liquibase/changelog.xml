@@ -185,4 +185,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-80_USMAT-6559.xml"/>	
 		<include file="classpath:/liquibase/deploy_Sprint-80_USMAT-6559_ADD_INFO_CHARLEN_CHANGE.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-84_USMAT-6610.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-82_USMAT-6655.xml"/>
 	</databaseChangeLog>

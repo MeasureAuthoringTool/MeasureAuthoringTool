@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.CQLData" table="CQL_DATA" lazy="true">
+    <id name="id" column="ID" >
+        <generator class="uuid"/>
+    </id>
+    <property name="measure_id" column="MEASURE_ID" unique="true"/>
+	<property name="cqlString" type="blob" column="CQL_DATA" />
+  </class>
+</hibernate-mapping>

@@ -314,6 +314,9 @@
     <bean id="userPasswordHistoryDAO"
 		class="mat.dao.impl.UserPasswordHistoryDAO" parent="baseDAO">
 	</bean>
+	<bean id="cqlDAO"
+		class="mat.dao.impl.clause.CQLDAO" parent="baseDAO">
+	</bean>
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -358,6 +361,7 @@
 		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
 		<property name="organizationDAO" ref="organizationDAO"/>
 		<property name="userPasswordHistoryDAO" ref="userPasswordHistoryDAO"/>
+		<property name="cqlDAO" ref="cqlDAO"/>
 	</bean>
 	 
 </beans>

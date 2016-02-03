@@ -292,6 +292,10 @@
 	<bean id="organizationDAO"
             class="mat.dao.impl.OrganizationDAO" parent="baseDAO">
     </bean>
+    
+    <bean id="cqlDAO"
+		class="mat.dao.impl.clause.CQLDAO" parent="baseDAO">
+	</bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
@@ -337,6 +341,7 @@
 		<property name="measureNotesDAO" ref="measureNotesDAO"/>
 		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
 		<property name="organizationDAO" ref="organizationDAO"/>
+		<property name="cqlDAO" ref="cqlDAO"/>
 	</bean>
      
 </beans>

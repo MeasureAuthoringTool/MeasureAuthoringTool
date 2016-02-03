@@ -151,18 +151,21 @@ public class LoginNewPresenter {
 	 */
 	private void submit() {
 		view.getHelpBlock().setText("");
+		view.getSubmitButton().setEnabled(false);
 		
 		if (view.getUserIdText().getText().isEmpty()) {
 			view.getUserIdGroup().setValidationState(ValidationState.ERROR);
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+			view.getSubmitButton().setEnabled(true);
 		} else if (view.getPasswordInput().getText().isEmpty()) {
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.ERROR);
+			view.getSubmitButton().setEnabled(true);
 		} else if (view.getSecurityCodeInput().getText().isEmpty()) {
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getSecurityCodeRequiredMessage());
@@ -170,6 +173,7 @@ public class LoginNewPresenter {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			view.getAuthTokenGroup().setValidationState(ValidationState.ERROR);
+			view.getSubmitButton().setEnabled(true);
 		} else {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
@@ -186,36 +190,37 @@ public class LoginNewPresenter {
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			view.getUserIdGroup().setValidationState(ValidationState.NONE);
 			view.getPasswordGroup().setValidationState(ValidationState.NONE);
+			view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
+			view.getSubmitButton().setEnabled(true);
 		}
 		
 		@Override
 		public void onSuccess(LoginModel result) {
 			view.getUserIdGroup().setValidationState(ValidationState.NONE);
 			view.getPasswordGroup().setValidationState(ValidationState.NONE);
+			view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
 			loginModel = result;
-			if(result != null) {
+			if (result != null) {
 				String secRole = null;
-				if(result.getRole() != null) {
+				if (result.getRole() != null) {
 					secRole = result.getRole().getDescription();
 				}
-				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole,result.getLoginId());
-				if(loginModel.isInitialPassword()){
+				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole, result.getLoginId());
+				if (loginModel.isInitialPassword()) {
 					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
-				}else if(loginModel.isLoginFailedEvent()){
-					
+				} else if (loginModel.isLoginFailedEvent()) {
 					view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 					view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 					view.getHelpBlock().setText(loginModel.getErrorMessage());
-				}else if(loginModel.isTemporaryPassword()){
+				} else if (loginModel.isTemporaryPassword()) {
 					MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());
-				}else{
+				} else {
 					MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
 				}
-			}
-			else {
+			} else {
 				view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getServerCallNullMessage());
 			}
-			
+			view.getSubmitButton().setEnabled(true);
 		}
 		
 		

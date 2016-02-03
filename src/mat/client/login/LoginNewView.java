@@ -137,7 +137,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		authLabel.setTitle("Security Code");
 		authLabel.setFor("inputAuthCode");
 		securityCodeInput.setWidth("210px");
-		securityCodeInput.setHeight("28px");
+		securityCodeInput.setHeight("28.5px");
 		securityCodeInput.setId("inputAuthCode");
 		securityCodeInput.setPlaceholder("Enter Security Code");
 		securityCodeInput.setTitle("Enter Security Code");

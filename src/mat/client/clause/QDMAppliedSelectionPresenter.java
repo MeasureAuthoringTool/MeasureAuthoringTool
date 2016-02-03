@@ -11,7 +11,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
@@ -35,6 +34,8 @@ import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionIdentifier;
 import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -227,7 +228,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the specific occ chk box
 		 */
-		CustomCheckBox getSpecificOccChkBox();
+		CheckBox getSpecificOccChkBox();
 		
 		/**
 		 * Gets the data type text.
@@ -401,6 +402,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 */
 		Widget buildPasteBottomPanel(boolean isEditable);
 		
+		ToggleSwitch getToggleSwitch();
+		
 	}
 	
 	/** The panel. */
@@ -430,7 +433,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/** The is modfied. */
 	private boolean isModified = false;
-		
+	
 	/** The modify value set dto. */
 	private QualityDataSetDTO modifyValueSetDTO;
 	
@@ -504,9 +507,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(false);
 							searchDisplay.getVSACExpansionIdentifierListBox().clear();
 							searchDisplay.getVSACExpansionIdentifierListBox().addItem(result.getVsacExpIdentifier());
-							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
-							chkBox.setValue(true);
-							chkBox.setEnabled(false);
+							//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+							//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
+							searchDisplay.getToggleSwitch().setValue(true);
+							searchDisplay.getToggleSwitch().setEnabled(false);
 							isExpansionIdentifier = true;
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
 						} else {
@@ -526,12 +530,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									break;
 								}
 							}
-							CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
-							chkBox.setValue(true);
-							chkBox.setEnabled(true);
+							//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+							//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
+							searchDisplay.getToggleSwitch().setEnabled(true);
+							searchDisplay.getToggleSwitch().setValue(true);
+							
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
 							isExpansionIdentifier = true;
 						} else {
+							searchDisplay.getToggleSwitch().setEnabled(true);
 							expIdentifierToAllQDM = "";
 							isExpansionIdentifier = false;
 						}
@@ -1165,11 +1172,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					return ;
 				}
 				searchDisplay.getSearchHeader().setText("Search");
-				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
+				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+				//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
 				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
 					expIdentifierToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
 					updateAllQDMsWithExpProfile(appliedQDMList);
-				} else if(!chkBox.getValue()){
+				} else if(!searchDisplay.getToggleSwitch().getValue()){
 					expIdentifierToAllQDM = "";
 					updateAllQDMsWithExpProfile(appliedQDMList);
 				} else {
@@ -1183,7 +1191,36 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * click handler for check box in apply Expansion Identifier Panel to fetch Expansion
 		 * Identifier List when Umls is active.
 		 */
-		searchDisplay.getDefaultExpIDInput().addValueChangeHandler(
+		/*searchDisplay.getDefaultExpIDInput().addValueChangeHandler(
+				new ValueChangeHandler<Boolean>() {
+					@Override
+					public void onValueChange(ValueChangeEvent<Boolean> event) {
+						if (event.getValue().toString().equals("true")) {
+							if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
+								// Login
+								// Validation
+								searchDisplay
+								.getErrorMessageDisplay()
+								.setMessage(
+										MatContext.get()
+										.getMessageDelegate()
+										.getUMLS_NOT_LOGGEDIN());
+								return;
+							}
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
+									true);
+							searchDisplay.setExpIdentifierList(MatContext.get()
+									.getExpIdentifierList());
+							searchDisplay.setDefaultExpansionIdentifierListBox();
+						} else if (event.getValue().toString().equals("false")) {
+							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
+									false);
+							searchDisplay.setDefaultExpansionIdentifierListBox();
+						}
+						
+					}
+				});*/
+		searchDisplay.getToggleSwitch().addValueChangeHandler(
 				new ValueChangeHandler<Boolean>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -1268,13 +1305,14 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				if (!expIdentifierToAllQDM.isEmpty()) {
 					qualityDataSetDTO.setExpansionIdentifier(expIdentifierToAllQDM);
 				}
-				CustomCheckBox chkBox = (CustomCheckBox) searchDisplay.getDefaultExpIDInput();
-				if (chkBox.getValue()) {
+				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox) searchDisplay.getDefaultExpIDInput();
+				//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
+				if (searchDisplay.getToggleSwitch().getValue()) {
 					modifiedQDMList.add(qualityDataSetDTO);
 				}
 			}
 		}
-		//Updating all SDE 
+		//Updating all SDE
 		updateAllSuppleDataElementsWithExpIdentifier(modifiedQDMList);
 	}
 	
@@ -1293,14 +1331,15 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Void result) {
 				getAppliedQDMList(true);
-				CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
-				if (!chkBox.getValue()) {
-				searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-						.getMessageDelegate().getDefaultExpansionIdRemovedMessage());
-
+				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+				//ToggleSwitch useDefaultExpToggelSwitch = searchDisplay.getToggleSwitch();
+				if (!searchDisplay.getToggleSwitch().getValue()) {
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getDefaultExpansionIdRemovedMessage());
+					
 				} else {
-				searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-						.getMessageDelegate().getVsacProfileAppliedToQdmElements());
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getVsacProfileAppliedToQdmElements());
 				}
 			}
 			
@@ -1975,7 +2014,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setValue("");
-		CustomCheckBox chkBox = searchDisplay.getSpecificOccChkBox();
+		CheckBox chkBox = searchDisplay.getSpecificOccChkBox();
 		chkBox.setEnabled(false);
 		chkBox.setValue(false);
 		searchDisplay.getSaveButton().setEnabled(false);
@@ -2031,9 +2070,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);
-		CustomCheckBox chkBox = (CustomCheckBox)searchDisplay.getDefaultExpIDInput();
-		chkBox.setEnabled(editable);
-		CustomCheckBox specificChkBox = searchDisplay.getSpecificOccChkBox();
+		//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+		//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
+		//searchDisplay.getToggleSwitch().setEnabled(editable);
+		CheckBox specificChkBox = searchDisplay.getSpecificOccChkBox();
 		specificChkBox.setEnabled(editable);
 		searchDisplay.buildPasteBottomPanel(editable);
 		searchDisplay.buildPasteTopPanel(editable);

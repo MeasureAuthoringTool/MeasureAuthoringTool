@@ -6,7 +6,6 @@ import java.util.List;
 import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.codelist.HasListBox;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -27,6 +26,11 @@ import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
+/*import mat.shared.CustomBootStrapCheckBox;*/
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -117,9 +121,10 @@ HasSelectionHandlers<Boolean> {
 	private Observer observer;
 	
 	/** The expansion Identifier selection. */
-	private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
-			"Use a default Expansion Identifier ?", 1);
-	
+	/*private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
+			"Use a default Expansion Identifier ?", 1);*/
+	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
+	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
 	
@@ -188,7 +193,7 @@ HasSelectionHandlers<Boolean> {
 	private boolean isEditable;
 	
 	/** The specific occurrence check box. */
-	private CustomCheckBox specificOcurChkBox;
+	private CheckBox specificOcurChkBox;
 	
 	/** The in progress message display. */
 	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
@@ -416,7 +421,7 @@ HasSelectionHandlers<Boolean> {
 	 * @return the widget
 	 */
 	private Widget buildDefaultExpIdentifierPanel() {
-		defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");
+		/*defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");*/
 		defaultExpIdentifierListBox.setWidth("200px");
 		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
 		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
@@ -435,7 +440,18 @@ HasSelectionHandlers<Boolean> {
 		searchPanel.add(defaultExpIdentifierHeader);
 		searchPanel.add(new SpacerWidget());
 		Grid queryGrid = new Grid(5, 1);
-		queryGrid.setWidget(0, 0, defaultExpIdentifierSel);
+		
+		toggleSwitch.setSize(SizeType.MINI);
+		toggleSwitch.setLabelText("Default Expansion Identifier");
+		toggleSwitch.setLabelWidth("180");
+		/*toggleSwitch.setOnIcon(IconType.CHECK);
+		toggleSwitch.setOffIcon(IconType.TIMES);
+		 */
+		toggleSwitch.setOnText("Yes");
+		toggleSwitch.setOnColor(ColorType.SUCCESS);
+		toggleSwitch.setOffText("No");
+		toggleSwitch.setOffColor(ColorType.DEFAULT);
+		queryGrid.setWidget(0, 0, toggleSwitch);
 		queryGrid.setWidget(1, 0, new SpacerWidget());
 		queryGrid.setWidget(2, 0, defaultExpIdentifierListBox);
 		queryGrid.setWidget(3, 0, new SpacerWidget());
@@ -500,7 +516,9 @@ HasSelectionHandlers<Boolean> {
 		dataTypeListBox.getElement().setId("DataType_ListBox");
 		dataTypeListBox.getElement().setTitle("DataType Selection List");
 		
-		specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
+		//specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
+		specificOcurChkBox = new CheckBox("Specific Occurrence");
+		specificOcurChkBox.setTitle("Specific Occurrence");
 		specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
 		
 		saveCancelButtonBar.getSaveButton().setText("Apply");
@@ -747,7 +765,7 @@ HasSelectionHandlers<Boolean> {
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
 			
-			String colName = "Modify"; 
+			String colName = "Modify";
 			
 			if(!isEditable){
 				colName = "Select";
@@ -835,9 +853,13 @@ HasSelectionHandlers<Boolean> {
 	 */
 	@Override
 	public HasValueChangeHandlers<Boolean> getDefaultExpIDInput() {
-		return defaultExpIdentifierSel;
+//		return defaultExpIdentifierSel;
+		return null;
 	}
-	
+	@Override
+	public ToggleSwitch getToggleSwitch(){
+		return toggleSwitch;
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSpecificOccChkBox()
 	 */
@@ -847,7 +869,7 @@ HasSelectionHandlers<Boolean> {
 	 * @return the specific occ chk box
 	 */
 	@Override
-	public CustomCheckBox getSpecificOccChkBox(){
+	public CheckBox getSpecificOccChkBox(){
 		return specificOcurChkBox;
 	}
 	
@@ -1081,7 +1103,8 @@ HasSelectionHandlers<Boolean> {
 	 */
 	@Override
 	public void resetVSACValueSetWidget() {
-		defaultExpIdentifierSel.setValue(false);
+		//defaultExpIdentifierSel.setValue(false);
+		toggleSwitch.setValue(false);
 		defaultExpIdentifierListBox.clear();
 		defaultExpIdentifierListBox.setEnabled(false);
 		defaultExpIdentifierListBox.addItem("--Select--");
@@ -1254,7 +1277,7 @@ HasSelectionHandlers<Boolean> {
 				} else {
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
 							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
-				} 
+				}
 				
 				return sb.toSafeHtml();
 			}

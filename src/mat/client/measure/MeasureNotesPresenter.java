@@ -548,6 +548,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 	 */
 	private void resetWidget() {
 		clearMessages();
+		notesDisplay.getToolBar().clear();
 		notesDisplay.getToolBar().setCode("");
 		notesDisplay.getMeasureNoteTitle().setText("");
 	}

@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
+import org.gwtbootstrap3.extras.summernote.client.ui.base.Toolbar;
 
 import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RichTextArea;
+//import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -767,8 +768,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 							}
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
 								VerticalPanel vp = (VerticalPanel)widget;
-								Widget wid = vp.getWidget(1);
-								noteDesc = ((RichTextArea)wid).getHTML();
+								System.out.println("Vertical Panel Widget Count: " + vp.getWidgetCount());
+								Widget wid = vp.getWidget(0);
+								noteDesc = ((Summernote)wid).getCode();
 							}
 						}
 						//System.out.println("TITLE: " + noteTitle);
@@ -811,8 +813,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 					}
 					if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
 						VerticalPanel vp = (VerticalPanel)widget;
-						Widget wid = vp.getWidget(1);
-						((RichTextArea)wid).setHTML(measureNoteDTO.getNoteDesc());
+						Widget wid = vp.getWidget(0);
+						((Summernote)wid).reconfigure();
+						((Summernote)wid).setCode(measureNoteDTO.getNoteDesc());
 					}
 				}
 			}

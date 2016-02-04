@@ -150,6 +150,7 @@ public class LoginNewPresenter {
 	 * Method called when Sign In Button on Login View is clicked.
 	 */
 	private void submit() {
+		view.getSuccessMessagePanel().setVisible(false);
 		view.getHelpBlock().setText("");
 		view.getSubmitButton().setEnabled(false);
 		

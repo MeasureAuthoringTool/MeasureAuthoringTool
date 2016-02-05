@@ -518,10 +518,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			cqlStr = cqlStr.append("\n\n");			
 		}
 		
-		//cqlStr.append("\n" + org.antlr.v4.runtime.Token.EOF);
-		// \n is skipped by the CQL.g4 file, try carriage return
-		cqlStr.append("\r" + "<EOF>");
-		cqlStr.append("\r" + org.antlr.v4.runtime.Token.EOF);
 		return cqlStr.toString();
 	}
 	

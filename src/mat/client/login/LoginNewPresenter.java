@@ -127,6 +127,7 @@ public class LoginNewPresenter {
 		});
 		view.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
 		view.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
+		view.getSecurityCodeInput().addKeyDownHandler(submitOnEnterHandler);
 	}
 	
 	public void go(HasWidgets container) {
@@ -153,7 +154,10 @@ public class LoginNewPresenter {
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getHelpBlock().setText("");
 		view.getSubmitButton().setEnabled(false);
-		
+		/*view.getUserIdText().setText("liwisham0002");
+		view.getPasswordInput().setText("Helloworld1234?");*/
+		view.getUserIdText().setText("JyN1896");
+		view.getPasswordInput().setText("Newpassword123?");
 		if (view.getUserIdText().getText().isEmpty()) {
 			view.getUserIdGroup().setValidationState(ValidationState.ERROR);
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);

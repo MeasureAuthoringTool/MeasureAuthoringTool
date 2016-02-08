@@ -165,15 +165,28 @@ public class CheckUserLastLoginTask {
 		
 		final List<User> returnUserList = new ArrayList<User>();
 		final Date daysAgo=getNumberOfDaysAgo((int)dayLimit);
-
-		logger.info(dayLimit + "daysAgo:"+daysAgo);
+		logger.info(dayLimit + "daysAgo:" + daysAgo);
 		
 		for(User user:users){
 			Date lastSignInDate = user.getSignInDate();
 			
-			if(lastSignInDate == null || !checkValidUser(user)){
+			if (!checkValidUser(user)) {
 				continue;
 			}
+			
+			// MAT-6582:  If a user has never signed in, look at activation date
+			if (lastSignInDate == null) {
+				Date activationDate = user.getActivationDate();
+				activationDate = DateUtils.truncate(activationDate, Calendar.DATE);
+				logger.info("User:"+user.getFirstName()+"  :::: activationDate :::::   " + activationDate);
+				if(activationDate.equals(daysAgo)) {
+					logger.info("User:"+user.getEmailAddress()+" who has never logged in and was activated over "+ dayLimit +" days ago.");
+					returnUserList.add(user);
+				}else{
+					logger.info("User:"+user.getEmailAddress()+" who has never logged in and was activated "+ dayLimit +" days ago.");
+				}
+				continue;
+			}		
 			
 			lastSignInDate = DateUtils.truncate(lastSignInDate, Calendar.DATE);
 			logger.info("User:"+user.getFirstName()+"  :::: lastSignInDate :::::   " + lastSignInDate);
@@ -225,8 +238,7 @@ public class CheckUserLastLoginTask {
 		
 		//final Date terminationDate = user.getTerminationDate();
 		final Date signInDate = user.getSignInDate();
-		System.out.println("signInDate :: "+ signInDate);
-		if(signInDate == null || user.getStatus().getId().equals("2")){
+		if(user.getStatus().getId().equals("2")){
 			isValidUser = false;
 		}
 		

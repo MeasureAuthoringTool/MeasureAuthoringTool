@@ -13,7 +13,7 @@ mat.dao.clause.CQLDAO{
 
 
 	@Override
-	public final CQLData findForCQL(final String measureId) {
+	public final CQLData findByID(final String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLData.class);
 

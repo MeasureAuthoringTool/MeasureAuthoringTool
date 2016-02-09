@@ -6,6 +6,7 @@ import mat.client.measure.service.CQLService;
 import mat.dao.clause.CQLDAO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameterTransferModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -24,14 +25,14 @@ public class CQLServiceImpl  implements CQLService{
 	@Override
 	public Boolean saveCQL(CQLModel cqlDataModel) {
 
-		CQLData cqlData = cqlDAO.findForCQL(cqlDataModel.getMeasureId());
+		CQLData cqlData = cqlDAO.findByID("");
 		if(cqlData!=null){
 			cqlData.setMeasureXMLAsByteArray(cqlDataModel.getCqlBuilder());
 
 		} else {
 
 			cqlData = new CQLData();
-			cqlData.setMeasure_id(cqlDataModel.getMeasureId());
+			cqlData.setMeasure_id("");
 			cqlData.setMeasureXMLAsByteArray(cqlDataModel.getCqlBuilder());
 		}
 
@@ -46,8 +47,17 @@ public class CQLServiceImpl  implements CQLService{
 	@Override
 	public CQLData getCQL(String measureId) {
 	
-		CQLData cqlData = cqlDAO.findForCQL(measureId);
+		CQLData cqlData = cqlDAO.findByID(measureId);
 		return cqlData;
+	}
+	
+	
+	public CQLModel saveAndModifyCQLParameter(CQLParameterTransferModel transferModel){
+		if(transferModel!=null){
+			
+		}
+		
+		return null;
 	}
 	
 }

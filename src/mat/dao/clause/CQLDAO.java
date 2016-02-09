@@ -5,6 +5,6 @@ import mat.model.clause.CQLData;
 
 public interface CQLDAO extends IDAO<CQLData, String>{
 
-	CQLData findForCQL(String measureId);
+	CQLData findByID(String measureId);
 
 }

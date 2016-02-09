@@ -98,6 +98,9 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP. */
 	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
 	
+	/** The Constant XPATH_CQL_LOOKUP. */
+	private static final String XPATH_CQL_LOOKUP = "/measure/cqlLookUp";
+	
 	/** The Constant XPATH_DETAILS_ITEM_COUNT. */
 	private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
@@ -132,13 +135,28 @@ public class XmlProcessor {
 	/** The Constant XPATH_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_DENOMINATOR_EXCEPTIONS = "/measure/populations/denominatorExceptions";
 	
+	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR = "/measure/measureDetails/denominatorDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS = "/measure/measureDetails/denominatorExceptionsDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_DENOMINATOR_EXCLUSIONS = "/measure/measureDetails/denominatorExclusionsDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS = "/measure/measureDetails/measurePopulationExclusionsDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS = "/measure/measureDetails/measurePopulationDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS. */
 	private static final String XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS = "/measure/measureDetails/measureObservationsDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_NUMERATOR. */
 	private static final String XPATH_MEASURE_DETAILS_NUMERATOR = "/measure/measureDetails/numeratorDescription";
+	
+	/** The Constant XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS. */
 	private static final String XPATH_MEASURE_DETAILS_NUM_EXCLUSIONS = "/measure/measureDetails/numeratorExclusionsDescription";
 	
 	/** The Constant XPATH_DENOMINATOR_EXCLUSIONS. */
@@ -864,6 +882,7 @@ public class XmlProcessor {
 			.removeChild(populationsNode.getChildNodes().item(0));
 		}
 		arrangeChildNodeList(populationsNode, childNodesList);
+		
 	}
 	
 	/**
@@ -927,6 +946,15 @@ public class XmlProcessor {
 			((Element) supplementaDataElementsElement.getParentNode())
 			.insertBefore(subTreeLookUpElement,
 					supplementaDataElementsElement.getNextSibling());
+		}
+		if (findNode(originalDoc, XPATH_CQL_LOOKUP) == null) {
+			Element cqlLookUpElement = originalDoc
+					.createElement("cqlLookUp");
+			((Element) supplementaDataElementsElement.getParentNode())
+			.insertBefore(cqlLookUpElement,
+					supplementaDataElementsElement.getNextSibling());
+			
+			createCQLLookUpElements();
 		}
 		if (findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE) == null) {
 			Element componentMeasureElement = originalDoc
@@ -1088,6 +1116,13 @@ public class XmlProcessor {
 						finalizedDateElement);
 			}
 		}
+	}
+	
+	/**
+	 * Creates the general information node.
+	 */
+	public void createGeneralInformationNode(){
+		
 	}
 	
 	/**
@@ -1539,8 +1574,10 @@ public class XmlProcessor {
 	/**
 	 * Takes the spaces out of the clauseName (attribute displayName in XML).
 	 *
-	 * @param xmlModel the xml model
-	 * @return
+	 * @param xmlString the xml string
+	 * @param xPathString the x path string
+	 * @return the string
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	public static String normalizeNodeForSpaces (String xmlString, String xPathString) throws XPathExpressionException {
 		XmlProcessor xmlProcessor = new XmlProcessor(xmlString);
@@ -1557,7 +1594,8 @@ public class XmlProcessor {
 	/**
 	 * Utility method to go through the Node and its children (upto nth level)
 	 * and remove all TEXT nodes.
-	 * @param node
+	 *
+	 * @param node the node
 	 */
 	public static void clean(Node node)
 	{
@@ -1583,5 +1621,59 @@ public class XmlProcessor {
 				node.removeChild(child);
 			}
 		}
+	}
+
+	/**
+	 * Creates the cql general info.
+	 *
+	 * @return the string
+	 */
+	public String createCQLLookUpElements() {
+	
+		if (originalDoc == null) {
+			return "";
+		}
+		// Get the title from originalDoc
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		try {
+			
+			Node cqlNode = findNode(originalDoc, XPATH_CQL_LOOKUP);
+			if(cqlNode!=null){
+			
+				String libraryName = (String) xPath.evaluate(
+						"/measure/measureDetails/title/text()",
+						originalDoc.getDocumentElement(), XPathConstants.STRING);
+			
+				Element libraryChildElem = originalDoc.createElement("library");
+				libraryChildElem.setTextContent(libraryName.replaceAll(" ", ""));
+				
+				Element usingChildElem = originalDoc.createElement("usingModel");
+				usingChildElem.setTextContent("QDM");
+				
+				Element contextChildElem = originalDoc.createElement("cqlContext");
+				contextChildElem.setTextContent("Patient");
+				
+				Element parametersChildElem = originalDoc.createElement("parameters");
+				
+				Element definitionsChildElem = originalDoc.createElement("definitions");
+				Element functionsChildElem = originalDoc.createElement("functions");				
+				
+				
+				cqlNode.appendChild(libraryChildElem);
+				cqlNode.appendChild(usingChildElem);
+				cqlNode.appendChild(contextChildElem);
+				cqlNode.appendChild(parametersChildElem);
+				cqlNode.appendChild(definitionsChildElem);
+				cqlNode.appendChild(functionsChildElem);
+			}
+			
+			
+			
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return transform(originalDoc);
+		
 	}
 }

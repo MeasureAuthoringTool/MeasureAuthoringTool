@@ -18,7 +18,10 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
+import mat.shared.SaveUpdateCQLResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -577,7 +580,13 @@ public interface MeasureServiceAsync {
 	void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
 	
 	void getCQLData(String measureId, AsyncCallback<CQLModel> callback);
-	
-	
+
+	void saveAndModifyDefinitions(String measureId,
+			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList,
+			AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void getCQLDefinitionsFromMeasureXML(String measureId,
+			AsyncCallback<CQLDefinitionsWrapper> callback);
+
 	
 }

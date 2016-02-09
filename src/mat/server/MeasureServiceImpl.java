@@ -23,8 +23,11 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -533,5 +536,19 @@ MeasureService {
 	public CQLModel getCQLData(String measureId) {
 			return this.getMeasureLibraryService().getCQLData(measureId);
 	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
+			CQLDefinition currentObj, List<CQLDefinition> definitionList){
+		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList);
+	}
+
+	@Override
+	public CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(
+			String measureId) {
+		return this.getMeasureLibraryService().getCQLDefinitionsFromMeasureXML(measureId);
+	}
+	
+
 	
 }

@@ -19,7 +19,10 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
+import mat.shared.SaveUpdateCQLResult;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -519,5 +522,11 @@ public interface MeasureService extends RemoteService {
 	Boolean saveCQLData(CQLModel cqlDataModel);
 	
 	CQLModel getCQLData(String measureId);
+	
+	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
+			CQLDefinition toBemodifiedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList);
+	
+	CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(String measureId);
 	
 }

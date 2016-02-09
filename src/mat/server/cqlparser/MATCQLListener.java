@@ -66,7 +66,7 @@ public class MATCQLListener extends cqlBaseListener {
 			library.setVersion(ctx.versionSpecifier().getText());
 			System.out.println(ctx.versionSpecifier().getText());
 		}
-		cqlModel.setLibrary(library);
+	//	cqlModel.setLibrary(library);
 		System.out.println("\r\n");
 		
 	}
@@ -77,9 +77,9 @@ public class MATCQLListener extends cqlBaseListener {
 		if (ctx.typeSpecifier() != null) {
 			paramModel.setTypeSpecifier(ctx.typeSpecifier().getText());
 		}
-		List<CQLParameterModelObject> parameters = cqlModel.getCqlParameters();
-		parameters.add(paramModel);
-		cqlModel.setCqlParameters(parameters);
+	//	List<CQLParameterModelObject> parameters = cqlModel.getCqlParameters();
+		//parameters.add(paramModel);
+		//cqlModel.setCqlParameters(parameters);
 		System.out.println("Found parameter definition...");
 		System.out.println(ctx.identifier().getText());
 		if (ctx.typeSpecifier() != null) {
@@ -96,9 +96,9 @@ public class MATCQLListener extends cqlBaseListener {
 		CQLValueSetModelObject valueSet = new CQLValueSetModelObject();
 		valueSet.setIdentifier(ctx.identifier().getText());
 		valueSet.setValueSetId(ctx.valuesetId().getText());
-		List<CQLValueSetModelObject> valueSets = cqlModel.getValueSetList(); 
-		valueSets.add(valueSet);
-		cqlModel.setValueSetList(valueSets);
+		//List<CQLValueSetModelObject> valueSets = cqlModel.getValueSetList(); 
+		//valueSets.add(valueSet);
+		//cqlModel.setValueSetList(valueSets);
 
 	}
 	
@@ -162,9 +162,9 @@ public class MATCQLListener extends cqlBaseListener {
 			CQLDefinitionModelObject definition = new CQLDefinitionModelObject();
 			definition.setIdentifier(ctx.expressionDefinition().identifier().getText());
 			definition.setExpression(expressionDefinition);
-			List<CQLDefinitionModelObject> definitions = cqlModel.getDefinitionList();
-			definitions.add(definition);
-			cqlModel.setDefinitionList(definitions);
+			//List<CQLDefinitionModelObject> definitions = cqlModel.getDefinitionList();
+			//definitions.add(definition);
+			//cqlModel.setDefinitionList(definitions);
 		}else if(ctx.contextDefinition() != null){
 			System.out.println("Found context ...");
 			System.out.println(ctx.contextDefinition().identifier().getText());

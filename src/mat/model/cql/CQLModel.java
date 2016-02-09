@@ -1,76 +1,49 @@
 package mat.model.cql;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLModel implements IsSerializable{
-	private CQLLibraryModelObject library;
-	private CQLContextModelObject context;
-	private List<CQLLibraryModelObject> includeLibraryList;
-	private List<CQLValueSetModelObject> valueSetList = new ArrayList<CQLValueSetModelObject>();
-	private List<CQLParameterModelObject> cqlParameters = new ArrayList<CQLParameterModelObject>();
-	private List<CQLDefinitionModelObject> definitionList = new ArrayList<CQLDefinitionModelObject>();
-	private List<CQLFunctionModelObject> functionsList = new ArrayList<CQLFunctionModelObject>();
+	private CQLLibraryModel library;
+	private CQLDataModel usedModel;
+	private List<CQLLibraryModel> includeLibraryList;
+	private String context;
+	private List<CQLQualityDataSetDTO> valueSetList;
 	private List<CQLQualityDataSetDTO> codeList;
+	private List<CQLParameter> cqlParameters;
+	private List<CQLDefinition> cqlDefinitions;
+	//private List<Functions> functionsList;
 	private String cqlBuilder;
-	
-	private String measureId;
-
-	public String getCqlBuilder() {
-		return cqlBuilder;
+	public CQLDataModel getUsedModel() {
+		return usedModel;
 	}
-	public void setCqlBuilder(String cqlBuilder) {
-		this.cqlBuilder = cqlBuilder;
+	public void setUsedModel(CQLDataModel usedModel) {
+		this.usedModel = usedModel;
 	}
-	public String getMeasureId() {
-		return measureId;
-	}
-	public void setMeasureId(String measureId) {
-		this.measureId = measureId;
-	}
-	public CQLLibraryModelObject getLibrary() {
-		return library;
-	}
-	public void setLibrary(CQLLibraryModelObject library) {
-		this.library = library;
-	}
-	public CQLContextModelObject getContext() {
+	public String getContext() {
 		return context;
 	}
-	public void setContext(CQLContextModelObject context) {
+	public void setContext(String context) {
 		this.context = context;
 	}
-	public List<CQLValueSetModelObject> getValueSetList() {
+	public List<CQLQualityDataSetDTO> getValueSetList() {
 		return valueSetList;
 	}
-	public void setValueSetList(List<CQLValueSetModelObject> valueSetList) {
+	public void setValueSetList(List<CQLQualityDataSetDTO> valueSetList) {
 		this.valueSetList = valueSetList;
 	}
-	public List<CQLParameterModelObject> getCqlParameters() {
-		return cqlParameters;
-	}
-	public void setCqlParameters(List<CQLParameterModelObject> cqlParameters) {
-		this.cqlParameters = cqlParameters;
-	}
-	public List<CQLDefinitionModelObject> getDefinitionList() {
-		return definitionList;
-	}
-	public void setDefinitionList(List<CQLDefinitionModelObject> definitionList) {
-		this.definitionList = definitionList;
-	}
-	public List<CQLFunctionModelObject> getFunctionsList() {
-		return functionsList;
-	}
-	public void setFunctionsList(List<CQLFunctionModelObject> functionsList) {
-		this.functionsList = functionsList;
-	}
-	public List<CQLLibraryModelObject> getIncludeLibraryList() {
+	public List<CQLLibraryModel> getIncludeLibraryList() {
 		return includeLibraryList;
 	}
-	public void setIncludeLibraryList(List<CQLLibraryModelObject> includeLibraryList) {
+	public void setIncludeLibraryList(List<CQLLibraryModel> includeLibraryList) {
 		this.includeLibraryList = includeLibraryList;
+	}
+	public CQLLibraryModel getLibrary() {
+		return library;
+	}
+	public void setLibrary(CQLLibraryModel library) {
+		this.library = library;
 	}
 	public List<CQLQualityDataSetDTO> getCodeList() {
 		return codeList;
@@ -78,18 +51,24 @@ public class CQLModel implements IsSerializable{
 	public void setCodeList(List<CQLQualityDataSetDTO> codeList) {
 		this.codeList = codeList;
 	}
-	public void printCQL() {
-		System.out.println("CQL Model Info:");
-		System.out.println(this);
-		System.out.println("Library: " + library.getIdentifier() +  " " + library.getVersion() != null ? library.getVersion(): " ");
-		System.out.println("Parameters: ");
-		for (CQLParameterModelObject param: getCqlParameters()) {
-			System.out.println(param.getIdentifier() +  " " + param.getTypeSpecifier());
-		}
-		System.out.println("Definitions: ");
-		for (CQLDefinitionModelObject definition: getDefinitionList()) {
-			System.out.println(definition.getIdentifier() +  " " + definition.getExpression());
-		}
+	public List<CQLParameter> getCqlParameters() {
+		return cqlParameters;
 	}
+	public void setCqlParameters(List<CQLParameter> cqlParameters) {
+		this.cqlParameters = cqlParameters;
+	}
+	public List<CQLDefinition> getDefinitionList() {
+		return cqlDefinitions;
+	}
+	public void setDefinitionList(List<CQLDefinition> definitionList) {
+		this.cqlDefinitions = definitionList;
+	}
+	public String getCqlBuilder() {
+		return cqlBuilder;
+	}
+	public void setCqlBuilder(String cqlBuilder) {
+		this.cqlBuilder = cqlBuilder;
+	}
+
 
 }

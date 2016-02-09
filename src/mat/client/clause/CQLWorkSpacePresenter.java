@@ -2,6 +2,17 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import mat.client.MatPresenter;
+import mat.client.shared.MatContext;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
 
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -12,6 +23,7 @@ import org.gwtbootstrap3.client.ui.TextArea;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -20,11 +32,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.MatPresenter;
-import mat.client.shared.MatContext;
-import mat.model.cql.CQLDefinitionModelObject;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameterModelObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -45,7 +52,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	String currentSelectedClause = null;
 	
 	/** The cql model. */
-	CQLModel cqlModel = new CQLModel();
+	CQLModel cqlModel = null;
+	
+	String measureId = null;
 	
 	
 	/**
@@ -132,7 +141,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		/**
 		 * Clear and add parameter names to list box.
 		 */
-		void addParameterNamesToListBox();
+		void clearAndAddParameterNamesToListBox();
 
 		/**
 		 * Gets the adds the parameter button.
@@ -167,14 +176,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the view parameter list
 		 */
-		List<CQLParameterModelObject> getViewParameterList();
+		List<CQLParameter> getViewParameterList();
 
 		/**
 		 * Gets the parameter map.
 		 *
 		 * @return the parameter map
 		 */
-		HashMap<String, CQLParameterModelObject> getParameterMap();
+		HashMap<String, CQLParameter> getParameterMap();
 
 		/**
 		 * Gets the parameter name map.
@@ -199,7 +208,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		/**
 		 * Clear and add definition names to list box.
 		 */
-		void addDefinitionNamesToListBox();
+		void clearAndAddDefinitionNamesToListBox();
 
 		/**
 		 * Gets the define name map.
@@ -213,7 +222,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the definition map
 		 */
-		HashMap<String, CQLDefinitionModelObject> getDefinitionMap();
+		HashMap<String, CQLDefinition> getDefinitionMap();
 
 		/**
 		 * Gets the define name list box.
@@ -234,14 +243,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the view definitions
 		 */
-		List<CQLDefinitionModelObject> getViewDefinitions();
+		List<CQLDefinition> getViewDefinitions();
 
 		/**
 		 * Sets the view definitions.
 		 *
 		 * @param viewDefinitions the new view definitions
 		 */
-		void setViewDefinitions(List<CQLDefinitionModelObject> viewDefinitions);
+		void setViewDefinitions(List<CQLDefinition> viewDefinitions);
 
 		/**
 		 * Gets the define name txt area.
@@ -353,19 +362,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		InlineRadio getPopulationRadio();
 
-		void setParameterIntoList(String parameterName, String parameterLogic);
+		void setParameterIntoList();
 
-		void setDefinitionIntoList(String definitionName, String definitionLogic);
-		
-		void setCQLValuesInLists(CQLModel cqlModel);
-		
-		void unsetActiveMenuItem(String menuClickedBefore);
+		void setDefinitionIntoList();
 
-		AceEditor getCqlAceEditor();
+		String getCurrentSelectedDefinitionObjId();
 
-		void setCqlAceEditor(AceEditor cqlAceEditor);
-		
-		void clearNameTxtAreas();
+		void updateDefineMap();
+
+		void setCurrentSelectedDefinitionObjId(
+				String currentSelectedDefinitionObjId);
+
 	}
 	
 	/** The search display. */
@@ -378,32 +385,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	public CQLWorkSpacePresenter(ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
-		
-		
-		
-		searchDisplay.getViewCQL().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getViewCQL().setActive(true);
-				clickedMenu = "view";
-				searchDisplay.getCqlAceEditor().setText(getCqlString());
-				searchDisplay.buildViewCQLView();
-			}
-		});
-		
-		
+		measureId = MatContext.get().getCurrentMeasureId();
 		searchDisplay.getAddDefineButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				String definitionName = searchDisplay.getDefineNameTxtArea().getText();
-				String definitionLogic = searchDisplay.getDefineAceEditor().getText();
-				searchDisplay.getDefineNameTxtArea().clear();
-				searchDisplay.getDefineAceEditor().setText("");;
-				searchDisplay.setDefinitionIntoList(definitionName,definitionLogic);
-				saveCQLData();
+				addAndModifyDefintions();
 			}
 		});
 		
@@ -412,17 +399,90 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				String parameterName = searchDisplay.getParameterNameTxtArea().getText();
-				String parameterLogic = searchDisplay.getParameterAceEditor().getText();
-				searchDisplay.getParameterNameTxtArea().clear();
-				searchDisplay.getParameterAceEditor().setText("");;
-				searchDisplay.setParameterIntoList(parameterName, parameterLogic);
+				searchDisplay.setParameterIntoList();
 				saveCQLData();
 			}
 		});
 		
 		
 	}
+	
+	
+	private void addAndModifyDefintions() {
+		
+		String definitionName = searchDisplay.getDefineNameTxtArea().getText();
+		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
+		if (!definitionName.isEmpty() && !definitionLogic.isEmpty()) {
+
+			final CQLDefinition define = new CQLDefinition();
+			define.setDefinitionName(definitionName);
+			define.setDefinitionLogic(definitionLogic);
+		
+			if(searchDisplay.getCurrentSelectedDefinitionObjId() != null){
+				CQLDefinition toBeModifiedObj = searchDisplay.getDefinitionMap()
+						.get(searchDisplay.getCurrentSelectedDefinitionObjId());
+				
+				MatContext.get().getMeasureService().saveAndModifyDefinitions(MatContext.get().getCurrentMeasureId(), 
+						toBeModifiedObj, define,searchDisplay.getViewDefinitions(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.setCurrentSelectedDefinitionObjId(null);
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						//searchDisplay.getViewDefinitions().add(define);
+						searchDisplay.setCurrentSelectedDefinitionObjId(null);
+						if(result.isSuccess()){
+							searchDisplay.setViewDefinitions(result.getCqlDefinitionList());
+							searchDisplay.clearAndAddDefinitionNamesToListBox();
+							searchDisplay.updateDefineMap();
+						} else {
+							Window.alert(" "+result.getFailureReason());
+						}
+						searchDisplay.getDefineNameTxtArea().clear();
+						searchDisplay.getDefineAceEditor().setText("");;
+					}
+				});
+				
+			} else {
+
+				MatContext.get().getMeasureService().saveAndModifyDefinitions(MatContext.get().getCurrentMeasureId(), null, define, 
+						searchDisplay.getViewDefinitions(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						if(result.isSuccess()){
+							searchDisplay.setViewDefinitions(result.getCqlDefinitionList());
+							searchDisplay.clearAndAddDefinitionNamesToListBox();
+							searchDisplay.updateDefineMap();
+						} else {
+							Window.alert(" "+result.getFailureReason());
+						}
+						searchDisplay.getDefineNameTxtArea().clear();
+						searchDisplay.getDefineAceEditor().setText("");;
+						
+					}
+				});
+				
+			}
+			//searchDisplay.getViewDefinitions().add(define);
+			//clearAndAddDefinitionNamesToListBox();
+			//updateDefineMap();
+		} else {
+			// show Error Display message
+		}
+		
+	}
+	
+	
 
 
 	/* (non-Javadoc)
@@ -430,6 +490,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		cqlModel = null;
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.setClickedMenu("general");
@@ -444,11 +505,44 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-		searchDisplay.buildView();
-		searchDisplay.clearNameTxtAreas();
-		getCQLData();
-		panel.add(searchDisplay.getMainPanel());
+		cqlModel = new CQLModel();
+		if(!view.equalsIgnoreCase("tab")){
+			getCQLDefinitionsList();
+			searchDisplay.buildView();
+			panel.add(searchDisplay.getMainPanel());
+		} 
+		
+		/*else {
+			searchDisplay.setClickedMenu("general");
+			searchDisplay.setCurrentSelectedClause(null);
+			searchDisplay.buildCQLView();
+			panel.add(searchDisplay.getMainVPanel());
+		}*/
+	}
 
+	private void getCQLDefinitionsList() {
+		
+		MatContext.get().getMeasureService().getCQLDefinitionsFromMeasureXML(MatContext.get().getCurrentMeasureId(), 
+				new AsyncCallback<CQLDefinitionsWrapper>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(CQLDefinitionsWrapper result) {
+				if(result.getCqlDefinitions().size()>0){
+					searchDisplay.setViewDefinitions(result.getCqlDefinitions());
+					searchDisplay.clearAndAddDefinitionNamesToListBox();
+					searchDisplay.updateDefineMap();	
+				}
+				
+			}
+		});
+		
+		
 	}
 
 
@@ -470,7 +564,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		cqlModel.setCqlBuilder(getCqlString());
 		cqlModel.setCqlParameters(searchDisplay.getViewParameterList());
 		cqlModel.setDefinitionList(searchDisplay.getViewDefinitions());
-		cqlModel.setMeasureId(MatContext.get().getCurrentMeasureId());
+		//cqlModel.setMeasureId(MatContext.get().getCurrentMeasureId());
 	}
 	
 	
@@ -483,18 +577,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		StringBuilder cqlStr = new StringBuilder();
 		//library Name
-		cqlStr = cqlStr.append("library " + MatContext.get().getCurrentMeasureName().replaceAll(" ", "") + " version '2'");
+		cqlStr = cqlStr.append("library " + MatContext.get().getCurrentMeasureName().replaceAll(" ", "") + " 2");
 		cqlStr = cqlStr.append("\n\n");
 		//Using
 		cqlStr = cqlStr.append("using QDM");
 		cqlStr = cqlStr.append("\n\n");
 		
 		//parameter
-		List<CQLParameterModelObject> paramList = searchDisplay.getViewParameterList();
+		List<CQLParameter> paramList = searchDisplay.getViewParameterList();
 		for(int i=0; i <paramList.size(); i++){
 			
-			cqlStr = cqlStr.append("parameter "+ paramList.get(i).getIdentifier() +"\t"+
-					paramList.get(i).getTypeSpecifier());
+			cqlStr = cqlStr.append("parameter "+ paramList.get(i).getParameterName() +
+					paramList.get(i).getParameterLogic());
 			cqlStr = cqlStr.append("\n\n");			
 		}
 		
@@ -510,23 +604,23 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 				
 		//define
-		List<CQLDefinitionModelObject> defineList = searchDisplay.getViewDefinitions();
+		List<CQLDefinition> defineList = searchDisplay.getViewDefinitions();
 		for(int i=0; i <defineList.size(); i++){
 			
-			cqlStr = cqlStr.append("define "+ defineList.get(i).getIdentifier()+":\n");
-			cqlStr = cqlStr.append(defineList.get(i).getExpression());
+			cqlStr = cqlStr.append("define "+ defineList.get(i).getDefinitionName()+"\n");
+			cqlStr = cqlStr.append(defineList.get(i).getDefinitionLogic());
 			cqlStr = cqlStr.append("\n\n");			
 		}
 		
+		
 		return cqlStr.toString();
 	}
-	
 	
 	/**
 	 * Save cql data.
 	 */
 	public void saveCQLData(){
-		setCQLData();
+		//setCQLData();
 		MatContext.get().getMeasureService().saveCQLData(cqlModel, new AsyncCallback<Boolean>() {
 			
 			@Override
@@ -541,34 +635,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				
 			}
 		});
+		
 	}
-		
-	/**
-	 * Get CQL data.
-	 */
-	public void getCQLData(){
-		
-		//get the CQL file from the database
-		MatContext.get().getMeasureService().getCQLData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<CQLModel>() {
-			
-		@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub					
-			}
-
-			@Override
-			public void onSuccess(CQLModel result) {
-				//System.out.println("In CQLPresenterNavBarWithList getCqlData onSuccess (result).");
-				//result.printCQL();
-				if (result != null) {
-					cqlModel = result;
-					searchDisplay.setCQLValuesInLists(cqlModel);
-				}
-
-			}
-
-		});	
-		
-		}
 
 }

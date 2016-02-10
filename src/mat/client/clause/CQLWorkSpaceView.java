@@ -63,13 +63,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/*private AnchorListItem generalInformation = new AnchorListItem();
 	private AnchorListItem parameterLibrary = new AnchorListItem();
 	private AnchorListItem definitionLibrary = new AnchorListItem();
-	private AnchorListItem functionLibrary = new AnchorListItem();
-	private AnchorListItem viewCQL = new AnchorListItem();*/
+	private AnchorListItem functionLibrary = new AnchorListItem();*/
+	private AnchorListItem viewCQL = new AnchorListItem();
 	private AnchorListItem generalInformation;
 	private AnchorListItem parameterLibrary;
 	private AnchorListItem definitionLibrary;
 	private AnchorListItem functionLibrary;
-	private AnchorListItem viewCQL;
 	private InlineRadio patientRadio = new InlineRadio("Context");
 	
 	/**
@@ -86,7 +85,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/*private TextArea parameterTxtArea = new TextArea();*/
 	private AceEditor parameterAceEditor = new AceEditor();
 
+	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
+	
+	/** The cql ace editor. */
+	private AceEditor cqlAceEditor = new AceEditor();
 
 	/**
 	 * Button addParameterButton.
@@ -156,6 +159,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * Button addDefineButton.
 	 */
 	private Button addDefineButton = new Button();
+
+	
+	/**
+	 * Button addViewButton.
+	 */
+	private Button addCQLViewButton = new Button();
 
 	private Badge paramBadge = new Badge();
 	private Badge defineBadge = new Badge();
@@ -925,6 +934,45 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void buildViewCQLView(){
 		mainFlowPanel.clear();
+		
+		VerticalPanel parameterVP = new VerticalPanel();
+		HorizontalPanel parameterFP = new HorizontalPanel();
+		
+		cqlAceEditor.startEditor();
+		cqlAceEditor.setMode(AceEditorMode.CQL);
+		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		cqlAceEditor.setSize("500px", "500px");
+		cqlAceEditor.setAutocompleteEnabled(true);
+		cqlAceEditor.setText("");
+		
+		parameterVP.add(cqlAceEditor);
+		mainFlowPanel.add(parameterVP);
+		
+//		addCQLViewButton.setType(ButtonType.PRIMARY);
+//		addCQLViewButton.setSize(ButtonSize.DEFAULT);
+//
+//		addCQLViewButton.setMarginTop(10);
+//		addCQLViewButton.setMarginLeft(15);
+//		addCQLViewButton.setTitle("OK");
+//		addCQLViewButton.setText("OK");
+
+		
+		parameterFP.add(parameterVP);
+		parameterFP.setStyleName("cqlRightContainer");
+
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		vp.setHeight("500px");
+		parameterFP.setWidth("700px");
+		parameterFP.setStyleName("marginLeft15px");
+		vp.add(parameterFP);
+
+		//addCqlEventHandkers();
+		mainFlowPanel.add(vp);	
+		
+	
 	}
 	/**
 	 * Reset All components to default state.
@@ -1133,5 +1181,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			String currentSelectedDefinitionObjId) {
 		this.currentSelectedDefinitionObjId = currentSelectedDefinitionObjId;
 	}
+
+	/**
+	 * Gets the cql ace editor.
+	 *
+	 * @return the cql ace editor
+	 */
+	@Override
+	public AceEditor getCqlAceEditor() {
+		return cqlAceEditor;
+	}
+
+	/**
+	 * Sets the cql ace editor.
+	 *
+	 * @param cqlAceEditor the new cql ace editor
+	 */
+//	@Override
+//	public void setCqlAceEditor(AceEditor cqlAceEditor) {
+//		this.cqlAceEditor = cqlAceEditor;
+//	}
 
 }

@@ -369,6 +369,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		String getCurrentSelectedDefinitionObjId();
 
 		void updateDefineMap();
+		
+		AceEditor getCqlAceEditor();
 
 		void setCurrentSelectedDefinitionObjId(
 				String currentSelectedDefinitionObjId);

@@ -21,8 +21,8 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -576,17 +576,20 @@ public interface MeasureServiceAsync {
 	void getDefaultSDEFromMeasureXml(String measureId, AsyncCallback<QualityDataModelWrapper> callback);
 	
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
-
+	
 	void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
 	
-	void getCQLData(String measureId, AsyncCallback<CQLModel> callback);
-
+	void getCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+	
 	void saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList,
 			AsyncCallback<SaveUpdateCQLResult> callback);
-
+	
 	void getCQLDefinitionsFromMeasureXML(String measureId,
 			AsyncCallback<CQLDefinitionsWrapper> callback);
-
+	
+	void saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+	
 	
 }

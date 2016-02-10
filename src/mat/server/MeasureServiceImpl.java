@@ -26,6 +26,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -528,13 +529,13 @@ MeasureService {
 	public Boolean saveCQLData(CQLModel cqlDataModel) {
 		return getMeasureLibraryService().saveCQLData(cqlDataModel);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
 	 */
 	@Override
-	public CQLModel getCQLData(String measureId) {
-			return this.getMeasureLibraryService().getCQLData(measureId);
+	public SaveUpdateCQLResult getCQLData(String measureId) {
+		return this.getMeasureLibraryService().getCQLData(measureId);
 	}
 	
 	@Override
@@ -542,13 +543,17 @@ MeasureService {
 			CQLDefinition currentObj, List<CQLDefinition> definitionList){
 		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList);
 	}
-
+	
 	@Override
 	public CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(
 			String measureId) {
 		return this.getMeasureLibraryService().getCQLDefinitionsFromMeasureXML(measureId);
 	}
 	
-
+	@Override
+	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj,
+			CQLParameter currentObj, List<CQLParameter> parameterList){
+		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
+	}
 	
 }

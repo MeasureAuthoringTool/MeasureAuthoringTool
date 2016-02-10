@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -30,6 +28,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLValidationResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -575,17 +574,21 @@ public interface MeasureLibraryService {
 	String getCurrentReleaseVersion();
 	void setCurrentReleaseVersion(String releaseVersion);
 	
-    CQLModel parseCQL(String cqlBuilder);
-
+	CQLModel parseCQL(String cqlBuilder);
+	
 	Boolean saveCQLData(CQLModel cqlDataModel);
-
-	CQLModel getCQLData(String measureId);
+	
+	SaveUpdateCQLResult getCQLData(String measureId);
 	
 	CQLValidationResult validateCQL(CQLModel cqlModel);
-
+	
 	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList);
 	
 	CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(String measureId);
+	
+	
+	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList);
 	
 }

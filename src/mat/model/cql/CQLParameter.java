@@ -9,12 +9,12 @@ public class CQLParameter implements IsSerializable{
 	private String defaultValue;
 	private String parameterLogic;
 	private String id;
-
+	
 	public String getParameterName() {
-		return parameterName;
+		return parameterName.replaceAll(" ", "").trim();
 	}
 	public void setParameterName(String parameterName) {
-		this.parameterName = parameterName;
+		this.parameterName = parameterName.replaceAll(" ", "").trim();
 	}
 	public String getCqlType() {
 		return cqlType;
@@ -40,6 +40,6 @@ public class CQLParameter implements IsSerializable{
 	public void setId(String id) {
 		this.id = id;
 	}
-
-
+	
+	
 }

@@ -75,11 +75,14 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLUsingModelObject;
 import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.MATCQLListener;
 import mat.server.cqlparser.cqlLexer;
@@ -4802,8 +4805,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult getCQLData(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
+		cqlModel = getCQLGeneratlInfo(measureId);
 		result.setCqlModel(cqlModel);
-		result.getCqlModel().setContext(getCQLGeneratlInfo(measureId));
 		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
 		result.getCqlModel().setDefinitionList(defineWrapper.getCqlDefinitions());
 		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
@@ -5438,18 +5441,51 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
-	private String getCQLGeneratlInfo(String measureId){
-		String context = "";
+	/**
+	 * Gets the CQL generatl info.
+	 *
+	 * @param measureId the measure id
+	 * @return the CQL generatl info
+	 */
+	private CQLModel getCQLGeneratlInfo(String measureId){
+		
+		String contextStr = "";
+		String libraryNameStr = "";
+		String usingModelStr = "";
+		CQLModel cqlModel = new CQLModel();
+		CQLLibraryModel libraryModel = new CQLLibraryModel();
+		CQLDataModel usingModel = new CQLDataModel();
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		
 		if (xmlModel!=null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_CONTEXT = "/measure/cqlLookUp/cqlContext/text()";
 			
 			try {
-				Node nodeCQLContextValue = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_CONTEXT,
+				Node nodeCQLLibrary = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_lIBRARY,
 						processor.getOriginalDoc(),	XPathConstants.NODE);
-				context = nodeCQLContextValue.getNodeValue();
+				Node nodeCQLUsingModel = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_USING,
+						processor.getOriginalDoc(),	XPathConstants.NODE);
+				Node nodeCQLContext = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_CONTEXT,
+						processor.getOriginalDoc(),	XPathConstants.NODE);
+				
+				if(nodeCQLLibrary != null){
+					libraryNameStr = nodeCQLLibrary.getTextContent();
+					libraryModel.setLibraryName(libraryNameStr);
+					/*libraryModel.setVersionUsed("2");*/	
+				} 
+				
+				if(nodeCQLUsingModel != null){
+					usingModelStr = nodeCQLUsingModel.getTextContent();
+					usingModel.setName(usingModelStr);
+				} 
+				
+				if(nodeCQLContext != null){
+					contextStr = nodeCQLContext.getTextContent();
+				}
 				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
@@ -5457,8 +5493,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		}
 		
-		
-		return context;
+		cqlModel.setLibrary(libraryModel);
+		cqlModel.setUsedModel(usingModel);
+		cqlModel.setContext(contextStr);
+		return cqlModel;
 	}
 	
 	

@@ -532,5 +532,8 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId,
 			CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
+
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
+			String context);
 	
 }

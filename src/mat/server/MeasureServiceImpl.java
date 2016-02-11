@@ -555,5 +555,11 @@ MeasureService {
 			CQLParameter currentObj, List<CQLParameter> parameterList){
 		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
 	}
+
+	@Override
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
+			String currentMeasureId, String context) {
+		return this.getMeasureLibraryService().saveAndModifyCQLGeneralInfo(currentMeasureId, context);
+	}
 	
 }

@@ -590,6 +590,9 @@ public interface MeasureServiceAsync {
 	
 	void saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	
 }

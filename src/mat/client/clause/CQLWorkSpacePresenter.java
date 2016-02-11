@@ -8,16 +8,22 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
+import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,6 +52,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/** The cql model. */
 	CQLModel cqlModel = null;
 	
+	/** The measure id. */
 	String measureId = null;
 	
 	
@@ -354,26 +361,99 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		InlineRadio getPopulationRadio();
 		
+		/**
+		 * Sets the parameter into list.
+		 */
 		void setParameterIntoList();
 		
+		/**
+		 * Sets the definition into list.
+		 */
 		void setDefinitionIntoList();
 		
+		/**
+		 * Gets the current selected definition obj id.
+		 *
+		 * @return the current selected definition obj id
+		 */
 		String getCurrentSelectedDefinitionObjId();
 		
+		/**
+		 * Update define map.
+		 */
 		void updateDefineMap();
 		
+		/**
+		 * Gets the cql ace editor.
+		 *
+		 * @return the cql ace editor
+		 */
 		AceEditor getCqlAceEditor();
 		
+		/**
+		 * Sets the current selected definition obj id.
+		 *
+		 * @param currentSelectedDefinitionObjId the new current selected definition obj id
+		 */
 		void setCurrentSelectedDefinitionObjId(
 				String currentSelectedDefinitionObjId);
 		
+		/**
+		 * Gets the current selected paramerter obj id.
+		 *
+		 * @return the current selected paramerter obj id
+		 */
 		String getCurrentSelectedParamerterObjId();
 		
+		/**
+		 * Sets the current selected paramerter obj id.
+		 *
+		 * @param currentSelectedParamerterObjId the new current selected paramerter obj id
+		 */
 		void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId);
 		
+		/**
+		 * Sets the view parameter list.
+		 *
+		 * @param viewParameterList the new view parameter list
+		 */
 		void setViewParameterList(List<CQLParameter> viewParameterList);
 		
+		/**
+		 * Update param map.
+		 */
 		void updateParamMap();
+
+		/**
+		 * Gets the save cql general info btn.
+		 *
+		 * @return the save cql general info btn
+		 */
+		Button getSaveCQLGeneralInfoBtn();
+
+		/**
+		 * Gets the success message alert.
+		 *
+		 * @return the success message alert
+		 */
+		Alert getSuccessMessageAlert();
+
+		/**
+		 * Sets the success message alert.
+		 *
+		 * @param successMessageAlert the new success message alert
+		 */
+		void setSuccessMessageAlert(Alert successMessageAlert);
+
+		Alert getErrorMessageAlertGenInfo();
+
+		Alert getSuccessMessageAlertDefinition();
+
+		Alert getErrorMessageAlertDefinition();
+
+		Alert getSuccessMessageAlertParameter();
+
+		Alert getErrorMessageAlertParameter();
 		
 	}
 	
@@ -410,8 +490,65 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
+		searchDisplay.getSaveCQLGeneralInfoBtn().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				saveAndModifyCQLGeneralInfo();
+			}
+		});
+		
 	}
 	
+	
+	/**
+	 * Save and modify cql general info.
+	 */
+	private void saveAndModifyCQLGeneralInfo(){
+		
+		String context = "";
+		if(searchDisplay.getPatientRadio().getValue()){
+			context = "Patient";
+		} else {
+			context = "Population";
+		} 
+		
+		MatContext.get().getMeasureService().saveAndModifyCQLGeneralInfo(MatContext.get().getCurrentMeasureId(), context, new AsyncCallback<SaveUpdateCQLResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				searchDisplay.getSuccessMessageAlert().clear();
+				if(result.isSuccess()){
+					
+					if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
+						searchDisplay.getPatientRadio().setValue(true);
+					} else {
+						searchDisplay.getPopulationRadio().setValue(true);
+					}
+					searchDisplay.getSuccessMessageAlert().setVisible(true);
+					/*Icon checkIcon = new Icon(IconType.CHECK_CIRCLE);
+					HTML successtext = new HTML("<h5>" + checkIcon + " <b>"+ MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG() +"</b> </h5>");*/
+					searchDisplay.getSuccessMessageAlert().setText(MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_GEN_INFO());
+				} 
+				
+			}
+		});
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Adds the and modify parameters.
+	 */
 	private void addAndModifyParameters() {
 		String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
@@ -609,6 +746,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 	}*/
 	
+	/**
+	 * Gets the CQL data.
+	 *
+	 * @return the CQL data
+	 */
 	private void getCQLData(){
 		MatContext.get().getMeasureService().getCQLData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			
@@ -621,12 +763,23 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if(result.getCqlModel() != null){
-					if (result.getCqlModel().getDefinitionList().size() >0) {
+					
+					if(!result.getCqlModel().getContext().isEmpty()){
+						if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
+							searchDisplay.getPatientRadio().setValue(true);
+						} else {
+							searchDisplay.getPopulationRadio().setValue(true);
+						}
+					}
+					
+					if (result.getCqlModel().getDefinitionList() != null &&
+							result.getCqlModel().getDefinitionList().size() >0) {
 						searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 						searchDisplay.clearAndAddDefinitionNamesToListBox();
 						searchDisplay.updateDefineMap();
 					}
-					if (result.getCqlModel().getCqlParameters().size() >0) {
+					if (result.getCqlModel().getCqlParameters() != null && 
+							result.getCqlModel().getCqlParameters().size() >0) {
 						searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 						searchDisplay.clearAndAddParameterNamesToListBox();
 						searchDisplay.updateParamMap();

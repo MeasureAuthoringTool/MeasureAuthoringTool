@@ -8,6 +8,8 @@ import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLParameter;
 import mat.shared.UUIDUtilClient;
+
+import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -20,6 +22,7 @@ import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -62,6 +65,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private AnchorListItem definitionLibrary;
 	private AnchorListItem functionLibrary;
 	private InlineRadio patientRadio = new InlineRadio("Context");
+	private Alert successMessageAlertGenInfo = new Alert();
+	private Alert errorMessageAlertGenInfo = new Alert();
+	private Alert successMessageAlertDefinition = new Alert();
+	private Alert errorMessageAlertDefinition = new Alert();
+	private Alert successMessageAlertParameter = new Alert();
+	private Alert errorMessageAlertParameter = new Alert();
 	
 	/**
 	 * InlineRadio populationRadio.
@@ -161,6 +170,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	private String currentSelectedDefinitionObjId = null;
 	private String currentSelectedParamerterObjId = null;
+	private Button saveCQLGeneralInfoBtn = new Button("Save");
+	
+	
 	@Override
 	public PanelCollapse getDefineCollapse() {
 		return defineCollapse;
@@ -437,7 +449,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		TextArea libraryNameValue = new TextArea();
 		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryNameLabel.setWidth("150px");
-		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:360px;height:25px;");
+		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		libraryNameValue.setText(MatContext.get().getCurrentMeasureName().replaceAll(" ", ""));
 		libraryNameValue.setReadOnly(true);
 		
@@ -445,7 +457,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		TextArea usingModelValue = new TextArea();
 		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		usingModeLabel.setWidth("150px");
-		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:360px;height:25px;");
+		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		usingModelValue.setText("QDM");
 		usingModelValue.setReadOnly(true);
 		
@@ -461,8 +473,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		usingFlowPanel.add(populationRadio);
 		usingFlowPanel.getElement().setAttribute("style", "margin-left:15px");
 		
-		
+		successMessageAlertGenInfo.setType(AlertType.SUCCESS);
+		successMessageAlertGenInfo.setWidth("600px");
+		successMessageAlertGenInfo.setVisible(false);
 		generalInfoTopPanel.add(new SpacerWidget());
+		generalInfoTopPanel.add(successMessageAlertGenInfo);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
 		generalInfoTopPanel.add(libraryNameLabel);
@@ -480,12 +495,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
+		
+		saveCQLGeneralInfoBtn.setType(ButtonType.SUCCESS);
+		saveCQLGeneralInfoBtn.getElement().setAttribute("id", "SaveGeneralInformation_Button");
+		saveCQLGeneralInfoBtn.setTitle("Save");
+		
+		generalInfoTopPanel.add(saveCQLGeneralInfoBtn);
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
-		vp.setWidth("762px");
-		generalInfoTopPanel.setWidth("750px");
+		vp.setWidth("715px");
+		generalInfoTopPanel.setWidth("700px");
 		generalInfoTopPanel.setStyleName("marginLeft15px");
 		vp.add(generalInfoTopPanel);
 		mainFlowPanel.clear();
@@ -1188,6 +1209,73 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public AceEditor getCqlAceEditor() {
 		return cqlAceEditor;
+	}
+
+	@Override
+	public Button getSaveCQLGeneralInfoBtn() {
+		return saveCQLGeneralInfoBtn;
+	}
+
+	public void setSaveCQLGeneralInfoBtn(Button saveCQLGeneralInfoBtn) {
+		this.saveCQLGeneralInfoBtn = saveCQLGeneralInfoBtn;
+	}
+
+	@Override
+	public Alert getSuccessMessageAlert() {
+		return successMessageAlertGenInfo;
+	}
+
+	@Override
+	public void setSuccessMessageAlert(Alert successMessageAlert) {
+		this.successMessageAlertGenInfo = successMessageAlert;
+	}
+
+	@Override
+	public Alert getErrorMessageAlertGenInfo() {
+		return errorMessageAlertGenInfo;
+	}
+
+	public void setErrorMessageAlertGenInfo(Alert errorMessageAlertGenInfo) {
+		this.errorMessageAlertGenInfo = errorMessageAlertGenInfo;
+	}
+
+	@Override
+	public Alert getSuccessMessageAlertDefinition() {
+		return successMessageAlertDefinition;
+	}
+
+	public void setSuccessMessageAlertDefinition(
+			Alert successMessageAlertDefinition) {
+		this.successMessageAlertDefinition = successMessageAlertDefinition;
+	}
+
+	@Override
+	public Alert getErrorMessageAlertDefinition() {
+		return errorMessageAlertDefinition;
+	}
+
+	public void setErrorMessageAlertDefinition(
+			Alert errorMessageAlertDefinition) {
+		this.errorMessageAlertDefinition = errorMessageAlertDefinition;
+	}
+
+	@Override
+	public Alert getSuccessMessageAlertParameter() {
+		return successMessageAlertParameter;
+	}
+
+	public void setSuccessMessageAlertParameter(
+			Alert successMessageAlertParameter) {
+		this.successMessageAlertParameter = successMessageAlertParameter;
+	}
+
+	@Override
+	public Alert getErrorMessageAlertParameter() {
+		return errorMessageAlertParameter;
+	}
+
+	public void setErrorMessageAlertParameter(Alert errorMessageAlertParameter) {
+		this.errorMessageAlertParameter = errorMessageAlertParameter;
 	}
 
 	/**

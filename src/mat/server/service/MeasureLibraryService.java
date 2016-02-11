@@ -590,5 +590,8 @@ public interface MeasureLibraryService {
 	
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
+
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
+			String context);
 	
 }

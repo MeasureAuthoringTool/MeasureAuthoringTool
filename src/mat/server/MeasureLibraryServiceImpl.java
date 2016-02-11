@@ -2153,6 +2153,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
+			processor.checkForScoringType();
 			checkForTimingElementsAndAppend(processor);
 			measureXmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			
@@ -4802,7 +4803,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		
+		result.getCqlModel().setContext(getCQLGeneratlInfo(measureId));
 		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
 		result.getCqlModel().setDefinitionList(defineWrapper.getCqlDefinitions());
 		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
@@ -4841,7 +4842,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					
 					logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp Start :  ");
 					// XPath to find All elementRef's under subTreeLookUp element nodes for to be modified QDM.
-					String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "/measure//cqlLookUp//definition[@id='"
+					String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "/measure/cqlLookUp//definition[@id='"
 							+ toBemodifiedObj.getId() + "']";
 					try {
 						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_DEFINITION,
@@ -4855,12 +4856,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							getService().saveMeasureXml(xmlModel);
 						}
 						
-						
 						wrapper = modfiyCQLDefinitionList(toBemodifiedObj, currentObj, definitionList);
 						result.setSuccess(true);
-						
-						
-						
 						
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);
@@ -4874,8 +4871,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_UNIQUE);
 				}
-				
-				
 				
 			} else {
 				
@@ -4934,6 +4929,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveAndModifyParameters(java.lang.String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
@@ -4953,7 +4951,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyDefinitions Start :  ");
 					
-					String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "/measure//cqlLookUp//parameter[@id='"
+					String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "/measure/cqlLookUp//parameter[@id='"
 							+ toBemodifiedObj.getId() + "']";
 					try {
 						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
@@ -4978,8 +4976,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_UNIQUE);
 				}
-				
-				
 				
 			} else {
 				
@@ -5030,6 +5026,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	/**
+	 * Check duplicate parameter name.
+	 *
+	 * @param toBeModified the to be modified
+	 * @param currentObj the current obj
+	 * @param paramaterList the paramater list
+	 * @return true, if successful
+	 */
 	private boolean checkDuplicateParameterName(CQLParameter toBeModified, CQLParameter currentObj,
 			List<CQLParameter> paramaterList) {
 		boolean isDuplicate = false;
@@ -5056,6 +5060,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return isDuplicate;
 		
 	}
+	
+	/**
+	 * Check duplicate defintion name.
+	 *
+	 * @param toBeModified the to be modified
+	 * @param currentObj the current obj
+	 * @param definitionList the definition list
+	 * @return true, if successful
+	 */
 	private boolean checkDuplicateDefintionName(CQLDefinition toBeModified, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList) {
 		boolean isDuplicate = false;
@@ -5083,6 +5096,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	/**
+	 * Sort definitions list.
+	 *
+	 * @param defineList the define list
+	 * @return the list
+	 */
 	private List<CQLDefinition> sortDefinitionsList(List<CQLDefinition> defineList){
 		
 		Collections.sort(defineList, new Comparator<CQLDefinition>() {
@@ -5095,6 +5114,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return defineList;
 	}
 	
+	/**
+	 * Sort parameters list.
+	 *
+	 * @param paramList the param list
+	 * @return the list
+	 */
 	private List<CQLParameter> sortParametersList(List<CQLParameter> paramList){
 		
 		Collections.sort(paramList, new Comparator<CQLParameter>() {
@@ -5109,10 +5134,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	/**
 	 * Modfiy cql Parameter List list.
-	 * @param toBeModifiedObj
-	 * @param currentObj
-	 * @param parameterList
-	 * @return
+	 *
+	 * @param toBeModifiedObj the to be modified obj
+	 * @param currentObj the current obj
+	 * @param parameterList the parameter list
+	 * @return the CQL parameters wrapper
 	 */
 	private CQLParametersWrapper modfiyCQLParameterList(CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
@@ -5135,6 +5161,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Modfiy cql definition list.
 	 *
+	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param definitionList the definition list
 	 * @return the CQL definitions wrapper
@@ -5352,8 +5379,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	/**
-	 * @param measureId
-	 * @return
+	 * Gets the CQL parameters from measure xml.
+	 *
+	 * @param measureId the measure id
+	 * @return the CQL parameters from measure xml
 	 */
 	private CQLParametersWrapper getCQLParametersFromMeasureXML(
 			String measureId) {
@@ -5368,7 +5397,69 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return wrapper;
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveAndModifyCQLGeneralInfo(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
+			String currentMeasureId, String context) {
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		
+		if(xmlModel!=null){
+			
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			String XPATH_EXPRESSION_CQLLOOKUP_CONTEXT = "/measure/cqlLookUp/cqlContext";
+			try {
+				Node nodeCQLContext = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_CONTEXT,
+						processor.getOriginalDoc(),	XPathConstants.NODE);
+				
+				if(nodeCQLContext!=null){
+					nodeCQLContext.setTextContent(context);
+					xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+					getService().saveMeasureXml(xmlModel);
+				}
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+			result.setSuccess(true);
+			result.getCqlModel().setContext(context);
+		} else {
+			result.setSuccess(false);
+		}
+		
+		return result;
+	}
 	
+	
+	private String getCQLGeneratlInfo(String measureId){
+		String context = "";
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		if (xmlModel!=null) {
+			
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			String XPATH_EXPRESSION_CQLLOOKUP_CONTEXT = "/measure/cqlLookUp/cqlContext/text()";
+			
+			try {
+				Node nodeCQLContextValue = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_CONTEXT,
+						processor.getOriginalDoc(),	XPathConstants.NODE);
+				context = nodeCQLContextValue.getNodeValue();
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		return context;
+	}
 	
 	
 }

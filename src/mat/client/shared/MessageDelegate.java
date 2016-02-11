@@ -189,6 +189,9 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
+	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information";
+	
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2475,5 +2478,9 @@ public class MessageDelegate {
 	 */
 	public String getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY() {
 		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
+	}
+
+	public String getSUCCESSFUL_SAVED_CQL_GEN_INFO() {
+		return SUCCESSFUL_SAVED_CQL_GEN_INFO;
 	}
 }

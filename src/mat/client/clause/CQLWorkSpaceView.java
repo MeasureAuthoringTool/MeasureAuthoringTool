@@ -49,26 +49,59 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CQLWorkSpaceView.
+ */
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	
+	/** The main panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
+	
+	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
+	
+	/** The tab panel. */
 	private HorizontalPanel tabPanel = new HorizontalPanel();
+	
+	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
+	
+	/** The main flow panel. */
 	private FlowPanel mainFlowPanel = new FlowPanel();
 	
+	/** The view cql. */
 	private AnchorListItem viewCQL = new AnchorListItem();
+	
+	/** The general information. */
 	private AnchorListItem generalInformation;
+	
+	/** The parameter library. */
 	private AnchorListItem parameterLibrary;
+	
+	/** The definition library. */
 	private AnchorListItem definitionLibrary;
+	
+	/** The function library. */
 	private AnchorListItem functionLibrary;
 	//private InlineRadio patientRadio = new InlineRadio("Context");
+	/** The success message alert gen info. */
 	private Alert successMessageAlertGenInfo = new Alert();
+	
+	/** The error message alert gen info. */
 	private Alert errorMessageAlertGenInfo = new Alert();
+	
+	/** The success message alert definition. */
 	private Alert successMessageAlertDefinition = new Alert();
+	
+	/** The error message alert definition. */
 	private Alert errorMessageAlertDefinition = new Alert();
+	
+	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
+	
+	/** The error message alert parameter. */
 	private Alert errorMessageAlertParameter = new Alert();
 	
 	/**
@@ -80,8 +113,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private TextArea parameterNameTxtArea = new TextArea();
 	
+	/** The parameter ace editor. */
 	private AceEditor parameterAceEditor = new AceEditor();
 	
+	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
 	
 	/** The cql ace editor. */
@@ -120,6 +155,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private ListBox parameterNameListBox;
 	
+	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
 	
 	/**
@@ -156,20 +192,41 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private Button addDefineButton = new Button();
 	
+	/** The param badge. */
 	private Badge paramBadge = new Badge();
+	
+	/** The define badge. */
 	private Badge defineBadge = new Badge();
 	
+	/** The param label. */
 	private Label paramLabel = new Label("Parameter");
+	
+	/** The define label. */
 	private Label defineLabel = new Label("Definition");
+	
+	/** The param collapse. */
 	PanelCollapse paramCollapse = new PanelCollapse();
+	
+	/** The define collapse. */
 	PanelCollapse defineCollapse = new PanelCollapse();
+	
+	/** The clicked menu. */
 	public String clickedMenu = "general";
+	
+	/** The current selected clause. */
 	public String currentSelectedClause = null;
 	
 	
+	/** The current selected definition obj id. */
 	private String currentSelectedDefinitionObjId = null;
+	
+	/** The current selected paramerter obj id. */
 	private String currentSelectedParamerterObjId = null;
+	
+	/** The save cql general info btn. */
 	private Button saveCQLGeneralInfoBtn = new Button("Save");
+	
+	/** The context toggle switch. */
 	private ToggleSwitch contextToggleSwitch = new ToggleSwitch();
 	
 	/*@Override
@@ -181,24 +238,43 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		this.mainFlowPanel = mainFlowPanel;
 	}*/
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineCollapse()
+	 */
 	@Override
 	public PanelCollapse getDefineCollapse() {
 		return defineCollapse;
 	}
 	
+	/**
+	 * Sets the define collapse.
+	 *
+	 * @param defineCollapse the new define collapse
+	 */
 	public void setDefineCollapse(PanelCollapse defineCollapse) {
 		this.defineCollapse = defineCollapse;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamCollapse()
+	 */
 	@Override
 	public PanelCollapse getParamCollapse() {
 		return paramCollapse;
 	}
 	
+	/**
+	 * Sets the param collapse.
+	 *
+	 * @param paramCollapse the new param collapse
+	 */
 	public void setParamCollapse(PanelCollapse paramCollapse) {
 		this.paramCollapse = paramCollapse;
 	}
 	
+	/**
+	 * Instantiates a new CQL work space view.
+	 */
 	public CQLWorkSpaceView() {
 		defineAceEditor.startEditor();
 		parameterAceEditor.startEditor();
@@ -221,6 +297,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainPanel.add(mainFlowPanel);
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildCQLFileView()
+	 */
 	@Override
 	public void buildCQLFileView(){
 		mainFlowPanel.clear();
@@ -257,6 +337,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	
+	/**
+	 * Adds the parameter event handler.
+	 */
 	private void addParameterEventHandler(){
 		/*getAddParameterButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -289,6 +372,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	/**
+	 * Adds the define event handkers.
+	 */
 	private void addDefineEventHandkers(){
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
@@ -317,8 +403,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			}
 		});*/
 	}
-	/**
-	 *
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateParamMap()
 	 */
 	@Override
 	public void updateParamMap() {
@@ -332,8 +419,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		getParamBadge().setText(""+getViewParameterList().size());
 		
 	}
-	/**
-	 *
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateDefineMap()
 	 */
 	@Override
 	public void updateDefineMap() {
@@ -349,6 +437,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateSuggestOracle()
+	 */
 	@Override
 	public void updateSuggestOracle() {
 		if (searchSuggestTextBox != null) {
@@ -358,6 +449,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildGeneralInformation()
+	 */
 	@Override
 	public void buildGeneralInformation(){
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
@@ -511,6 +605,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		rightHandNavPanel.add(navPills);
 	}
+	
+	/**
+	 * Creates the parameter collapsable panel.
+	 *
+	 * @return the panel collapse
+	 */
 	private PanelCollapse createParameterCollapsablePanel() {
 		paramCollapse.setId("collapseParameter");
 		
@@ -564,6 +664,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	/**
+	 * Creates the define collapsable panel.
+	 *
+	 * @return the panel collapse
+	 */
 	private PanelCollapse createDefineCollapsablePanel() {
 		PanelCollapse parameterCollapsePanel = new PanelCollapse();
 		parameterCollapsePanel.setId("collapseDefine");
@@ -619,6 +724,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildParameterLibraryView()
+	 */
 	@Override
 	public void buildParameterLibraryView(){
 		mainFlowPanel.clear();
@@ -741,6 +849,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			}
 		});
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#clearAndAddParameterNamesToListBox()
+	 */
 	@Override
 	public void clearAndAddParameterNamesToListBox() {
 		if (parameterNameListBox != null) {
@@ -759,6 +871,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildDefinitionLibraryView()
+	 */
 	@Override
 	public void buildDefinitionLibraryView(){
 		mainFlowPanel.clear();
@@ -838,6 +954,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.add(vp);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateSuggestDefineOracle()
+	 */
 	@Override
 	public void updateSuggestDefineOracle() {
 		if (searchSuggestDefineTextBox != null) {
@@ -847,6 +966,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#clearAndAddDefinitionNamesToListBox()
+	 */
 	@Override
 	public void clearAndAddDefinitionNamesToListBox() {
 		if (defineNameListBox != null) {
@@ -865,6 +987,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildFunctionLibraryView()
+	 */
 	@Override
 	public void buildFunctionLibraryView(){
 		mainFlowPanel.clear();
@@ -895,182 +1021,355 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getMainPanel()
+	 */
 	@Override
 	public HorizontalPanel getMainPanel() {
 		return mainPanel;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getMainVPanel()
+	 */
 	@Override
 	public VerticalPanel getMainVPanel() {
 		return mainVPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getGeneralInformation()
+	 */
 	@Override
 	public AnchorListItem getGeneralInformation() {
 		return generalInformation;
 	}
 	
+	/**
+	 * Sets the general information.
+	 *
+	 * @param generalInformation the new general information
+	 */
 	public void setGeneralInformation(AnchorListItem generalInformation) {
 		this.generalInformation = generalInformation;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterLibrary()
+	 */
 	@Override
 	public AnchorListItem getParameterLibrary() {
 		return parameterLibrary;
 	}
 	
+	/**
+	 * Sets the parameter library.
+	 *
+	 * @param parameterLibrary the new parameter library
+	 */
 	public void setParameterLibrary(AnchorListItem parameterLibrary) {
 		this.parameterLibrary = parameterLibrary;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefinitionLibrary()
+	 */
 	@Override
 	public AnchorListItem getDefinitionLibrary() {
 		return definitionLibrary;
 	}
 	
+	/**
+	 * Sets the definition library.
+	 *
+	 * @param definitionLibrary the new definition library
+	 */
 	public void setDefinitionLibrary(AnchorListItem definitionLibrary) {
 		this.definitionLibrary = definitionLibrary;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getFunctionLibrary()
+	 */
 	@Override
 	public AnchorListItem getFunctionLibrary() {
 		return functionLibrary;
 	}
 	
+	/**
+	 * Sets the function library.
+	 *
+	 * @param functionLibrary the new function library
+	 */
 	public void setFunctionLibrary(AnchorListItem functionLibrary) {
 		this.functionLibrary = functionLibrary;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getViewCQL()
+	 */
 	@Override
 	public AnchorListItem getViewCQL() {
 		return viewCQL;
 	}
 	
+	/**
+	 * Sets the view cql.
+	 *
+	 * @param viewCQL the new view cql
+	 */
 	public void setViewCQL(AnchorListItem viewCQL) {
 		this.viewCQL = viewCQL;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getAddParameterButton()
+	 */
 	@Override
 	public Button getAddParameterButton() {
 		return addParameterButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getRemoveParameterButton()
+	 */
 	@Override
 	public Button getRemoveParameterButton() {
 		return removeParameterButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterNameTxtArea()
+	 */
 	@Override
 	public TextArea getParameterNameTxtArea() {
 		return parameterNameTxtArea;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterTxtArea()
+	 */
 	@Override
 	public AceEditor getParameterTxtArea() {
 		return parameterAceEditor;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getViewParameterList()
+	 */
 	@Override
 	public List<CQLParameter> getViewParameterList() {
 		return viewParameterList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setViewParameterList(java.util.List)
+	 */
 	@Override
 	public void setViewParameterList(List<CQLParameter> viewParameterList) {
 		this.viewParameterList = viewParameterList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterMap()
+	 */
 	@Override
 	public HashMap<String, CQLParameter> getParameterMap() {
 		return parameterMap;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterNameMap()
+	 */
 	@Override
 	public HashMap<String, String> getParameterNameMap() {
 		return parameterNameMap;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterNameListBox()
+	 */
 	@Override
 	public ListBox getParameterNameListBox() {
 		return parameterNameListBox;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineNameMap()
+	 */
 	@Override
 	public HashMap<String, String> getDefineNameMap() {
 		return defineNameMap;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefinitionMap()
+	 */
 	@Override
 	public HashMap<String, CQLDefinition> getDefinitionMap() {
 		return definitionMap;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineNameListBox()
+	 */
 	@Override
 	public ListBox getDefineNameListBox() {
 		return defineNameListBox;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDeleteDefineButton()
+	 */
 	@Override
 	public Button getDeleteDefineButton() {
 		return deleteDefineButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getViewDefinitions()
+	 */
 	@Override
 	public List<CQLDefinition> getViewDefinitions() {
 		return viewDefinitions;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setViewDefinitions(java.util.List)
+	 */
 	@Override
 	public void setViewDefinitions(List<CQLDefinition> viewDefinitions) {
 		this.viewDefinitions = viewDefinitions;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineNameTxtArea()
+	 */
 	@Override
 	public TextArea getDefineNameTxtArea() {
 		return defineNameTxtArea;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getAddDefineButton()
+	 */
 	@Override
 	public Button getAddDefineButton() {
 		return addDefineButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamBadge()
+	 */
 	@Override
 	public Badge getParamBadge() {
 		return paramBadge;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterAceEditor()
+	 */
 	@Override
 	public AceEditor getParameterAceEditor() {
 		return parameterAceEditor;
 	}
 	
+	/**
+	 * Sets the parameter ace editor.
+	 *
+	 * @param parameterAceEditor the new parameter ace editor
+	 */
 	public void setParameterAceEditor(AceEditor parameterAceEditor) {
 		this.parameterAceEditor = parameterAceEditor;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineAceEditor()
+	 */
 	@Override
 	public AceEditor getDefineAceEditor() {
 		return defineAceEditor;
 	}
 	
+	/**
+	 * Sets the define ace editor.
+	 *
+	 * @param defineAceEditor the new define ace editor
+	 */
 	public void setDefineAceEditor(AceEditor defineAceEditor) {
 		this.defineAceEditor = defineAceEditor;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineBadge()
+	 */
 	@Override
 	public Badge getDefineBadge() {
 		return defineBadge;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getClickedMenu()
+	 */
 	@Override
 	public String getClickedMenu() {
 		return clickedMenu;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.lang.String)
+	 */
 	@Override
 	public void setClickedMenu(String clickedMenu) {
 		this.clickedMenu = clickedMenu;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setCurrentSelectedClause(java.lang.String)
+	 */
 	@Override
 	public void setCurrentSelectedClause(String currentSelectedClause) {
 		this.currentSelectedClause = currentSelectedClause;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getCurrentSelectedClause()
+	 */
 	@Override
 	public String getCurrentSelectedClause() {
 		return currentSelectedClause;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getCurrentSelectedDefinitionObjId()
+	 */
 	@Override
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setCurrentSelectedDefinitionObjId(java.lang.String)
+	 */
 	@Override
 	public void setCurrentSelectedDefinitionObjId(
 			String currentSelectedDefinitionObjId) {
 		this.currentSelectedDefinitionObjId = currentSelectedDefinitionObjId;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getCurrentSelectedParamerterObjId()
+	 */
 	@Override
 	public String getCurrentSelectedParamerterObjId() {
 		return currentSelectedParamerterObjId;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setCurrentSelectedParamerterObjId(java.lang.String)
+	 */
 	@Override
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
@@ -1086,73 +1385,130 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return cqlAceEditor;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSaveCQLGeneralInfoBtn()
+	 */
 	@Override
 	public Button getSaveCQLGeneralInfoBtn() {
 		return saveCQLGeneralInfoBtn;
 	}
 	
+	/**
+	 * Sets the save cql general info btn.
+	 *
+	 * @param saveCQLGeneralInfoBtn the new save cql general info btn
+	 */
 	public void setSaveCQLGeneralInfoBtn(Button saveCQLGeneralInfoBtn) {
 		this.saveCQLGeneralInfoBtn = saveCQLGeneralInfoBtn;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlert()
+	 */
 	@Override
 	public Alert getSuccessMessageAlert() {
 		return successMessageAlertGenInfo;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setSuccessMessageAlert(org.gwtbootstrap3.client.ui.Alert)
+	 */
 	@Override
 	public void setSuccessMessageAlert(Alert successMessageAlert) {
 		successMessageAlertGenInfo = successMessageAlert;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertGenInfo()
+	 */
 	@Override
 	public Alert getErrorMessageAlertGenInfo() {
 		return errorMessageAlertGenInfo;
 	}
 	
+	/**
+	 * Sets the error message alert gen info.
+	 *
+	 * @param errorMessageAlertGenInfo the new error message alert gen info
+	 */
 	public void setErrorMessageAlertGenInfo(Alert errorMessageAlertGenInfo) {
 		this.errorMessageAlertGenInfo = errorMessageAlertGenInfo;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertDefinition()
+	 */
 	@Override
 	public Alert getSuccessMessageAlertDefinition() {
 		return successMessageAlertDefinition;
 	}
 	
+	/**
+	 * Sets the success message alert definition.
+	 *
+	 * @param successMessageAlertDefinition the new success message alert definition
+	 */
 	public void setSuccessMessageAlertDefinition(
 			Alert successMessageAlertDefinition) {
 		this.successMessageAlertDefinition = successMessageAlertDefinition;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertDefinition()
+	 */
 	@Override
 	public Alert getErrorMessageAlertDefinition() {
 		return errorMessageAlertDefinition;
 	}
 	
+	/**
+	 * Sets the error message alert definition.
+	 *
+	 * @param errorMessageAlertDefinition the new error message alert definition
+	 */
 	public void setErrorMessageAlertDefinition(
 			Alert errorMessageAlertDefinition) {
 		this.errorMessageAlertDefinition = errorMessageAlertDefinition;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertParameter()
+	 */
 	@Override
 	public Alert getSuccessMessageAlertParameter() {
 		return successMessageAlertParameter;
 	}
 	
+	/**
+	 * Sets the success message alert parameter.
+	 *
+	 * @param successMessageAlertParameter the new success message alert parameter
+	 */
 	public void setSuccessMessageAlertParameter(
 			Alert successMessageAlertParameter) {
 		this.successMessageAlertParameter = successMessageAlertParameter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertParameter()
+	 */
 	@Override
 	public Alert getErrorMessageAlertParameter() {
 		return errorMessageAlertParameter;
 	}
 	
+	/**
+	 * Sets the error message alert parameter.
+	 *
+	 * @param errorMessageAlertParameter the new error message alert parameter
+	 */
 	public void setErrorMessageAlertParameter(Alert errorMessageAlertParameter) {
 		this.errorMessageAlertParameter = errorMessageAlertParameter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getContextToggleSwitch()
+	 */
 	@Override
 	public ToggleSwitch getContextToggleSwitch() {
 		// TODO Auto-generated method stub

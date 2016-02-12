@@ -16,8 +16,18 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,6 +37,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -412,19 +425,52 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		void setSuccessMessageAlert(Alert successMessageAlert);
 		
+		/**
+		 * Gets the error message alert gen info.
+		 *
+		 * @return the error message alert gen info
+		 */
 		Alert getErrorMessageAlertGenInfo();
 		
+		/**
+		 * Gets the success message alert definition.
+		 *
+		 * @return the success message alert definition
+		 */
 		Alert getSuccessMessageAlertDefinition();
 		
+		/**
+		 * Gets the error message alert definition.
+		 *
+		 * @return the error message alert definition
+		 */
 		Alert getErrorMessageAlertDefinition();
 		
+		/**
+		 * Gets the success message alert parameter.
+		 *
+		 * @return the success message alert parameter
+		 */
 		Alert getSuccessMessageAlertParameter();
 		
+		/**
+		 * Gets the error message alert parameter.
+		 *
+		 * @return the error message alert parameter
+		 */
 		Alert getErrorMessageAlertParameter();
 		
 		
+		/**
+		 * Gets the context toggle switch.
+		 *
+		 * @return the context toggle switch
+		 */
 		ToggleSwitch getContextToggleSwitch();
 		
+		/**
+		 * Builds the cql file view.
+		 */
 		void buildCQLFileView();
 		
 	}
@@ -452,11 +498,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				/*searchDisplay.setParameterIntoList();
-				saveCQLData();*/
 				addAndModifyParameters();
 			}
-			
 			
 		});
 		
@@ -469,6 +512,57 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				saveAndModifyCQLGeneralInfo();
 			}
 		});
+		
+		searchDisplay.getDefineNameTxtArea().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
+				
+			}
+		});
+		
+		
+	   searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
+		
+		@Override
+		public void onClick(ClickEvent event) {
+			resetMessageDisplay();
+			
+		}
+	});
+	
+	searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			
+			resetMessageDisplay();
+		}
+	});
+	
+	
+	searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+		
+		@Override
+		public void onChangeSelection(AceSelection selection) {
+			resetMessageDisplay();
+			
+		}
+	});
+	
+	
+	searchDisplay.getParameterAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+		
+		@Override
+		public void onChangeSelection(AceSelection selection) {
+			resetMessageDisplay();
+			
+		}
+	});
+	
+	
+	
 	}
 	
 	
@@ -700,6 +794,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	
 	
+	/**
+	 * Reset message display.
+	 */
 	private void resetMessageDisplay() {
 		
 		searchDisplay.getSuccessMessageAlert().clear();
@@ -860,7 +957,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	/**
 	 * Method to unset Anchor List Item selection for previous selection and set for new selections.
-	 * @param menuClickedBefore
+	 *
+	 * @param menuClickedBefore the menu clicked before
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		
@@ -884,7 +982,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	/**
-	 * Method to build View for Anchor List item View CQL
+	 * Method to build View for Anchor List item View CQL.
 	 */
 	private void buildCQLView() {
 		
@@ -915,6 +1013,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		panel.setStyleName("contentPanel");
 		return panel;
 	}
+	
+	/**
+	 * Gets the msg panel.
+	 *
+	 * @param iconType the icon type
+	 * @param message the message
+	 * @return the msg panel
+	 */
 	private HTML getMsgPanel(IconType iconType, String message) {
 		Icon checkIcon = new Icon(iconType);
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");

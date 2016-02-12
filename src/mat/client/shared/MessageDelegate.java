@@ -190,6 +190,14 @@ public class MessageDelegate {
 			"to the selected Version and/or Expansion Identifier.";
 	
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information";
+	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully Saved Definition into CQL";
+	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully Saved Parameter into CQL";
+	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter Definition Name and Logic.";
+	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter Parameter and Logic";
+	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter Name already Exists";
+	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition Name already Exists";
+	public final String SUCESS_DEFINITION_MODIFY  = "Successfully Modified Definition";
+	public final String SUCESS_PARAMETER_MODIFY  = "Successfully Modified Definition";
 	
 	
 	/**
@@ -2482,5 +2490,37 @@ public class MessageDelegate {
 
 	public String getSUCCESSFUL_SAVED_CQL_GEN_INFO() {
 		return SUCCESSFUL_SAVED_CQL_GEN_INFO;
+	}
+	
+	public String getSUCCESSFUL_SAVED_CQL_DEFINITION() {
+		return SUCCESSFUL_SAVED_CQL_DEFINITION;
+	}
+
+	public String getSUCCESSFUL_SAVED_CQL_PARAMETER() {
+		return SUCCESSFUL_SAVED_CQL_PARAMETER;
+	}
+
+	public String getERROR_SAVE_CQL_DEFINITION() {
+		return ERROR_SAVE_CQL_DEFINITION;
+	}
+
+	public String getERROR_SAVE_CQL_PARAMETER() {
+		return ERROR_SAVE_CQL_PARAMETER;
+	}
+
+	public String getERROR_DUPLICATE_PARAMETER_NAME() {
+		return ERROR_DUPLICATE_PARAMETER_NAME;
+	}
+
+	public String getERROR_DUPLICATE_DEFINITION_NAME() {
+		return ERROR_DUPLICATE_DEFINITION_NAME;
+	}
+
+	public String getSUCESS_DEFINITION_MODIFY() {
+		return SUCESS_DEFINITION_MODIFY;
+	}
+
+	public String getSUCESS_PARAMETER_MODIFY() {
+		return SUCESS_PARAMETER_MODIFY;
 	}
 }

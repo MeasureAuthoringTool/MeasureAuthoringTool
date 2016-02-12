@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import mat.client.admin.ManageOrganizationPresenter.SearchDisplay;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -23,6 +24,9 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -64,7 +68,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private AnchorListItem parameterLibrary;
 	private AnchorListItem definitionLibrary;
 	private AnchorListItem functionLibrary;
-	private InlineRadio patientRadio = new InlineRadio("Context");
+	//private InlineRadio patientRadio = new InlineRadio("Context");
 	private Alert successMessageAlertGenInfo = new Alert();
 	private Alert errorMessageAlertGenInfo = new Alert();
 	private Alert successMessageAlertDefinition = new Alert();
@@ -75,7 +79,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * InlineRadio populationRadio.
 	 */
-	private InlineRadio populationRadio = new InlineRadio("Context");
+	//private InlineRadio populationRadio = new InlineRadio("Context");
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
@@ -171,6 +175,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private String currentSelectedDefinitionObjId = null;
 	private String currentSelectedParamerterObjId = null;
 	private Button saveCQLGeneralInfoBtn = new Button("Save");
+	private ToggleSwitch contextToggleSwitch = new ToggleSwitch();
 	
 	@Override
 	public FlowPanel getMainFlowPanel() {
@@ -221,7 +226,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainPanel.add(mainFlowPanel);
 	
 	}
-	
+		
 	@Override
 	public void unsetActiveMenuItem(String menuClickedBefore) {
 		
@@ -266,7 +271,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
 					}
 				}
-				
+				successMessageAlertParameter.clear();
+				successMessageAlertParameter.setVisible(false);
+				errorMessageAlertParameter.clear();
+				errorMessageAlertParameter.setVisible(false);
 			}
 		});
 		
@@ -287,6 +295,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					}
 				}
 				
+				successMessageAlertDefinition.clear();
+				successMessageAlertDefinition.setVisible(false);
+				errorMessageAlertDefinition.clear();
+				errorMessageAlertDefinition.setVisible(false);
 			}
 		});
 		
@@ -361,13 +373,24 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		Label defaultContextLabel = new Label(LabelType.INFO, "Context");
 		defaultContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel usingFlowPanel = new FlowPanel();
-		patientRadio.setFormValue("Patient");
-		patientRadio.setValue(true);
-		populationRadio.setFormValue("Population");
-		patientRadio.setText("Patient");
-		populationRadio.setText("Population");
-		usingFlowPanel.add(patientRadio);
-		usingFlowPanel.add(populationRadio);
+//		patientRadio.setFormValue("Patient");
+//		patientRadio.setValue(true);
+//		populationRadio.setFormValue("Population");
+//		patientRadio.setText("Patient");
+//		populationRadio.setText("Population");
+//		usingFlowPanel.add(patientRadio);
+//		usingFlowPanel.add(populationRadio);
+		
+		contextToggleSwitch.setSize(SizeType.MINI);
+		contextToggleSwitch.setLabelText("Context");
+		contextToggleSwitch.setTitle("Click to change context");
+		contextToggleSwitch.setLabelWidth("125");
+		contextToggleSwitch.setOnText("Patient");
+		contextToggleSwitch.setOnColor(ColorType.SUCCESS);
+		contextToggleSwitch.setOffText("Population");
+		contextToggleSwitch.setOffColor(ColorType.PRIMARY);
+		
+		usingFlowPanel.add(contextToggleSwitch);
 		usingFlowPanel.getElement().setAttribute("style", "margin-left:15px");
 		
 		successMessageAlertGenInfo.setType(AlertType.SUCCESS);
@@ -397,7 +420,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		saveCQLGeneralInfoBtn.getElement().setAttribute("id", "SaveGeneralInformation_Button");
 		saveCQLGeneralInfoBtn.setTitle("Save");
 		
-		generalInfoTopPanel.add(saveCQLGeneralInfoBtn);
+		HorizontalPanel buttonLayoutPanel = new HorizontalPanel();
+		buttonLayoutPanel.setStylePrimaryName("myAccountButtonLayout");
+		buttonLayoutPanel.add(saveCQLGeneralInfoBtn);
+		
+		generalInfoTopPanel.add(buttonLayoutPanel);
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
 		VerticalPanel vp = new VerticalPanel();
@@ -593,6 +620,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		Label parameterLabel = new Label(LabelType.INFO,"Parameter - optional");
 		parameterLabel.setMarginTop(5);
+		parameterLabel.setId("Parameter_Label");
+		parameterNameTxtArea.setText("");
 		parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
 		parameterNameTxtArea.setSize("260px", "25px");
 		parameterNameTxtArea.setId("parameterNameField");
@@ -601,29 +630,45 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		
 		//parameterAceEditor.startEditor();
+		parameterAceEditor.setText("");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
 		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		parameterAceEditor.setSize("500px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
+		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		
 		//addParameterButton = new Button();
 		addParameterButton.setType(ButtonType.PRIMARY);
 		addParameterButton.setSize(ButtonSize.DEFAULT);
-		
+		addParameterButton.setId("AddParameter_Button");
 		addParameterButton.setMarginTop(10);
 		addParameterButton.setMarginLeft(15);
-		addParameterButton.setTitle("OK");
-		addParameterButton.setText("OK");
+		addParameterButton.setTitle("Save");
+		addParameterButton.setText("Save");
 		
 		deleteParameterButton.setType(ButtonType.PRIMARY);
 		deleteParameterButton.setSize(ButtonSize.EXTRA_SMALL);
 		deleteParameterButton.setIcon(IconType.REMOVE);
 		deleteParameterButton.setTitle("Delete");
 		deleteParameterButton.setText("Delete");
+		deleteParameterButton.setId("DeleteParameter_Button");
 		
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;margin-left:15px;");
 		
+		successMessageAlertParameter.setType(AlertType.SUCCESS);
+		successMessageAlertParameter.setWidth("600px");
+		successMessageAlertParameter.setVisible(false);
+		
+		errorMessageAlertParameter.setType(AlertType.DANGER);
+		errorMessageAlertParameter.setWidth("600px");
+		errorMessageAlertParameter.setVisible(false);
+		
+		//parameterVP.add(new SpacerWidget());
+		parameterVP.add(successMessageAlertParameter);
+		//parameterVP.add(new SpacerWidget());
+		parameterVP.add(errorMessageAlertParameter);
+		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
@@ -641,6 +686,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		vp.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
+		
+		//vp.add(successMessageAlertParameter);
+		vp.add(new SpacerWidget());
+		//vp.add(errorMessageAlertParameter);
 		vp.add(parameterFP);
 		
 		addParameterEventHandler();
@@ -710,13 +759,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void buildDefinitionLibraryView(){
 		mainFlowPanel.clear();
-		VerticalPanel parameterVP = new VerticalPanel();
-		HorizontalPanel parameterFP = new HorizontalPanel();
+		VerticalPanel definitionVP = new VerticalPanel();
+		HorizontalPanel definitionFP = new HorizontalPanel();
 		
 		Label defineLabel = new Label(LabelType.INFO,"Definition Name");
 		//parameterLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;margin-top:15px;background-color:#0964A2;");
 		
 		defineLabel.setMarginTop(5);
+		defineLabel.setId("Definition_Label");
+		defineNameTxtArea.setText("");
 		defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("260px", "25px");
 		defineNameTxtArea.setId("parameterNameField");
@@ -724,48 +775,66 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineLabel.setText("Definition Name");
 		
 		
-		
+		defineAceEditor.setText("");
 		defineAceEditor.setMode(AceEditorMode.CQL);
 		defineAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		defineAceEditor.setSize("500px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
+		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		
 		addDefineButton.setType(ButtonType.PRIMARY);
 		addDefineButton.setSize(ButtonSize.DEFAULT);
-		
+		addDefineButton.setId("AddDefine_Button");
 		addDefineButton.setMarginTop(10);
 		addDefineButton.setMarginLeft(15);
-		addDefineButton.setTitle("OK");
-		addDefineButton.setText("OK");
+		addDefineButton.setTitle("Save");
+		addDefineButton.setText("Save");
 		
 		deleteDefineButton.setType(ButtonType.PRIMARY);
 		deleteDefineButton.setSize(ButtonSize.EXTRA_SMALL);
 		deleteDefineButton.setIcon(IconType.REMOVE);
 		deleteDefineButton.setTitle("Delete");
 		deleteDefineButton.setText("Delete");
-		
+		deleteDefineButton.setId("DeleteDefine_Button");
 		defineNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;margin-left:15px;");
 		
-		
-		parameterVP.add(defineLabel);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(defineNameTxtArea);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(defineAceEditor);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(addDefineButton);
-		parameterVP.setStyleName("topping");
-		parameterFP.add(parameterVP);
-		parameterFP.setStyleName("cqlRightContainer");
+		//definitionVP.add(new SpacerWidget());
+		definitionVP.add(successMessageAlertDefinition);
+		//definitionVP.add(new SpacerWidget());
+		definitionVP.add(errorMessageAlertDefinition);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(defineLabel);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(defineNameTxtArea);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(defineAceEditor);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(addDefineButton);
+		definitionVP.setStyleName("topping");
+		definitionFP.add(definitionVP);
+		definitionFP.setStyleName("cqlRightContainer");
 		
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
 		vp.setWidth("700px");
 		vp.setHeight("500px");
-		parameterFP.setWidth("700px");
-		parameterFP.setStyleName("marginLeft15px");
-		vp.add(parameterFP);
+		definitionFP.setWidth("700px");
+		definitionFP.setStyleName("marginLeft15px");
+		vp.add(new SpacerWidget());
+		
+		successMessageAlertDefinition.setType(AlertType.SUCCESS);
+		successMessageAlertDefinition.setWidth("600px");
+		successMessageAlertDefinition.setVisible(false);
+		
+		errorMessageAlertDefinition.setType(AlertType.DANGER);
+		errorMessageAlertDefinition.setWidth("600px");
+		errorMessageAlertDefinition.setVisible(false);
+		
+		vp.add(successMessageAlertDefinition);
+		vp.add(new SpacerWidget());
+		vp.add(errorMessageAlertDefinition);
+		vp.add(definitionFP);
 		
 		addDefineEventHandkers();
 		mainFlowPanel.add(vp);
@@ -989,23 +1058,23 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return currentSelectedClause;
 	}
 	
-	@Override
-	public InlineRadio getPatientRadio() {
-		return patientRadio;
-	}
-	
-	public void setPatientRadio(InlineRadio patientRadio) {
-		this.patientRadio = patientRadio;
-	}
-	
-	@Override
-	public InlineRadio getPopulationRadio() {
-		return populationRadio;
-	}
-	
-	public void setPopulationRadio(InlineRadio populationRadio) {
-		this.populationRadio = populationRadio;
-	}
+//	@Override
+//	public InlineRadio getPatientRadio() {
+//		return patientRadio;
+//	}
+//	
+//	public void setPatientRadio(InlineRadio patientRadio) {
+//		this.patientRadio = patientRadio;
+//	}
+//	
+//	@Override
+//	public InlineRadio getPopulationRadio() {
+//		return populationRadio;
+//	}
+//	
+//	public void setPopulationRadio(InlineRadio populationRadio) {
+//		this.populationRadio = populationRadio;
+//	}
 	
 	@Override
 	public String getCurrentSelectedDefinitionObjId() {
@@ -1101,6 +1170,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 
 	public void setErrorMessageAlertParameter(Alert errorMessageAlertParameter) {
 		this.errorMessageAlertParameter = errorMessageAlertParameter;
+	}
+
+	@Override
+	public ToggleSwitch getContextToggleSwitch() {
+		return contextToggleSwitch;
+	}
+
+	public void setContextToggleSwitch(ToggleSwitch contextToggleSwitch) {
+		this.contextToggleSwitch = contextToggleSwitch;
 	}
 
 }

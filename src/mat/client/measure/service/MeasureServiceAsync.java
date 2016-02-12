@@ -577,7 +577,7 @@ public interface MeasureServiceAsync {
 	
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
-	void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
+	//void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
 	
 	void getCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 	
@@ -593,6 +593,8 @@ public interface MeasureServiceAsync {
 
 	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
+	void getCQLFileData(String currentMeasureId, AsyncCallback<String> asyncCallback);
 	
 	
 }

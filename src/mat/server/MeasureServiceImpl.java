@@ -523,20 +523,21 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveCQLData(mat.model.cql.CQLModel)
-	 */
-	@Override
-	public Boolean saveCQLData(CQLModel cqlDataModel) {
-		return getMeasureLibraryService().saveCQLData(cqlDataModel);
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
 	 */
 	@Override
 	public SaveUpdateCQLResult getCQLData(String measureId) {
 		return this.getMeasureLibraryService().getCQLData(measureId);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
+	 */
+	@Override
+	public String getCQLFileData(String measureId) {
+		return this.getMeasureLibraryService().getCQLFileData(measureId);
+	}
+
 	
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,

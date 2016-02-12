@@ -2,34 +2,36 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Alert;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Badge;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
-import org.gwtbootstrap3.client.ui.Alert;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -128,9 +130,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		AnchorListItem getViewCQL();
 		
 		/**
-		 * Builds the view cql view.
+		 * Button addViewButton.
 		 */
-		void buildViewCQLView();
+		Button addCQLViewButton = new Button();
+		Object mainFlowPanel = null;
+
 		
 		/**
 		 * Update suggest oracle.
@@ -273,11 +277,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		VerticalPanel getMainVPanel();
 		
 		/**
-		 * Builds the cql view.
-		 */
-		void buildCQLView();
-		
-		/**
 		 * Gets the param badge.
 		 *
 		 * @return the param badge
@@ -362,16 +361,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		InlineRadio getPopulationRadio();
 		
 		/**
-		 * Sets the parameter into list.
-		 */
-		void setParameterIntoList();
-		
-		/**
-		 * Sets the definition into list.
-		 */
-		void setDefinitionIntoList();
-		
-		/**
 		 * Gets the current selected definition obj id.
 		 *
 		 * @return the current selected definition obj id
@@ -454,6 +443,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Alert getSuccessMessageAlertParameter();
 
 		Alert getErrorMessageAlertParameter();
+
+		void unsetActiveMenuItem(String menuClickedBefore);
+
+		FlowPanel getMainFlowPanel();
+
+		void setMainFlowPanel(FlowPanel mainFlowPanel);
 		
 	}
 	
@@ -498,6 +493,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				saveAndModifyCQLGeneralInfo();
 			}
 		});
+		
+//		searchDisplay.getViewCQL().addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				searchDisplay.unsetActiveMenuItem(clickedMenu);
+//				searchDisplay.getViewCQL().setActive(true);
+//				clickedMenu = "view";
+//				buildCQLFileView();
+//			}
+//		});
+		
 		
 	}
 	
@@ -718,13 +725,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		cqlModel = new CQLModel();
 		getCQLData();
 		searchDisplay.buildView();
+		addHandler();
 		panel.add(searchDisplay.getMainPanel());
 	}
 	
-	/*private void getCQLDefinitionsList() {
-		
-		MatContext.get().getMeasureService().getCQLDefinitionsFromMeasureXML(MatContext.get().getCurrentMeasureId(),
-				new AsyncCallback<CQLDefinitionsWrapper>() {
+	/**
+	 * Gets the CQL data.
+	 *
+	 * @return the CQL data
+	 */
+	private void getCQLFileData(){
+		MatContext.get().getMeasureService().getCQLFileData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<String>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
@@ -733,19 +744,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 			
 			@Override
-			public void onSuccess(CQLDefinitionsWrapper result) {
-				if (result.getCqlDefinitions().size() >0) {
-					searchDisplay.setViewDefinitions(result.getCqlDefinitions());
-					searchDisplay.clearAndAddDefinitionNamesToListBox();
-					searchDisplay.updateDefineMap();
+			public void onSuccess(String cqlString) {
+				if(cqlString != null){
+					searchDisplay.getCqlAceEditor().setText(cqlString);
 				}
-				
 			}
 		});
+	}
 		
-		
-	}*/
-	
 	/**
 	 * Gets the CQL data.
 	 *
@@ -801,86 +807,98 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		return panel;
 	}
 	
-	/**
-	 * Sets the cql data.
-	 */
-	private void setCQLData() {
-		
-		cqlModel.setCqlBuilder(getCqlString());
-		cqlModel.setCqlParameters(searchDisplay.getViewParameterList());
-		cqlModel.setDefinitionList(searchDisplay.getViewDefinitions());
-		//cqlModel.setMeasureId(MatContext.get().getCurrentMeasureId());
-	}
-	
-	
-	/**
-	 * Gets the cql string.
-	 *
-	 * @return the cql string
-	 */
-	private String getCqlString(){
-		
-		StringBuilder cqlStr = new StringBuilder();
-		//library Name
-		cqlStr = cqlStr.append("library " + MatContext.get().getCurrentMeasureName().replaceAll(" ", "") + " 2");
-		cqlStr = cqlStr.append("\n\n");
-		//Using
-		cqlStr = cqlStr.append("using QDM");
-		cqlStr = cqlStr.append("\n\n");
-		
-		//parameter
-		List<CQLParameter> paramList = searchDisplay.getViewParameterList();
-		for(int i=0; i <paramList.size(); i++){
-			
-			cqlStr = cqlStr.append("parameter "+ paramList.get(i).getParameterName() +
-					paramList.get(i).getParameterLogic());
-			cqlStr = cqlStr.append("\n\n");
-		}
-		
-		//context
-		String contextStr ="";
-		if(searchDisplay.getPopulationRadio().getValue()){
-			contextStr = "Population";
-		} else {
-			contextStr = "Patient";
-		}
-		
-		cqlStr = cqlStr.append("context "+ contextStr +"\n\n");
-		
-		
-		//define
-		List<CQLDefinition> defineList = searchDisplay.getViewDefinitions();
-		for(int i=0; i <defineList.size(); i++){
-			
-			cqlStr = cqlStr.append("define "+ defineList.get(i).getDefinitionName()+"\n");
-			cqlStr = cqlStr.append(defineList.get(i).getDefinitionLogic());
-			cqlStr = cqlStr.append("\n\n");
-		}
-		
-		
-		return cqlStr.toString();
-	}
-	
-	/**
-	 * Save cql data.
-	 */
-	public void saveCQLData(){
-		//setCQLData();
-		MatContext.get().getMeasureService().saveCQLData(cqlModel, new AsyncCallback<Boolean>() {
+	private void addHandler() {
+		searchDisplay.getGeneralInformation().addClickHandler(new ClickHandler() {
 			
 			@Override
-			public void onSuccess(Boolean result) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+			public void onClick(ClickEvent event) {
+				searchDisplay.unsetActiveMenuItem(clickedMenu);
+				searchDisplay.getGeneralInformation().setActive(true);
+				clickedMenu = "general";
+				searchDisplay.buildGeneralInformation();
 				
 			}
 		});
 		
+		searchDisplay.getParameterLibrary().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.unsetActiveMenuItem(clickedMenu);
+				searchDisplay.getParameterLibrary().setActive(true);
+				clickedMenu = "param";
+				searchDisplay.buildParameterLibraryView();
+				
+			}
+		});
+		searchDisplay.getDefinitionLibrary().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.unsetActiveMenuItem(clickedMenu);
+				searchDisplay.getDefinitionLibrary().setActive(true);
+				clickedMenu = "define";
+				searchDisplay.buildDefinitionLibraryView();
+				
+			}
+		});
+		
+		searchDisplay.getFunctionLibrary().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.unsetActiveMenuItem(clickedMenu);
+				searchDisplay.getFunctionLibrary().setActive(true);
+				clickedMenu = "func";
+				searchDisplay.buildFunctionLibraryView();
+			}
+		});
+		
+		searchDisplay.getViewCQL().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.unsetActiveMenuItem(clickedMenu);
+				searchDisplay.getViewCQL().setActive(true);
+				clickedMenu = "view";
+				buildCQLFileView();
+			}
+		});
 	}
+	
+	
+	public void buildCQLFileView(){
+		searchDisplay.getMainFlowPanel().clear();
+		
+		VerticalPanel parameterVP = new VerticalPanel();
+		HorizontalPanel parameterFP = new HorizontalPanel();
+		
+		searchDisplay.getCqlAceEditor().setMode(AceEditorMode.CQL);
+		searchDisplay.getCqlAceEditor().setTheme(AceEditorTheme.ECLIPSE);
+		searchDisplay.getCqlAceEditor().getElement().getStyle().setFontSize(14, Unit.PX);
+		searchDisplay.getCqlAceEditor().setSize("500px", "500px");
+		searchDisplay.getCqlAceEditor().setAutocompleteEnabled(true);
+		
+		parameterVP.add(searchDisplay.getCqlAceEditor());
+		searchDisplay.getMainFlowPanel().add(parameterVP);
+				
+		parameterFP.add(parameterVP);
+		parameterFP.setStyleName("cqlRightContainer");
+
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		vp.setHeight("500px");
+		parameterFP.setWidth("700px");
+		parameterFP.setStyleName("marginLeft15px");
+		vp.add(parameterFP);
+
+		getCQLFileData();
+		//addCqlEventHandkers();
+		searchDisplay.getMainFlowPanel().add(vp);	
+		
+		
+	}
+
 	
 }

@@ -4757,7 +4757,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		//CQLValidationResult result = new CQLValidationResult();
 		CQLModel cqlModel = new CQLModel();
-		cqlModel.setCqlBuilder(cqlBuilder);
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
 		System.out.println(cqlBuilder);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -4788,16 +4787,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlModel = cqlListener.getCqlModel();
 		return cqlModel;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#saveCQLData(mat.model.cql.CQLModel)
-	 */
-	@Override
-	public Boolean saveCQLData(CQLModel cqlDataModel){
-		return getCqlService().saveCQL(cqlDataModel);
-	}
-	
-	
+		
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getCQLData(java.lang.String)
 	 */
@@ -4814,6 +4804,75 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getCQLData(java.lang.String)
+	 */
+	@Override
+	public String getCQLFileData(String measureId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLModel cqlModel = new CQLModel();
+		cqlModel = getCQLGeneratlInfo(measureId);
+		result.setCqlModel(cqlModel);
+		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
+		result.getCqlModel().setDefinitionList(defineWrapper.getCqlDefinitions());
+		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
+		result.getCqlModel().setCqlParameters(paramWrapper.getCqlParameterList());
+		String cqlString = getCqlString(result.getCqlModel());
+		return cqlString;
+	}
+
+	/**
+	 * Gets the cql string.
+	 *
+	 * @return the cql string
+	 */
+	private String getCqlString(CQLModel cqlModel){
+			
+		StringBuffer cqlStr = new StringBuffer();
+		
+		//library Name
+		if (cqlModel.getLibrary() != null) {
+			cqlStr = cqlStr.append("library " + cqlModel.getLibrary().getLibraryName());
+			if (cqlModel.getLibrary().getVersionUsed() != null) {
+				cqlStr = cqlStr.append("version " + cqlModel.getLibrary().getVersionUsed());
+			} 
+			cqlStr = cqlStr.append("\n\n");
+		}
+		
+		//Using
+		cqlStr = cqlStr.append("using QDM");
+		cqlStr = cqlStr.append("\n\n");
+		
+		// parameters
+		List<CQLParameter> paramList = cqlModel.getCqlParameters();
+		if (paramList != null) {
+			for(CQLParameter parameter: paramList) {
+				cqlStr = cqlStr.append("parameter "+ parameter.getParameterName() +
+						parameter.getParameterLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+		}
+		
+		//context
+		if(cqlModel.getContext() != null && !cqlModel.getContext().isEmpty()) {
+			cqlStr = cqlStr.append("context "+ cqlModel.getContext() +"\n\n");
+		}
+		
+		
+		//define
+		List<CQLDefinition> defineList = cqlModel.getDefinitionList();
+		if (paramList != null) {
+			for(CQLDefinition definition : defineList) {
+				cqlStr = cqlStr.append("define "+ definition.getDefinitionName()+"\n");
+				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+		}
+		
+		
+		return cqlStr.toString();
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#validateCQL(mat.model.cql.CQLModel)
 	 */

@@ -15,7 +15,7 @@ public interface CQLService {
 	 * @param cqlDataModel the cql data model
 	 * @return the boolean
 	 */
-	Boolean saveCQL(CQLModel cqlDataModel);
+	//Boolean saveCQL(CQLModel cqlDataModel);
 	
 	/**
 	 * Get cql.

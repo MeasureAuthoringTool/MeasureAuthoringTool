@@ -14,7 +14,7 @@ public class CQLModel implements IsSerializable{
 	private List<CQLParameter> cqlParameters;
 	private List<CQLDefinition> cqlDefinitions;
 	//private List<Functions> functionsList;
-	private String cqlBuilder;
+	
 	public CQLDataModel getUsedModel() {
 		return usedModel;
 	}
@@ -63,12 +63,5 @@ public class CQLModel implements IsSerializable{
 	public void setDefinitionList(List<CQLDefinition> definitionList) {
 		this.cqlDefinitions = definitionList;
 	}
-	public String getCqlBuilder() {
-		return cqlBuilder;
-	}
-	public void setCqlBuilder(String cqlBuilder) {
-		this.cqlBuilder = cqlBuilder;
-	}
-
 
 }

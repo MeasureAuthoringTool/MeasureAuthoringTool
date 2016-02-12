@@ -576,9 +576,11 @@ public interface MeasureLibraryService {
 	
 	CQLModel parseCQL(String cqlBuilder);
 	
-	Boolean saveCQLData(CQLModel cqlDataModel);
+	//Boolean saveCQLData(CQLModel cqlDataModel);
 	
 	SaveUpdateCQLResult getCQLData(String measureId);
+	
+	String getCQLFileData(String measureId);
 	
 	CQLValidationResult validateCQL(CQLModel cqlModel);
 	

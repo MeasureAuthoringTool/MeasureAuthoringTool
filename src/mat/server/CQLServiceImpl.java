@@ -19,27 +19,6 @@ public class CQLServiceImpl  implements CQLService{
 	private CQLDAO cqlDAO;
 
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.CQLService#saveCQL(mat.model.cql.CQLModel)
-	 */
-	@Override
-	public Boolean saveCQL(CQLModel cqlDataModel) {
-
-		CQLData cqlData = cqlDAO.findByID("");
-		if(cqlData!=null){
-			cqlData.setMeasureXMLAsByteArray(cqlDataModel.getCqlBuilder());
-
-		} else {
-
-			cqlData = new CQLData();
-			cqlData.setMeasure_id("");
-			cqlData.setMeasureXMLAsByteArray(cqlDataModel.getCqlBuilder());
-		}
-
-		cqlDAO.save(cqlData);
-
-		return true;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.CQLService#saveCQL(mat.model.cql.CQLModel)

@@ -519,9 +519,11 @@ public interface MeasureService extends RemoteService {
 	
 	CQLModel parseCQL(String cqlBuilder);
 	
-	Boolean saveCQLData(CQLModel cqlDataModel);
+	//Boolean saveCQLData(CQLModel cqlDataModel);
 	
 	SaveUpdateCQLResult getCQLData(String measureId);
+	
+	String getCQLFileData(String measureId);
 	
 	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBemodifiedObj, CQLDefinition currentObj,

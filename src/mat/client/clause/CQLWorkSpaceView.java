@@ -381,14 +381,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		Label defaultContextLabel = new Label(LabelType.INFO, "Context");
 		defaultContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel usingFlowPanel = new FlowPanel();
-		//		patientRadio.setFormValue("Patient");
-		//		patientRadio.setValue(true);
-		//		populationRadio.setFormValue("Population");
-		//		patientRadio.setText("Patient");
-		//		populationRadio.setText("Population");
-		//		usingFlowPanel.add(patientRadio);
-		//		usingFlowPanel.add(populationRadio);
-		
+
 		contextToggleSwitch.setSize(SizeType.MINI);
 		contextToggleSwitch.setLabelText("Context");
 		contextToggleSwitch.setTitle("Click to change context");
@@ -397,6 +390,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		contextToggleSwitch.setOnColor(ColorType.SUCCESS);
 		contextToggleSwitch.setOffText("Population");
 		contextToggleSwitch.setOffColor(ColorType.PRIMARY);
+		
+		if(getContextToggleSwitch().getValue()){
+			contextToggleSwitch.setValue(true);
+		} else {
+			contextToggleSwitch.setValue(false);
+		}
 		
 		usingFlowPanel.add(contextToggleSwitch);
 		usingFlowPanel.getElement().setAttribute("style", "margin-left:15px");
@@ -672,9 +671,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertParameter.setWidth("600px");
 		errorMessageAlertParameter.setVisible(false);
 		
-		//parameterVP.add(new SpacerWidget());
 		parameterVP.add(successMessageAlertParameter);
-		//parameterVP.add(new SpacerWidget());
 		parameterVP.add(errorMessageAlertParameter);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
@@ -695,9 +692,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
 		
-		//vp.add(successMessageAlertParameter);
 		vp.add(new SpacerWidget());
-		//vp.add(errorMessageAlertParameter);
 		vp.add(parameterFP);
 		
 		addParameterEventHandler();
@@ -807,9 +802,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		deleteDefineButton.setId("DeleteDefine_Button");
 		defineNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;margin-left:15px;");
 		
-		//definitionVP.add(new SpacerWidget());
+		successMessageAlertDefinition.setType(AlertType.SUCCESS);
+		successMessageAlertDefinition.setWidth("600px");
+		successMessageAlertDefinition.setVisible(false);
+		
+		errorMessageAlertDefinition.setType(AlertType.DANGER);
+		errorMessageAlertDefinition.setWidth("600px");
+		errorMessageAlertDefinition.setVisible(false);
+		
 		definitionVP.add(successMessageAlertDefinition);
-		//definitionVP.add(new SpacerWidget());
 		definitionVP.add(errorMessageAlertDefinition);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineLabel);
@@ -829,19 +830,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		vp.setHeight("500px");
 		definitionFP.setWidth("700px");
 		definitionFP.setStyleName("marginLeft15px");
+		
 		vp.add(new SpacerWidget());
-		
-		successMessageAlertDefinition.setType(AlertType.SUCCESS);
-		successMessageAlertDefinition.setWidth("600px");
-		successMessageAlertDefinition.setVisible(false);
-		
-		errorMessageAlertDefinition.setType(AlertType.DANGER);
-		errorMessageAlertDefinition.setWidth("600px");
-		errorMessageAlertDefinition.setVisible(false);
-		
-		vp.add(successMessageAlertDefinition);
-		vp.add(new SpacerWidget());
-		vp.add(errorMessageAlertDefinition);
 		vp.add(definitionFP);
 		
 		addDefineEventHandkers();

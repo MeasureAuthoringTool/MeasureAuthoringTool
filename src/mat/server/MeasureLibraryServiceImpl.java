@@ -4846,15 +4846,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();
 		if (paramList != null) {
 			for(CQLParameter parameter: paramList) {
-				cqlStr = cqlStr.append("parameter "+ parameter.getParameterName() +
-						parameter.getParameterLogic());
+				cqlStr = cqlStr.append("parameter " + parameter.getParameterName() + " " + parameter.getParameterLogic());
 				cqlStr = cqlStr.append("\n\n");
 			}
 		}
 		
 		//context
 		if((cqlModel.getContext() != null) && !cqlModel.getContext().isEmpty()) {
-			cqlStr = cqlStr.append("context "+ cqlModel.getContext() +"\n\n");
+			cqlStr = cqlStr.append("context "+ cqlModel.getContext() + "\n\n");
 		}
 		
 		
@@ -4862,7 +4861,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<CQLDefinition> defineList = cqlModel.getDefinitionList();
 		if (defineList != null) {
 			for(CQLDefinition definition : defineList) {
-				cqlStr = cqlStr.append("define "+ definition.getDefinitionName()+"\n");
+				cqlStr = cqlStr.append("define "+ definition.getDefinitionName() + ": ");
 				cqlStr = cqlStr.append(definition.getDefinitionLogic());
 				cqlStr = cqlStr.append("\n\n");
 			}

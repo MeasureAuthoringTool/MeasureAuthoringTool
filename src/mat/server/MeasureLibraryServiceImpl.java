@@ -82,7 +82,6 @@ import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
-import mat.model.cql.CQLUsingModelObject;
 import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.MATCQLListener;
 import mat.server.cqlparser.cqlLexer;
@@ -4787,7 +4786,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlModel = cqlListener.getCqlModel();
 		return cqlModel;
 	}
-		
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getCQLData(java.lang.String)
 	 */
@@ -4808,34 +4807,34 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#getCQLData(java.lang.String)
 	 */
 	@Override
-	public String getCQLFileData(String measureId) {
+	public SaveUpdateCQLResult getCQLFileData(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLModel cqlModel = new CQLModel();
-		cqlModel = getCQLGeneratlInfo(measureId);
-		result.setCqlModel(cqlModel);
-		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
-		result.getCqlModel().setDefinitionList(defineWrapper.getCqlDefinitions());
-		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
-		result.getCqlModel().setCqlParameters(paramWrapper.getCqlParameterList());
-		String cqlString = getCqlString(result.getCqlModel());
-		return cqlString;
+		SaveUpdateCQLResult allCqlData = getCQLData(measureId);
+		StringBuilder cqlString = getCqlString(allCqlData.getCqlModel());
+		if (cqlString!=null) {
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+		}
+		result.setCqlString(cqlString.toString());
+		return result;
 	}
-
+	
 	/**
 	 * Gets the cql string.
 	 *
 	 * @return the cql string
 	 */
-	private String getCqlString(CQLModel cqlModel){
-			
-		StringBuffer cqlStr = new StringBuffer();
+	private StringBuilder getCqlString(CQLModel cqlModel){
+		
+		StringBuilder cqlStr = new StringBuilder();
 		
 		//library Name
 		if (cqlModel.getLibrary() != null) {
 			cqlStr = cqlStr.append("library " + cqlModel.getLibrary().getLibraryName());
 			if (cqlModel.getLibrary().getVersionUsed() != null) {
 				cqlStr = cqlStr.append("version " + cqlModel.getLibrary().getVersionUsed());
-			} 
+			}
 			cqlStr = cqlStr.append("\n\n");
 		}
 		
@@ -4854,14 +4853,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		//context
-		if(cqlModel.getContext() != null && !cqlModel.getContext().isEmpty()) {
+		if((cqlModel.getContext() != null) && !cqlModel.getContext().isEmpty()) {
 			cqlStr = cqlStr.append("context "+ cqlModel.getContext() +"\n\n");
 		}
 		
 		
 		//define
 		List<CQLDefinition> defineList = cqlModel.getDefinitionList();
-		if (paramList != null) {
+		if (defineList != null) {
 			for(CQLDefinition definition : defineList) {
 				cqlStr = cqlStr.append("define "+ definition.getDefinitionName()+"\n");
 				cqlStr = cqlStr.append(definition.getDefinitionLogic());
@@ -4870,9 +4869,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		
-		return cqlStr.toString();
+		return cqlStr;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#validateCQL(mat.model.cql.CQLModel)
 	 */
@@ -5459,7 +5458,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return wrapper;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#saveAndModifyCQLGeneralInfo(java.lang.String, java.lang.String)
 	 */
@@ -5534,13 +5533,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(nodeCQLLibrary != null){
 					libraryNameStr = nodeCQLLibrary.getTextContent();
 					libraryModel.setLibraryName(libraryNameStr);
-					/*libraryModel.setVersionUsed("2");*/	
-				} 
+					/*libraryModel.setVersionUsed("2");*/
+				}
 				
 				if(nodeCQLUsingModel != null){
 					usingModelStr = nodeCQLUsingModel.getTextContent();
 					usingModel.setName(usingModelStr);
-				} 
+				}
 				
 				if(nodeCQLContext != null){
 					contextStr = nodeCQLContext.getTextContent();

@@ -534,10 +534,10 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
 	 */
 	@Override
-	public String getCQLFileData(String measureId) {
+	public SaveUpdateCQLResult getCQLFileData(String measureId) {
 		return this.getMeasureLibraryService().getCQLFileData(measureId);
 	}
-
+	
 	
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
@@ -556,7 +556,7 @@ MeasureService {
 			CQLParameter currentObj, List<CQLParameter> parameterList){
 		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
 	}
-
+	
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
 			String currentMeasureId, String context) {

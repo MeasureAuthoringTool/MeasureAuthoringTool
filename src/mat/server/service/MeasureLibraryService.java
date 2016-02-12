@@ -580,7 +580,7 @@ public interface MeasureLibraryService {
 	
 	SaveUpdateCQLResult getCQLData(String measureId);
 	
-	String getCQLFileData(String measureId);
+	SaveUpdateCQLResult getCQLFileData(String measureId);
 	
 	CQLValidationResult validateCQL(CQLModel cqlModel);
 	
@@ -592,7 +592,7 @@ public interface MeasureLibraryService {
 	
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
-
+	
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
 			String context);
 	

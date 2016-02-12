@@ -523,7 +523,7 @@ public interface MeasureService extends RemoteService {
 	
 	SaveUpdateCQLResult getCQLData(String measureId);
 	
-	String getCQLFileData(String measureId);
+	SaveUpdateCQLResult getCQLFileData(String measureId);
 	
 	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBemodifiedObj, CQLDefinition currentObj,
@@ -534,7 +534,7 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId,
 			CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
-
+	
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
 			String context);
 	

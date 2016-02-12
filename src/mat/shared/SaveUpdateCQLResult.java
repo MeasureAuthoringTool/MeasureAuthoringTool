@@ -13,6 +13,16 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	CQLModel cqlModel;
 	
+	String cqlString;
+	
+	public String getCqlString() {
+		return cqlString;
+	}
+	
+	public void setCqlString(String cqlString) {
+		this.cqlString = cqlString;
+	}
+	
 	public CQLModel getCqlModel() {
 		return cqlModel;
 	}

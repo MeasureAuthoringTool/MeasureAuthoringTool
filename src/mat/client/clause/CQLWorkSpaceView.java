@@ -3,9 +3,10 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import mat.client.admin.ManageOrganizationPresenter.SearchDisplay;
-
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLParameter;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -27,7 +28,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -45,14 +45,9 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLParameter;
 
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
@@ -62,7 +57,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private HorizontalPanel tabPanel = new HorizontalPanel();
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	private FlowPanel mainFlowPanel = new FlowPanel();
-
+	
 	private AnchorListItem viewCQL = new AnchorListItem();
 	private AnchorListItem generalInformation;
 	private AnchorListItem parameterLibrary;
@@ -177,15 +172,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private Button saveCQLGeneralInfoBtn = new Button("Save");
 	private ToggleSwitch contextToggleSwitch = new ToggleSwitch();
 	
-	@Override
+	/*@Override
 	public FlowPanel getMainFlowPanel() {
 		return mainFlowPanel;
 	}
 	@Override
 	public void setMainFlowPanel(FlowPanel mainFlowPanel) {
 		this.mainFlowPanel = mainFlowPanel;
-	}
-
+	}*/
+	
 	@Override
 	public PanelCollapse getDefineCollapse() {
 		return defineCollapse;
@@ -224,31 +219,44 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.setWidth("700px");
 		mainPanel.add(rightHandNavPanel);
 		mainPanel.add(mainFlowPanel);
-	
-	}
 		
+	}
 	@Override
-	public void unsetActiveMenuItem(String menuClickedBefore) {
+	public void buildCQLFileView(){
+		mainFlowPanel.clear();
 		
-		if(menuClickedBefore.equalsIgnoreCase("general")){
-			getGeneralInformation().setActive(false);
-		} else if(menuClickedBefore.equalsIgnoreCase("param")){
-			getParameterLibrary().setActive(false);
-			if(getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
-				getParamCollapse().getElement().setClassName("panel-collapse collapse");
-			}
-		} else if(menuClickedBefore.equalsIgnoreCase("define")){
-			getDefinitionLibrary().setActive(false);
-			if(getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
-				getDefineCollapse().getElement().setClassName("panel-collapse collapse");
-			}
-		} else if(menuClickedBefore.equalsIgnoreCase("func")){
-			getFunctionLibrary().setActive(false);
-		} else if(menuClickedBefore.equalsIgnoreCase("view")){
-			getViewCQL().setActive(false);
-		}
+		VerticalPanel parameterVP = new VerticalPanel();
+		HorizontalPanel parameterFP = new HorizontalPanel();
+		
+		cqlAceEditor.setMode(AceEditorMode.CQL);
+		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		
+		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		cqlAceEditor.setSize("500px", "500px");
+		cqlAceEditor.setAutocompleteEnabled(true);
+		cqlAceEditor.setReadOnly(true);
+		parameterVP.add(cqlAceEditor);
+		mainFlowPanel.add(parameterVP);
+		
+		parameterFP.add(parameterVP);
+		parameterFP.setStyleName("cqlRightContainer");
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		vp.setHeight("500px");
+		parameterFP.setWidth("700px");
+		parameterFP.setStyleName("marginLeft15px");
+		vp.add(parameterFP);
+		
+		
+		//addCqlEventHandkers();
+		mainFlowPanel.add(vp);
+		
+		
 	}
-
+	
+	
 	private void addParameterEventHandler(){
 		/*getAddParameterButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -373,13 +381,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		Label defaultContextLabel = new Label(LabelType.INFO, "Context");
 		defaultContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel usingFlowPanel = new FlowPanel();
-//		patientRadio.setFormValue("Patient");
-//		patientRadio.setValue(true);
-//		populationRadio.setFormValue("Population");
-//		patientRadio.setText("Patient");
-//		populationRadio.setText("Population");
-//		usingFlowPanel.add(patientRadio);
-//		usingFlowPanel.add(populationRadio);
+		//		patientRadio.setFormValue("Patient");
+		//		patientRadio.setValue(true);
+		//		populationRadio.setFormValue("Population");
+		//		patientRadio.setText("Patient");
+		//		populationRadio.setText("Population");
+		//		usingFlowPanel.add(patientRadio);
+		//		usingFlowPanel.add(populationRadio);
 		
 		contextToggleSwitch.setSize(SizeType.MINI);
 		contextToggleSwitch.setLabelText("Context");
@@ -872,8 +880,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.clear();
 	}
 	
-
-
+	
+	
 	/**
 	 * Reset All components to default state.
 	 */
@@ -1058,23 +1066,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return currentSelectedClause;
 	}
 	
-//	@Override
-//	public InlineRadio getPatientRadio() {
-//		return patientRadio;
-//	}
-//	
-//	public void setPatientRadio(InlineRadio patientRadio) {
-//		this.patientRadio = patientRadio;
-//	}
-//	
-//	@Override
-//	public InlineRadio getPopulationRadio() {
-//		return populationRadio;
-//	}
-//	
-//	public void setPopulationRadio(InlineRadio populationRadio) {
-//		this.populationRadio = populationRadio;
-//	}
 	
 	@Override
 	public String getCurrentSelectedDefinitionObjId() {
@@ -1104,81 +1095,78 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public AceEditor getCqlAceEditor() {
 		return cqlAceEditor;
 	}
-
+	
 	@Override
 	public Button getSaveCQLGeneralInfoBtn() {
 		return saveCQLGeneralInfoBtn;
 	}
-
+	
 	public void setSaveCQLGeneralInfoBtn(Button saveCQLGeneralInfoBtn) {
 		this.saveCQLGeneralInfoBtn = saveCQLGeneralInfoBtn;
 	}
-
+	
 	@Override
 	public Alert getSuccessMessageAlert() {
 		return successMessageAlertGenInfo;
 	}
-
+	
 	@Override
 	public void setSuccessMessageAlert(Alert successMessageAlert) {
-		this.successMessageAlertGenInfo = successMessageAlert;
+		successMessageAlertGenInfo = successMessageAlert;
 	}
-
+	
 	@Override
 	public Alert getErrorMessageAlertGenInfo() {
 		return errorMessageAlertGenInfo;
 	}
-
+	
 	public void setErrorMessageAlertGenInfo(Alert errorMessageAlertGenInfo) {
 		this.errorMessageAlertGenInfo = errorMessageAlertGenInfo;
 	}
-
+	
 	@Override
 	public Alert getSuccessMessageAlertDefinition() {
 		return successMessageAlertDefinition;
 	}
-
+	
 	public void setSuccessMessageAlertDefinition(
 			Alert successMessageAlertDefinition) {
 		this.successMessageAlertDefinition = successMessageAlertDefinition;
 	}
-
+	
 	@Override
 	public Alert getErrorMessageAlertDefinition() {
 		return errorMessageAlertDefinition;
 	}
-
+	
 	public void setErrorMessageAlertDefinition(
 			Alert errorMessageAlertDefinition) {
 		this.errorMessageAlertDefinition = errorMessageAlertDefinition;
 	}
-
+	
 	@Override
 	public Alert getSuccessMessageAlertParameter() {
 		return successMessageAlertParameter;
 	}
-
+	
 	public void setSuccessMessageAlertParameter(
 			Alert successMessageAlertParameter) {
 		this.successMessageAlertParameter = successMessageAlertParameter;
 	}
-
+	
 	@Override
 	public Alert getErrorMessageAlertParameter() {
 		return errorMessageAlertParameter;
 	}
-
+	
 	public void setErrorMessageAlertParameter(Alert errorMessageAlertParameter) {
 		this.errorMessageAlertParameter = errorMessageAlertParameter;
 	}
-
+	
 	@Override
 	public ToggleSwitch getContextToggleSwitch() {
+		// TODO Auto-generated method stub
 		return contextToggleSwitch;
 	}
-
-	public void setContextToggleSwitch(ToggleSwitch contextToggleSwitch) {
-		this.contextToggleSwitch = contextToggleSwitch;
-	}
-
+	
 }

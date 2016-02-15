@@ -189,15 +189,15 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
-	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information";
-	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully Saved Definition into CQL";
-	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully Saved Parameter into CQL";
+	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information.";
+	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully Saved Definition into CQL.";
+	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully Saved Parameter into CQL.";
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter Definition Name and Logic.";
-	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter Parameter and Logic";
-	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter Name already Exists";
-	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition Name already Exists";
-	public final String SUCESS_DEFINITION_MODIFY  = "Successfully Modified Definition";
-	public final String SUCESS_PARAMETER_MODIFY  = "Successfully Modified Definition";
+	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter Parameter and Logic.";
+	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter Name already Exists.";
+	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition Name already Exists.";
+	public final String SUCESS_DEFINITION_MODIFY  = "Successfully Modified Definition.";
+	public final String SUCESS_PARAMETER_MODIFY  = "Successfully Modified Parameter.";
 	
 	
 	/**
@@ -683,7 +683,7 @@ public class MessageDelegate {
 	
 	/** The clause work space invalid nested clause. */
 	private final String CLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR = "Any logical operator under a top-level logical operator must contain at least one logical operator or clause. " +
-			                                                        "Any terminal logical operator under a top-level logical operator must contain at least one clause.";
+			"Any terminal logical operator under a top-level logical operator must contain at least one clause.";
 	
 	/** The measure observation validation for functions. */
 	private final String MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS = "Contents of the clause logic are not permitted for Measure Observations.";
@@ -693,7 +693,7 @@ public class MessageDelegate {
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
 	}
-
+	
 	/**
 	 * Gets the measure observation validation for functions.
 	 *
@@ -702,7 +702,7 @@ public class MessageDelegate {
 	public String getMEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS() {
 		return MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS;
 	}
-
+	
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -2478,7 +2478,7 @@ public class MessageDelegate {
 	public String getSUCCESSFULLY_MODIFIED_ALL_OIDS() {
 		return SUCCESSFULLY_MODIFIED_ALL_OIDS;
 	}
-
+	
 	/**
 	 * Gets the comparison diloag box unit error display.
 	 *
@@ -2487,7 +2487,7 @@ public class MessageDelegate {
 	public String getCOMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY() {
 		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
 	}
-
+	
 	public String getSUCCESSFUL_SAVED_CQL_GEN_INFO() {
 		return SUCCESSFUL_SAVED_CQL_GEN_INFO;
 	}
@@ -2495,31 +2495,31 @@ public class MessageDelegate {
 	public String getSUCCESSFUL_SAVED_CQL_DEFINITION() {
 		return SUCCESSFUL_SAVED_CQL_DEFINITION;
 	}
-
+	
 	public String getSUCCESSFUL_SAVED_CQL_PARAMETER() {
 		return SUCCESSFUL_SAVED_CQL_PARAMETER;
 	}
-
+	
 	public String getERROR_SAVE_CQL_DEFINITION() {
 		return ERROR_SAVE_CQL_DEFINITION;
 	}
-
+	
 	public String getERROR_SAVE_CQL_PARAMETER() {
 		return ERROR_SAVE_CQL_PARAMETER;
 	}
-
+	
 	public String getERROR_DUPLICATE_PARAMETER_NAME() {
 		return ERROR_DUPLICATE_PARAMETER_NAME;
 	}
-
+	
 	public String getERROR_DUPLICATE_DEFINITION_NAME() {
 		return ERROR_DUPLICATE_DEFINITION_NAME;
 	}
-
+	
 	public String getSUCESS_DEFINITION_MODIFY() {
 		return SUCESS_DEFINITION_MODIFY;
 	}
-
+	
 	public String getSUCESS_PARAMETER_MODIFY() {
 		return SUCESS_PARAMETER_MODIFY;
 	}

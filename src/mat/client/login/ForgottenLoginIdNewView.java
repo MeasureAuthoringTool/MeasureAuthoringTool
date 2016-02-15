@@ -41,7 +41,7 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 	private FormGroup messageFormGrp = new FormGroup();
 	private HelpBlock helpBlock = new HelpBlock();
 	private Button submitButton = new Button("Submit");
-	private Button resetButton = new Button("Reset");
+	private Button resetButton = new Button("Cancel");
 	/**
 	 * Instantiates a new forgotten login id view.
 	 */
@@ -97,7 +97,7 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 		submitButton.setTitle("Submit");
 		
 		resetButton.setType(ButtonType.PRIMARY);
-		resetButton.setTitle("Reset");
+		resetButton.setTitle("Cancel");
 		buttonToolBar.add(submitButton);
 		buttonToolBar.add(resetButton);
 		

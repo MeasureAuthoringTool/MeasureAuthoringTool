@@ -35,6 +35,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 	CQLDefinition definition;
 	
 	
+	public CQLDefinition getDefinition() {
+		return definition;
+	}
+	
+	public void setDefinition(CQLDefinition definition) {
+		this.definition = definition;
+	}
+	
 	/** The parameter. */
 	CQLParameter parameter;
 	

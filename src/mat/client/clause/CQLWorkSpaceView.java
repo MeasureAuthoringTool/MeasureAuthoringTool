@@ -312,9 +312,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		
 		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		cqlAceEditor.setSize("500px", "500px");
+		cqlAceEditor.setSize("675px", "500px");
 		cqlAceEditor.setAutocompleteEnabled(true);
 		cqlAceEditor.setReadOnly(true);
+		Label viewCQlFileLabel = new Label(LabelType.INFO);
+		viewCQlFileLabel.setText("View CQL file here");
+		viewCQlFileLabel.setTitle("View CQL file here");
+		parameterVP.add(new SpacerWidget());
+		parameterVP.add(new SpacerWidget());
+		parameterVP.add(viewCQlFileLabel);
+		parameterVP.add(new SpacerWidget());
+		parameterVP.add(new SpacerWidget());
 		parameterVP.add(cqlAceEditor);
 		mainFlowPanel.add(parameterVP);
 		
@@ -328,7 +336,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
 		vp.add(parameterFP);
-		
+		vp.setHeight("675px");
 		
 		//addCqlEventHandkers();
 		mainFlowPanel.add(vp);
@@ -341,14 +349,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * Adds the parameter event handler.
 	 */
 	private void addParameterEventHandler(){
-		/*getAddParameterButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				setParameterIntoList();
-			}
-		});*/
-		
-		
 		
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
@@ -395,13 +395,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				errorMessageAlertDefinition.setVisible(false);
 			}
 		});
-		
-		/*getAddDefineButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				setDefinitionIntoList();
-			}
-		});*/
 	}
 	
 	/* (non-Javadoc)
@@ -475,11 +468,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		Label defaultContextLabel = new Label(LabelType.INFO, "Context");
 		defaultContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel usingFlowPanel = new FlowPanel();
-
+		
 		contextToggleSwitch.setSize(SizeType.MINI);
 		contextToggleSwitch.setLabelText("Context");
 		contextToggleSwitch.setTitle("Click to change context");
-		contextToggleSwitch.setLabelWidth("125");
+		contextToggleSwitch.setLabelWidth("100");
 		contextToggleSwitch.setOnText("Patient");
 		contextToggleSwitch.setOnColor(ColorType.SUCCESS);
 		contextToggleSwitch.setOffText("Population");
@@ -534,6 +527,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		generalInfoTopPanel.setWidth("700px");
 		generalInfoTopPanel.setStyleName("marginLeft15px");
 		vp.add(generalInfoTopPanel);
+		
 		mainFlowPanel.clear();
 		mainFlowPanel.add(vp);
 		
@@ -733,7 +727,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
 		
-		Label parameterLabel = new Label(LabelType.INFO,"Parameter - optional");
+		Label parameterLabel = new Label(LabelType.INFO,"Parameter");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
 		parameterNameTxtArea.setText("");
@@ -741,7 +735,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.setSize("260px", "25px");
 		parameterNameTxtArea.setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
-		parameterLabel.setText("Parameter - Optional");
+		parameterLabel.setText("Parameter");
 		
 		
 		//parameterAceEditor.startEditor();
@@ -749,7 +743,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterAceEditor.setMode(AceEditorMode.CQL);
 		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		parameterAceEditor.setSize("500px", "500px");
+		parameterAceEditor.setSize("675px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		
@@ -758,7 +752,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		addParameterButton.setSize(ButtonSize.DEFAULT);
 		addParameterButton.setId("AddParameter_Button");
 		addParameterButton.setMarginTop(10);
-		addParameterButton.setMarginLeft(15);
+		//addParameterButton.setMarginLeft(15);
 		addParameterButton.setTitle("Save");
 		addParameterButton.setText("Save");
 		
@@ -769,7 +763,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		deleteParameterButton.setText("Delete");
 		deleteParameterButton.setId("DeleteParameter_Button");
 		
-		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;margin-left:15px;");
+		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		successMessageAlertParameter.setType(AlertType.SUCCESS);
 		successMessageAlertParameter.setWidth("600px");
@@ -802,7 +796,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		vp.add(new SpacerWidget());
 		vp.add(parameterFP);
-		
+		vp.setHeight("675px");
 		addParameterEventHandler();
 		mainFlowPanel.add(vp);
 		
@@ -898,7 +892,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setMode(AceEditorMode.CQL);
 		defineAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		defineAceEditor.setSize("500px", "500px");
+		defineAceEditor.setSize("675px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		
@@ -906,7 +900,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		addDefineButton.setSize(ButtonSize.DEFAULT);
 		addDefineButton.setId("AddDefine_Button");
 		addDefineButton.setMarginTop(10);
-		addDefineButton.setMarginLeft(15);
+		//addDefineButton.setMarginLeft(15);
 		addDefineButton.setTitle("Save");
 		addDefineButton.setText("Save");
 		
@@ -916,7 +910,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		deleteDefineButton.setTitle("Delete");
 		deleteDefineButton.setText("Delete");
 		deleteDefineButton.setId("DeleteDefine_Button");
-		defineNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;margin-left:15px;");
+		defineNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px");
 		
 		successMessageAlertDefinition.setType(AlertType.SUCCESS);
 		successMessageAlertDefinition.setWidth("600px");
@@ -949,7 +943,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		vp.add(new SpacerWidget());
 		vp.add(definitionFP);
-		
+		vp.setHeight("675px");
 		addDefineEventHandkers();
 		mainFlowPanel.add(vp);
 	}

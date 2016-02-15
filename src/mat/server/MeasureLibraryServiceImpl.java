@@ -4918,7 +4918,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						
 						wrapper = modfiyCQLDefinitionList(toBemodifiedObj, currentObj, definitionList);
 						result.setSuccess(true);
-						
+						result.setDefinition(currentObj);
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);
 						e.printStackTrace();
@@ -4953,7 +4953,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								getService().saveMeasureXml(xmlModel);
 								
 								result.setSuccess(true);
-								//result.setDefinition(currentObj);
+								result.setDefinition(currentObj);
 								definitionList.add(currentObj);
 								wrapper.setCqlDefinitions(definitionList);
 								
@@ -5024,6 +5024,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						}
 						wrapper = modfiyCQLParameterList(toBemodifiedObj, currentObj, parameterList);
 						result.setSuccess(true);
+						result.setParameter(currentObj);
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);
 						e.printStackTrace();
@@ -5057,10 +5058,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
 								
-								result.setSuccess(true);
+								
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
-								
+								result.setSuccess(true);
+								result.setParameter(currentObj);
 							} catch (SAXException e) {
 								result.setSuccess(false);
 								e.printStackTrace();

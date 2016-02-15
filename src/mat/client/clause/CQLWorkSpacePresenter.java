@@ -627,7 +627,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
-						searchDisplay.setCurrentSelectedParamerterObjId(null);
+						//searchDisplay.setCurrentSelectedParamerterObjId(null);
 						if (result.isSuccess()) {
 							searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 							searchDisplay.clearAndAddParameterNamesToListBox();
@@ -635,12 +635,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 							searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY()));
+							searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
 							
 						} else {
 							
 						}
-						/*searchDisplay.getParameterNameTxtArea().clear();
-						searchDisplay.getParameterAceEditor().setText("");*/
+						
 						
 					}
 				});
@@ -662,8 +662,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 							searchDisplay.clearAndAddParameterNamesToListBox();
 							searchDisplay.updateParamMap();
-							/*searchDisplay.getParameterNameTxtArea().clear();
-							searchDisplay.getParameterAceEditor().setText("");*/
+							searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
+							
 							searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 							searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
@@ -718,7 +718,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
-						searchDisplay.setCurrentSelectedDefinitionObjId(null);
+						//	searchDisplay.setCurrentSelectedDefinitionObjId(null);
 						if(result.isSuccess()){
 							
 							searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
@@ -727,6 +727,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertDefinition().setVisible(true);
 							searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY()));
+							searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
 							
 						} else {
 							
@@ -761,6 +762,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertDefinition().setVisible(true);
 							searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION()));
+							searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
 							
 						} else {
 							

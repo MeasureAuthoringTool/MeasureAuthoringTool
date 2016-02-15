@@ -140,9 +140,9 @@
 
 	<!-- Immunization -->
 	<template oid="2.16.840.1.113883.10.20.28.3.112" class="SBADM" mood="EVN" status="COMPLETED" code="416118004" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="Administration" addCodeTag="true" addValueTag="false" includeSubTemplate="immunization" addExtensionInTemplate="true">immunization, administered</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="COMPLETED" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true" addExtensionInTemplate="true">immunization, order</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, allergy</template>
-	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization">immunization, intolerance</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.113" class="SBADM" mood="RQO" status="ACTIVE" includeSubTemplate="immunization" addCodeTag="false" addValueTag="false" includeOtherSubTemplate="order-dateTime" typeOrder="true" addExtensionInTemplate="true">immunization, order</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.114" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="416098002" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueCodeSystemName="SNOMED CT" valueDisplayName="Drug Allergy" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization-allergy">immunization, allergy</template>
+	<template oid="2.16.840.1.113883.10.20.28.3.115" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueCode="59037007" valueCodeSystem="2.16.840.1.113883.6.96" addExtensionInTemplate="true" valueDisplayName="Drug Intolerance" addCodeTag="true" addValueTag="true" includeSubTemplate="immunization-intolerance">immunization, intolerance</template>
     
     <!-- Diagnosis new Datatype -->
     
@@ -738,6 +738,31 @@
             </role>
         </participation>
     </immunization>
+    
+    
+    <immunization-allergy changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingEntity classCode="MMAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingEntity>
+            </role>
+        </participation>
+    </immunization-allergy>
+    
+    <immunization-intolerance changeAttribute="code,displayName">
+        <participation typeCode="CSM">
+            <role classCode="MANU">
+                <playingMaterial classCode="MMAT" determinerCode="KIND">
+                    <code valueSet="$QDMElementValueSetOID" >
+				      <displayName value="$displaynamevalue"/>
+				    </code>
+                </playingMaterial>
+            </role>
+        </participation>
+    </immunization-intolerance>
 
 
     </subtemplates>

@@ -16,18 +16,10 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -37,7 +29,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 
@@ -312,7 +303,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		/**
 		 * Gets the clicked menu.
 		 *
-		 * @return the clicked menu
+		 * @return the clicked menuF
 		 */
 		String getClickedMenu();
 		
@@ -523,46 +514,46 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-	   searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
-		
-		@Override
-		public void onClick(ClickEvent event) {
-			resetMessageDisplay();
+		searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
 			
-		}
-	});
-	
-	searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
+				
+			}
+		});
 		
-		@Override
-		public void onValueChange(ValueChangeEvent<Boolean> event) {
+		searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
-			resetMessageDisplay();
-		}
-	});
-	
-	
-	searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				
+				resetMessageDisplay();
+			}
+		});
 		
-		@Override
-		public void onChangeSelection(AceSelection selection) {
-			resetMessageDisplay();
-			
-		}
-	});
-	
-	
-	searchDisplay.getParameterAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
 		
-		@Override
-		public void onChangeSelection(AceSelection selection) {
-			resetMessageDisplay();
+		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
 			
-		}
-	});
-	
-	
-	
+			@Override
+			public void onChangeSelection(AceSelection selection) {
+				resetMessageDisplay();
+				
+			}
+		});
+		
+		
+		searchDisplay.getParameterAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+			
+			@Override
+			public void onChangeSelection(AceSelection selection) {
+				resetMessageDisplay();
+				
+			}
+		});
+		
+		
+		
 	}
 	
 	
@@ -648,8 +639,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						} else {
 							
 						}
-						searchDisplay.getParameterNameTxtArea().clear();
-						searchDisplay.getParameterAceEditor().setText("");
+						/*searchDisplay.getParameterNameTxtArea().clear();
+						searchDisplay.getParameterAceEditor().setText("");*/
 						
 					}
 				});
@@ -671,8 +662,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 							searchDisplay.clearAndAddParameterNamesToListBox();
 							searchDisplay.updateParamMap();
-							searchDisplay.getParameterNameTxtArea().clear();
-							searchDisplay.getParameterAceEditor().setText("");
+							/*searchDisplay.getParameterNameTxtArea().clear();
+							searchDisplay.getParameterAceEditor().setText("");*/
 							searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 							searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
@@ -743,8 +734,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 									MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
 						}
-						searchDisplay.getDefineNameTxtArea().clear();
-						searchDisplay.getDefineAceEditor().setText("");;
+						/*searchDisplay.getDefineNameTxtArea().clear();
+						searchDisplay.getDefineAceEditor().setText("");;*/
 					}
 				});
 				
@@ -777,8 +768,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 									MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
 						}
-						searchDisplay.getDefineNameTxtArea().clear();
-						searchDisplay.getDefineAceEditor().setText("");;
+						/*searchDisplay.getDefineNameTxtArea().clear();
+						searchDisplay.getDefineAceEditor().setText("");;*/
 						
 					}
 				});

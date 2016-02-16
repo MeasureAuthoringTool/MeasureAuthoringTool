@@ -464,6 +464,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		void buildCQLFileView();
 		
+		void updateSuggestFuncOracle();
+		
+		void clearAndAddFunctionsNamesToListBox();
+		
+		PanelCollapse getFunctionCollapse();
+		
+		TextArea getFuncNameTxtArea();
+		
 	}
 	
 	/** The search display. */
@@ -998,6 +1006,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		} else if(menuClickedBefore.equalsIgnoreCase("func")){
 			searchDisplay.getFunctionLibrary().setActive(false);
+			if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+				searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
+			}
 		} else if(menuClickedBefore.equalsIgnoreCase("view")){
 			searchDisplay.getViewCQL().setActive(false);
 		}

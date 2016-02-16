@@ -6,6 +6,7 @@ import java.util.List;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
@@ -162,23 +163,48 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * ListBox defineNameListBox.
 	 */
 	private ListBox defineNameListBox;
+	
+	/**
+	 * ListBox funcNameListBox.
+	 */
+	private ListBox funcNameListBox;
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
 	private TextArea defineNameTxtArea = new TextArea();
 	
 	/**
+	 * TextArea defineNameTxtArea.
+	 */
+	private TextArea funcNameTxtArea = new TextArea();
+	
+	/**
 	 * SuggestBox searchSuggestDefineTextBox.
 	 */
 	private SuggestBox searchSuggestDefineTextBox;
+	
+	/**
+	 * SuggestBox searchSuggestFuncTextBox.
+	 */
+	private SuggestBox searchSuggestFuncTextBox;
 	/**
 	 * List viewDefinitions.
 	 */
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
+	
+	/**
+	 * List viewFunctions.
+	 */
+	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
 	/**
 	 * HashMap defineNameMap.
 	 */
 	private HashMap<String, String> defineNameMap = new HashMap<String, String>();
+	
+	/**
+	 * HashMap funcNameMap.
+	 */
+	private HashMap<String, String> funcNameMap = new HashMap<String, String>();
 	/**
 	 * HashMap definitionMap.
 	 */
@@ -198,17 +224,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The define badge. */
 	private Badge defineBadge = new Badge();
 	
+	/** The Function badge. */
+	private Badge functionBadge = new Badge();
+	
 	/** The param label. */
 	private Label paramLabel = new Label("Parameter");
 	
 	/** The define label. */
 	private Label defineLabel = new Label("Definition");
 	
+	/** The function Lib Label. */
+	private Label functionLibLabel = new Label("Function");
+	
 	/** The param collapse. */
 	PanelCollapse paramCollapse = new PanelCollapse();
 	
 	/** The define collapse. */
 	PanelCollapse defineCollapse = new PanelCollapse();
+	/** The function Collapse. */
+	PanelCollapse functionCollapse = new PanelCollapse();
 	
 	/** The clicked menu. */
 	public String clickedMenu = "general";
@@ -290,6 +324,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		resetAll();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
+		functionCollapse = createFunctionCollapsablePanel();
 		buildLeftHandNavNar();
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
@@ -585,8 +620,21 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		definitionLibrary.add(defineCollapse);
 		
 		functionLibrary.setIcon(IconType.PENCIL);
-		functionLibrary.setText("Functions");
+		/*functionLibrary.setText("Functions");*/
 		functionLibrary.setTitle("Functions");
+		
+		functionBadge.setText(""+viewFunctions.size());
+		Anchor funcAnchor = (Anchor) (functionLibrary.getWidget(0));
+		functionLibLabel.setStyleName("transparentLabel");
+		funcAnchor.add(functionLibLabel);
+		functionBadge.setMarginLeft(67);
+		funcAnchor.add(functionBadge);
+		funcAnchor.setDataParent("#navGroup");
+		functionLibrary.setDataToggle(Toggle.COLLAPSE);
+		functionLibrary.setHref("#collapseFunction");
+		
+		functionLibrary.add(functionCollapse);
+		
 		
 		viewCQL.setIcon(IconType.BOOK);
 		viewCQL.setText("View CQL");
@@ -717,6 +765,64 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterCollapseBody.add(parameterFP);
 		parameterCollapsePanel.add(parameterCollapseBody);
 		return parameterCollapsePanel;
+		
+	}
+	
+	
+	/**
+	 * Creates the define collapsable panel.
+	 *
+	 * @return the panel collapse
+	 */
+	private PanelCollapse createFunctionCollapsablePanel() {
+		PanelCollapse funcCollapsePanel = new PanelCollapse();
+		funcCollapsePanel.setId("collapseFunction");
+		
+		PanelBody funcCollapseBody = new PanelBody();
+		
+		HorizontalPanel funcFP = new HorizontalPanel();
+		
+		VerticalPanel rightVerticalPanel = new VerticalPanel();
+		rightVerticalPanel.setSpacing(10);
+		
+		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelFunc");
+		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		Label functionLibraryLabel = new Label("Function Library");
+		searchSuggestFuncTextBox = new SuggestBox();
+		updateSuggestFuncOracle();
+		searchSuggestFuncTextBox.setWidth("180px");
+		searchSuggestFuncTextBox.setText("Search");
+		searchSuggestFuncTextBox.getElement().setId("searchTextBox_TextBoxFuncLib");
+		
+		searchSuggestFuncTextBox.getValueBox().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if ("Search".equals(searchSuggestFuncTextBox.getText())) {
+					searchSuggestFuncTextBox.setText("");
+				}
+			}
+		});
+		
+		funcNameListBox = new ListBox();
+		funcNameListBox.setWidth("180px");
+		funcNameListBox.setVisibleItemCount(10);
+		funcNameListBox.getElement().setAttribute("id", "funcListBox");
+		
+		clearAndAddFunctionsNamesToListBox();
+		
+		addSuggestHandler(searchSuggestFuncTextBox, funcNameListBox);
+		addListBoxHandler(funcNameListBox, searchSuggestFuncTextBox);
+		
+		searchSuggestFuncTextBox.getElement().setAttribute("id", "searchSuggestTextBoxFunc");
+		rightVerticalPanel.add(searchSuggestFuncTextBox);
+		rightVerticalPanel.add(funcNameListBox);
+		
+		rightVerticalPanel.setCellHorizontalAlignment(functionLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
+		funcFP.add(rightVerticalPanel);
+		funcCollapseBody.add(funcFP);
+		funcCollapsePanel.add(funcCollapseBody);
+		return funcCollapsePanel;
 		
 	}
 	
@@ -884,15 +990,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		HorizontalPanel definitionFP = new HorizontalPanel();
 		
 		Label defineLabel = new Label(LabelType.INFO,"Definition Name");
-		//parameterLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;margin-top:15px;background-color:#0964A2;");
-		
 		defineLabel.setMarginTop(5);
 		defineLabel.setId("Definition_Label");
 		defineNameTxtArea.setText("");
 		defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("260px", "25px");
-		defineNameTxtArea.setId("parameterNameField");
-		defineNameTxtArea.setName("parameterName");
+		defineNameTxtArea.setId("defineNameField");
+		defineNameTxtArea.setName("defineName");
 		defineLabel.setText("Definition Name");
 		
 		
@@ -968,6 +1072,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 	
+	@Override
+	public void updateSuggestFuncOracle() {
+		if (searchSuggestFuncTextBox != null) {
+			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestFuncTextBox.getSuggestOracle();
+			multiWordSuggestOracle.clear();
+			multiWordSuggestOracle.addAll(funcNameMap.values());
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#clearAndAddDefinitionNamesToListBox()
 	 */
@@ -990,6 +1103,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 	
+	@Override
+	public void clearAndAddFunctionsNamesToListBox() {
+		if (funcNameListBox != null) {
+			funcNameListBox.clear();
+			for (CQLFunctions func : viewFunctions) {
+				funcNameListBox.addItem(func.getFunctionName(), func.getId());
+			}
+			// Set tooltips for each element in listbox
+			SelectElement selectElement = SelectElement.as(funcNameListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				String title = options.getItem(i).getText();
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(title);
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildFunctionLibraryView()
 	 */
@@ -998,6 +1130,40 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
+		
+		VerticalPanel funcVP = new VerticalPanel();
+		HorizontalPanel funcFP = new HorizontalPanel();
+		
+		Label functionNameLabel = new Label(LabelType.INFO,"Function Name");
+		functionNameLabel.setMarginTop(5);
+		functionNameLabel.setId("Function_Label");
+		funcNameTxtArea.setText("");
+		funcNameTxtArea.setPlaceholder("Enter Function Name here.");
+		funcNameTxtArea.setSize("260px", "25px");
+		funcNameTxtArea.setId("FunctionNameField");
+		funcNameTxtArea.setName("FunctionName");
+		functionNameLabel.setText("Function Name");
+		
+		
+		funcVP.add(functionNameLabel);
+		funcVP.add(new SpacerWidget());
+		funcVP.add(funcNameTxtArea);
+		funcVP.add(new SpacerWidget());
+		funcVP.setStyleName("topping");
+		funcFP.add(funcVP);
+		funcFP.setStyleName("cqlRightContainer");
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		vp.setHeight("500px");
+		funcFP.setWidth("700px");
+		funcFP.setStyleName("marginLeft15px");
+		
+		vp.add(funcFP);
+		vp.setHeight("675px");
+		/*addDefineEventHandkers();*/
+		mainFlowPanel.add(vp);
 	}
 	
 	
@@ -1517,6 +1683,22 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public ToggleSwitch getContextToggleSwitch() {
 		// TODO Auto-generated method stub
 		return contextToggleSwitch;
+	}
+	@Override
+	public TextArea getFuncNameTxtArea() {
+		return funcNameTxtArea;
+	}
+	
+	public void setFuncNameTxtArea(TextArea funcNameTxtArea) {
+		this.funcNameTxtArea = funcNameTxtArea;
+	}
+	@Override
+	public PanelCollapse getFunctionCollapse() {
+		return functionCollapse;
+	}
+	
+	public void setFunctionCollapse(PanelCollapse functionCollapse) {
+		this.functionCollapse = functionCollapse;
 	}
 	
 }

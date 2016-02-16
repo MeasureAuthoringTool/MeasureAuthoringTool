@@ -4811,7 +4811,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		SaveUpdateCQLResult allCqlData = getCQLData(measureId);
 		StringBuilder cqlString = getCqlString(allCqlData.getCqlModel());
-		if (cqlString!=null) {
+		if (cqlString != null) {
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
@@ -4822,10 +4822,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	/**
 	 * Gets the cql string.
-	 *
+	 *@param cqlModel - CQLModel
 	 * @return the cql string
 	 */
-	private StringBuilder getCqlString(CQLModel cqlModel){
+	private StringBuilder getCqlString(CQLModel cqlModel) {
 		
 		StringBuilder cqlStr = new StringBuilder();
 		
@@ -4884,68 +4884,63 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveAndModifyDefinitions(java.lang.String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList){
+	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,
+			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		boolean isDuplicate = false;
-		if(xmlModel!=null){
+		if (xmlModel != null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			if(toBemodifiedObj!=null){
-				currentObj.setId(toBemodifiedObj.getId());
-				isDuplicate =  checkDuplicateDefintionName(toBemodifiedObj, currentObj, definitionList);
-				if(!isDuplicate){
+			if (toBeModifiedObj != null) {
+				currentObj.setId(toBeModifiedObj.getId());
+				isDuplicate =  checkDuplicateDefintionName(toBeModifiedObj, currentObj, definitionList);
+				if (!isDuplicate) {
 					
 					logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp Start :  ");
 					// XPath to find All elementRef's under subTreeLookUp element nodes for to be modified QDM.
 					String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "/measure/cqlLookUp//definition[@id='"
-							+ toBemodifiedObj.getId() + "']";
+							+ toBeModifiedObj.getId() + "']";
 					try {
-						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_DEFINITION,
-								processor.getOriginalDoc(),	XPathConstants.NODE);
-						if(nodeDefinition!=null){
-							
-							nodeDefinition.getAttributes().getNamedItem("context").setNodeValue(currentObj.getContext());
-							nodeDefinition.getAttributes().getNamedItem("definitionName").setNodeValue(currentObj.getDefinitionName());
+						Node nodeDefinition = processor.findNode(processor.getOriginalDoc()
+								, XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+						if (nodeDefinition != null) {
+							nodeDefinition.getAttributes().getNamedItem("context")
+							.setNodeValue(currentObj.getContext());
+							nodeDefinition.getAttributes().getNamedItem("definitionName")
+							.setNodeValue(currentObj.getDefinitionName());
 							nodeDefinition.setTextContent(currentObj.getDefinitionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
+							wrapper = modfiyCQLDefinitionList(toBeModifiedObj, currentObj, definitionList);
+							result.setSuccess(true);
+							result.setDefinition(currentObj);
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
 						}
-						
-						wrapper = modfiyCQLDefinitionList(toBemodifiedObj, currentObj, definitionList);
-						result.setSuccess(true);
-						result.setDefinition(currentObj);
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);
 						e.printStackTrace();
-						
 					}
 					logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp End :  ");
-					
 				} else {
-					
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_UNIQUE);
 				}
-				
 			} else {
-				
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkDuplicateDefintionName(toBemodifiedObj, currentObj, definitionList);
-				if(!isDuplicate){
-					
+				isDuplicate = checkDuplicateDefintionName(toBeModifiedObj, currentObj, definitionList);
+				if (!isDuplicate) {
 					String cqlString = createDefinitionsXML(currentObj);
 					String XPATH_EXPRESSION_DEFINTIONS = "/measure/cqlLookUp/definitions";
-					
 					try {
-						Node nodeDefinitions = (Node) xPath.evaluate(XPATH_EXPRESSION_DEFINTIONS, processor.getOriginalDoc(),
-								XPathConstants.NODE);
-						if(nodeDefinitions!=null){
-							
+						Node nodeDefinitions = processor.findNode(processor.getOriginalDoc()
+								, XPATH_EXPRESSION_DEFINTIONS);
+						if (nodeDefinitions != null) {
 							try {
 								processor.appendNode(cqlString, "definition", XPATH_EXPRESSION_DEFINTIONS);
 								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
@@ -4965,6 +4960,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								e.printStackTrace();
 							}
 							
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
 						}
 						
 					} catch (XPathExpressionException e) {
@@ -4993,7 +4991,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveAndModifyParameters(java.lang.String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
+	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -5004,33 +5002,38 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if(xmlModel!=null){
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			if(toBemodifiedObj!=null){
-				currentObj.setId(toBemodifiedObj.getId());
-				isDuplicate =  checkDuplicateParameterName(toBemodifiedObj, currentObj, parameterList);
+			if(toBeModifiedObj!=null){
+				currentObj.setId(toBeModifiedObj.getId());
+				isDuplicate =  checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
 				if (!isDuplicate) {
 					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyDefinitions Start :  ");
 					
 					String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "/measure/cqlLookUp//parameter[@id='"
-							+ toBemodifiedObj.getId() + "']";
+							+ toBeModifiedObj.getId() + "']";
 					try {
-						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
-								processor.getOriginalDoc(),	XPathConstants.NODE);
-						if(nodeDefinition!=null){
-							nodeDefinition.getAttributes().getNamedItem("parameterName").setNodeValue(currentObj.getParameterName());
-							nodeDefinition.setTextContent(currentObj.getParameterLogic());
+						Node nodeParameter = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
+						//								processor.getOriginalDoc(),	XPathConstants.NODE);
+						if(nodeParameter!=null){
+							nodeParameter.getAttributes().getNamedItem("parameterName").setNodeValue(currentObj.getParameterName());
+							nodeParameter.setTextContent(currentObj.getParameterLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
+							
+							wrapper = modfiyCQLParameterList(toBeModifiedObj, currentObj, parameterList);
+							result.setSuccess(true);
+							result.setParameter(currentObj);
+						}else{
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
 						}
-						wrapper = modfiyCQLParameterList(toBemodifiedObj, currentObj, parameterList);
-						result.setSuccess(true);
-						result.setParameter(currentObj);
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);
 						e.printStackTrace();
 						
 					}
-					logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp End :  ");
+					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyDefinitions End :  ");
 					
 				} else {
 					
@@ -5041,24 +5044,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkDuplicateParameterName(toBemodifiedObj, currentObj, parameterList);
+				isDuplicate = checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
 				if (!isDuplicate) {
 					
 					String cqlString = createParametersXML(currentObj);
 					String XPATH_EXPRESSION_PARAMETERS = "/measure/cqlLookUp/parameters";
 					
 					try {
-						Node nodeDefinitions = (Node) xPath.evaluate(XPATH_EXPRESSION_PARAMETERS, processor.getOriginalDoc(),
-								XPathConstants.NODE);
-						if(nodeDefinitions!=null){
-							
+						/*Node nodeParameters = (Node) xPath.evaluate(XPATH_EXPRESSION_PARAMETERS, processor.getOriginalDoc(),
+								XPathConstants.NODE);*/
+						Node nodeParameters = processor.findNode(processor.getOriginalDoc(),XPATH_EXPRESSION_PARAMETERS);
+						if(nodeParameters!=null){
 							try {
 								processor.appendNode(cqlString, "parameter", XPATH_EXPRESSION_PARAMETERS);
 								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
-								
-								
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
 								result.setSuccess(true);
@@ -5070,6 +5071,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								result.setSuccess(false);
 								e.printStackTrace();
 							}
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
 						}
 					} catch (XPathExpressionException e) {
 						result.setSuccess(false);

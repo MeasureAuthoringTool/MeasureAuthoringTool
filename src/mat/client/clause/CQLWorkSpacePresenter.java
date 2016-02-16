@@ -638,7 +638,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
 							
 						} else {
-							
+							if (result.getFailureReason() == 1) {
+								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+							} else {
+								if (result.getFailureReason() == 2) {
+									searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+									searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+											"Unable to find Node to modify."));
+								}
+							}
 						}
 						
 						
@@ -669,9 +679,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
 							
 						} else {
-							searchDisplay.getErrorMessageAlertParameter().setVisible(true);
-							searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-									MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+							if (result.getFailureReason() == 1) {
+								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+							} else {
+								if (result.getFailureReason() == 2) {
+									searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+									searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+											"Missing Parameters Tag."));
+								}
+							}
 						}
 						
 					}
@@ -730,10 +748,15 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
 							
 						} else {
-							
-							searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
-							searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-									MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+							if(result.getFailureReason() ==1){
+								searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
+								searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+							} else if(result.getFailureReason() == 2){
+								searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
+								searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										"Unable to find Node to modify."));
+							}
 						}
 						/*searchDisplay.getDefineNameTxtArea().clear();
 						searchDisplay.getDefineAceEditor().setText("");;*/
@@ -755,7 +778,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
-						if(result.isSuccess()){
+						if (result.isSuccess()) {
 							searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 							searchDisplay.clearAndAddDefinitionNamesToListBox();
 							searchDisplay.updateDefineMap();
@@ -766,9 +789,15 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							
 						} else {
 							
-							searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
-							searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-									MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+							if (result.getFailureReason() == 1) {
+								searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
+								searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+							} else if(result.getFailureReason() == 2){
+								searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
+								searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										"Missing Definitions Tag."));
+							}
 						}
 						/*searchDisplay.getDefineNameTxtArea().clear();
 						searchDisplay.getDefineAceEditor().setText("");;*/

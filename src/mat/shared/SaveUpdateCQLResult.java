@@ -11,9 +11,18 @@ import mat.model.cql.CQLParameter;
  */
 public class SaveUpdateCQLResult extends GenericResult{
 	
-	CQLModel cqlModel;
+	private CQLModel cqlModel;
 	
-	String cqlString;
+	private String cqlString;
+	
+	/** The definition. */
+	private CQLDefinition definition;
+	
+	/** The parameter. */
+	private CQLParameter parameter;
+	
+	public static final int NAME_NOT_UNIQUE = 1;
+	public static final int NODE_NOT_FOUND = 2;
 	
 	public String getCqlString() {
 		return cqlString;
@@ -31,8 +40,7 @@ public class SaveUpdateCQLResult extends GenericResult{
 		this.cqlModel = cqlModel;
 	}
 	
-	/** The definition. */
-	CQLDefinition definition;
+	
 	
 	
 	public CQLDefinition getDefinition() {
@@ -42,14 +50,6 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public void setDefinition(CQLDefinition definition) {
 		this.definition = definition;
 	}
-	
-	/** The parameter. */
-	CQLParameter parameter;
-	
-	public static final int NAME_NOT_UNIQUE = 1;
-	
-	
-	
 	
 	/**
 	 * Gets the parameter.
@@ -68,6 +68,4 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public void setParameter(CQLParameter parameter) {
 		this.parameter = parameter;
 	}
-	
-	
 }

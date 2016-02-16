@@ -947,15 +947,7 @@ public class XmlProcessor {
 			.insertBefore(subTreeLookUpElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		if (findNode(originalDoc, XPATH_CQL_LOOKUP) == null) {
-			Element cqlLookUpElement = originalDoc
-					.createElement("cqlLookUp");
-			((Element) supplementaDataElementsElement.getParentNode())
-			.insertBefore(cqlLookUpElement,
-					supplementaDataElementsElement.getNextSibling());
-			
-			createCQLLookUpElements();
-		}
+		
 		if (findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE) == null) {
 			Element componentMeasureElement = originalDoc
 					.createElement("componentMeasures");
@@ -999,7 +991,15 @@ public class XmlProcessor {
 			.insertBefore(riskAdjustmentVariablesElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		
+		if (findNode(originalDoc, XPATH_CQL_LOOKUP) == null) {
+			Element cqlLookUpElement = originalDoc
+					.createElement("cqlLookUp");
+			((Element) supplementaDataElementsElement.getParentNode())
+			.appendChild(cqlLookUpElement
+					);
+			
+			createCQLLookUpElements();
+		}
 		System.out.println("Original Doc: "+originalDoc.toString());
 	}
 	
@@ -1622,14 +1622,14 @@ public class XmlProcessor {
 			}
 		}
 	}
-
+	
 	/**
 	 * Creates the cql general info.
 	 *
 	 * @return the string
 	 */
 	public String createCQLLookUpElements() {
-	
+		
 		if (originalDoc == null) {
 			return "";
 		}
@@ -1639,11 +1639,11 @@ public class XmlProcessor {
 			
 			Node cqlNode = findNode(originalDoc, XPATH_CQL_LOOKUP);
 			if(cqlNode!=null){
-			
+				
 				String libraryName = (String) xPath.evaluate(
 						"/measure/measureDetails/title/text()",
 						originalDoc.getDocumentElement(), XPathConstants.STRING);
-			
+				
 				Element libraryChildElem = originalDoc.createElement("library");
 				libraryChildElem.setTextContent(libraryName.replaceAll(" ", ""));
 				
@@ -1656,7 +1656,7 @@ public class XmlProcessor {
 				Element parametersChildElem = originalDoc.createElement("parameters");
 				
 				Element definitionsChildElem = originalDoc.createElement("definitions");
-				Element functionsChildElem = originalDoc.createElement("functions");				
+				Element functionsChildElem = originalDoc.createElement("functions");
 				
 				
 				cqlNode.appendChild(libraryChildElem);

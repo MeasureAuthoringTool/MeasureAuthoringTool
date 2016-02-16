@@ -447,6 +447,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void buildGeneralInformation(){
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
@@ -537,6 +539,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * Method to create Right Hand side Nav bar in CQL Workspace.
 	 */
 	private void buildLeftHandNavNar(){
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
@@ -723,6 +727,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void buildParameterLibraryView(){
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -871,6 +877,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void buildDefinitionLibraryView(){
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
@@ -987,6 +995,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void buildFunctionLibraryView(){
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
 	}
 	

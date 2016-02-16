@@ -1,7 +1,6 @@
 package mat.model.cql;
 
 import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLModel implements IsSerializable{
@@ -13,7 +12,7 @@ public class CQLModel implements IsSerializable{
 	private List<CQLQualityDataSetDTO> codeList;
 	private List<CQLParameter> cqlParameters;
 	private List<CQLDefinition> cqlDefinitions;
-	//private List<Functions> functionsList;
+	private List<CQLFunctions> functionsList;
 	
 	public CQLDataModel getUsedModel() {
 		return usedModel;
@@ -61,7 +60,7 @@ public class CQLModel implements IsSerializable{
 		return cqlDefinitions;
 	}
 	public void setDefinitionList(List<CQLDefinition> definitionList) {
-		this.cqlDefinitions = definitionList;
+		cqlDefinitions = definitionList;
 	}
-
+	
 }

@@ -1,48 +1,46 @@
 package mat.server.cqlparser;
 
 import java.util.List;
-
+import mat.model.cql.CQLModel;
+import mat.model.cql.parser.CQLDefinitionModelObject;
+import mat.model.cql.parser.CQLLibraryModelObject;
+import mat.model.cql.parser.CQLParameterModelObject;
+import mat.model.cql.parser.CQLValueSetModelObject;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-
-import mat.model.cql.CQLDefinitionModelObject;
-import mat.model.cql.CQLLibraryModelObject;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameterModelObject;
-import mat.model.cql.CQLValueSetModelObject;
 
 
 public class MATCQLListener extends cqlBaseListener {
 	
 	CQLModel cqlModel = new CQLModel();
-
+	
 	MATCQLListener parser;
 	
 	cqlLexer lexer;
 	
 	CommonTokenStream tokens;
-
+	
 	public cqlLexer getLexer() {
 		return lexer;
 	}
-
+	
 	public void setLexer(cqlLexer lexer) {
 		this.lexer = lexer;
 	}
-
+	
 	public MATCQLListener getParser() {
 		return parser;
 	}
-
+	
 	public void setParser(MATCQLListener parser) {
 		this.parser = parser;
 	}
-
+	
 	
 	public CQLModel getCqlModel() {
 		return cqlModel;
 	}
-
+	
 	public void setCqlModel(CQLModel cqlModel) {
 		this.cqlModel = cqlModel;
 	}
@@ -50,12 +48,13 @@ public class MATCQLListener extends cqlBaseListener {
 	public CommonTokenStream getTokens() {
 		return tokens;
 	}
-
+	
 	public void setTokens(CommonTokenStream tokens) {
 		this.tokens = tokens;
 	}
-
-
+	
+	
+	@Override
 	public void exitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
 		
 		CQLLibraryModelObject library = new CQLLibraryModelObject();
@@ -66,18 +65,19 @@ public class MATCQLListener extends cqlBaseListener {
 			library.setVersion(ctx.versionSpecifier().getText());
 			System.out.println(ctx.versionSpecifier().getText());
 		}
-	//	cqlModel.setLibrary(library);
+		//	cqlModel.setLibrary(library);
 		System.out.println("\r\n");
 		
 	}
 	
+	@Override
 	public void exitParameterDefinition(cqlParser.ParameterDefinitionContext ctx) {
 		CQLParameterModelObject paramModel = new CQLParameterModelObject();
 		paramModel.setIdentifier(ctx.identifier().getText());
 		if (ctx.typeSpecifier() != null) {
 			paramModel.setTypeSpecifier(ctx.typeSpecifier().getText());
 		}
-	//	List<CQLParameterModelObject> parameters = cqlModel.getCqlParameters();
+		//	List<CQLParameterModelObject> parameters = cqlModel.getCqlParameters();
 		//parameters.add(paramModel);
 		//cqlModel.setCqlParameters(parameters);
 		System.out.println("Found parameter definition...");
@@ -88,7 +88,8 @@ public class MATCQLListener extends cqlBaseListener {
 		System.out.println("\r\n");
 	}
 	
-	public void exitValuesetDefinition(cqlParser.ValuesetDefinitionContext ctx) { 
+	@Override
+	public void exitValuesetDefinition(cqlParser.ValuesetDefinitionContext ctx) {
 		System.out.println("Found ValueSet definition...");
 		System.out.println(ctx.identifier().getText());
 		System.out.println(ctx.valuesetId().getText());
@@ -96,13 +97,13 @@ public class MATCQLListener extends cqlBaseListener {
 		CQLValueSetModelObject valueSet = new CQLValueSetModelObject();
 		valueSet.setIdentifier(ctx.identifier().getText());
 		valueSet.setValueSetId(ctx.valuesetId().getText());
-		//List<CQLValueSetModelObject> valueSets = cqlModel.getValueSetList(); 
+		//List<CQLValueSetModelObject> valueSets = cqlModel.getValueSetList();
 		//valueSets.add(valueSet);
 		//cqlModel.setValueSetList(valueSets);
-
+		
 	}
 	
-/*	public void exitDefineClause(cqlParser.DefineClauseContext ctx) {
+	/*	public void exitDefineClause(cqlParser.DefineClauseContext ctx) {
 		System.out.println("Found Function definition...");
 		List<DefineClauseItemContext> defines = ctx.defineClauseItem();
 		for (DefineClauseItemContext define: defines) {
@@ -111,9 +112,10 @@ public class MATCQLListener extends cqlBaseListener {
 			 System.out.println("Rule Context: " + define.getRuleContext().getText());
 		}
 	}
-	*/
+	 */
 	
-	public void exitStatement(cqlParser.StatementContext ctx) { 
+	@Override
+	public void exitStatement(cqlParser.StatementContext ctx) {
 		if(ctx.functionDefinition() != null){
 			System.out.println("Found Function definition...");
 			System.out.println(ctx.functionDefinition().identifier().getText());
@@ -130,14 +132,14 @@ public class MATCQLListener extends cqlBaseListener {
 			// delete the define xxx:/n from the string
 			String expressionDefinition = buffer.toString().substring(buffer.toString().indexOf(':') + 2);
 			System.out.println("Expression Definition:  " + expressionDefinition);
-
-//			CQLFunctionModelObject function = new CQLFunctionModelObject();
-//			function.setIdentifier(ctx.expressionDefinition().identifier().getText());
-//			function.s(expressionDefinition);
-//			List<CQLDefinitionModelObject> definitions = cqlModel.getDefinitionList();
-//			definitions.add(function);
-//			cqlModel.setDefinitionList(definitions);
-
+			
+			//			CQLFunctionModelObject function = new CQLFunctionModelObject();
+			//			function.setIdentifier(ctx.expressionDefinition().identifier().getText());
+			//			function.s(expressionDefinition);
+			//			List<CQLDefinitionModelObject> definitions = cqlModel.getDefinitionList();
+			//			definitions.add(function);
+			//			cqlModel.setDefinitionList(definitions);
+			
 			
 			
 			
@@ -158,8 +160,8 @@ public class MATCQLListener extends cqlBaseListener {
 			// delete the define xxx:/n from the string
 			String expressionDefinition = buffer.toString().substring(buffer.toString().indexOf(':') + 2);
 			System.out.println("Expression Definition:  " + expressionDefinition);
-
-			CQLDefinitionModelObject definition = new CQLDefinitionModelObject();
+			
+			CQLDefinitionModelObject definition = new mat.model.cql.parser.CQLDefinitionModelObject();
 			definition.setIdentifier(ctx.expressionDefinition().identifier().getText());
 			definition.setExpression(expressionDefinition);
 			//List<CQLDefinitionModelObject> definitions = cqlModel.getDefinitionList();

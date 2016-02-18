@@ -2,11 +2,13 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -14,12 +16,11 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -370,7 +372,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the save cql general info btn
 		 */
-		Button getSaveCQLGeneralInfoBtn();
+		//Button getSaveCQLGeneralInfoBtn();
 		
 		/**
 		 * Gets the success message alert.
@@ -427,19 +429,53 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the context toggle switch
 		 */
-		ToggleSwitch getContextToggleSwitch();
+		//ToggleSwitch getContextToggleSwitch();
 		
 		/**
 		 * Builds the cql file view.
 		 */
 		void buildCQLFileView();
+
+		//ToggleSwitch getContextPOPToggleSwitch();
+
+		//ToggleSwitch getContextPATToggleSwitch();
+
+		/**
+		 * Gets the context pat button.
+		 *
+		 * @return the context pat button
+		 */
+		Button getContextPatButton();
+
+		/**
+		 * Gets the context pop button.
+		 *
+		 * @return the context pop button
+		 */
+		Button getContextPopButton();
 		
+		/**
+		 * Update suggest func oracle.
+		 */
 		void updateSuggestFuncOracle();
 		
+		/**
+		 * Clear and add functions names to list box.
+		 */
 		void clearAndAddFunctionsNamesToListBox();
 		
+		/**
+		 * Gets the function collapse.
+		 *
+		 * @return the function collapse
+		 */
 		PanelCollapse getFunctionCollapse();
 		
+		/**
+		 * Gets the func name txt area.
+		 *
+		 * @return the func name txt area
+		 */
 		TextArea getFuncNameTxtArea();
 		
 	}
@@ -473,14 +509,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-		searchDisplay.getSaveCQLGeneralInfoBtn().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getSaveCQLGeneralInfoBtn().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				
 				saveAndModifyCQLGeneralInfo();
 			}
-		});
+		});*/
 		
 		searchDisplay.getDefineNameTxtArea().addClickHandler(new ClickHandler() {
 			
@@ -501,14 +537,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		/*searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				
 				resetMessageDisplay();
 			}
-		});
+		});*/
 		
 		
 		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
@@ -530,7 +566,28 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getContextPatButton().setEnabled(false);
+				searchDisplay.getContextPatButton().setType(ButtonType.SUCCESS);
+				searchDisplay.getContextPopButton().setEnabled(true);
+				searchDisplay.getContextPopButton().setType(ButtonType.PRIMARY);
+			}
+		});
 		
+		
+		searchDisplay.getContextPopButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getContextPatButton().setEnabled(true);
+				searchDisplay.getContextPatButton().setType(ButtonType.PRIMARY);
+				searchDisplay.getContextPopButton().setEnabled(false);
+				searchDisplay.getContextPopButton().setType(ButtonType.SUCCESS);
+			}
+		});
 		
 	}
 	
@@ -538,7 +595,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/**
 	 * Save and modify cql general info.
 	 */
-	private void saveAndModifyCQLGeneralInfo(){
+	/*private void saveAndModifyCQLGeneralInfo(){
 		resetMessageDisplay();
 		String context = "";
 		if(searchDisplay.getContextToggleSwitch().getValue()){
@@ -573,7 +630,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				
 			}
 		});
-	}
+	}*/
 	
 	
 	
@@ -843,9 +900,34 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
+		setWidgetsReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
 		panel.add(searchDisplay.getMainPanel());
 	}
 	
+	
+	/**
+	 * Sets the widgets read only if the Measure is Locked 
+	 * and ReadOnly.
+	 *
+	 * @param editable the new widgets read only
+	 */
+	private void setWidgetsReadOnly(boolean editable) {
+
+		/*searchDisplay.getContextToggleSwitch().setEnabled(true);
+		searchDisplay.getSaveCQLGeneralInfoBtn().setEnabled(editable);
+		*/
+		searchDisplay.getParameterNameTxtArea().setEnabled(editable);
+		searchDisplay.getParameterAceEditor().setReadOnly(!editable);
+		searchDisplay.getAddParameterButton().setEnabled(editable);
+		
+		searchDisplay.getDefineNameTxtArea().setEnabled(editable);
+		searchDisplay.getDefineAceEditor().setReadOnly(!editable);
+		searchDisplay.getAddDefineButton().setEnabled(editable);
+	
+	}
+
+
 	/**
 	 * Gets the CQL data.
 	 *
@@ -864,13 +946,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if(result.getCqlModel() != null){
 					
-					if(!result.getCqlModel().getContext().isEmpty()){
+					/*if(!result.getCqlModel().getContext().isEmpty()){
 						if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
 							searchDisplay.getContextToggleSwitch().setValue(true);
 						} else {
 							searchDisplay.getContextToggleSwitch().setValue(false);
 						}
-					}
+					}*/
 					
 					if ((result.getCqlModel().getDefinitionList() != null) &&
 							(result.getCqlModel().getDefinitionList().size() >0)) {
@@ -949,10 +1031,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				clickedMenu = "view";
 				searchDisplay.buildCQLFileView();
 				buildCQLView();
-			}
-			
+			}	
 			
 		});
+				
 	}
 	
 	/**

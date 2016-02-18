@@ -306,42 +306,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the clicked menuF
 		 */
 		String getClickedMenu();
-		
-		/**
-		 * Gets the current selected clause.
-		 *
-		 * @return the current selected clause
-		 */
-		String getCurrentSelectedClause();
-		
 		/**
 		 * Sets the clicked menu.
 		 *
 		 * @param clickedMenu the new clicked menu
 		 */
 		void setClickedMenu(String clickedMenu);
-		
-		/**
-		 * Sets the current selected clause.
-		 *
-		 * @param currentSelectedClause the new current selected clause
-		 */
-		void setCurrentSelectedClause(String currentSelectedClause);
-		
-		/**
-		 * Gets the patient radio.
-		 *
-		 * @return the patient radio
-		 */
-		//InlineRadio getPatientRadio();
-		
-		/**
-		 * Gets the population radio.
-		 *
-		 * @return the population radio
-		 */
-		//InlineRadio getPopulationRadio();
-		
 		/**
 		 * Gets the current selected definition obj id.
 		 *

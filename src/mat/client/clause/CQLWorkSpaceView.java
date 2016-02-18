@@ -6,6 +6,7 @@ import java.util.List;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import org.gwtbootstrap3.client.ui.Alert;
@@ -40,12 +41,15 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.view.client.ListDataProvider;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -59,6 +63,19 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The main panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
+	/** The cell table panel. */
+	private VerticalPanel cellTablePanel = new VerticalPanel();
+	
+	/** Cell Table Row Count. */
+	private static final int TABLE_ROW_COUNT = 2;
+	
+	/** The table. */
+	private CellTable<CQLFunctionArgument> table;
+	
+	/** The sort provider. */
+	private ListDataProvider<CQLFunctionArgument> listDataProvider;
+	
+	private CQLFunctions selectedFunction;
 	
 	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
@@ -122,6 +139,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
+	
+	/** The Function Body ace editor. */
+	private AceEditor functionBodyAceEditor = new AceEditor();
 	
 	/**
 	 * Button addParameterButton.
@@ -247,10 +267,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The clicked menu. */
 	public String clickedMenu = "general";
 	
-	/** The current selected clause. */
-	public String currentSelectedClause = null;
-	
-	
 	/** The current selected definition obj id. */
 	private String currentSelectedDefinitionObjId = null;
 	
@@ -263,18 +279,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context toggle switch. */
 	private ToggleSwitch contextToggleSwitch = new ToggleSwitch();
 	
-	/*@Override
-	public FlowPanel getMainFlowPanel() {
-		return mainFlowPanel;
-	}
-	@Override
-	public void setMainFlowPanel(FlowPanel mainFlowPanel) {
-		this.mainFlowPanel = mainFlowPanel;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineCollapse()
-	 */
 	@Override
 	public PanelCollapse getDefineCollapse() {
 		return defineCollapse;
@@ -313,6 +317,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.startEditor();
 		parameterAceEditor.startEditor();
 		cqlAceEditor.startEditor();
+		functionBodyAceEditor.startEditor();
 		resetAll();
 	}
 	
@@ -373,7 +378,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		vp.add(parameterFP);
 		vp.setHeight("675px");
 		
-		//addCqlEventHandkers();
 		mainFlowPanel.add(vp);
 		
 		
@@ -410,7 +414,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Adds the define event handkers.
 	 */
-	private void addDefineEventHandkers(){
+	private void addDefineEventHandlers(){
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -481,7 +485,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildGeneralInformation()
 	 */
 	@Override
-	public void buildGeneralInformation(){
+	public void buildGeneralInformation() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
@@ -573,7 +577,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Method to create Right Hand side Nav bar in CQL Workspace.
 	 */
-	private void buildLeftHandNavNar(){
+	private void buildLeftHandNavNar() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		rightHandNavPanel.clear();
@@ -770,7 +774,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	
 	/**
-	 * Creates the define collapsable panel.
+	 * Creates the Function collapsable panel.
 	 *
 	 * @return the panel collapse
 	 */
@@ -1056,7 +1060,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		vp.add(new SpacerWidget());
 		vp.add(definitionFP);
 		vp.setHeight("675px");
-		addDefineEventHandkers();
+		addDefineEventHandlers();
 		mainFlowPanel.add(vp);
 	}
 	
@@ -1144,10 +1148,22 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcNameTxtArea.setName("FunctionName");
 		functionNameLabel.setText("Function Name");
 		
+		functionBodyAceEditor.setText("");
+		functionBodyAceEditor.setMode(AceEditorMode.CQL);
+		functionBodyAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		functionBodyAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		functionBodyAceEditor.setSize("675px", "500px");
+		functionBodyAceEditor.setAutocompleteEnabled(true);
+		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
+		funcVP.add(new SpacerWidget());
+		/*createAddArgumentViewForFunctions();
+		funcVP.add(cellTablePanel);*/
+		funcVP.add(new SpacerWidget());
+		funcVP.add(functionBodyAceEditor);
 		funcVP.add(new SpacerWidget());
 		funcVP.setStyleName("topping");
 		funcFP.add(funcVP);
@@ -1162,32 +1178,57 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		vp.add(funcFP);
 		vp.setHeight("675px");
-		/*addDefineEventHandkers();*/
+		
 		mainFlowPanel.add(vp);
 	}
 	
+	
+	private void createAddArgumentViewForFunctions(){
+		cellTablePanel.clear();
+		cellTablePanel.setStyleName("cellTablePanel");
+		if (selectedFunction != null) {
+			
+		} else {
+			Label tableHeader = new Label("Added Arguments List");
+			tableHeader.getElement().setId("tableHeader_Label");
+			tableHeader.setStyleName("recentSearchHeader");
+			tableHeader.getElement().setAttribute("tabIndex", "0");
+			HTML desc = new HTML("<p> No Arguments Added.</p>");
+			cellTablePanel.add(tableHeader);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(desc);
+		}
+		
+	}
 	
 	
 	/**
 	 * Reset All components to default state.
 	 */
-	private void resetAll(){
+	private void resetAll() {
 		rightHandNavPanel.clear();
 		mainFlowPanel.clear();
 		parameterNameTxtArea.setText("");
 		defineNameTxtArea.setText("");
+		funcNameTxtArea.setText("");
+		
 		defineAceEditor.setText("");
 		parameterAceEditor.setText("");
 		cqlAceEditor.setText("");
+		functionBodyAceEditor.setText("");
 		
 		viewParameterList.clear();
 		viewDefinitions.clear();
+		viewFunctions.clear();
 		
 		if(paramCollapse != null){
 			paramCollapse.clear();
 		}
 		if(defineCollapse != null){
 			defineCollapse.clear();
+		}
+		if(functionCollapse != null){
+			functionCollapse.clear();
 		}
 		
 	}
@@ -1495,21 +1536,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		this.clickedMenu = clickedMenu;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setCurrentSelectedClause(java.lang.String)
-	 */
-	@Override
-	public void setCurrentSelectedClause(String currentSelectedClause) {
-		this.currentSelectedClause = currentSelectedClause;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getCurrentSelectedClause()
-	 */
-	@Override
-	public String getCurrentSelectedClause() {
-		return currentSelectedClause;
-	}
 	
 	
 	/* (non-Javadoc)

@@ -5,11 +5,11 @@
 <mapping>
 	<class name="mat.model.cql.CQLFunctionsWrapper">
 		<map-to xml="cqlLookUp" />
-		<field name="cqlFunctions" type="mat.model.cql.CQLFunction" 
+		<field name="cqlFunctions" type="mat.model.cql.CQLFunctions" 
 		get-method="getCqlFunctionsList" set-method="setCqlFunctionsList"
 			collection="arraylist">
 			<bind-xml name="function" location="functions">
-				<class name="mat.model.cql.CQLFunction">
+				<class name="mat.model.cql.CQLFunctions">
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>

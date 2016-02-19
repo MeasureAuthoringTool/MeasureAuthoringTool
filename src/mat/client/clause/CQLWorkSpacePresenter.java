@@ -2,13 +2,11 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -18,7 +16,6 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -29,7 +26,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -435,18 +431,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * Builds the cql file view.
 		 */
 		void buildCQLFileView();
-
+		
 		//ToggleSwitch getContextPOPToggleSwitch();
-
+		
 		//ToggleSwitch getContextPATToggleSwitch();
-
+		
 		/**
 		 * Gets the context pat button.
 		 *
 		 * @return the context pat button
 		 */
 		Button getContextPatButton();
-
+		
 		/**
 		 * Gets the context pop button.
 		 *
@@ -477,6 +473,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the func name txt area
 		 */
 		TextArea getFuncNameTxtArea();
+		
+		Button getSaveFunctionButton();
 		
 	}
 	
@@ -907,16 +905,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	
 	/**
-	 * Sets the widgets read only if the Measure is Locked 
+	 * Sets the widgets read only if the Measure is Locked
 	 * and ReadOnly.
 	 *
 	 * @param editable the new widgets read only
 	 */
 	private void setWidgetsReadOnly(boolean editable) {
-
+		
 		/*searchDisplay.getContextToggleSwitch().setEnabled(true);
 		searchDisplay.getSaveCQLGeneralInfoBtn().setEnabled(editable);
-		*/
+		 */
 		searchDisplay.getParameterNameTxtArea().setEnabled(editable);
 		searchDisplay.getParameterAceEditor().setReadOnly(!editable);
 		searchDisplay.getAddParameterButton().setEnabled(editable);
@@ -924,10 +922,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getDefineNameTxtArea().setEnabled(editable);
 		searchDisplay.getDefineAceEditor().setReadOnly(!editable);
 		searchDisplay.getAddDefineButton().setEnabled(editable);
-	
+		
 	}
-
-
+	
+	
 	/**
 	 * Gets the CQL data.
 	 *
@@ -1031,10 +1029,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				clickedMenu = "view";
 				searchDisplay.buildCQLFileView();
 				buildCQLView();
-			}	
+			}
 			
 		});
-				
+		
 	}
 	
 	/**

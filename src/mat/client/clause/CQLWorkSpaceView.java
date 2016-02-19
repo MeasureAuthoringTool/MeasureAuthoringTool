@@ -3,14 +3,12 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -33,7 +31,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -54,7 +51,6 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -244,6 +240,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private Button addDefineButton = new Button();
 	
+	/**
+	 * Button Save Function Button.
+	 */
+	private Button saveFunctionButton = new Button();
+	
+	
 	/** The param badge. */
 	private Badge paramBadge = new Badge();
 	
@@ -292,11 +294,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private ToggleSwitch contextPOPToggleSwitch = new ToggleSwitch();
 	
 	/** The erase define button. */
-	private Button eraseDefineButton = new Button(); 
+	private Button eraseDefineButton = new Button();
 	
 	/** The context pat button. */
 	private Button contextPatButton = new Button();
-
+	
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
 	
@@ -775,7 +777,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		PanelBody defineCollapseBody = new PanelBody();
 		
-		HorizontalPanel defineFP = new HorizontalPanel();	
+		HorizontalPanel defineFP = new HorizontalPanel();
 		
 		VerticalPanel rightVerticalPanel = new VerticalPanel();
 		rightVerticalPanel.setSpacing(10);
@@ -1133,7 +1135,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		contextPOPToggleSwitch.setOnColor(ColorType.SUCCESS);
 		contextPOPToggleSwitch.setOffIcon(IconType.TIMES);
 		contextPOPToggleSwitch.setOffColor(ColorType.DANGER);
-	
+		
 		//contextPatButton.setType(ButtonType.PRIMARY);
 		contextPatButton.setId("ConextPatient_Button");
 		contextPatButton.setMarginTop(10);
@@ -1146,7 +1148,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		contextPopButton.setTitle("Population");
 		contextPopButton.setText("Population");
 		contextPopButton.setStyleName("buttonContext");
-
+		
 		
 		contextPatButton.setType(ButtonType.SUCCESS);
 		contextPopButton.setType(ButtonType.PRIMARY);
@@ -1168,7 +1170,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		//defineConextPanel.getElement().setAttribute("style", "margin-left:15px");
 		
-	
+		
 		
 		HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
 		buttonLayOutPanel.add(addDefineButton);
@@ -1180,7 +1182,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		iconPanel.add(saveDefineIcon);
 		iconPanel.add(eraseDefineIcon);
 		iconPanel.setStyleName("myAccountButtonLayout");
-		*/
+		 */
 		definitionVP.add(successMessageAlertDefinition);
 		definitionVP.add(errorMessageAlertDefinition);
 		definitionVP.add(new SpacerWidget());
@@ -1194,8 +1196,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		//definitionVP.add(new SpacerWidget());
 		//definitionVP.add(iconPanel);
 		//definitionVP.add(new SpacerWidget());
-        definitionVP.add(buttonLayOutPanel);
-        /*definitionVP.add(new SpacerWidget());*/
+		definitionVP.add(buttonLayOutPanel);
+		/*definitionVP.add(new SpacerWidget());*/
 		definitionVP.add(defineAceEditor);
 		definitionVP.add(new SpacerWidget());
 		//definitionVP.add(addDefineButton);
@@ -1298,7 +1300,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * Builds the function library view.
 	 */
 	@Override
-	public void buildFunctionLibraryView(){
+	public void buildFunctionLibraryView() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
@@ -1306,7 +1308,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		
-		Label functionNameLabel = new Label(LabelType.INFO,"Function Name");
+		Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
 		functionNameLabel.setMarginTop(5);
 		functionNameLabel.setId("Function_Label");
 		funcNameTxtArea.setText("");
@@ -1324,12 +1326,27 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		functionBodyAceEditor.setAutocompleteEnabled(true);
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		
+		saveFunctionButton.setType(ButtonType.LINK);
+		saveFunctionButton.setId("AddDefine_Button");
+		saveFunctionButton.setMarginTop(10);
+		
+		saveFunctionButton.setTitle("Save");
+		saveFunctionButton.setIcon(IconType.SAVE);
+		saveFunctionButton.setIconSize(IconSize.LARGE);
+		saveFunctionButton.setColor("#0964A2");
+		saveFunctionButton.setSize("30px", "30px");
+		
+		HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
+		buttonLayOutPanel.add(saveFunctionButton);
+		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
+		
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
 		funcVP.add(new SpacerWidget());
 		/*createAddArgumentViewForFunctions();
 		funcVP.add(cellTablePanel);*/
+		funcVP.add(buttonLayOutPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionBodyAceEditor);
 		funcVP.add(new SpacerWidget());
@@ -1354,7 +1371,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Creates the add argument view for functions.
 	 */
-	private void createAddArgumentViewForFunctions(){
+	private void createAddArgumentViewForFunctions() {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if (selectedFunction != null) {
@@ -1921,7 +1938,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public AceEditor getCqlAceEditor() {
 		return cqlAceEditor;
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlert()
@@ -2065,7 +2082,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getContextToggleSwitch()
 	 */
-
+	
 	/**
 	 * Gets the func name txt area.
 	 *
@@ -2103,7 +2120,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setFunctionCollapse(PanelCollapse functionCollapse) {
 		this.functionCollapse = functionCollapse;
 	}
-
+	
 	/**
 	 * Sets the erase define button.
 	 *
@@ -2132,6 +2149,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getContextPopButton() {
 		return contextPopButton;
 	}
-
+	@Override
+	public Button getSaveFunctionButton() {
+		return saveFunctionButton;
+	}
+	
+	public void setSaveFunctionButton(Button saveFunctionButton) {
+		this.saveFunctionButton = saveFunctionButton;
+	}
+	
 	
 }

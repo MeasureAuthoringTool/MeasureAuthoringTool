@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.cql.CQLFunctionsWrapper">
+		<map-to xml="cqlLookUp" />
+		<field name="cqlFunctions" type="mat.model.cql.CQLFunction" 
+		get-method="getCqlFunctionsList" set-method="setCqlFunctionsList"
+			collection="arraylist">
+			<bind-xml name="function" location="functions">
+				<class name="mat.model.cql.CQLFunction">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="functionName" type="java.lang.String">
+						<bind-xml name="functionName" node="attribute" />
+					</field>
+					<field name="functionLogic" type="java.lang.String">
+						<bind-xml node="text" />
+					</field>
+					<field name="context" type="java.lang.String">
+						<bind-xml name="context" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+
+	</class>
+</mapping>

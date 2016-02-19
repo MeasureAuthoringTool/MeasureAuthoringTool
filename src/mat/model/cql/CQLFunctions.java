@@ -8,6 +8,7 @@ public class CQLFunctions implements IsSerializable {
 	private String functionName;
 	private String functionLogic;
 	private List<CQLFunctionArgument> argumentList;
+	private String context;
 	public String getFunctionName() {
 		return functionName;
 	}
@@ -31,5 +32,11 @@ public class CQLFunctions implements IsSerializable {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getContext() {
+		return context;
+	}
+	public void setContext(String context) {
+		this.context = context;
 	}
 }

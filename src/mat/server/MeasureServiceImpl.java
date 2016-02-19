@@ -25,6 +25,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.service.MeasureLibraryService;
@@ -555,6 +556,12 @@ MeasureService {
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList){
 		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
+			CQLFunctions currentObj, List<CQLFunctions> functionsList){
+		return this.getMeasureLibraryService().saveAndModifyFunctions(measureId, toBeModifiedObj, currentObj, functionsList);
 	}
 	
 	@Override

@@ -12,7 +12,7 @@ public class CQLModel implements IsSerializable{
 	private List<CQLQualityDataSetDTO> codeList;
 	private List<CQLParameter> cqlParameters;
 	private List<CQLDefinition> cqlDefinitions;
-	private List<CQLFunctions> functionsList;
+	private List<CQLFunctions> cqlFunctions;
 	
 	public CQLDataModel getUsedModel() {
 		return usedModel;
@@ -61,6 +61,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setDefinitionList(List<CQLDefinition> definitionList) {
 		cqlDefinitions = definitionList;
+	}
+	public List<CQLFunctions> getCqlFunctions() {
+		return cqlFunctions;
+	}
+	public void setCqlFunctions(List<CQLFunctions> cqlFunctions) {
+		this.cqlFunctions = cqlFunctions;
 	}
 	
 }

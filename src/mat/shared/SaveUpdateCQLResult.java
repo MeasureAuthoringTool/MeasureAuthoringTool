@@ -2,6 +2,7 @@ package mat.shared;
 
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 
@@ -20,6 +21,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	/** The parameter. */
 	private CQLParameter parameter;
+	
+	private CQLFunctions function;
 	
 	public static final int NAME_NOT_UNIQUE = 1;
 	public static final int NODE_NOT_FOUND = 2;
@@ -67,5 +70,13 @@ public class SaveUpdateCQLResult extends GenericResult{
 	 */
 	public void setParameter(CQLParameter parameter) {
 		this.parameter = parameter;
+	}
+
+	public CQLFunctions getFunction() {
+		return function;
+	}
+
+	public void setFunction(CQLFunctions function) {
+		this.function = function;
 	}
 }

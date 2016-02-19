@@ -78,6 +78,8 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -4800,6 +4802,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.getCqlModel().setDefinitionList(defineWrapper.getCqlDefinitions());
 		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
 		result.getCqlModel().setCqlParameters(paramWrapper.getCqlParameterList());
+		CQLFunctionsWrapper functionWrapper = getCQLFunctionsFromMeasureXML(measureId);
+		result.getCqlModel().setCqlFunctions(functionWrapper.getCqlFunctionsList());
 		return result;
 	}
 	
@@ -5007,7 +5011,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				isDuplicate =  checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
 				if (!isDuplicate) {
 					
-					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyDefinitions Start :  ");
+					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyParameters Start :  ");
 					
 					String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "/measure/cqlLookUp//parameter[@id='"
 							+ toBeModifiedObj.getId() + "']";
@@ -5033,7 +5037,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						e.printStackTrace();
 						
 					}
-					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyDefinitions End :  ");
+					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyParameters End :  ");
 					
 				} else {
 					
@@ -5087,6 +5091,108 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		if(result.isSuccess() && (wrapper.getCqlParameterList().size()>0)){
 			result.getCqlModel().setCqlParameters(sortParametersList(wrapper.getCqlParameterList()));
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList) {
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
+		boolean isDuplicate = false;
+		if(xmlModel!=null){
+			
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			if(toBeModifiedObj!=null){
+				currentObj.setId(toBeModifiedObj.getId());
+				//isDuplicate =  checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
+				if (!isDuplicate) {
+					
+					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions Start :  ");
+					
+					String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "/measure/cqlLookUp//function[@id='"
+							+ toBeModifiedObj.getId() + "']";
+					try {
+						Node nodeParameter = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
+						//								processor.getOriginalDoc(),	XPathConstants.NODE);
+						if(nodeParameter!=null){
+							nodeParameter.getAttributes().getNamedItem("functionName").setNodeValue(currentObj.getFunctionName());
+							nodeParameter.setTextContent(currentObj.getFunctionLogic());
+							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+							getService().saveMeasureXml(xmlModel);
+							
+							wrapper = modfiyCQLFunctionList(toBeModifiedObj, currentObj, functionsList);
+							result.setSuccess(true);
+							result.setFunction(currentObj);
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
+						}
+					} catch (XPathExpressionException e) {
+						result.setSuccess(false);
+						e.printStackTrace();
+						
+					}
+					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions End :  ");
+					
+				} else {
+					
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_UNIQUE);
+				}
+				
+			} else {
+				
+				currentObj.setId(UUID.randomUUID().toString());
+				//isDuplicate = checkDuplicateParameterName(toBeModifiedObj, currentObj, functionsList);
+				if (!isDuplicate) {
+					
+					String cqlString = createFunctionsXML(currentObj);
+					String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/parameters";
+					
+					try {
+						/*Node nodeParameters = (Node) xPath.evaluate(XPATH_EXPRESSION_PARAMETERS, processor.getOriginalDoc(),
+								XPathConstants.NODE);*/
+						Node nodeParameters = processor.findNode(processor.getOriginalDoc(),XPATH_EXPRESSION_FUNCTIONS);
+						if(nodeParameters!=null){
+							try {
+								processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
+								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+								xmlModel.setXml(processor.getOriginalXml());
+								getService().saveMeasureXml(xmlModel);
+								functionsList.add(currentObj);
+								wrapper.setCqlFunctionsList(functionsList);
+								result.setSuccess(true);
+								result.setFunction(currentObj);
+							} catch (SAXException e) {
+								result.setSuccess(false);
+								e.printStackTrace();
+							} catch (IOException e) {
+								result.setSuccess(false);
+								e.printStackTrace();
+							}
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
+						}
+					} catch (XPathExpressionException e) {
+						result.setSuccess(false);
+						e.printStackTrace();
+					}
+				} else {
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_UNIQUE);
+				}
+			}
+		}
+		if(result.isSuccess() && (wrapper.getCqlFunctionsList().size()>0)){
+			result.getCqlModel().setCqlFunctions(sortFunctionssList(wrapper.getCqlFunctionsList()));
 		}
 		
 		return result;
@@ -5198,6 +5304,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return paramList;
 	}
 	
+	
+	/**
+	 * Sort Functions list.
+	 *
+	 * @param funcList the Function list
+	 * @return the list
+	 */
+	private List<CQLFunctions> sortFunctionssList(List<CQLFunctions> funcList){
+		
+		Collections.sort(funcList, new Comparator<CQLFunctions>() {
+			@Override
+			public int compare(final CQLFunctions o1, final CQLFunctions o2) {
+				return o1.getFunctionName().compareToIgnoreCase(o2.getFunctionName());
+			}
+		});
+		
+		return funcList;
+	}
+	
 	/**
 	 * Modfiy cql Parameter List list.
 	 *
@@ -5221,6 +5346,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		parameterList.add(currentObj);
 		wrapper.setCqlParameterList(parameterList);
+		return wrapper;
+	}
+	
+	/**
+	 * Modfiy cql Function List list.
+	 *
+	 * @param toBeModifiedObj the to be modified obj
+	 * @param currentObj the current obj
+	 * @param Function List the CQLFunction list
+	 * @return the CQL Function wrapper
+	 */
+	private CQLFunctionsWrapper modfiyCQLFunctionList(CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionList) {
+		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
+		Iterator<CQLFunctions> iterator = functionList.iterator();
+		while (iterator.hasNext()) {
+			CQLFunctions cqlParam = iterator.next();
+			if (cqlParam.getId().equals(toBeModifiedObj.getId())) {
+				//					CQLDefinition definition = cqlDefinition;
+				
+				iterator.remove();
+				break;
+			}
+		}
+		functionList.add(currentObj);
+		wrapper.setCqlFunctionsList(functionList);
 		return wrapper;
 	}
 	
@@ -5337,6 +5488,49 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return details;
 	}
+	/**
+	 * Convert xml to cql Functions model.
+	 *
+	 * @param xmlModel the xml model
+	 * @return the CQL Function wrapper
+	 */
+	private CQLFunctionsWrapper convertXmltoCQLFunctionModel(final MeasureXmlModel xmlModel) {
+		logger.info("In MeasureLibraryServiceImpl.convertXmltoCQLParameterModel()");
+		CQLFunctionsWrapper details = null;
+		String xml = null;
+		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
+			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName("cqlLookUp");
+			// logger.info("xml by tag name elementlookup" + xml);
+		}
+		try {
+			if (xml == null) {// TODO: This Check should be replaced when the
+				// DataConversion is complete.
+				logger.info("xml is null or xml doesn't contain cqlLookUp tag");
+				
+			} else {
+				Mapping mapping = new Mapping();
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLFunctionModelMapping.xml"));
+				Unmarshaller unmar = new Unmarshaller(mapping);
+				unmar.setClass(CQLFunctionsWrapper.class);
+				unmar.setWhitespacePreserve(true);
+				// logger.info("unmarshalling xml..elementlookup " + xml);
+				details = (CQLFunctionsWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+				//logger.info("unmarshalling complete..elementlookup" + details.getQualityDataDTO().get(0).getCodeListName());
+			}
+			
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLFunctionModelMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		return details;
+	}
 	
 	/**
 	 * Creates the Parameters xml.
@@ -5375,7 +5569,49 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				e.printStackTrace();
 			}
 		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createParametersXML()");
+		logger.info("Exiting MeasureLibraryServiceImpl.createParametersXML()");
+		return stream.toString();
+		
+	}
+	
+	/**
+	 * Creates the Function xml.
+	 *
+	 * @param function the CQLFunctions
+	 * @return the string
+	 */
+	private String createFunctionsXML(CQLFunctions function){
+		
+		logger.info("In MeasureLibraryServiceImpl.createFunctionsXML");
+		Mapping mapping = new Mapping();
+		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
+		List<CQLFunctions> funcList = new ArrayList<CQLFunctions>();
+		
+		funcList.add(function);
+		wrapper.setCqlFunctionsList(funcList);
+		
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLFunctionModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(wrapper);
+			logger.info("Marshalling of CQLFunctions is successful..");
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLFunctionModelMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		logger.info("Exiting MeasureLibraryServiceImpl.createFunctionsXML()");
 		return stream.toString();
 		
 	}
@@ -5459,6 +5695,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			wrapper = convertXmltoCQLParameterModel(measureXmlModel);
 			if((wrapper.getCqlParameterList()!=null) && (wrapper.getCqlParameterList().size() >0)){
 				sortParametersList(wrapper.getCqlParameterList());
+			}
+		}
+		return wrapper;
+	}
+	
+	/**
+	 * Gets the CQL parameters from measure xml.
+	 *
+	 * @param measureId the measure id
+	 * @return the CQL parameters from measure xml
+	 */
+	private CQLFunctionsWrapper getCQLFunctionsFromMeasureXML(
+			String measureId) {
+		
+		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+		CQLFunctionsWrapper wrapper = null;
+		if(measureXmlModel!=null){
+			wrapper = convertXmltoCQLFunctionModel(measureXmlModel);
+			if((wrapper.getCqlFunctionsList()!=null) && (wrapper.getCqlFunctionsList().size() >0)){
+				sortFunctionssList(wrapper.getCqlFunctionsList());
 			}
 		}
 		return wrapper;

@@ -27,6 +27,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.util.XmlProcessor;
@@ -595,5 +596,8 @@ public interface MeasureLibraryService {
 	
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
 			String context);
+	
+	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList);
 	
 }

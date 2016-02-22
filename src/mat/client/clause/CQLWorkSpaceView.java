@@ -3,17 +3,14 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -54,6 +51,12 @@ import com.google.gwt.view.client.ListDataProvider;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -294,6 +297,21 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	private String currentSelectedFunctionObjId = null;
 	
+	/** The parameter clear top button. */
+	private Button clearParameterTopButton = new Button();
+
+	/** The dirty flag for clear. */
+	private Boolean isParameterDirty = false;
+	
+	String saveWarningMsg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
+
+	/** The warning message alert parameter. */
+	private Alert warningMessageAlertParameter = new Alert();
+
+	private Button clearParameterYesButton = new Button();
+	
+	private Button clearParameterNoButton = new Button();
+		
 	/** The save cql general info btn. */
 	//private Button saveCQLGeneralInfoBtn = new Button("Save");
 	
@@ -315,6 +333,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
 	
+	public Alert getWarningMessageAlertParameter() {
+		return warningMessageAlertParameter;
+	}
+
+	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
+		this.warningMessageAlertParameter = warningMessageAlertParameter;
+	}
+
+	@Override
+	public void setIsParameterDirty(Boolean isParameterDirty) {
+		this.isParameterDirty = isParameterDirty;
+	}
+	
+	@Override
+	public Boolean getIsParameterDirty() {
+		return isParameterDirty;
+	}
+
+
 	/**
 	 * Gets the define collapse.
 	 *
@@ -333,6 +370,21 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setDefineCollapse(PanelCollapse defineCollapse) {
 		this.defineCollapse = defineCollapse;
 	}
+	
+	@Override
+	public Button getClearParameterYesButton() {
+		return clearParameterYesButton;
+	}
+
+	@Override
+	public Button getClearParameterNoButton() {
+		return clearParameterNoButton;
+	}
+
+	public Button getClearParameterTopButton() {
+	return clearParameterTopButton;
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamCollapse()
@@ -952,6 +1004,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
+		ButtonToolBar parameterButtonToolBar = new ButtonToolBar();
 		
 		Label parameterLabel = new Label(LabelType.INFO,"Parameter");
 		parameterLabel.setMarginTop(5);
@@ -963,7 +1016,22 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.setName("parameterName");
 		parameterLabel.setText("Parameter");
 		
-		
+		clearParameterTopButton.setType(ButtonType.INFO);
+		clearParameterTopButton.setSize(ButtonSize.EXTRA_SMALL);
+		clearParameterTopButton.setIcon(IconType.ERASER);
+		clearParameterTopButton.setTitle("Clear");
+		clearParameterTopButton.setText("Clear");
+		clearParameterTopButton.setId("ClearParameter_Button");
+
+		addParameterButton.setType(ButtonType.INFO);
+		addParameterButton.setSize(ButtonSize.EXTRA_SMALL);
+		addParameterButton.setIcon(IconType.SAVE);
+		addParameterButton.setId("AddParameter_Button");
+		//addParameterButton.setMarginTop(10);
+		//addParameterButton.setMarginLeft(15);
+		addParameterButton.setTitle("Save");
+		addParameterButton.setText("Save");
+
 		//parameterAceEditor.startEditor();
 		parameterAceEditor.setText("");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
@@ -974,15 +1042,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		
 		//addParameterButton = new Button();
-		addParameterButton.setType(ButtonType.PRIMARY);
-		addParameterButton.setSize(ButtonSize.DEFAULT);
+		addParameterButton.setType(ButtonType.INFO);
+		addParameterButton.setSize(ButtonSize.EXTRA_SMALL);
 		addParameterButton.setId("AddParameter_Button");
-		addParameterButton.setMarginTop(10);
-		//addParameterButton.setMarginLeft(15);
 		addParameterButton.setTitle("Save");
 		addParameterButton.setText("Save");
 		
-		deleteParameterButton.setType(ButtonType.PRIMARY);
+		deleteParameterButton.setType(ButtonType.INFO);
 		deleteParameterButton.setSize(ButtonSize.EXTRA_SMALL);
 		deleteParameterButton.setIcon(IconType.REMOVE);
 		deleteParameterButton.setTitle("Delete");
@@ -997,18 +1063,49 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		errorMessageAlertParameter.setType(AlertType.DANGER);
 		errorMessageAlertParameter.setWidth("600px");
-		errorMessageAlertParameter.setVisible(false);
+		errorMessageAlertParameter.setVisible(false);	
+	
+		clearParameterYesButton.setType(ButtonType.INFO);
+		clearParameterYesButton.setSize(ButtonSize.EXTRA_SMALL);
+		clearParameterYesButton.setTitle("Yes");
+		clearParameterYesButton.setText("Yes");
+		clearParameterYesButton.setId("ClearParameterYes_Button");
 		
+		clearParameterNoButton.setType(ButtonType.INFO);
+		clearParameterNoButton.setSize(ButtonSize.EXTRA_SMALL);
+		clearParameterNoButton.setMarginLeft(15);
+		clearParameterNoButton.setTitle("No");
+		clearParameterNoButton.setText("No");
+		clearParameterNoButton.setId("ClearParameterNo_Button");
+		
+		warningMessageAlertParameter.setType(AlertType.WARNING);
+		warningMessageAlertParameter.setWidth("600px");
+		warningMessageAlertParameter.setVisible(false);
+		warningMessageAlertParameter.clear();
+		warningMessageAlertParameter.add(getMsgPanel(IconType.WARNING, saveWarningMsg));
+		warningMessageAlertParameter.add(new SpacerWidget());
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		buttonToolBar.add(clearParameterYesButton);
+		buttonToolBar.add(clearParameterNoButton);
+		warningMessageAlertParameter.add(buttonToolBar);
+
 		parameterVP.add(successMessageAlertParameter);
 		parameterVP.add(errorMessageAlertParameter);
+		parameterVP.add(warningMessageAlertParameter);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
 		parameterVP.add(new SpacerWidget());
+		
+		parameterButtonToolBar.add(clearParameterTopButton);
+		parameterButtonToolBar.add(addParameterButton);
+		parameterButtonToolBar.addStyleName("myAccountButtonLayout continueButton");
+		parameterVP.add(parameterButtonToolBar);
+		
+		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterAceEditor);
 		parameterVP.add(new SpacerWidget());
-		parameterVP.add(addParameterButton);
 		parameterVP.setStyleName("topping");
 		parameterFP.add(parameterVP);
 		parameterFP.setStyleName("cqlRightContainer");
@@ -2263,5 +2360,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return errorMessageAlertFunction;
 	}
 	
-	
+	/**
+	 * Gets the msg panel.
+	 *
+	 * @param iconType the icon type
+	 * @param message the message
+	 * @return the msg panel
+	 */
+	private HTML getMsgPanel(IconType iconType, String message) {
+		Icon checkIcon = new Icon(iconType);
+		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
+		return msgHtml;
+	}
+
 }

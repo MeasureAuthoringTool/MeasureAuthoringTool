@@ -2,6 +2,7 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
@@ -15,8 +16,10 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.base.ComplexWidget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -27,6 +30,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -433,9 +437,21 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		void buildCQLFileView();
 		
+		/**
+		 * Gets the CQL clear Parameter top button.
+		 *
+		 * @return the CQL clear top button
+		 */
+		Button getClearParameterTopButton();
+
+		
 		//ToggleSwitch getContextPOPToggleSwitch();
 		
 		//ToggleSwitch getContextPATToggleSwitch();
+		
+		void setIsParameterDirty(Boolean isParameterDirty);
+
+		Boolean getIsParameterDirty();
 		
 		/**
 		 * Gets the context pat button.
@@ -443,6 +459,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the context pat button
 		 */
 		Button getContextPatButton();
+		
+		ComplexWidget getWarningMessageAlertParameter();
+
+		Button getClearParameterYesButton();
+		
+		Button getClearParameterNoButton();
+
 		
 		/**
 		 * Gets the context pop button.
@@ -558,7 +581,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
-				
+				searchDisplay.setIsParameterDirty(true);	
 			}
 		});
 		
@@ -587,9 +610,40 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
-				
+				searchDisplay.setIsParameterDirty(true);
 			}
 		});
+		
+		searchDisplay.getClearParameterTopButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (searchDisplay.getIsParameterDirty()) {
+					searchDisplay.getWarningMessageAlertParameter().setVisible(true);
+				}
+			}
+		});
+						
+		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearParameter();
+				searchDisplay.setIsParameterDirty(false);
+				//searchDisplay.getWarningMessageAlertParameter().clear();
+				searchDisplay.getWarningMessageAlertParameter().setVisible(false);
+			}
+		});
+		
+		searchDisplay.getClearParameterNoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				//searchDisplay.getWarningMessageAlertParameter().clear();
+				searchDisplay.getWarningMessageAlertParameter().setVisible(false);
+			}
+		});
+
 		
 		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
 			
@@ -616,6 +670,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 	}
 	
+	private void clearParameter() {
+		if (searchDisplay.getParameterAceEditor().getText()!= null ||
+			searchDisplay.getParameterNameTxtArea() != null	) {
+			searchDisplay.getParameterNameTxtArea().clear();
+			searchDisplay.getParameterAceEditor().setText("");
+		}
+	}
 	
 	/**
 	 * Save and modify cql general info.
@@ -798,7 +859,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY()));
 							searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
-							
+							searchDisplay.setIsParameterDirty(false);
 						} else {
 							if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
@@ -839,7 +900,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 							searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
-							
+							searchDisplay.setIsParameterDirty(false);
 						} else {
 							if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
@@ -1000,6 +1061,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		searchDisplay.getErrorMessageAlertParameter().clear();
 		searchDisplay.getErrorMessageAlertParameter().setVisible(false);
+		
+		searchDisplay.getWarningMessageAlertParameter().setVisible(false);
+		searchDisplay.getWarningMessageAlertParameter().setVisible(false);
 		
 		searchDisplay.getSuccessMessageAlertFunction().clear();
 		searchDisplay.getSuccessMessageAlertFunction().setVisible(false);

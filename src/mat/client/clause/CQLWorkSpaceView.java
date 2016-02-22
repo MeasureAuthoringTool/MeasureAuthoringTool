@@ -121,8 +121,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
 	
+	/** The success message alert parameter. */
+	private Alert successMessageAlertFunction = new Alert();
+	
 	/** The error message alert parameter. */
 	private Alert errorMessageAlertParameter = new Alert();
+	
+	/** The error message alert parameter. */
+	private Alert errorMessageAlertFunction = new Alert();
 	
 	/**
 	 * InlineRadio populationRadio.
@@ -231,6 +237,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * HashMap definitionMap.
 	 */
 	private HashMap<String, CQLDefinition> definitionMap = new HashMap<String, CQLDefinition>();
+	
+	/**
+	 * HashMap definitionMap.
+	 */
+	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
 	/**
 	 * Button deleteDefineButton.
 	 */
@@ -280,6 +291,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The current selected paramerter obj id. */
 	private String currentSelectedParamerterObjId = null;
+	
+	private String currentSelectedFunctionObjId = null;
 	
 	/** The save cql general info btn. */
 	//private Button saveCQLGeneralInfoBtn = new Button("Save");
@@ -475,6 +488,31 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		});
 	}
 	
+	/**
+	 * Adds the Function event handlers.
+	 */
+	private void addFuncEventHandlers(){
+		funcNameListBox.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				int selectedIndex  = funcNameListBox.getSelectedIndex();
+				if(selectedIndex != -1){
+					final String selectedFunctionId = funcNameListBox.getValue(selectedIndex);
+					currentSelectedFunctionObjId = selectedFunctionId;
+					if(functionMap.get(selectedFunctionId) != null){
+						getFuncNameTxtArea().setText(functionMap.get(selectedFunctionId).getFunctionName());
+						getFunctionBodyAceEditor().setText(functionMap.get(selectedFunctionId).getFunctionLogic());
+					}
+				}
+				
+				successMessageAlertFunction.clear();
+				successMessageAlertFunction.setVisible(false);
+				errorMessageAlertFunction.clear();
+				errorMessageAlertFunction.setVisible(false);
+			}
+		});
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateParamMap()
 	 */
@@ -514,6 +552,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	@Override
+	public void updateFunctionMap() {
+		functionMap.clear();
+		funcNameMap.clear();
+		for(CQLFunctions function : viewFunctions){
+			funcNameMap.put(function.getId(), function.getFunctionName());
+			functionMap.put(function.getId(), function);
+		}
+		updateSuggestFuncOracle();
+		functionBadge.setText(""+viewFunctions.size());
+		
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateSuggestOracle()
 	 */
@@ -1340,6 +1390,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		buttonLayOutPanel.add(saveFunctionButton);
 		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
 		
+		successMessageAlertFunction.setType(AlertType.SUCCESS);
+		successMessageAlertFunction.setWidth("600px");
+		successMessageAlertFunction.setVisible(false);
+		
+		
+		errorMessageAlertFunction.setType(AlertType.DANGER);
+		errorMessageAlertFunction.setWidth("600px");
+		errorMessageAlertFunction.setVisible(false);
+		
+		funcVP.add(successMessageAlertFunction);
+		funcVP.add(errorMessageAlertFunction);
+		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
@@ -1363,7 +1425,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		vp.add(funcFP);
 		vp.setHeight("675px");
-		
+		addFuncEventHandlers();
 		mainFlowPanel.add(vp);
 	}
 	
@@ -2156,6 +2218,42 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	public void setSaveFunctionButton(Button saveFunctionButton) {
 		this.saveFunctionButton = saveFunctionButton;
+	}
+	@Override
+	public AceEditor getFunctionBodyAceEditor() {
+		return functionBodyAceEditor;
+	}
+	
+	public void setFunctionBodyAceEditor(AceEditor functionBodyAceEditor) {
+		this.functionBodyAceEditor = functionBodyAceEditor;
+	}
+	@Override
+	public String getCurrentSelectedFunctionObjId() {
+		return currentSelectedFunctionObjId;
+	}
+	@Override
+	public void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId) {
+		this.currentSelectedFunctionObjId = currentSelectedFunctionObjId;
+	}
+	@Override
+	public HashMap<String, CQLFunctions> getFunctionMap() {
+		return functionMap;
+	}
+	@Override
+	public List<CQLFunctions> getViewFunctions() {
+		return viewFunctions;
+	}
+	@Override
+	public void setViewFunctions(List<CQLFunctions> viewFunctions) {
+		this.viewFunctions = viewFunctions;
+	}
+	@Override
+	public Alert getSuccessMessageAlertFunction() {
+		return successMessageAlertFunction;
+	}
+	@Override
+	public Alert getErrorMessageAlertFunction() {
+		return errorMessageAlertFunction;
 	}
 	
 	

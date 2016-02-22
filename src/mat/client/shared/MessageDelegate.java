@@ -191,14 +191,19 @@ public class MessageDelegate {
 	
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information.";
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully Saved Definition into CQL.";
+	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully Saved Function into CQL.";
+	
+	
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully Saved Parameter into CQL.";
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter Definition Name and Logic.";
 	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter Parameter Name and Logic.";
+	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter Function Name and Function body.";
 	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter Name already Exists.";
+	public final String ERROR_DUPLICATE_FUNCTION_NAME  = "Function Name already Exists.";
 	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition Name already Exists.";
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully Modified Definition.";
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully Modified Parameter.";
-	
+	public final String SUCESS_FUNCTION_MODIFY  = "Successfully Modified Function.";
 	
 	/**
 	 * Gets the measure save server error message.
@@ -2522,5 +2527,20 @@ public class MessageDelegate {
 	
 	public String getSUCESS_PARAMETER_MODIFY() {
 		return SUCESS_PARAMETER_MODIFY;
+	}
+	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS() {
+		return SUCCESSFUL_SAVED_CQL_FUNCTIONS;
+	}
+	
+	public String getERROR_SAVE_CQL_FUNCTION() {
+		return ERROR_SAVE_CQL_FUNCTION;
+	}
+	
+	public String getERROR_DUPLICATE_FUNCTION_NAME() {
+		return ERROR_DUPLICATE_FUNCTION_NAME;
+	}
+	
+	public String getSUCESS_FUNCTION_MODIFY() {
+		return SUCESS_FUNCTION_MODIFY;
 	}
 }

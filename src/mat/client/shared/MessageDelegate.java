@@ -189,21 +189,21 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
-	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully Saved CQL General Information.";
-	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully Saved Definition into CQL.";
-	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully Saved Function into CQL.";
+	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully saved CQL general information.";
+	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
+	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully saved function into CQL.";
 	
 	
-	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully Saved Parameter into CQL.";
-	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter Definition Name and Logic.";
-	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter Parameter Name and Logic.";
-	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter Function Name and Function body.";
-	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter Name already Exists.";
-	public final String ERROR_DUPLICATE_FUNCTION_NAME  = "Function Name already Exists.";
-	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition Name already Exists.";
-	public final String SUCESS_DEFINITION_MODIFY  = "Successfully Modified Definition.";
-	public final String SUCESS_PARAMETER_MODIFY  = "Successfully Modified Parameter.";
-	public final String SUCESS_FUNCTION_MODIFY  = "Successfully Modified Function.";
+	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully saved parameter into CQL.";
+	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name and logic.";
+	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name and logic.";
+	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name and function body.";
+	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter name already exists.";
+	public final String ERROR_DUPLICATE_FUNCTION_NAME  = "Function name already exists.";
+	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition name already exists.";
+	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
+	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
+	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
 	
 	/**
 	 * Gets the measure save server error message.

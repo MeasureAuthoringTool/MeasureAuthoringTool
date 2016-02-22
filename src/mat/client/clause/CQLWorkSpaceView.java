@@ -395,6 +395,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void buildCQLFileView(){
+		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
 		mainFlowPanel.clear();
 		
 		VerticalPanel parameterVP = new VerticalPanel();
@@ -589,6 +592,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void buildGeneralInformation() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
@@ -944,6 +948,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void buildParameterLibraryView(){
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -1100,6 +1105,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void buildDefinitionLibraryView(){
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
 		mainFlowPanel.clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
@@ -1353,6 +1359,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void buildFunctionLibraryView() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
 		mainFlowPanel.clear();
 		
 		VerticalPanel funcVP = new VerticalPanel();

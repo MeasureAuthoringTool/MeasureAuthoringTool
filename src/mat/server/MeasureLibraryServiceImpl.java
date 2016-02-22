@@ -5118,12 +5118,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "/measure/cqlLookUp//function[@id='"
 							+ toBeModifiedObj.getId() + "']";
 					try {
-						Node nodeParameter = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+						Node nodeFunction = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
 						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
-						if(nodeParameter!=null){
-							nodeParameter.getAttributes().getNamedItem("functionName").setNodeValue(currentObj.getFunctionName());
-							nodeParameter.setTextContent(currentObj.getFunctionLogic());
+						if(nodeFunction!=null){
+							nodeFunction.getAttributes().getNamedItem("functionName").setNodeValue(currentObj.getFunctionName());
+							nodeFunction.setTextContent(currentObj.getFunctionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
 							
@@ -5154,13 +5154,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (!isDuplicate) {
 					
 					String cqlString = createFunctionsXML(currentObj);
-					String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/parameters";
+					String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/functions";
 					
 					try {
 						/*Node nodeParameters = (Node) xPath.evaluate(XPATH_EXPRESSION_PARAMETERS, processor.getOriginalDoc(),
 								XPathConstants.NODE);*/
-						Node nodeParameters = processor.findNode(processor.getOriginalDoc(),XPATH_EXPRESSION_FUNCTIONS);
-						if(nodeParameters!=null){
+						Node nodeFunctions = processor.findNode(processor.getOriginalDoc(),XPATH_EXPRESSION_FUNCTIONS);
+						if(nodeFunctions!=null){
 							try {
 								processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
 								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));

@@ -5,8 +5,8 @@
 <mapping>
 	<class name="mat.model.cql.CQLFunctionsWrapper">
 		<map-to xml="cqlLookUp" />
-		<field name="cqlFunctions" type="mat.model.cql.CQLFunctions" 
-		get-method="getCqlFunctionsList" set-method="setCqlFunctionsList"
+		<field name="cqlFunctions" type="mat.model.cql.CQLFunctions"
+			get-method="getCqlFunctionsList" set-method="setCqlFunctionsList"
 			collection="arraylist">
 			<bind-xml name="function" location="functions">
 				<class name="mat.model.cql.CQLFunctions">
@@ -17,10 +17,27 @@
 						<bind-xml name="functionName" node="attribute" />
 					</field>
 					<field name="functionLogic" type="java.lang.String">
-						<bind-xml node="text" />
+						<bind-xml name="functionLogic" node="element" />
 					</field>
 					<field name="context" type="java.lang.String">
 						<bind-xml name="context" node="attribute" />
+					</field>
+					<field name="argument" type="mat.model.cql.CQLFunctionArgument"
+						get-method="getArgumentList" set-method="setArgumentList"
+						collection="arraylist">
+						<bind-xml name="argument" location="arguments">
+							<class name="mat.model.cql.CQLFunctionArgument">
+								<field name="id" type="java.lang.String">
+									<bind-xml name="id" node="attribute" />
+								</field>
+								<field name="argumentName" type="java.lang.String">
+									<bind-xml name="argumentName" node="attribute" />
+								</field>
+								<field name="argumentType" type="java.lang.String">
+									<bind-xml name="argumentType" node="attribute" />
+								</field>
+							</class>
+						</bind-xml>
 					</field>
 				</class>
 			</bind-xml>

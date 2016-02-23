@@ -7,7 +7,7 @@ public class CQLFunctions implements IsSerializable {
 	private String id;
 	private String functionName;
 	private String functionLogic;
-	private List<CQLFunctionArgument> argumentList;
+	private List<CQLFunctionArgument> argument;
 	private String context;
 	public String getFunctionName() {
 		return functionName;
@@ -22,10 +22,10 @@ public class CQLFunctions implements IsSerializable {
 		this.functionLogic = functionLogic;
 	}
 	public List<CQLFunctionArgument> getArgumentList() {
-		return argumentList;
+		return argument;
 	}
 	public void setArgumentList(List<CQLFunctionArgument> argumentList) {
-		this.argumentList = argumentList;
+		this.argument = argumentList;
 	}
 	public String getId() {
 		return id;

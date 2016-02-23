@@ -3,6 +3,7 @@ package mat.model.cql;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLFunctionArgument implements IsSerializable {
+	private String id;
 	private String argumentName;
 	private String argumentType;
 	
@@ -17,5 +18,11 @@ public class CQLFunctionArgument implements IsSerializable {
 	}
 	public void setArgumentType(String argumentType) {
 		this.argumentType = argumentType;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 }

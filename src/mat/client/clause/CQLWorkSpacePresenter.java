@@ -517,6 +517,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Alert getErrorMessageAlertFunction();
 		
 		void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId);
+
+		Button getEraseDefineButton();
 		
 	}
 	
@@ -561,7 +563,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});

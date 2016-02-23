@@ -51,6 +51,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLDefinition;
@@ -245,14 +246,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * HashMap definitionMap.
 	 */
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
-	/**
-	 * Button deleteDefineButton.
-	 */
-	private Button deleteDefineButton = new Button();
-	/**
-	 * Button addDefineButton.
-	 */
-	private Button addDefineButton = new Button();
 	
 	/**
 	 * Button Save Function Button.
@@ -324,14 +317,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop toggle switch. */
 	private ToggleSwitch contextPOPToggleSwitch = new ToggleSwitch();
 	
-	/** The erase define button. */
-	private Button eraseDefineButton = new Button();
 	
 	/** The context pat button. */
 	private Button contextPatButton = new Button();
 	
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
+	
+	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
+	
 	
 	public Alert getWarningMessageAlertParameter() {
 		return warningMessageAlertParameter;
@@ -1226,36 +1220,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		
-		//addDefineButton.setType(ButtonType.PRIMARY);
-		//addDefineButton.setSize(ButtonSize.DEFAULT);
-		addDefineButton.setType(ButtonType.LINK);
-		addDefineButton.setId("AddDefine_Button");
-		addDefineButton.setMarginTop(10);
-		//addDefineButton.setMarginLeft(15);
-		addDefineButton.setTitle("Save");
-		//addDefineButton.setText("Save");
-		addDefineButton.setIcon(IconType.SAVE);
-		addDefineButton.setIconSize(IconSize.LARGE);
-		addDefineButton.setColor("#0964A2");
-		addDefineButton.setSize("30px", "30px");
-		
-		deleteDefineButton.setType(ButtonType.LINK);
-		deleteDefineButton.setId("DeleteDefine_Button");
-		deleteDefineButton.setMarginTop(10);
-		deleteDefineButton.setTitle("Delete");
-		deleteDefineButton.setIcon(IconType.TRASH);
-		deleteDefineButton.setIconSize(IconSize.LARGE);
-		deleteDefineButton.setColor("red");
-		deleteDefineButton.setSize("30px", "30px");
-		
-		eraseDefineButton.setType(ButtonType.LINK);
-		eraseDefineButton.setId("EraseDefine_Button");
-		eraseDefineButton.setMarginTop(10);
-		eraseDefineButton.setTitle("Erase");
-		eraseDefineButton.setIcon(IconType.ERASER);
-		eraseDefineButton.setIconSize(IconSize.LARGE);
-		eraseDefineButton.setColor("#0964A2");
-		eraseDefineButton.setSize("30px", "30px");
 		successMessageAlertDefinition.setType(AlertType.SUCCESS);
 		successMessageAlertDefinition.setWidth("600px");
 		successMessageAlertDefinition.setVisible(false);
@@ -1324,12 +1288,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		//defineConextPanel.getElement().setAttribute("style", "margin-left:15px");
 		
 		
-		
-		HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
-		buttonLayOutPanel.add(addDefineButton);
-		buttonLayOutPanel.add(deleteDefineButton);
-		buttonLayOutPanel.add(eraseDefineButton);
-		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
+
 		
 		/*HorizontalPanel iconPanel = new HorizontalPanel();
 		iconPanel.add(saveDefineIcon);
@@ -1349,7 +1308,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		//definitionVP.add(new SpacerWidget());
 		//definitionVP.add(iconPanel);
 		//definitionVP.add(new SpacerWidget());
-		definitionVP.add(buttonLayOutPanel);
+		definitionVP.add(defineButtonBar);
 		/*definitionVP.add(new SpacerWidget());*/
 		definitionVP.add(defineAceEditor);
 		definitionVP.add(new SpacerWidget());
@@ -1889,7 +1848,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getDeleteDefineButton() {
-		return deleteDefineButton;
+		return defineButtonBar.getDeleteButton();
 	}
 	
 	/* (non-Javadoc)
@@ -1941,7 +1900,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getAddDefineButton() {
-		return addDefineButton;
+		return defineButtonBar.getSaveButton();
 	}
 	
 	/* (non-Javadoc)
@@ -2288,12 +2247,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	/**
-	 * Sets the erase define button.
+	 * get the erase define button.
 	 *
 	 * @param eraseDefineButton the new erase define button
 	 */
-	public void setEraseDefineButton(Button eraseDefineButton) {
-		this.eraseDefineButton = eraseDefineButton;
+	@Override
+	public Button getEraseDefineButton() {
+		return defineButtonBar.getEraseButton();
 	}
 	
 	/**

@@ -94,8 +94,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
-	
-	
+		
 	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	
@@ -344,9 +343,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
 	
-	
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
+	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
+
 	private Boolean isDefinitionDirty = false;
 	
 	
@@ -1013,7 +1013,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		ButtonToolBar parameterButtonToolBar = new ButtonToolBar();
+		//ButtonToolBar parameterButtonToolBar = new ButtonToolBar();
 		
 		Label parameterLabel = new Label(LabelType.INFO,"Parameter");
 		parameterLabel.setMarginTop(5);
@@ -1106,13 +1106,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
 		parameterVP.add(new SpacerWidget());
+		parameterVP.add(parameterButtonBar);
 		
-		parameterButtonToolBar.add(clearParameterTopButton);
-		parameterButtonToolBar.add(addParameterButton);
-		parameterButtonToolBar.addStyleName("myAccountButtonLayout continueButton");
-		parameterVP.add(parameterButtonToolBar);
+		//parameterButtonToolBar.add(clearParameterTopButton);
+		//parameterButtonToolBar.add(addParameterButton);
+		//parameterButtonToolBar.addStyleName("myAccountButtonLayout continueButton");
+		//parameterVP.add(parameterButtonToolBar);
 		
-		parameterVP.add(new SpacerWidget());
+		//parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterAceEditor);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.setStyleName("topping");
@@ -2016,7 +2017,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getDeleteDefineButton() {
 		return defineButtonBar.getDeleteButton();
 	}
-	
+	/**
+	 * Gets the delete parameter button.
+	 *
+	 * @return the delete define button
+	 */
+	@Override
+	public Button getDeleteParameterButton() {
+		return parameterButtonBar.getDeleteButton();
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getViewDefinitions()
 	 */
@@ -2422,6 +2432,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return defineButtonBar.getEraseButton();
 	}
 	
+	/**
+	 * get the erase define button.
+	 *
+	 * @param eraseDefineButton the new erase define button
+	 */
+	@Override
+	public Button getEraseParameterButton() {
+		return parameterButtonBar.getEraseButton();
+	}
+
 	/**
 	 * Gets the context pat button.
 	 *

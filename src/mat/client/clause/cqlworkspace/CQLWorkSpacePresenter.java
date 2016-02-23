@@ -527,6 +527,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId);
 		
 		Button getEraseDefineButton();
+
+		Button getDeleteParameterButton();
+
+		Button getEraseParameterButton();
 		
 		Button getAddNewArgument();
 		
@@ -573,7 +577,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
@@ -626,19 +629,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsParameterDirty(true);
 			}
 		});
-		
-		searchDisplay.getClearParameterTopButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				if (searchDisplay.getIsParameterDirty()) {
-					searchDisplay.getWarningMessageAlertParameter().setVisible(true);
-				} else {
-					clearParameter();
-				}
-			}
-		});
-		
+				
 		searchDisplay.getEraseDefineButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -651,7 +642,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		
+		searchDisplay.getEraseParameterButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (searchDisplay.getIsParameterDirty()) {
+					searchDisplay.getWarningMessageAlertParameter().setVisible(true);
+				} else {
+					clearParameter();
+				}
+			}
+		});
+						
 		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -691,8 +693,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 			}
 		});
-		
-		
 		
 		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
 			

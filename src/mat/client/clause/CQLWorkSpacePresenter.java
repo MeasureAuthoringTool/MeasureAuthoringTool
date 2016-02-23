@@ -2,7 +2,6 @@ package mat.client.clause;
 
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
@@ -19,7 +18,6 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.base.ComplexWidget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -30,7 +28,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -443,14 +440,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the CQL clear top button
 		 */
 		Button getClearParameterTopButton();
-
+		
 		
 		//ToggleSwitch getContextPOPToggleSwitch();
 		
 		//ToggleSwitch getContextPATToggleSwitch();
 		
 		void setIsParameterDirty(Boolean isParameterDirty);
-
+		
 		Boolean getIsParameterDirty();
 		
 		/**
@@ -461,11 +458,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getContextPatButton();
 		
 		ComplexWidget getWarningMessageAlertParameter();
-
+		
 		Button getClearParameterYesButton();
 		
 		Button getClearParameterNoButton();
-
+		
 		
 		/**
 		 * Gets the context pop button.
@@ -563,6 +560,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
@@ -582,7 +580,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);	
+				searchDisplay.setIsParameterDirty(true);
 			}
 		});
 		
@@ -624,7 +622,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				}
 			}
 		});
-						
+		
 		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -644,7 +642,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getWarningMessageAlertParameter().setVisible(false);
 			}
 		});
-
+		
 		
 		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
 			
@@ -672,8 +670,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	private void clearParameter() {
-		if (searchDisplay.getParameterAceEditor().getText()!= null ||
-			searchDisplay.getParameterNameTxtArea() != null	) {
+		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
+				(searchDisplay.getParameterNameTxtArea() != null)	) {
 			searchDisplay.getParameterNameTxtArea().clear();
 			searchDisplay.getParameterAceEditor().setText("");
 		}
@@ -1086,7 +1084,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
-		searchDisplay.setClickedMenu("general");
+		clickedMenu = "general";
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 		
@@ -1097,6 +1095,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
+		clickedMenu = "general";
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();

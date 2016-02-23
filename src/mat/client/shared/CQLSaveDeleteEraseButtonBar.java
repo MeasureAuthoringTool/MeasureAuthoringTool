@@ -4,7 +4,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
@@ -24,54 +23,53 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	/** The erase button. */
 	private Button eraseButton = new Button();
 	
+	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
 	/**
 	 * Instantiates a new CQL save delete erase button bar.
 	 */
 	public CQLSaveDeleteEraseButtonBar() {
 		
-		HorizontalPanel buttonLayout = new HorizontalPanel();
+		
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		
-        saveButton.setType(ButtonType.LINK);
-        saveButton.getElement().setId("saveButton_Button");
-        saveButton.setMarginTop(10);
-        saveButton.setTitle("Save");
-        saveButton.setIcon(IconType.SAVE);
-        saveButton.setIconSize(IconSize.LARGE);
-        saveButton.setColor("#00BFFF");
-        saveButton.setSize("30px", "30px");
-		
-        deleteButton.setType(ButtonType.LINK);
-        deleteButton.getElement().setId("deleteButton_Button");
-        deleteButton.setMarginTop(10);
-        deleteButton.setTitle("Delete");
-        deleteButton.setIcon(IconType.TRASH);
-        deleteButton.setIconSize(IconSize.LARGE);
-        deleteButton.setColor("red");
-        deleteButton.setSize("30px", "30px");
-		
-        eraseButton.setType(ButtonType.LINK);
-        eraseButton.getElement().setId("eraseButton_Button");
-        eraseButton.setMarginTop(10);
-        eraseButton.setTitle("Erase");
-        eraseButton.setIcon(IconType.ERASER);
-        eraseButton.setIconSize(IconSize.LARGE);
-        eraseButton.setColor("#0964A2");
-        eraseButton.setSize("30px", "30px");
-		
+		saveButton.setType(ButtonType.LINK);
+		saveButton.getElement().setId("saveButton_Button");
+		saveButton.setMarginTop(10);
 		saveButton.setTitle("Save");
+		saveButton.setIcon(IconType.SAVE);
+		saveButton.setIconSize(IconSize.LARGE);
+		saveButton.setColor("#00BFFF");
+		saveButton.setSize("30px", "30px");
+		
+		deleteButton.setType(ButtonType.LINK);
+		deleteButton.getElement().setId("deleteButton_Button");
+		deleteButton.setMarginTop(10);
 		deleteButton.setTitle("Delete");
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.setIconSize(IconSize.LARGE);
+		deleteButton.setColor("red");
+		deleteButton.setSize("30px", "30px");
+		
+		eraseButton.setType(ButtonType.LINK);
+		eraseButton.getElement().setId("eraseButton_Button");
+		eraseButton.setMarginTop(10);
 		eraseButton.setTitle("Erase");
+		eraseButton.setIcon(IconType.ERASER);
+		eraseButton.setIconSize(IconSize.LARGE);
+		eraseButton.setColor("#0964A2");
+		eraseButton.setSize("30px", "30px");
+		
+		
 		buttonLayout.add(saveButton);
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(eraseButton);
 		initWidget(buttonLayout);
 		
 	}
-
-
+	
+	
 	/**
 	 * Gets the save button.
 	 *
@@ -80,8 +78,8 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	public Button getSaveButton() {
 		return saveButton;
 	}
-
-
+	
+	
 	/**
 	 * Gets the delete button.
 	 *
@@ -90,8 +88,8 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	public Button getDeleteButton() {
 		return deleteButton;
 	}
-
-
+	
+	
 	/**
 	 * Gets the erase button.
 	 *
@@ -99,6 +97,11 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	 */
 	public Button getEraseButton() {
 		return eraseButton;
+	}
+	
+	
+	public HorizontalPanel getButtonLayout() {
+		return buttonLayout;
 	}
 
 }

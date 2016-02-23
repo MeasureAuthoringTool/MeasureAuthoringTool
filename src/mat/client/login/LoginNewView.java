@@ -74,7 +74,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		successMessagePanel.setVisible(false);
 		Row headingRow = new Row();
 		Column headingCol = new Column(ColumnSize.SM_10);
-		headingCol.setOffset(ColumnOffset.SM_3);
+		headingCol.setOffset(ColumnOffset.SM_4);
 		headingCol.add(welcomeHeading);
 		headingRow.add(headingCol);
 		
@@ -88,8 +88,8 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		loginFormContianer.add(successMessagePanelRow);
 		
 		Row mainRow = new Row();
-		Column mainCol = new Column(ColumnSize.MD_4);
-		mainCol.setOffset(ColumnOffset.MD_3);
+		Column mainCol = new Column(ColumnSize.SM_12);
+		mainCol.setOffset(ColumnOffset.SM_4);
 		//Login Panel.
 		Panel loginPanel = new Panel();
 		loginPanel.setWidth("300px");

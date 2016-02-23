@@ -1,4 +1,4 @@
-package mat.client.clause;
+package mat.client.clause.cqlworkspace;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,6 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.base.ComplexWidget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,8 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -445,20 +442,19 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the CQL clear top button
 		 */
 		Button getClearParameterTopButton();
-
+		
 		
 		//ToggleSwitch getContextPOPToggleSwitch();
 		
 		//ToggleSwitch getContextPATToggleSwitch();
 		
 		void setIsParameterDirty(Boolean isParameterDirty);
-
+		
 		Boolean getIsParameterDirty();
 		
 		void setIsDefinitionDirty(Boolean isDefinitionDirty);
 		
 		Boolean getIsDefinitionDirty();
-		
 		/**
 		 * Gets the context pat button.
 		 *
@@ -469,7 +465,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		ComplexWidget getWarningMessageAlertParameter();
 		
 		ComplexWidget getWarningMessageAlertDefinition();
-
+		
 		Button getClearParameterYesButton();
 		
 		Button getClearParameterNoButton();
@@ -477,7 +473,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getClearDefinitionYesButton();
 		
 		Button getClearDefinitionNoButton();
-
+		
 		
 		/**
 		 * Gets the context pop button.
@@ -529,8 +525,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Alert getErrorMessageAlertFunction();
 		
 		void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId);
-
+		
 		Button getEraseDefineButton();
+		
+		Button getAddNewArgument();
 		
 	}
 	
@@ -575,6 +573,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
@@ -594,7 +593,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChange(ChangeEvent event) {
 				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);	
+				searchDisplay.setIsParameterDirty(true);
 			}
 		});
 		
@@ -651,8 +650,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				}
 			}
 		});
-
-						
+		
+		
 		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -692,8 +691,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 			}
 		});
-
-
+		
+		
 		
 		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
 			
@@ -717,7 +716,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getContextPopButton().setType(ButtonType.SUCCESS);
 			}
 		});
-		
+		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+			}
+		});
 	}
 	
 	private void clearParameter() {
@@ -727,15 +731,15 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getParameterAceEditor().setText("");
 		}
 	}
-
+	
 	private void clearDefinition() {
-		if (searchDisplay.getDefineAceEditor().getText()!= null ||
-				searchDisplay.getDefineNameTxtArea() != null	) {
-				searchDisplay.getDefineAceEditor().setText("");
-				searchDisplay.getDefineNameTxtArea().clear();
+		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
+				(searchDisplay.getDefineNameTxtArea() != null)	) {
+			searchDisplay.getDefineAceEditor().setText("");
+			searchDisplay.getDefineNameTxtArea().clear();
 		}
 	}
-
+	
 	
 	/**
 	 * Save and modify cql general info.

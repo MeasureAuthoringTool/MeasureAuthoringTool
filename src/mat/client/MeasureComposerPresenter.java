@@ -1,11 +1,11 @@
 package mat.client;
 
-import mat.client.clause.CQLWorkSpacePresenter;
-import mat.client.clause.CQLWorkSpaceView;
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.MeasureNotesPresenter;

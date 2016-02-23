@@ -1,4 +1,4 @@
-package mat.client.clause;
+package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +32,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -88,14 +89,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The sort provider. */
 	private ListDataProvider<CQLFunctionArgument> listDataProvider;
-	private MatSimplePager spager;
 	
+	private MatSimplePager spager;
 	
 	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
 	
-	/** The tab panel. */
-	private HorizontalPanel tabPanel = new HorizontalPanel();
 	
 	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
@@ -117,7 +116,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The function library. */
 	private AnchorListItem functionLibrary;
-	//private InlineRadio patientRadio = new InlineRadio("Context");
+	
 	/** The success message alert gen info. */
 	private Alert successMessageAlertGenInfo = new Alert();
 	
@@ -132,8 +131,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The warning message alert definition. */
 	private Alert warningMessageAlertDefinition = new Alert();
-
-
+	
+	
 	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
 	
@@ -149,12 +148,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private Button clearDefinitionYesButton = new Button();
 	
 	private Button clearDefinitionNoButton = new Button();
-
 	
-	/**
-	 * InlineRadio populationRadio.
-	 */
-	//private InlineRadio populationRadio = new InlineRadio("Context");
+	
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
@@ -272,11 +267,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private Button addDefineButton = new Button();
 	
-	/**
-	 * Button Save Function Button.
-	 */
-	private Button saveFunctionButton = new Button();
+	private Button addNewArgument = new Button();
 	
+	CQLSaveDeleteEraseButtonBar functionButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	/** The param badge. */
 	private Badge paramBadge = new Badge();
@@ -351,6 +344,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
 	
+	
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	private Boolean isDefinitionDirty = false;
@@ -364,11 +358,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
 		this.warningMessageAlertParameter = warningMessageAlertParameter;
 	}
-
+	
+	@Override
 	public Alert getWarningMessageAlertDefinition() {
 		return warningMessageAlertDefinition;
 	}
-
+	
 	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
 		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
 	}
@@ -382,18 +377,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Boolean getIsParameterDirty() {
 		return isParameterDirty;
 	}
-
-
+	
+	
 	@Override
 	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
 		this.isDefinitionDirty = isDefinitionDirty;
 	}
-
+	
 	@Override
 	public Boolean getIsDefinitionDirty() {
 		return isDefinitionDirty;
 	}
-
+	
 	/**
 	 * Gets the define collapse.
 	 *
@@ -427,17 +422,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getClearParameterTopButton() {
 		return clearParameterTopButton;
 	}
-
+	
 	@Override
 	public Button getClearDefinitionYesButton() {
 		return clearDefinitionYesButton;
 	}
-
+	
 	@Override
 	public Button getClearDefinitionNoButton() {
 		return clearDefinitionNoButton;
 	}
-
+	
 	
 	
 	/* (non-Javadoc)
@@ -1291,7 +1286,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		clearDefinitionNoButton.setTitle("No");
 		clearDefinitionNoButton.setText("No");
 		clearDefinitionNoButton.setId("ClearParameterNo_Button");
-
+		
 		warningMessageAlertDefinition.setType(AlertType.WARNING);
 		warningMessageAlertDefinition.setWidth("600px");
 		warningMessageAlertDefinition.setVisible(false);
@@ -1303,7 +1298,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		buttonToolBar.add(clearDefinitionYesButton);
 		buttonToolBar.add(clearDefinitionNoButton);
 		warningMessageAlertDefinition.add(buttonToolBar);
-
+		
 		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		//defineContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
@@ -1365,6 +1360,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		
 		
+		
+		/*HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
+		buttonLayOutPanel.add(addDefineButton);
+		buttonLayOutPanel.add(deleteDefineButton);
+		buttonLayOutPanel.add(eraseDefineButton);
+		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
+		 */
 		/*HorizontalPanel iconPanel = new HorizontalPanel();
 		iconPanel.add(saveDefineIcon);
 		iconPanel.add(eraseDefineIcon);
@@ -1515,19 +1517,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		functionBodyAceEditor.setAutocompleteEnabled(true);
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		
-		saveFunctionButton.setType(ButtonType.LINK);
-		saveFunctionButton.setId("AddDefine_Button");
-		saveFunctionButton.setMarginTop(10);
 		
-		saveFunctionButton.setTitle("Save");
-		saveFunctionButton.setIcon(IconType.SAVE);
-		saveFunctionButton.setIconSize(IconSize.LARGE);
-		saveFunctionButton.setColor("#0964A2");
-		saveFunctionButton.setSize("30px", "30px");
-		
-		HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
-		buttonLayOutPanel.add(saveFunctionButton);
-		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
 		
 		successMessageAlertFunction.setType(AlertType.SUCCESS);
 		successMessageAlertFunction.setWidth("600px");
@@ -1538,6 +1528,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertFunction.setWidth("600px");
 		errorMessageAlertFunction.setVisible(false);
 		
+		addNewArgument.setType(ButtonType.LINK);
+		addNewArgument.getElement().setId("addArgument_Button");
+		
+		addNewArgument.setTitle("Add Argument");
+		addNewArgument.setText("Add Argument");
+		addNewArgument.setIcon(IconType.PLUS);
+		addNewArgument.setSize(ButtonSize.SMALL);
+		
+		addNewArgument.setPull(Pull.RIGHT);
+		
 		funcVP.add(successMessageAlertFunction);
 		funcVP.add(errorMessageAlertFunction);
 		funcVP.add(new SpacerWidget());
@@ -1545,9 +1545,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
 		funcVP.add(new SpacerWidget());
+		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions();
 		funcVP.add(cellTablePanel);
-		funcVP.add(buttonLayOutPanel);
+		funcVP.add(functionButtonBar);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionBodyAceEditor);
 		funcVP.add(new SpacerWidget());
@@ -1577,41 +1578,43 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		cellTablePanel.setStyleName("cellTablePanel");
 		
 		if (currentSelectedFunctionObjId != null) {
-			argumentListTable = new CellTable<CQLFunctionArgument>();
-			argumentListTable.setStriped(true);
-			argumentListTable.setCondensed(true);
-			argumentListTable.setBordered(true);
-			argumentListTable.setHover(true);
 			CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
-			/*List<CQLFunctionArgument> argList = new ArrayList<CQLFunctionArgument>();
-			List<String> dataTypeList = CQLGrammarDataType.getDataTypeName();
-			for(String dt : dataTypeList){
-				CQLFunctionArgument argument = new CQLFunctionArgument();
-				argument.setArgumentName("a");
-				argument.setArgumentType(dt);
-				argList.add(argument);
+			if(selectedFunction.getArgumentList() != null) {
+				argumentListTable = new CellTable<CQLFunctionArgument>();
+				argumentListTable.setStriped(true);
+				argumentListTable.setCondensed(true);
+				argumentListTable.setBordered(true);
+				argumentListTable.setHover(true);
+				
+				argumentListTable.setPageSize(TABLE_ROW_COUNT);
+				argumentListTable.redraw();
+				listDataProvider = new ListDataProvider<CQLFunctionArgument>();
+				listDataProvider.refresh();
+				listDataProvider.getList().addAll(selectedFunction.getArgumentList());
+				ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<CQLFunctionArgument>(
+						listDataProvider.getList());
+				argumentListTable.addColumnSortHandler(sortHandler);
+				argumentListTable = addColumnToTable(argumentListTable, sortHandler);
+				listDataProvider.addDataDisplay(argumentListTable);
+				CustomPager.Resources pagerResources = GWT
+						.create(CustomPager.Resources.class);
+				spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
+						pagerResources, false, 0, true);
+				spager.setDisplay(argumentListTable);
+				spager.setPageStart(0);
+				cellTablePanel.add(argumentListTable);
+				//cellTablePanel.add(new SpacerWidget());
+				cellTablePanel.add(spager);
+			} else {
+				com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
+				tableHeader.getElement().setId("tableHeader_Label");
+				tableHeader.setStyleName("measureGroupingTableHeader");
+				tableHeader.getElement().setAttribute("tabIndex", "0");
+				HTML desc = new HTML("<p> No Arguments Added.</p>");
+				cellTablePanel.add(tableHeader);
+				cellTablePanel.add(new SpacerWidget());
+				cellTablePanel.add(desc);
 			}
-			selectedFunction.setArgumentList(argList);*/
-			argumentListTable.setPageSize(TABLE_ROW_COUNT);
-			argumentListTable.redraw();
-			listDataProvider = new ListDataProvider<CQLFunctionArgument>();
-			listDataProvider.refresh();
-			listDataProvider.getList().addAll(selectedFunction.getArgumentList());
-			ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<CQLFunctionArgument>(
-					listDataProvider.getList());
-			argumentListTable.addColumnSortHandler(sortHandler);
-			argumentListTable = addColumnToTable(argumentListTable, sortHandler);
-			listDataProvider.addDataDisplay(argumentListTable);
-			CustomPager.Resources pagerResources = GWT
-					.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-					pagerResources, false, 0, true);
-			spager.setDisplay(argumentListTable);
-			spager.setPageStart(0);
-			cellTablePanel.add(argumentListTable);
-			//cellTablePanel.add(new SpacerWidget());
-			cellTablePanel.add(spager);
-			
 		} else {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
 			tableHeader.getElement().setId("tableHeader_Label");
@@ -2440,12 +2443,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	@Override
 	public Button getSaveFunctionButton() {
-		return saveFunctionButton;
+		return functionButtonBar.getSaveButton();
 	}
 	
-	public void setSaveFunctionButton(Button saveFunctionButton) {
-		this.saveFunctionButton = saveFunctionButton;
-	}
 	@Override
 	public AceEditor getFunctionBodyAceEditor() {
 		return functionBodyAceEditor;
@@ -2495,5 +2495,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
 		return msgHtml;
 	}
-	
+	@Override
+	public Button getAddNewArgument() {
+		return addNewArgument;
+	}
 }

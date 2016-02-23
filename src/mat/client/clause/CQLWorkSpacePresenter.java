@@ -18,6 +18,9 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.base.ComplexWidget;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -31,6 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -440,15 +445,19 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the CQL clear top button
 		 */
 		Button getClearParameterTopButton();
-		
+
 		
 		//ToggleSwitch getContextPOPToggleSwitch();
 		
 		//ToggleSwitch getContextPATToggleSwitch();
 		
 		void setIsParameterDirty(Boolean isParameterDirty);
-		
+
 		Boolean getIsParameterDirty();
+		
+		void setIsDefinitionDirty(Boolean isDefinitionDirty);
+		
+		Boolean getIsDefinitionDirty();
 		
 		/**
 		 * Gets the context pat button.
@@ -459,10 +468,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		ComplexWidget getWarningMessageAlertParameter();
 		
+		ComplexWidget getWarningMessageAlertDefinition();
+
 		Button getClearParameterYesButton();
 		
 		Button getClearParameterNoButton();
 		
+		Button getClearDefinitionYesButton();
+		
+		Button getClearDefinitionNoButton();
+
 		
 		/**
 		 * Gets the context pop button.
@@ -560,27 +575,26 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
 		
-		searchDisplay.getDefineNameTxtArea().addClickHandler(new ClickHandler() {
+		searchDisplay.getDefineNameTxtArea().addChangeHandler(new ChangeHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onChange(ChangeEvent event) {
 				resetMessageDisplay();
-				
+				searchDisplay.setIsDefinitionDirty(true);
 			}
 		});
 		
 		
-		searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
+		searchDisplay.getParameterNameTxtArea().addChangeHandler(new ChangeHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onChange(ChangeEvent event) {
 				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);
+				searchDisplay.setIsParameterDirty(true);	
 			}
 		});
 		
@@ -599,6 +613,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
+				searchDisplay.setIsDefinitionDirty(true);
 				
 			}
 		});
@@ -619,10 +634,25 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsParameterDirty()) {
 					searchDisplay.getWarningMessageAlertParameter().setVisible(true);
+				} else {
+					clearParameter();
 				}
 			}
 		});
 		
+		searchDisplay.getEraseDefineButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (searchDisplay.getIsDefinitionDirty()) {
+					searchDisplay.getWarningMessageAlertDefinition().setVisible(true);
+				} else {
+					clearDefinition();
+				}
+			}
+		});
+
+						
 		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -643,6 +673,27 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getClearDefinitionYesButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearDefinition();
+				searchDisplay.setIsDefinitionDirty(false);
+				//searchDisplay.getWarningMessageAlertParameter().clear();
+				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
+			}
+		});
+		
+		searchDisplay.getClearDefinitionNoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				//searchDisplay.getWarningMessageAlertParameter().clear();
+				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
+			}
+		});
+
+
 		
 		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
 			
@@ -676,6 +727,15 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getParameterAceEditor().setText("");
 		}
 	}
+
+	private void clearDefinition() {
+		if (searchDisplay.getDefineAceEditor().getText()!= null ||
+				searchDisplay.getDefineNameTxtArea() != null	) {
+				searchDisplay.getDefineAceEditor().setText("");
+				searchDisplay.getDefineNameTxtArea().clear();
+		}
+	}
+
 	
 	/**
 	 * Save and modify cql general info.
@@ -1062,7 +1122,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getErrorMessageAlertParameter().setVisible(false);
 		
 		searchDisplay.getWarningMessageAlertParameter().setVisible(false);
-		searchDisplay.getWarningMessageAlertParameter().setVisible(false);
+		searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 		
 		searchDisplay.getSuccessMessageAlertFunction().clear();
 		searchDisplay.getSuccessMessageAlertFunction().setVisible(false);

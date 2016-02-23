@@ -130,6 +130,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The error message alert definition. */
 	private Alert errorMessageAlertDefinition = new Alert();
 	
+	/** The warning message alert definition. */
+	private Alert warningMessageAlertDefinition = new Alert();
+
+
 	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
 	
@@ -141,6 +145,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The error message alert parameter. */
 	private Alert errorMessageAlertFunction = new Alert();
+	
+	private Button clearDefinitionYesButton = new Button();
+	
+	private Button clearDefinitionNoButton = new Button();
+
 	
 	/**
 	 * InlineRadio populationRadio.
@@ -342,8 +351,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop button. */
 	private Button contextPopButton = new Button();
 	
-	
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
+	
+	private Boolean isDefinitionDirty = false;
 	
 	
 	@Override
@@ -353,6 +363,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
 		this.warningMessageAlertParameter = warningMessageAlertParameter;
+	}
+
+	public Alert getWarningMessageAlertDefinition() {
+		return warningMessageAlertDefinition;
+	}
+
+	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
+		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
 	}
 	
 	@Override
@@ -364,8 +382,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Boolean getIsParameterDirty() {
 		return isParameterDirty;
 	}
-	
-	
+
+
+	@Override
+	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
+		this.isDefinitionDirty = isDefinitionDirty;
+	}
+
+	@Override
+	public Boolean getIsDefinitionDirty() {
+		return isDefinitionDirty;
+	}
+
 	/**
 	 * Gets the define collapse.
 	 *
@@ -399,6 +427,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getClearParameterTopButton() {
 		return clearParameterTopButton;
 	}
+
+	@Override
+	public Button getClearDefinitionYesButton() {
+		return clearDefinitionYesButton;
+	}
+
+	@Override
+	public Button getClearDefinitionNoButton() {
+		return clearDefinitionNoButton;
+	}
+
 	
 	
 	/* (non-Javadoc)
@@ -1020,8 +1059,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		addParameterButton.setType(ButtonType.INFO);
 		addParameterButton.setSize(ButtonSize.EXTRA_SMALL);
 		addParameterButton.setId("AddParameter_Button");
-		addParameterButton.setMarginTop(10);
-		//addParameterButton.setMarginLeft(15);
 		addParameterButton.setTitle("Save");
 		addParameterButton.setText("Save");
 		
@@ -1242,6 +1279,32 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertDefinition.setWidth("600px");
 		errorMessageAlertDefinition.setVisible(false);
 		
+		clearDefinitionYesButton.setType(ButtonType.INFO);
+		clearDefinitionYesButton.setSize(ButtonSize.EXTRA_SMALL);
+		clearDefinitionYesButton.setTitle("Yes");
+		clearDefinitionYesButton.setText("Yes");
+		clearDefinitionYesButton.setId("ClearParameterYes_Button");
+		
+		clearDefinitionNoButton.setType(ButtonType.INFO);
+		clearDefinitionNoButton.setSize(ButtonSize.EXTRA_SMALL);
+		clearDefinitionNoButton.setMarginLeft(15);
+		clearDefinitionNoButton.setTitle("No");
+		clearDefinitionNoButton.setText("No");
+		clearDefinitionNoButton.setId("ClearParameterNo_Button");
+
+		warningMessageAlertDefinition.setType(AlertType.WARNING);
+		warningMessageAlertDefinition.setWidth("600px");
+		warningMessageAlertDefinition.setVisible(false);
+		warningMessageAlertDefinition.clear();
+		warningMessageAlertDefinition.add(getMsgPanel(IconType.WARNING, saveWarningMsg));
+		warningMessageAlertDefinition.add(new SpacerWidget());
+		
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		buttonToolBar.add(clearDefinitionYesButton);
+		buttonToolBar.add(clearDefinitionNoButton);
+		warningMessageAlertDefinition.add(buttonToolBar);
+
+		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		//defineContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel defineConextPanel = new FlowPanel();
@@ -1302,13 +1365,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		
 		
-		
-		/*HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
-		buttonLayOutPanel.add(addDefineButton);
-		buttonLayOutPanel.add(deleteDefineButton);
-		buttonLayOutPanel.add(eraseDefineButton);
-		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
-		 */
 		/*HorizontalPanel iconPanel = new HorizontalPanel();
 		iconPanel.add(saveDefineIcon);
 		iconPanel.add(eraseDefineIcon);
@@ -1316,6 +1372,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		 */
 		definitionVP.add(successMessageAlertDefinition);
 		definitionVP.add(errorMessageAlertDefinition);
+		definitionVP.add(warningMessageAlertDefinition);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineLabel);
 		definitionVP.add(new SpacerWidget());

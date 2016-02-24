@@ -6,6 +6,7 @@ import mat.client.MatPresenter;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
 import org.gwtbootstrap3.client.ui.Alert;
@@ -423,14 +424,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		Alert getErrorMessageAlertParameter();
 		
-		
-		/**
-		 * Gets the context toggle switch.
-		 *
-		 * @return the context toggle switch
-		 */
-		//ToggleSwitch getContextToggleSwitch();
-		
 		/**
 		 * Builds the cql file view.
 		 */
@@ -443,10 +436,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		Button getClearParameterTopButton();
 		
-		
-		//ToggleSwitch getContextPOPToggleSwitch();
-		
-		//ToggleSwitch getContextPATToggleSwitch();
 		
 		void setIsParameterDirty(Boolean isParameterDirty);
 		
@@ -577,6 +566,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
@@ -719,7 +709,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				
+				CQLModel currentModel = new CQLModel();
+				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
+				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
+				AddFunctionArgumentDialogBox.showComparisonDialogBox(currentModel);
 			}
 		});
 	}

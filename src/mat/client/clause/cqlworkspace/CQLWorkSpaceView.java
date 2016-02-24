@@ -94,7 +94,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
-		
+	
+	
 	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	

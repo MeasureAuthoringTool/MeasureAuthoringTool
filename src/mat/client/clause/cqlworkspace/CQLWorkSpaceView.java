@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
@@ -16,7 +15,6 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -42,7 +40,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -76,7 +73,6 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -210,6 +206,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
 	
+	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
+	
 	/**
 	 * ListBox defineNameListBox.
 	 */
@@ -336,7 +334,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The define button bar. */
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
-
+	
 	/** The parameter button bar. */
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
@@ -528,7 +526,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						getFunctionBodyAceEditor().setText(functionMap.get(selectedFunctionId).getFunctionLogic());
 					}
 				}
-				createAddArgumentViewForFunctions();
+				if (currentSelectedFunctionObjId != null) {
+					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
+					functionArgumentList = selectedFunction.getArgumentList();
+				}
+				createAddArgumentViewForFunctions(functionArgumentList);
 				successMessageAlertFunction.clear();
 				successMessageAlertFunction.setVisible(false);
 				errorMessageAlertFunction.clear();
@@ -1364,7 +1366,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcVP.add(funcNameTxtArea);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
-		createAddArgumentViewForFunctions();
+		createAddArgumentViewForFunctions(functionArgumentList);
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
 		funcVP.add(new SpacerWidget());
@@ -1391,49 +1393,38 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Creates the add argument view for functions.
 	 */
-	private void createAddArgumentViewForFunctions() {
+	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		isEditable = MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
-		if (currentSelectedFunctionObjId != null) {
-			CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
-			if(selectedFunction.getArgumentList() != null) {
-				argumentListTable = new CellTable<CQLFunctionArgument>();
-				argumentListTable.setStriped(true);
-				argumentListTable.setCondensed(true);
-				argumentListTable.setBordered(true);
-				argumentListTable.setHover(true);
-				
-				argumentListTable.setPageSize(TABLE_ROW_COUNT);
-				argumentListTable.redraw();
-				listDataProvider = new ListDataProvider<CQLFunctionArgument>();
-				listDataProvider.refresh();
-				listDataProvider.getList().addAll(selectedFunction.getArgumentList());
-				ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<CQLFunctionArgument>(
-						listDataProvider.getList());
-				argumentListTable.addColumnSortHandler(sortHandler);
-				argumentListTable = addColumnToTable(argumentListTable, sortHandler);
-				listDataProvider.addDataDisplay(argumentListTable);
-				CustomPager.Resources pagerResources = GWT
-						.create(CustomPager.Resources.class);
-				spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-						pagerResources, false, 0, true);
-				spager.setDisplay(argumentListTable);
-				spager.setPageStart(0);
-				cellTablePanel.add(argumentListTable);
-				//cellTablePanel.add(new SpacerWidget());
-				cellTablePanel.add(spager);
-			} else {
-				com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
-				tableHeader.getElement().setId("tableHeader_Label");
-				tableHeader.setStyleName("measureGroupingTableHeader");
-				tableHeader.getElement().setAttribute("tabIndex", "0");
-				HTML desc = new HTML("<p> No Arguments Added.</p>");
-				cellTablePanel.add(tableHeader);
-				cellTablePanel.add(new SpacerWidget());
-				cellTablePanel.add(desc);
-			}
+		
+		if ((argumentList != null) && (argumentList.size() > 0)) {
+			argumentListTable = new CellTable<CQLFunctionArgument>();
+			argumentListTable.setStriped(true);
+			argumentListTable.setCondensed(true);
+			argumentListTable.setBordered(true);
+			argumentListTable.setHover(true);
+			
+			argumentListTable.setPageSize(TABLE_ROW_COUNT);
+			argumentListTable.redraw();
+			listDataProvider = new ListDataProvider<CQLFunctionArgument>();
+			listDataProvider.refresh();
+			listDataProvider.getList().addAll(argumentList);
+			ListHandler<CQLFunctionArgument> sortHandler = new ListHandler<CQLFunctionArgument>(
+					listDataProvider.getList());
+			argumentListTable.addColumnSortHandler(sortHandler);
+			argumentListTable = addColumnToTable(argumentListTable, sortHandler);
+			listDataProvider.addDataDisplay(argumentListTable);
+			CustomPager.Resources pagerResources = GWT
+					.create(CustomPager.Resources.class);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
+					pagerResources, false, 0, true);
+			spager.setDisplay(argumentListTable);
+			spager.setPageStart(0);
+			cellTablePanel.add(argumentListTable);
+			//cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
 		} else {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
 			tableHeader.getElement().setId("tableHeader_Label");
@@ -1444,6 +1435,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 		}
+		/*} else {
+			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
+			tableHeader.getElement().setId("tableHeader_Label");
+			tableHeader.setStyleName("measureGroupingTableHeader");
+			tableHeader.getElement().setAttribute("tabIndex", "0");
+			HTML desc = new HTML("<p> No Arguments Added.</p>");
+			cellTablePanel.add(tableHeader);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(desc);
+		}*/
 		
 	}
 	
@@ -2690,7 +2691,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPATToggleSwitch()
 	 */
@@ -2698,7 +2699,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public ToggleSwitch getContextPATToggleSwitch() {
 		return contextPATToggleSwitch;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPOPToggleSwitch()
 	 */
@@ -2706,7 +2707,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public ToggleSwitch getContextPOPToggleSwitch() {
 		return contextPOPToggleSwitch;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getAddParameterButton()
 	 */
@@ -2714,7 +2715,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getAddParameterButton() {
 		return parameterButtonBar.getSaveButton();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getParameterButtonBar()
 	 */
@@ -2730,12 +2731,20 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public CQLSaveDeleteEraseButtonBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionButtonBar()
 	 */
 	@Override
 	public CQLSaveDeleteEraseButtonBar getFunctionButtonBar() {
 		return functionButtonBar;
+	}
+	@Override
+	public List<CQLFunctionArgument> getFunctionArgumentList() {
+		return functionArgumentList;
+	}
+	@Override
+	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
+		this.functionArgumentList = functionArgumentList;
 	}
 }

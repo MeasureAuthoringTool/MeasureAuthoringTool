@@ -2,7 +2,6 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
@@ -13,7 +12,6 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -24,7 +22,6 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.base.ComplexWidget;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,7 +36,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -635,14 +631,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the adds the new argument
 		 */
 		Button getAddNewArgument();
-
+		
 		/**
 		 * Gets the context pat toggle switch.
 		 *
 		 * @return the context pat toggle switch
 		 */
 		ToggleSwitch getContextPATToggleSwitch();
-
+		
 		/**
 		 * Gets the context pop toggle switch.
 		 *
@@ -663,27 +659,31 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param observer the new observer
 		 */
 		void setObserver(Observer observer);
-
+		
 		/**
 		 * Gets the parameter button bar.
 		 *
 		 * @return the parameter button bar
 		 */
 		CQLSaveDeleteEraseButtonBar getParameterButtonBar();
-
+		
 		/**
 		 * Gets the define button bar.
 		 *
 		 * @return the define button bar
 		 */
 		CQLSaveDeleteEraseButtonBar getDefineButtonBar();
-
+		
 		/**
 		 * Gets the function button bar.
 		 *
 		 * @return the function button bar
 		 */
 		CQLSaveDeleteEraseButtonBar getFunctionButtonBar();
+		
+		List<CQLFunctionArgument> getFunctionArgumentList();
+		
+		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
 		
 	}
 	
@@ -842,7 +842,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				CQLModel currentModel = new CQLModel();
 				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
 				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
-				AddFunctionArgumentDialogBox.showComparisonDialogBox(currentModel);
+				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel, addNewFunctionArgument , false);
 			}
 		});
 		
@@ -862,7 +863,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		searchDisplay.getContextPOPToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
+			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if(searchDisplay.getContextPOPToggleSwitch().getValue()){
@@ -884,7 +885,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
-				Window.alert("Edit Clicked for argument name : "+ result.getArgumentName());
+				CQLModel currentModel = new CQLModel();
+				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
+				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
+				
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel,result,true);
 				
 			}
 			
@@ -1366,34 +1371,34 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	
-     /**
-      * Sets the definition widget read only.
-      *
-      * @param isEditable the new definition widget read only
-      */
-     private void setDefinitionWidgetReadOnly(boolean isEditable){
+	/**
+	 * Sets the definition widget read only.
+	 *
+	 * @param isEditable the new definition widget read only
+	 */
+	private void setDefinitionWidgetReadOnly(boolean isEditable){
 		
-    	searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
- 		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
- 		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
- 		searchDisplay.getContextPATToggleSwitch().setEnabled(isEditable);
- 		searchDisplay.getContextPOPToggleSwitch().setEnabled(isEditable);
+		searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
+		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
+		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
+		searchDisplay.getContextPATToggleSwitch().setEnabled(isEditable);
+		searchDisplay.getContextPOPToggleSwitch().setEnabled(isEditable);
 	}
-     
-     
-     /**
-      * Sets the function widget read only.
-      *
-      * @param isEditable the new function widget read only
-      */
-     private void setFunctionWidgetReadOnly(boolean isEditable){
-    	
-    	 searchDisplay.getFuncNameTxtArea().setEnabled(isEditable);
- 		searchDisplay.getFunctionBodyAceEditor().setReadOnly(!isEditable);
- 		searchDisplay.getFunctionButtonBar().setEnabled(isEditable);
- 		searchDisplay.getAddNewArgument().setEnabled(isEditable);
- 	}
-
+	
+	
+	/**
+	 * Sets the function widget read only.
+	 *
+	 * @param isEditable the new function widget read only
+	 */
+	private void setFunctionWidgetReadOnly(boolean isEditable){
+		
+		searchDisplay.getFuncNameTxtArea().setEnabled(isEditable);
+		searchDisplay.getFunctionBodyAceEditor().setReadOnly(!isEditable);
+		searchDisplay.getFunctionButtonBar().setEnabled(isEditable);
+		searchDisplay.getAddNewArgument().setEnabled(isEditable);
+	}
+	
 	
 	
 	/**
@@ -1471,7 +1476,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				clickedMenu = "param";
 				searchDisplay.buildParameterLibraryView();
 				setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+						.checkForEditPermission());
 				
 			}
 		});

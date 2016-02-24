@@ -84,7 +84,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
  */
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
-	
+	boolean isEditable = true;
 	/** The main panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
 	/** The cell table panel. */
@@ -1632,8 +1632,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				String title = "Click to Modify QDM";
 				String cssClass = "customEditButton";
 				
-				sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-						+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
+				if(isEditable){
+					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
+							+ "' class=\" " + cssClass + "\">Editable</button>");
+				} else {
+					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
+							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
+				}
 				
 				
 				return sb.toSafeHtml();

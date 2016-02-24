@@ -2,6 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.MatContext;
@@ -11,6 +12,7 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -19,12 +21,15 @@ import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.base.ComplexWidget;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -33,6 +38,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -446,12 +452,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setIsDefinitionDirty(Boolean isDefinitionDirty);
 		
 		Boolean getIsDefinitionDirty();
-		/**
-		 * Gets the context pat button.
-		 *
-		 * @return the context pat button
-		 */
-		Button getContextPatButton();
 		
 		ComplexWidget getWarningMessageAlertParameter();
 		
@@ -464,14 +464,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getClearDefinitionYesButton();
 		
 		Button getClearDefinitionNoButton();
-		
-		
-		/**
-		 * Gets the context pop button.
-		 *
-		 * @return the context pop button
-		 */
-		Button getContextPopButton();
 		
 		/**
 		 * Update suggest func oracle.
@@ -524,6 +516,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getEraseParameterButton();
 		
 		Button getAddNewArgument();
+
+		ToggleSwitch getContextPATToggleSwitch();
+
+		ToggleSwitch getContextPOPToggleSwitch();
 		
 		Observer getObserver();
 		
@@ -676,28 +672,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getContextPatButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getContextPatButton().setEnabled(false);
-				searchDisplay.getContextPatButton().setType(ButtonType.SUCCESS);
-				searchDisplay.getContextPopButton().setEnabled(true);
-				searchDisplay.getContextPopButton().setType(ButtonType.PRIMARY);
-			}
-		});
 		
-		
-		searchDisplay.getContextPopButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getContextPatButton().setEnabled(true);
-				searchDisplay.getContextPatButton().setType(ButtonType.PRIMARY);
-				searchDisplay.getContextPopButton().setEnabled(false);
-				searchDisplay.getContextPopButton().setType(ButtonType.SUCCESS);
-			}
-		});
 		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -707,6 +682,35 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				AddFunctionArgumentDialogBox.showComparisonDialogBox(currentModel);
 			}
 		});
+		
+		
+		searchDisplay.getContextPATToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				
+				if(searchDisplay.getContextPATToggleSwitch().getValue()){
+					searchDisplay.getContextPOPToggleSwitch().setValue(false);
+				} else {
+					searchDisplay.getContextPOPToggleSwitch().setValue(true);
+				}
+				
+			}
+		});
+		
+		searchDisplay.getContextPOPToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(searchDisplay.getContextPOPToggleSwitch().getValue()){
+					searchDisplay.getContextPATToggleSwitch().setValue(false);
+				} else {
+					searchDisplay.getContextPATToggleSwitch().setValue(true);
+				}
+				
+			}
+		});
+		
 	}
 	private void addObserverHandler() {
 		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {

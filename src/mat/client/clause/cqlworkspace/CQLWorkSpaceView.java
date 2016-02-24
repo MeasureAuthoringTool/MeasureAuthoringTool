@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
@@ -15,6 +16,7 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -31,7 +33,6 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -41,6 +42,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -74,6 +76,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -175,15 +178,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The Function Body ace editor. */
 	private AceEditor functionBodyAceEditor = new AceEditor();
 	
-	/**
-	 * Button addParameterButton.
-	 */
-	private Button addParameterButton = new Button();
-	
-	/**
-	 * Button deleteParameterButton.
-	 */
-	private Button deleteParameterButton = new Button();
 	
 	/**
 	 * SuggestBox searchSuggestTextBox.
@@ -343,15 +337,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop toggle switch. */
 	private ToggleSwitch contextPOPToggleSwitch = new ToggleSwitch();
 	
-	/** The erase define button. */
-	private Button eraseDefineButton = new Button();
-	
-	/** The context pat button. */
-	private Button contextPatButton = new Button();
-	
-	/** The context pop button. */
-	private Button contextPopButton = new Button();
-	
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
@@ -509,6 +494,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					if(getDefinitionMap().get(selectedDefinitionID) != null){
 						getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
 						getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
+						/*if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
+							getContextPATToggleSwitch().setValue(true);
+							getContextPOPToggleSwitch().setValue(false);
+						} else {
+							getContextPOPToggleSwitch().setValue(true);
+							getContextPATToggleSwitch().setValue(false);
+						}*/
 					}
 				}
 				
@@ -941,7 +933,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		//ButtonToolBar parameterButtonToolBar = new ButtonToolBar();
 		
 		Label parameterLabel = new Label(LabelType.INFO,"Parameter");
 		parameterLabel.setMarginTop(5);
@@ -960,15 +951,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		clearParameterTopButton.setText("Clear");
 		clearParameterTopButton.setId("ClearParameter_Button");
 		
-		addParameterButton.setType(ButtonType.INFO);
-		addParameterButton.setSize(ButtonSize.EXTRA_SMALL);
-		addParameterButton.setIcon(IconType.SAVE);
-		addParameterButton.setId("AddParameter_Button");
-		//addParameterButton.setMarginTop(10);
-		//addParameterButton.setMarginLeft(15);
-		addParameterButton.setTitle("Save");
-		addParameterButton.setText("Save");
-		
 		//parameterAceEditor.startEditor();
 		parameterAceEditor.setText("");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
@@ -977,21 +959,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterAceEditor.setSize("675px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
-		
-		//addParameterButton = new Button();
-		addParameterButton.setType(ButtonType.INFO);
-		addParameterButton.setSize(ButtonSize.EXTRA_SMALL);
-		addParameterButton.setId("AddParameter_Button");
-		addParameterButton.setTitle("Save");
-		addParameterButton.setText("Save");
-		
-		deleteParameterButton.setType(ButtonType.INFO);
-		deleteParameterButton.setSize(ButtonSize.EXTRA_SMALL);
-		deleteParameterButton.setIcon(IconType.REMOVE);
-		deleteParameterButton.setTitle("Delete");
-		deleteParameterButton.setText("Delete");
-		deleteParameterButton.setId("DeleteParameter_Button");
-		
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		successMessageAlertParameter.setType(AlertType.SUCCESS);
@@ -1035,13 +1002,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterVP.add(parameterNameTxtArea);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
-		
-		//parameterButtonToolBar.add(clearParameterTopButton);
-		//parameterButtonToolBar.add(addParameterButton);
-		//parameterButtonToolBar.addStyleName("myAccountButtonLayout continueButton");
-		//parameterVP.add(parameterButtonToolBar);
-		
-		//parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterAceEditor);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.setStyleName("topping");
@@ -1164,36 +1124,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		
-		//addDefineButton.setType(ButtonType.PRIMARY);
-		//addDefineButton.setSize(ButtonSize.DEFAULT);
-		addDefineButton.setType(ButtonType.LINK);
-		addDefineButton.setId("AddDefine_Button");
-		addDefineButton.setMarginTop(10);
-		//addDefineButton.setMarginLeft(15);
-		addDefineButton.setTitle("Save");
-		//addDefineButton.setText("Save");
-		addDefineButton.setIcon(IconType.SAVE);
-		addDefineButton.setIconSize(IconSize.LARGE);
-		addDefineButton.setColor("#0964A2");
-		addDefineButton.setSize("30px", "30px");
-		
-		deleteDefineButton.setType(ButtonType.LINK);
-		deleteDefineButton.setId("DeleteDefine_Button");
-		deleteDefineButton.setMarginTop(10);
-		deleteDefineButton.setTitle("Delete");
-		deleteDefineButton.setIcon(IconType.TRASH);
-		deleteDefineButton.setIconSize(IconSize.LARGE);
-		deleteDefineButton.setColor("red");
-		deleteDefineButton.setSize("30px", "30px");
-		
-		eraseDefineButton.setType(ButtonType.LINK);
-		eraseDefineButton.setId("EraseDefine_Button");
-		eraseDefineButton.setMarginTop(10);
-		eraseDefineButton.setTitle("Erase");
-		eraseDefineButton.setIcon(IconType.ERASER);
-		eraseDefineButton.setIconSize(IconSize.LARGE);
-		eraseDefineButton.setColor("#0964A2");
-		eraseDefineButton.setSize("30px", "30px");
 		successMessageAlertDefinition.setType(AlertType.SUCCESS);
 		successMessageAlertDefinition.setWidth("600px");
 		successMessageAlertDefinition.setVisible(false);
@@ -1235,7 +1165,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		contextPATToggleSwitch.setSize(SizeType.MINI);
 		contextPATToggleSwitch.setLabelText("Patient");
-		contextPATToggleSwitch.setIndeterminate(true);
+		contextPATToggleSwitch.setValue(true);
 		contextPATToggleSwitch.setTitle("Click to change context");
 		contextPATToggleSwitch.setLabelWidth("75");
 		contextPATToggleSwitch.setOnIcon(IconType.CHECK);
@@ -1246,6 +1176,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		contextPOPToggleSwitch.setSize(SizeType.MINI);
 		contextPOPToggleSwitch.setLabelText("Population");
+		contextPOPToggleSwitch.setValue(false);
 		contextPOPToggleSwitch.setTitle("Click to change Context");
 		contextPOPToggleSwitch.setLabelWidth("75");
 		contextPOPToggleSwitch.setOnIcon(IconType.CHECK);
@@ -1253,54 +1184,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		contextPOPToggleSwitch.setOffIcon(IconType.TIMES);
 		contextPOPToggleSwitch.setOffColor(ColorType.DANGER);
 		
-		//contextPatButton.setType(ButtonType.PRIMARY);
-		contextPatButton.setId("ConextPatient_Button");
-		contextPatButton.setMarginTop(10);
-		contextPatButton.setTitle("Patient");
-		contextPatButton.setText("Patient");
-		contextPatButton.setStyleName("buttonContext");
-		
-		contextPopButton.setId("ConextPopulation_Button");
-		contextPopButton.setMarginTop(10);
-		contextPopButton.setTitle("Population");
-		contextPopButton.setText("Population");
-		contextPopButton.setStyleName("buttonContext");
-		
-		
-		contextPatButton.setType(ButtonType.SUCCESS);
-		contextPopButton.setType(ButtonType.PRIMARY);
-		
-		/*defineConextPanel.add(contextPATToggleSwitch);
-		defineConextPanel.add(contextPOPToggleSwitch);*/
-		defineConextPanel.add(contextPatButton);
-		defineConextPanel.add(contextPopButton);
-		
-		/*if(get().getValue()){
-			//contextPATToggleSwitch.setValue(true);
-			contextPatButton.setType(ButtonType.SUCCESS);
-			contextPopButton.setType(ButtonType.PRIMARY);
-		} else {
-			//contextPOPToggleSwitch.setValue(true);
-			contextPopButton.setType(ButtonType.SUCCESS);
-			contextPatButton.setType(ButtonType.PRIMARY);
-		}*/
-		
-		//defineConextPanel.getElement().setAttribute("style", "margin-left:15px");
-		
-		
-		
-		
-		/*HorizontalPanel buttonLayOutPanel = new HorizontalPanel();
-		buttonLayOutPanel.add(addDefineButton);
-		buttonLayOutPanel.add(deleteDefineButton);
-		buttonLayOutPanel.add(eraseDefineButton);
-		buttonLayOutPanel.setStyleName("myAccountButtonLayout continueButton");
-		 */
-		/*HorizontalPanel iconPanel = new HorizontalPanel();
-		iconPanel.add(saveDefineIcon);
-		iconPanel.add(eraseDefineIcon);
-		iconPanel.setStyleName("myAccountButtonLayout");
-		 */
+		defineConextPanel.add(contextPATToggleSwitch);
+		defineConextPanel.add(contextPOPToggleSwitch);
+		defineConextPanel.setStyleName("contextToggleSwitch");
 		definitionVP.add(successMessageAlertDefinition);
 		definitionVP.add(errorMessageAlertDefinition);
 		definitionVP.add(warningMessageAlertDefinition);
@@ -1928,18 +1814,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		this.viewCQL = viewCQL;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getAddParameterButton()
-	 */
-	/**
-	 * Gets the adds the parameter button.
-	 *
-	 * @return the adds the parameter button
-	 */
-	@Override
-	public Button getAddParameterButton() {
-		return addParameterButton;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getRemoveParameterButton()
@@ -2521,25 +2395,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return parameterButtonBar.getEraseButton();
 	}
 	
-	/**
-	 * Gets the context pat button.
-	 *
-	 * @return the context pat button
-	 */
-	@Override
-	public Button getContextPatButton() {
-		return contextPatButton;
-	}
-	
-	/**
-	 * Gets the context pop button.
-	 *
-	 * @return the context pop button
-	 */
-	@Override
-	public Button getContextPopButton() {
-		return contextPopButton;
-	}
 	@Override
 	public Button getSaveFunctionButton() {
 		return functionButtonBar.getSaveButton();
@@ -2710,5 +2565,20 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void setObserver(Observer observer) {
 		this.observer = observer;
+	}
+
+	@Override
+	public ToggleSwitch getContextPATToggleSwitch() {
+		return contextPATToggleSwitch;
+	}
+
+	@Override
+	public ToggleSwitch getContextPOPToggleSwitch() {
+		return contextPOPToggleSwitch;
+	}
+
+	@Override
+	public Button getAddParameterButton() {
+		return parameterButtonBar.getSaveButton();
 	}
 }

@@ -3,8 +3,10 @@ package mat.client.clause.cqlworkspace;
 import java.util.HashMap;
 import java.util.List;
 import mat.client.MatPresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -516,12 +518,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId);
 		
 		Button getEraseDefineButton();
-
+		
 		Button getDeleteParameterButton();
-
+		
 		Button getEraseParameterButton();
 		
 		Button getAddNewArgument();
+		
+		Observer getObserver();
+		
+		void setObserver(Observer observer);
 		
 	}
 	
@@ -535,6 +541,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	public CQLWorkSpacePresenter(ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
+		addEventHandlers();
+		addObserverHandler();
+	}
+	
+	private void addEventHandlers() {
 		searchDisplay.getAddDefineButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -552,16 +563,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 			
 		});
-		
-		
-		/*searchDisplay.getSaveCQLGeneralInfoBtn().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				saveAndModifyCQLGeneralInfo();
-			}
-		});*/
 		
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -590,15 +591,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		/*searchDisplay.getContextToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				
-				resetMessageDisplay();
-			}
-		});*/
-		
 		
 		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
 			
@@ -619,7 +611,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsParameterDirty(true);
 			}
 		});
-				
+		
 		searchDisplay.getEraseDefineButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -643,7 +635,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				}
 			}
 		});
-						
+		
 		searchDisplay.getClearParameterYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -716,7 +708,23 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 	}
-	
+	private void addObserverHandler() {
+		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
+			
+			@Override
+			public void onModifyClicked(CQLFunctionArgument result) {
+				Window.alert("Edit Clicked for argument name : "+ result.getArgumentName());
+				
+			}
+			
+			@Override
+			public void onDeleteClicked(CQLFunctionArgument result, int index) {
+				Window.alert("Delete Clicked for argument name : "+ result.getArgumentName());
+				
+			}
+			
+		});
+	}
 	private void clearParameter() {
 		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
 				(searchDisplay.getParameterNameTxtArea() != null)	) {

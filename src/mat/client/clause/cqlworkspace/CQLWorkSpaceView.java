@@ -2,6 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
@@ -13,6 +14,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -39,8 +41,13 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -54,6 +61,7 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
@@ -347,116 +355,35 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
-
+	
 	private Boolean isDefinitionDirty = false;
-	
-	
-	@Override
-	public Alert getWarningMessageAlertParameter() {
-		return warningMessageAlertParameter;
-	}
-	
-	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
-		this.warningMessageAlertParameter = warningMessageAlertParameter;
-	}
-	
-	@Override
-	public Alert getWarningMessageAlertDefinition() {
-		return warningMessageAlertDefinition;
-	}
-	
-	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
-		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
-	}
-	
-	@Override
-	public void setIsParameterDirty(Boolean isParameterDirty) {
-		this.isParameterDirty = isParameterDirty;
-	}
-	
-	@Override
-	public Boolean getIsParameterDirty() {
-		return isParameterDirty;
-	}
-	
-	
-	@Override
-	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
-		this.isDefinitionDirty = isDefinitionDirty;
-	}
-	
-	@Override
-	public Boolean getIsDefinitionDirty() {
-		return isDefinitionDirty;
-	}
-	
 	/**
-	 * Gets the define collapse.
-	 *
-	 * @return the define collapse
+	 * The Interface Observer.
 	 */
-	@Override
-	public PanelCollapse getDefineCollapse() {
-		return defineCollapse;
+	public static interface Observer {
+		
+		/**
+		 * On modify clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
+		void onModifyClicked(CQLFunctionArgument result);
+		
+		/**
+		 * On delete clicked.
+		 *
+		 * @param result            the result
+		 * @param index the index
+		 */
+		void onDeleteClicked(CQLFunctionArgument result, int index);
 	}
 	
-	/**
-	 * Sets the define collapse.
-	 *
-	 * @param defineCollapse the new define collapse
-	 */
-	public void setDefineCollapse(PanelCollapse defineCollapse) {
-		this.defineCollapse = defineCollapse;
-	}
-	
-	@Override
-	public Button getClearParameterYesButton() {
-		return clearParameterYesButton;
-	}
-	
-	@Override
-	public Button getClearParameterNoButton() {
-		return clearParameterNoButton;
-	}
-	
-	@Override
-	public Button getClearParameterTopButton() {
-		return clearParameterTopButton;
-	}
-	
-	@Override
-	public Button getClearDefinitionYesButton() {
-		return clearDefinitionYesButton;
-	}
-	
-	@Override
-	public Button getClearDefinitionNoButton() {
-		return clearDefinitionNoButton;
-	}
+	/** The observer. */
+	private Observer observer;
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamCollapse()
-	 */
-	/**
-	 * Gets the param collapse.
-	 *
-	 * @return the param collapse
-	 */
-	@Override
-	public PanelCollapse getParamCollapse() {
-		return paramCollapse;
-	}
-	
-	/**
-	 * Sets the param collapse.
-	 *
-	 * @param paramCollapse the new param collapse
-	 */
-	public void setParamCollapse(PanelCollapse paramCollapse) {
-		this.paramCollapse = paramCollapse;
-	}
 	
 	/**
 	 * Instantiates a new CQL work space view.
@@ -1630,7 +1557,137 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	private CompositeCell<CQLFunctionArgument> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
+		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
+		if(isEditable){
+			cells.add(getModifyQDMButtonCell());
+			cells.add(getDeleteQDMButtonCell());
+		}
+		
+		CompositeCell<CQLFunctionArgument> cell = new CompositeCell<CQLFunctionArgument>(
+				cells) {
+			@Override
+			public void render(Context context, CQLFunctionArgument object,
+					SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
+				for (HasCell<CQLFunctionArgument, ?> hasCell : cells) {
+					render(context, object, sb, hasCell);
+				}
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			
+			@Override
+			protected <X> void render(Context context,
+					CQLFunctionArgument object, SafeHtmlBuilder sb,
+					HasCell<CQLFunctionArgument, X> hasCell) {
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				if ((object != null)) {
+					cell.render(context, hasCell.getValue(object), sb);
+				} else {
+					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				}
+				sb.appendHtmlConstant("</td>");
+			}
+			
+			@Override
+			protected Element getContainerElement(Element parent) {
+				return parent.getFirstChildElement().getFirstChildElement()
+						.getFirstChildElement();
+			}
+		};
+		return cell;
+	}
 	
+	
+	
+	private HasCell<CQLFunctionArgument, SafeHtml> getModifyQDMButtonCell() {
+		
+		HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
+			
+			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return modifyButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLFunctionArgument, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLFunctionArgument, SafeHtml>() {
+					@Override
+					public void update(int index, CQLFunctionArgument object,
+							SafeHtml value) {
+						if ((object != null)) {
+							observer.onModifyClicked(object);
+						}
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLFunctionArgument object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Modify QDM";
+				String cssClass = "customEditButton";
+				
+				sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
+						+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
+				
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
+	}
+	
+	/**
+	 * Gets the delete qdm button cell.
+	 * 
+	 * @return the delete qdm button cell
+	 */
+	private HasCell<CQLFunctionArgument, SafeHtml> getDeleteQDMButtonCell() {
+		
+		HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
+			
+			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return deleteButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLFunctionArgument, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLFunctionArgument, SafeHtml>() {
+					@Override
+					public void update(int index, CQLFunctionArgument object,
+							SafeHtml value) {
+						observer.onDeleteClicked(object, index);
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLFunctionArgument object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Delete QDM";
+				String cssClass;
+				
+				cssClass = "customDeleteButton";
+				sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
+						+ title + "' class=\" " + cssClass
+						+ "\"/>Delete</button>");
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
+	}
 	private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
 			ListHandler<CQLFunctionArgument> sortHandler) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
@@ -1677,8 +1734,24 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					.fromSafeConstant("<span title=\"Datatype\">" + "Datatype"
 							+ "</span>"));
 			
+			String colName = "Modify";
+			
+			
+			
+			// Modify by Delete Column
+			table.addColumn(new Column<CQLFunctionArgument, CQLFunctionArgument>(
+					getCompositeCellForQDMModifyAndDelete(true)) {
+				
+				@Override
+				public CQLFunctionArgument getValue(CQLFunctionArgument object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+					+ colName + "</span>"));
+			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
 		}
 		return table;
 	}
@@ -2027,7 +2100,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getDeleteParameterButton() {
 		return parameterButtonBar.getDeleteButton();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getViewDefinitions()
 	 */
@@ -2442,7 +2515,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Button getEraseParameterButton() {
 		return parameterButtonBar.getEraseButton();
 	}
-
+	
 	/**
 	 * Gets the context pat button.
 	 *
@@ -2503,7 +2576,112 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Alert getErrorMessageAlertFunction() {
 		return errorMessageAlertFunction;
 	}
+	@Override
+	public Alert getWarningMessageAlertParameter() {
+		return warningMessageAlertParameter;
+	}
 	
+	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
+		this.warningMessageAlertParameter = warningMessageAlertParameter;
+	}
+	
+	@Override
+	public Alert getWarningMessageAlertDefinition() {
+		return warningMessageAlertDefinition;
+	}
+	
+	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
+		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
+	}
+	
+	@Override
+	public void setIsParameterDirty(Boolean isParameterDirty) {
+		this.isParameterDirty = isParameterDirty;
+	}
+	
+	@Override
+	public Boolean getIsParameterDirty() {
+		return isParameterDirty;
+	}
+	
+	
+	@Override
+	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
+		this.isDefinitionDirty = isDefinitionDirty;
+	}
+	
+	@Override
+	public Boolean getIsDefinitionDirty() {
+		return isDefinitionDirty;
+	}
+	
+	/**
+	 * Gets the define collapse.
+	 *
+	 * @return the define collapse
+	 */
+	@Override
+	public PanelCollapse getDefineCollapse() {
+		return defineCollapse;
+	}
+	
+	/**
+	 * Sets the define collapse.
+	 *
+	 * @param defineCollapse the new define collapse
+	 */
+	public void setDefineCollapse(PanelCollapse defineCollapse) {
+		this.defineCollapse = defineCollapse;
+	}
+	
+	@Override
+	public Button getClearParameterYesButton() {
+		return clearParameterYesButton;
+	}
+	
+	@Override
+	public Button getClearParameterNoButton() {
+		return clearParameterNoButton;
+	}
+	
+	@Override
+	public Button getClearParameterTopButton() {
+		return clearParameterTopButton;
+	}
+	
+	@Override
+	public Button getClearDefinitionYesButton() {
+		return clearDefinitionYesButton;
+	}
+	
+	@Override
+	public Button getClearDefinitionNoButton() {
+		return clearDefinitionNoButton;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamCollapse()
+	 */
+	/**
+	 * Gets the param collapse.
+	 *
+	 * @return the param collapse
+	 */
+	@Override
+	public PanelCollapse getParamCollapse() {
+		return paramCollapse;
+	}
+	
+	/**
+	 * Sets the param collapse.
+	 *
+	 * @param paramCollapse the new param collapse
+	 */
+	public void setParamCollapse(PanelCollapse paramCollapse) {
+		this.paramCollapse = paramCollapse;
+	}
 	/**
 	 * Gets the msg panel.
 	 *
@@ -2519,5 +2697,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public Button getAddNewArgument() {
 		return addNewArgument;
+	}
+	@Override
+	public Observer getObserver() {
+		return observer;
+	}
+	@Override
+	public void setObserver(Observer observer) {
+		this.observer = observer;
 	}
 }

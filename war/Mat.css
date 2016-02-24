@@ -2469,8 +2469,6 @@ padding: 2px;
 }
 
 .buttonContext {
-	//border: 4px solid #26759E !important;
-    border-radius: 25px !important;
     box-shadow: 0 2px 2px #878787 !important;
     display: inline-block !important;
     font-family: arial,helvetica,sans-serif !important;
@@ -2479,20 +2477,18 @@ padding: 2px;
     margin-right: 5px;
     padding: 5px 20px !important;
     text-decoration: none !important;
-    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3) !important;
     width: 90px;
+    background: gray;!important 
+    -webkit-filter: grayscale(100%); 
+    filter: grayscale(100%);
 }
 
-.buttonContext:hover {
-	border: 4px solid #26759E !important;
-	//background-color: #26759E !important;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#26759E) !important,
-		to(#133D5B)) !important;
-	background-image: -webkit-linear-gradient(top, #26759E, #133D5B) !important;
-	background-image: -moz-linear-gradient(top, #26759E, #133D5B) !important;
-	background-image: -ms-linear-gradient(top, #26759E, #133D5B) !important;
-	background-image: -o-linear-gradient(top, #26759E, #133D5B) !important;
-	background-image: linear-gradient(to bottom, #26759E, #133D5B) !important;
-	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,
-		startColorstr=#26759E, endColorstr=#133D5B) !important;
+.contextToggleSwitch div{
+	margin-right: 5px;
 }
+
+/* .buttonContext select{
+	-webkit-filter: grayscale(100%); Chrome, Safari, Opera
+    filter: grayscale(100%);
+} */
+

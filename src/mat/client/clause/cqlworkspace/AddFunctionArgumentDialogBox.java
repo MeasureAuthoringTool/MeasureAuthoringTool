@@ -39,7 +39,6 @@ public class AddFunctionArgumentDialogBox {
 		dialogModal.setSize(ModalSize.SMALL);
 		
 		ModalBody modalBody = new ModalBody();
-		modalBody.setHeight("250px");
 		Container modalContainer = new Container();
 		Row rowOne = new Row();
 		Row rowTwo = new Row();
@@ -73,7 +72,9 @@ public class AddFunctionArgumentDialogBox {
 		
 		TextArea argumentNameTextArea = new TextArea();
 		argumentNameTextArea.setPlaceholder("Enter Argument Name");
-		argumentNameTextArea.getElement().setAttribute("style","width:250px;height:25px");
+		argumentNameTextArea.setWidth("250px");
+		argumentNameTextArea.setHeight("25px");
+		//argumentNameTextArea.getElement().setAttribute("style","width:220px;height:25px");
 		
 		Label labelSelectItem = new Label(LabelType.INFO, "Select Item");
 		labelSelectItem.setText("Select Item");

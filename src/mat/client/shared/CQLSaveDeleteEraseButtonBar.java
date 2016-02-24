@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CQLSaveDeleteEraseButtonBar.
  */
@@ -23,6 +24,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	/** The erase button. */
 	private Button eraseButton = new Button();
 	
+	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
 	/**
@@ -71,6 +73,18 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	
 	
 	/**
+	 * Sets the enabled.
+	 *
+	 * @param isEnabled the new enabled
+	 */
+	public void setEnabled(boolean isEnabled){
+		saveButton.setEnabled(isEnabled);
+		deleteButton.setEnabled(isEnabled);
+		eraseButton.setEnabled(isEnabled);
+	}
+	
+	
+	/**
 	 * Gets the save button.
 	 *
 	 * @return the save button
@@ -100,6 +114,11 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	}
 	
 	
+	/**
+	 * Gets the button layout.
+	 *
+	 * @return the button layout
+	 */
 	public HorizontalPanel getButtonLayout() {
 		return buttonLayout;
 	}

@@ -87,7 +87,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
  */
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
-	boolean isEditable = true;
+	/** The is editable. */
+	boolean isEditable = false;
 	/** The main panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
 	/** The cell table panel. */
@@ -96,11 +97,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** Cell Table Row Count. */
 	private static final int TABLE_ROW_COUNT = 2;
 	
+	/** The argument list table. */
 	CellTable<CQLFunctionArgument> argumentListTable;
 	
 	/** The sort provider. */
 	private ListDataProvider<CQLFunctionArgument> listDataProvider;
 	
+	/** The spager. */
 	private MatSimplePager spager;
 	
 	/** The main v panel. */
@@ -156,8 +159,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The error message alert parameter. */
 	private Alert errorMessageAlertFunction = new Alert();
 	
+	/** The clear definition yes button. */
 	private Button clearDefinitionYesButton = new Button();
 	
+	/** The clear definition no button. */
 	private Button clearDefinitionNoButton = new Button();
 	
 	
@@ -260,17 +265,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * HashMap definitionMap.
 	 */
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
-	/**
-	 * Button deleteDefineButton.
-	 */
-	private Button deleteDefineButton = new Button();
-	/**
-	 * Button addDefineButton.
-	 */
-	private Button addDefineButton = new Button();
 	
+	/** The add new argument. */
 	private Button addNewArgument = new Button();
 	
+	/** The function button bar. */
 	CQLSaveDeleteEraseButtonBar functionButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	/** The param badge. */
@@ -308,6 +307,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The current selected paramerter obj id. */
 	private String currentSelectedParamerterObjId = null;
 	
+	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
 	
 	/** The parameter clear top button. */
@@ -316,20 +316,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for clear. */
 	private Boolean isParameterDirty = false;
 	
+	/** The save warning msg. */
 	String saveWarningMsg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
 	
 	/** The warning message alert parameter. */
 	private Alert warningMessageAlertParameter = new Alert();
 	
+	/** The clear parameter yes button. */
 	private Button clearParameterYesButton = new Button();
 	
+	/** The clear parameter no button. */
 	private Button clearParameterNoButton = new Button();
-	
-	/** The save cql general info btn. */
-	//private Button saveCQLGeneralInfoBtn = new Button("Save");
-	
-	/** The context toggle switch. */
-	//private ToggleSwitch contextToggleSwitch = new ToggleSwitch();
 	
 	/** The context pat toggle switch. */
 	private ToggleSwitch contextPATToggleSwitch = new ToggleSwitch();
@@ -337,10 +334,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The context pop toggle switch. */
 	private ToggleSwitch contextPOPToggleSwitch = new ToggleSwitch();
 	
+	/** The define button bar. */
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
-	
+
+	/** The parameter button bar. */
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
+	/** The is definition dirty. */
 	private Boolean isDefinitionDirty = false;
 	/**
 	 * The Interface Observer.
@@ -494,13 +494,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					if(getDefinitionMap().get(selectedDefinitionID) != null){
 						getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
 						getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
-						/*if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
+						if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
 							getContextPATToggleSwitch().setValue(true);
 							getContextPOPToggleSwitch().setValue(false);
 						} else {
 							getContextPOPToggleSwitch().setValue(true);
 							getContextPATToggleSwitch().setValue(false);
-						}*/
+						}
 					}
 				}
 				
@@ -576,6 +576,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#updateFunctionMap()
+	 */
 	@Override
 	public void updateFunctionMap() {
 		functionMap.clear();
@@ -1391,7 +1394,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private void createAddArgumentViewForFunctions() {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		
+		isEditable = MatContext.get().getMeasureLockService()
+				.checkForEditPermission();
 		if (currentSelectedFunctionObjId != null) {
 			CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
 			if(selectedFunction.getArgumentList() != null) {
@@ -1443,7 +1447,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 	}
 	
-	private CompositeCell<CQLFunctionArgument> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
+	/**
+	 * Gets the composite cell for qdm modify and delete.
+	 *
+	 * @return the composite cell for qdm modify and delete
+	 */
+	private CompositeCell<CQLFunctionArgument> getCompositeCellForQDMModifyAndDelete() {
 		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
 		if(isEditable){
 			cells.add(getModifyQDMButtonCell());
@@ -1487,6 +1496,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	
 	
+	/**
+	 * Gets the modify qdm button cell.
+	 *
+	 * @return the modify qdm button cell
+	 */
 	private HasCell<CQLFunctionArgument, SafeHtml> getModifyQDMButtonCell() {
 		
 		HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
@@ -1569,9 +1583,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				String cssClass;
 				
 				cssClass = "customDeleteButton";
-				sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
-						+ title + "' class=\" " + cssClass
-						+ "\"/>Delete</button>");
+				if(isEditable){
+					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
+							+ title + "' class=\" " + cssClass
+							+ "\"/>Delete</button>");
+					
+				} else {
+					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
+							+ title + "' class=\" " + cssClass
+							+ "\" disabled/>Delete</button>");
+				}
 				
 				return sb.toSafeHtml();
 			}
@@ -1579,6 +1600,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		return hasCell;
 	}
+	
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param table the table
+	 * @param sortHandler the sort handler
+	 * @return the cell table
+	 */
 	private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
 			ListHandler<CQLFunctionArgument> sortHandler) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
@@ -1631,7 +1660,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			
 			// Modify by Delete Column
 			table.addColumn(new Column<CQLFunctionArgument, CQLFunctionArgument>(
-					getCompositeCellForQDMModifyAndDelete(true)) {
+					getCompositeCellForQDMModifyAndDelete()) {
 				
 				@Override
 				public CQLFunctionArgument getValue(CQLFunctionArgument object) {
@@ -2378,7 +2407,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * get the erase define button.
 	 *
-	 * @param eraseDefineButton the new erase define button
+	 * @return the erase define button
 	 */
 	@Override
 	public Button getEraseDefineButton() {
@@ -2388,88 +2417,156 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * get the erase define button.
 	 *
-	 * @param eraseDefineButton the new erase define button
+	 * @return the erase parameter button
 	 */
 	@Override
 	public Button getEraseParameterButton() {
 		return parameterButtonBar.getEraseButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getSaveFunctionButton()
+	 */
 	@Override
 	public Button getSaveFunctionButton() {
 		return functionButtonBar.getSaveButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionBodyAceEditor()
+	 */
 	@Override
 	public AceEditor getFunctionBodyAceEditor() {
 		return functionBodyAceEditor;
 	}
 	
+	/**
+	 * Sets the function body ace editor.
+	 *
+	 * @param functionBodyAceEditor the new function body ace editor
+	 */
 	public void setFunctionBodyAceEditor(AceEditor functionBodyAceEditor) {
 		this.functionBodyAceEditor = functionBodyAceEditor;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCurrentSelectedFunctionObjId()
+	 */
 	@Override
 	public String getCurrentSelectedFunctionObjId() {
 		return currentSelectedFunctionObjId;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setCurrentSelectedFunctionObjId(java.lang.String)
+	 */
 	@Override
 	public void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId) {
 		this.currentSelectedFunctionObjId = currentSelectedFunctionObjId;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionMap()
+	 */
 	@Override
 	public HashMap<String, CQLFunctions> getFunctionMap() {
 		return functionMap;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getViewFunctions()
+	 */
 	@Override
 	public List<CQLFunctions> getViewFunctions() {
 		return viewFunctions;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setViewFunctions(java.util.List)
+	 */
 	@Override
 	public void setViewFunctions(List<CQLFunctions> viewFunctions) {
 		this.viewFunctions = viewFunctions;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertFunction()
+	 */
 	@Override
 	public Alert getSuccessMessageAlertFunction() {
 		return successMessageAlertFunction;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertFunction()
+	 */
 	@Override
 	public Alert getErrorMessageAlertFunction() {
 		return errorMessageAlertFunction;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertParameter()
+	 */
 	@Override
 	public Alert getWarningMessageAlertParameter() {
 		return warningMessageAlertParameter;
 	}
 	
+	/**
+	 * Sets the warning message alert parameter.
+	 *
+	 * @param warningMessageAlertParameter the new warning message alert parameter
+	 */
 	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
 		this.warningMessageAlertParameter = warningMessageAlertParameter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertDefinition()
+	 */
 	@Override
 	public Alert getWarningMessageAlertDefinition() {
 		return warningMessageAlertDefinition;
 	}
 	
+	/**
+	 * Sets the warning message alert definition.
+	 *
+	 * @param warningMessageAlertDefinition the new warning message alert definition
+	 */
 	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
 		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsParameterDirty(java.lang.Boolean)
+	 */
 	@Override
 	public void setIsParameterDirty(Boolean isParameterDirty) {
 		this.isParameterDirty = isParameterDirty;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsParameterDirty()
+	 */
 	@Override
 	public Boolean getIsParameterDirty() {
 		return isParameterDirty;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsDefinitionDirty(java.lang.Boolean)
+	 */
 	@Override
 	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
 		this.isDefinitionDirty = isDefinitionDirty;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsDefinitionDirty()
+	 */
 	@Override
 	public Boolean getIsDefinitionDirty() {
 		return isDefinitionDirty;
@@ -2494,26 +2591,41 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		this.defineCollapse = defineCollapse;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterYesButton()
+	 */
 	@Override
 	public Button getClearParameterYesButton() {
 		return clearParameterYesButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterNoButton()
+	 */
 	@Override
 	public Button getClearParameterNoButton() {
 		return clearParameterNoButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterTopButton()
+	 */
 	@Override
 	public Button getClearParameterTopButton() {
 		return clearParameterTopButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearDefinitionYesButton()
+	 */
 	@Override
 	public Button getClearDefinitionYesButton() {
 		return clearDefinitionYesButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearDefinitionNoButton()
+	 */
 	@Override
 	public Button getClearDefinitionNoButton() {
 		return clearDefinitionNoButton;
@@ -2554,31 +2666,76 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
 		return msgHtml;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getAddNewArgument()
+	 */
 	@Override
 	public Button getAddNewArgument() {
 		return addNewArgument;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getObserver()
+	 */
 	@Override
 	public Observer getObserver() {
 		return observer;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setObserver(mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer)
+	 */
 	@Override
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPATToggleSwitch()
+	 */
 	@Override
 	public ToggleSwitch getContextPATToggleSwitch() {
 		return contextPATToggleSwitch;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPOPToggleSwitch()
+	 */
 	@Override
 	public ToggleSwitch getContextPOPToggleSwitch() {
 		return contextPOPToggleSwitch;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getAddParameterButton()
+	 */
 	@Override
 	public Button getAddParameterButton() {
 		return parameterButtonBar.getSaveButton();
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getParameterButtonBar()
+	 */
+	@Override
+	public CQLSaveDeleteEraseButtonBar getParameterButtonBar() {
+		return parameterButtonBar;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getDefineButtonBar()
+	 */
+	@Override
+	public CQLSaveDeleteEraseButtonBar getDefineButtonBar() {
+		return defineButtonBar;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionButtonBar()
+	 */
+	@Override
+	public CQLSaveDeleteEraseButtonBar getFunctionButtonBar() {
+		return functionButtonBar;
 	}
 }

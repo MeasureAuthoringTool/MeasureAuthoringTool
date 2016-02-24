@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -445,24 +446,74 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getClearParameterTopButton();
 		
 		
+		/**
+		 * Sets the checks if is parameter dirty.
+		 *
+		 * @param isParameterDirty the new checks if is parameter dirty
+		 */
 		void setIsParameterDirty(Boolean isParameterDirty);
 		
+		/**
+		 * Gets the checks if is parameter dirty.
+		 *
+		 * @return the checks if is parameter dirty
+		 */
 		Boolean getIsParameterDirty();
 		
+		/**
+		 * Sets the checks if is definition dirty.
+		 *
+		 * @param isDefinitionDirty the new checks if is definition dirty
+		 */
 		void setIsDefinitionDirty(Boolean isDefinitionDirty);
 		
+		/**
+		 * Gets the checks if is definition dirty.
+		 *
+		 * @return the checks if is definition dirty
+		 */
 		Boolean getIsDefinitionDirty();
 		
+		/**
+		 * Gets the warning message alert parameter.
+		 *
+		 * @return the warning message alert parameter
+		 */
 		ComplexWidget getWarningMessageAlertParameter();
 		
+		/**
+		 * Gets the warning message alert definition.
+		 *
+		 * @return the warning message alert definition
+		 */
 		ComplexWidget getWarningMessageAlertDefinition();
 		
+		/**
+		 * Gets the clear parameter yes button.
+		 *
+		 * @return the clear parameter yes button
+		 */
 		Button getClearParameterYesButton();
 		
+		/**
+		 * Gets the clear parameter no button.
+		 *
+		 * @return the clear parameter no button
+		 */
 		Button getClearParameterNoButton();
 		
+		/**
+		 * Gets the clear definition yes button.
+		 *
+		 * @return the clear definition yes button
+		 */
 		Button getClearDefinitionYesButton();
 		
+		/**
+		 * Gets the clear definition no button.
+		 *
+		 * @return the clear definition no button
+		 */
 		Button getClearDefinitionNoButton();
 		
 		/**
@@ -489,41 +540,150 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		TextArea getFuncNameTxtArea();
 		
+		/**
+		 * Gets the save function button.
+		 *
+		 * @return the save function button
+		 */
 		Button getSaveFunctionButton();
 		
+		/**
+		 * Gets the function body ace editor.
+		 *
+		 * @return the function body ace editor
+		 */
 		AceEditor getFunctionBodyAceEditor();
 		
+		/**
+		 * Update function map.
+		 */
 		void updateFunctionMap();
 		
+		/**
+		 * Gets the current selected function obj id.
+		 *
+		 * @return the current selected function obj id
+		 */
 		String getCurrentSelectedFunctionObjId();
 		
+		/**
+		 * Gets the function map.
+		 *
+		 * @return the function map
+		 */
 		HashMap<String, CQLFunctions> getFunctionMap();
 		
+		/**
+		 * Gets the view functions.
+		 *
+		 * @return the view functions
+		 */
 		List<CQLFunctions> getViewFunctions();
 		
+		/**
+		 * Sets the view functions.
+		 *
+		 * @param viewFunctions the new view functions
+		 */
 		void setViewFunctions(List<CQLFunctions> viewFunctions);
 		
+		/**
+		 * Gets the success message alert function.
+		 *
+		 * @return the success message alert function
+		 */
 		Alert getSuccessMessageAlertFunction();
 		
+		/**
+		 * Gets the error message alert function.
+		 *
+		 * @return the error message alert function
+		 */
 		Alert getErrorMessageAlertFunction();
 		
+		/**
+		 * Sets the current selected function obj id.
+		 *
+		 * @param currentSelectedFunctionObjId the new current selected function obj id
+		 */
 		void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId);
 		
+		/**
+		 * Gets the erase define button.
+		 *
+		 * @return the erase define button
+		 */
 		Button getEraseDefineButton();
 		
+		/**
+		 * Gets the delete parameter button.
+		 *
+		 * @return the delete parameter button
+		 */
 		Button getDeleteParameterButton();
 		
+		/**
+		 * Gets the erase parameter button.
+		 *
+		 * @return the erase parameter button
+		 */
 		Button getEraseParameterButton();
 		
+		/**
+		 * Gets the adds the new argument.
+		 *
+		 * @return the adds the new argument
+		 */
 		Button getAddNewArgument();
 
+		/**
+		 * Gets the context pat toggle switch.
+		 *
+		 * @return the context pat toggle switch
+		 */
 		ToggleSwitch getContextPATToggleSwitch();
 
+		/**
+		 * Gets the context pop toggle switch.
+		 *
+		 * @return the context pop toggle switch
+		 */
 		ToggleSwitch getContextPOPToggleSwitch();
 		
+		/**
+		 * Gets the observer.
+		 *
+		 * @return the observer
+		 */
 		Observer getObserver();
 		
+		/**
+		 * Sets the observer.
+		 *
+		 * @param observer the new observer
+		 */
 		void setObserver(Observer observer);
+
+		/**
+		 * Gets the parameter button bar.
+		 *
+		 * @return the parameter button bar
+		 */
+		CQLSaveDeleteEraseButtonBar getParameterButtonBar();
+
+		/**
+		 * Gets the define button bar.
+		 *
+		 * @return the define button bar
+		 */
+		CQLSaveDeleteEraseButtonBar getDefineButtonBar();
+
+		/**
+		 * Gets the function button bar.
+		 *
+		 * @return the function button bar
+		 */
+		CQLSaveDeleteEraseButtonBar getFunctionButtonBar();
 		
 	}
 	
@@ -541,6 +701,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		addObserverHandler();
 	}
 	
+	/**
+	 * Adds the event handlers.
+	 */
 	private void addEventHandlers() {
 		searchDisplay.getAddDefineButton().addClickHandler(new ClickHandler() {
 			
@@ -712,6 +875,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 	}
+	
+	/**
+	 * Adds the observer handler.
+	 */
 	private void addObserverHandler() {
 		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
 			
@@ -729,6 +896,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 		});
 	}
+	
+	/**
+	 * Clear parameter.
+	 */
 	private void clearParameter() {
 		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
 				(searchDisplay.getParameterNameTxtArea() != null)	) {
@@ -737,6 +908,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 	}
 	
+	/**
+	 * Clear definition.
+	 */
 	private void clearDefinition() {
 		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
@@ -1004,11 +1178,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		resetMessageDisplay();
 		String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
+		String defineContext = "";
+		if(searchDisplay.getContextPATToggleSwitch().getValue()){
+			defineContext = "Patient";
+		} else {
+			defineContext = "Population";
+		}
 		if (!definitionName.isEmpty() && !definitionLogic.isEmpty()) {
 			
 			final CQLDefinition define = new CQLDefinition();
 			define.setDefinitionName(definitionName);
 			define.setDefinitionLogic(definitionLogic);
+			define.setContext(defineContext);
 			
 			if(searchDisplay.getCurrentSelectedDefinitionObjId() != null){
 				CQLDefinition toBeModifiedObj = searchDisplay.getDefinitionMap()
@@ -1168,32 +1349,51 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
-		setWidgetsReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
 		panel.add(searchDisplay.getMainPanel());
 	}
 	
 	
 	/**
-	 * Sets the widgets read only if the Measure is Locked
-	 * and ReadOnly.
+	 * Sets the parameter widget read only.
 	 *
-	 * @param editable the new widgets read only
+	 * @param isEditable the new parameter widget read only
 	 */
-	private void setWidgetsReadOnly(boolean editable) {
+	private void setParameterWidgetReadOnly(boolean isEditable){
 		
-		/*searchDisplay.getContextToggleSwitch().setEnabled(true);
-		searchDisplay.getSaveCQLGeneralInfoBtn().setEnabled(editable);
-		 */
-		searchDisplay.getParameterNameTxtArea().setEnabled(editable);
-		searchDisplay.getParameterAceEditor().setReadOnly(!editable);
-		searchDisplay.getAddParameterButton().setEnabled(editable);
-		
-		searchDisplay.getDefineNameTxtArea().setEnabled(editable);
-		searchDisplay.getDefineAceEditor().setReadOnly(!editable);
-		searchDisplay.getAddDefineButton().setEnabled(editable);
-		
+		searchDisplay.getParameterNameTxtArea().setEnabled(isEditable);
+		searchDisplay.getParameterAceEditor().setReadOnly(!isEditable);
+		searchDisplay.getParameterButtonBar().setEnabled(isEditable);
 	}
+	
+	
+     /**
+      * Sets the definition widget read only.
+      *
+      * @param isEditable the new definition widget read only
+      */
+     private void setDefinitionWidgetReadOnly(boolean isEditable){
+		
+    	searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
+ 		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
+ 		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
+ 		searchDisplay.getContextPATToggleSwitch().setEnabled(isEditable);
+ 		searchDisplay.getContextPOPToggleSwitch().setEnabled(isEditable);
+	}
+     
+     
+     /**
+      * Sets the function widget read only.
+      *
+      * @param isEditable the new function widget read only
+      */
+     private void setFunctionWidgetReadOnly(boolean isEditable){
+    	
+    	 searchDisplay.getFuncNameTxtArea().setEnabled(isEditable);
+ 		searchDisplay.getFunctionBodyAceEditor().setReadOnly(!isEditable);
+ 		searchDisplay.getFunctionButtonBar().setEnabled(isEditable);
+ 		searchDisplay.getAddNewArgument().setEnabled(isEditable);
+ 	}
+
 	
 	
 	/**
@@ -1270,6 +1470,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getParameterLibrary().setActive(true);
 				clickedMenu = "param";
 				searchDisplay.buildParameterLibraryView();
+				setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
 				
 			}
 		});
@@ -1281,6 +1483,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getDefinitionLibrary().setActive(true);
 				clickedMenu = "define";
 				searchDisplay.buildDefinitionLibraryView();
+				boolean editable = MatContext.get().getMeasureLockService()
+						.checkForEditPermission();
+				
+				searchDisplay.getContextPATToggleSwitch().setEnabled(editable);
+				searchDisplay.getContextPOPToggleSwitch().setEnabled(editable);
+				setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
+						.checkForEditPermission());
 				
 			}
 		});
@@ -1293,6 +1502,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getFunctionLibrary().setActive(true);
 				clickedMenu = "func";
 				searchDisplay.buildFunctionLibraryView();
+				setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
+						.checkForEditPermission());
 			}
 		});
 		

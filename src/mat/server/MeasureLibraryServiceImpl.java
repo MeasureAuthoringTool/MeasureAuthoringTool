@@ -85,6 +85,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
 import mat.server.cqlparser.CQLErrorListener;
+import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.cqlparser.MATCQLListener;
 import mat.server.cqlparser.cqlLexer;
 import mat.server.cqlparser.cqlParser;
@@ -93,6 +94,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
+import mat.server.simplexml.hqmf.TemplateXMLSingleton;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
@@ -4901,7 +4903,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				isDuplicate =  checkDuplicateDefintionName(toBeModifiedObj, currentObj, definitionList);
+				
+				//if the modified Name and current Name are not same
+				if(!toBeModifiedObj.getDefinitionName().
+						equalsIgnoreCase(currentObj.getDefinitionName())) {
+					
+					isDuplicate = checkForKeywords(currentObj.getDefinitionName());
+					if(isDuplicate){
+						result.setSuccess(false);
+						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						return result;
+					}
+					
+					isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), measureId);
+				}
+				
+				
 				if (!isDuplicate) {
 					
 					logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp Start :  ");
@@ -4937,7 +4954,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkDuplicateDefintionName(toBeModifiedObj, currentObj, definitionList);
+				isDuplicate = checkForKeywords(currentObj.getDefinitionName());
+				if(isDuplicate){
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					return result;
+				}
+				
+				//isDuplicate = checkDuplicateDefintionName(toBeModifiedObj, currentObj, definitionList);
+				isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), measureId);
 				if (!isDuplicate) {
 					String cqlString = createDefinitionsXML(currentObj);
 					String XPATH_EXPRESSION_DEFINTIONS = "/measure/cqlLookUp/definitions";
@@ -5008,7 +5033,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if(toBeModifiedObj!=null){
 				currentObj.setId(toBeModifiedObj.getId());
-				isDuplicate =  checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
+				
+				if(!toBeModifiedObj.getParameterName().
+						equalsIgnoreCase(currentObj.getParameterName())) {
+					
+					isDuplicate = checkForKeywords(currentObj.getParameterName());
+					if(isDuplicate){
+						result.setSuccess(false);
+						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						return result;
+					}
+					isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), measureId);
+				}
+				
 				if (!isDuplicate) {
 					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyParameters Start :  ");
@@ -5048,7 +5085,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
+				/*isDuplicate = checkForKeywords(currentObj.getParameterName());
+				isDuplicate = checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);*/
+				isDuplicate = checkForKeywords(currentObj.getParameterName());
+				if(isDuplicate){
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					return result;
+				}
+				
+				isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), measureId);
+				
 				if (!isDuplicate) {
 					
 					String cqlString = createParametersXML(currentObj);
@@ -5096,6 +5143,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveAndModifyFunctions(java.lang.String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
@@ -5110,7 +5160,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if(toBeModifiedObj!=null){
 				currentObj.setId(toBeModifiedObj.getId());
-				//isDuplicate =  checkDuplicateParameterName(toBeModifiedObj, currentObj, parameterList);
+				
+				if(!toBeModifiedObj.getFunctionName().
+						equalsIgnoreCase(currentObj.getFunctionName())) {
+					
+					isDuplicate = checkForKeywords(currentObj.getFunctionName());
+					if(isDuplicate){
+						result.setSuccess(false);
+						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						return result;
+					}
+					isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), measureId);
+				}
+				
 				if (!isDuplicate) {
 					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions Start :  ");
@@ -5150,7 +5212,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				//isDuplicate = checkDuplicateParameterName(toBeModifiedObj, currentObj, functionsList);
+				isDuplicate = checkForKeywords(currentObj.getFunctionName());
+				if(isDuplicate){
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					return result;
+				}
+				isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), measureId);
 				if (!isDuplicate) {
 					
 					String cqlString = createFunctionsXML(currentObj);
@@ -5354,7 +5422,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
-	 * @param Function List the CQLFunction list
+	 * @param functionList the function list
 	 * @return the CQL Function wrapper
 	 */
 	private CQLFunctionsWrapper modfiyCQLFunctionList(CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
@@ -5817,7 +5885,83 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlModel.setContext(contextStr);
 		return cqlModel;
 	}
+
+	/**
+	 * **
+	 * This is to check if the Identifier Name on CQL Workspace is
+	 * Unique, does not allow keywords. 
+	 * ***
+	 *
+	 * @param name the name
+	 * @return true, if successful
+	 */
 	
+	private boolean checkForKeywords(String name) {
+		
+		XmlProcessor cqlXMLProcessor = CQLTemplateXML.getCQLTemplateXmlProcessor();
+		String XPATH_CQL_KEYWORDS = "/cqlTemplate/keywords/keyword[translate(text(),'abcdefghijklmnopqrstuvwxyz'," +
+				     "'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+name.toUpperCase()+"']";
+		try {
+			Node templateNode = cqlXMLProcessor.findNode(cqlXMLProcessor.getOriginalDoc(), XPATH_CQL_KEYWORDS);	
+			if (templateNode != null) {
+				return true;
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Check for duplicate names.
+	 *
+	 * @param identifierName the identifier name
+	 * @param measureId the measure id
+	 * @return true, if successful
+	 */
+	private boolean isDuplicateIdentifierName(String identifierName, String measureId){
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		boolean isInvalid = false;
+		if (xmlModel!=null) {
+			
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			String XPATH_CQLLOOKUP_PARAMETER_NAME = "/measure/cqlLookUp//@parameterName='"+identifierName+"'";
+			String XPATH_CQLLOOKUP_DEFINITION_NAME = "/measure/cqlLookUp//@definitionName='"+identifierName+"'";
+			String XPATH_CQLLOOKUP_FUNCTION_NAME = "/measure/cqlLookUp//@functionName='"+identifierName+"'";
+		    
+			try {
+				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_PARAMETER_NAME,
+						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
+				if(isInvalid){
+					return isInvalid;
+				}
+				
+				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_DEFINITION_NAME,
+						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
+				
+				if(isInvalid){
+					return isInvalid;
+				}
+				
+				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_FUNCTION_NAME,
+						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
+				
+				if(isInvalid){
+					return isInvalid;
+				}
+				
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+			
+		}
+		
+		return false;
+	}
 	
 }
 

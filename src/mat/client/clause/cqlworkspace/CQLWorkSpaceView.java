@@ -1096,6 +1096,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		
+		successMessageAlertDefinition.setType(AlertType.SUCCESS);
+		successMessageAlertDefinition.setWidth("600px");
+		successMessageAlertDefinition.setVisible(false);
+				
+		errorMessageAlertDefinition.setType(AlertType.DANGER);
+		errorMessageAlertDefinition.setWidth("600px");
+		errorMessageAlertDefinition.setVisible(false);
+		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		//defineContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel defineConextPanel = new FlowPanel();
@@ -2664,4 +2672,5 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;
 	}
+
 }

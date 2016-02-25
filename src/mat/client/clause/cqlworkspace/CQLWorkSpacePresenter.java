@@ -770,9 +770,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsDefinitionDirty()) {
-					//searchDisplay.getWarningMessageAlertDefinition().clear();
-					//searchDisplay.getWarningMessageAlertDefinition().add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
-					searchDisplay.getWarningMessageAlertDefinition().turnOnWarningAlert();
+					searchDisplay.getWarningMessageAlertDefinition().createAlert();
 				} else {
 					clearDefinition();
 				}
@@ -784,9 +782,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsParameterDirty()) {
-					//searchDisplay.getWarningMessageAlertParameter().clear();
-					//searchDisplay.getWarningMessageAlertParameter().add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
-					searchDisplay.getWarningMessageAlertParameter().turnOnWarningAlert();
+					searchDisplay.getWarningMessageAlertParameter().createAlert();
 				} else {
 					clearParameter();
 				}
@@ -799,8 +795,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				clearParameter();
 				searchDisplay.setIsParameterDirty(false);
-				//searchDisplay.getWarningMessageAlertParameter().clear();
-				searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
+					searchDisplay.getWarningMessageAlertParameter().clearAlert();
 			}
 		});
 		
@@ -808,8 +803,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				//searchDisplay.getWarningMessageAlertParameter().clear();
-				searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
+				searchDisplay.getWarningMessageAlertParameter().clearAlert();
 			}
 		});
 		
@@ -819,8 +813,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				clearDefinition();
 				searchDisplay.setIsDefinitionDirty(false);
-				//searchDisplay.getWarningMessageAlertDefinition().clear();
-				searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
+				searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 			}
 		});
 		
@@ -828,8 +821,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				//searchDisplay.getWarningMessageAlertDefinition().clear();
-				searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
+				searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 			}
 		});
 		
@@ -1318,9 +1310,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getErrorMessageAlertParameter().clear();
 		searchDisplay.getErrorMessageAlertParameter().setVisible(false);
 		
-		searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
+		searchDisplay.getWarningMessageAlertParameter().clearAlert();
 		
-		searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
+		searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 		
 		searchDisplay.getSuccessMessageAlertFunction().clear();
 		searchDisplay.getSuccessMessageAlertFunction().setVisible(false);
@@ -1341,8 +1333,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
 		searchDisplay.setIsParameterDirty(false);
 		searchDisplay.setIsDefinitionDirty(false);
-		searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
-		searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
+		searchDisplay.getWarningMessageAlertParameter().clearAlert();
+		searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");

@@ -13,7 +13,7 @@ public class MessageAlert extends Alert {
 	}
 
 	public void setMessage(HTML message) {
-		this.add(message);
+		add(message);
 	}
 
 }

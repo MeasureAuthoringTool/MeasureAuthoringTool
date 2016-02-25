@@ -107,7 +107,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
 	
-	
 	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	
@@ -458,7 +457,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				errorMessageAlertParameter.clear();
 				errorMessageAlertParameter.setVisible(false);
 				setIsParameterDirty(false);
-				warningMessageAlertParameter.turnOffWarningAlert();
+				warningMessageAlertParameter.clearAlert();
 			}
 		});
 		
@@ -494,7 +493,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				errorMessageAlertDefinition.clear();
 				errorMessageAlertDefinition.setVisible(false);
 				setIsDefinitionDirty(false);
-				warningMessageAlertDefinition.turnOffWarningAlert();;
+				warningMessageAlertDefinition.clearAlert();
 				
 			}
 		});
@@ -1641,8 +1640,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		setIsParameterDirty(false);
 		setIsDefinitionDirty(false);
-		getWarningMessageAlertParameter().turnOffWarningAlert();
-		getWarningMessageAlertDefinition().turnOffWarningAlert();
+		getWarningMessageAlertParameter().clearAlert();
+		getWarningMessageAlertDefinition().clearAlert();
 	
 	}
 	

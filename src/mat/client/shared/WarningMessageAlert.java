@@ -10,11 +10,22 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.user.client.ui.HTML;
 
-public class WarningMessageAlert extends MessageAlert {
+public class WarningMessageAlert extends MessageAlert implements WarningAlertInterface  {
 	
 	private Button yesButton = new Button();
 	
 	private Button noButton = new Button();
+	
+	public void createAlert () {
+		super.clear();
+		createWarningAlert();
+		setVisible(true);
+	}
+	
+	public void clearAlert () {
+		super.clear();
+		setVisible(false);
+	}
 	
 	public WarningMessageAlert() {
 		createWarningAlert();
@@ -57,16 +68,6 @@ public class WarningMessageAlert extends MessageAlert {
 		add(buttonToolBar);
 	}
 	
-	public void turnOnWarningAlert () {
-		clear();
-		createWarningAlert();
-		setVisible(true);
-	}
-	
-	public void turnOffWarningAlert () {
-		clear();
-		setVisible(false);
-	}
 	
 	/**
 	 * Gets the msg panel.
@@ -80,5 +81,6 @@ public class WarningMessageAlert extends MessageAlert {
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
 		return msgHtml;
 	}
+
 
 }

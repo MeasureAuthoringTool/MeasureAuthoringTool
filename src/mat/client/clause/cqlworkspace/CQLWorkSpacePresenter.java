@@ -905,6 +905,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void clearParameter() {
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
+		searchDisplay.setIsParameterDirty(false);
 		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
 				(searchDisplay.getParameterNameTxtArea() != null)	) {
 			searchDisplay.getParameterNameTxtArea().clear();
@@ -917,6 +918,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void clearDefinition() {
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
+		searchDisplay.setIsDefinitionDirty(false);
 		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
 			searchDisplay.getDefineAceEditor().setText("");
@@ -1316,10 +1318,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getErrorMessageAlertParameter().clear();
 		searchDisplay.getErrorMessageAlertParameter().setVisible(false);
 		
-		//searchDisplay.getWarningMessageAlertParameter().clear();
 		searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
 		
-		//searchDisplay.getWarningMessageAlertDefinition().clear();
 		searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
 		
 		searchDisplay.getSuccessMessageAlertFunction().clear();
@@ -1339,6 +1339,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
+		searchDisplay.setIsParameterDirty(false);
+		searchDisplay.setIsDefinitionDirty(false);
+		searchDisplay.getWarningMessageAlertParameter().turnOffWarningAlert();
+		searchDisplay.getWarningMessageAlertDefinition().turnOffWarningAlert();
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");

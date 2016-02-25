@@ -308,9 +308,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for clear. */
 	private Boolean isParameterDirty = false;
 	
-	/** The save warning msg. */
-	//String saveWarningMsg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
-	
 	/** The warning message alert parameter. */
 	private WarningMessageAlert warningMessageAlertParameter = new WarningMessageAlert();
 	
@@ -928,6 +925,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setIsDefinitionDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -1075,6 +1073,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setIsDefinitionDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
@@ -1640,6 +1639,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			functionCollapse.clear();
 		}
 		
+		setIsParameterDirty(false);
+		setIsDefinitionDirty(false);
+		getWarningMessageAlertParameter().turnOffWarningAlert();
+		getWarningMessageAlertDefinition().turnOffWarningAlert();
+	
 	}
 	
 	/* (non-Javadoc)

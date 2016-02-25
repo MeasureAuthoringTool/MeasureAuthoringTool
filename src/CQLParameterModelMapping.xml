@@ -18,11 +18,11 @@
 					</field>
 
 					<field name="parameterName" type="java.lang.String">
-						<bind-xml name="parameterName" node="attribute" />
+						<bind-xml name="name" node="attribute" />
 					</field>
 
 					<field name="parameterLogic" type="java.lang.String">
-						<bind-xml node="text" />
+						<bind-xml name="logic" node="text" />
 					</field>
 				</class>
 			</bind-xml>

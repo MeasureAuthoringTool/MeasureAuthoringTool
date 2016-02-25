@@ -14,10 +14,10 @@
 						<bind-xml name="id" node="attribute" />
 					</field>
 					<field name="functionName" type="java.lang.String">
-						<bind-xml name="functionName" node="attribute" />
+						<bind-xml name="name" node="attribute" />
 					</field>
 					<field name="functionLogic" type="java.lang.String">
-						<bind-xml name="functionLogic" node="element" />
+						<bind-xml name="logic" node="element" />
 					</field>
 					<field name="context" type="java.lang.String">
 						<bind-xml name="context" node="attribute" />
@@ -31,10 +31,10 @@
 									<bind-xml name="id" node="attribute" />
 								</field>
 								<field name="argumentName" type="java.lang.String">
-									<bind-xml name="argumentName" node="attribute" />
+									<bind-xml name="name" node="attribute" />
 								</field>
 								<field name="argumentType" type="java.lang.String">
-									<bind-xml name="argumentType" node="attribute" />
+									<bind-xml name="type" node="attribute" />
 								</field>
 							</class>
 						</bind-xml>

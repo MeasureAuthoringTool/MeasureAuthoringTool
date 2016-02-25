@@ -18,11 +18,11 @@
 					</field>
 
 					<field name="definitionName" type="java.lang.String">
-						<bind-xml name="definitionName" node="attribute" />
+						<bind-xml name="name" node="attribute" />
 					</field>
 
 					<field name="definitionLogic" type="java.lang.String">
-						<bind-xml node="text" />
+						<bind-xml name="logic" node="text" />
 					</field>
 
 					<field name="context" type="java.lang.String">

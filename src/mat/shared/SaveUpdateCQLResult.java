@@ -26,6 +26,7 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	public static final int NAME_NOT_UNIQUE = 1;
 	public static final int NODE_NOT_FOUND = 2;
+	public static final int NAME_NOT_KEYWORD = 3;
 	
 	public String getCqlString() {
 		return cqlString;

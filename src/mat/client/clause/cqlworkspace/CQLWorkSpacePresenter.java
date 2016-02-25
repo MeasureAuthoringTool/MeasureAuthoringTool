@@ -726,7 +726,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				addAndModifyFunction();
 			}
 		});
@@ -776,6 +775,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsDefinitionDirty()) {
+					//searchDisplay.getWarningMessageAlertDefinition().clear();
+					//searchDisplay.getWarningMessageAlertDefinition().add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
 					searchDisplay.getWarningMessageAlertDefinition().setVisible(true);
 				} else {
 					clearDefinition();
@@ -788,6 +789,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsParameterDirty()) {
+					//searchDisplay.getWarningMessageAlertParameter().clear();
+					//searchDisplay.getWarningMessageAlertParameter().add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
 					searchDisplay.getWarningMessageAlertParameter().setVisible(true);
 				} else {
 					clearParameter();
@@ -821,7 +824,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				clearDefinition();
 				searchDisplay.setIsDefinitionDirty(false);
-				//searchDisplay.getWarningMessageAlertParameter().clear();
+				//searchDisplay.getWarningMessageAlertDefinition().clear();
 				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 			}
 		});
@@ -830,7 +833,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				//searchDisplay.getWarningMessageAlertParameter().clear();
+				//searchDisplay.getWarningMessageAlertDefinition().clear();
 				searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 			}
 		});
@@ -906,6 +909,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Clear parameter.
 	 */
 	private void clearParameter() {
+		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
 				(searchDisplay.getParameterNameTxtArea() != null)	) {
 			searchDisplay.getParameterNameTxtArea().clear();
@@ -917,6 +921,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Clear definition.
 	 */
 	private void clearDefinition() {
+		searchDisplay.setCurrentSelectedDefinitionObjId(null);
 		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
 			searchDisplay.getDefineAceEditor().setText("");
@@ -1223,7 +1228,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY()));
 							searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
-							
+							searchDisplay.setIsDefinitionDirty(false);
 						} else {
 							if(result.getFailureReason() ==1){
 								searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
@@ -1263,7 +1268,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 									MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION()));
 							searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
-							
+							searchDisplay.setIsDefinitionDirty(false);
 						} else {
 							
 							if (result.getFailureReason() == 1) {
@@ -1316,7 +1321,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getErrorMessageAlertParameter().clear();
 		searchDisplay.getErrorMessageAlertParameter().setVisible(false);
 		
+		//searchDisplay.getWarningMessageAlertParameter().clear();
 		searchDisplay.getWarningMessageAlertParameter().setVisible(false);
+		
+		//searchDisplay.getWarningMessageAlertDefinition().clear();
 		searchDisplay.getWarningMessageAlertDefinition().setVisible(false);
 		
 		searchDisplay.getSuccessMessageAlertFunction().clear();

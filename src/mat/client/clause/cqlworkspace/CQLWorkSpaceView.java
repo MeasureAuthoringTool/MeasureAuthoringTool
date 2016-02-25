@@ -4,24 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -40,6 +28,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -73,9 +62,22 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -140,7 +142,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private Alert errorMessageAlertDefinition = new Alert();
 	
 	/** The warning message alert definition. */
-	private Alert warningMessageAlertDefinition = new Alert();
+	private WarningMessageAlert warningMessageAlertDefinition = new WarningMessageAlert();
 	
 	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
@@ -153,13 +155,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The error message alert parameter. */
 	private Alert errorMessageAlertFunction = new Alert();
-	
-	/** The clear definition yes button. */
-	private Button clearDefinitionYesButton = new Button();
-	
-	/** The clear definition no button. */
-	private Button clearDefinitionNoButton = new Button();
-	
 	
 	/**
 	 * TextArea parameterNameTxtArea.
@@ -314,16 +309,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private Boolean isParameterDirty = false;
 	
 	/** The save warning msg. */
-	String saveWarningMsg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
+	//String saveWarningMsg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
 	
 	/** The warning message alert parameter. */
-	private Alert warningMessageAlertParameter = new Alert();
-	
-	/** The clear parameter yes button. */
-	private Button clearParameterYesButton = new Button();
-	
-	/** The clear parameter no button. */
-	private Button clearParameterNoButton = new Button();
+	private WarningMessageAlert warningMessageAlertParameter = new WarningMessageAlert();
 	
 	/** The context pat toggle switch. */
 	private ToggleSwitch contextPATToggleSwitch = new ToggleSwitch();
@@ -471,9 +460,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				successMessageAlertParameter.setVisible(false);
 				errorMessageAlertParameter.clear();
 				errorMessageAlertParameter.setVisible(false);
-				//warningMessageAlertParameter.clear();
 				setIsParameterDirty(false);
-				warningMessageAlertParameter.setVisible(false);
+				warningMessageAlertParameter.turnOffWarningAlert();
 			}
 		});
 		
@@ -508,9 +496,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				successMessageAlertDefinition.setVisible(false);
 				errorMessageAlertDefinition.clear();
 				errorMessageAlertDefinition.setVisible(false);
-				//warningMessageAlertDefinition.clear();
 				setIsDefinitionDirty(false);
-				warningMessageAlertDefinition.setVisible(false);
+				warningMessageAlertDefinition.turnOffWarningAlert();;
 				
 			}
 		});
@@ -979,31 +966,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertParameter.setType(AlertType.DANGER);
 		errorMessageAlertParameter.setWidth("600px");
 		errorMessageAlertParameter.setVisible(false);
-		
-		clearParameterYesButton.setType(ButtonType.PRIMARY);
-		clearParameterYesButton.setSize(ButtonSize.EXTRA_SMALL);
-		clearParameterYesButton.setTitle("Yes");
-		clearParameterYesButton.setText("Yes");
-		clearParameterYesButton.setId("ClearParameterYes_Button");
-		
-		clearParameterNoButton.setType(ButtonType.PRIMARY);
-		clearParameterNoButton.setSize(ButtonSize.EXTRA_SMALL);
-		clearParameterNoButton.setMarginLeft(15);
-		clearParameterNoButton.setTitle("No");
-		clearParameterNoButton.setText("No");
-		clearParameterNoButton.setId("ClearParameterNo_Button");
-		
-		warningMessageAlertParameter.setType(AlertType.WARNING);
-		warningMessageAlertParameter.setWidth("600px");
-		warningMessageAlertParameter.setVisible(false);
-		warningMessageAlertParameter.clear();
-		warningMessageAlertParameter.add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
-		warningMessageAlertParameter.add(new SpacerWidget());
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		buttonToolBar.add(clearParameterYesButton);
-		buttonToolBar.add(clearParameterNoButton);
-		warningMessageAlertParameter.add(buttonToolBar);
-		
+
 		parameterVP.add(successMessageAlertParameter);
 		parameterVP.add(errorMessageAlertParameter);
 		parameterVP.add(warningMessageAlertParameter);
@@ -1134,41 +1097,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setSize("675px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
-		
-		successMessageAlertDefinition.setType(AlertType.SUCCESS);
-		successMessageAlertDefinition.setWidth("600px");
-		successMessageAlertDefinition.setVisible(false);
-		
-		
-		errorMessageAlertDefinition.setType(AlertType.DANGER);
-		errorMessageAlertDefinition.setWidth("600px");
-		errorMessageAlertDefinition.setVisible(false);
-		
-		clearDefinitionYesButton.setType(ButtonType.PRIMARY);
-		clearDefinitionYesButton.setSize(ButtonSize.EXTRA_SMALL);
-		clearDefinitionYesButton.setTitle("Yes");
-		clearDefinitionYesButton.setText("Yes");
-		clearDefinitionYesButton.setId("ClearParameterYes_Button");
-		
-		clearDefinitionNoButton.setType(ButtonType.PRIMARY);
-		clearDefinitionNoButton.setSize(ButtonSize.EXTRA_SMALL);
-		clearDefinitionNoButton.setMarginLeft(15);
-		clearDefinitionNoButton.setTitle("No");
-		clearDefinitionNoButton.setText("No");
-		clearDefinitionNoButton.setId("ClearParameterNo_Button");
-		
-		warningMessageAlertDefinition.setType(AlertType.WARNING);
-		warningMessageAlertDefinition.setWidth("600px");
-		warningMessageAlertDefinition.setVisible(false);
-		warningMessageAlertDefinition.clear();
-		warningMessageAlertDefinition.add(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
-		warningMessageAlertDefinition.add(new SpacerWidget());
-		
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		buttonToolBar.add(clearDefinitionYesButton);
-		buttonToolBar.add(clearDefinitionNoButton);
-		warningMessageAlertDefinition.add(buttonToolBar);
-		
 		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		//defineContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
@@ -2516,7 +2444,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertParameter()
 	 */
 	@Override
-	public Alert getWarningMessageAlertParameter() {
+	public WarningMessageAlert getWarningMessageAlertParameter() {
 		return warningMessageAlertParameter;
 	}
 	
@@ -2525,7 +2453,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 *
 	 * @param warningMessageAlertParameter the new warning message alert parameter
 	 */
-	public void setWarningMessageAlertParameter(Alert warningMessageAlertParameter) {
+	public void setWarningMessageAlertParameter(WarningMessageAlert warningMessageAlertParameter) {
 		this.warningMessageAlertParameter = warningMessageAlertParameter;
 	}
 	
@@ -2533,7 +2461,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertDefinition()
 	 */
 	@Override
-	public Alert getWarningMessageAlertDefinition() {
+	public WarningMessageAlert getWarningMessageAlertDefinition() {
 		return warningMessageAlertDefinition;
 	}
 	
@@ -2542,7 +2470,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 *
 	 * @param warningMessageAlertDefinition the new warning message alert definition
 	 */
-	public void setWarningMessageAlertDefinition(Alert warningMessageAlertDefinition) {
+	public void setWarningMessageAlertDefinition(WarningMessageAlert warningMessageAlertDefinition) {
 		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
 	}
 	
@@ -2603,7 +2531,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getClearParameterYesButton() {
-		return clearParameterYesButton;
+		return getWarningMessageAlertParameter().getYesButton();
 	}
 	
 	/* (non-Javadoc)
@@ -2611,15 +2539,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getClearParameterNoButton() {
-		return clearParameterNoButton;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterTopButton()
-	 */
-	@Override
-	public Button getClearParameterTopButton() {
-		return clearParameterTopButton;
+		return getWarningMessageAlertParameter().getNoButton();
 	}
 	
 	/* (non-Javadoc)
@@ -2627,7 +2547,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getClearDefinitionYesButton() {
-		return clearDefinitionYesButton;
+		return getWarningMessageAlertDefinition().getYesButton();
 	}
 	
 	/* (non-Javadoc)
@@ -2635,7 +2555,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public Button getClearDefinitionNoButton() {
-		return clearDefinitionNoButton;
+		return getWarningMessageAlertDefinition().getNoButton();
 	}
 	
 	
@@ -2660,18 +2580,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	public void setParamCollapse(PanelCollapse paramCollapse) {
 		this.paramCollapse = paramCollapse;
-	}
-	/**
-	 * Gets the msg panel.
-	 *
-	 * @param iconType the icon type
-	 * @param message the message
-	 * @return the msg panel
-	 */
-	private HTML getMsgPanel(IconType iconType, String message) {
-		Icon checkIcon = new Icon(iconType);
-		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
-		return msgHtml;
 	}
 	
 	/* (non-Javadoc)

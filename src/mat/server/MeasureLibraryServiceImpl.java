@@ -4931,7 +4931,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if (nodeDefinition != null) {
 							nodeDefinition.getAttributes().getNamedItem("context")
 							.setNodeValue(currentObj.getContext());
-							nodeDefinition.getAttributes().getNamedItem("definitionName")
+							nodeDefinition.getAttributes().getNamedItem("name")
 							.setNodeValue(currentObj.getDefinitionName());
 							nodeDefinition.setTextContent(currentObj.getDefinitionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
@@ -5057,7 +5057,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeParameter!=null){
-							nodeParameter.getAttributes().getNamedItem("parameterName").setNodeValue(currentObj.getParameterName());
+							nodeParameter.getAttributes().getNamedItem("name").setNodeValue(currentObj.getParameterName());
 							nodeParameter.setTextContent(currentObj.getParameterLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
@@ -5184,7 +5184,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeFunction!=null){
-							nodeFunction.getAttributes().getNamedItem("functionName").setNodeValue(currentObj.getFunctionName());
+							nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
 							nodeFunction.setTextContent(currentObj.getFunctionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
@@ -5836,7 +5836,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private CQLModel getCQLGeneratlInfo(String measureId){
 		
-		String contextStr = "";
 		String libraryNameStr = "";
 		String usingModelStr = "";
 		CQLModel cqlModel = new CQLModel();
@@ -5849,14 +5848,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
-			String XPATH_EXPRESSION_CQLLOOKUP_CONTEXT = "/measure/cqlLookUp/cqlContext/text()";
 			
 			try {
 				Node nodeCQLLibrary = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_lIBRARY,
 						processor.getOriginalDoc(),	XPathConstants.NODE);
 				Node nodeCQLUsingModel = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_USING,
-						processor.getOriginalDoc(),	XPathConstants.NODE);
-				Node nodeCQLContext = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_CONTEXT,
 						processor.getOriginalDoc(),	XPathConstants.NODE);
 				
 				if(nodeCQLLibrary != null){
@@ -5870,10 +5866,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					usingModel.setName(usingModelStr);
 				}
 				
-				if(nodeCQLContext != null){
-					contextStr = nodeCQLContext.getTextContent();
-				}
-				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
@@ -5882,7 +5874,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		cqlModel.setLibrary(libraryModel);
 		cqlModel.setUsedModel(usingModel);
-		cqlModel.setContext(contextStr);
 		return cqlModel;
 	}
 
@@ -5927,31 +5918,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (xmlModel!=null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_CQLLOOKUP_PARAMETER_NAME = "/measure/cqlLookUp//@parameterName='"+identifierName+"'";
-			String XPATH_CQLLOOKUP_DEFINITION_NAME = "/measure/cqlLookUp//@definitionName='"+identifierName+"'";
-			String XPATH_CQLLOOKUP_FUNCTION_NAME = "/measure/cqlLookUp//@functionName='"+identifierName+"'";
-		    
+			String XPATH_CQLLOOKUP_IDENTIFIER_NAME = "/measure/cqlLookUp//@name='"+identifierName+"'";
 			try {
-				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_PARAMETER_NAME,
+				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_IDENTIFIER_NAME,
 						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
 				if(isInvalid){
 					return isInvalid;
-				}
-				
-				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_DEFINITION_NAME,
-						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
-				
-				if(isInvalid){
-					return isInvalid;
-				}
-				
-				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_FUNCTION_NAME,
-						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
-				
-				if(isInvalid){
-					return isInvalid;
-				}
-				
+				}				
 				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();

@@ -865,48 +865,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		
-		searchDisplay.getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
-				searchDisplay.setIsDefinitionDirty(true);
-				String definitionName = searchDisplay.getDefineNameTxtArea().getText();
-				if(definitionName == null || "".equals(definitionName.trim()) || !Character.isLetter(definitionName.charAt(0))){
-					searchDisplay.getDefineNameTxtArea().setText("");
-				}
-			}
-		});
-		
-		
-		/*searchDisplay.getParameterNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);
-				String parameterName = searchDisplay.getParameterNameTxtArea().getText();
-				if(parameterName == null || "".equals(parameterName.trim()) || !Character.isLetter(parameterName.charAt(0))){
-					searchDisplay.getParameterNameTxtArea().setText("");
-				}
-			}
-		});
-		
-		
-		searchDisplay.getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
-				String functionName = searchDisplay.getFuncNameTxtArea().getText();
-				if(functionName == null || "".equals(functionName.trim()) || !Character.isLetter(functionName.charAt(0))){
-					searchDisplay.getFuncNameTxtArea().setText("");
-				}
-			}
-		});*/
-
-		
 	}
 	
 	/**

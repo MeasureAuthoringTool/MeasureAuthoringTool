@@ -9,21 +9,22 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.Container;
-import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +35,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class AddFunctionArgumentDialogBox {
 	private static List<String> argumentDataTypeList = CQLGrammarDataType.getDataTypeName();
 	
-	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, boolean isEdit){
+	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, final boolean isEdit){
 		String saveButtonText = "Add";
 		String modalText = "Add Argument";
 		if (isEdit) {
@@ -51,50 +52,67 @@ public class AddFunctionArgumentDialogBox {
 		dialogModal.setSize(ModalSize.SMALL);
 		
 		ModalBody modalBody = new ModalBody();
-		Container modalContainer = new Container();
-		Row rowOne = new Row();
-		Row rowTwo = new Row();
-		Row rowThird = new Row();
-		Row rowFourth = new Row();
-		Row rowFifth = new Row();
-		Row rowSixth = new Row();
-		Column rowOneColOne = new Column(ColumnSize.SM_5);
-		Column rowTwoColOne = new Column(ColumnSize.SM_5);
-		Column rowThirdColOne = new Column(ColumnSize.SM_5);
-		Column rowFourthColOne = new Column(ColumnSize.SM_5);
-		Column rowFifthColOne = new Column(ColumnSize.SM_5);
-		Column rowSixthColOne = new Column(ColumnSize.SM_5);
-		
-		Label labelDataTypeLabel = new Label(LabelType.INFO,"Available Datatypes");
-		labelDataTypeLabel.setId("Available_Datatypes");
-		labelDataTypeLabel.setText("Available Datatypes");
-		labelDataTypeLabel.getElement().setAttribute("style", "font-size:75%;");
 		
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
-		listAllDataTypes.setWidth("150px");
+		listAllDataTypes.setWidth("250px");
 		listAllDataTypes.addItem("-- Select--");
 		for (int i = 0; i < argumentDataTypeList.size(); i++) {
 			listAllDataTypes.addItem(argumentDataTypeList.get(i));
 		}
 		
+		Form bodyForm = new Form();
 		
-		Label labelArgumentName = new Label(LabelType.INFO,"Argument Name");
-		labelArgumentName.setText("Argument Name");
-		labelArgumentName.getElement().setAttribute("style", "font-size:75%;");
+		final FormGroup messageFormgroup = new FormGroup();
+		final HelpBlock helpBlock = new HelpBlock();
+		messageFormgroup.add(helpBlock);
+		messageFormgroup.getElement().setAttribute("role", "alert");
+		
+		
+		final FormGroup dataTypeFormGroup = new FormGroup();
+		FormLabel availableDataFormLabel = new FormLabel();
+		availableDataFormLabel.setText("Available Datatypes");
+		availableDataFormLabel.setTitle("Available Datatypeser ID");
+		availableDataFormLabel.setFor("listDataType");
+		
+		dataTypeFormGroup.add(availableDataFormLabel);
+		dataTypeFormGroup.add(listAllDataTypes);
+		
+		final FormGroup argumentNameFormGroup = new FormGroup();
+		FormLabel argumentNameFormLabel = new FormLabel();
+		argumentNameFormLabel.setText("Argument Name");
+		argumentNameFormLabel.setTitle("Argument Name");
+		argumentNameFormLabel.setFor("inputArgumentName");
 		
 		final TextArea argumentNameTextArea = new TextArea();
 		argumentNameTextArea.setPlaceholder("Enter Argument Name");
 		argumentNameTextArea.setWidth("250px");
-		argumentNameTextArea.setHeight("25px");
+		argumentNameTextArea.setHeight("38px");
 		
 		
-		Label labelSelectItem = new Label(LabelType.INFO, "Select Item");
-		labelSelectItem.setText("Select Item");
-		labelSelectItem.getElement().setAttribute("style", "font-size:75%;");
+		argumentNameFormGroup.add(argumentNameFormLabel);
+		argumentNameFormGroup.add(argumentNameTextArea);
+		
+		final FormGroup selectFormGroup = new FormGroup();
+		FormLabel selectFormLabel = new FormLabel();
+		selectFormLabel.setText("Select");
+		selectFormLabel.setTitle("Select");
+		selectFormLabel.setFor("listSelectItem");
 		
 		final ListBoxMVP listSelectItem = new ListBoxMVP();
-		listSelectItem.setWidth("150px");
+		listSelectItem.setWidth("250px");
 		listSelectItem.setEnabled(false);
+		
+		selectFormGroup.add(selectFormLabel);
+		selectFormGroup.add(listSelectItem);
+		
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(messageFormgroup);
+		formFieldSet.add(dataTypeFormGroup);
+		formFieldSet.add(argumentNameFormGroup);
+		formFieldSet.add(selectFormGroup);
+		bodyForm.add(formFieldSet);
+		
+		
 		
 		if(isEdit){
 			String selectedDataType = null;
@@ -137,34 +155,8 @@ public class AddFunctionArgumentDialogBox {
 		}
 		
 		
-		rowOneColOne.add(labelDataTypeLabel);
-		rowTwoColOne.add(listAllDataTypes);
-		rowThirdColOne.add(labelArgumentName);
-		rowFourthColOne.add(argumentNameTextArea);
-		rowFifthColOne.add(labelSelectItem);
-		rowSixthColOne.add(listSelectItem);
 		
-		rowOne.add(rowOneColOne);
-		rowTwo.add(rowTwoColOne);
-		rowTwo.setMarginTop(15.00);
-		rowThird.add(rowThirdColOne);
-		rowThird.setMarginTop(15.00);
-		rowFourth.add(rowFourthColOne);
-		rowFourth.setMarginTop(15.00);
-		rowFifth.add(rowFifthColOne);
-		rowFifth.setMarginTop(15.00);
-		rowSixth.add(rowSixthColOne);
-		rowSixth.setMarginTop(15.00);
-		rowSixth.setMarginBottom(15.00);
-		
-		modalContainer.add(rowOne);
-		modalContainer.add(rowTwo);
-		modalContainer.add(rowThird);
-		modalContainer.add(rowFourth);
-		modalContainer.add(rowFifth);
-		modalContainer.add(rowSixth);
-		
-		modalBody.add(modalContainer);
+		modalBody.add(bodyForm);
 		ModalFooter modalFooter = new ModalFooter();
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
@@ -191,10 +183,12 @@ public class AddFunctionArgumentDialogBox {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				if (listAllDataTypes.getValue().contains("Select")) {
-					addButton.setEnabled(false);
-					argumentNameTextArea.setEnabled(true);
-				} else if (listAllDataTypes.getValue().equalsIgnoreCase("definition")) {
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
+				argumentNameFormGroup.setValidationState(ValidationState.NONE);
+				selectFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				if (listAllDataTypes.getValue().equalsIgnoreCase("definition")) {
 					addDefinitionInList(listSelectItem, currentModel.getDefinitionList());
 					listSelectItem.setEnabled(true);
 					addButton.setEnabled(true);
@@ -215,10 +209,78 @@ public class AddFunctionArgumentDialogBox {
 			
 		});
 		
-		addButton.addClickHandler(new ClickHandler() {
+		listSelectItem.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
+				argumentNameFormGroup.setValidationState(ValidationState.NONE);
+				selectFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				
+			}
+		});
+		
+		
+		argumentNameTextArea.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
+				argumentNameFormGroup.setValidationState(ValidationState.NONE);
+				selectFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+			}
+		});
+		
+		addButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				int selectedIndex = listAllDataTypes.getSelectedIndex();
+				String argumentName = null;
+				if (selectedIndex != 0) {
+					String argumentDataType = listAllDataTypes.getItemText(selectedIndex);
+					if (argumentDataType.equalsIgnoreCase("definition")
+							|| argumentDataType.equalsIgnoreCase("parameter")) {
+						int selectedItemIndex = listSelectItem.getSelectedIndex();
+						if (selectedItemIndex != 0) {
+							argumentName = listSelectItem.getItemText(selectedItemIndex);
+						} else {
+							selectFormGroup.setValidationState(ValidationState.ERROR);
+							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+							helpBlock.setText("Select definition/Parameter.");
+							messageFormgroup.setValidationState(ValidationState.ERROR);
+							
+						}
+						
+					} else {
+						if (!argumentDataType.contains("Select")) {
+							if (!argumentNameTextArea.getText().isEmpty()) {
+								argumentName = argumentNameTextArea.getText();
+							} else {
+								argumentNameFormGroup.setValidationState(ValidationState.ERROR);
+								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+								helpBlock.setText("Argument name is required.");
+								messageFormgroup.setValidationState(ValidationState.ERROR);
+								
+							}
+						} else {
+							dataTypeFormGroup.setValidationState(ValidationState.ERROR);
+							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+							helpBlock.setText("Datatype is required.");
+							messageFormgroup.setValidationState(ValidationState.ERROR);
+						}
+						
+					}
+				} else {
+					dataTypeFormGroup.setValidationState(ValidationState.ERROR);
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Datatype is required.");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+					
+				}
 			}
 		});
 		

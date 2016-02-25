@@ -204,6 +204,9 @@ public class MessageDelegate {
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
 	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
+	public final String ERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR  = "Invalid Identifier name. " +
+			"Name may not begin with number or underscore, and name may not contain one or more CQL reserved words unless enclosed in double-quotes. ";
+	public final String ERROR_IDENTIFIER_NAME_NOT_KEYWORD = "Identifier Name cannot be a Reserved Keyword."; 
 	
 	/**
 	 * Gets the measure save server error message.
@@ -2542,5 +2545,13 @@ public class MessageDelegate {
 	
 	public String getSUCESS_FUNCTION_MODIFY() {
 		return SUCESS_FUNCTION_MODIFY;
+	}
+
+	public String getERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR() {
+		return ERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR;
+	}
+
+	public String getERROR_IDENTIFIER_NAME_NOT_KEYWORD() {
+		return ERROR_IDENTIFIER_NAME_NOT_KEYWORD;
 	}
 }

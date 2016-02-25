@@ -1,12 +1,14 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.List;
+import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLGrammarDataType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -35,14 +37,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class AddFunctionArgumentDialogBox {
 	private static List<String> argumentDataTypeList = CQLGrammarDataType.getDataTypeName();
 	
-	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, final boolean isEdit){
+	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, final boolean isEdit, final ViewDisplay searchDisplay){
 		String saveButtonText = "Add";
 		String modalText = "Add Argument";
 		if (isEdit) {
 			saveButtonText = "Edit";
 			modalText = "Edit Argument " + functionArg.getArgumentName();
 		}
-		Modal dialogModal = new Modal();
+		final Modal dialogModal = new Modal();
 		dialogModal.setTitle(modalText);
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
@@ -240,8 +242,9 @@ public class AddFunctionArgumentDialogBox {
 			public void onClick(ClickEvent event) {
 				int selectedIndex = listAllDataTypes.getSelectedIndex();
 				String argumentName = null;
+				String argumentDataType  = null;
 				if (selectedIndex != 0) {
-					String argumentDataType = listAllDataTypes.getItemText(selectedIndex);
+					argumentDataType = listAllDataTypes.getItemText(selectedIndex);
 					if (argumentDataType.equalsIgnoreCase("definition")
 							|| argumentDataType.equalsIgnoreCase("parameter")) {
 						int selectedItemIndex = listSelectItem.getSelectedIndex();
@@ -280,6 +283,28 @@ public class AddFunctionArgumentDialogBox {
 					helpBlock.setText("Datatype is required.");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					
+				}
+				if((argumentName != null) && (argumentDataType !=null)){
+					if(isEdit){
+						
+						for(int i=0 ; i< searchDisplay.getFunctionArgumentList().size();i++){
+							CQLFunctionArgument currentFunctionArgument = searchDisplay.getFunctionArgumentList().get(i);
+							if(currentFunctionArgument.getId().equalsIgnoreCase(functionArg.getId())){
+								currentFunctionArgument.setArgumentName(argumentName);
+								currentFunctionArgument.setArgumentType(argumentDataType);
+								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+								break;
+							}
+						}
+						
+					} else {
+						functionArg.setArgumentName(argumentName);
+						functionArg.setArgumentType(argumentDataType);
+						functionArg.setId(UUIDUtilClient.uuid(16));
+						searchDisplay.getFunctionArgumentList().add(functionArg);
+						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+					}
+					dialogModal.hide();
 				}
 			}
 		});

@@ -1,8 +1,19 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import mat.client.MatPresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.WarningMessageAlert;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.shared.SaveUpdateCQLResult;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -12,7 +23,6 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,21 +39,9 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
-import mat.client.MatPresenter;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.MatContext;
-import mat.client.shared.WarningMessageAlert;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -680,6 +678,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
 		
+		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
+		
 	}
 	
 	/** The search display. */
@@ -795,7 +795,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				clearParameter();
 				searchDisplay.setIsParameterDirty(false);
-					searchDisplay.getWarningMessageAlertParameter().clearAlert();
+				searchDisplay.getWarningMessageAlertParameter().clearAlert();
 			}
 		});
 		
@@ -833,7 +833,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
 				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel, addNewFunctionArgument , false);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel, addNewFunctionArgument , false, searchDisplay);
 			}
 		});
 		
@@ -864,7 +864,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				
 			}
 		});
-		
 	}
 	
 	/**
@@ -872,21 +871,24 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void addObserverHandler() {
 		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
-			
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
 				CQLModel currentModel = new CQLModel();
 				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
 				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
-				
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel,result,true);
-				
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel,result,true,searchDisplay);
 			}
-			
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
-				Window.alert("Delete Clicked for argument name : "+ result.getArgumentName());
-				
+				Iterator<CQLFunctionArgument> iterator = searchDisplay.getFunctionArgumentList().iterator();
+				while (iterator.hasNext()) {
+					CQLFunctionArgument cqlFunArgument = iterator.next();
+					if (cqlFunArgument.getId().equals(result.getId())) {
+						iterator.remove();
+						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+						break;
+					}
+				}
 			}
 			
 		});
@@ -920,8 +922,49 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	
 	/**
-	 * Adds the and modify function.
+	 * Save and modify cql general info.
 	 */
+	/*private void saveAndModifyCQLGeneralInfo(){
+		resetMessageDisplay();
+		String context = "";
+		if(searchDisplay.getContextToggleSwitch().getValue()){
+			context = "Patient";
+		} else {
+			context = "Population";
+		}
+		
+		MatContext.get().getMeasureService().saveAndModifyCQLGeneralInfo(MatContext.get().getCurrentMeasureId(), context, new AsyncCallback<SaveUpdateCQLResult>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageAlertGenInfo().setVisible(true);
+				searchDisplay.getErrorMessageAlertGenInfo().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+						MatContext.get().getMessageDelegate().getGenericErrorMessage()));
+			}
+			
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				searchDisplay.getSuccessMessageAlert().clear();
+				if(result.isSuccess()){
+					
+					if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
+						searchDisplay.getContextToggleSwitch().setValue(true);
+					} else {
+						searchDisplay.getContextToggleSwitch().setValue(false);
+					}
+					searchDisplay.getSuccessMessageAlert().setVisible(true);
+					searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
+							MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_GEN_INFO()));
+				}
+				
+			}
+		});
+	}*/
+	
+	
+	
+	
+	
 	protected void addAndModifyFunction() {
 		resetMessageDisplay();
 		String functionName = searchDisplay.getFuncNameTxtArea().getText();
@@ -959,13 +1002,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
 								
 							} else if (result.getFailureReason() == 1) {
-									searchDisplay.getErrorMessageAlertFunction().setVisible(true);
-									searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
+								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
 							} else if (result.getFailureReason() == 2) {
-										searchDisplay.getErrorMessageAlertFunction().setVisible(true);
-										searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-												"Unable to find Node to modify."));
+								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
+								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										"Unable to find Node to modify."));
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -998,13 +1041,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS()));
 								
 							} else if (result.getFailureReason() == 1) {
-									searchDisplay.getErrorMessageAlertFunction().setVisible(true);
-									searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
+								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
 							} else if (result.getFailureReason() == 2) {
-										searchDisplay.getErrorMessageAlertFunction().setVisible(true);
-										searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-												"Missing Functions Tag."));
+								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
+								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										"Missing Functions Tag."));
 							}  else if(result.getFailureReason() == 3){
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -1071,13 +1114,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
 								searchDisplay.setIsParameterDirty(false);
 							} else if (result.getFailureReason() == 1) {
-									searchDisplay.getErrorMessageAlertParameter().setVisible(true);
-									searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
 							} else if (result.getFailureReason() == 2) {
-										searchDisplay.getErrorMessageAlertParameter().setVisible(true);
-										searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-												"Unable to find Node to modify."));
+								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										"Unable to find Node to modify."));
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -1110,13 +1153,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
 								searchDisplay.setIsParameterDirty(false);
 							} else if (result.getFailureReason() == 1) {
-									searchDisplay.getErrorMessageAlertParameter().setVisible(true);
-									searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
+								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-												"Missing Parameters Tag."));
+										"Missing Parameters Tag."));
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -1601,16 +1644,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private boolean validateForSpecialChar (String identifierName) {
 		
-		if(identifierName == null || "".equals(identifierName) || !Character.isLetter(identifierName.charAt(0))){
+		if((identifierName == null) || "".equals(identifierName) || !Character.isLetter(identifierName.charAt(0))){
 			return true;
 		}
 		
 		for(int i = 0; i< identifierName.length(); i++) {
-			if(!Character.isLetter(identifierName.charAt(i)) && !Character.isDigit(identifierName.charAt(i)) && identifierName.charAt(i) != '_'
-					&& identifierName.charAt(i) != ' '){
+			if(!Character.isLetter(identifierName.charAt(i)) && !Character.isDigit(identifierName.charAt(i)) && (identifierName.charAt(i) != '_')
+					&& (identifierName.charAt(i) != ' ')){
 				return  true;
 			}
 		}
-		return false; 
+		return false;
 	}
 }

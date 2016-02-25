@@ -4,7 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -28,7 +39,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -62,22 +72,9 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -963,7 +960,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertParameter.setType(AlertType.DANGER);
 		errorMessageAlertParameter.setWidth("600px");
 		errorMessageAlertParameter.setVisible(false);
-
+		
 		parameterVP.add(successMessageAlertParameter);
 		parameterVP.add(errorMessageAlertParameter);
 		parameterVP.add(warningMessageAlertParameter);
@@ -1333,6 +1330,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Creates the add argument view for functions.
 	 */
+	@Override
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -1650,7 +1648,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setIsDefinitionDirty(false);
 		getWarningMessageAlertParameter().clearAlert();
 		getWarningMessageAlertDefinition().clearAlert();
-	
+		
 	}
 	
 	/* (non-Javadoc)

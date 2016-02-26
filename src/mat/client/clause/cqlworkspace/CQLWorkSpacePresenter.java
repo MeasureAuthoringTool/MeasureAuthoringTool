@@ -736,22 +736,31 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getDefineNameTxtArea().addChangeHandler(new ChangeHandler() {
+		searchDisplay.getDefineNameTxtArea().addClickHandler(new ClickHandler() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
 				searchDisplay.setIsDefinitionDirty(true);
 			}
 		});
 		
 		
-		searchDisplay.getParameterNameTxtArea().addChangeHandler(new ChangeHandler() {
+		searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
+			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
 				searchDisplay.setIsParameterDirty(true);
+			}
+		});
+		
+		
+         searchDisplay.getFuncNameTxtArea().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
 			}
 		});
 		
@@ -780,6 +789,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
 				if (searchDisplay.getIsDefinitionDirty()) {
 					searchDisplay.getWarningMessageAlertDefinition().createAlert();
 				} else {
@@ -792,6 +802,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
 				if (searchDisplay.getIsParameterDirty()) {
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
 				} else {

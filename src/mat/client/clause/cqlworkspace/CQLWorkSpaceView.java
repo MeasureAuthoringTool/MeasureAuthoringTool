@@ -67,6 +67,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -956,6 +957,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		clearParameterTopButton.setText("Clear");
 		clearParameterTopButton.setId("ClearParameter_Button");
 		
+		SimplePanel paramAceEditorPanel = new SimplePanel();
+		paramAceEditorPanel.setSize("685px", "510px");
 		//parameterAceEditor.startEditor();
 		parameterAceEditor.setText("");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
@@ -964,6 +967,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterAceEditor.setSize("675px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
+		paramAceEditorPanel.add(parameterAceEditor);
+		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
+		paramAceEditorPanel.setStyleName("cqlRightContainer");
+		
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		successMessageAlertParameter.setType(AlertType.SUCCESS);
@@ -983,7 +990,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterVP.add(parameterNameTxtArea);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
-		parameterVP.add(parameterAceEditor);
+		parameterVP.add(paramAceEditorPanel);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.setStyleName("topping");
 		parameterFP.add(parameterVP);
@@ -1100,7 +1107,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineNameTxtArea.setName("defineName");
 		defineLabel.setText("Definition Name");
 		
-		
+		SimplePanel defAceEditorPanel = new SimplePanel();
+		defAceEditorPanel.setSize("685px", "510px");
 		defineAceEditor.setText("");
 		defineAceEditor.setMode(AceEditorMode.CQL);
 		defineAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -1108,6 +1116,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineAceEditor.setSize("675px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
+		defAceEditorPanel.add(defineAceEditor);
+		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
+		defAceEditorPanel.setStyleName("cqlRightContainer");
 		
 		successMessageAlertDefinition.setType(AlertType.SUCCESS);
 		successMessageAlertDefinition.setWidth("600px");
@@ -1142,7 +1153,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineConextPanel);
 		definitionVP.add(defineButtonBar);
-		definitionVP.add(defineAceEditor);
+		definitionVP.add(defAceEditorPanel);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.setStyleName("topping");
 		definitionFP.add(definitionVP);
@@ -1265,6 +1276,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcNameTxtArea.setName("FunctionName");
 		functionNameLabel.setText("Function Name");
 		
+		SimplePanel funcAceEditorPanel = new SimplePanel();
+		funcAceEditorPanel.setSize("685", "510");
 		functionBodyAceEditor.setText("");
 		functionBodyAceEditor.setMode(AceEditorMode.CQL);
 		functionBodyAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -1272,7 +1285,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		functionBodyAceEditor.setSize("675px", "500px");
 		functionBodyAceEditor.setAutocompleteEnabled(true);
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
-		
+		funcAceEditorPanel.add(functionBodyAceEditor);
+		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
+		funcAceEditorPanel.setStyleName("cqlRightContainer");
 		
 		
 		successMessageAlertFunction.setType(AlertType.SUCCESS);
@@ -1306,7 +1321,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
 		funcVP.add(new SpacerWidget());
-		funcVP.add(functionBodyAceEditor);
+		funcVP.add(funcAceEditorPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.setStyleName("topping");
 		funcFP.add(funcVP);

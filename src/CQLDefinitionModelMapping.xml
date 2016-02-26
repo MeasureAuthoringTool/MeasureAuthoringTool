@@ -22,7 +22,7 @@
 					</field>
 
 					<field name="definitionLogic" type="java.lang.String">
-						<bind-xml name="logic" node="text" />
+						<bind-xml name="logic" node="element" />
 					</field>
 
 					<field name="context" type="java.lang.String">

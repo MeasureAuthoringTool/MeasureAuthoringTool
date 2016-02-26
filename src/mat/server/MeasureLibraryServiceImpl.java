@@ -4933,7 +4933,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							.setNodeValue(currentObj.getContext());
 							nodeDefinition.getAttributes().getNamedItem("name")
 							.setNodeValue(currentObj.getDefinitionName());
-							nodeDefinition.setTextContent(currentObj.getDefinitionLogic());
+							/*nodeDefinition.setTextContent(currentObj.getDefinitionLogic());*/
+							Node logicNode = nodeDefinition.getFirstChild();
+							logicNode.setTextContent(currentObj.getDefinitionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj, currentObj, definitionList);
@@ -5058,7 +5060,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeParameter!=null){
 							nodeParameter.getAttributes().getNamedItem("name").setNodeValue(currentObj.getParameterName());
-							nodeParameter.setTextContent(currentObj.getParameterLogic());
+							/*nodeParameter.setTextContent(currentObj.getParameterLogic());*/
+							Node logicNode = nodeParameter.getFirstChild();
+							logicNode.setTextContent(currentObj.getParameterLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
 							
@@ -5185,7 +5189,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeFunction!=null){
 							nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
-							nodeFunction.setTextContent(currentObj.getFunctionLogic());
+							/*nodeFunction.setTextContent(currentObj.getFunctionLogic());*/
+							Node logicNode = nodeFunction.getFirstChild();
+							logicNode.setTextContent(currentObj.getFunctionLogic());
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
 							
@@ -5914,23 +5920,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean isDuplicateIdentifierName(String identifierName, String measureId){
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		boolean isInvalid = false;
+//		boolean isInvalid = false;
 		if (xmlModel!=null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_CQLLOOKUP_IDENTIFIER_NAME = "/measure/cqlLookUp//translate(@name, " +
-					"'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+identifierName.toUpperCase()+"'";
+			String XPATH_CQLLOOKUP_IDENTIFIER_NAME = "/measure/cqlLookUp//node()[translate(@name, " +
+					"'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+identifierName.toUpperCase()+"']";
 			try {
-				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_IDENTIFIER_NAME,
-						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);
-				if(isInvalid){
-					return isInvalid;
+				NodeList nodeList = (NodeList) xPath.evaluate(XPATH_CQLLOOKUP_IDENTIFIER_NAME,
+						processor.getOriginalDoc(),	XPathConstants.NODESET);
+				
+				if(nodeList != null && nodeList.getLength() > 0){
+					return true;
 				}				
 				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-			
 			
 		}
 		

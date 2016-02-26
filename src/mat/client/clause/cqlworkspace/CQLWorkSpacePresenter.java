@@ -782,8 +782,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsDefinitionDirty()) {
+					resetMessageDisplay();
 					searchDisplay.getWarningMessageAlertDefinition().createAlert();
 				} else {
+					resetMessageDisplay();
 					clearDefinition();
 				}
 			}
@@ -794,8 +796,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsParameterDirty()) {
+					resetMessageDisplay();
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
 				} else {
+					resetMessageDisplay();
 					clearParameter();
 				}
 			}

@@ -88,7 +88,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		loginFormContianer.add(successMessagePanelRow);
 		
 		Row mainRow = new Row();
-		Column mainCol = new Column(ColumnSize.SM_12);
+		Column mainCol = new Column(ColumnSize.SM_10);
 		mainCol.setOffset(ColumnOffset.SM_4);
 		//Login Panel.
 		Panel loginPanel = new Panel();

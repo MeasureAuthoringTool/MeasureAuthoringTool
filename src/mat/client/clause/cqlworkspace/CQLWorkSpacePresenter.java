@@ -29,6 +29,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
@@ -736,30 +738,31 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getDefineNameTxtArea().addClickHandler(new ClickHandler() {
+		searchDisplay.getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
 				searchDisplay.setIsDefinitionDirty(true);
+				
 			}
 		});
 		
 		
-		searchDisplay.getParameterNameTxtArea().addClickHandler(new ClickHandler() {
+		searchDisplay.getParameterNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
 				searchDisplay.setIsParameterDirty(true);
 			}
 		});
 		
 		
-         searchDisplay.getFuncNameTxtArea().addClickHandler(new ClickHandler() {
+         searchDisplay.getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
 			}
 		});
@@ -782,6 +785,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
 				searchDisplay.setIsParameterDirty(true);
+			}
+		});
+		
+        searchDisplay.getFunctionBodyAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+			
+			@Override
+			public void onChangeSelection(AceSelection selection) {
+				resetMessageDisplay();
 			}
 		});
 		
@@ -1579,7 +1590,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * @param menuClickedBefore the menu clicked before
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
-		
+		resetMessageDisplay();
 		if(menuClickedBefore.equalsIgnoreCase("general")){
 			searchDisplay.getGeneralInformation().setActive(false);
 		} else if(menuClickedBefore.equalsIgnoreCase("param")){

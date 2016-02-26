@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
@@ -16,11 +17,13 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -36,9 +39,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -72,6 +73,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -196,6 +198,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
 	
+	/** The function argument list. */
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
 	
 	/**
@@ -308,10 +311,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private WarningMessageAlert warningMessageAlertParameter = new WarningMessageAlert();
 	
 	/** The context pat toggle switch. */
-	private ToggleSwitch contextPATToggleSwitch = new ToggleSwitch();
+	private InlineRadio contextPatientRadioBtn = new InlineRadio("Patient");
 	
 	/** The context pop toggle switch. */
-	private ToggleSwitch contextPOPToggleSwitch = new ToggleSwitch();
+	private InlineRadio contextPopulationRadioBtn = new InlineRadio("Population");
 	
 	/** The define button bar. */
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
@@ -476,11 +479,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
 						getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
 						if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
-							getContextPATToggleSwitch().setValue(true);
-							getContextPOPToggleSwitch().setValue(false);
+							getContextPATRadioBtn().setValue(true);
+							getContextPOPRadioBtn().setValue(false);
 						} else {
-							getContextPOPToggleSwitch().setValue(true);
-							getContextPATToggleSwitch().setValue(false);
+							getContextPOPRadioBtn().setValue(true);
+							getContextPATRadioBtn().setValue(false);
 						}
 					}
 				}
@@ -1102,32 +1105,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		errorMessageAlertDefinition.setVisible(false);
 		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
-		//defineContextLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		FlowPanel defineConextPanel = new FlowPanel();
 		
-		contextPATToggleSwitch.setSize(SizeType.MINI);
-		contextPATToggleSwitch.setLabelText("Patient");
-		contextPATToggleSwitch.setValue(true);
-		contextPATToggleSwitch.setTitle("Click to change context");
-		contextPATToggleSwitch.setLabelWidth("75");
-		contextPATToggleSwitch.setOnIcon(IconType.CHECK);
-		contextPATToggleSwitch.setOnColor(ColorType.SUCCESS);
-		contextPATToggleSwitch.setOffIcon(IconType.TIMES);
-		contextPATToggleSwitch.setOffColor(ColorType.DANGER);
+		contextPatientRadioBtn.setValue(true);
+		contextPatientRadioBtn.setText("Patient");
+		contextPatientRadioBtn.setId("context_PatientRadioButton");
+		contextPopulationRadioBtn.setValue(false);
+		contextPopulationRadioBtn.setText("Population");
+		contextPopulationRadioBtn.setId("context_PopulationRadioButton");
 		
-		
-		contextPOPToggleSwitch.setSize(SizeType.MINI);
-		contextPOPToggleSwitch.setLabelText("Population");
-		contextPOPToggleSwitch.setValue(false);
-		contextPOPToggleSwitch.setTitle("Click to change Context");
-		contextPOPToggleSwitch.setLabelWidth("75");
-		contextPOPToggleSwitch.setOnIcon(IconType.CHECK);
-		contextPOPToggleSwitch.setOnColor(ColorType.SUCCESS);
-		contextPOPToggleSwitch.setOffIcon(IconType.TIMES);
-		contextPOPToggleSwitch.setOffColor(ColorType.DANGER);
-		
-		defineConextPanel.add(contextPATToggleSwitch);
-		defineConextPanel.add(contextPOPToggleSwitch);
+		defineConextPanel.add(contextPatientRadioBtn);
+		defineConextPanel.add(contextPopulationRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
 		definitionVP.add(successMessageAlertDefinition);
 		definitionVP.add(errorMessageAlertDefinition);
@@ -1140,14 +1128,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		definitionVP.add(defineContextLabel);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineConextPanel);
-		//definitionVP.add(new SpacerWidget());
-		//definitionVP.add(iconPanel);
-		//definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineButtonBar);
-		/*definitionVP.add(new SpacerWidget());*/
 		definitionVP.add(defineAceEditor);
 		definitionVP.add(new SpacerWidget());
-		//definitionVP.add(addDefineButton);
 		definitionVP.setStyleName("topping");
 		definitionFP.add(definitionVP);
 		definitionFP.setStyleName("cqlRightContainer");
@@ -1329,6 +1312,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/**
 	 * Creates the add argument view for functions.
+	 *
+	 * @param argumentList the argument list
 	 */
 	@Override
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
@@ -2619,16 +2604,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPATToggleSwitch()
 	 */
 	@Override
-	public ToggleSwitch getContextPATToggleSwitch() {
-		return contextPATToggleSwitch;
+	public InlineRadio getContextPATRadioBtn() {
+		return contextPatientRadioBtn;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPOPToggleSwitch()
 	 */
 	@Override
-	public ToggleSwitch getContextPOPToggleSwitch() {
-		return contextPOPToggleSwitch;
+	public InlineRadio getContextPOPRadioBtn() {
+		return contextPopulationRadioBtn;
 	}
 	
 	/* (non-Javadoc)
@@ -2662,10 +2647,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public CQLSaveDeleteEraseButtonBar getFunctionButtonBar() {
 		return functionButtonBar;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionArgumentList()
+	 */
 	@Override
 	public List<CQLFunctionArgument> getFunctionArgumentList() {
 		return functionArgumentList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setFunctionArgumentList(java.util.List)
+	 */
 	@Override
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;

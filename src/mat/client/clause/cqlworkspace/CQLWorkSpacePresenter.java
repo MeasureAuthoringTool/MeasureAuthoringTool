@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
@@ -14,21 +15,21 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
@@ -39,6 +40,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -625,14 +627,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the context pat toggle switch
 		 */
-		ToggleSwitch getContextPATToggleSwitch();
+		InlineRadio getContextPATRadioBtn();
 		
 		/**
 		 * Gets the context pop toggle switch.
 		 *
 		 * @return the context pop toggle switch
 		 */
-		ToggleSwitch getContextPOPToggleSwitch();
+		InlineRadio getContextPOPRadioBtn();
 		
 		/**
 		 * Gets the observer.
@@ -676,8 +678,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		List<CQLFunctionArgument> getFunctionArgumentList();
 		
+		/**
+		 * Sets the function argument list.
+		 *
+		 * @param functionArgumentList the new function argument list
+		 */
 		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
 		
+		/**
+		 * Creates the add argument view for functions.
+		 *
+		 * @param argumentList the argument list
+		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 		
 	}
@@ -838,28 +850,28 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-		searchDisplay.getContextPATToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		searchDisplay.getContextPATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				
-				if(searchDisplay.getContextPATToggleSwitch().getValue()){
-					searchDisplay.getContextPOPToggleSwitch().setValue(false);
+				if(searchDisplay.getContextPATRadioBtn().getValue()){
+					searchDisplay.getContextPOPRadioBtn().setValue(false);
 				} else {
-					searchDisplay.getContextPOPToggleSwitch().setValue(true);
+					searchDisplay.getContextPOPRadioBtn().setValue(true);
 				}
 				
 			}
 		});
 		
-		searchDisplay.getContextPOPToggleSwitch().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		searchDisplay.getContextPOPRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(searchDisplay.getContextPOPToggleSwitch().getValue()){
-					searchDisplay.getContextPATToggleSwitch().setValue(false);
+				if(searchDisplay.getContextPOPRadioBtn().getValue()){
+					searchDisplay.getContextPATRadioBtn().setValue(false);
 				} else {
-					searchDisplay.getContextPATToggleSwitch().setValue(true);
+					searchDisplay.getContextPATRadioBtn().setValue(true);
 				}
 				
 			}
@@ -917,57 +929,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
 			searchDisplay.getDefineAceEditor().setText("");
 			searchDisplay.getDefineNameTxtArea().clear();
+			searchDisplay.getContextPATRadioBtn().setValue(true);
+			searchDisplay.getContextPOPRadioBtn().setValue(false);
 		}
 	}
 	
 	
 	/**
-	 * Save and modify cql general info.
+	 * Adds the and modify function.
 	 */
-	/*private void saveAndModifyCQLGeneralInfo(){
-		resetMessageDisplay();
-		String context = "";
-		if(searchDisplay.getContextToggleSwitch().getValue()){
-			context = "Patient";
-		} else {
-			context = "Population";
-		}
-		
-		MatContext.get().getMeasureService().saveAndModifyCQLGeneralInfo(MatContext.get().getCurrentMeasureId(), context, new AsyncCallback<SaveUpdateCQLResult>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageAlertGenInfo().setVisible(true);
-				searchDisplay.getErrorMessageAlertGenInfo().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-						MatContext.get().getMessageDelegate().getGenericErrorMessage()));
-			}
-			
-			@Override
-			public void onSuccess(SaveUpdateCQLResult result) {
-				searchDisplay.getSuccessMessageAlert().clear();
-				if(result.isSuccess()){
-					
-					if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
-						searchDisplay.getContextToggleSwitch().setValue(true);
-					} else {
-						searchDisplay.getContextToggleSwitch().setValue(false);
-					}
-					searchDisplay.getSuccessMessageAlert().setVisible(true);
-					searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
-							MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_GEN_INFO()));
-				}
-				
-			}
-		});
-	}*/
-	
-	
-	
-	
-	
 	protected void addAndModifyFunction() {
 		resetMessageDisplay();
-		String functionName = searchDisplay.getFuncNameTxtArea().getText();
+		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
 		if (!functionName.isEmpty() && !functionBody.isEmpty()) {
 			
@@ -1005,14 +978,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										"Unable to find Node to modify."));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+										MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR()));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							}
 						}
 					});
@@ -1035,7 +1011,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
-								
+								searchDisplay.setCurrentSelectedFunctionObjId(result.getFunction().getId());
 								searchDisplay.getSuccessMessageAlertFunction().setVisible(true);
 								searchDisplay.getSuccessMessageAlertFunction().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS()));
@@ -1044,14 +1020,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										"Missing Functions Tag."));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							}  else if(result.getFailureReason() == 3){
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+										MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR()));
+								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							}
 						}
 						
@@ -1061,7 +1040,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			} else {
 				searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 				searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-						MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR()));
+						MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR()));
+				searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 			}
 			
 			
@@ -1069,6 +1049,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 			searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 					MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_FUNCTION()));
+			searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 		}
 		
 	}
@@ -1079,7 +1060,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void addAndModifyParameters() {
 		resetMessageDisplay();
-		String parameterName = searchDisplay.getParameterNameTxtArea().getText();
+		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty() && !parameterLogic.isEmpty()) {
 			
@@ -1117,14 +1098,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										"Unable to find Node to modify."));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+										MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR()));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							}
 						}
 					});
@@ -1147,7 +1131,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
 								searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
-								
+								searchDisplay.setCurrentSelectedParamerterObjId(result.getParameter().getId());
 								searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 								searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
@@ -1156,14 +1140,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										"Missing Parameters Tag."));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							}  else if(result.getFailureReason() == 3) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+										MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR()));
+								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							}
 						}
 						
@@ -1173,7 +1160,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			} else {
 				searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 				searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-						MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR()));
+						MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR()));
+				searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 			}
 			
 			
@@ -1181,6 +1169,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 			searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 					MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_PARAMETER()));
+			searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 		}
 		
 	}
@@ -1191,10 +1180,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void addAndModifyDefintions() {
 		resetMessageDisplay();
-		String definitionName = searchDisplay.getDefineNameTxtArea().getText();
+		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
 		String defineContext = "";
-		if(searchDisplay.getContextPATToggleSwitch().getValue()){
+		if(searchDisplay.getContextPATRadioBtn().getValue()){
 			defineContext = "Patient";
 		} else {
 			defineContext = "Population";
@@ -1230,7 +1219,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								
 								searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 								searchDisplay.clearAndAddDefinitionNamesToListBox();
-								searchDisplay.updateDefineMap();
+								searchDisplay.updateDefineMap();								
 								searchDisplay.getSuccessMessageAlertDefinition().setVisible(true);
 								searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY()));
@@ -1241,14 +1230,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 2){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 											"Unable to find Node to modify."));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 3) {
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+											MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR()));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								}
 							}
 							/*searchDisplay.getDefineNameTxtArea().clear();
@@ -1275,6 +1267,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 								searchDisplay.clearAndAddDefinitionNamesToListBox();
 								searchDisplay.updateDefineMap();
+								searchDisplay.setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
 								searchDisplay.getSuccessMessageAlertDefinition().setVisible(true);
 								searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION()));
@@ -1286,14 +1279,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 2){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 											"Missing Definitions Tag."));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 3) {
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NOT_KEYWORD()));
+											MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR()));
+									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								}
 							}
 							/*searchDisplay.getDefineNameTxtArea().clear();
@@ -1307,7 +1303,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				
 				searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 				searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-						MatContext.get().getMessageDelegate().getERROR_IDENTIFIER_NAME_NO_SPECIAL_CHAR()));
+						MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR()));
+				searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 			}
 			
 			
@@ -1316,6 +1313,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 			searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 					MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION()));
+			searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 		}
 		
 	}
@@ -1415,8 +1413,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
 		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
 		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
-		searchDisplay.getContextPATToggleSwitch().setEnabled(isEditable);
-		searchDisplay.getContextPOPToggleSwitch().setEnabled(isEditable);
+		searchDisplay.getContextPATRadioBtn().setEnabled(isEditable);
+		searchDisplay.getContextPOPRadioBtn().setEnabled(isEditable);
 	}
 	
 	
@@ -1525,8 +1523,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				boolean editable = MatContext.get().getMeasureLockService()
 						.checkForEditPermission();
 				
-				searchDisplay.getContextPATToggleSwitch().setEnabled(editable);
-				searchDisplay.getContextPOPToggleSwitch().setEnabled(editable);
+				searchDisplay.getContextPATRadioBtn().setEnabled(editable);
+				searchDisplay.getContextPOPRadioBtn().setEnabled(editable);
 				setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
 						.checkForEditPermission());
 				

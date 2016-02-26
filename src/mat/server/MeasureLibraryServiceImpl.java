@@ -5918,7 +5918,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (xmlModel!=null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_CQLLOOKUP_IDENTIFIER_NAME = "/measure/cqlLookUp//@name='"+identifierName+"'";
+			String XPATH_CQLLOOKUP_IDENTIFIER_NAME = "/measure/cqlLookUp//translate(@name, " +
+					"'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+identifierName.toUpperCase()+"'";
 			try {
 				isInvalid = (Boolean) xPath.evaluate(XPATH_CQLLOOKUP_IDENTIFIER_NAME,
 						processor.getOriginalDoc(),	XPathConstants.BOOLEAN);

@@ -3,7 +3,6 @@ package mat.client.clause.cqlworkspace;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
@@ -782,10 +781,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsDefinitionDirty()) {
-					resetMessageDisplay();
 					searchDisplay.getWarningMessageAlertDefinition().createAlert();
 				} else {
-					resetMessageDisplay();
 					clearDefinition();
 				}
 			}
@@ -796,10 +793,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				if (searchDisplay.getIsParameterDirty()) {
-					resetMessageDisplay();
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
 				} else {
-					resetMessageDisplay();
 					clearParameter();
 				}
 			}
@@ -937,8 +932,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getContextPOPRadioBtn().setValue(false);
 		}
 	}
-	
-	
 	/**
 	 * Adds the and modify function.
 	 */
@@ -1375,6 +1368,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
+		if(searchDisplay.getFunctionArgumentList().size() >0){
+			searchDisplay.getFunctionArgumentList().clear();
+		}
 		clickedMenu = "general";
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
@@ -1390,6 +1386,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
+		if(searchDisplay.getFunctionArgumentList().size() >0){
+			searchDisplay.getFunctionArgumentList().clear();
+		}
 		panel.add(searchDisplay.getMainPanel());
 	}
 	

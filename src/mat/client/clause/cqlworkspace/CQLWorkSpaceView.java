@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
@@ -394,6 +393,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedFunctionObjId(null);
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		if(getFunctionArgumentList().size() >0){
+			getFunctionArgumentList().clear();
+		}
 		mainFlowPanel.clear();
 		
 		VerticalPanel parameterVP = new VerticalPanel();
@@ -517,7 +519,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				}
 				if (currentSelectedFunctionObjId != null) {
 					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
-					functionArgumentList = selectedFunction.getArgumentList();
+					if(selectedFunction.getArgumentList() != null){
+						functionArgumentList = selectedFunction.getArgumentList();
+					}
 				}
 				createAddArgumentViewForFunctions(functionArgumentList);
 				successMessageAlertFunction.clear();
@@ -608,6 +612,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		if(getFunctionArgumentList().size() >0){
+			getFunctionArgumentList().clear();
+		}
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
@@ -924,6 +931,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		if(getFunctionArgumentList().size() >0){
+			getFunctionArgumentList().clear();
+		}
 		setIsDefinitionDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
@@ -1073,6 +1083,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
 		setIsDefinitionDirty(false);
+		if(getFunctionArgumentList().size() >0){
+			getFunctionArgumentList().clear();
+		}
 		mainFlowPanel.clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
@@ -1099,7 +1112,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		successMessageAlertDefinition.setType(AlertType.SUCCESS);
 		successMessageAlertDefinition.setWidth("600px");
 		successMessageAlertDefinition.setVisible(false);
-				
+		
 		errorMessageAlertDefinition.setType(AlertType.DANGER);
 		errorMessageAlertDefinition.setWidth("600px");
 		errorMessageAlertDefinition.setVisible(false);
@@ -1234,6 +1247,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		if(getFunctionArgumentList().size() >0){
+			getFunctionArgumentList().clear();
+		}
 		mainFlowPanel.clear();
 		
 		VerticalPanel funcVP = new VerticalPanel();

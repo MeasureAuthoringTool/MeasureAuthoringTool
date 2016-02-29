@@ -198,9 +198,7 @@ public class MessageDelegate {
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name and logic.";
 	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name and logic.";
 	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name and function body.";
-	public final String ERROR_DUPLICATE_PARAMETER_NAME  = "Parameter name already exists.";
-	public final String ERROR_DUPLICATE_FUNCTION_NAME  = "Function name already exists.";
-	public final String ERROR_DUPLICATE_DEFINITION_NAME  = "Definition name already exists.";
+	public final String ERROR_DUPLICATE_IDENTIFIER_NAME  = "Name already exists.";
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
 	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
@@ -2519,12 +2517,8 @@ public class MessageDelegate {
 		return ERROR_SAVE_CQL_PARAMETER;
 	}
 	
-	public String getERROR_DUPLICATE_PARAMETER_NAME() {
-		return ERROR_DUPLICATE_PARAMETER_NAME;
-	}
-	
-	public String getERROR_DUPLICATE_DEFINITION_NAME() {
-		return ERROR_DUPLICATE_DEFINITION_NAME;
+	public String getERROR_DUPLICATE_IDENTIFIER_NAME() {
+		return ERROR_DUPLICATE_IDENTIFIER_NAME;
 	}
 	
 	public String getSUCESS_DEFINITION_MODIFY() {
@@ -2540,10 +2534,6 @@ public class MessageDelegate {
 	
 	public String getERROR_SAVE_CQL_FUNCTION() {
 		return ERROR_SAVE_CQL_FUNCTION;
-	}
-	
-	public String getERROR_DUPLICATE_FUNCTION_NAME() {
-		return ERROR_DUPLICATE_FUNCTION_NAME;
 	}
 	
 	public String getSUCESS_FUNCTION_MODIFY() {

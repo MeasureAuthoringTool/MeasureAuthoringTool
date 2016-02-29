@@ -996,7 +996,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
@@ -1038,7 +1038,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_FUNCTION_NAME()));
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
@@ -1116,7 +1116,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
@@ -1158,7 +1158,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_PARAMETER_NAME()));
+										MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 								searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 							} else if (result.getFailureReason() == 2) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
@@ -1248,7 +1248,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								if(result.getFailureReason() ==1){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 2){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
@@ -1297,7 +1297,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								if (result.getFailureReason() == 1) {
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
 									searchDisplay.getErrorMessageAlertDefinition().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
-											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_DEFINITION_NAME()));
+											MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME()));
 									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 2){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);

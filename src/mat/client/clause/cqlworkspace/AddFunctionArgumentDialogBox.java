@@ -1,13 +1,18 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
+import mat.client.codelist.HasListBox;
 import mat.client.shared.ListBoxMVP;
-import mat.model.cql.CQLDefinition;
+import mat.client.shared.MatContext;
+import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLGrammarDataType;
 import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
 import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -27,15 +32,23 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ListBox;
 
 
 
 public class AddFunctionArgumentDialogBox {
 	private static List<String> argumentDataTypeList = CQLGrammarDataType.getDataTypeName();
+	private static final List<String> attributeList = new ArrayList<String>();
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+			.create(QDSAttributesService.class);
 	
 	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, final boolean isEdit, final ViewDisplay searchDisplay){
 		String saveButtonText = "Add";
@@ -56,7 +69,7 @@ public class AddFunctionArgumentDialogBox {
 		ModalBody modalBody = new ModalBody();
 		
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
-		listAllDataTypes.setWidth("250px");
+		listAllDataTypes.setWidth("290px");
 		listAllDataTypes.addItem("-- Select--");
 		for (int i = 0; i < argumentDataTypeList.size(); i++) {
 			listAllDataTypes.addItem(argumentDataTypeList.get(i));
@@ -87,7 +100,7 @@ public class AddFunctionArgumentDialogBox {
 		
 		final TextArea argumentNameTextArea = new TextArea();
 		argumentNameTextArea.setPlaceholder("Enter Argument Name");
-		argumentNameTextArea.setWidth("250px");
+		argumentNameTextArea.setWidth("290px");
 		argumentNameTextArea.setHeight("38px");
 		
 		
@@ -96,65 +109,43 @@ public class AddFunctionArgumentDialogBox {
 		
 		final FormGroup selectFormGroup = new FormGroup();
 		FormLabel selectFormLabel = new FormLabel();
-		selectFormLabel.setText("Select");
-		selectFormLabel.setTitle("Select");
+		selectFormLabel.setText("Select Model Object");
+		selectFormLabel.setTitle("Select Model Object");
 		selectFormLabel.setFor("listSelectItem");
 		
 		final ListBoxMVP listSelectItem = new ListBoxMVP();
-		listSelectItem.setWidth("250px");
+		listSelectItem.setWidth("290px");
 		listSelectItem.setEnabled(false);
 		
 		selectFormGroup.add(selectFormLabel);
 		selectFormGroup.add(listSelectItem);
+		
+		final FormGroup selectAttributeFormGroup = new FormGroup();
+		FormLabel selectAttributeFormGroupLabel = new FormLabel();
+		selectAttributeFormGroupLabel.setText("Select Attribute");
+		selectAttributeFormGroupLabel.setTitle("Select Attribute");
+		selectAttributeFormGroupLabel.setFor("qdmAttributeDialog_attributeListBox");
+		
+		
+		final ListBox attributeListBox = new ListBox(false);
+		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
+		attributeListBox.setVisibleItemCount(1);
+		attributeListBox.setWidth("290px");
+		attributeListBox.addItem("");
+		attributeListBox.setEnabled(false);
+		
+		selectAttributeFormGroup.add(selectAttributeFormGroupLabel);
+		selectAttributeFormGroup.add(attributeListBox);
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(dataTypeFormGroup);
 		formFieldSet.add(argumentNameFormGroup);
 		formFieldSet.add(selectFormGroup);
+		formFieldSet.add(selectAttributeFormGroup);
 		bodyForm.add(formFieldSet);
 		
 		
-		
-		if(isEdit){
-			String selectedDataType = null;
-			for(int i=0;i<listAllDataTypes.getItemCount();i++){
-				if(listAllDataTypes.getItemText(i).equalsIgnoreCase(functionArg.getArgumentType())){
-					listAllDataTypes.setSelectedIndex(i);
-					selectedDataType = functionArg.getArgumentType();
-					break;
-				}
-			}
-			if(selectedDataType.equalsIgnoreCase("definition")
-					|| functionArg.getArgumentType().equalsIgnoreCase("parameter")){
-				argumentNameTextArea.setEnabled(false);
-				argumentNameTextArea.clear();
-				if(selectedDataType.equalsIgnoreCase("definition")){
-					addDefinitionInList(listSelectItem, currentModel.getDefinitionList());
-					for(int i=0;i<listSelectItem.getItemCount();i++){
-						if(listSelectItem.getItemText(i).equalsIgnoreCase(functionArg.getArgumentName())){
-							listSelectItem.setSelectedIndex(i);
-							break;
-						}
-					}
-				} else if(selectedDataType.equalsIgnoreCase("parameter")){
-					addParamInList(listSelectItem, currentModel.getCqlParameters());
-					for(int i=0;i<listSelectItem.getItemCount();i++){
-						if(listSelectItem.getItemText(i).equalsIgnoreCase(functionArg.getArgumentName())){
-							listSelectItem.setSelectedIndex(i);
-							break;
-						}
-					}
-				}
-			} else {
-				argumentNameTextArea.setEnabled(true);
-				argumentNameTextArea.clear();
-				argumentNameTextArea.setText(functionArg.getArgumentName());
-				listSelectItem.clear();
-				listSelectItem.setEnabled(false);
-			}
-			
-		}
 		
 		
 		
@@ -190,19 +181,19 @@ public class AddFunctionArgumentDialogBox {
 				argumentNameFormGroup.setValidationState(ValidationState.NONE);
 				selectFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
-				if (listAllDataTypes.getValue().equalsIgnoreCase("definition")) {
-					addDefinitionInList(listSelectItem, currentModel.getDefinitionList());
+				if (listAllDataTypes.getValue().equalsIgnoreCase("Model")) {
+					populateAllDataType(listSelectItem);
 					listSelectItem.setEnabled(true);
+					attributeListBox.clear();
+					attributeListBox.setEnabled(false);
 					addButton.setEnabled(true);
 					argumentNameTextArea.setEnabled(false);
-				} else if (listAllDataTypes.getValue().equalsIgnoreCase("Parameter")) {
-					addParamInList(listSelectItem, currentModel.getCqlParameters());
-					listSelectItem.setEnabled(true);
-					addButton.setEnabled(true);
-					argumentNameTextArea.setEnabled(false);
+					
 				} else {
 					listSelectItem.clear();
 					listSelectItem.setEnabled(false);
+					attributeListBox.clear();
+					attributeListBox.setEnabled(false);
 					addButton.setEnabled(true);
 					argumentNameTextArea.setEnabled(true);
 				}
@@ -220,9 +211,64 @@ public class AddFunctionArgumentDialogBox {
 				argumentNameFormGroup.setValidationState(ValidationState.NONE);
 				selectFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
-				
+				attributeListBox.clear();
+				int selectedIndex = listSelectItem.getSelectedIndex();
+				String itemValue = new String();
+				if(selectedIndex !=-1){
+					itemValue = listSelectItem.getItemText(selectedIndex);
+				}
+				if(!itemValue.contains("Select")){
+					getAttributesForDataType(itemValue, attributeListBox);
+					attributeListBox.setEnabled(true);
+				} else {
+					attributeListBox.setEnabled(false);
+					attributeListBox.clear();
+				}
 			}
 		});
+		
+		
+		if(isEdit){
+			String selectedDataType = null;
+			for(int i=0;i<listAllDataTypes.getItemCount();i++){
+				if(listAllDataTypes.getItemText(i).equalsIgnoreCase(functionArg.getArgumentType())){
+					listAllDataTypes.setSelectedIndex(i);
+					selectedDataType = functionArg.getArgumentType();
+					break;
+				}
+			}
+			if(selectedDataType.equalsIgnoreCase("model")){
+				argumentNameTextArea.setEnabled(false);
+				argumentNameTextArea.clear();
+				populateAllDataType(listSelectItem);
+				listSelectItem.setEnabled(true);
+				
+				for(int i=0;i<listSelectItem.getItemCount();i++){
+					String itemValue = listSelectItem.getItemText(i);
+					if(itemValue.equalsIgnoreCase(functionArg.getArgumentName())){
+						listSelectItem.setSelectedIndex(i);
+						getAttributesForDataType(itemValue, attributeListBox);
+						attributeListBox.setEnabled(true);
+						break;
+					}
+				}
+				if(functionArg.getAttributeName() !=null){
+					for(int j=0;j<attributeListBox.getItemCount();j++){
+						if(attributeListBox.getItemText(j).equalsIgnoreCase(functionArg.getAttributeName())){
+							attributeListBox.setSelectedIndex(j);
+							break;
+						}
+					}
+				}
+			} else {
+				argumentNameTextArea.setEnabled(true);
+				argumentNameTextArea.clear();
+				argumentNameTextArea.setText(functionArg.getArgumentName());
+				listSelectItem.clear();
+				listSelectItem.setEnabled(false);
+			}
+			
+		}
 		
 		
 		argumentNameTextArea.addClickHandler(new ClickHandler() {
@@ -243,19 +289,24 @@ public class AddFunctionArgumentDialogBox {
 				int selectedIndex = listAllDataTypes.getSelectedIndex();
 				String argumentName = null;
 				String argumentDataType  = null;
+				String attributeName = null;
 				if (selectedIndex != 0) {
 					argumentDataType = listAllDataTypes.getItemText(selectedIndex);
-					if (argumentDataType.equalsIgnoreCase("definition")
-							|| argumentDataType.equalsIgnoreCase("parameter")) {
+					if (argumentDataType.equalsIgnoreCase("Model")) {
 						int selectedItemIndex = listSelectItem.getSelectedIndex();
 						if (selectedItemIndex != 0) {
 							argumentName = listSelectItem.getItemText(selectedItemIndex);
 						} else {
 							selectFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Select definition/Parameter.");
+							helpBlock.setText("Select QDM datatype.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 							
+						}
+						
+						int selectedAttributeIndex = attributeListBox.getSelectedIndex();
+						if (selectedAttributeIndex != 0) {
+							attributeName = attributeListBox.getItemText(selectedAttributeIndex);
 						}
 						
 					} else {
@@ -272,7 +323,7 @@ public class AddFunctionArgumentDialogBox {
 						} else {
 							dataTypeFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Datatype is required.");
+							helpBlock.setText("CQL datatype is required.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 						
@@ -280,7 +331,7 @@ public class AddFunctionArgumentDialogBox {
 				} else {
 					dataTypeFormGroup.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Datatype is required.");
+					helpBlock.setText("CQL datatype is required.");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					
 				}
@@ -292,6 +343,7 @@ public class AddFunctionArgumentDialogBox {
 							if(currentFunctionArgument.getId().equalsIgnoreCase(functionArg.getId())){
 								currentFunctionArgument.setArgumentName(argumentName);
 								currentFunctionArgument.setArgumentType(argumentDataType);
+								currentFunctionArgument.setAttributeName(attributeName);
 								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
 								break;
 							}
@@ -301,6 +353,7 @@ public class AddFunctionArgumentDialogBox {
 						functionArg.setArgumentName(argumentName);
 						functionArg.setArgumentType(argumentDataType);
 						functionArg.setId(UUIDUtilClient.uuid(16));
+						functionArg.setAttributeName(attributeName);
 						searchDisplay.getFunctionArgumentList().add(functionArg);
 						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
 					}
@@ -313,31 +366,76 @@ public class AddFunctionArgumentDialogBox {
 		
 	}
 	/**
-	 * Method to add CQLParameter content in listSelectItem
-	 * @param listSelectItem - ListMVP
-	 * @param cqlParameters - List
+	 * Populate all data type.
 	 */
-	protected static void addParamInList(ListBoxMVP listSelectItem, List<CQLParameter> cqlParameters) {
-		listSelectItem.clear();
-		listSelectItem.addItem("-- Select--");
-		for (CQLParameter param : cqlParameters) {
-			listSelectItem.addItem(param.getParameterName());
-		}
-		
+	private static void populateAllDataType(final ListBoxMVP listDataType) {
+		MatContext
+		.get()
+		.getListBoxCodeProvider()
+		.getAllDataType(
+				new AsyncCallback<List<? extends HasListBox>>() {
+					
+					@Override
+					public void onFailure(final Throwable caught) {
+						
+					}
+					
+					@Override
+					public void onSuccess(
+							final List<? extends HasListBox> result) {
+						Collections.sort(result,
+								new HasListBox.Comparator());
+						setListBoxItems(listDataType,result, MatContext.PLEASE_SELECT);
+					}
+				});
 	}
 	
-	/**
-	 * Method to add CQLDefinition content in listSelectItem
-	 * @param listSelectItem - ListMVP
-	 * @param definitionList - List
-	 */
-	protected static void addDefinitionInList(ListBoxMVP listSelectItem, List<CQLDefinition> definitionList) {
-		listSelectItem.clear();
-		listSelectItem.addItem("-- Select--");
-		for (CQLDefinition define : definitionList) {
-			listSelectItem.addItem(define.getDefinitionName());
+	private static void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption) {
+		listBox.clear();
+		listBox.addItem(defaultOption, "");
+		if (itemList != null) {
+			for (HasListBox listBoxContent : itemList) {
+				//MAT-4366
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")) {
+					listBox.addItem(listBoxContent.getItem(),""+listBoxContent.getValue());
+				}
+			}
+			
+			SelectElement selectElement = SelectElement.as(listBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(optionElement.getText());
+			}
 		}
-		
 	}
 	
+	private static void getAttributesForDataType(String dataType, final ListBox attributeListBox){
+		attributeService.getAllAttributesByDataType(dataType,
+				new AsyncCallback<List<QDSAttributes>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				System.out
+				.println("Error retrieving data type attributes. "
+						+ caught.getMessage());
+				
+			}
+			
+			@Override
+			public void onSuccess(List<QDSAttributes> result) {
+				attributeList.clear();
+				for (QDSAttributes qdsAttributes : result) {
+					attributeList.add(qdsAttributes.getName());
+				}
+				attributeListBox.addItem("--Select--");
+				for (String attribName : attributeList) {
+					attributeListBox.addItem(attribName);
+				}
+			}
+			
+		});
+	}
 }

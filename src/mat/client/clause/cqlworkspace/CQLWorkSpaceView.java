@@ -16,7 +16,6 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -38,7 +37,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -1583,6 +1581,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				public SafeHtml getValue(CQLFunctionArgument object) {
 					StringBuilder title = new StringBuilder();
 					StringBuilder value = new StringBuilder(object.getArgumentName());
+					if((object.getAttributeName() != null) && !object.getAttributeName().isEmpty()){
+						value = value.append(":" + object.getAttributeName());
+					}
 					title = title.append("Name : ").append(value);
 					return CellTableUtility.getColumnToolTip(value.toString(),
 							title.toString());
@@ -1601,6 +1602,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					title = title.append("Datatype : ").append(
 							object.getArgumentType());
 					StringBuilder value = new StringBuilder(object.getArgumentType());
+					
 					return CellTableUtility.getColumnToolTip(value.toString(),
 							title.toString());
 				}
@@ -2694,5 +2696,5 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;
 	}
-
+	
 }

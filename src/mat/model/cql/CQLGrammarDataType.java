@@ -10,9 +10,8 @@ public class CQLGrammarDataType implements IsSerializable{
 		DATA_TYPE.add("Boolean");
 		DATA_TYPE.add("DateTime");
 		DATA_TYPE.add("Decimal");
-		DATA_TYPE.add("Definition");
 		DATA_TYPE.add("Integer");
-		DATA_TYPE.add("Parameter");
+		DATA_TYPE.add("Model");
 		DATA_TYPE.add("String");
 		DATA_TYPE.add("Time");
 		DATA_TYPE.add("Others");

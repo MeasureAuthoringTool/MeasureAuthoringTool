@@ -1,7 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -12,7 +11,6 @@ import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLGrammarDataType;
-import mat.model.cql.CQLModel;
 import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -50,12 +48,23 @@ public class AddFunctionArgumentDialogBox {
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
-	public static  void showArgumentDialogBox(final CQLModel currentModel, final CQLFunctionArgument functionArg, final boolean isEdit, final ViewDisplay searchDisplay){
+	public static  void showArgumentDialogBox( final CQLFunctionArgument functionArg, final boolean isEdit, final ViewDisplay searchDisplay){
+		final List<String> allDataTypes = MatContext.get().getDataTypeList();
+		final ListBox attributeListBox = new ListBox(false);
 		String saveButtonText = "Add";
 		String modalText = "Add Argument";
 		if (isEdit) {
 			saveButtonText = "Edit";
-			modalText = "Edit Argument " + functionArg.getArgumentName();
+			modalText = "Edit Argument: " + functionArg.getArgumentName();
+			if(functionArg.getArgumentType().equalsIgnoreCase("Model")){
+				attributeListBox.clear();
+				attributeListBox.addItem(MatContext.get().PLEASE_SELECT);
+				//if(functionArg.getAttributeName() != null){
+				for (int i = 0; i < searchDisplay.getAvailableQDSAttributeList().size(); i++) {
+					attributeListBox.addItem(searchDisplay.getAvailableQDSAttributeList().get(i).getName());
+				}
+				//}
+			}
 		}
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle(modalText);
@@ -127,7 +136,7 @@ public class AddFunctionArgumentDialogBox {
 		selectAttributeFormGroupLabel.setFor("qdmAttributeDialog_attributeListBox");
 		
 		
-		final ListBox attributeListBox = new ListBox(false);
+		
 		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
 		attributeListBox.setVisibleItemCount(1);
 		attributeListBox.setWidth("290px");
@@ -172,6 +181,50 @@ public class AddFunctionArgumentDialogBox {
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
 		
+		if(isEdit){
+			String selectedDataType = null;
+			for(int i=0;i<listAllDataTypes.getItemCount();i++){
+				if(listAllDataTypes.getItemText(i).equalsIgnoreCase(functionArg.getArgumentType())){
+					listAllDataTypes.setSelectedIndex(i);
+					selectedDataType = functionArg.getArgumentType();
+					break;
+				}
+			}
+			if(selectedDataType.equalsIgnoreCase("model")){
+				argumentNameTextArea.setEnabled(false);
+				argumentNameTextArea.clear();
+				populateAllDataType(listSelectItem,allDataTypes);
+				listSelectItem.setEnabled(true);
+				
+				for(int i=0;i<listSelectItem.getItemCount();i++){
+					String itemValue = listSelectItem.getItemText(i);
+					if(itemValue.equalsIgnoreCase(functionArg.getArgumentName())){
+						listSelectItem.setSelectedIndex(i);
+						//getAttributesForDataType(itemValue, attributeListBox);
+						attributeListBox.setEnabled(true);
+						break;
+					}
+				}
+				if(functionArg.getAttributeName() !=null){
+					for(int j=0;j<attributeListBox.getItemCount();j++){
+						if(attributeListBox.getItemText(j).equalsIgnoreCase(functionArg.getAttributeName())){
+							attributeListBox.setSelectedIndex(j);
+							break;
+						}
+					}
+				}
+			} else {
+				argumentNameTextArea.setEnabled(true);
+				argumentNameTextArea.clear();
+				argumentNameTextArea.setText(functionArg.getArgumentName());
+				listSelectItem.clear();
+				listSelectItem.setEnabled(false);
+			}
+			
+		}
+		
+		
+		
 		listAllDataTypes.addChangeHandler(new ChangeHandler() {
 			
 			@Override
@@ -182,12 +235,13 @@ public class AddFunctionArgumentDialogBox {
 				selectFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				if (listAllDataTypes.getValue().equalsIgnoreCase("Model")) {
-					populateAllDataType(listSelectItem);
+					populateAllDataType(listSelectItem,allDataTypes);
 					listSelectItem.setEnabled(true);
 					attributeListBox.clear();
 					attributeListBox.setEnabled(false);
 					addButton.setEnabled(true);
 					argumentNameTextArea.setEnabled(false);
+					argumentNameTextArea.clear();
 					
 				} else {
 					listSelectItem.clear();
@@ -228,47 +282,6 @@ public class AddFunctionArgumentDialogBox {
 		});
 		
 		
-		if(isEdit){
-			String selectedDataType = null;
-			for(int i=0;i<listAllDataTypes.getItemCount();i++){
-				if(listAllDataTypes.getItemText(i).equalsIgnoreCase(functionArg.getArgumentType())){
-					listAllDataTypes.setSelectedIndex(i);
-					selectedDataType = functionArg.getArgumentType();
-					break;
-				}
-			}
-			if(selectedDataType.equalsIgnoreCase("model")){
-				argumentNameTextArea.setEnabled(false);
-				argumentNameTextArea.clear();
-				populateAllDataType(listSelectItem);
-				listSelectItem.setEnabled(true);
-				
-				for(int i=0;i<listSelectItem.getItemCount();i++){
-					String itemValue = listSelectItem.getItemText(i);
-					if(itemValue.equalsIgnoreCase(functionArg.getArgumentName())){
-						listSelectItem.setSelectedIndex(i);
-						getAttributesForDataType(itemValue, attributeListBox);
-						attributeListBox.setEnabled(true);
-						break;
-					}
-				}
-				if(functionArg.getAttributeName() !=null){
-					for(int j=0;j<attributeListBox.getItemCount();j++){
-						if(attributeListBox.getItemText(j).equalsIgnoreCase(functionArg.getAttributeName())){
-							attributeListBox.setSelectedIndex(j);
-							break;
-						}
-					}
-				}
-			} else {
-				argumentNameTextArea.setEnabled(true);
-				argumentNameTextArea.clear();
-				argumentNameTextArea.setText(functionArg.getArgumentName());
-				listSelectItem.clear();
-				listSelectItem.setEnabled(false);
-			}
-			
-		}
 		
 		
 		argumentNameTextArea.addClickHandler(new ClickHandler() {
@@ -368,8 +381,8 @@ public class AddFunctionArgumentDialogBox {
 	/**
 	 * Populate all data type.
 	 */
-	private static void populateAllDataType(final ListBoxMVP listDataType) {
-		MatContext
+	private static void populateAllDataType(final ListBoxMVP listDataType, List<String> allDataTypeList) {
+		/*MatContext
 		.get()
 		.getListBoxCodeProvider()
 		.getAllDataType(
@@ -387,7 +400,12 @@ public class AddFunctionArgumentDialogBox {
 								new HasListBox.Comparator());
 						setListBoxItems(listDataType,result, MatContext.PLEASE_SELECT);
 					}
-				});
+				});*/
+		listDataType.clear();
+		for(String dataType : allDataTypeList){
+			listDataType.addItem(dataType);
+		}
+		
 	}
 	
 	private static void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption) {

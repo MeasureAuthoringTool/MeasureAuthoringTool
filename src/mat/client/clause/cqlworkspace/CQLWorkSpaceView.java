@@ -11,6 +11,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -71,7 +72,6 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -81,7 +81,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
  * The Class CQLWorkSpaceView.
  */
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
-	
+	private List<QDSAttributes> availableQDSAttributeList;
 	/** The is editable. */
 	boolean isEditable = false;
 	/** The main panel. */
@@ -93,7 +93,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private static final int TABLE_ROW_COUNT = 2;
 	
 	/** The argument list table. */
-	CellTable<CQLFunctionArgument> argumentListTable;
+	private CellTable<CQLFunctionArgument> argumentListTable;
 	
 	/** The sort provider. */
 	private ListDataProvider<CQLFunctionArgument> listDataProvider;
@@ -2695,6 +2695,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;
+	}
+	@Override
+	public List<QDSAttributes> getAvailableQDSAttributeList() {
+		return availableQDSAttributeList;
+	}
+	@Override
+	public void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList) {
+		this.availableQDSAttributeList = availableQDSAttributeList;
 	}
 	
 }

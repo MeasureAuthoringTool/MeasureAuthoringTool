@@ -4,17 +4,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.WarningMessageAlert;
+import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -24,7 +25,7 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,7 +42,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -57,6 +57,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	/** The clicked menu. */
 	String clickedMenu = "general";
+	
+	QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+			.create(QDSAttributesService.class);
 	
 	/** The view. */
 	String view ="";
@@ -693,6 +696,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 		
+		List<QDSAttributes> getAvailableQDSAttributeList();
+		
+		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
+		
 	}
 	
 	/** The search display. */
@@ -862,11 +869,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				CQLModel currentModel = new CQLModel();
-				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
-				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel, addNewFunctionArgument , false, searchDisplay);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox( addNewFunctionArgument , false, searchDisplay);
 			}
 		});
 		
@@ -906,10 +910,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
-				CQLModel currentModel = new CQLModel();
-				currentModel.setCqlParameters(searchDisplay.getViewParameterList());
-				currentModel.setDefinitionList(searchDisplay.getViewDefinitions());
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(currentModel,result,true,searchDisplay);
+				System.out.println("I am clickeddddd!!!");
+				if (result.getArgumentType().equalsIgnoreCase("Model")) {
+					getAttributesForDataType(result);
+				} else {
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
+				}
+				
 			}
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
@@ -927,6 +934,28 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 	}
 	
+	private void getAttributesForDataType(final CQLFunctionArgument functionArg){
+		attributeService.getAllAttributesByDataType(functionArg.getArgumentName(),
+				new AsyncCallback<List<QDSAttributes>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				System.out
+				.println("Error retrieving data type attributes. "
+						+ caught.getMessage());
+				
+			}
+			
+			@Override
+			public void onSuccess(List<QDSAttributes> result) {
+				searchDisplay.setAvailableQDSAttributeList(result);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg,true,searchDisplay);
+				
+			}
+			
+		});
+	}
 	/**
 	 * Clear parameter.
 	 */
@@ -1408,6 +1437,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
+		MatContext.get().getAllDataType();
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}

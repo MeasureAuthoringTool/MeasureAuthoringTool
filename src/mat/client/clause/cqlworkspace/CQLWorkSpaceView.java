@@ -4,19 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -38,6 +26,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -72,9 +61,24 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -139,6 +143,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The warning message alert definition. */
 	private WarningMessageAlert warningMessageAlertDefinition = new WarningMessageAlert();
+	
+	/** The warning message alert function. */
+	private WarningMessageAlert warningMessageAlertFunction = new WarningMessageAlert();
+
 	
 	/** The success message alert parameter. */
 	private Alert successMessageAlertParameter = new Alert();
@@ -302,9 +310,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The parameter clear top button. */
 	private Button clearParameterTopButton = new Button();
 	
-	/** The dirty flag for clear. */
-	private Boolean isParameterDirty = false;
+	/** The dirty flag for page. */
+	private Boolean isPageDirty = false;
 	
+	public Boolean getIsPageDirty() {
+		return isPageDirty;
+	}
+
 	/** The warning message alert parameter. */
 	private WarningMessageAlert warningMessageAlertParameter = new WarningMessageAlert();
 	
@@ -320,8 +332,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The parameter button bar. */
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
-	/** The is definition dirty. */
-	private Boolean isDefinitionDirty = false;
 	/**
 	 * The Interface Observer.
 	 */
@@ -457,7 +467,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				successMessageAlertParameter.setVisible(false);
 				errorMessageAlertParameter.clear();
 				errorMessageAlertParameter.setVisible(false);
-				setIsParameterDirty(false);
+				setIsPageDirty(false);
 				warningMessageAlertParameter.clearAlert();
 			}
 		});
@@ -493,7 +503,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				successMessageAlertDefinition.setVisible(false);
 				errorMessageAlertDefinition.clear();
 				errorMessageAlertDefinition.setVisible(false);
-				setIsDefinitionDirty(false);
+				setIsPageDirty(false);
 				warningMessageAlertDefinition.clearAlert();
 				
 			}
@@ -933,7 +943,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
-		setIsDefinitionDirty(false);
+		setIsPageDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -1087,7 +1097,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
-		setIsDefinitionDirty(false);
+		setIsPageDirty(false);
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
@@ -1309,6 +1319,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		funcVP.add(successMessageAlertFunction);
 		funcVP.add(errorMessageAlertFunction);
+		funcVP.add(warningMessageAlertFunction);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
@@ -1662,8 +1673,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			functionCollapse.clear();
 		}
 		
-		setIsParameterDirty(false);
-		setIsDefinitionDirty(false);
+		setIsPageDirty(false);
 		getWarningMessageAlertParameter().clearAlert();
 		getWarningMessageAlertDefinition().clearAlert();
 		
@@ -2386,6 +2396,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return parameterButtonBar.getEraseButton();
 	}
 	
+	/**
+	 * get the erase define button.
+	 *
+	 * @return the erase parameter button
+	 */
+	@Override
+	public Button getEraseFunctionButton() {
+		return functionButtonBar.getEraseButton();
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getSaveFunctionButton()
 	 */
@@ -2502,38 +2522,31 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsParameterDirty(java.lang.Boolean)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertFunction()
 	 */
 	@Override
-	public void setIsParameterDirty(Boolean isParameterDirty) {
-		this.isParameterDirty = isParameterDirty;
+	public WarningMessageAlert getWarningMessageAlertFunction() {
+		return warningMessageAlertFunction;
 	}
+	
+	/**
+	 * Sets the warning message alert definition.
+	 *
+	 * @param warningMessageAlertDefinition the new warning message alert function
+	 */
+	public void setWarningMessageAlertFunction(WarningMessageAlert warningMessageAlertFunction) {
+		this.warningMessageAlertFunction = warningMessageAlertFunction;
+	}
+
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsParameterDirty()
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsPageDirty(java.lang.Boolean)
 	 */
 	@Override
-	public Boolean getIsParameterDirty() {
-		return isParameterDirty;
+	public void setIsPageDirty(Boolean isPageDirty) {
+		this.isPageDirty = isPageDirty;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsDefinitionDirty(java.lang.Boolean)
-	 */
-	@Override
-	public void setIsDefinitionDirty(Boolean isDefinitionDirty) {
-		this.isDefinitionDirty = isDefinitionDirty;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsDefinitionDirty()
-	 */
-	@Override
-	public Boolean getIsDefinitionDirty() {
-		return isDefinitionDirty;
-	}
-	
+			
 	/**
 	 * Gets the define collapse.
 	 *
@@ -2585,6 +2598,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return getWarningMessageAlertDefinition().getNoButton();
 	}
 	
+
+	@Override
+	public Button getClearFunctionYesButton() {
+		return getWarningMessageAlertFunction().getYesButton();
+	}
+	
+		 
+	@Override
+	public Button getClearFunctionNoButton() {
+		return getWarningMessageAlertFunction().getNoButton();
+	}
+
 	
 	
 	/* (non-Javadoc)

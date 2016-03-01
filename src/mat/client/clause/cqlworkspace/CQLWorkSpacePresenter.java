@@ -26,8 +26,6 @@ import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -45,6 +43,17 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
+import mat.client.MatPresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.WarningMessageAlert;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -437,32 +446,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void buildCQLFileView();
 		
 		/**
-		 * Sets the checks if is parameter dirty.
+		 * Sets the checks if is page dirty.
 		 *
-		 * @param isParameterDirty the new checks if is parameter dirty
+		 * @param isParameterDirty the new checks if is page dirty
 		 */
-		void setIsParameterDirty(Boolean isParameterDirty);
-		
-		/**
-		 * Gets the checks if is parameter dirty.
-		 *
-		 * @return the checks if is parameter dirty
-		 */
-		Boolean getIsParameterDirty();
-		
-		/**
-		 * Sets the checks if is definition dirty.
-		 *
-		 * @param isDefinitionDirty the new checks if is definition dirty
-		 */
-		void setIsDefinitionDirty(Boolean isDefinitionDirty);
-		
-		/**
-		 * Gets the checks if is definition dirty.
-		 *
-		 * @return the checks if is definition dirty
-		 */
-		Boolean getIsDefinitionDirty();
+		void setIsPageDirty(Boolean isPageDirty);
+						
 		
 		/**
 		 * Gets the warning message alert parameter.
@@ -477,6 +466,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the warning message alert definition
 		 */
 		WarningMessageAlert getWarningMessageAlertDefinition();
+		
+		/**
+		 * Gets the warning message alert function.
+		 *
+		 * @return the warning message alert function
+		 */
+		WarningMessageAlert getWarningMessageAlertFunction();
+
 		
 		/**
 		 * Gets the clear parameter yes button.
@@ -688,6 +685,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param functionArgumentList the new function argument list
 		 */
 		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
+
+		Button getEraseFunctionButton();
+
+		Button getClearFunctionYesButton();
+
+		Button getClearFunctionNoButton();
 		
 		/**
 		 * Creates the add argument view for functions.
@@ -695,6 +698,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param argumentList the argument list
 		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
+
+		Boolean getIsPageDirty();
 		
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
@@ -728,7 +733,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		
 		searchDisplay.getAddParameterButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -750,7 +754,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
-				searchDisplay.setIsDefinitionDirty(true);
+				searchDisplay.setIsPageDirty(true);
 				
 			}
 		});
@@ -761,7 +765,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -771,6 +775,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				resetMessageDisplay();
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -780,7 +785,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
-				searchDisplay.setIsDefinitionDirty(true);
+				searchDisplay.setIsPageDirty(true);
 				
 			}
 		});
@@ -791,7 +796,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
-				searchDisplay.setIsParameterDirty(true);
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -800,6 +805,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				resetMessageDisplay();
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -808,10 +814,22 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
-				if (searchDisplay.getIsDefinitionDirty()) {
+				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertDefinition().createAlert();
 				} else {
 					clearDefinition();
+				}
+			}
+		});
+		
+		searchDisplay.getEraseFunctionButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (searchDisplay.getIsPageDirty()) {
+					searchDisplay.getWarningMessageAlertFunction().createAlert();
+				} else {
+					clearFunction();
 				}
 			}
 		});
@@ -821,7 +839,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				resetMessageDisplay();
-				if (searchDisplay.getIsParameterDirty()) {
+				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
 				} else {
 					clearParameter();
@@ -834,7 +852,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				clearParameter();
-				searchDisplay.setIsParameterDirty(false);
+				searchDisplay.setIsPageDirty(false);
 				searchDisplay.getWarningMessageAlertParameter().clearAlert();
 			}
 		});
@@ -852,7 +870,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				clearDefinition();
-				searchDisplay.setIsDefinitionDirty(false);
+				searchDisplay.setIsPageDirty(false);
 				searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 			}
 		});
@@ -865,12 +883,30 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getClearFunctionYesButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearFunction();
+				searchDisplay.setIsPageDirty(false);
+				searchDisplay.getWarningMessageAlertFunction().clearAlert();
+			}
+		});
+		
+		searchDisplay.getClearFunctionNoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getWarningMessageAlertFunction().clearAlert();
+			}
+		});
 		
 		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
 				AddFunctionArgumentDialogBox.showArgumentDialogBox( addNewFunctionArgument , false, searchDisplay);
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -879,7 +915,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				
+				searchDisplay.setIsPageDirty(true);
 				if(searchDisplay.getContextPATRadioBtn().getValue()){
 					searchDisplay.getContextPOPRadioBtn().setValue(false);
 				} else {
@@ -893,6 +929,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				searchDisplay.setIsPageDirty(true);
 				if(searchDisplay.getContextPOPRadioBtn().getValue()){
 					searchDisplay.getContextPATRadioBtn().setValue(false);
 				} else {
@@ -911,15 +948,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
 				System.out.println("I am clickeddddd!!!");
+				searchDisplay.setIsPageDirty(true);
 				if (result.getArgumentType().equalsIgnoreCase("Model")) {
 					getAttributesForDataType(result);
 				} else {
 					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
 				}
-				
 			}
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
+				searchDisplay.setIsPageDirty(true);
 				Iterator<CQLFunctionArgument> iterator = searchDisplay.getFunctionArgumentList().iterator();
 				while (iterator.hasNext()) {
 					CQLFunctionArgument cqlFunArgument = iterator.next();
@@ -961,7 +999,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void clearParameter() {
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
-		searchDisplay.setIsParameterDirty(false);
+		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
 				(searchDisplay.getParameterNameTxtArea() != null)	) {
 			searchDisplay.getParameterNameTxtArea().clear();
@@ -974,7 +1012,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void clearDefinition() {
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
-		searchDisplay.setIsDefinitionDirty(false);
+		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
 			searchDisplay.getDefineAceEditor().setText("");
@@ -983,6 +1021,21 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getContextPOPRadioBtn().setValue(false);
 		}
 	}
+	
+	/**
+	 * Clear definition.
+	 */
+	private void clearFunction() {
+		searchDisplay.setCurrentSelectedFunctionObjId(null);
+		searchDisplay.setIsPageDirty(false);
+		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null) ||
+				(searchDisplay.getFuncNameTxtArea() != null)	) {
+			searchDisplay.getFunctionBodyAceEditor().setText("");
+			searchDisplay.getFuncNameTxtArea().clear();
+		}
+	}
+	
+	
 	/**
 	 * Adds the and modify function.
 	 */
@@ -1141,7 +1194,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY()));
 								searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
-								searchDisplay.setIsParameterDirty(false);
+								searchDisplay.setIsPageDirty(false);
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -1183,7 +1236,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getSuccessMessageAlertParameter().setVisible(true);
 								searchDisplay.getSuccessMessageAlertParameter().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER()));
-								searchDisplay.setIsParameterDirty(false);
+								searchDisplay.setIsPageDirty(false);
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertParameter().setVisible(true);
 								searchDisplay.getErrorMessageAlertParameter().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
@@ -1272,7 +1325,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY()));
 								searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
-								searchDisplay.setIsDefinitionDirty(false);
+								searchDisplay.setIsPageDirty(false);
 							} else {
 								if(result.getFailureReason() ==1){
 									searchDisplay.getErrorMessageAlertDefinition().setVisible(true);
@@ -1320,7 +1373,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION()));
 								searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
-								searchDisplay.setIsDefinitionDirty(false);
+								searchDisplay.setIsPageDirty(false);
 							} else {
 								
 								if (result.getFailureReason() == 1) {
@@ -1395,6 +1448,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		searchDisplay.getWarningMessageAlertDefinition().clearAlert();
 		
+		searchDisplay.getWarningMessageAlertFunction().clearAlert();
+		
 		searchDisplay.getSuccessMessageAlertFunction().clear();
 		searchDisplay.getSuccessMessageAlertFunction().setVisible(false);
 		
@@ -1412,10 +1467,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
-		searchDisplay.setIsParameterDirty(false);
-		searchDisplay.setIsDefinitionDirty(false);
+		searchDisplay.setIsPageDirty(false);
 		searchDisplay.getWarningMessageAlertParameter().clearAlert();
 		searchDisplay.getWarningMessageAlertDefinition().clearAlert();
+		searchDisplay.getWarningMessageAlertFunction().clearAlert();
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");

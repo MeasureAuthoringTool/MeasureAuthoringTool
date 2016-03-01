@@ -537,6 +537,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				successMessageAlertFunction.setVisible(false);
 				errorMessageAlertFunction.clear();
 				errorMessageAlertFunction.setVisible(false);
+				warningMessageAlertFunction.clearAlert();
 			}
 		});
 	}

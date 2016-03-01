@@ -881,23 +881,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getWarningMessageAlertFunction().clearAlert();
 			}
 		});
-		searchDisplay.getClearFunctionYesButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				clearFunction();
-				searchDisplay.setIsPageDirty(false);
-				searchDisplay.getWarningMessageAlertFunction().clearAlert();
-			}
-		});
-		
-		searchDisplay.getClearFunctionNoButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getWarningMessageAlertFunction().clearAlert();
-			}
-		});
 		
 		searchDisplay.getClearFunctionNoButton().addClickHandler(new ClickHandler() {
 			
@@ -959,7 +942,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				} else {
 					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
 				}
-				
 			}
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
@@ -1028,7 +1010,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 	}
 	
-	
 	/**
 	 * Clear definition.
 	 */
@@ -1081,7 +1062,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getSuccessMessageAlertFunction().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY()));
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
-								
+								searchDisplay.setIsPageDirty(false);
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertFunction().setVisible(true);
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,

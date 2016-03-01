@@ -5189,6 +5189,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeFunction!=null){
 							nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
+							nodeFunction.getAttributes().getNamedItem("context").setNodeValue(currentObj.getFunctionName());
 							/*nodeFunction.setTextContent(currentObj.getFunctionLogic());*/
 							Node logicNode = nodeFunction.getFirstChild();
 							logicNode.setTextContent(currentObj.getFunctionLogic());

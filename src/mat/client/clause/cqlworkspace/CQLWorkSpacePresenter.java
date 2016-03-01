@@ -617,14 +617,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the context pat toggle switch
 		 */
-		InlineRadio getContextPATRadioBtn();
+		InlineRadio getContextDefinePATRadioBtn();
 		
 		/**
 		 * Gets the context pop toggle switch.
 		 *
 		 * @return the context pop toggle switch
 		 */
-		InlineRadio getContextPOPRadioBtn();
+		InlineRadio getContextDefinePOPRadioBtn();
 		
 		/**
 		 * Gets the observer.
@@ -693,6 +693,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
 		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
+
+		InlineRadio getContextFuncPATRadioBtn();
+
+		InlineRadio getContextFuncPOPRadioBtn();
 		
 	}
 	
@@ -900,33 +904,61 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-		searchDisplay.getContextPATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		searchDisplay.getContextDefinePATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextPATRadioBtn().getValue()){
-					searchDisplay.getContextPOPRadioBtn().setValue(false);
+				if(searchDisplay.getContextDefinePATRadioBtn().getValue()){
+					searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 				} else {
-					searchDisplay.getContextPOPRadioBtn().setValue(true);
+					searchDisplay.getContextDefinePOPRadioBtn().setValue(true);
 				}
 				
 			}
 		});
 		
-		searchDisplay.getContextPOPRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		searchDisplay.getContextDefinePOPRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextPOPRadioBtn().getValue()){
-					searchDisplay.getContextPATRadioBtn().setValue(false);
+				if(searchDisplay.getContextDefinePOPRadioBtn().getValue()){
+					searchDisplay.getContextDefinePATRadioBtn().setValue(false);
 				} else {
-					searchDisplay.getContextPATRadioBtn().setValue(true);
+					searchDisplay.getContextDefinePATRadioBtn().setValue(true);
 				}
 				
 			}
 		});
+		
+		
+       searchDisplay.getContextFuncPATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				searchDisplay.setIsPageDirty(true);
+				if(searchDisplay.getContextFuncPATRadioBtn().getValue()){
+					searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
+				} else {
+					searchDisplay.getContextFuncPOPRadioBtn().setValue(true);
+				}
+			}
+		});
+		
+		searchDisplay.getContextFuncPOPRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				searchDisplay.setIsPageDirty(true);
+				if(searchDisplay.getContextFuncPOPRadioBtn().getValue()){
+					searchDisplay.getContextFuncPATRadioBtn().setValue(false);
+				} else {
+					searchDisplay.getContextFuncPATRadioBtn().setValue(true);
+				}
+			}
+		});
+		
 	}
 	
 	/**
@@ -1005,8 +1037,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				(searchDisplay.getDefineNameTxtArea() != null)	) {
 			searchDisplay.getDefineAceEditor().setText("");
 			searchDisplay.getDefineNameTxtArea().clear();
-			searchDisplay.getContextPATRadioBtn().setValue(true);
-			searchDisplay.getContextPOPRadioBtn().setValue(false);
+			searchDisplay.getContextDefinePATRadioBtn().setValue(true);
+			searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 		}
 	}
 	
@@ -1020,6 +1052,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				(searchDisplay.getFuncNameTxtArea() != null)	) {
 			searchDisplay.getFunctionBodyAceEditor().setText("");
 			searchDisplay.getFuncNameTxtArea().clear();
+			searchDisplay.getContextFuncPATRadioBtn().setValue(true);
+			searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
 		}
 	}
 	
@@ -1031,6 +1065,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		resetMessageDisplay();
 		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
+		String funcContext = "";
+		if(searchDisplay.getContextFuncPATRadioBtn().getValue()){
+			funcContext = "Patient";
+		} else {
+			funcContext = "Population";
+		}
 		if (!functionName.isEmpty() && !functionBody.isEmpty()) {
 			
 			if(!validateForSpecialChar(functionName.trim())) {
@@ -1038,6 +1078,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);
+				function.setContext(funcContext);
 				if(searchDisplay.getCurrentSelectedFunctionObjId() != null){
 					CQLFunctions toBeModifiedParamObj = searchDisplay.getFunctionMap().get(searchDisplay.getCurrentSelectedFunctionObjId());
 					MatContext.get().getMeasureService().saveAndModifyFunctions(MatContext.get().getCurrentMeasureId(), toBeModifiedParamObj, function,
@@ -1272,7 +1313,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
 		String defineContext = "";
-		if(searchDisplay.getContextPATRadioBtn().getValue()){
+		if(searchDisplay.getContextDefinePATRadioBtn().getValue()){
 			defineContext = "Patient";
 		} else {
 			defineContext = "Population";
@@ -1512,8 +1553,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
 		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
 		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
-		searchDisplay.getContextPATRadioBtn().setEnabled(isEditable);
-		searchDisplay.getContextPOPRadioBtn().setEnabled(isEditable);
+		searchDisplay.getContextDefinePATRadioBtn().setEnabled(isEditable);
+		searchDisplay.getContextDefinePOPRadioBtn().setEnabled(isEditable);
 	}
 	
 	
@@ -1528,6 +1569,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		searchDisplay.getFunctionButtonBar().setEnabled(isEditable);
 		searchDisplay.getAddNewArgument().setEnabled(isEditable);
+		searchDisplay.getContextFuncPATRadioBtn().setEnabled(isEditable);
+		searchDisplay.getContextFuncPOPRadioBtn().setEnabled(isEditable);
+
 	}
 	
 	
@@ -1619,11 +1663,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getDefinitionLibrary().setActive(true);
 				clickedMenu = "define";
 				searchDisplay.buildDefinitionLibraryView();
-				boolean editable = MatContext.get().getMeasureLockService()
-						.checkForEditPermission();
-				
-				searchDisplay.getContextPATRadioBtn().setEnabled(editable);
-				searchDisplay.getContextPOPRadioBtn().setEnabled(editable);
 				setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
 						.checkForEditPermission());
 				

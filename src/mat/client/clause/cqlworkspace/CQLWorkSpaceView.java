@@ -85,6 +85,8 @@ import mat.shared.ClickableSafeHtmlCell;
  * The Class CQLWorkSpaceView.
  */
 public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
+	
+	/** The available qds attribute list. */
 	private List<QDSAttributes> availableQDSAttributeList;
 	/** The is editable. */
 	boolean isEditable = false;
@@ -313,6 +315,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsPageDirty()
+	 */
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}
@@ -321,16 +326,23 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private WarningMessageAlert warningMessageAlertParameter = new WarningMessageAlert();
 	
 	/** The context pat toggle switch. */
-	private InlineRadio contextPatientRadioBtn = new InlineRadio("Patient");
+	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	
 	/** The context pop toggle switch. */
-	private InlineRadio contextPopulationRadioBtn = new InlineRadio("Population");
+	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	
 	/** The define button bar. */
 	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
 	
 	/** The parameter button bar. */
 	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
+	
+	/** The context pat toggle switch. */
+	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
+	
+	/** The context pop toggle switch. */
+	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
+	
 	
 	/**
 	 * The Interface Observer.
@@ -490,11 +502,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
 						getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
 						if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
-							getContextPATRadioBtn().setValue(true);
-							getContextPOPRadioBtn().setValue(false);
+							getContextDefinePATRadioBtn().setValue(true);
+							getContextDefinePOPRadioBtn().setValue(false);
 						} else {
-							getContextPOPRadioBtn().setValue(true);
-							getContextPATRadioBtn().setValue(false);
+							getContextDefinePOPRadioBtn().setValue(true);
+							getContextDefinePATRadioBtn().setValue(false);
 						}
 					}
 				}
@@ -524,6 +536,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					if(functionMap.get(selectedFunctionId) != null){
 						getFuncNameTxtArea().setText(functionMap.get(selectedFunctionId).getFunctionName());
 						getFunctionBodyAceEditor().setText(functionMap.get(selectedFunctionId).getFunctionLogic());
+						if(functionMap.get(selectedFunctionId).getContext().equalsIgnoreCase("patient")){
+							contextFuncPATRadioBtn.setValue(true);
+							contextFuncPOPRadioBtn.setValue(false);
+						} else {
+							contextFuncPOPRadioBtn.setValue(true);
+							contextFuncPATRadioBtn.setValue(false);
+						}
 					}
 				}
 				if (currentSelectedFunctionObjId != null) {
@@ -1140,15 +1159,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		FlowPanel defineConextPanel = new FlowPanel();
 		
-		contextPatientRadioBtn.setValue(true);
-		contextPatientRadioBtn.setText("Patient");
-		contextPatientRadioBtn.setId("context_PatientRadioButton");
-		contextPopulationRadioBtn.setValue(false);
-		contextPopulationRadioBtn.setText("Population");
-		contextPopulationRadioBtn.setId("context_PopulationRadioButton");
+		contextDefinePATRadioBtn.setValue(true);
+		contextDefinePATRadioBtn.setText("Patient");
+		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
+		contextDefinePOPRadioBtn.setValue(false);
+		contextDefinePOPRadioBtn.setText("Population");
+		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
 		
-		defineConextPanel.add(contextPatientRadioBtn);
-		defineConextPanel.add(contextPopulationRadioBtn);
+		defineConextPanel.add(contextDefinePATRadioBtn);
+		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
 		definitionVP.add(successMessageAlertDefinition);
 		definitionVP.add(errorMessageAlertDefinition);
@@ -1318,6 +1337,21 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		addNewArgument.setPull(Pull.RIGHT);
 		
+		Label funcContextLabel = new Label(LabelType.INFO, "Context");
+		FlowPanel funcConextPanel = new FlowPanel();
+		
+		contextFuncPATRadioBtn.setValue(true);
+		contextFuncPATRadioBtn.setText("Patient");
+		contextFuncPATRadioBtn.setId("context_PatientRadioButton");
+		contextFuncPOPRadioBtn.setValue(false);
+		contextFuncPOPRadioBtn.setText("Population");
+		contextFuncPOPRadioBtn.setId("context_PopulationRadioButton");
+		
+		funcConextPanel.add(contextFuncPATRadioBtn);
+		funcConextPanel.add(contextFuncPOPRadioBtn);
+		funcConextPanel.setStyleName("contextToggleSwitch");
+		
+		
 		funcVP.add(successMessageAlertFunction);
 		funcVP.add(errorMessageAlertFunction);
 		funcVP.add(warningMessageAlertFunction);
@@ -1325,6 +1359,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
+		funcVP.add(new SpacerWidget());
+		funcVP.add(funcContextLabel);
+		funcVP.add(new SpacerWidget());
+		funcVP.add(funcConextPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList);
@@ -2533,7 +2571,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * Sets the warning message alert definition.
 	 *
-	 * @param warningMessageAlertDefinition the new warning message alert function
+	 * @param warningMessageAlertFunction the new warning message alert function
 	 */
 	public void setWarningMessageAlertFunction(WarningMessageAlert warningMessageAlertFunction) {
 		this.warningMessageAlertFunction = warningMessageAlertFunction;
@@ -2600,12 +2638,18 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearFunctionYesButton()
+	 */
 	@Override
 	public Button getClearFunctionYesButton() {
 		return getWarningMessageAlertFunction().getYesButton();
 	}
 	
 		 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearFunctionNoButton()
+	 */
 	@Override
 	public Button getClearFunctionNoButton() {
 		return getWarningMessageAlertFunction().getNoButton();
@@ -2663,16 +2707,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPATToggleSwitch()
 	 */
 	@Override
-	public InlineRadio getContextPATRadioBtn() {
-		return contextPatientRadioBtn;
+	public InlineRadio getContextDefinePATRadioBtn() {
+		return contextDefinePATRadioBtn;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextPOPToggleSwitch()
 	 */
 	@Override
-	public InlineRadio getContextPOPRadioBtn() {
-		return contextPopulationRadioBtn;
+	public InlineRadio getContextDefinePOPRadioBtn() {
+		return contextDefinePOPRadioBtn;
 	}
 	
 	/* (non-Javadoc)
@@ -2722,13 +2766,208 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getAvailableQDSAttributeList()
+	 */
 	@Override
 	public List<QDSAttributes> getAvailableQDSAttributeList() {
 		return availableQDSAttributeList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setAvailableQDSAttributeList(java.util.List)
+	 */
 	@Override
 	public void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList) {
 		this.availableQDSAttributeList = availableQDSAttributeList;
+	}
+
+	/**
+	 * Checks if is editable.
+	 *
+	 * @return true, if is editable
+	 */
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	/**
+	 * Gets the cell table panel.
+	 *
+	 * @return the cell table panel
+	 */
+	public VerticalPanel getCellTablePanel() {
+		return cellTablePanel;
+	}
+
+	/**
+	 * Gets the table row count.
+	 *
+	 * @return the table row count
+	 */
+	public static int getTableRowCount() {
+		return TABLE_ROW_COUNT;
+	}
+
+	/**
+	 * Gets the argument list table.
+	 *
+	 * @return the argument list table
+	 */
+	public CellTable<CQLFunctionArgument> getArgumentListTable() {
+		return argumentListTable;
+	}
+
+	/**
+	 * Gets the list data provider.
+	 *
+	 * @return the list data provider
+	 */
+	public ListDataProvider<CQLFunctionArgument> getListDataProvider() {
+		return listDataProvider;
+	}
+
+	/**
+	 * Gets the spager.
+	 *
+	 * @return the spager
+	 */
+	public MatSimplePager getSpager() {
+		return spager;
+	}
+
+	/**
+	 * Gets the right hand nav panel.
+	 *
+	 * @return the right hand nav panel
+	 */
+	public VerticalPanel getRightHandNavPanel() {
+		return rightHandNavPanel;
+	}
+
+	/**
+	 * Gets the main flow panel.
+	 *
+	 * @return the main flow panel
+	 */
+	public FlowPanel getMainFlowPanel() {
+		return mainFlowPanel;
+	}
+
+	/**
+	 * Gets the success message alert gen info.
+	 *
+	 * @return the success message alert gen info
+	 */
+	public Alert getSuccessMessageAlertGenInfo() {
+		return successMessageAlertGenInfo;
+	}
+
+	/**
+	 * Gets the search suggest text box.
+	 *
+	 * @return the search suggest text box
+	 */
+	public SuggestBox getSearchSuggestTextBox() {
+		return searchSuggestTextBox;
+	}
+
+	/**
+	 * Gets the func name list box.
+	 *
+	 * @return the func name list box
+	 */
+	public ListBox getFuncNameListBox() {
+		return funcNameListBox;
+	}
+
+	/**
+	 * Gets the search suggest define text box.
+	 *
+	 * @return the search suggest define text box
+	 */
+	public SuggestBox getSearchSuggestDefineTextBox() {
+		return searchSuggestDefineTextBox;
+	}
+
+	/**
+	 * Gets the search suggest func text box.
+	 *
+	 * @return the search suggest func text box
+	 */
+	public SuggestBox getSearchSuggestFuncTextBox() {
+		return searchSuggestFuncTextBox;
+	}
+
+	/**
+	 * Gets the func name map.
+	 *
+	 * @return the func name map
+	 */
+	public HashMap<String, String> getFuncNameMap() {
+		return funcNameMap;
+	}
+
+	/**
+	 * Gets the function badge.
+	 *
+	 * @return the function badge
+	 */
+	public Badge getFunctionBadge() {
+		return functionBadge;
+	}
+
+	/**
+	 * Gets the param label.
+	 *
+	 * @return the param label
+	 */
+	public Label getParamLabel() {
+		return paramLabel;
+	}
+
+	/**
+	 * Gets the define label.
+	 *
+	 * @return the define label
+	 */
+	public Label getDefineLabel() {
+		return defineLabel;
+	}
+
+	/**
+	 * Gets the function lib label.
+	 *
+	 * @return the function lib label
+	 */
+	public Label getFunctionLibLabel() {
+		return functionLibLabel;
+	}
+
+	/**
+	 * Gets the clear parameter top button.
+	 *
+	 * @return the clear parameter top button
+	 */
+	public Button getClearParameterTopButton() {
+		return clearParameterTopButton;
+	}
+	
+    /* (non-Javadoc)
+     * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextFuncPATRadioBtn()
+     */
+    @Override
+	public InlineRadio getContextFuncPATRadioBtn() {
+		return contextFuncPATRadioBtn;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextFuncPOPRadioBtn()
+	 */
+	@Override
+    public InlineRadio getContextFuncPOPRadioBtn() {
+		return contextFuncPOPRadioBtn;
 	}
 	
 }

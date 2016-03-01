@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -45,8 +44,8 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACExpansionIdentifier;
+import mat.model.cql.CQLGrammarDataType;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
@@ -83,6 +82,8 @@ public class MatContext implements IsSerializable {
 	
 	/** The Constant PLEASE_SELECT. */
 	public static final String PLEASE_SELECT = "--Select--";
+	
+	public CQLGrammarDataType cqlGrammarDataType = new CQLGrammarDataType();
 	
 	/** The instance. */
 	private static MatContext instance = new MatContext();
@@ -1210,15 +1211,15 @@ public class MatContext implements IsSerializable {
 	public void recordUserEvent(String userId, List<String> event, String additionalInfo, boolean isChildLogRequired) {
 		MatContext.get()
 		.getAuditService().recordUserEvent(userId, event, additionalInfo, isChildLogRequired, new AsyncCallback<Boolean>() {
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 			}
-
+			
 			@Override
 			public void onSuccess(Boolean result) {
 			}
-		});		
+		});
 	}
 	
 	/**
@@ -1488,6 +1489,23 @@ public class MatContext implements IsSerializable {
 					}
 				});
 	}
+	// Get all CQL Data types from cqlTemplate.xml
+	public void getAllCQLDataType(){
+		measureService.getCQLDataTypeList(new AsyncCallback<CQLGrammarDataType>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSuccess(CQLGrammarDataType result) {
+				cqlGrammarDataType = result;
+				
+			}
+		});
+	}
 	
 	/**
 	 * Sets the all data type options.
@@ -1734,6 +1752,11 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setGlobalCopyPaste(GlobalCopyPasteObject globalCopyPaste) {
 		this.globalCopyPaste = globalCopyPaste;
+	}
+	
+	
+	public CQLGrammarDataType getCqlGrammarDataType() {
+		return cqlGrammarDataType;
 	}
 	
 	

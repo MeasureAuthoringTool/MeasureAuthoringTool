@@ -43,17 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
-import mat.client.MatPresenter;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.MatContext;
-import mat.client.shared.WarningMessageAlert;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -892,6 +881,23 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getWarningMessageAlertFunction().clearAlert();
 			}
 		});
+		searchDisplay.getClearFunctionYesButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearFunction();
+				searchDisplay.setIsPageDirty(false);
+				searchDisplay.getWarningMessageAlertFunction().clearAlert();
+			}
+		});
+		
+		searchDisplay.getClearFunctionNoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getWarningMessageAlertFunction().clearAlert();
+			}
+		});
 		
 		searchDisplay.getClearFunctionNoButton().addClickHandler(new ClickHandler() {
 			
@@ -947,13 +953,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
-				System.out.println("I am clickeddddd!!!");
 				searchDisplay.setIsPageDirty(true);
-				if (result.getArgumentType().equalsIgnoreCase("Model")) {
+				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
 					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
 				}
+				
 			}
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
@@ -1021,6 +1027,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getContextPOPRadioBtn().setValue(false);
 		}
 	}
+	
 	
 	/**
 	 * Clear definition.
@@ -1493,6 +1500,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.buildView();
 		addHandler();
 		MatContext.get().getAllDataType();
+		MatContext.get().getAllCQLDataType();
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}

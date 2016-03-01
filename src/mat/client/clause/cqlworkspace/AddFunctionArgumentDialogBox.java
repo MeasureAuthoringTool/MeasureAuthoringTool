@@ -10,7 +10,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLGrammarDataType;
 import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -43,12 +42,13 @@ import com.google.gwt.user.client.ui.ListBox;
 
 
 public class AddFunctionArgumentDialogBox {
-	private static List<String> argumentDataTypeList = CQLGrammarDataType.getDataTypeName();
+	
 	private static final List<String> attributeList = new ArrayList<String>();
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
 	public static  void showArgumentDialogBox( final CQLFunctionArgument functionArg, final boolean isEdit, final ViewDisplay searchDisplay){
+		List<String> allCqlDataType = MatContext.get().getCqlGrammarDataType().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getDataTypeList();
 		final ListBox attributeListBox = new ListBox(false);
 		String saveButtonText = "Add";
@@ -56,7 +56,7 @@ public class AddFunctionArgumentDialogBox {
 		if (isEdit) {
 			saveButtonText = "Edit";
 			modalText = "Edit Argument: " + functionArg.getArgumentName();
-			if(functionArg.getArgumentType().equalsIgnoreCase("Model")){
+			if(functionArg.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
 				attributeListBox.clear();
 				attributeListBox.addItem(MatContext.get().PLEASE_SELECT);
 				//if(functionArg.getAttributeName() != null){
@@ -80,8 +80,8 @@ public class AddFunctionArgumentDialogBox {
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
 		listAllDataTypes.setWidth("290px");
 		listAllDataTypes.addItem("-- Select--");
-		for (int i = 0; i < argumentDataTypeList.size(); i++) {
-			listAllDataTypes.addItem(argumentDataTypeList.get(i));
+		for (int i = 0; i < allCqlDataType.size(); i++) {
+			listAllDataTypes.addItem(allCqlDataType.get(i));
 		}
 		
 		Form bodyForm = new Form();
@@ -118,8 +118,8 @@ public class AddFunctionArgumentDialogBox {
 		
 		final FormGroup selectFormGroup = new FormGroup();
 		FormLabel selectFormLabel = new FormLabel();
-		selectFormLabel.setText("Select Model Object");
-		selectFormLabel.setTitle("Select Model Object");
+		selectFormLabel.setText("Select QDM Datatype Object");
+		selectFormLabel.setTitle("Select QDM Datatype Object");
 		selectFormLabel.setFor("listSelectItem");
 		
 		final ListBoxMVP listSelectItem = new ListBoxMVP();
@@ -190,7 +190,7 @@ public class AddFunctionArgumentDialogBox {
 					break;
 				}
 			}
-			if(selectedDataType.equalsIgnoreCase("model")){
+			if(selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
 				argumentNameTextArea.setEnabled(false);
 				argumentNameTextArea.clear();
 				populateAllDataType(listSelectItem,allDataTypes);
@@ -234,7 +234,7 @@ public class AddFunctionArgumentDialogBox {
 				argumentNameFormGroup.setValidationState(ValidationState.NONE);
 				selectFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
-				if (listAllDataTypes.getValue().equalsIgnoreCase("Model")) {
+				if (listAllDataTypes.getValue().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					populateAllDataType(listSelectItem,allDataTypes);
 					listSelectItem.setEnabled(true);
 					attributeListBox.clear();
@@ -305,7 +305,7 @@ public class AddFunctionArgumentDialogBox {
 				String attributeName = null;
 				if (selectedIndex != 0) {
 					argumentDataType = listAllDataTypes.getItemText(selectedIndex);
-					if (argumentDataType.equalsIgnoreCase("Model")) {
+					if (argumentDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 						int selectedItemIndex = listSelectItem.getSelectedIndex();
 						if (selectedItemIndex != 0) {
 							argumentName = listSelectItem.getItemText(selectedItemIndex);

@@ -80,6 +80,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
+import mat.model.cql.CQLGrammarDataType;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -94,7 +95,6 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
-import mat.server.simplexml.hqmf.TemplateXMLSingleton;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
@@ -5882,11 +5882,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlModel.setUsedModel(usingModel);
 		return cqlModel;
 	}
-
+	
 	/**
 	 * **
 	 * This is to check if the Identifier Name on CQL Workspace is
-	 * Unique, does not allow keywords. 
+	 * Unique, does not allow keywords.
 	 * ***
 	 *
 	 * @param name the name
@@ -5897,9 +5897,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		XmlProcessor cqlXMLProcessor = CQLTemplateXML.getCQLTemplateXmlProcessor();
 		String XPATH_CQL_KEYWORDS = "/cqlTemplate/keywords/keyword[translate(text(),'abcdefghijklmnopqrstuvwxyz'," +
-				     "'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+name.toUpperCase()+"']";
+				"'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='"+name.toUpperCase()+"']";
 		try {
-			Node templateNode = cqlXMLProcessor.findNode(cqlXMLProcessor.getOriginalDoc(), XPATH_CQL_KEYWORDS);	
+			Node templateNode = cqlXMLProcessor.findNode(cqlXMLProcessor.getOriginalDoc(), XPATH_CQL_KEYWORDS);
 			if (templateNode != null) {
 				return true;
 			}
@@ -5909,6 +5909,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return false;
 	}
 	
+	@Override
+	public CQLGrammarDataType getCQLDataTypeList(){
+		CQLGrammarDataType cqlGrammarDataType = new CQLGrammarDataType();
+		XmlProcessor cqlXMLProcessor = CQLTemplateXML.getCQLTemplateXmlProcessor();
+		String XPATH_DATATYPES = "/cqlTemplate/Datatypes/Datatype";
+		List<String> cqlDataTypeList = new ArrayList<String>();
+		try {
+			NodeList dataTypeNodeList = cqlXMLProcessor.findNodeList(cqlXMLProcessor.getOriginalDoc(), XPATH_DATATYPES);
+			if(dataTypeNodeList!= null){
+				for (int i = 0; i < dataTypeNodeList.getLength(); i++) {
+					Node node = dataTypeNodeList.item(i);
+					cqlDataTypeList.add(node.getTextContent());
+				}
+			}
+		}catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		cqlGrammarDataType.setCqlDataTypeList(cqlDataTypeList);
+		return cqlGrammarDataType;
+	}
 	
 	/**
 	 * Check for duplicate names.
@@ -5920,7 +5940,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean isDuplicateIdentifierName(String identifierName, String measureId){
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-//		boolean isInvalid = false;
+		//		boolean isInvalid = false;
 		if (xmlModel!=null) {
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
@@ -5930,9 +5950,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				NodeList nodeList = (NodeList) xPath.evaluate(XPATH_CQLLOOKUP_IDENTIFIER_NAME,
 						processor.getOriginalDoc(),	XPathConstants.NODESET);
 				
-				if(nodeList != null && nodeList.getLength() > 0){
+				if((nodeList != null) && (nodeList.getLength() > 0)){
 					return true;
-				}				
+				}
 				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();

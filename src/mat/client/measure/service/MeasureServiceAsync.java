@@ -21,6 +21,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLGrammarDataType;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
@@ -599,6 +600,8 @@ public interface MeasureServiceAsync {
 	
 	void saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void getCQLDataTypeList(AsyncCallback<CQLGrammarDataType> callback);
 	
 	
 }

@@ -819,6 +819,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertFunction().createAlert();
 				} else {

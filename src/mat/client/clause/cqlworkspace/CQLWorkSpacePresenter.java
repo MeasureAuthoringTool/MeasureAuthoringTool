@@ -440,7 +440,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param isParameterDirty the new checks if is page dirty
 		 */
 		void setIsPageDirty(Boolean isPageDirty);
-						
+		
 		
 		/**
 		 * Gets the warning message alert parameter.
@@ -462,7 +462,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @return the warning message alert function
 		 */
 		WarningMessageAlert getWarningMessageAlertFunction();
-
+		
 		
 		/**
 		 * Gets the clear parameter yes button.
@@ -674,11 +674,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param functionArgumentList the new function argument list
 		 */
 		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
-
+		
 		Button getEraseFunctionButton();
-
+		
 		Button getClearFunctionYesButton();
-
+		
 		Button getClearFunctionNoButton();
 		
 		/**
@@ -687,16 +687,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param argumentList the argument list
 		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
-
+		
 		Boolean getIsPageDirty();
 		
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
 		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
-
+		
 		InlineRadio getContextFuncPATRadioBtn();
-
+		
 		InlineRadio getContextFuncPOPRadioBtn();
+		
+		boolean validateForSpecialChar(String identifierName);
 		
 	}
 	
@@ -763,7 +765,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-         searchDisplay.getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
+		searchDisplay.getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -793,7 +795,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-        searchDisplay.getFunctionBodyAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+		searchDisplay.getFunctionBodyAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
@@ -918,7 +920,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				
 			}
 		});
-		
 		searchDisplay.getContextDefinePOPRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
@@ -934,7 +935,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		
-       searchDisplay.getContextFuncPATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+		searchDisplay.getContextFuncPATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -959,7 +960,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				}
 			}
 		});
-		
 	}
 	
 	/**
@@ -975,6 +975,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				} else {
 					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
 				}
+				
 			}
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
@@ -994,7 +995,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	private void getAttributesForDataType(final CQLFunctionArgument functionArg){
-		attributeService.getAllAttributesByDataType(functionArg.getArgumentName(),
+		attributeService.getAllAttributesByDataType(functionArg.getQdmDataType(),
 				new AsyncCallback<List<QDSAttributes>>() {
 			
 			@Override
@@ -1043,11 +1044,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 	}
 	
+	
 	/**
 	 * Clear definition.
 	 */
 	private void clearFunction() {
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getFunctionArgumentList().clear();
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null) ||
 				(searchDisplay.getFuncNameTxtArea() != null)	) {
@@ -1074,11 +1077,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		if (!functionName.isEmpty() && !functionBody.isEmpty()) {
 			
-			if(!validateForSpecialChar(functionName.trim())) {
+			if(!searchDisplay.validateForSpecialChar(functionName.trim())) {
 				
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);
+				function.setArgumentList(searchDisplay.getFunctionArgumentList());
 				function.setContext(funcContext);
 				if(searchDisplay.getCurrentSelectedFunctionObjId() != null){
 					CQLFunctions toBeModifiedParamObj = searchDisplay.getFunctionMap().get(searchDisplay.getCurrentSelectedFunctionObjId());
@@ -1095,7 +1099,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
-							//searchDisplay.setCurrentSelectedParamerterObjId(null);
 							if (result.isSuccess()) {
 								searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
@@ -1195,7 +1198,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty() && !parameterLogic.isEmpty()) {
 			
-			if(!validateForSpecialChar(parameterName.trim())) {
+			if(!searchDisplay.validateForSpecialChar(parameterName.trim())) {
 				
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
@@ -1321,7 +1324,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		if (!definitionName.isEmpty() && !definitionLogic.isEmpty()) {
 			
-			if(!validateForSpecialChar(definitionName.trim())) {
+			if(!searchDisplay.validateForSpecialChar(definitionName.trim())) {
 				
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);
@@ -1350,7 +1353,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								
 								searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 								searchDisplay.clearAndAddDefinitionNamesToListBox();
-								searchDisplay.updateDefineMap();								
+								searchDisplay.updateDefineMap();
 								searchDisplay.getSuccessMessageAlertDefinition().setVisible(true);
 								searchDisplay.getSuccessMessageAlertDefinition().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY()));
@@ -1572,7 +1575,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getAddNewArgument().setEnabled(isEditable);
 		searchDisplay.getContextFuncPATRadioBtn().setEnabled(isEditable);
 		searchDisplay.getContextFuncPOPRadioBtn().setEnabled(isEditable);
-
+		
 	}
 	
 	
@@ -1773,24 +1776,5 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	
-	/**
-	 * Validation for special characters.
-	 *
-	 * @param identifierName the identifier name
-	 * @return true, if successful
-	 */
-	private boolean validateForSpecialChar (String identifierName) {
-		
-		if((identifierName == null) || "".equals(identifierName) || !Character.isLetter(identifierName.charAt(0))){
-			return true;
-		}
-		
-		for(int i = 0; i< identifierName.length(); i++) {
-			if(!Character.isLetter(identifierName.charAt(i)) && !Character.isDigit(identifierName.charAt(i)) && (identifierName.charAt(i) != '_')
-					&& (identifierName.charAt(i) != ' ')){
-				return  true;
-			}
-		}
-		return false;
-	}
+	
 }

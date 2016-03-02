@@ -43,7 +43,9 @@ import com.google.gwt.user.client.ui.ListBox;
  *
  */
 public class AddFunctionArgumentDialogBox {
-	
+	/**
+	 * String Message - Argument name is not unique.
+	 */
 	private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name is not unique.";
 	/**
 	 * String Message - CQL datatype is required.
@@ -72,13 +74,12 @@ public class AddFunctionArgumentDialogBox {
 	 */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
-	
 	/**
 	 * @param functionArg - CQLFunctionArgument
 	 * @param isEdit - {@link Boolean}
 	 * @param searchDisplay - {@link CQLWorkSpaceView}
 	 */
-	public static  void showArgumentDialogBox( final CQLFunctionArgument functionArg,
+	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
 			final boolean isEdit, final ViewDisplay searchDisplay) {
 		List<String> allCqlDataType = MatContext.get().getCqlGrammarDataType().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getDataTypeList();
@@ -98,8 +99,8 @@ public class AddFunctionArgumentDialogBox {
 					attributeListBox.addItem(searchDisplay.getAvailableQDSAttributeList().get(i).getName());
 				}
 			}
-			
-			if(functionArg.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+			if (functionArg.getArgumentType().equalsIgnoreCase(
+					CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
 				otherTypeTextArea.setText(functionArg.getOtherType());
 				otherTypeTextArea.setEnabled(true);
 			}
@@ -119,11 +120,14 @@ public class AddFunctionArgumentDialogBox {
 		for (int i = 0; i < allCqlDataType.size(); i++) {
 			listAllDataTypes.addItem(allCqlDataType.get(i));
 		}
+		// main form
 		Form bodyForm = new Form();
+		// message Form group
 		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();
 		messageFormgroup.add(helpBlock);
 		messageFormgroup.getElement().setAttribute("role", "alert");
+		// CQL Data Type Drop down Form group
 		final FormGroup dataTypeFormGroup = new FormGroup();
 		FormLabel availableDataFormLabel = new FormLabel();
 		availableDataFormLabel.setText("Available Datatypes");
@@ -131,6 +135,7 @@ public class AddFunctionArgumentDialogBox {
 		availableDataFormLabel.setFor("listDataType");
 		dataTypeFormGroup.add(availableDataFormLabel);
 		dataTypeFormGroup.add(listAllDataTypes);
+		// Argument Name Form group
 		final FormGroup argumentNameFormGroup = new FormGroup();
 		FormLabel argumentNameFormLabel = new FormLabel();
 		argumentNameFormLabel.setText("Argument Name");
@@ -142,19 +147,18 @@ public class AddFunctionArgumentDialogBox {
 		argumentNameTextArea.setHeight("38px");
 		argumentNameFormGroup.add(argumentNameFormLabel);
 		argumentNameFormGroup.add(argumentNameTextArea);
-		
+		// Other Type Form group
 		final FormGroup otherTypeFormGroup = new FormGroup();
 		FormLabel otherTypeFormLabel = new FormLabel();
 		otherTypeFormLabel.setText("Other Type");
 		otherTypeFormLabel.setTitle("Other Type");
 		otherTypeFormLabel.setFor("inputOtherType");
-		
 		otherTypeTextArea.setPlaceholder("Enter Other Type here.");
 		otherTypeTextArea.setWidth("290px");
 		otherTypeTextArea.setHeight("38px");
 		otherTypeFormGroup.add(otherTypeFormLabel);
 		otherTypeFormGroup.add(otherTypeTextArea);
-		
+		// QDM Data types drop down Form group
 		final FormGroup selectFormGroup = new FormGroup();
 		FormLabel selectFormLabel = new FormLabel();
 		selectFormLabel.setText("Select QDM Datatype Object");
@@ -165,6 +169,7 @@ public class AddFunctionArgumentDialogBox {
 		listSelectItem.setEnabled(false);
 		selectFormGroup.add(selectFormLabel);
 		selectFormGroup.add(listSelectItem);
+		// Attribute Drop down Form group
 		final FormGroup selectAttributeFormGroup = new FormGroup();
 		FormLabel selectAttributeFormGroupLabel = new FormLabel();
 		selectAttributeFormGroupLabel.setText("Select Attribute");
@@ -177,6 +182,7 @@ public class AddFunctionArgumentDialogBox {
 		attributeListBox.setEnabled(false);
 		selectAttributeFormGroup.add(selectAttributeFormGroupLabel);
 		selectAttributeFormGroup.add(attributeListBox);
+		// Main form field Set
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(argumentNameFormGroup);
@@ -204,6 +210,7 @@ public class AddFunctionArgumentDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		// Set values for Edit flow.
 		if (isEdit) {
 			String selectedDataType = null;
 			argumentNameTextArea.setText(functionArg.getArgumentName());
@@ -235,7 +242,7 @@ public class AddFunctionArgumentDialogBox {
 						}
 					}
 				}
-			} else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+			} else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
 				listSelectItem.clear();
 				listSelectItem.setEnabled(false);
 				otherTypeTextArea.setText(functionArg.getOtherType());
@@ -247,6 +254,7 @@ public class AddFunctionArgumentDialogBox {
 				listSelectItem.setEnabled(false);
 			}
 		}
+		// CQL Data Types List box change handler.
 		listAllDataTypes.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -281,6 +289,7 @@ public class AddFunctionArgumentDialogBox {
 				}
 			}
 		});
+		// QDM Data Types List Box change handler.
 		listSelectItem.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -304,6 +313,7 @@ public class AddFunctionArgumentDialogBox {
 				}
 			}
 		});
+		//Argument Text Area click handler
 		argumentNameTextArea.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -314,6 +324,7 @@ public class AddFunctionArgumentDialogBox {
 				helpBlock.setText("");
 			}
 		});
+		// Add Button Click Handler
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -326,16 +337,17 @@ public class AddFunctionArgumentDialogBox {
 				String otherType = null;
 				if (!argumentNameTextArea.getText().isEmpty()) {
 					argumentName = argumentNameTextArea.getText();
-					
 					if (selectedIndex != 0) {
 						argumentDataType = listAllDataTypes.getItemText(selectedIndex);
+						// Selected data type is QDM Data Type
 						if (argumentDataType.contains(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 							int selectedItemIndex = listSelectItem.getSelectedIndex();
 							if (selectedItemIndex != 0) {
 								qdmDataType =  listSelectItem.getItemText(selectedItemIndex);
 								int selectedAttributeIndex = attributeListBox.getSelectedIndex();
 								if (selectedAttributeIndex != 0) {
-									attributeName = attributeListBox.getItemText(selectedAttributeIndex);
+									attributeName = attributeListBox.
+											getItemText(selectedAttributeIndex);
 								}
 							} else {
 								isValid = false;
@@ -344,10 +356,10 @@ public class AddFunctionArgumentDialogBox {
 								helpBlock.setText(MESSAGE_SELECT_QDM_DATATYPE);
 								messageFormgroup.setValidationState(ValidationState.ERROR);
 							}
-							
-						} else if(argumentDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
-							if(otherTypeTextArea.getText().isEmpty()){
-								isValid=false;
+						} else if (argumentDataType.equalsIgnoreCase(// Selected Data Type is Others
+								CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+							if (otherTypeTextArea.getText().isEmpty()) {
+								isValid = false;
 								otherTypeFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 								helpBlock.setText("Other Type is not defined.");
@@ -357,7 +369,7 @@ public class AddFunctionArgumentDialogBox {
 							}
 						}
 					} else {
-						isValid=false;
+						isValid = false;
 						dataTypeFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 						helpBlock.setText(MESSAGE_CQL_DATATYPE_IS_REQUIRED);
@@ -370,18 +382,19 @@ public class AddFunctionArgumentDialogBox {
 					helpBlock.setText(MESSAGE_ARGUMENT_NAME_IS_REQUIRED);
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
-				
-				if(isValid){
+				// Argument Name Validation Check
+				if (isValid) {
 					boolean checkIfDuplicate = searchDisplay.getFunctionArgNameMap().containsKey(argumentName);
-					if(checkIfDuplicate && isEdit){
+					if (checkIfDuplicate && isEdit) {
 						CQLFunctionArgument tempArgObj = searchDisplay.getFunctionArgNameMap().get(argumentName);
-						if(tempArgObj.getId().equalsIgnoreCase(functionArg.getId())){
+						if (tempArgObj.getId().equalsIgnoreCase(functionArg.getId())) {
 							// this means same object is modified.
 							checkIfDuplicate = false;
 						}
 					}
 					boolean isInValidName = searchDisplay.validateForSpecialChar(argumentName);
-					if(!isInValidName && !checkIfDuplicate ){ //&& !searchDisplay.getFuncNameTxtArea().getText().equalsIgnoreCase(argumentName)){
+					if (!isInValidName && !checkIfDuplicate) {
+						//&& !searchDisplay.getFuncNameTxtArea().getText().equalsIgnoreCase(argumentName)){
 						isValid = true;
 						helpBlock.setText("");
 						messageFormgroup.setValidationState(ValidationState.NONE);
@@ -393,15 +406,16 @@ public class AddFunctionArgumentDialogBox {
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				}
-				
+				// Add or Modify Argument if valid.
 				if (isValid && (argumentName != null) && (argumentDataType != null)) {
-					if (isEdit) {
+					if (isEdit) { // Existing Function Argument.
 						for (int i = 0; i < searchDisplay.getFunctionArgumentList().size(); i++) {
 							CQLFunctionArgument currentFunctionArgument = searchDisplay.
 									getFunctionArgumentList().get(i);
 							if (currentFunctionArgument.getId().equalsIgnoreCase(
 									functionArg.getId())) {
-								searchDisplay.getFunctionArgNameMap().remove(currentFunctionArgument.getArgumentName());
+								searchDisplay.getFunctionArgNameMap().remove(
+										currentFunctionArgument.getArgumentName());
 								currentFunctionArgument.setArgumentName(argumentName);
 								currentFunctionArgument.setArgumentType(argumentDataType);
 								currentFunctionArgument.setAttributeName(attributeName);
@@ -409,11 +423,12 @@ public class AddFunctionArgumentDialogBox {
 								currentFunctionArgument.setOtherType(otherType);
 								searchDisplay.createAddArgumentViewForFunctions(
 										searchDisplay.getFunctionArgumentList());
-								searchDisplay.getFunctionArgNameMap().put(argumentName, currentFunctionArgument);
+								searchDisplay.getFunctionArgNameMap().put(argumentName,
+										currentFunctionArgument);
 								break;
 							}
 						}
-					} else {
+					} else { // New Argument
 						functionArg.setArgumentName(argumentName);
 						functionArg.setArgumentType(argumentDataType);
 						functionArg.setId(UUIDUtilClient.uuid(16));

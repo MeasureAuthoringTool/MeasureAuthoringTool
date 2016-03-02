@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class AddFunctionArgumentDialogBox {
 	
+	private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name is not unique.";
 	/**
 	 * String Message - CQL datatype is required.
 	 */
@@ -87,7 +88,7 @@ public class AddFunctionArgumentDialogBox {
 		String saveButtonText = "Add";
 		String modalText = "Add Argument";
 		if (isEdit) {
-			saveButtonText = "Edit";
+			saveButtonText = "Apply";
 			modalText = "Edit Argument: " + functionArg.getArgumentName();
 			if (functionArg.getArgumentType().equalsIgnoreCase(
 					CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
@@ -325,6 +326,7 @@ public class AddFunctionArgumentDialogBox {
 				String otherType = null;
 				if (!argumentNameTextArea.getText().isEmpty()) {
 					argumentName = argumentNameTextArea.getText();
+					
 					if (selectedIndex != 0) {
 						argumentDataType = listAllDataTypes.getItemText(selectedIndex);
 						if (argumentDataType.contains(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
@@ -369,6 +371,28 @@ public class AddFunctionArgumentDialogBox {
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 				
+				if(isValid){
+					boolean checkIfDuplicate = searchDisplay.getFunctionArgNameMap().containsKey(argumentName);
+					if(checkIfDuplicate && isEdit){
+						CQLFunctionArgument tempArgObj = searchDisplay.getFunctionArgNameMap().get(argumentName);
+						if(tempArgObj.getId().equalsIgnoreCase(functionArg.getId())){
+							// this means same object is modified.
+							checkIfDuplicate = false;
+						}
+					}
+					boolean isInValidName = searchDisplay.validateForSpecialChar(argumentName);
+					if(!isInValidName && !checkIfDuplicate ){ //&& !searchDisplay.getFuncNameTxtArea().getText().equalsIgnoreCase(argumentName)){
+						isValid = true;
+						helpBlock.setText("");
+						messageFormgroup.setValidationState(ValidationState.NONE);
+					} else {
+						isValid = false;
+						argumentNameFormGroup.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText(ARGUMENT_NAME_IS_NOT_UNIQUE);
+						messageFormgroup.setValidationState(ValidationState.ERROR);
+					}
+				}
 				
 				if (isValid && (argumentName != null) && (argumentDataType != null)) {
 					if (isEdit) {
@@ -377,6 +401,7 @@ public class AddFunctionArgumentDialogBox {
 									getFunctionArgumentList().get(i);
 							if (currentFunctionArgument.getId().equalsIgnoreCase(
 									functionArg.getId())) {
+								searchDisplay.getFunctionArgNameMap().remove(currentFunctionArgument.getArgumentName());
 								currentFunctionArgument.setArgumentName(argumentName);
 								currentFunctionArgument.setArgumentType(argumentDataType);
 								currentFunctionArgument.setAttributeName(attributeName);
@@ -384,6 +409,7 @@ public class AddFunctionArgumentDialogBox {
 								currentFunctionArgument.setOtherType(otherType);
 								searchDisplay.createAddArgumentViewForFunctions(
 										searchDisplay.getFunctionArgumentList());
+								searchDisplay.getFunctionArgNameMap().put(argumentName, currentFunctionArgument);
 								break;
 							}
 						}
@@ -396,6 +422,7 @@ public class AddFunctionArgumentDialogBox {
 						functionArg.setOtherType(otherType);
 						searchDisplay.getFunctionArgumentList().add(functionArg);
 						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+						searchDisplay.getFunctionArgNameMap().put(argumentName, functionArg);
 					}
 					dialogModal.hide();
 				}

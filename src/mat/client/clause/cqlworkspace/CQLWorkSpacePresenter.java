@@ -700,6 +700,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		boolean validateForSpecialChar(String identifierName);
 		
+		HashMap<String, CQLFunctionArgument> getFunctionArgNameMap();
+		
+		
+		
+		void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap);
+		
 	}
 	
 	/** The search display. */
@@ -1501,6 +1507,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.setIsPageDirty(false);
 		searchDisplay.getWarningMessageAlertParameter().clearAlert();
 		searchDisplay.getWarningMessageAlertDefinition().clearAlert();
@@ -1599,13 +1606,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if(result.getCqlModel() != null){
 					
-					/*if(!result.getCqlModel().getContext().isEmpty()){
-						if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
-							searchDisplay.getContextToggleSwitch().setValue(true);
-						} else {
-							searchDisplay.getContextToggleSwitch().setValue(false);
-						}
-					}*/
 					
 					if ((result.getCqlModel().getDefinitionList() != null) &&
 							(result.getCqlModel().getDefinitionList().size() >0)) {

@@ -205,6 +205,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The function argument list. */
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
+	private HashMap<String,CQLFunctionArgument> functionArgNameMap = new HashMap<String, CQLFunctionArgument>();
 	
 	/**
 	 * ListBox defineNameListBox.
@@ -415,6 +416,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
+		getFunctionArgNameMap().clear();
 		mainFlowPanel.clear();
 		
 		VerticalPanel parameterVP = new VerticalPanel();
@@ -605,9 +607,13 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void updateFunctionMap() {
 		functionMap.clear();
 		funcNameMap.clear();
+		functionArgNameMap.clear();
 		for(CQLFunctions function : viewFunctions){
 			funcNameMap.put(function.getId(), function.getFunctionName());
 			functionMap.put(function.getId(), function);
+			for(CQLFunctionArgument argument : function.getArgumentList()){
+				functionArgNameMap.put(argument.getArgumentName(), argument);
+			}
 		}
 		updateSuggestFuncOracle();
 		functionBadge.setText(""+viewFunctions.size());
@@ -639,6 +645,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		getFunctionArgNameMap().clear();
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
@@ -695,6 +702,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	private void buildLeftHandNavNar() {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
+		getFunctionArgumentList().clear();
+		getFunctionArgNameMap().clear();
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
@@ -961,6 +971,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
+		getFunctionArgNameMap().clear();
 		setIsPageDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
@@ -1115,6 +1126,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		getFunctionArgNameMap().clear();
 		setIsPageDirty(false);
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
@@ -1284,6 +1296,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		getFunctionArgNameMap().clear();
 		if(getFunctionArgumentList().size() >0){
 			getFunctionArgumentList().clear();
 		}
@@ -2987,6 +3000,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public InlineRadio getContextFuncPOPRadioBtn() {
 		return contextFuncPOPRadioBtn;
+	}
+	@Override
+	public HashMap<String, CQLFunctionArgument> getFunctionArgNameMap() {
+		return functionArgNameMap;
+	}
+	@Override
+	public void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap) {
+		this.functionArgNameMap = functionArgNameMap;
 	}
 	
 }

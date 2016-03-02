@@ -837,6 +837,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
+					
 				} else {
 					clearParameter();
 				}

@@ -1651,6 +1651,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						if(object.getAttributeName() != null){
 							value = value.append(".").append(object.getAttributeName());
 						}
+					} else if (value.toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+						value = value.append(":").append(object.getOtherType());
 					}
 					title = title.append("Datatype : ").append(
 							value);

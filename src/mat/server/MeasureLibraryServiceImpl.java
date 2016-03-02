@@ -78,6 +78,7 @@ import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLGrammarDataType;
@@ -5169,7 +5170,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						equalsIgnoreCase(currentObj.getFunctionName())) {
 					
 					isDuplicate = checkForKeywords(currentObj.getFunctionName());
-					if(isDuplicate){
+					if (isDuplicate) {
 						result.setSuccess(false);
 						result.setFailureReason(result.NAME_NOT_KEYWORD);
 						return result;
@@ -5178,6 +5179,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				
 				if (!isDuplicate) {
+					
+					//validation for argument name to check if it is not a keyword.
+					result = checkIfKeywordForArgument(result, currentObj);
+					isDuplicate = result.isSuccess();
+					if(isDuplicate){
+						result.setSuccess(false);
+						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						result.setFunction(currentObj);
+						return result;
+					}
 					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions Start :  ");
 					
@@ -5227,6 +5238,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), measureId);
 				if (!isDuplicate) {
+					
+					//validation for argument name to check if it is not a keyword.
+					result = checkIfKeywordForArgument(result, currentObj);
+					isDuplicate = result.isSuccess();
+					if(isDuplicate){
+						result.setSuccess(false);
+						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						result.setFunction(currentObj);
+						return result;
+					}
+					
 					
 					String cqlString = createFunctionsXML(currentObj);
 					String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/functions";
@@ -5824,8 +5846,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param name the name
 	 * @return true, if successful
 	 */
-	
-	private boolean checkForKeywords(String name) {
+	@Override
+	public boolean checkForKeywords(String name) {
 		
 		XmlProcessor cqlXMLProcessor = CQLTemplateXML.getCQLTemplateXmlProcessor();
 		String XPATH_CQL_KEYWORDS = "/cqlTemplate/keywords/keyword[translate(text(),'abcdefghijklmnopqrstuvwxyz'," +
@@ -5894,6 +5916,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return false;
 	}
+	
+	private SaveUpdateCQLResult checkIfKeywordForArgument(SaveUpdateCQLResult result, 
+			CQLFunctions currentObj){
+		
+		List<CQLFunctionArgument> argList = currentObj.getArgumentList(); 
+		for(int i=0; i<argList.size(); i++){
+			if(checkForKeywords(argList.get(i).getArgumentName())){
+				argList.get(i).setValid(true);
+				result.setSuccess(true);
+			} else {
+				argList.get(i).setValid(false);
+			}
+		}
+		
+		if(argList.size()>0){
+			currentObj.setArgumentList(argList);
+		} else {
+			currentObj.setArgumentList(new ArrayList<CQLFunctionArgument>());
+		}
+		result.setFunction(currentObj);
+		return result;
+	}
+	
+	
 	
 }
 

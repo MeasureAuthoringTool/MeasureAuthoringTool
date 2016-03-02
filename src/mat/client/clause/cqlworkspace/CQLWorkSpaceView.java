@@ -1644,8 +1644,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					StringBuilder value = new StringBuilder(object.getArgumentName());
 					
 					title = title.append("Name : ").append(value);
-					return CellTableUtility.getColumnToolTip(value.toString(),
-							title.toString());
+					/*return CellTableUtility.getColumnToolTip(value.toString(),
+							title.toString());*/
+					return getDataTypeColumnToolTip(value.toString(), title, object.isValid());
 				}
 				
 			};
@@ -3008,6 +3009,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap) {
 		this.functionArgNameMap = functionArgNameMap;
+	}
+	
+	private SafeHtml getDataTypeColumnToolTip(String columnText,
+			StringBuilder title, boolean hasImage) {
+		if (hasImage) {
+			String htmlConstant = "<html>"
+					+ "<head> </head> <Body><img src =\"images/error.png\" alt=\"Arugment Name is InValid.\""
+					+ "title = \"Arugment Name is InValid.\"/>"
+					+ "<span tabIndex = \"0\" title='" + title + "'>"
+					+ columnText + "</span></body>" + "</html>";
+			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
+					.toSafeHtml();
+		} else {
+			String htmlConstant = "<html>"
+					+ "<head> </head> <Body><span tabIndex = \"0\" title='"
+					+ title + "'>" + columnText + "</span></body>" + "</html>";
+			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
+					.toSafeHtml();
+		}
 	}
 	
 }

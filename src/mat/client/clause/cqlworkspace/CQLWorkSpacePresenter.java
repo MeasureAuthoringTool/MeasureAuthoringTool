@@ -1130,6 +1130,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR()));
 								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
+								if(result.getFunction()!=null){
+									searchDisplay.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
+								}
 							}
 						}
 					});
@@ -1172,6 +1175,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getErrorMessageAlertFunction().add(getMsgPanel(IconType.EXCLAMATION_CIRCLE,
 										MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR()));
 								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
+								if(result.getFunction()!=null){
+									searchDisplay.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
+								}
+								
 							}
 						}
 						
@@ -1606,6 +1613,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if(result.getCqlModel() != null){
 					
+					/*if(!result.getCqlModel().getContext().isEmpty()){
+						if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
+							searchDisplay.getContextToggleSwitch().setValue(true);
+						} else {
+							searchDisplay.getContextToggleSwitch().setValue(false);
+						}
+					}*/
 					
 					if ((result.getCqlModel().getDefinitionList() != null) &&
 							(result.getCqlModel().getDefinitionList().size() >0)) {

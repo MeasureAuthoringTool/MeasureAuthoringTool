@@ -11,6 +11,12 @@ public class CQLFunctionArgument implements IsSerializable {
 	private String attributeName;
 	private boolean isValid;
 	
+	public boolean isValid() {
+		return isValid;
+	}
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
 	public String getArgumentName() {
 		return argumentName;
 	}

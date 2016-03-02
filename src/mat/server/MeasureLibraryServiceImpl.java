@@ -5189,7 +5189,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeFunction!=null){
 							nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
-							nodeFunction.getAttributes().getNamedItem("context").setNodeValue(currentObj.getFunctionName());
+							nodeFunction.getAttributes().getNamedItem("context").setNodeValue(currentObj.getContext());
 							/*nodeFunction.setTextContent(currentObj.getFunctionLogic());*/
 							Node logicNode = nodeFunction.getFirstChild();
 							logicNode.setTextContent(currentObj.getFunctionLogic());
@@ -5273,75 +5273,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
-	/**
-	 * Check duplicate parameter name.
-	 *
-	 * @param toBeModified the to be modified
-	 * @param currentObj the current obj
-	 * @param paramaterList the paramater list
-	 * @return true, if successful
-	 */
-	private boolean checkDuplicateParameterName(CQLParameter toBeModified, CQLParameter currentObj,
-			List<CQLParameter> paramaterList) {
-		boolean isDuplicate = false;
-		if(toBeModified != null){
-			for(CQLParameter parameterObj: paramaterList ){
-				if(!parameterObj.getId().equalsIgnoreCase(currentObj.getId())){
-					if(parameterObj.getParameterName().equalsIgnoreCase(currentObj.getParameterName())){
-						isDuplicate = true;
-						break;
-					}
-				}
-			}
-		} else {
-			
-			for(CQLParameter parameterObj: paramaterList ){
-				if(parameterObj.getParameterName().equalsIgnoreCase(currentObj.getParameterName())){
-					isDuplicate = true;
-					break;
-				}
-			}
-		}
-		
-		
-		return isDuplicate;
-		
-	}
-	
-	/**
-	 * Check duplicate defintion name.
-	 *
-	 * @param toBeModified the to be modified
-	 * @param currentObj the current obj
-	 * @param definitionList the definition list
-	 * @return true, if successful
-	 */
-	private boolean checkDuplicateDefintionName(CQLDefinition toBeModified, CQLDefinition currentObj,
-			List<CQLDefinition> definitionList) {
-		boolean isDuplicate = false;
-		if(toBeModified != null){
-			for(CQLDefinition definition: definitionList ){
-				if(!definition.getId().equalsIgnoreCase(currentObj.getId())){
-					if(definition.getDefinitionName().equalsIgnoreCase(currentObj.getDefinitionName())){
-						isDuplicate = true;
-						break;
-					}
-				}
-			}
-		} else {
-			
-			for(CQLDefinition definition: definitionList ){
-				if(definition.getDefinitionName().equalsIgnoreCase(currentObj.getDefinitionName())){
-					isDuplicate = true;
-					break;
-				}
-			}
-		}
-		
-		
-		return isDuplicate;
-		
-	}
 	
 	/**
 	 * Sort definitions list.

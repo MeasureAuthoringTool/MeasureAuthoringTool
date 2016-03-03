@@ -206,7 +206,7 @@ public class MessageDelegate {
 			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
 	public final String ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR  = "Invalid Definition name. " +
 			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
-	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function name. " +
+	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
 			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
 	
 	/**
@@ -2539,15 +2539,15 @@ public class MessageDelegate {
 	public String getSUCESS_FUNCTION_MODIFY() {
 		return SUCESS_FUNCTION_MODIFY;
 	}
-
+	
 	public String getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_PARAMETER_NAME_NO_SPECIAL_CHAR;
 	}
-
+	
 	public String getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR;
 	}
-
+	
 	public String getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR;
 	}

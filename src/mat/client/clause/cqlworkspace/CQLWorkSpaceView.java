@@ -1639,7 +1639,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 							value = value.append(".").append(object.getAttributeName());
 						}
 					} else if (value.toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
-						value = value.append(":").append(CellTableUtility.htmlEscape(object.getOtherType()));
+						value = value.append(":").append(object.getOtherType());
 					}
 					title = title.append("Datatype : ").append(
 							value);

@@ -31,7 +31,7 @@
 									<bind-xml name="id" node="attribute" />
 								</field>
 								<field name="argumentName" type="java.lang.String">
-									<bind-xml name="name" node="attribute" />
+									<bind-xml name="argumentName" node="attribute" />
 								</field>
 								<field name="argumentType" type="java.lang.String">
 									<bind-xml name="type" node="attribute" />

@@ -3,9 +3,9 @@ package mat.client.shared;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-public class SuccessMessageAlert extends MessageAlert implements SuccessAlertInterface  {
+public class SuccessMessageAlert extends MessageAlert implements MessageAlertInterface  {
 	
-	
+	@Override
 	public void createAlert (String successMessage) {
 		clear();
 		createSuccessAlert(successMessage);

@@ -7,7 +7,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-public class WarningConfirmationMessageAlert extends MessageAlert implements WarningAlertInterface  {
+public class WarningConfirmationMessageAlert extends MessageAlert implements WarningConfirmationAlertInterface  {
 	
 	private Button yesButton = new Button();
 	

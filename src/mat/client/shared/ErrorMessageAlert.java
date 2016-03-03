@@ -3,9 +3,9 @@ package mat.client.shared;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-public class ErrorMessageAlert extends MessageAlert implements ErrorMessageAlertInterface  {
+public class ErrorMessageAlert extends MessageAlert implements MessageAlertInterface  {
 	
-	
+	@Override
 	public void createAlert (String errorMessage) {
 		clear();
 		createErrorAlert(errorMessage);
@@ -22,7 +22,7 @@ public class ErrorMessageAlert extends MessageAlert implements ErrorMessageAlert
 
 	public void createErrorAlert(String errorMessage) {
 		setType(AlertType.DANGER);
-		super.setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage));
+		setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage));
 		setFocus();
 	}
 		

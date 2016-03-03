@@ -548,7 +548,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				if (currentSelectedFunctionObjId != null) {
 					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
 					if(selectedFunction.getArgumentList() != null){
-						functionArgumentList = selectedFunction.getArgumentList();
+						functionArgumentList.clear();
+						functionArgumentList.addAll(selectedFunction.getArgumentList());
+					} else {
+						functionArgumentList.clear();
 					}
 				}
 				createAddArgumentViewForFunctions(functionArgumentList);
@@ -611,7 +614,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		for(CQLFunctions function : viewFunctions){
 			funcNameMap.put(function.getId(), function.getFunctionName());
 			functionMap.put(function.getId(), function);
-			if (function.getArgumentList() != null) {
+			if(function.getArgumentList() != null){
 				for(CQLFunctionArgument argument : function.getArgumentList()){
 					functionArgNameMap.put(argument.getArgumentName(), argument);
 				}

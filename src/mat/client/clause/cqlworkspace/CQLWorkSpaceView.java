@@ -4,7 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -25,7 +39,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -60,25 +73,9 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
 
 
 // TODO: Auto-generated Javadoc
@@ -1150,7 +1147,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defAceEditorPanel.add(defineAceEditor);
 		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
 		defAceEditorPanel.setStyleName("cqlRightContainer");
-				
+		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		FlowPanel defineConextPanel = new FlowPanel();
 		
@@ -1313,7 +1310,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
 		funcAceEditorPanel.setStyleName("cqlRightContainer");
 		
-				
+		
 		addNewArgument.setType(ButtonType.LINK);
 		addNewArgument.getElement().setId("addArgument_Button");
 		
@@ -1670,8 +1667,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					+ colName + "</span>"));
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
-			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(1, 35.0, Unit.PCT);
+			table.setColumnWidth(2, 10.0, Unit.PCT);
 		}
 		return table;
 	}

@@ -5,7 +5,7 @@ import org.gwtbootstrap3.client.ui.Button;
 /**
  * The Interface WarningAlertInterface.
  */
-public interface WarningAlertInterface {
+public interface WarningConfirmationAlertInterface {
 	
 	/**
 	 * Clear the alert (messages/buttons).

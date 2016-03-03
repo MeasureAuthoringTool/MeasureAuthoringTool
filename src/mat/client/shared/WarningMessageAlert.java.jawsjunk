@@ -8,13 +8,18 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class WarningMessageAlert extends MessageAlert implements WarningAlertInterface  {
 	
 	private Button yesButton = new Button();
 	
 	private Button noButton = new Button();
+	
+	/** The h panel. */
+	private HorizontalPanel hPanel;
 	
 	public void createAlert () {
 		super.clear();
@@ -41,18 +46,24 @@ public class WarningMessageAlert extends MessageAlert implements WarningAlertInt
 	
 	public void createWarningAlert() {
 		super.setMessage(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
+		hPanel = new HorizontalPanel();
 		createButtons();
+		setFocus();
 	}
 	
 	private void createButtons() {
 		setType(AlertType.WARNING);
 		add(new SpacerWidget());
-		
+		//getElement().focus();
+		//super.getElement().focus();
+
 		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.EXTRA_SMALL);
 		yesButton.setTitle("Yes");
 		yesButton.setText("Yes");
 		yesButton.setId("Clear_Yes_Button");
+		//yesButton.setFocus(true);
+		//yesButton.getElement().focus();
 		
 		noButton.setType(ButtonType.PRIMARY);
 		noButton.setSize(ButtonSize.EXTRA_SMALL);
@@ -60,12 +71,16 @@ public class WarningMessageAlert extends MessageAlert implements WarningAlertInt
 		noButton.setTitle("No");
 		noButton.setText("No");
 		noButton.setId("Clear_No_Button");
+		//noButton.setFocus(false);
 
 		add(new SpacerWidget());
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		buttonToolBar.getElement().focus();
 		buttonToolBar.add(yesButton);
 		buttonToolBar.add(noButton);
 		add(buttonToolBar);
+		buttonToolBar.getElement().focus();
+		buttonToolBar.getElement().focus();
 	}
 	
 	

@@ -46,7 +46,11 @@ public class AddFunctionArgumentDialogBox {
 	/**
 	 * String Message - Argument name is not unique.
 	 */
-	private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name is not unique.";
+	private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name already exists.";
+	/**
+	 * String Message - Argument name is not unique.
+	 */
+	private static final String ARGUMENT_NAME_IS_INVALID = "Invalid argument Name. Name may not begin with number or underscore.";
 	/**
 	 * String Message - CQL datatype is required.
 	 */
@@ -400,9 +404,14 @@ public class AddFunctionArgumentDialogBox {
 						messageFormgroup.setValidationState(ValidationState.NONE);
 					} else {
 						isValid = false;
+						helpBlock.setText("");
 						argumentNameFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText(ARGUMENT_NAME_IS_NOT_UNIQUE);
+						if(checkIfDuplicate){
+							helpBlock.setText(ARGUMENT_NAME_IS_NOT_UNIQUE);
+						} else if(isInValidName){
+							helpBlock.setText(ARGUMENT_NAME_IS_INVALID);
+						}
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				}

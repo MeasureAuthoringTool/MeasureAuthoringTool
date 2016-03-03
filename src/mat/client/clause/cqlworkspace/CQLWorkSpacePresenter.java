@@ -978,6 +978,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
 				searchDisplay.setIsPageDirty(true);
+				resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
@@ -1457,7 +1458,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
-		//MatContext.get().getAllDataType();
 		MatContext.get().getAllDataTypesForCQLWorkSpace();
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();

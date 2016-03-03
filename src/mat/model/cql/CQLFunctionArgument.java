@@ -18,10 +18,10 @@ public class CQLFunctionArgument implements IsSerializable {
 		this.isValid = isValid;
 	}
 	public String getArgumentName() {
-		return argumentName;
+		return argumentName.replaceAll(" ", "").trim();
 	}
 	public void setArgumentName(String argumentName) {
-		this.argumentName = argumentName;
+		this.argumentName = argumentName.replaceAll(" ", "").trim();
 	}
 	public String getArgumentType() {
 		return argumentType;

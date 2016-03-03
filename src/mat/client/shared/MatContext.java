@@ -1490,7 +1490,9 @@ public class MatContext implements IsSerializable {
 				});
 	}
 	// Get all CQL Data types from cqlTemplate.xml
-	public void getAllCQLDataType(){
+	// And All QDM Data types except Attributes.
+	public void getAllDataTypesForCQLWorkSpace(){
+		
 		measureService.getCQLDataTypeList(new AsyncCallback<CQLGrammarDataType>() {
 			
 			@Override
@@ -1505,6 +1507,35 @@ public class MatContext implements IsSerializable {
 				
 			}
 		});
+		
+		
+		listBoxCodeProvider.getAllDataType(
+				new AsyncCallback<List<? extends HasListBox>>() {
+					
+					@Override
+					public void onFailure(final Throwable caught) {
+					}
+					
+					@Override
+					public void onSuccess(
+							final List<? extends HasListBox> result) {
+						Collections.sort(result,
+								new HasListBox.Comparator());
+						dataTypeList.clear();
+						dataTypeList.add(MatContext.PLEASE_SELECT);
+						if (result != null) {
+							for (HasListBox listBoxContent : result) {
+								//MAT-4366
+								if(! listBoxContent.getItem().equalsIgnoreCase("attribute")){
+									dataTypeList.add(listBoxContent.getItem());
+								}
+								
+							}
+							
+						}
+					}
+				});
+		
 	}
 	
 	/**
@@ -1733,7 +1764,7 @@ public class MatContext implements IsSerializable {
 	 * @param profileList the new profile list
 	 */
 	public void setExpIdentifierList(List<String> profileList) {
-		this.expIdentifierList = profileList;
+		expIdentifierList = profileList;
 	}
 	
 	/**

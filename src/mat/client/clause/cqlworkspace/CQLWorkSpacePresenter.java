@@ -4,35 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
-import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -48,6 +19,32 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Badge;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1137,7 +1134,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getViewFunctions(), new AsyncCallback<SaveUpdateCQLResult>() {
 						
 						@Override
-						public void onFailure(Throwable caught) {							
+						public void onFailure(Throwable caught) {
 							searchDisplay.getErrorMessageAlertFunction().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 						
@@ -1149,7 +1146,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
 								searchDisplay.setCurrentSelectedFunctionObjId(result.getFunction().getId());
-								searchDisplay.getSuccessMessageAlertFunction().createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());		
+								searchDisplay.getSuccessMessageAlertFunction().createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());
 							} else if (result.getFailureReason() == 1) {
 								searchDisplay.getErrorMessageAlertFunction().createAlert(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
 								searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
@@ -1366,7 +1363,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 									searchDisplay.getErrorMessageAlertDefinition().createAlert(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
 									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 2){
-									searchDisplay.getErrorMessageAlertDefinition().createAlert("Missing Definitions Tag.");					
+									searchDisplay.getErrorMessageAlertDefinition().createAlert("Missing Definitions Tag.");
 									searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 								} else if(result.getFailureReason() == 3) {
 									searchDisplay.getErrorMessageAlertDefinition().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
@@ -1380,7 +1377,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					});
 					
 				}
-			} else {				
+			} else {
 				searchDisplay.getErrorMessageAlertDefinition().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
 				searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 			}
@@ -1460,8 +1457,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addHandler();
-		MatContext.get().getAllDataType();
-		MatContext.get().getAllCQLDataType();
+		//MatContext.get().getAllDataType();
+		MatContext.get().getAllDataTypesForCQLWorkSpace();
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}

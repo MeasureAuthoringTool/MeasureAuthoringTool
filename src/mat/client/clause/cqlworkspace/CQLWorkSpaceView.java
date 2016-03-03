@@ -611,8 +611,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		for(CQLFunctions function : viewFunctions){
 			funcNameMap.put(function.getId(), function.getFunctionName());
 			functionMap.put(function.getId(), function);
-			for(CQLFunctionArgument argument : function.getArgumentList()){
-				functionArgNameMap.put(argument.getArgumentName(), argument);
+			if (function.getArgumentList() != null) {
+				for(CQLFunctionArgument argument : function.getArgumentList()){
+					functionArgNameMap.put(argument.getArgumentName(), argument);
+				}
 			}
 		}
 		updateSuggestFuncOracle();

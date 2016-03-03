@@ -5160,6 +5160,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setCqlModel(cqlModel);
 		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
 		boolean isDuplicate = false;
+		String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/functions";
 		if(xmlModel!=null){
 			
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
@@ -5190,6 +5191,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						return result;
 					}
 					
+					String cqlString = createFunctionsXML(currentObj);
+					
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions Start :  ");
 					
 					String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "/measure/cqlLookUp//function[@id='"
@@ -5199,14 +5202,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						//						Node nodeDefinition = (Node) xPath.evaluate(XPATH_EXPRESSION_CQLLOOKUP_PARAMETER,
 						//								processor.getOriginalDoc(),	XPathConstants.NODE);
 						if(nodeFunction!=null){
-							nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
-							nodeFunction.getAttributes().getNamedItem("context").setNodeValue(currentObj.getContext());
+							/*nodeFunction.getAttributes().getNamedItem("name").setNodeValue(currentObj.getFunctionName());
+							nodeFunction.getAttributes().getNamedItem("context").setNodeValue(currentObj.getContext());*/
 							/*nodeFunction.setTextContent(currentObj.getFunctionLogic());*/
-							Node logicNode = nodeFunction.getFirstChild();
-							logicNode.setTextContent(currentObj.getFunctionLogic());
+							/*Node logicNode = nodeFunction.getFirstChild();
+							logicNode.setTextContent(currentObj.getFunctionLogic());*/
+							
+							processor.removeFromParent(nodeFunction);
+							processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
 							xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
-							
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj, currentObj, functionsList);
 							result.setSuccess(true);
 							result.setFunction(currentObj);
@@ -5218,6 +5223,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						result.setSuccess(false);
 						e.printStackTrace();
 						
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					logger.debug(" MeasureLibraryServiceImpl: saveAndModifyFunctions End :  ");
 					
@@ -5251,7 +5262,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					
 					
 					String cqlString = createFunctionsXML(currentObj);
-					String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/functions";
 					
 					try {
 						/*Node nodeParameters = (Node) xPath.evaluate(XPATH_EXPRESSION_PARAMETERS, processor.getOriginalDoc(),
@@ -5863,6 +5873,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getCQLDataTypeList()
+	 */
 	@Override
 	public CQLGrammarDataType getCQLDataTypeList(){
 		CQLGrammarDataType cqlGrammarDataType = new CQLGrammarDataType();
@@ -5917,6 +5930,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return false;
 	}
 	
+	/**
+	 * Check if keyword for argument.
+	 *
+	 * @param result the result
+	 * @param currentObj the current obj
+	 * @return the save update cql result
+	 */
 	private SaveUpdateCQLResult checkIfKeywordForArgument(SaveUpdateCQLResult result, 
 			CQLFunctions currentObj){
 		

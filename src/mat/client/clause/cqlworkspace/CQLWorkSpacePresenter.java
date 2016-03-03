@@ -1,5 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1058,6 +1059,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	private void clearFunction() {
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
 		searchDisplay.getFunctionArgumentList().clear();
+		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null) ||
 				(searchDisplay.getFuncNameTxtArea() != null)	) {

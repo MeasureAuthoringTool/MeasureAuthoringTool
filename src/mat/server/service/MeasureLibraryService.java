@@ -603,6 +603,4 @@ public interface MeasureLibraryService {
 	
 	CQLGrammarDataType getCQLDataTypeList();
 	
-	boolean checkForKeywords(String name);
-	
 }

@@ -30,6 +30,7 @@ import mat.DTO.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -4858,24 +4859,121 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 		
-		//context
-		if((cqlModel.getContext() != null) && !cqlModel.getContext().isEmpty()) {
-			cqlStr = cqlStr.append("context "+ cqlModel.getContext() + "\n\n");
+		//Definitions and Functions by Context
+		cqlStr = getDefineAndFuncsByContext(cqlModel.getDefinitionList(), cqlModel.getCqlFunctions(), cqlStr);
+		
+		
+		return cqlStr;
+	}
+	
+	/**
+	 * Gets the define and funcs by context.
+	 *
+	 * @param defineList the define list
+	 * @param functionsList the functions list
+	 * @param cqlStr the cql str
+	 * @return the define and funcs by context
+	 */
+	private StringBuilder getDefineAndFuncsByContext(List<CQLDefinition> defineList,
+			List<CQLFunctions> functionsList, StringBuilder cqlStr){
+		
+		List<CQLDefinition> contextPatDefineList = new  ArrayList<CQLDefinition>();
+		List<CQLDefinition> contextPopDefineList = new  ArrayList<CQLDefinition>();
+		List<CQLFunctions> contextPatFuncList = new  ArrayList<CQLFunctions>();
+		List<CQLFunctions> contextPopFuncList = new  ArrayList<CQLFunctions>();
+		if (defineList != null) {
+		for(int i=0; i<defineList.size();i++){
+			if(defineList.get(i).getContext().equalsIgnoreCase("patient")){
+				contextPatDefineList.add(defineList.get(i));
+			} else {
+				contextPopDefineList.add(defineList.get(i));
+			}
+		}
+		}
+		if (functionsList != null) {
+		for(int i=0; i<functionsList.size();i++){
+			if(functionsList.get(i).getContext().equalsIgnoreCase("patient")){
+				contextPatFuncList.add(functionsList.get(i));
+			} else {
+				contextPopFuncList.add(functionsList.get(i));
+			}
+		}
 		}
 		
 		
-		//define
-		List<CQLDefinition> defineList = cqlModel.getDefinitionList();
-		if (defineList != null) {
-			for(CQLDefinition definition : defineList) {
+		if(contextPatDefineList.size()>0 
+				|| contextPatFuncList.size()>0){
+			
+			cqlStr = cqlStr.append("context Patient \n\n");
+			
+			for(CQLDefinition definition : contextPatDefineList) {
 				cqlStr = cqlStr.append("define "+ definition.getDefinitionName() + ": ");
 				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+			
+			for(CQLFunctions function : contextPatFuncList) {
+				cqlStr = cqlStr.append("define function "+ function.getFunctionName() + "(");
+				for(CQLFunctionArgument argument: function.getArgumentList()){
+					StringBuilder argumentType = new StringBuilder();
+					if(argument.getArgumentType().toString().equalsIgnoreCase("QDM Datatype")){
+						//argumentType = argumentType.append(":").append(argument.getQdmDataType());
+						if(argument.getAttributeName() != null){
+							argumentType = argumentType.append("\" ").append(argument.getQdmDataType());
+							argumentType = argumentType.append(".").append(argument.getAttributeName()).append("\" ");
+						}
+					} 
+					else if (argument.getArgumentType().toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+						argumentType = argumentType.append(argument.getOtherType());
+					} else {
+						argumentType = argumentType.append(argument.getArgumentType());
+					}
+					cqlStr = cqlStr.append(argument.getArgumentName() +" " + argumentType + ", ");
+				}
+				cqlStr.deleteCharAt(cqlStr.length()-1);
+				cqlStr = cqlStr.append("): " + function.getFunctionLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+			
+		} 
+		
+		if(contextPopDefineList.size()>0 
+				|| contextPopFuncList.size()>0){
+			
+			cqlStr = cqlStr.append("context Population \n\n");
+			for(CQLDefinition definition : contextPopDefineList) {
+				cqlStr = cqlStr.append("define "+ definition.getDefinitionName() + ": ");
+				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+			
+			for(CQLFunctions function : contextPopFuncList) {
+				cqlStr = cqlStr.append("define function "+ function.getFunctionName() + "(");
+				for(CQLFunctionArgument argument: function.getArgumentList()){
+					StringBuilder argumentType = new StringBuilder();
+					if(argument.getArgumentType().toString().equalsIgnoreCase("QDM Datatype")){
+						//argumentType = argumentType.append(":").append(argument.getQdmDataType());
+						if(argument.getAttributeName() != null){
+							argumentType = argumentType.append("\" ").append(argument.getQdmDataType());
+							argumentType = argumentType.append(".").append(argument.getAttributeName()).append("\" ");
+						}
+					} 
+					else if (argument.getArgumentType().toString().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+						argumentType = argumentType.append(argument.getOtherType());
+					} else {
+						argumentType = argumentType.append(argument.getArgumentType());
+					}
+					cqlStr = cqlStr.append(argument.getArgumentName() +" " + argumentType + ", ");
+				}
+				cqlStr.deleteCharAt(cqlStr.length()-1);
+				cqlStr = cqlStr.append("): " + function.getFunctionLogic());
 				cqlStr = cqlStr.append("\n\n");
 			}
 		}
 		
 		
 		return cqlStr;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -5856,7 +5954,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param name the name
 	 * @return true, if successful
 	 */
-	@Override
 	public boolean checkForKeywords(String name) {
 		
 		XmlProcessor cqlXMLProcessor = CQLTemplateXML.getCQLTemplateXmlProcessor();

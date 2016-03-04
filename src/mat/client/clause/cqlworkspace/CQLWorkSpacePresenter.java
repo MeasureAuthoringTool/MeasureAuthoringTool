@@ -1090,7 +1090,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		} else {
 			funcContext = "Population";
 		}
-		if (!functionName.isEmpty() && !functionBody.isEmpty()) {
+		if (!functionName.isEmpty()) {
 			
 			if(!searchDisplay.validateForSpecialChar(functionName.trim())) {
 				
@@ -1193,7 +1193,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		resetMessageDisplay();
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
-		if (!parameterName.isEmpty() && !parameterLogic.isEmpty()) {
+		if (!parameterName.isEmpty()) {
 			
 			if(!searchDisplay.validateForSpecialChar(parameterName.trim())) {
 				
@@ -1293,7 +1293,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		} else {
 			defineContext = "Population";
 		}
-		if (!definitionName.isEmpty() && !definitionLogic.isEmpty()) {
+		if (!definitionName.isEmpty()) {
 			
 			if(!searchDisplay.validateForSpecialChar(definitionName.trim())) {
 				

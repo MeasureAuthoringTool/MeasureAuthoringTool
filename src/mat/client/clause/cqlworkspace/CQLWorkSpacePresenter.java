@@ -708,6 +708,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap);
 		
+		org.gwtbootstrap3.client.ui.ListBox getFuncNameListBox();
+		
 	}
 	
 	/** The search display. */
@@ -1569,6 +1571,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Adding handlers for Anchor Items.
 	 */
 	private void addHandler() {
+		
 		searchDisplay.getGeneralInformation().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -1647,16 +1650,19 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getGeneralInformation().setActive(false);
 		} else if(menuClickedBefore.equalsIgnoreCase("param")){
 			searchDisplay.getParameterLibrary().setActive(false);
+			searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 			}
 		} else if(menuClickedBefore.equalsIgnoreCase("define")){
 			searchDisplay.getDefinitionLibrary().setActive(false);
+			searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 			}
 		} else if(menuClickedBefore.equalsIgnoreCase("func")){
 			searchDisplay.getFunctionLibrary().setActive(false);
+			searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
 			}

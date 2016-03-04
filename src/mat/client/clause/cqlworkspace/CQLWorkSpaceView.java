@@ -2884,6 +2884,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 *
 	 * @return the func name list box
 	 */
+	@Override
 	public ListBox getFuncNameListBox() {
 		return funcNameListBox;
 	}

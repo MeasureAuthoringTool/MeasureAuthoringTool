@@ -819,6 +819,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertDefinition().createAlert();
+					searchDisplay.getWarningMessageAlertDefinition().getYesButton().setFocus(true);
 				} else {
 					clearDefinition();
 				}
@@ -832,6 +833,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertFunction().createAlert();
+					searchDisplay.getWarningMessageAlertFunction().getYesButton().setFocus(true);
 				} else {
 					clearFunction();
 				}
@@ -845,6 +847,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningMessageAlertParameter().createAlert();
+					searchDisplay.getWarningMessageAlertParameter().getYesButton().setFocus(true);
 				} else {
 					clearParameter();
 				}

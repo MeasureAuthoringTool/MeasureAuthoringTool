@@ -22,7 +22,7 @@ public class CellTableUtility {
 	 * @param title the title
 	 * @return the column tool tip */
 	public static SafeHtml getColumnToolTip(String columnText, String title) {
-		String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"0\" title=\" " + title + "\">" + escapeHtml(columnText)
+		String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"0\" title=\" " + escapeHtml(title) + "\">" + escapeHtml(columnText)
 				+ "</span></body>"
 				+ "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
@@ -41,6 +41,6 @@ public class CellTableUtility {
 			return null;
 		}
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;");
+				.replaceAll(">", "&gt;").replaceAll("\"", "&quot;").replaceAll("'", "&#39;");
 	}
 }

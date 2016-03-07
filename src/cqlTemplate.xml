@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cqlTemplate>
     <!-- CQL Data type list  -->
-    <Datatypes>
-        <Datatype>Boolean</Datatype>
-        <Datatype>DateTime</Datatype>
-        <Datatype>Decimal</Datatype>
-        <Datatype>Integer</Datatype>
-        <Datatype>QDM Datatype</Datatype>
-        <Datatype>String</Datatype>
-        <Datatype>Time</Datatype>
-         <Datatype>Others</Datatype>
-    </Datatypes>
+    <datatypes>
+        <datatype>Boolean</datatype>
+        <datatype>DateTime</datatype>
+        <datatype>Decimal</datatype>
+        <datatype>Integer</datatype>
+        <datatype>QDM Datatype</datatype>
+        <datatype>String</datatype>
+        <datatype>Time</datatype>
+         <datatype>Others</datatype>
+    </datatypes>
     <!-- CQL Reserved Keyword List  -->
 	<keywords>
 		<keyword>Abs</keyword>

@@ -63,13 +63,11 @@ public interface MeasureServiceAsync {
 	
 	/**
 	 * Creates the and save element look up.
-	 * 
-	 * @param list
-	 *            the list
-	 * @param measureID
-	 *            the measure id
-	 * @param callback
-	 *            the callback
+	 *
+	 * @param list            the list
+	 * @param measureID            the measure id
+	 * @param expProfileToAllQDM the exp profile to all qdm
+	 * @param callback            the callback
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
@@ -263,17 +261,11 @@ public interface MeasureServiceAsync {
 	
 	/**
 	 * Save measure note.
-	 * 
-	 * @param noteTitle
-	 *            the note title
-	 * @param noteDescription
-	 *            the note description
-	 * @param measureId
-	 *            the measureId
-	 * @param userId
-	 *            the userId
-	 * @param callback
-	 *            the callback
+	 *
+	 * @param model the model
+	 * @param measureId            the measureId
+	 * @param userId            the userId
+	 * @param callback            the callback
 	 */
 	void saveMeasureNote(MeasureNoteDTO model,
 			String measureId, String userId, AsyncCallback<SaveMeasureNotesResult> callback);
@@ -486,6 +478,12 @@ public interface MeasureServiceAsync {
 	void validatePackageGrouping(ManageMeasureDetailModel model,
 			AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
+	/**
+	 * Validate measure xmlinpopulation workspace.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param asyncCallback the async callback
+	 */
 	void validateMeasureXmlinpopulationWorkspace(MeasureXmlModel measureXmlModel, AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
 	
@@ -566,41 +564,124 @@ public interface MeasureServiceAsync {
 			String currentMeasureId,
 			AsyncCallback<SortedClauseMapResult> Callback);
 	
+	/**
+	 * Gets the used steward and developers list.
+	 *
+	 * @param measureId the measure id
+	 * @param asyncCallback the async callback
+	 * @return the used steward and developers list
+	 */
 	void getUsedStewardAndDevelopersList(String measureId,
 			AsyncCallback<MeasureDetailResult> asyncCallback);
 	
+	/**
+	 * Update measure xml for deleted component measure and org.
+	 *
+	 * @param id the id
+	 * @param asyncCallback the async callback
+	 */
 	void updateMeasureXmlForDeletedComponentMeasureAndOrg(String id,
 			AsyncCallback<Void> asyncCallback);
 	
+	/**
+	 * Update measure xml for expansion identifier.
+	 *
+	 * @param list the list
+	 * @param measureId the measure id
+	 * @param expansionProfile the expansion profile
+	 * @param callback the callback
+	 */
 	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> list, String measureId, String expansionProfile,
 			AsyncCallback<Void> callback);
 	
+	/**
+	 * Gets the default sde from measure xml.
+	 *
+	 * @param measureId the measure id
+	 * @param callback the callback
+	 * @return the default sde from measure xml
+	 */
 	void getDefaultSDEFromMeasureXml(String measureId, AsyncCallback<QualityDataModelWrapper> callback);
 	
+	/**
+	 * Parses the cql.
+	 *
+	 * @param cqlBuilder the cql builder
+	 * @param asyncCallback the async callback
+	 */
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
-	//void saveCQLData(CQLModel cqlModel,  AsyncCallback<Boolean> callback);
-	
+	/**
+	 * Gets the CQL data.
+	 *
+	 * @param measureId the measure id
+	 * @param callback the callback
+	 * @return the CQL data
+	 */
 	void getCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 	
+	/**
+	 * Save and modify definitions.
+	 *
+	 * @param measureId the measure id
+	 * @param toBemodifiedObj the to bemodified obj
+	 * @param currentObj the current obj
+	 * @param definitionList the definition list
+	 * @param callback the callback
+	 */
 	void saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 	
-	void getCQLDefinitionsFromMeasureXML(String measureId,
-			AsyncCallback<CQLDefinitionsWrapper> callback);
-	
+	/**
+	 * Save and modify parameters.
+	 *
+	 * @param measureId the measure id
+	 * @param toBemodifiedObj the to bemodified obj
+	 * @param currentObj the current obj
+	 * @param parameterList the parameter list
+	 * @param callback the callback
+	 */
 	void saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
+	/**
+	 * Save and modify cql general info.
+	 *
+	 * @param currentMeasureId the current measure id
+	 * @param context the context
+	 * @param asyncCallback the async callback
+	 */
 	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
+	/**
+	 * Gets the CQL file data.
+	 *
+	 * @param measureId the measure id
+	 * @param asyncCallback the async callback
+	 * @return the CQL file data
+	 */
 	void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
+	/**
+	 * Save and modify functions.
+	 *
+	 * @param measureId the measure id
+	 * @param toBeModifiedObj the to be modified obj
+	 * @param currentObj the current obj
+	 * @param functionsList the functions list
+	 * @param callback the callback
+	 */
 	void saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
+	/**
+	 * Gets the CQL data type list.
+	 *
+	 * @param callback the callback
+	 * @return the CQL data type list
+	 */
 	void getCQLDataTypeList(AsyncCallback<CQLGrammarDataType> callback);
 	
 	

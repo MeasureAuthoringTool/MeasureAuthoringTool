@@ -541,36 +541,45 @@ MeasureService {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveAndModifyDefinitions(java.lang.String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList){
 		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList);
 	}
 	
-	@Override
-	public CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(
-			String measureId) {
-		return this.getMeasureLibraryService().getCQLDefinitionsFromMeasureXML(measureId);
-	}
-	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveAndModifyParameters(java.lang.String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList){
 		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveAndModifyFunctions(java.lang.String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList){
 		return this.getMeasureLibraryService().saveAndModifyFunctions(measureId, toBeModifiedObj, currentObj, functionsList);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#saveAndModifyCQLGeneralInfo(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
 			String currentMeasureId, String context) {
 		return this.getMeasureLibraryService().saveAndModifyCQLGeneralInfo(currentMeasureId, context);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getCQLDataTypeList()
+	 */
 	@Override
 	public CQLGrammarDataType getCQLDataTypeList() {
 		return this.getMeasureLibraryService().getCQLDataTypeList();

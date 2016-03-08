@@ -1214,6 +1214,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						public void onSuccess(SaveUpdateCQLResult result) {
 							//searchDisplay.setCurrentSelectedParamerterObjId(null);
 							if (result.isSuccess()) {
+								
 								searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
@@ -1462,7 +1463,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		clickedMenu = "general";
 		getCQLData();
 		searchDisplay.buildView();
-		addHandler();
+		addLeftNavEventHandler();
 		MatContext.get().getAllDataTypesForCQLWorkSpace();
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
@@ -1570,7 +1571,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/**
 	 * Adding handlers for Anchor Items.
 	 */
-	private void addHandler() {
+	private void addLeftNavEventHandler() {
 		
 		searchDisplay.getGeneralInformation().addClickHandler(new ClickHandler() {
 			

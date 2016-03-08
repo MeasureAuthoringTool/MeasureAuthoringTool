@@ -22,13 +22,13 @@ public interface WarningConfirmationAlertInterface {
 	 * Gets the Yes Button.
 	 * 
 	 */
-	public Button getYesButton();
+	public Button getWarningConfirmationYesButton();
 	
 	/**
 	 * Gets the No Button.
 	 * 
 	 */
-	public Button getNoButton();
+	public Button getWarningConfirmationNoButton();
 	
 
 }

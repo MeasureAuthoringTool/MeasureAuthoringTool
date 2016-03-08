@@ -13,6 +13,7 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	
 	private Button noButton = new Button();
 	
+	@Override
 	public void createAlert () {
 		clear();
 		createWarningAlert();
@@ -23,18 +24,22 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 		createWarningAlert();
 	}
 	
-	public Button getYesButton() {
+	@Override
+	public Button getWarningConfirmationYesButton() {
 		return yesButton;
 	}
 	
-	public Button getNoButton() {
+	@Override
+	public Button getWarningConfirmationNoButton() {
 		return noButton;
 	}
 	
 	public void createWarningAlert() {
+		clear();
 		super.setMessage(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
 		createButtons();
 		setFocus();
+		setVisible(true);
 	}
 		
 	private void createButtons() {
@@ -60,5 +65,6 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 		buttonToolBar.add(noButton);
 		add(buttonToolBar);
 	}
+
 
 }

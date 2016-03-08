@@ -4,22 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
-import org.gwtbootstrap3.client.ui.Alert;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -39,6 +24,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -73,9 +59,26 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 
 
 // TODO: Auto-generated Javadoc
@@ -89,7 +92,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The is editable. */
 	boolean isEditable = false;
 	/** The main panel. */
+	VerticalPanel mainVPPanel = new VerticalPanel();
+
+	/** The main horizontal panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
+	
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
@@ -114,6 +121,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The main flow panel. */
 	private FlowPanel mainFlowPanel = new FlowPanel();
 	
+	/** The message panel. */
+	private HorizontalPanel messagePanel = new HorizontalPanel();
+	
 	/** The view cql. */
 	private AnchorListItem viewCQL = new AnchorListItem();
 	
@@ -129,37 +139,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The function library. */
 	private AnchorListItem functionLibrary;
 	
-	/** The success message alert gen info. */
-	private SuccessMessageAlert successMessageAlertGenInfo = new SuccessMessageAlert();
+	/** The CQL success message. */
+	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	
-	/** The error message alert gen info. */
-	private ErrorMessageAlert errorMessageAlertGenInfo = new ErrorMessageAlert();
-	
-	/** The success message alert definition. */
-	private SuccessMessageAlert successMessageAlertDefinition = new SuccessMessageAlert();
-	
-	/** The error message alert definition. */
-	private ErrorMessageAlert errorMessageAlertDefinition = new ErrorMessageAlert();
-	
-	/** The warning message alert definition. */
-	private WarningConfirmationMessageAlert warningMessageAlertDefinition = new WarningConfirmationMessageAlert();
-	
-	/** The warning message alert function. */
-	private WarningConfirmationMessageAlert warningMessageAlertFunction = new WarningConfirmationMessageAlert();
-	
-	
-	/** The success message alert parameter. */
-	private SuccessMessageAlert successMessageAlertParameter = new SuccessMessageAlert();
-	
-	/** The success message alert parameter. */
-	private SuccessMessageAlert successMessageAlertFunction = new SuccessMessageAlert();
-	
-	/** The error message alert parameter. */
-	private ErrorMessageAlert errorMessageAlertParameter = new ErrorMessageAlert();
-	
-	/** The error message alert parameter. */
-	private ErrorMessageAlert errorMessageAlertFunction = new ErrorMessageAlert();
-	
+	/** The CQL error message. */
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
+		
+	/** The CQL warning message. */
+	private MessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+			
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
@@ -307,12 +295,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
-	
-	/** The parameter clear top button. */
-	private Button clearParameterTopButton = new Button();
-	
+		
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
+	
+	VerticalPanel vp = new VerticalPanel();
 	
 	@Override
 	/* (non-Javadoc)
@@ -321,10 +308,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}
-	
-	/** The warning message alert parameter. */
-	private WarningConfirmationMessageAlert warningMessageAlertParameter = new WarningConfirmationMessageAlert();
-	
+		
 	/** The context pat toggle switch. */
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	
@@ -396,10 +380,25 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineCollapse = createDefineCollapsablePanel();
 		functionCollapse = createFunctionCollapsablePanel();
 		buildLeftHandNavNar();
+		
+		/* add a panel to display messages */
+		//vp.getElement().setAttribute("style", "margin-left:100px");
+		//vp.addStyleName("centerAligned");
+		//messagePanel.getElement().setAttribute("style", "margin-left:100px");
+		//messagePanel.addStyleName("cqlRightMessage");
+		//vp.add(messagePanel);
+		
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
 		mainPanel.add(rightHandNavPanel);
-		mainPanel.add(mainFlowPanel);
+		mainPanel.add(mainFlowPanel);		
+
+		//mainVPPanel.getElement().setAttribute("style", "margin-left:20px");
+		//mainVPPanel.getElement().setAttribute("style", "margin-left:100px");
+		mainVPPanel.addStyleName("cqlRightMessage");
+		mainVPPanel.add(messagePanel);
+		mainVPPanel.add(mainPanel);
+
 		
 	}
 	
@@ -444,7 +443,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterFP.add(parameterVP);
 		parameterFP.setStyleName("cqlRightContainer");
 		
-		VerticalPanel vp = new VerticalPanel();
+		
 		vp.setStyleName("cqlRightContainer");
 		vp.setWidth("700px");
 		vp.setHeight("500px");
@@ -476,10 +475,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 						getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
 					}
 				}
-				successMessageAlertParameter.clearAlert();
-				errorMessageAlertParameter.clearAlert();
+				successMessageAlert.clearAlert();
+				errorMessageAlert.clearAlert();
 				setIsPageDirty(false);
-				warningMessageAlertParameter.clearAlert();
+				warningConfirmationMessageAlert.clearAlert();
 			}
 		});
 		
@@ -510,10 +509,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					}
 				}
 				
-				successMessageAlertDefinition.clearAlert();
-				errorMessageAlertDefinition.clearAlert();
+				successMessageAlert.clearAlert();
+				errorMessageAlert.clearAlert();
 				setIsPageDirty(false);
-				warningMessageAlertDefinition.clearAlert();
+				warningConfirmationMessageAlert.clearAlert();
 				
 			}
 		});
@@ -545,18 +544,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				if (currentSelectedFunctionObjId != null) {
 					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
 					if(selectedFunction.getArgumentList() != null){
-						createAddArgumentViewForFunctions(selectedFunction.getArgumentList());
-						//functionArgumentList = new ArrayList<CQLFunctionArgument>(selectedFunction.getArgumentList());
+						functionArgumentList.clear();
+						functionArgumentList.addAll(selectedFunction.getArgumentList());
 					} else {
 						functionArgumentList.clear();
-						createAddArgumentViewForFunctions(functionArgumentList);
 					}
-				} else {
-					createAddArgumentViewForFunctions(functionArgumentList);
 				}
-				successMessageAlertFunction.clearAlert();
-				errorMessageAlertFunction.clearAlert();
-				warningMessageAlertFunction.clearAlert();
+				createAddArgumentViewForFunctions(functionArgumentList);
+				successMessageAlert.clearAlert();
+				errorMessageAlert.clearAlert();
+				warningConfirmationMessageAlert.clearAlert();
 			}
 		});
 	}
@@ -671,7 +668,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		
 		generalInfoTopPanel.add(new SpacerWidget());
-		generalInfoTopPanel.add(successMessageAlertGenInfo);
+		//messagePanel.add(successMessageAlert);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
 		generalInfoTopPanel.add(libraryNameLabel);
@@ -777,6 +774,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		
 		navPills.setWidth("200px");
 		
+		messagePanel.add(successMessageAlert);
+		messagePanel.add(errorMessageAlert);
+		messagePanel.add(warningConfirmationMessageAlert);
+
+		//rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
 	}
 	
@@ -985,14 +987,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		parameterLabel.setText("Parameter");
-		
-		clearParameterTopButton.setType(ButtonType.INFO);
-		clearParameterTopButton.setSize(ButtonSize.EXTRA_SMALL);
-		clearParameterTopButton.setIcon(IconType.ERASER);
-		clearParameterTopButton.setTitle("Clear");
-		clearParameterTopButton.setText("Clear");
-		clearParameterTopButton.setId("ClearParameter_Button");
-		
+				
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("685px", "510px");
 		//parameterAceEditor.startEditor();
@@ -1010,9 +1005,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		
-		parameterVP.add(successMessageAlertParameter);
-		parameterVP.add(errorMessageAlertParameter);
-		parameterVP.add(warningMessageAlertParameter);
+//		messagePanel.add(successMessageAlert);
+//		messagePanel.add(errorMessageAlert);
+//		messagePanel.add(warningConfirmationMessageAlert);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -1163,9 +1158,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineConextPanel.add(contextDefinePATRadioBtn);
 		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
-		definitionVP.add(successMessageAlertDefinition);
-		definitionVP.add(errorMessageAlertDefinition);
-		definitionVP.add(warningMessageAlertDefinition);
+//		messagePanel.add(successMessageAlert);
+//		messagePanel.add(errorMessageAlert);
+//		messagePanel.add(warningConfirmationMessageAlert);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineLabel);
 		definitionVP.add(new SpacerWidget());
@@ -1338,9 +1333,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcConextPanel.setStyleName("contextToggleSwitch");
 		
 		
-		funcVP.add(successMessageAlertFunction);
-		funcVP.add(errorMessageAlertFunction);
-		funcVP.add(warningMessageAlertFunction);
+//		messagePanel.add(successMessageAlert);
+//		messagePanel.add(errorMessageAlert);
+//		messagePanel.add(warningConfirmationMessageAlert);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
@@ -1411,6 +1406,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			spager.setDisplay(argumentListTable);
 			spager.setPageStart(0);
 			cellTablePanel.add(argumentListTable);
+			//cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
 		} else {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
@@ -1422,6 +1418,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 		}
+		/*} else {
+			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
+			tableHeader.getElement().setId("tableHeader_Label");
+			tableHeader.setStyleName("measureGroupingTableHeader");
+			tableHeader.getElement().setAttribute("tabIndex", "0");
+			HTML desc = new HTML("<p> No Arguments Added.</p>");
+			cellTablePanel.add(tableHeader);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(desc);
+		}*/
 		
 	}
 	
@@ -1694,8 +1700,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 		
 		setIsPageDirty(false);
-		getWarningMessageAlertParameter().clearAlert();
-		getWarningMessageAlertDefinition().clearAlert();
+		getWarningConfirmationMessageAlert().clearAlert();
+		getWarningConfirmationMessageAlert().clearAlert();
 		
 	}
 	
@@ -1730,8 +1736,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the main panel
 	 */
 	@Override
-	public HorizontalPanel getMainPanel() {
-		return mainPanel;
+	public VerticalPanel getMainPanel() {
+		return mainVPPanel;
 	}
 	
 	/* (non-Javadoc)
@@ -2237,6 +2243,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	
+	public HorizontalPanel getMessagePanel() {
+		return messagePanel;
+	}
+
+	public void setMessagePanel(HorizontalPanel messagePanel) {
+		this.messagePanel = messagePanel;
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlert()
 	 */
@@ -2246,8 +2260,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the success message alert
 	 */
 	@Override
-	public SuccessMessageAlert getSuccessMessageAlert() {
-		return successMessageAlertGenInfo;
+	public MessageAlert getSuccessMessageAlert() {
+		return successMessageAlert;
 	}
 	
 	/* (non-Javadoc)
@@ -2260,7 +2274,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	@Override
 	public void setSuccessMessageAlert(SuccessMessageAlert successMessageAlert) {
-		successMessageAlertGenInfo = successMessageAlert;
+		this.successMessageAlert = successMessageAlert;
 	}
 	
 	/* (non-Javadoc)
@@ -2272,113 +2286,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the error message alert gen info
 	 */
 	@Override
-	public ErrorMessageAlert getErrorMessageAlertGenInfo() {
-		return errorMessageAlertGenInfo;
+	public MessageAlert getErrorMessageAlert() {
+		return errorMessageAlert;
 	}
 	
-	/**
-	 * Sets the error message alert gen info.
-	 *
-	 * @param errorMessageAlertGenInfo the new error message alert gen info
-	 */
-	public void setErrorMessageAlertGenInfo(ErrorMessageAlert errorMessageAlertGenInfo) {
-		this.errorMessageAlertGenInfo = errorMessageAlertGenInfo;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertDefinition()
-	 */
-	/**
-	 * Gets the success message alert definition.
-	 *
-	 * @return the success message alert definition
-	 */
-	@Override
-	public SuccessMessageAlert getSuccessMessageAlertDefinition() {
-		return successMessageAlertDefinition;
-	}
-	
-	/**
-	 * Sets the success message alert definition.
-	 *
-	 * @param successMessageAlertDefinition the new success message alert definition
-	 */
-	public void setSuccessMessageAlertDefinition(
-			SuccessMessageAlert successMessageAlertDefinition) {
-		this.successMessageAlertDefinition = successMessageAlertDefinition;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertDefinition()
-	 */
-	/**
-	 * Gets the error message alert definition.
-	 *
-	 * @return the error message alert definition
-	 */
-	@Override
-	public ErrorMessageAlert getErrorMessageAlertDefinition() {
-		return errorMessageAlertDefinition;
-	}
-	
-	/**
-	 * Sets the error message alert definition.
-	 *
-	 * @param errorMessageAlertDefinition the new error message alert definition
-	 */
-	public void setErrorMessageAlertDefinition(
-			ErrorMessageAlert errorMessageAlertDefinition) {
-		this.errorMessageAlertDefinition = errorMessageAlertDefinition;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertParameter()
-	 */
-	/**
-	 * Gets the success message alert parameter.
-	 *
-	 * @return the success message alert parameter
-	 */
-	@Override
-	public SuccessMessageAlert getSuccessMessageAlertParameter() {
-		return successMessageAlertParameter;
-	}
-	
-	/**
-	 * Sets the success message alert parameter.
-	 *
-	 * @param successMessageAlertParameter the new success message alert parameter
-	 */
-	public void setSuccessMessageAlertParameter(
-			SuccessMessageAlert successMessageAlertParameter) {
-		this.successMessageAlertParameter = successMessageAlertParameter;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertParameter()
-	 */
-	/**
-	 * Gets the error message alert parameter.
-	 *
-	 * @return the error message alert parameter
-	 */
-	@Override
-	public ErrorMessageAlert getErrorMessageAlertParameter() {
-		return errorMessageAlertParameter;
-	}
-	
-	/**
-	 * Sets the error message alert parameter.
-	 *
-	 * @param errorMessageAlertParameter the new error message alert parameter
-	 */
-	public void setErrorMessageAlertParameter(ErrorMessageAlert errorMessageAlertParameter) {
-		this.errorMessageAlertParameter = errorMessageAlertParameter;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getContextToggleSwitch()
-	 */
 	
 	/**
 	 * Gets the func name txt area.
@@ -2514,74 +2425,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlertFunction()
-	 */
-	@Override
-	public SuccessMessageAlert getSuccessMessageAlertFunction() {
-		return successMessageAlertFunction;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getErrorMessageAlertFunction()
-	 */
-	@Override
-	public ErrorMessageAlert getErrorMessageAlertFunction() {
-		return errorMessageAlertFunction;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertParameter()
-	 */
-	@Override
-	public WarningConfirmationMessageAlert getWarningMessageAlertParameter() {
-		return warningMessageAlertParameter;
-	}
-	
-	/**
-	 * Sets the warning message alert parameter.
-	 *
-	 * @param warningMessageAlertParameter the new warning message alert parameter
-	 */
-	public void setWarningMessageAlertParameter(WarningConfirmationMessageAlert warningMessageAlertParameter) {
-		this.warningMessageAlertParameter = warningMessageAlertParameter;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertDefinition()
-	 */
-	@Override
-	public WarningConfirmationMessageAlert getWarningMessageAlertDefinition() {
-		return warningMessageAlertDefinition;
-	}
-	
-	/**
-	 * Sets the warning message alert definition.
-	 *
-	 * @param warningMessageAlertDefinition the new warning message alert definition
-	 */
-	public void setWarningMessageAlertDefinition(WarningConfirmationMessageAlert warningMessageAlertDefinition) {
-		this.warningMessageAlertDefinition = warningMessageAlertDefinition;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningMessageAlertFunction()
-	 */
-	@Override
-	public WarningConfirmationMessageAlert getWarningMessageAlertFunction() {
-		return warningMessageAlertFunction;
-	}
-	
-	/**
-	 * Sets the warning message alert definition.
-	 *
-	 * @param warningMessageAlertFunction the new warning message alert function
-	 */
-	public void setWarningMessageAlertFunction(WarningConfirmationMessageAlert warningMessageAlertFunction) {
-		this.warningMessageAlertFunction = warningMessageAlertFunction;
-	}
-	
-	
-	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsPageDirty(java.lang.Boolean)
 	 */
 	@Override
@@ -2612,47 +2455,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterYesButton()
 	 */
 	@Override
-	public Button getClearParameterYesButton() {
-		return getWarningMessageAlertParameter().getYesButton();
+	public Button getWarningConfirmationYesButton() {
+		return getWarningConfirmationMessageAlert().getWarningConfirmationYesButton();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearParameterNoButton()
 	 */
 	@Override
-	public Button getClearParameterNoButton() {
-		return getWarningMessageAlertParameter().getNoButton();
+	public Button getWarningConfirmationNoButton() {
+		return getWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearDefinitionYesButton()
-	 */
-	@Override
-	public Button getClearDefinitionYesButton() {
-		return getWarningMessageAlertDefinition().getYesButton();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getClearDefinitionNoButton()
-	 */
-	@Override
-	public Button getClearDefinitionNoButton() {
-		return getWarningMessageAlertDefinition().getNoButton();
-	}
-	
-	
-	@Override
-	public Button getClearFunctionYesButton() {
-		return getWarningMessageAlertFunction().getYesButton();
-	}
-	
-	
-	@Override
-	public Button getClearFunctionNoButton() {
-		return getWarningMessageAlertFunction().getNoButton();
-	}
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParamCollapse()
@@ -2852,14 +2665,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		return mainFlowPanel;
 	}
 	
-	/**
-	 * Gets the success message alert gen info.
-	 *
-	 * @return the success message alert gen info
-	 */
-	public Alert getSuccessMessageAlertGenInfo() {
-		return successMessageAlertGenInfo;
-	}
 	
 	/**
 	 * Gets the search suggest text box.
@@ -2942,16 +2747,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Label getFunctionLibLabel() {
 		return functionLibLabel;
 	}
-	
-	/**
-	 * Gets the clear parameter top button.
-	 *
-	 * @return the clear parameter top button
-	 */
-	public Button getClearParameterTopButton() {
-		return clearParameterTopButton;
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextFuncPATRadioBtn()
 	 */
@@ -2994,5 +2790,22 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					.toSafeHtml();
 		}
 	}
-	
+
+	@Override
+	public void setErrorMessageAlert(ErrorMessageAlert errorMessageAlert) {
+		this.errorMessageAlert = errorMessageAlert;
+		
+	}
+
+
+	public MessageAlert getWarningConfirmationMessageAlert() {
+		return warningConfirmationMessageAlert;
+	}
+
+	@Override
+	public void setWarningConfirmationMessageAlert(MessageAlert warningMessageAlert) {
+		this.warningConfirmationMessageAlert = warningMessageAlert;		
+	}
+
+			
 }

@@ -42,7 +42,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		insertButton.getElement().setId("insertButton_Button");
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
-		insertButton.setIcon(IconType.TAGS);
+		insertButton.setIcon(IconType.PLUS_SQUARE);
 		insertButton.setIconSize(IconSize.LARGE);
 		insertButton.setColor("#00BFFF");
 		insertButton.setSize("30px", "30px");

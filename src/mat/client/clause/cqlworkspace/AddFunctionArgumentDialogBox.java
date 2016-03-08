@@ -418,22 +418,23 @@ public class AddFunctionArgumentDialogBox {
 				// Add or Modify Argument if valid.
 				if (isValid && (argumentName != null) && (argumentDataType != null)) {
 					if (isEdit) { // Existing Function Argument.
-						for (int i = 0; i < searchDisplay.getFunctionArgumentList().size(); i++) {
+						for (int i = searchDisplay.getFunctionArgumentList().size()-1; i >= 0; i--) {
 							CQLFunctionArgument currentFunctionArgument = searchDisplay.
 									getFunctionArgumentList().get(i);
 							if (currentFunctionArgument.getId().equalsIgnoreCase(
 									functionArg.getId())) {
+								CQLFunctionArgument argument = currentFunctionArgument.clone();
+								argument.setArgumentName(argumentName);
+								argument.setArgumentType(argumentDataType);
+								argument.setAttributeName(attributeName);
+								argument.setQdmDataType(qdmDataType);
+								argument.setOtherType(otherType);
 								searchDisplay.getFunctionArgNameMap().remove(
 										currentFunctionArgument.getArgumentName());
-								currentFunctionArgument.setArgumentName(argumentName);
-								currentFunctionArgument.setArgumentType(argumentDataType);
-								currentFunctionArgument.setAttributeName(attributeName);
-								currentFunctionArgument.setQdmDataType(qdmDataType);
-								currentFunctionArgument.setOtherType(otherType);
-								searchDisplay.createAddArgumentViewForFunctions(
-										searchDisplay.getFunctionArgumentList());
-								searchDisplay.getFunctionArgNameMap().put(argumentName,
-										currentFunctionArgument);
+								searchDisplay.getFunctionArgumentList().remove(i);
+								searchDisplay.getFunctionArgumentList().add(argument);
+								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+								searchDisplay.getFunctionArgNameMap().put(argumentName, argument);
 								break;
 							}
 						}

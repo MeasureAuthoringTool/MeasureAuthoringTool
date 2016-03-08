@@ -2,7 +2,7 @@ package mat.model.cql;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CQLFunctionArgument implements IsSerializable {
+public class CQLFunctionArgument implements IsSerializable, Cloneable {
 	private String id;
 	private String argumentName;
 	private String argumentType;
@@ -53,4 +53,16 @@ public class CQLFunctionArgument implements IsSerializable {
 	public void setQdmDataType(String qdmDataType) {
 		this.qdmDataType = qdmDataType;
 	}
+	
+	public CQLFunctionArgument clone() {
+		CQLFunctionArgument argumentClone = new CQLFunctionArgument();
+		argumentClone.setArgumentName(this.getArgumentName());
+		argumentClone.setId(this.getId());
+		argumentClone.setArgumentType(this.getArgumentType());
+		argumentClone.setAttributeName(this.getAttributeName());
+		argumentClone.setQdmDataType(this.getQdmDataType());
+		argumentClone.setOtherType(this.getOtherType());
+		return argumentClone;
+	}
+	
 }

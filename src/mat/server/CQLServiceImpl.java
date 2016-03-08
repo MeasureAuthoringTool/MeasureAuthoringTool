@@ -1037,7 +1037,6 @@ public class CQLServiceImpl implements CQLService {
 		Mapping mapping = new Mapping();
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		List<CQLDefinition> definitionList = new ArrayList<CQLDefinition>();
-		definition.setContext("Patient");
 		definitionList.add(definition);
 		wrapper.setCqlDefinitions(definitionList);
 		

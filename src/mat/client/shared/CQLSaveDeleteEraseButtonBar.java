@@ -12,8 +12,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 /**
  * The Class CQLSaveDeleteEraseButtonBar.
  */
-public class CQLSaveDeleteEraseButtonBar extends Composite{
+public class CQLSaveDeleteEraseButtonBar extends Composite {
 	
+	/** The Insert Param button. */
+	private Button insertParamButton = new Button();
 	
 	/** The save button. */
 	private Button saveButton = new Button();
@@ -35,6 +37,16 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 		
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
+		
+		insertParamButton.setType(ButtonType.LINK);
+		insertParamButton.getElement().setId("insertParamButton_Button");
+		insertParamButton.setMarginTop(10);
+		insertParamButton.setTitle("Insert Param");
+		insertParamButton.setIcon(IconType.TAGS);
+		insertParamButton.setIconSize(IconSize.LARGE);
+		insertParamButton.setColor("#00BFFF");
+		insertParamButton.setSize("30px", "30px");
+		
 		
 		saveButton.setType(ButtonType.LINK);
 		saveButton.getElement().setId("saveButton_Button");
@@ -63,7 +75,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 		eraseButton.setColor("#0964A2");
 		eraseButton.setSize("30px", "30px");
 		
-		
+		buttonLayout.add(insertParamButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(eraseButton);
@@ -78,12 +90,17 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	 * @param isEnabled the new enabled
 	 */
 	public void setEnabled(boolean isEnabled){
+		
+		insertParamButton.setEnabled(isEnabled);
 		saveButton.setEnabled(isEnabled);
 		deleteButton.setEnabled(isEnabled);
 		eraseButton.setEnabled(isEnabled);
 	}
 	
 	
+	public Button getInsertParamButton() {
+		return insertParamButton;
+	}
 	/**
 	 * Gets the save button.
 	 *
@@ -122,5 +139,5 @@ public class CQLSaveDeleteEraseButtonBar extends Composite{
 	public HorizontalPanel getButtonLayout() {
 		return buttonLayout;
 	}
-
+	
 }

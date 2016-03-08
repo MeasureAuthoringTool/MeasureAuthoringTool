@@ -545,13 +545,15 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 				if (currentSelectedFunctionObjId != null) {
 					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
 					if(selectedFunction.getArgumentList() != null){
-						functionArgumentList.clear();
-						functionArgumentList.addAll(selectedFunction.getArgumentList());
+						createAddArgumentViewForFunctions(selectedFunction.getArgumentList());
+						//functionArgumentList = new ArrayList<CQLFunctionArgument>(selectedFunction.getArgumentList());
 					} else {
 						functionArgumentList.clear();
+						createAddArgumentViewForFunctions(functionArgumentList);
 					}
+				} else {
+					createAddArgumentViewForFunctions(functionArgumentList);
 				}
-				createAddArgumentViewForFunctions(functionArgumentList);
 				successMessageAlertFunction.clearAlert();
 				errorMessageAlertFunction.clearAlert();
 				warningMessageAlertFunction.clearAlert();
@@ -1409,7 +1411,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			spager.setDisplay(argumentListTable);
 			spager.setPageStart(0);
 			cellTablePanel.add(argumentListTable);
-			//cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
 		} else {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
@@ -1421,16 +1422,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 		}
-		/*} else {
-			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label("Added Arguments List");
-			tableHeader.getElement().setId("tableHeader_Label");
-			tableHeader.setStyleName("measureGroupingTableHeader");
-			tableHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No Arguments Added.</p>");
-			cellTablePanel.add(tableHeader);
-			cellTablePanel.add(new SpacerWidget());
-			cellTablePanel.add(desc);
-		}*/
 		
 	}
 	

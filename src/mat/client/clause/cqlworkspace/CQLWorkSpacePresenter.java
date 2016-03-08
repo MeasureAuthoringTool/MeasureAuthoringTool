@@ -731,7 +731,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void addEventHandlers() {
 		
-		searchDisplay.getDefineButtonBar().getInsertParamButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getDefineButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				AddParameterToAceEditorDialogBox.showListOfParametersDialogBox(searchDisplay);

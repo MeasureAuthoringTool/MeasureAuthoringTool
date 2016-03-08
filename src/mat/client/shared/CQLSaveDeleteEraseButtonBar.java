@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class CQLSaveDeleteEraseButtonBar extends Composite {
 	
 	/** The Insert Param button. */
-	private Button insertParamButton = new Button();
+	private Button insertButton = new Button();
 	
 	/** The save button. */
 	private Button saveButton = new Button();
@@ -38,14 +38,14 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		
-		insertParamButton.setType(ButtonType.LINK);
-		insertParamButton.getElement().setId("insertParamButton_Button");
-		insertParamButton.setMarginTop(10);
-		insertParamButton.setTitle("Insert Param");
-		insertParamButton.setIcon(IconType.TAGS);
-		insertParamButton.setIconSize(IconSize.LARGE);
-		insertParamButton.setColor("#00BFFF");
-		insertParamButton.setSize("30px", "30px");
+		insertButton.setType(ButtonType.LINK);
+		insertButton.getElement().setId("insertButton_Button");
+		insertButton.setMarginTop(10);
+		insertButton.setTitle("Insert");
+		insertButton.setIcon(IconType.TAGS);
+		insertButton.setIconSize(IconSize.LARGE);
+		insertButton.setColor("#00BFFF");
+		insertButton.setSize("30px", "30px");
 		
 		
 		saveButton.setType(ButtonType.LINK);
@@ -75,7 +75,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		eraseButton.setColor("#0964A2");
 		eraseButton.setSize("30px", "30px");
 		
-		buttonLayout.add(insertParamButton);
+		buttonLayout.add(insertButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(eraseButton);
@@ -90,16 +90,15 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 	 * @param isEnabled the new enabled
 	 */
 	public void setEnabled(boolean isEnabled){
-		
-		insertParamButton.setEnabled(isEnabled);
+		insertButton.setEnabled(isEnabled);
 		saveButton.setEnabled(isEnabled);
 		deleteButton.setEnabled(isEnabled);
 		eraseButton.setEnabled(isEnabled);
 	}
 	
 	
-	public Button getInsertParamButton() {
-		return insertParamButton;
+	public Button getInsertButton() {
+		return insertButton;
 	}
 	/**
 	 * Gets the save button.

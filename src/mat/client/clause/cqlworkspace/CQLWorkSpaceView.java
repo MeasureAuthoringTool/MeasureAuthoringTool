@@ -299,8 +299,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 	
-	VerticalPanel vp = new VerticalPanel();
-	
 	@Override
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsPageDirty()
@@ -417,7 +415,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		mainFlowPanel.clear();
 		
 		VerticalPanel parameterVP = new VerticalPanel();
-		HorizontalPanel parameterFP = new HorizontalPanel();
+		SimplePanel parameterFP = new SimplePanel();
 		
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -435,22 +433,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(cqlAceEditor);
-		mainFlowPanel.add(parameterVP);
-		
 		parameterFP.add(parameterVP);
 		parameterFP.setStyleName("cqlRightContainer");
-		
-		
-		vp.setStyleName("cqlRightContainer");
-		vp.setWidth("700px");
-		vp.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
-		vp.add(parameterFP);
-		vp.setHeight("675px");
-		
-		mainFlowPanel.add(vp);
-		
+		mainFlowPanel.add(parameterFP);
 		
 	}
 	

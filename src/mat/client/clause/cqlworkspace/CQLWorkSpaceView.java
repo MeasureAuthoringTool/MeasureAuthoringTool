@@ -89,10 +89,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The is editable. */
 	boolean isEditable = false;
 	/** The main panel. */
-	VerticalPanel mainVPPanel = new VerticalPanel();
+	HorizontalPanel mainHPPanel = new HorizontalPanel();
 	
 	/** The main horizontal panel. */
-	private HorizontalPanel mainPanel = new HorizontalPanel();
+	private VerticalPanel mainPanel = new VerticalPanel();
 	
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
@@ -378,25 +378,19 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		functionCollapse = createFunctionCollapsablePanel();
 		buildLeftHandNavNar();
 		
-		/* add a panel to display messages */
-		//vp.getElement().setAttribute("style", "margin-left:100px");
-		//vp.addStyleName("centerAligned");
-		//messagePanel.getElement().setAttribute("style", "margin-left:100px");
-		//messagePanel.addStyleName("cqlRightMessage");
-		//vp.add(messagePanel);
 		
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
-		mainPanel.add(rightHandNavPanel);
+		//mainPanel.add(rightHandNavPanel);
+		mainPanel.add(messagePanel);
 		mainPanel.add(mainFlowPanel);
 		successMessageAlert.setVisible(false);
 		errorMessageAlert.setVisible(false);
 		warningConfirmationMessageAlert.setVisible(false);
-		//mainVPPanel.getElement().setAttribute("style", "margin-left:20px");
-		//mainVPPanel.getElement().setAttribute("style", "margin-left:100px");
-		mainVPPanel.addStyleName("cqlRightMessage");
-		mainVPPanel.add(messagePanel);
-		mainVPPanel.add(mainPanel);
+		
+		mainHPPanel.addStyleName("cqlRightMessage");
+		mainHPPanel.add(rightHandNavPanel);
+		mainHPPanel.add(mainPanel);
 		
 		
 	}
@@ -1735,8 +1729,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the main panel
 	 */
 	@Override
-	public VerticalPanel getMainPanel() {
-		return mainVPPanel;
+	public HorizontalPanel getMainPanel() {
+		return mainHPPanel;
 	}
 	
 	/* (non-Javadoc)

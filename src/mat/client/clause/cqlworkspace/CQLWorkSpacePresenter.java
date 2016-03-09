@@ -37,6 +37,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -71,7 +72,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * Top Main panel of CQL Workspace Tab.
 		 * @return HorizontalPanel
 		 */
-		VerticalPanel getMainPanel();
+		HorizontalPanel getMainPanel();
 		
 		/**
 		 * Generates View for CQLWorkSpace tab.

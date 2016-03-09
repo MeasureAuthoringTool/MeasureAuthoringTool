@@ -1525,7 +1525,6 @@ public class MatContext implements IsSerializable {
 						dataTypeList.add(MatContext.PLEASE_SELECT);
 						if (result != null) {
 							for (HasListBox listBoxContent : result) {
-								//MAT-4366
 								if(! listBoxContent.getItem().equalsIgnoreCase("attribute")){
 									dataTypeList.add(listBoxContent.getItem());
 								}

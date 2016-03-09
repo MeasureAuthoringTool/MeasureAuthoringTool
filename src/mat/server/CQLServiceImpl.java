@@ -1222,13 +1222,13 @@ public class CQLServiceImpl implements CQLService {
 				StringBuilder argumentType = new StringBuilder();
 				if (argument.getArgumentType().toString()
 						.equalsIgnoreCase("QDM Datatype")) {
+					argumentType = argumentType.append("\"").append(
+							argument.getQdmDataType());
 					if (argument.getAttributeName() != null) {
-						argumentType = argumentType.append("\" ").append(
-								argument.getQdmDataType());
 						argumentType = argumentType.append(".")
-								.append(argument.getAttributeName())
-								.append("\" ");
+								.append(argument.getAttributeName());
 					}
+					argumentType = argumentType.append("\"");
 				} else if (argument
 						.getArgumentType()
 						.toString()
@@ -1242,7 +1242,7 @@ public class CQLServiceImpl implements CQLService {
 				cqlStr = cqlStr.append(argument.getArgumentName() + " "
 						+ argumentType + ", ");
 			}
-			cqlStr.deleteCharAt(cqlStr.length() - 1);
+			cqlStr.deleteCharAt(cqlStr.length() - 2);
 		}
 			
 			cqlStr = cqlStr.append("): " + function.getFunctionLogic());

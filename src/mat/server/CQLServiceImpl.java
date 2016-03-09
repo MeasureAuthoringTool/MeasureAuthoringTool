@@ -1180,8 +1180,8 @@ public class CQLServiceImpl implements CQLService {
 		
 		if ((contextPopDefineList.size() > 0) || (contextPopFuncList.size() > 0)) {
 			
-			getDefineAndFunctionsByContext(contextPatDefineList,
-					contextPatFuncList, POPULATION, cqlStr);
+			getDefineAndFunctionsByContext(contextPopDefineList,
+					contextPopFuncList, POPULATION, cqlStr);
 		}
 		
 		return cqlStr;
@@ -1217,6 +1217,7 @@ public class CQLServiceImpl implements CQLService {
 		for (CQLFunctions function : functionsList) {
 			cqlStr = cqlStr.append("define function "
 					+ function.getFunctionName() + "(");
+			if(function.getArgumentList()!=null) {
 			for (CQLFunctionArgument argument : function.getArgumentList()) {
 				StringBuilder argumentType = new StringBuilder();
 				if (argument.getArgumentType().toString()
@@ -1242,6 +1243,8 @@ public class CQLServiceImpl implements CQLService {
 						+ argumentType + ", ");
 			}
 			cqlStr.deleteCharAt(cqlStr.length() - 1);
+		}
+			
 			cqlStr = cqlStr.append("): " + function.getFunctionLogic());
 			cqlStr = cqlStr.append("\n\n");
 		}

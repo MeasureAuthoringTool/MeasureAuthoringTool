@@ -4,7 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -24,7 +39,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -59,26 +73,9 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
 
 
 // TODO: Auto-generated Javadoc
@@ -93,7 +90,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	boolean isEditable = false;
 	/** The main panel. */
 	VerticalPanel mainVPPanel = new VerticalPanel();
-
+	
 	/** The main horizontal panel. */
 	private HorizontalPanel mainPanel = new HorizontalPanel();
 	
@@ -144,10 +141,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-		
+	
 	/** The CQL warning message. */
 	private MessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-			
+	
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
@@ -295,7 +292,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
-		
+	
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 	
@@ -308,7 +305,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}
-		
+	
 	/** The context pat toggle switch. */
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	
@@ -391,14 +388,16 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
 		mainPanel.add(rightHandNavPanel);
-		mainPanel.add(mainFlowPanel);		
-
+		mainPanel.add(mainFlowPanel);
+		successMessageAlert.setVisible(false);
+		errorMessageAlert.setVisible(false);
+		warningConfirmationMessageAlert.setVisible(false);
 		//mainVPPanel.getElement().setAttribute("style", "margin-left:20px");
 		//mainVPPanel.getElement().setAttribute("style", "margin-left:100px");
 		mainVPPanel.addStyleName("cqlRightMessage");
 		mainVPPanel.add(messagePanel);
 		mainVPPanel.add(mainPanel);
-
+		
 		
 	}
 	
@@ -777,7 +776,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		messagePanel.add(successMessageAlert);
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
-
+		
 		//rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
 	}
@@ -987,7 +986,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		parameterLabel.setText("Parameter");
-				
+		
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("685px", "510px");
 		//parameterAceEditor.startEditor();
@@ -1005,9 +1004,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		
-//		messagePanel.add(successMessageAlert);
-//		messagePanel.add(errorMessageAlert);
-//		messagePanel.add(warningConfirmationMessageAlert);
+		//		messagePanel.add(successMessageAlert);
+		//		messagePanel.add(errorMessageAlert);
+		//		messagePanel.add(warningConfirmationMessageAlert);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -1158,9 +1157,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		defineConextPanel.add(contextDefinePATRadioBtn);
 		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
-//		messagePanel.add(successMessageAlert);
-//		messagePanel.add(errorMessageAlert);
-//		messagePanel.add(warningConfirmationMessageAlert);
+		//		messagePanel.add(successMessageAlert);
+		//		messagePanel.add(errorMessageAlert);
+		//		messagePanel.add(warningConfirmationMessageAlert);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineLabel);
 		definitionVP.add(new SpacerWidget());
@@ -1333,9 +1332,9 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcConextPanel.setStyleName("contextToggleSwitch");
 		
 		
-//		messagePanel.add(successMessageAlert);
-//		messagePanel.add(errorMessageAlert);
-//		messagePanel.add(warningConfirmationMessageAlert);
+		//		messagePanel.add(successMessageAlert);
+		//		messagePanel.add(errorMessageAlert);
+		//		messagePanel.add(warningConfirmationMessageAlert);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
@@ -2246,11 +2245,11 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public HorizontalPanel getMessagePanel() {
 		return messagePanel;
 	}
-
+	
 	public void setMessagePanel(HorizontalPanel messagePanel) {
 		this.messagePanel = messagePanel;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getSuccessMessageAlert()
 	 */
@@ -2747,7 +2746,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public Label getFunctionLibLabel() {
 		return functionLibLabel;
 	}
-		
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getContextFuncPATRadioBtn()
 	 */
@@ -2790,22 +2789,23 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 					.toSafeHtml();
 		}
 	}
-
+	
 	@Override
 	public void setErrorMessageAlert(ErrorMessageAlert errorMessageAlert) {
 		this.errorMessageAlert = errorMessageAlert;
 		
 	}
-
-
+	
+	
+	@Override
 	public MessageAlert getWarningConfirmationMessageAlert() {
 		return warningConfirmationMessageAlert;
 	}
-
+	
 	@Override
 	public void setWarningConfirmationMessageAlert(MessageAlert warningMessageAlert) {
-		this.warningConfirmationMessageAlert = warningMessageAlert;		
+		warningConfirmationMessageAlert = warningMessageAlert;
 	}
-
-			
+	
+	
 }

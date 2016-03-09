@@ -801,11 +801,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if (clickedMenu.equals("func")) {
+				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 					clearFunction();
-				} else if (clickedMenu.equals("param")) {
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 					clearParameter();
-				} else if (clickedMenu.equals("define")) {
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 					clearDefinition();
 				}
 				searchDisplay.setIsPageDirty(false);
@@ -1384,7 +1384,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		clickedMenu = "general";
+		clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 		
@@ -1395,7 +1395,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-		clickedMenu = "general";
+		clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		getCQLData();
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
@@ -1514,7 +1514,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				unsetActiveMenuItem(clickedMenu);
 				searchDisplay.getGeneralInformation().setActive(true);
-				clickedMenu = "general";
+				clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 				searchDisplay.buildGeneralInformation();
 				
 			}
@@ -1526,7 +1526,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				unsetActiveMenuItem(clickedMenu);
 				searchDisplay.getParameterLibrary().setActive(true);
-				clickedMenu = "param";
+				clickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 				searchDisplay.buildParameterLibraryView();
 				setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 						.checkForEditPermission());
@@ -1539,7 +1539,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				unsetActiveMenuItem(clickedMenu);
 				searchDisplay.getDefinitionLibrary().setActive(true);
-				clickedMenu = "define";
+				clickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 				searchDisplay.buildDefinitionLibraryView();
 				setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
 						.checkForEditPermission());
@@ -1553,7 +1553,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				unsetActiveMenuItem(clickedMenu);
 				searchDisplay.getFunctionLibrary().setActive(true);
-				clickedMenu = "func";
+				clickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 				searchDisplay.buildFunctionLibraryView();
 				setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
 						.checkForEditPermission());
@@ -1566,7 +1566,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				unsetActiveMenuItem(clickedMenu);
 				searchDisplay.getViewCQL().setActive(true);
-				clickedMenu = "view";
+				clickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
 				searchDisplay.buildCQLFileView();
 				buildCQLView();
 			}
@@ -1582,27 +1582,27 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		resetMessageDisplay();
-		if(menuClickedBefore.equalsIgnoreCase("general")){
+		if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
 			searchDisplay.getGeneralInformation().setActive(false);
-		} else if(menuClickedBefore.equalsIgnoreCase("param")){
+		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
 			searchDisplay.getParameterLibrary().setActive(false);
 			searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 			}
-		} else if(menuClickedBefore.equalsIgnoreCase("define")){
+		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
 			searchDisplay.getDefinitionLibrary().setActive(false);
 			searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 			}
-		} else if(menuClickedBefore.equalsIgnoreCase("func")){
+		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
 			searchDisplay.getFunctionLibrary().setActive(false);
 			searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
 			if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
 				searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
 			}
-		} else if(menuClickedBefore.equalsIgnoreCase("view")){
+		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
 			searchDisplay.getViewCQL().setActive(false);
 		}
 	}

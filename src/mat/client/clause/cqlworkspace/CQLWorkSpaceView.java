@@ -14,6 +14,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -225,6 +226,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * List viewDefinitions.
 	 */
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
+	
+	private List<QualityDataSetDTO> appliedQdmList = new ArrayList<QualityDataSetDTO>();
 	
 	/**
 	 * List viewFunctions.
@@ -2800,6 +2803,14 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	@Override
 	public void setWarningConfirmationMessageAlert(MessageAlert warningMessageAlert) {
 		warningConfirmationMessageAlert = warningMessageAlert;
+	}
+	@Override
+	public List<QualityDataSetDTO> getAppliedQdmList() {
+		return appliedQdmList;
+	}
+	@Override
+	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
+		this.appliedQdmList = appliedQdmList;
 	}
 	
 	

@@ -4,6 +4,8 @@ import java.util.List;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -36,7 +38,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("AddParameter_Modal");
-		dialogModal.setSize(ModalSize.SMALL);
+		dialogModal.setSize(ModalSize.MEDIUM);
 		ModalBody modalBody = new ModalBody();
 		
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
@@ -104,6 +106,10 @@ public class InsertIntoAceEditorDialogBox {
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
+				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
+				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableItemToInsert.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String itemTypeSelected = availableItemToInsert.getItemText(selectedIndex);
@@ -112,21 +118,65 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getViewParameterList().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewParameterList().get(i).getParameterName());
+							listAllItemNames.addItem(searchDisplay.getViewParameterList().get(i)
+									.getParameterName());
 						}
-					} else if(itemTypeSelected.equalsIgnoreCase("functions")){
+					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewFunctions().get(i).getFunctionName());
+							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
+							StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+							functionNameBuilder.append("(");
+							StringBuilder argumentType = new StringBuilder();
+							if(functions.getArgumentList() != null){
+								for(int j=0;j<functions.getArgumentList().size();j++){
+									CQLFunctionArgument argument = functions.getArgumentList().get(j);
+									argumentType = argumentType.append(argument.getArgumentName() + " ");
+									if (argument.getArgumentType().toString()
+											.equalsIgnoreCase("QDM Datatype")) {
+										if (argument.getAttributeName() != null) {
+											argumentType = argumentType.append("\"").append(
+													argument.getQdmDataType());
+											argumentType = argumentType.append(".")
+													.append(argument.getAttributeName())
+													.append("\" ");
+											
+										}
+									} else if (argument
+											.getArgumentType()
+											.toString()
+											.equalsIgnoreCase(
+													CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+										argumentType = argumentType.append(argument.getOtherType());
+									} else {
+										argumentType = argumentType.append(argument
+												.getArgumentType());
+									}
+									if(j <  (functions.getArgumentList().size()-1)){
+										argumentType.append(",");
+									}
+								}
+							}
+							functionNameBuilder.append(argumentType + ")");
+							listAllItemNames.addItem(functionNameBuilder.toString());
 						}
-					} else if(itemTypeSelected.equalsIgnoreCase("definitions")){
+					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getViewDefinitions().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i).getDefinitionName());
+							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
+									.getDefinitionName());
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("Applied QDM")) {
+						listAllItemNames.clear();
+						listAllItemNames.setEnabled(true);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
+							listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
+									+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
 						}
 					} else {
 						listAllItemNames.clear();
@@ -142,6 +192,7 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
+				selectItemListFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
@@ -151,30 +202,45 @@ public class InsertIntoAceEditorDialogBox {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				int selectedIndex = listAllItemNames.getSelectedIndex();
-				if (selectedIndex != 0) {
-					String paramName = listAllItemNames.getItemText(selectedIndex);
-					if(paramName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				int selectedItemIndex = availableItemToInsert.getSelectedIndex();
+				if(selectedItemIndex != 0){
+					String itemTypeName = availableItemToInsert.getItemText(selectedItemIndex);
+					if(!itemTypeName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						int selectedIndex = listAllItemNames.getSelectedIndex();
+						if (selectedIndex != 0) {
+							String itemNameToBeInserted = listAllItemNames.getItemTitle(selectedIndex);
+							if(itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+								helpBlock.setText("Please Select Valid Parameter name to insert into Editor");
+								messageFormgroup.setValidationState(ValidationState.ERROR);
+							} else {
+								int columnIndex = searchDisplay.getDefineAceEditor().getCursorPosition().getColumn();
+								System.out.println(columnIndex);
+								if(itemTypeName.equalsIgnoreCase("Applied QDM")){
+									itemNameToBeInserted = " \"" + itemNameToBeInserted + "\"";
+								}
+								searchDisplay.getDefineAceEditor().insertAtCursor(" " + itemNameToBeInserted);
+								dialogModal.hide();
+							}
+						} else {
+							selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+							helpBlock.setText("Please Select Item name to insert into Editor");
+							messageFormgroup.setValidationState(ValidationState.ERROR);
+						}
+					} else {
 						availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Select Valid Parameter name to insert into Editor");
+						helpBlock.setText("Please Select Item Type to insert into Editor");
 						messageFormgroup.setValidationState(ValidationState.ERROR);
-					} else {
-						int columnIndex = searchDisplay.getDefineAceEditor().getCursorPosition().getColumn();
-						System.out.println(columnIndex);
-						searchDisplay.getDefineAceEditor().insertAtCursor(" " + paramName);
-						dialogModal.hide();
 					}
-				} else {
-					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
-					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Select Parameter name to insert into Editor");
-					messageFormgroup.setValidationState(ValidationState.ERROR);
+					
 				}
-				
 			}
 			
 		});
+		
 		dialogModal.show();
 	}
 	

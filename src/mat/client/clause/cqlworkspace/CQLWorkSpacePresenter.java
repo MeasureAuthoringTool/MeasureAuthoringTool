@@ -13,6 +13,8 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -641,6 +643,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		Button getWarningConfirmationYesButton();
 		
 		Button getWarningConfirmationNoButton();
+		
+		List<QualityDataSetDTO> getAppliedQdmList();
+		
+		void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList);
 		
 	}
 	
@@ -1400,6 +1406,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		MatContext.get().getAllDataTypesForCQLWorkSpace();
+		getAppliedQDMList(true);
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}
@@ -1652,6 +1659,26 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		return msgHtml;
 	}
 	
-	
+	private void getAppliedQDMList(boolean checkForSupplementData) {
+		String measureId = MatContext.get().getCurrentMeasureId();
+		if ((measureId != null) && !measureId.equals("")) {
+			MatContext.get().getMeasureService().getAppliedQDMFromMeasureXml(measureId,
+					checkForSupplementData,
+					new AsyncCallback<QualityDataModelWrapper>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Unable to Reterive QDM List");
+					
+				}
+				
+				@Override
+				public void onSuccess(QualityDataModelWrapper result) {
+					searchDisplay.setAppliedQdmList(result.getQualityDataDTO());
+				}
+				
+			});
+		}
+	}
 	
 }

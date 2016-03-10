@@ -13,12 +13,7 @@ var SqlHighlightRules = function() {
     );
     
     var matTimingKeywords = (
-    		"Concurrent With|During|Ends After End Of|Ends After Or Concurrent With End Of|Ends After Or Concurrent With Start Of|Ends After Start Of|"+
-		    "Ends Before End Of|Ends Before Or Concurrent With End Of|Ends Before Or Concurrent With Start Of|"+
-		    "Ends Before Start Of|Ends Concurrent With|Ends Concurrent With Start Of|Ends During|Fulfills|Overlaps|Starts After End Of|"+
-		    "Starts After Or Concurrent With End Of|Starts After Or Concurrent With Start Of|Starts After Start Of|Starts Before End Of|"+
-		    "Starts Before Or Concurrent With End Of|Starts Before Or Concurrent With Start Of|Starts Before Start Of|Starts Concurrent With|"+
-		    "Starts Concurrent With End Of|Starts During"
+    		"after|before|during|ends|includes|included in|meets|overlaps|same|starts|within"
     );
     
     var matFunctionKeywords = (

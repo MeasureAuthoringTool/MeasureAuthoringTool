@@ -299,13 +299,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 	
-	@Override
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsPageDirty()
-	 */
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}
+	private Boolean isDoubleClick = false;
+	
+	VerticalPanel vp = new VerticalPanel();
+	
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
@@ -351,8 +348,33 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The observer. */
 	private Observer observer;
 	
+	@Override
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIsPageDirty()
+	 */
+	public Boolean getIsPageDirty() {
+		return isPageDirty;
+	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsPageDirty(java.lang.Boolean)
+	 */
+	@Override
+	public void setIsPageDirty(Boolean isPageDirty) {
+		this.isPageDirty = isPageDirty;
+	}
+
 	
+	@Override
+	public void setIsDoubleClick(Boolean isDoubleClick) {
+		this.isDoubleClick = isDoubleClick;	
+	}
+
+	@Override
+	public Boolean isDoubleClick() {
+		return isDoubleClick;
+	}
+
 	
 	/**
 	 * Instantiates a new CQL work space view.
@@ -450,23 +472,26 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				int selectedIndex  = getParameterNameListBox().getSelectedIndex();
-				if (selectedIndex != -1) {
-					final String selectedParamID = getParameterNameListBox().getValue(selectedIndex);
-					currentSelectedParamerterObjId = selectedParamID;
-					if(getParameterMap().get(selectedParamID) != null){
-						getParameterNameTxtArea().setText(getParameterMap().get(selectedParamID).getParameterName());
-						getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
+				setIsDoubleClick(true);
+				if (getIsPageDirty()) {
+					getWarningConfirmationMessageAlert().createAlert();
+					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					int selectedIndex  = getParameterNameListBox().getSelectedIndex();
+					if (selectedIndex != -1) {
+						final String selectedParamID = getParameterNameListBox().getValue(selectedIndex);
+						currentSelectedParamerterObjId = selectedParamID;
+						if(getParameterMap().get(selectedParamID) != null){
+							getParameterNameTxtArea().setText(getParameterMap().get(selectedParamID).getParameterName());
+							getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
+						}
 					}
 				}
 				successMessageAlert.clearAlert();
 				errorMessageAlert.clearAlert();
 				setIsPageDirty(false);
-				warningConfirmationMessageAlert.clearAlert();
 			}
-		});
-		
-		
+		});	
 	}
 	
 	/**
@@ -476,28 +501,33 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				int selectedIndex  = getDefineNameListBox().getSelectedIndex();
-				if(selectedIndex != -1){
-					final String selectedDefinitionID = getDefineNameListBox().getValue(selectedIndex);
-					currentSelectedDefinitionObjId = selectedDefinitionID;
-					if(getDefinitionMap().get(selectedDefinitionID) != null){
-						getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
-						getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
-						if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
-							getContextDefinePATRadioBtn().setValue(true);
-							getContextDefinePOPRadioBtn().setValue(false);
-						} else {
-							getContextDefinePOPRadioBtn().setValue(true);
-							getContextDefinePATRadioBtn().setValue(false);
+				//System.out.println("double-clicked");
+				setIsDoubleClick(true);
+				if (getIsPageDirty()) {
+					getWarningConfirmationMessageAlert().createAlert();
+					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					int selectedIndex  = getDefineNameListBox().getSelectedIndex();
+					if(selectedIndex != -1){
+						final String selectedDefinitionID = getDefineNameListBox().getValue(selectedIndex);
+						currentSelectedDefinitionObjId = selectedDefinitionID;
+						if(getDefinitionMap().get(selectedDefinitionID) != null){
+							getDefineNameTxtArea().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
+							getDefineAceEditor().setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
+							if(getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")){
+								getContextDefinePATRadioBtn().setValue(true);
+								getContextDefinePOPRadioBtn().setValue(false);
+							} else {
+								getContextDefinePOPRadioBtn().setValue(true);
+								getContextDefinePATRadioBtn().setValue(false);
+							}
 						}
-					}
 				}
 				
 				successMessageAlert.clearAlert();
 				errorMessageAlert.clearAlert();
 				setIsPageDirty(false);
-				warningConfirmationMessageAlert.clearAlert();
-				
+				}
 			}
 		});
 	}
@@ -509,35 +539,40 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		funcNameListBox.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
+				setIsDoubleClick(true);
+				if (getIsPageDirty()) {
+					getWarningConfirmationMessageAlert().createAlert();
+					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
 				int selectedIndex  = funcNameListBox.getSelectedIndex();
-				if(selectedIndex != -1){
-					final String selectedFunctionId = funcNameListBox.getValue(selectedIndex);
-					currentSelectedFunctionObjId = selectedFunctionId;
-					if(functionMap.get(selectedFunctionId) != null){
-						getFuncNameTxtArea().setText(functionMap.get(selectedFunctionId).getFunctionName());
-						getFunctionBodyAceEditor().setText(functionMap.get(selectedFunctionId).getFunctionLogic());
-						if(functionMap.get(selectedFunctionId).getContext().equalsIgnoreCase("patient")){
-							contextFuncPATRadioBtn.setValue(true);
-							contextFuncPOPRadioBtn.setValue(false);
-						} else {
-							contextFuncPOPRadioBtn.setValue(true);
-							contextFuncPATRadioBtn.setValue(false);
+					if(selectedIndex != -1){
+						final String selectedFunctionId = funcNameListBox.getValue(selectedIndex);
+						currentSelectedFunctionObjId = selectedFunctionId;
+						if(functionMap.get(selectedFunctionId) != null){
+							getFuncNameTxtArea().setText(functionMap.get(selectedFunctionId).getFunctionName());
+							getFunctionBodyAceEditor().setText(functionMap.get(selectedFunctionId).getFunctionLogic());
+							if(functionMap.get(selectedFunctionId).getContext().equalsIgnoreCase("patient")){
+								contextFuncPATRadioBtn.setValue(true);
+								contextFuncPOPRadioBtn.setValue(false);
+							} else {
+								contextFuncPOPRadioBtn.setValue(true);
+								contextFuncPATRadioBtn.setValue(false);
+							}
 						}
 					}
-				}
-				if (currentSelectedFunctionObjId != null) {
-					CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
-					if(selectedFunction.getArgumentList() != null){
-						functionArgumentList.clear();
-						functionArgumentList.addAll(selectedFunction.getArgumentList());
-					} else {
-						functionArgumentList.clear();
+					if (currentSelectedFunctionObjId != null) {
+						CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
+						if(selectedFunction.getArgumentList() != null){
+							functionArgumentList.clear();
+							functionArgumentList.addAll(selectedFunction.getArgumentList());
+						} else {
+							functionArgumentList.clear();
+						}
 					}
 				}
 				createAddArgumentViewForFunctions(functionArgumentList);
 				successMessageAlert.clearAlert();
 				errorMessageAlert.clearAlert();
-				warningConfirmationMessageAlert.clearAlert();
 			}
 		});
 	}
@@ -2408,14 +2443,6 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		this.viewFunctions = viewFunctions;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsPageDirty(java.lang.Boolean)
-	 */
-	@Override
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
-	}
-	
 	/**
 	 * Gets the define collapse.
 	 *
@@ -2799,6 +2826,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
 	}
+
 	
 	
 }

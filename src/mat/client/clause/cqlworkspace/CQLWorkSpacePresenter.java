@@ -4,6 +4,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Badge;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Icon;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
+import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -21,32 +51,6 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Icon;
-import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
-import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -68,7 +72,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/**
 	 * The Interface ViewDisplay.
 	 */
-	interface ViewDisplay {
+ public static interface ViewDisplay {
 		
 		/**
 		 * Top Main panel of CQL Workspace Tab.
@@ -441,6 +445,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		void setIsPageDirty(Boolean isPageDirty);
 		
+		Boolean getIsPageDirty();
+		
+		void setIsDoubleClick(Boolean isDoubleClick);
+		
+		Boolean isDoubleClick();
+		
 		/**
 		 * Update suggest func oracle.
 		 */
@@ -619,8 +629,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * @param argumentList the argument list
 		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
-		
-		Boolean getIsPageDirty();
 		
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
@@ -807,16 +815,46 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-					clearFunction();
-				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
-					clearParameter();
-				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
-					clearDefinition();
-				}
-				searchDisplay.setIsPageDirty(false);
-				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-			}
+				
+				// has double click been selected in a listbox and which one?
+				if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+					searchDisplay.setIsPageDirty(false);
+					searchDisplay.setIsDoubleClick(false);
+					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+						searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
+					}
+					
+				} else if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+					searchDisplay.setIsPageDirty(false);
+					searchDisplay.setIsDoubleClick(false);
+					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+						searchDisplay.getParameterNameListBox().fireEvent(new DoubleClickEvent(){});
+					}
+					
+				} else if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+					searchDisplay.setIsPageDirty(false);
+					searchDisplay.setIsDoubleClick(false);
+					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+						searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
+					}
+					
+				} else {
+					
+					// if clear button was selected
+					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+						clearFunction();
+					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+						clearParameter();
+					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+						clearDefinition();
+					}
+					searchDisplay.setIsPageDirty(false);
+					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+			} // end else
+			} // end onClick
 		});
 		
 		searchDisplay.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
@@ -824,6 +862,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+					searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+					searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
+				}
 			}
 		});
 		
@@ -1360,7 +1405,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/**
 	 * Reset message display.
 	 */
-	private void resetMessageDisplay() {
+	public void resetMessageDisplay() {
 		
 		searchDisplay.getSuccessMessageAlert().clearAlert();
 		
@@ -1658,7 +1703,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
 		return msgHtml;
 	}
-	
+
 	private void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
@@ -1680,5 +1725,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			});
 		}
 	}
+
+	
+	public ViewDisplay getSearchDisplay() {
+		
+		return searchDisplay;
+	}
+
 	
 }

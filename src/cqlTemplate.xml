@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cqlTemplate>
-    <!-- CQL Data type list  -->
-    <datatypes>
-        <datatype>Boolean</datatype>
-        <datatype>DateTime</datatype>
-        <datatype>Decimal</datatype>
-        <datatype>Integer</datatype>
-        <datatype>QDM Datatype</datatype>
-        <datatype>String</datatype>
-        <datatype>Time</datatype>
-         <datatype>Others</datatype>
-    </datatypes>
-    <!-- CQL Reserved Keyword List  -->
+	<!-- CQL Data type list -->
+	<datatypes>
+		<datatype>Boolean</datatype>
+		<datatype>DateTime</datatype>
+		<datatype>Decimal</datatype>
+		<datatype>Integer</datatype>
+		<datatype>QDM Datatype</datatype>
+		<datatype>String</datatype>
+		<datatype>Time</datatype>
+		<datatype>Others</datatype>
+	</datatypes>
+<!-- CQL Timings list -->
+	<timings>
+		<timing>after</timing>
+		<timing>before</timing>
+		<timing>during</timing>
+		<timing>ends</timing>
+		<timing>includes</timing>
+		<timing>included in</timing>
+		<timing>meets</timing>
+		<timing>overlaps</timing>
+		<timing>same</timing>
+		<timing>starts</timing>
+		<timing>within</timing>
+	</timings>
+	<!-- CQL Reserved Keyword List -->
 	<keywords>
 		<keyword>Abs</keyword>
 		<keyword>after</keyword>

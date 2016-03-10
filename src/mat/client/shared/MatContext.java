@@ -44,7 +44,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACExpansionIdentifier;
-import mat.model.cql.CQLGrammarDataType;
+import mat.model.cql.CQLKeywords;
 import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -83,7 +83,7 @@ public class MatContext implements IsSerializable {
 	/** The Constant PLEASE_SELECT. */
 	public static final String PLEASE_SELECT = "--Select--";
 	
-	public CQLGrammarDataType cqlGrammarDataType = new CQLGrammarDataType();
+	public CQLKeywords cqlKeywords = new CQLKeywords();
 	
 	/** The instance. */
 	private static MatContext instance = new MatContext();
@@ -1489,11 +1489,11 @@ public class MatContext implements IsSerializable {
 					}
 				});
 	}
-	// Get all CQL Data types from cqlTemplate.xml
+	// Get all CQL Data types/Timings/Functions from cqlTemplate.xml
 	// And All QDM Data types except Attributes.
-	public void getAllDataTypesForCQLWorkSpace(){
+	public void getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace(){
 		
-		measureService.getCQLDataTypeList(new AsyncCallback<CQLGrammarDataType>() {
+		measureService.getCQLKeywordsList(new AsyncCallback<CQLKeywords>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1502,8 +1502,8 @@ public class MatContext implements IsSerializable {
 			}
 			
 			@Override
-			public void onSuccess(CQLGrammarDataType result) {
-				cqlGrammarDataType = result;
+			public void onSuccess(CQLKeywords result) {
+				cqlKeywords = result;
 				
 			}
 		});
@@ -1785,8 +1785,8 @@ public class MatContext implements IsSerializable {
 	}
 	
 	
-	public CQLGrammarDataType getCqlGrammarDataType() {
-		return cqlGrammarDataType;
+	public CQLKeywords getCqlGrammarDataType() {
+		return cqlKeywords;
 	}
 	
 	

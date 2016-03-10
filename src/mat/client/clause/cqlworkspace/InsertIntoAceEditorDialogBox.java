@@ -30,29 +30,32 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 public class InsertIntoAceEditorDialogBox {
 	public static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
+	public static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
+	public static List<String> cqlFunctionsList = MatContext.get().getCqlGrammarDataType().getCqlFunctionsList();
+	
+	/**
+	 * @param searchDisplay
+	 */
 	public static  void showListOfParametersDialogBox(final ViewDisplay searchDisplay){
 		final Modal dialogModal = new Modal();
-		dialogModal.setTitle("Insert into Editor");
+		dialogModal.setTitle("Insert Item into Editor");
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		dialogModal.setDataKeyboard(true);
-		dialogModal.setId("AddParameter_Modal");
+		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setSize(ModalSize.MEDIUM);
 		ModalBody modalBody = new ModalBody();
 		
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
 		availableItemToInsert.clear();
-		availableItemToInsert.setWidth("290px");
+		availableItemToInsert.setWidth("350px");
 		addAvailableItems(availableItemToInsert);
 		
 		final ListBoxMVP listAllItemNames = new ListBoxMVP();
-		listAllItemNames.setWidth("290px");
+		listAllItemNames.setWidth("350px");
 		listAllItemNames.clear();
 		listAllItemNames.setEnabled(false);
-		/*for (int i = 0; i < searchDisplay.getViewParameterList().size(); i++) {
-			listAllParamNames.addItem(searchDisplay.getViewParameterList().get(i).getParameterName());
-		}*/
 		
 		// main form
 		Form bodyForm = new Form();
@@ -134,7 +137,7 @@ public class InsertIntoAceEditorDialogBox {
 								for(int j=0;j<functions.getArgumentList().size();j++){
 									CQLFunctionArgument argument = functions.getArgumentList().get(j);
 									argumentType = argumentType.append(argument.getArgumentName() + " ");
-									if (argument.getArgumentType().toString()
+									/*if (argument.getArgumentType().toString()
 											.equalsIgnoreCase("QDM Datatype")) {
 										if (argument.getAttributeName() != null) {
 											argumentType = argumentType.append("\"").append(
@@ -153,7 +156,7 @@ public class InsertIntoAceEditorDialogBox {
 									} else {
 										argumentType = argumentType.append(argument
 												.getArgumentType());
-									}
+									}*/
 									if(j <  (functions.getArgumentList().size()-1)){
 										argumentType.append(",");
 									}
@@ -169,6 +172,21 @@ public class InsertIntoAceEditorDialogBox {
 						for (int i = 0; i < searchDisplay.getViewDefinitions().size(); i++) {
 							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
 									.getDefinitionName());
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("timing")) {
+						listAllItemNames.clear();
+						listAllItemNames.setEnabled(true);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						
+						for (int i = 0; i < timingList.size(); i++) {
+							listAllItemNames.addItem(timingList.get(i));
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("CQL Functions")) {
+						listAllItemNames.clear();
+						listAllItemNames.setEnabled(true);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < cqlFunctionsList.size(); i++) {
+							listAllItemNames.addItem(cqlFunctionsList.get(i));
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Applied QDM")) {
 						listAllItemNames.clear();

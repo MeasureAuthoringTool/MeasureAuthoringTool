@@ -28,7 +28,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLGrammarDataType;
+import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.util.XmlProcessor;
@@ -682,6 +682,6 @@ public interface MeasureLibraryService {
 	 *
 	 * @return the CQL data type list
 	 */
-	CQLGrammarDataType getCQLDataTypeList();
+	CQLKeywords getCQLKeywordsLists();
 	
 }

@@ -1405,7 +1405,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
-		MatContext.get().getAllDataTypesForCQLWorkSpace();
+		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		getAppliedQDMList(true);
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();

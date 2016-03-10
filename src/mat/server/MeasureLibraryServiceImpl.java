@@ -82,7 +82,7 @@ import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
-import mat.model.cql.CQLGrammarDataType;
+import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -4823,8 +4823,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#getCQLDataTypeList()
 	 */
 	@Override
-	public CQLGrammarDataType getCQLDataTypeList(){
-		return getCqlService().getCQLDataTypeList();
+	public CQLKeywords getCQLKeywordsLists(){
+		return getCqlService().getCQLKeyWords();
 	}
 	
 }

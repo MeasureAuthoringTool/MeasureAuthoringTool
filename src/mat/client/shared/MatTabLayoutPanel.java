@@ -4,19 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mat.client.Enableable;
-import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
-import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
-import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.metadata.MetaDataPresenter;
-import mat.client.measurepackage.MeasurePackageDetail;
-import mat.client.measurepackage.MeasurePackagePresenter;
-import mat.client.shared.ui.MATTabPanel;
-import mat.shared.ConstantMessages;
-import mat.shared.DynamicTabBarFormatter;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,6 +13,21 @@ import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Enableable;
+import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
+import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.metadata.MetaDataPresenter;
+import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackagePresenter;
+import mat.client.shared.ui.MATTabPanel;
+import mat.shared.ConstantMessages;
+import mat.shared.DynamicTabBarFormatter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -343,6 +346,11 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				ClauseWorkSpacePresenter clauseWorkspacePresenter = (ClauseWorkSpacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter, selectedIndex);
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
+				int CQLWorkspaceTab = 3;
+				CQLWorkSpacePresenter cqlWorkspacePresenter = (CQLWorkSpacePresenter)
+						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(CQLWorkspaceTab);
+				validateCQLWorkspaceTab(cqlWorkspacePresenter, selectedIndex);
 			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
 				int populationWorkspaceTab = 4;
 				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
@@ -360,6 +368,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter) previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
+		} else if ((selectedIndex == 3) && (previousPresenter instanceof CQLWorkSpacePresenter)) {
+			CQLWorkSpacePresenter cqlPresenter = (CQLWorkSpacePresenter) previousPresenter;
+			validateCQLWorkspaceTab(cqlPresenter, selectedIndex);
 		} else if ((selectedIndex == 4) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
 			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
@@ -429,6 +440,30 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	
 	/**
+	 * Validate cql workspace tab.
+	 * 
+	 * @param cqlWorkSpacePresenter
+	 *            the cql presenter
+	 * @param selectedIndex
+	 *            the selected index
+	 */
+	private void validateCQLWorkspaceTab(CQLWorkSpacePresenter cqlWorkSpacePresenter, int selectedIndex) {
+		
+		cqlWorkSpacePresenter.resetMessageDisplay();
+		if (cqlWorkSpacePresenter.getSearchDisplay().getIsPageDirty()) {
+			isUnsavedData = true;
+			cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert().createAlert();
+			cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+			String auditMessage = cqlWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+			handleClickEventsOnUnsavedChangesMsg(selectedIndex, 
+					cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert(), auditMessage);
+		} else {
+			isUnsavedData = false;
+		}
+	}
+
+	
+	/**
 	 * Validate clause workspace tab.
 	 * 
 	 * @param xmlTreePresenter
@@ -454,10 +489,50 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			isUnsavedData = false;
 		}
 	}
+
 	
-	
-	
-	
+	/**
+	 * On Click Events.
+	 * 
+	 * @param selIndex
+	 *            the sel index
+	 * @param btns
+	 *            the btns
+	 * @param saveErrorMessage
+	 *            the save error message
+	 * @param auditMessage
+	 *            the audit message
+	 */
+	private void handleClickEventsOnUnsavedChangesMsg(int selIndex, final MessageAlert warningAlert, final String auditMessage) {
+		isUnsavedData = true;
+		ClickHandler clickHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isUnsavedData = false;
+				org.gwtbootstrap3.client.ui.Button button = (org.gwtbootstrap3.client.ui.Button) event.getSource();
+				if ("Yes".equals(button.getText())) { // navigate to the tab select
+					//Audit If Yes is clicked and changes are discarded on cqlWorkspace.
+					if (auditMessage != null) {
+						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+								null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
+					}
+					warningAlert.clearAlert();
+					updateOnBeforeSelection();
+					selectTab(selectedIndex);
+				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
+					warningAlert.clearAlert();
+				}
+			}
+		};
+		
+		warningAlert.getWarningConfirmationYesButton().addClickHandler(clickHandler);
+		warningAlert.getWarningConfirmationNoButton().addClickHandler(clickHandler);
+		
+		if (isUnsavedData) {
+			MatContext.get().setErrorTabIndex(selIndex);
+			MatContext.get().setErrorTab(true);
+		}
+	}
 	
 	/**
 	 * On Click Events.
@@ -503,7 +578,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			MatContext.get().setErrorTab(true);
 		}
 	}
-	
 	
 	/**
 	 * Show error message.

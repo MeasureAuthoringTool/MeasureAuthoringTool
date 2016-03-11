@@ -46,6 +46,9 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -57,13 +60,17 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -149,7 +156,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
-	private TextArea parameterNameTxtArea = new TextArea();
+	private CustomTextAreaWithNoWhiteSpaces parameterNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
 	
 	/** The parameter ace editor. */
 	private AceEditor parameterAceEditor = new AceEditor();
@@ -192,6 +199,8 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	
 	/** The function argument list. */
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
+	
+	/** The function arg name map. */
 	private HashMap<String,CQLFunctionArgument> functionArgNameMap = new HashMap<String, CQLFunctionArgument>();
 	
 	/**
@@ -206,12 +215,12 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private TextArea defineNameTxtArea = new TextArea();
+	private CustomTextAreaWithNoWhiteSpaces defineNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
 	
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private TextArea funcNameTxtArea = new TextArea();
+	private CustomTextAreaWithNoWhiteSpaces funcNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
 	
 	/**
 	 * SuggestBox searchSuggestDefineTextBox.
@@ -227,6 +236,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 */
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
 	
+	/** The applied qdm list. */
 	private List<QualityDataSetDTO> appliedQdmList = new ArrayList<QualityDataSetDTO>();
 	
 	/**
@@ -299,8 +309,10 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 	
+	/** The is double click. */
 	private Boolean isDoubleClick = false;
 	
+	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
 	
 	
@@ -365,11 +377,17 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsDoubleClick(java.lang.Boolean)
+	 */
 	@Override
 	public void setIsDoubleClick(Boolean isDoubleClick) {
 		this.isDoubleClick = isDoubleClick;	
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#isDoubleClick()
+	 */
 	@Override
 	public Boolean isDoubleClick() {
 		return isDoubleClick;
@@ -1905,7 +1923,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the parameter name txt area
 	 */
 	@Override
-	public TextArea getParameterNameTxtArea() {
+	public CustomTextAreaWithNoWhiteSpaces getParameterNameTxtArea() {
 		return parameterNameTxtArea;
 	}
 	
@@ -2083,7 +2101,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the define name txt area
 	 */
 	@Override
-	public TextArea getDefineNameTxtArea() {
+	public CustomTextAreaWithNoWhiteSpaces getDefineNameTxtArea() {
 		return defineNameTxtArea;
 	}
 	
@@ -2262,10 +2280,20 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	
+	/**
+	 * Gets the message panel.
+	 *
+	 * @return the message panel
+	 */
 	public HorizontalPanel getMessagePanel() {
 		return messagePanel;
 	}
 	
+	/**
+	 * Sets the message panel.
+	 *
+	 * @param messagePanel the new message panel
+	 */
 	public void setMessagePanel(HorizontalPanel messagePanel) {
 		this.messagePanel = messagePanel;
 	}
@@ -2316,7 +2344,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 * @return the func name txt area
 	 */
 	@Override
-	public TextArea getFuncNameTxtArea() {
+	public CustomTextAreaWithNoWhiteSpaces getFuncNameTxtArea() {
 		return funcNameTxtArea;
 	}
 	
@@ -2325,7 +2353,7 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	 *
 	 * @param funcNameTxtArea the new func name txt area
 	 */
-	public void setFuncNameTxtArea(TextArea funcNameTxtArea) {
+	public void setFuncNameTxtArea(CustomTextAreaWithNoWhiteSpaces funcNameTxtArea) {
 		this.funcNameTxtArea = funcNameTxtArea;
 	}
 	
@@ -2774,15 +2802,31 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	public InlineRadio getContextFuncPOPRadioBtn() {
 		return contextFuncPOPRadioBtn;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFunctionArgNameMap()
+	 */
 	@Override
 	public HashMap<String, CQLFunctionArgument> getFunctionArgNameMap() {
 		return functionArgNameMap;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setFunctionArgNameMap(java.util.HashMap)
+	 */
 	@Override
 	public void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap) {
 		this.functionArgNameMap = functionArgNameMap;
 	}
 	
+	/**
+	 * Gets the data type column tool tip.
+	 *
+	 * @param columnText the column text
+	 * @param title the title
+	 * @param hasImage the has image
+	 * @return the data type column tool tip
+	 */
 	private SafeHtml getDataTypeColumnToolTip(String columnText,
 			StringBuilder title, boolean hasImage) {
 		if (hasImage) {
@@ -2802,6 +2846,150 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 		}
 	}
 	
+	
+	/**
+	 * The Class CustomTextAreaWithNoWhiteSpaces.
+	 */
+	public class CustomTextAreaWithNoWhiteSpaces extends TextArea  {
+
+		
+		/** The max length. */
+		private int maxLength;
+		
+		
+		/**
+		 * Constructor.
+		 *
+		 * @param maxLen the max len
+		 */
+		public CustomTextAreaWithNoWhiteSpaces(int maxLen) {
+			
+			super(Document.get().createTextAreaElement());
+			maxLength = maxLen;
+			setStyleName("gwt-TextArea");
+			sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
+			
+			CustomTextAreaWithNoWhiteSpaces.this
+			.addValueChangeHandler(new ValueChangeHandler<String>() {
+				
+				@Override
+				public void onValueChange(ValueChangeEvent<String> event) {
+					if (!CustomTextAreaWithNoWhiteSpaces.this.isReadOnly()) {
+						String nameTextArea = event.getValue().replaceAll(" ", "").trim();
+						CustomTextAreaWithNoWhiteSpaces.this.setText(nameTextArea);
+
+						if (nameTextArea.length() >= maxLength) {
+							String subStringText = nameTextArea.substring(0,
+									maxLength);
+							CustomTextAreaWithNoWhiteSpaces.this.setValue(subStringText);
+							setCursorPos(maxLength);
+						} else {
+							CustomTextAreaWithNoWhiteSpaces.this.setValue(nameTextArea);
+							setCursorPos(nameTextArea.length());
+						}
+						resetMessageDisplay();
+						setIsPageDirty(true);
+					}
+				}
+			});
+		}
+		/**
+		 * Description: Takes the browser event.
+		 *
+		 * @param event
+		 *            declared.
+		 */
+		@Override
+		public void onBrowserEvent(Event event) {
+			
+			String nameTextArea;
+			try {
+				nameTextArea = CustomTextAreaWithNoWhiteSpaces.this.getText();
+			} catch (Exception e) {
+				nameTextArea = "";
+			}
+			
+			// Checking for paste event
+	 		if (event.getTypeInt() == Event.ONPASTE) {
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						ValueChangeEvent.fire(CustomTextAreaWithNoWhiteSpaces.this,
+								CustomTextAreaWithNoWhiteSpaces.this.getText());
+					}
+				});
+				return;
+			}
+			// Checking for key Down event.
+			if ((event.getTypeInt() == Event.ONKEYDOWN)
+					&& (nameTextArea.length() > maxLength)
+					&& (event.getKeyCode() != KeyCodes.KEY_LEFT)
+					&& (event.getKeyCode() != KeyCodes.KEY_TAB)
+					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
+					&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
+					&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
+					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)
+					&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
+				event.preventDefault();
+			}else if((event.getTypeInt() == Event.ONKEYDOWN) && 
+					(event.getKeyCode() == KeyCodes.KEY_SPACE)){
+				event.preventDefault();
+			} else if ((event.getTypeInt() == Event.ONKEYDOWN)
+					&& (nameTextArea.length() <= maxLength)) {
+				if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
+						&& (event.getKeyCode() != KeyCodes.KEY_TAB)
+						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
+						&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
+					if (!event.getCtrlKey()) {
+						Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+							@Override
+							public void execute() {
+								ValueChangeEvent.fire(CustomTextAreaWithNoWhiteSpaces.this,
+										CustomTextAreaWithNoWhiteSpaces.this.getText());
+							}
+						});
+					}
+				}
+			}
+		}
+		/**
+		 * Getter for maximum length.
+		 * @return - int.
+		 */
+		public int getMaxLength() {
+			return maxLength;
+		}
+		
+		/**
+		 * Setter for maximum length.
+		 *
+		 * @param maxLength the new max length
+		 */
+		public void setMaxLength(int maxLength) {
+			this.maxLength = maxLength;
+		}
+	}
+	
+	
+   /* (non-Javadoc)
+    * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#resetMessageDisplay()
+    */
+   @Override
+   public void resetMessageDisplay() {
+		
+		getSuccessMessageAlert().clearAlert();
+		
+		getErrorMessageAlert().clearAlert();
+		
+		getWarningConfirmationMessageAlert().clearAlert();
+		
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setErrorMessageAlert(mat.client.shared.ErrorMessageAlert)
+	 */
 	@Override
 	public void setErrorMessageAlert(ErrorMessageAlert errorMessageAlert) {
 		this.errorMessageAlert = errorMessageAlert;
@@ -2809,19 +2997,33 @@ public class CQLWorkSpaceView  implements CQLWorkSpacePresenter.ViewDisplay{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getWarningConfirmationMessageAlert()
+	 */
 	@Override
 	public MessageAlert getWarningConfirmationMessageAlert() {
 		return warningConfirmationMessageAlert;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setWarningConfirmationMessageAlert(mat.client.shared.MessageAlert)
+	 */
 	@Override
 	public void setWarningConfirmationMessageAlert(MessageAlert warningMessageAlert) {
 		warningConfirmationMessageAlert = warningMessageAlert;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getAppliedQdmList()
+	 */
 	@Override
 	public List<QualityDataSetDTO> getAppliedQdmList() {
 		return appliedQdmList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setAppliedQdmList(java.util.List)
+	 */
 	@Override
 	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;

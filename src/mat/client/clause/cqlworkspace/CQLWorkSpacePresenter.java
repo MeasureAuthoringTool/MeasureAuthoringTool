@@ -655,6 +655,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		List<QualityDataSetDTO> getAppliedQdmList();
 		
 		void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList);
+
+		void resetMessageDisplay();
 		
 	}
 	
@@ -709,11 +711,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
+		/*searchDisplay.getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 				
 			}
@@ -724,7 +726,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
 		});
@@ -734,17 +736,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
-		});
+		});*/
 		
 		
 		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 				
 			}
@@ -755,7 +757,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
 		});
@@ -764,7 +766,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
 		});
@@ -773,7 +775,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
 					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -787,7 +789,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
 					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -801,7 +803,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (searchDisplay.getIsPageDirty()) {
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
 					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -945,7 +947,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
 				searchDisplay.setIsPageDirty(true);
-				resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
@@ -1043,7 +1045,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Adds the and modify function.
 	 */
 	protected void addAndModifyFunction() {
-		resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
 		String funcContext = "";
@@ -1163,7 +1165,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * Adds the and modify parameters.
 	 */
 	private void addAndModifyParameters() {
-		resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty()) {
@@ -1272,7 +1274,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * 
 	 */
 	private void addAndModifyDefintions() {
-		resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
 		String defineContext = "";
@@ -1397,21 +1399,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			.createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION());
 			searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 		}
-		
-	}
-	
-	
-	
-	/**
-	 * Reset message display.
-	 */
-	public void resetMessageDisplay() {
-		
-		searchDisplay.getSuccessMessageAlert().clearAlert();
-		
-		searchDisplay.getErrorMessageAlert().clearAlert();
-		
-		searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
 		
 	}
 	
@@ -1633,7 +1620,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * @param menuClickedBefore the menu clicked before
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
-		resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
 			searchDisplay.getGeneralInformation().setActive(false);
 		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){

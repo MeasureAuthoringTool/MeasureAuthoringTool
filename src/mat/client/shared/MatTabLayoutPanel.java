@@ -449,7 +449,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 */
 	private void validateCQLWorkspaceTab(CQLWorkSpacePresenter cqlWorkSpacePresenter, int selectedIndex) {
 		
-		cqlWorkSpacePresenter.resetMessageDisplay();
+		cqlWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 		if (cqlWorkSpacePresenter.getSearchDisplay().getIsPageDirty()) {
 			isUnsavedData = true;
 			cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert().createAlert();

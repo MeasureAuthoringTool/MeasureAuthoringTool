@@ -195,9 +195,9 @@ public class MessageDelegate {
 	
 	
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully saved parameter into CQL.";
-	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name and logic.";
-	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name and logic.";
-	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name and function body.";
+	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name.";
+	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name.";
+	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name.";
 	public final String ERROR_DUPLICATE_IDENTIFIER_NAME  = "Name already exists.";
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";

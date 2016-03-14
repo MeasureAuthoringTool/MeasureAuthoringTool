@@ -63,6 +63,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	/** The clicked menu. */
 	String clickedMenu = "general";
+	String nextClickedMenu = "general";
 	
 	QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
@@ -78,7 +79,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 * Top Main panel of CQL Workspace Tab.
 		 * @return HorizontalPanel
 		 */
-		HorizontalPanel getMainPanel();
+		VerticalPanel getMainPanel();
 		
 		/**
 		 * Generates View for CQLWorkSpace tab.
@@ -281,6 +282,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		VerticalPanel getMainVPanel();
 		
+		
+		HorizontalPanel getMessagePanel();
 		/**
 		 * Gets the param badge.
 		 *
@@ -450,6 +453,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setIsDoubleClick(Boolean isDoubleClick);
 		
 		Boolean isDoubleClick();
+		
+		void setIsNavBarClick(Boolean isDoubleClick);
+		
+		Boolean isNavBarClick();
+
 		
 		/**
 		 * Update suggest func oracle.
@@ -655,8 +663,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		List<QualityDataSetDTO> getAppliedQdmList();
 		
 		void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList);
-
+		
 		void resetMessageDisplay();
+
+		HorizontalPanel getMainHPanel();
 		
 	}
 	
@@ -817,34 +827,47 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				System.out.println("In Yes Button Click Handler");
+				searchDisplay.setIsPageDirty(false);
+				System.out.println("Clear Warning Alert");
+				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
 				
-				// has double click been selected in a listbox and which one?
-				if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-					searchDisplay.setIsPageDirty(false);
+				// has double click been selected in a listbox, clicked Menu is what used to be selected
+				if (searchDisplay.isDoubleClick()) {
+					
 					searchDisplay.setIsDoubleClick(false);
-					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+					System.out.println("In Yes Button - set double click to false");
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-						searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
-					}
-					
-				} else if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
-					searchDisplay.setIsPageDirty(false);
-					searchDisplay.setIsDoubleClick(false);
-					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+						//searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
+					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 						searchDisplay.getParameterNameListBox().fireEvent(new DoubleClickEvent(){});
-					}
-					
-				} else if (searchDisplay.isDoubleClick() && clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
-					searchDisplay.setIsPageDirty(false);
-					searchDisplay.setIsDoubleClick(false);
-					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 						searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
 					}
 					
-				} else {
+				// Nav Bar has been selected, clickMenu is what used to be selected	
+				} else if (searchDisplay.isNavBarClick()) {
 					
+					searchDisplay.setIsNavBarClick(false);
+					System.out.println("In Yes Button- set NavBarClick to false");
+					unsetActiveMenuItem(clickedMenu);					
+					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+						functionEvent();
+						//searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
+					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+						parameterEvent();
+						//searchDisplay.getParameterLibrary().fireEvent(new ClickEvent(){});
+					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+						definitionEvent();
+						//searchDisplay.getDefinitionLibrary().fireEvent(new ClickEvent(){});
+					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
+						generalInfoEvent();
+					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_VIEW_MENU)) {
+						viewCqlEvent();
+					}
+				// clear button was selected	
+				} else {
+				
 					// if clear button was selected
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						clearFunction();
@@ -853,17 +876,17 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 						clearDefinition();
 					}
-					searchDisplay.setIsPageDirty(false);
-					searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-			} // end else
-			} // end onClick
+				} 
+			} 
 		});
 		
 		searchDisplay.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				System.out.println("In No Button Click Handler");
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+				System.out.println("Clear Warning Alert");
 				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
 				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
@@ -1413,9 +1436,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.setIsPageDirty(false);
-		searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-		searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-		searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
+		searchDisplay.resetMessageDisplay();
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
@@ -1423,9 +1444,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getFunctionArgumentList().clear();
 		}
 		clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+		searchDisplay.getMessagePanel().clear();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-		
 	}
 	
 	/* (non-Javadoc)
@@ -1437,12 +1458,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		getCQLData();
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
+		searchDisplay.resetMessageDisplay();
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		getAppliedQDMList(true);
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		panel.add(searchDisplay.getMainPanel());
+		panel.add(searchDisplay.getMainHPanel());
 	}
 	
 	
@@ -1551,38 +1573,55 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getGeneralInformation().setActive(true);
-				clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-				searchDisplay.buildGeneralInformation();
-				
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				System.out.println("In general info Nav Bar Click - set double click to false and Nav Bar Click to trus");
+
+
+				if (searchDisplay.getIsPageDirty()) {
+					nextClickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
+					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					generalInfoEvent();
+				}
 			}
 		});
+		
 		
 		searchDisplay.getParameterLibrary().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getParameterLibrary().setActive(true);
-				clickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-				searchDisplay.buildParameterLibraryView();
-				setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
-						.checkForEditPermission());
-				
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				System.out.println("In Param Navbar Click - set double click to false and Nav Bar Click to true");
+
+				if (searchDisplay.getIsPageDirty()) {
+					nextClickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
+					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					parameterEvent();
+				}
 			}
 		});
+		
 		searchDisplay.getDefinitionLibrary().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getDefinitionLibrary().setActive(true);
-				clickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-				searchDisplay.buildDefinitionLibraryView();
-				setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
-						.checkForEditPermission());
-				
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				System.out.println("In define Navbar Click - set double click to false and Nav Bar Click to trus");
+
+				if (searchDisplay.getIsPageDirty()) {
+					nextClickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
+					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					definitionEvent();
+				}
 			}
 		});
 		
@@ -1590,12 +1629,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getFunctionLibrary().setActive(true);
-				clickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-				searchDisplay.buildFunctionLibraryView();
-				setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
-						.checkForEditPermission());
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				System.out.println("In func Navbar Click - set double click to false and Nav Bar Click to trus");
+
+
+				if (searchDisplay.getIsPageDirty()) {
+					nextClickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
+					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					functionEvent();
+				}
 			}
 		});
 		
@@ -1603,15 +1648,65 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				unsetActiveMenuItem(clickedMenu);
-				searchDisplay.getViewCQL().setActive(true);
-				clickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-				searchDisplay.buildCQLFileView();
-				buildCQLView();
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				System.out.println("In CQL View Nav Bar Click - set double click to false and Nav Bar Click to trus");
+
+				if (searchDisplay.getIsPageDirty()) {
+					nextClickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
+					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
+					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+				} else {
+					viewCqlEvent();
+				}
 			}
-			
 		});
 		
+	}
+	
+	
+	private void generalInfoEvent() {
+		unsetActiveMenuItem(clickedMenu);
+		searchDisplay.getGeneralInformation().setActive(true);
+		clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+		searchDisplay.buildGeneralInformation();
+	}
+	
+	private void parameterEvent() {
+		unsetActiveMenuItem(clickedMenu);
+		searchDisplay.getParameterLibrary().setActive(true);
+		clickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+		searchDisplay.buildParameterLibraryView();
+		setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+
+	}
+	
+	private void definitionEvent() {
+		unsetActiveMenuItem(clickedMenu);
+		searchDisplay.getDefinitionLibrary().setActive(true);
+		clickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+		searchDisplay.buildDefinitionLibraryView();
+		setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+	}
+	
+	private void functionEvent() {
+		unsetActiveMenuItem(clickedMenu);
+		searchDisplay.getFunctionLibrary().setActive(true);
+		clickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+		searchDisplay.buildFunctionLibraryView();
+		setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+	}
+	
+	private void viewCqlEvent() {
+		unsetActiveMenuItem(clickedMenu);
+		searchDisplay.getViewCQL().setActive(true);
+		clickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
+		searchDisplay.buildCQLFileView();
+		buildCQLView();
+
 	}
 	
 	/**

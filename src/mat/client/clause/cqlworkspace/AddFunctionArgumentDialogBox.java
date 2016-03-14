@@ -145,7 +145,7 @@ public class AddFunctionArgumentDialogBox {
 		argumentNameFormLabel.setText("Argument Name");
 		argumentNameFormLabel.setTitle("Argument Name");
 		argumentNameFormLabel.setFor("inputArgumentName");
-		final TextArea argumentNameTextArea = new TextArea();
+		final TextArea argumentNameTextArea = searchDisplay.getArgumentTextArea();
 		argumentNameTextArea.setPlaceholder("Enter Argument Name");
 		argumentNameTextArea.setWidth("290px");
 		argumentNameTextArea.setHeight("38px");

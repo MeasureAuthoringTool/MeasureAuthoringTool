@@ -50,6 +50,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -58,6 +59,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -3168,6 +3170,13 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				nameTextArea = "";
 			}
 
+			//Checking on Click Events
+			if (event.getTypeInt() == Event.ONCLICK) {
+				NativeEvent nativeEvent = Document.get().createClickEvent(1, 0, 0,
+						0, 0, false, false, false, false);
+				DomEvent.fireNativeEvent(nativeEvent, this);
+			}
+			
 			// Checking for paste event
 			if (event.getTypeInt() == Event.ONPASTE) {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -3297,6 +3306,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
+	}
+	
+	@Override
+	public CustomTextAreaWithNoWhiteSpaces getArgumentTextArea(){
+		return new CustomTextAreaWithNoWhiteSpaces(500);
 	}
 
 }

@@ -37,6 +37,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView.CustomTextAreaWithNoWhiteSpaces;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -667,6 +668,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void resetMessageDisplay();
 
 		HorizontalPanel getMainHPanel();
+
+		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
 		
 	}
 	

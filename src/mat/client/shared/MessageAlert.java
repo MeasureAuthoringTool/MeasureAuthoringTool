@@ -44,7 +44,7 @@ public class MessageAlert extends Alert implements MessageAlertInterface {
 			getElement().setAttribute("aria-atomic", "true");
 			getElement().setAttribute("aria-relevant", "all");
 			getElement().setAttribute("role", "alert");
-			getElement().setAttribute("style", "margin-left:100px");
+			//getElement().setAttribute("style", "margin-left:100px");
 		} catch (JavaScriptException e) {
 			// This try/catch block is needed for IE7 since it is throwing
 			// exception "cannot move

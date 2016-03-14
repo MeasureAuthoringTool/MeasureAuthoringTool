@@ -18,8 +18,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
@@ -841,7 +839,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					searchDisplay.setIsDoubleClick(false);
 					System.out.println("In Yes Button - set double click to false");
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-						//searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
+						searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 						searchDisplay.getParameterNameListBox().fireEvent(new DoubleClickEvent(){});
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
@@ -1020,16 +1018,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 		});
 	}
+	
 	/**
 	 * Clear parameter.
 	 */
 	private void clearParameter() {
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getParameterAceEditor().getText()!= null) ||
-				(searchDisplay.getParameterNameTxtArea() != null)	) {
-			searchDisplay.getParameterNameTxtArea().clear();
+		if ((searchDisplay.getParameterAceEditor().getText() != null)) {
 			searchDisplay.getParameterAceEditor().setText("");
+		}
+		if ((searchDisplay.getParameterNameTxtArea() != null)) {
+			searchDisplay.getParameterNameTxtArea().clear();
 		}
 	}
 	
@@ -1039,32 +1039,33 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	private void clearDefinition() {
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getDefineAceEditor().getText()!= null) ||
-				(searchDisplay.getDefineNameTxtArea() != null)	) {
+		if ((searchDisplay.getDefineAceEditor().getText() != null)) {
 			searchDisplay.getDefineAceEditor().setText("");
-			searchDisplay.getDefineNameTxtArea().clear();
-			searchDisplay.getContextDefinePATRadioBtn().setValue(true);
-			searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 		}
+		if ((searchDisplay.getDefineNameTxtArea() != null)) {
+			searchDisplay.getDefineNameTxtArea().clear();
+		}
+		searchDisplay.getContextDefinePATRadioBtn().setValue(true);
+		searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 	}
 	
-	
 	/**
-	 * Clear definition.
+	 * Clear function.
 	 */
 	private void clearFunction() {
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
 		searchDisplay.getFunctionArgumentList().clear();
 		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
 		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null) ||
-				(searchDisplay.getFuncNameTxtArea() != null)	) {
+		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null)) { 
 			searchDisplay.getFunctionBodyAceEditor().setText("");
-			searchDisplay.getFuncNameTxtArea().clear();
-			searchDisplay.getContextFuncPATRadioBtn().setValue(true);
-			searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
 		}
-	}
+		if ((searchDisplay.getFuncNameTxtArea() != null)) {
+			searchDisplay.getFuncNameTxtArea().clear();
+		}
+		searchDisplay.getContextFuncPATRadioBtn().setValue(true);
+		searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
+		}
 	
 	
 	/**
@@ -1143,6 +1144,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result.isSuccess()) {
+								searchDisplay.setIsPageDirty(false);
 								searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();

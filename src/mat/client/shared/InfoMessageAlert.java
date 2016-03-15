@@ -23,6 +23,7 @@ public class InfoMessageAlert extends MessageAlert implements MessageAlertInterf
 
 	public void createInfoAlert(String infoMessage) {
 		setType(AlertType.INFO);
+		getElement().setAttribute("id", "InfoMessageAlert");
 		super.setMessage(getMsgPanel(IconType.INFO, infoMessage));
 		setFocus();
 	}

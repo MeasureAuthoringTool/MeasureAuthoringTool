@@ -23,6 +23,7 @@ public class WarningMessageAlert extends MessageAlert implements MessageAlertInt
 
 	public void createWarningAlert(String warningMessage) {
 		setType(AlertType.SUCCESS);
+		getElement().setAttribute("id", "WarningMessageAlert");
 		setMessage(getMsgPanel(IconType.CHECK_CIRCLE, warningMessage));
 		setFocus();
 	}

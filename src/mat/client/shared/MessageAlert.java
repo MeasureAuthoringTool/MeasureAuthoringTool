@@ -12,7 +12,7 @@ public class MessageAlert extends Alert implements MessageAlertInterface {
 
 	public MessageAlert() {
 		setWidth("600px");
-		getElement().setAttribute("id", "WarningMessage");
+		//getElement().setAttribute("id", "WarningMessage");
 		getElement().setAttribute("style", "margin-left:20px");
 		getElement().setAttribute("style", "margin-top:20px");
 		//getElement().setAttribute("text-align", "center");

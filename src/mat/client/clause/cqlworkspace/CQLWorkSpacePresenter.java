@@ -843,11 +843,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
 					}
 					
-				// Nav Bar has been selected, clickMenu is what used to be selected	
+				// new Nav Bar has been selected, clickMenu is what used to be selected	
 				} else if (searchDisplay.isNavBarClick()) {
 					
 					searchDisplay.setIsNavBarClick(false);
-					unsetActiveMenuItem(clickedMenu);					
+					//unsetActiveMenuItem(clickedMenu);					
 					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						functionEvent();
 						//searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
@@ -878,16 +878,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 		
 		searchDisplay.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
-				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
-					searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
-				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
-					searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
+				// no was selected, don't move anywhere
+				if (searchDisplay.isNavBarClick()) {
+					unsetActiveMenuItem(nextClickedMenu);
 				}
 			}
 		});

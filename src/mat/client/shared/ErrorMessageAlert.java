@@ -23,6 +23,7 @@ public class ErrorMessageAlert extends MessageAlert implements MessageAlertInter
 	public void createErrorAlert(String errorMessage) {
 		setType(AlertType.DANGER);
 		setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage));
+		getElement().setAttribute("id", "ErrorMessageAlert");
 		setFocus();
 	}
 		

@@ -36,6 +36,7 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	
 	public void createWarningAlert() {
 		clear();
+		getElement().setAttribute("id", "WarningConfirmationMessageAlert");
 		super.setMessage(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
 		createButtons();
 		setFocus();

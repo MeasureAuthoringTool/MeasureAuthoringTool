@@ -828,16 +828,13 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println("In Yes Button Click Handler");
 				searchDisplay.setIsPageDirty(false);
-				System.out.println("Clear Warning Alert");
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
 				
 				// has double click been selected in a listbox, clicked Menu is what used to be selected
 				if (searchDisplay.isDoubleClick()) {
 					
 					searchDisplay.setIsDoubleClick(false);
-					System.out.println("In Yes Button - set double click to false");
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
@@ -850,7 +847,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				} else if (searchDisplay.isNavBarClick()) {
 					
 					searchDisplay.setIsNavBarClick(false);
-					System.out.println("In Yes Button- set NavBarClick to false");
 					unsetActiveMenuItem(clickedMenu);					
 					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						functionEvent();
@@ -885,9 +881,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println("In No Button Click Handler");
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
-				System.out.println("Clear Warning Alert");
 				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
 				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
@@ -1445,6 +1439,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
+		searchDisplay.getViewCQL().getElement().setClassName("panel-collapse collapse");
 		if(searchDisplay.getFunctionArgumentList().size() >0){
 			searchDisplay.getFunctionArgumentList().clear();
 		}
@@ -1580,9 +1575,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
-				System.out.println("In general info Nav Bar Click - set double click to false and Nav Bar Click to trus");
-
-
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
@@ -1600,8 +1592,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
-				System.out.println("In Param Navbar Click - set double click to false and Nav Bar Click to true");
-
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
@@ -1618,8 +1608,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
-				System.out.println("In define Navbar Click - set double click to false and Nav Bar Click to trus");
-
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
@@ -1636,9 +1624,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
-				System.out.println("In func Navbar Click - set double click to false and Nav Bar Click to trus");
-
-
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
@@ -1655,8 +1640,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
-				System.out.println("In CQL View Nav Bar Click - set double click to false and Nav Bar Click to trus");
-
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
 					searchDisplay.getWarningConfirmationMessageAlert().createAlert();

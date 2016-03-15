@@ -518,7 +518,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
-				System.out.println("In Param Double Click - set double click to true");
 				if (getIsPageDirty()) {
 					getWarningConfirmationMessageAlert().createAlert();
 					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -532,10 +531,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 							getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
 						}
 					}
+					successMessageAlert.clearAlert();
+					errorMessageAlert.clearAlert();
 				}
-				successMessageAlert.clearAlert();
-				errorMessageAlert.clearAlert();
-				setIsPageDirty(false);
+				
 			}
 		});	
 	}
@@ -547,9 +546,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// System.out.println("double-clicked");
 				setIsDoubleClick(true);
-				System.out.println("In Define Double Click - set double click to true");
 				if (getIsPageDirty()) {
 					getWarningConfirmationMessageAlert().createAlert();
 					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -575,7 +572,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 					successMessageAlert.clearAlert();
 					errorMessageAlert.clearAlert();
-					setIsPageDirty(false);
 				}
 			}
 		});
@@ -589,7 +585,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
-				System.out.println("In Func Double Click - set double click to true");
 				if (getIsPageDirty()) {
 					getWarningConfirmationMessageAlert().createAlert();
 					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
@@ -3241,8 +3236,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void resetMessageDisplay() {
-
-		System.out.println("resetMessageDisplay() called");
 
 		getSuccessMessageAlert().clearAlert();
 

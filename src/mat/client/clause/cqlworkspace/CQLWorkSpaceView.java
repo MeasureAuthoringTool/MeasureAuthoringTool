@@ -519,8 +519,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
-					getWarningConfirmationMessageAlert().createAlert();
-					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					showUnsavedChangesWarning();
 				} else {
 					int selectedIndex  = getParameterNameListBox().getSelectedIndex();
 					if (selectedIndex != -1) {
@@ -548,8 +547,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
-					getWarningConfirmationMessageAlert().createAlert();
-					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					showUnsavedChangesWarning();
 				} else {
 					int selectedIndex = getDefineNameListBox().getSelectedIndex();
 					if (selectedIndex != -1) {
@@ -586,8 +584,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
-					getWarningConfirmationMessageAlert().createAlert();
-					getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					showUnsavedChangesWarning();
 				} else {
 					int selectedIndex = funcNameListBox.getSelectedIndex();
 					if (selectedIndex != -1) {
@@ -3306,4 +3303,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return new CustomTextAreaWithNoWhiteSpaces(500);
 	}
 
+	public void showUnsavedChangesWarning() {
+		getErrorMessageAlert().clearAlert();
+		getSuccessMessageAlert().clearAlert();
+		getWarningConfirmationMessageAlert().createAlert();
+		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+	}
 }

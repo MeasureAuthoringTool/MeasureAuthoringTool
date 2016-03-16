@@ -669,6 +669,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 
 		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
 		
+		void showUnsavedChangesWarning();
+		
 	}
 	
 	/** The search display. */
@@ -694,6 +696,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				InsertIntoAceEditorDialogBox.showListOfParametersDialogBox(searchDisplay);
+				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
@@ -787,9 +790,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.setIsNavBarClick(false);
 				if (searchDisplay.getIsPageDirty()) {
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					clearDefinition();
 				}
@@ -801,9 +805,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.setIsNavBarClick(false);
 				if (searchDisplay.getIsPageDirty()) {
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					clearFunction();
 				}
@@ -815,9 +820,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.setIsNavBarClick(false);
 				if (searchDisplay.getIsPageDirty()) {
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					clearParameter();
 				}
@@ -1572,8 +1578,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					generalInfoEvent();
 				}
@@ -1589,8 +1594,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					parameterEvent();
 				}
@@ -1605,8 +1609,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					definitionEvent();
 				}
@@ -1621,8 +1624,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					functionEvent();
 				}
@@ -1637,8 +1639,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextClickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-					searchDisplay.getWarningConfirmationMessageAlert().createAlert();
-					searchDisplay.getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+					searchDisplay.showUnsavedChangesWarning();
 				} else {
 					viewCqlEvent();
 				}
@@ -1797,5 +1798,4 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		return searchDisplay;
 	}
 
-	
 }

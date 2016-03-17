@@ -109,4 +109,6 @@ public interface CQLService {
 	 * @return the CQL file data
 	 */
 	SaveUpdateCQLResult getCQLFileData(String measureId);
+
+	String createParametersXML(CQLParameter parameter);
 }

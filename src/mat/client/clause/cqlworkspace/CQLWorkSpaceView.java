@@ -313,6 +313,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The is double click. */
 	private Boolean isDoubleClick = false;
 
+	/** The is nav bar click. */
 	private Boolean isNavBarClick = false;
 
 	/** The vp. */
@@ -407,11 +408,17 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return isDoubleClick;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#setIsNavBarClick(java.lang.Boolean)
+	 */
 	@Override
 	public void setIsNavBarClick(Boolean isNavBarClick) {
 		this.isNavBarClick = isNavBarClick;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#isNavBarClick()
+	 */
 	@Override
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
@@ -528,6 +535,13 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 						if(getParameterMap().get(selectedParamID) != null){
 							getParameterNameTxtArea().setText(getParameterMap().get(selectedParamID).getParameterName());
 							getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
+							//disable parameterName and Logic fields for Default Parameter
+							boolean isReadOnly = getParameterMap().get(selectedParamID).isReadOnly();
+							
+							if(MatContext.get().getMeasureLockService()
+									.checkForEditPermission()){
+								setParameterWidgetReadOnly(!isReadOnly);
+							}
 						}
 					}
 					successMessageAlert.clearAlert();
@@ -3101,6 +3115,23 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 		}
 	}
+	
+	
+	
+	/**
+	 * Sets the parameter widget read only.
+	 *
+	 * @param isEditable the new parameter widget read only
+	 */
+	@Override
+	public void setParameterWidgetReadOnly(boolean isEditable){
+		
+		getParameterNameTxtArea().setEnabled(isEditable);
+		getParameterAceEditor().setReadOnly(!isEditable);
+		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
+		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
+		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
+	}
 
 	/**
 	 * The Class CustomTextAreaWithNoWhiteSpaces.
@@ -3298,6 +3329,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		this.appliedQdmList = appliedQdmList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getArgumentTextArea()
+	 */
 	@Override
 	public CustomTextAreaWithNoWhiteSpaces getArgumentTextArea(){
 		return new CustomTextAreaWithNoWhiteSpaces(500);

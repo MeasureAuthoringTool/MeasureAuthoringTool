@@ -941,7 +941,8 @@ public class CQLServiceImpl implements CQLService {
 	 *            the CQLParameter
 	 * @return the string
 	 */
-	private String createParametersXML(CQLParameter parameter) {
+	@Override
+	public String createParametersXML(CQLParameter parameter) {
 		
 		logger.info("In CQLServiceImpl.createParametersXML");
 		Mapping mapping = new Mapping();

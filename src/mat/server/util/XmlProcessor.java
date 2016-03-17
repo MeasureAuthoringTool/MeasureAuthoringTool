@@ -268,6 +268,9 @@ public class XmlProcessor {
 	/** The original doc. */
 	private Document originalDoc;
 	
+	/** The Constant PARAMETER_MEASUREMENT_PERIOD. */
+	private static final String PARAMETER_MEASUREMENT_PERIOD = "MeasurementPeriod";
+	
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
 		INITIAL_POPULATIONS, NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
@@ -1667,13 +1670,36 @@ public class XmlProcessor {
 				cqlNode.appendChild(functionsChildElem);
 			}
 			
-			
-			
-			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 		return transform(originalDoc);
 		
+	}
+	
+	
+	/**
+	 * Check for default parameter MeasurementPeriod.
+	 *
+	 * @return the list
+	 */
+	public List<String> checkForDefaultParameters(){
+		List<String> missingDefaultParameterList = new ArrayList<String>();
+		
+		if (originalDoc != null) {
+			try {
+				// Measurement Period
+				Node measurementPeriodNode = this.findNode(originalDoc,
+						"/measure/cqlLookUp//parameter[@name='"
+								+ PARAMETER_MEASUREMENT_PERIOD + "']");
+				if (measurementPeriodNode == null) {
+					missingDefaultParameterList.add(PARAMETER_MEASUREMENT_PERIOD);
+				}
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return missingDefaultParameterList;
 	}
 }

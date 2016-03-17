@@ -668,6 +668,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		HorizontalPanel getMainHPanel();
 
 		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
+
+		void setParameterWidgetReadOnly(boolean isEditable);
 		
 		void showUnsavedChangesWarning();
 		
@@ -1025,6 +1027,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		if ((searchDisplay.getParameterNameTxtArea() != null)) {
 			searchDisplay.getParameterNameTxtArea().clear();
+		}
+		
+		if(MatContext.get().getMeasureLockService()
+				.checkForEditPermission()){
+			searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+					.checkForEditPermission());
 		}
 	}
 	
@@ -1470,19 +1478,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	
 	/**
-	 * Sets the parameter widget read only.
-	 *
-	 * @param isEditable the new parameter widget read only
-	 */
-	private void setParameterWidgetReadOnly(boolean isEditable){
-		
-		searchDisplay.getParameterNameTxtArea().setEnabled(isEditable);
-		searchDisplay.getParameterAceEditor().setReadOnly(!isEditable);
-		searchDisplay.getParameterButtonBar().setEnabled(isEditable);
-	}
-	
-	
-	/**
 	 * Sets the definition widget read only.
 	 *
 	 * @param isEditable the new definition widget read only
@@ -1661,7 +1656,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getParameterLibrary().setActive(true);
 		clickedMenu = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 		searchDisplay.buildParameterLibraryView();
-		setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+		searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
 
 	}

@@ -9,6 +9,7 @@ public class CQLParameter implements IsSerializable{
 	private String defaultValue;
 	private String parameterLogic;
 	private String id;
+	private boolean readOnly;
 	
 	public String getParameterName() {
 		return parameterName.replaceAll(" ", "").trim();
@@ -39,6 +40,12 @@ public class CQLParameter implements IsSerializable{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+	public void setReadOnly(boolean isReadOnly) {
+		this.readOnly = isReadOnly;
 	}
 	
 	

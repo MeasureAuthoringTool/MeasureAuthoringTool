@@ -236,7 +236,11 @@ public class InsertIntoAceEditorDialogBox {
 								int columnIndex = searchDisplay.getDefineAceEditor().getCursorPosition().getColumn();
 								System.out.println(columnIndex);
 								if(itemTypeName.equalsIgnoreCase("Applied QDM")){
-									itemNameToBeInserted = " \"" + itemNameToBeInserted + "\"";
+									String[] str = itemNameToBeInserted.split("\\.");
+									StringBuilder sb = new StringBuilder();
+									sb = sb.append("[\"" + str[1]+"\"");
+									sb = sb.append(":'").append(str[0] + "']");
+									itemNameToBeInserted = sb.toString();
 								}
 								searchDisplay.getDefineAceEditor().insertAtCursor(" " + itemNameToBeInserted);
 								dialogModal.hide();

@@ -509,6 +509,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			@Override
 			public void onClick(ClickEvent event) {
 				isUnsavedData = false;
+				selectTab(selectedIndex);
 				org.gwtbootstrap3.client.ui.Button button = (org.gwtbootstrap3.client.ui.Button) event.getSource();
 				if ("Yes".equals(button.getText())) { // navigate to the tab select
 					//Audit If Yes is clicked and changes are discarded on cqlWorkspace.
@@ -518,7 +519,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 					}
 					warningAlert.clearAlert();
 					updateOnBeforeSelection();
-					selectTab(selectedIndex);
 				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
 					warningAlert.clearAlert();
 				}

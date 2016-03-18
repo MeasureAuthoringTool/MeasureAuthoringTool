@@ -258,6 +258,11 @@ public class InsertIntoAceEditorDialogBox {
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 					
+				} else {
+					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please Select Item Type to insert into Editor");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 			}
 			

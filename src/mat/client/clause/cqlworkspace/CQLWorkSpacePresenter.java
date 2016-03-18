@@ -31,6 +31,7 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -45,6 +46,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelection;
 import edu.ycp.cs.dh.acegwt.client.ace.AceSelectionListener;
@@ -70,7 +72,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/**
 	 * The Interface ViewDisplay.
 	 */
-	public static interface ViewDisplay {
+ public static interface ViewDisplay {
 		
 		/**
 		 * Top Main panel of CQL Workspace Tab.
@@ -448,7 +450,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setIsNavBarClick(Boolean isDoubleClick);
 		
 		Boolean isNavBarClick();
-		
+
 		
 		/**
 		 * Update suggest func oracle.
@@ -656,11 +658,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList);
 		
 		void resetMessageDisplay();
-		
+
 		HorizontalPanel getMainHPanel();
-		
+
 		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
-		
+
 		void setParameterWidgetReadOnly(boolean isEditable);
 		
 		void showUnsavedChangesWarning();
@@ -750,35 +752,35 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});*/
 		
 		
-		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
-			
-			@Override
-			public void onChangeSelection(AceSelection selection) {
-				searchDisplay.resetMessageDisplay();
-				searchDisplay.setIsPageDirty(true);
-				
-			}
-		});
-		
-		
-		searchDisplay.getParameterAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
-			
-			@Override
-			public void onChangeSelection(AceSelection selection) {
-				searchDisplay.resetMessageDisplay();
-				searchDisplay.setIsPageDirty(true);
-			}
-		});
-		
-		searchDisplay.getFunctionBodyAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
-			
-			@Override
-			public void onChangeSelection(AceSelection selection) {
-				searchDisplay.resetMessageDisplay();
-				searchDisplay.setIsPageDirty(true);
-			}
-		});
-		
+//		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+//
+//			@Override
+//			public void onChangeSelection(AceSelection selection) {
+//				searchDisplay.resetMessageDisplay();
+//				searchDisplay.setIsPageDirty(true);
+//		
+//			}
+//		});
+//		
+//		
+//		searchDisplay.getParameterAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+//			
+//			@Override
+//			public void onChangeSelection(AceSelection selection) {
+//				searchDisplay.resetMessageDisplay();
+//				searchDisplay.setIsPageDirty(true);
+//			}
+//		});
+//		
+//		searchDisplay.getFunctionBodyAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
+//			
+//			@Override
+//			public void onChangeSelection(AceSelection selection) {
+//				searchDisplay.resetMessageDisplay();
+//				searchDisplay.setIsPageDirty(true);
+//			}
+//		});
+//		
 		searchDisplay.getEraseDefineButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -844,12 +846,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 						searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
 					}
 					
-					// new Nav Bar has been selected, clickMenu is what used to be selected
+				// new Nav Bar has been selected, clickMenu is what used to be selected	
 				} else if (searchDisplay.isNavBarClick()) {
 					
 					searchDisplay.setIsNavBarClick(false);
 					searchDisplay.setIsDoubleClick(false);
-					//unsetActiveMenuItem(clickedMenu);
+					//unsetActiveMenuItem(clickedMenu);					
 					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						functionEvent();
 						//searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
@@ -864,9 +866,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_VIEW_MENU)) {
 						viewCqlEvent();
 					}
-					// clear button was selected
+				// clear button was selected	
 				} else {
-					
+				
 					// if clear button was selected
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						clearFunction();
@@ -875,8 +877,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 						clearDefinition();
 					}
-				}
-			}
+				} 
+			} 
 		});
 		
 		searchDisplay.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
@@ -896,7 +898,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 					searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
 					//unsetActiveMenuItem(nextClickedMenu);
-				}
+				} 
 			}
 		});
 		
@@ -1066,7 +1068,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
 		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null)) {
+		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null)) { 
 			searchDisplay.getFunctionBodyAceEditor().setText("");
 		}
 		if ((searchDisplay.getFuncNameTxtArea() != null)) {
@@ -1074,7 +1076,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		searchDisplay.getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
-	}
+		}
 	
 	
 	/**
@@ -1664,7 +1666,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.buildParameterLibraryView();
 		searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
-		
+
 	}
 	
 	private void definitionEvent() {
@@ -1691,7 +1693,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		clickedMenu = CQLWorkSpaceConstants.CQL_VIEW_MENU;
 		searchDisplay.buildCQLFileView();
 		buildCQLView();
-		
+
 	}
 	
 	/**
@@ -1770,7 +1772,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
 		return msgHtml;
 	}
-	
+
 	private void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
@@ -1792,11 +1794,11 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			});
 		}
 	}
-	
+
 	
 	public ViewDisplay getSearchDisplay() {
 		
 		return searchDisplay;
 	}
-	
+
 }

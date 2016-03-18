@@ -525,6 +525,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
+				setIsNavBarClick(false);
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
 				} else {
@@ -597,6 +598,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				setIsDoubleClick(true);
+				setIsNavBarClick(false);
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
 				} else {
@@ -2029,15 +2031,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @see
 	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterTxtArea()
 	 */
-	/**
-	 * Gets the parameter txt area.
-	 *
-	 * @return the parameter txt area
-	 */
-	@Override
-	public AceEditor getParameterTxtArea() {
-		return parameterAceEditor;
-	}
 
 	/*
 	 * (non-Javadoc)

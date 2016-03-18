@@ -172,12 +172,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		 */
 		TextArea getParameterNameTxtArea();
 		
-		/**
-		 * Gets the parameter txt area.
-		 *
-		 * @return the parameter txt area
-		 */
-		AceEditor getParameterTxtArea();
 		
 		/**
 		 * Gets the view parameter list.
@@ -759,12 +753,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		
 		searchDisplay.getDefineAceEditor().getSelection().addSelectionListener(new AceSelectionListener() {
-			
+
 			@Override
 			public void onChangeSelection(AceSelection selection) {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
-				
+		
 			}
 		});
 		
@@ -843,6 +837,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				if (searchDisplay.isDoubleClick()) {
 					
 					searchDisplay.setIsDoubleClick(false);
+					searchDisplay.setIsNavBarClick(false);
 					if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
 					} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
@@ -855,6 +850,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				} else if (searchDisplay.isNavBarClick()) {
 					
 					searchDisplay.setIsNavBarClick(false);
+					searchDisplay.setIsDoubleClick(false);
 					//unsetActiveMenuItem(clickedMenu);					
 					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						functionEvent();
@@ -888,9 +884,20 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
 				// no was selected, don't move anywhere
 				if (searchDisplay.isNavBarClick()) {
 					unsetActiveMenuItem(nextClickedMenu);
+				}
+				if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
+					//unsetActiveMenuItem(nextClickedMenu);
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+					searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
+					//unsetActiveMenuItem(nextClickedMenu);
+				} else if (clickedMenu.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+					searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
+					//unsetActiveMenuItem(nextClickedMenu);
 				}
 			}
 		});

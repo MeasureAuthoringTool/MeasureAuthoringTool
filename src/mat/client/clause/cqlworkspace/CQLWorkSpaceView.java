@@ -155,7 +155,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-	
+
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 	
@@ -704,7 +704,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					functionArgNameMap.put(argument.getArgumentName().toLowerCase(), argument);
 				}
 			}*/
-		}
+			}
 		updateSuggestFuncOracle();
 		functionBadge.setText("" + viewFunctions.size());
 		
@@ -2412,7 +2412,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
-	
+
 	
 	/*
 	 * (non-Javadoc)
@@ -2744,7 +2744,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getWarningConfirmationYesButton() {
-		return ((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationYesButton();
+		return getWarningConfirmationMessageAlert().getWarningConfirmationYesButton();
 	}
 	
 	/*
@@ -2755,7 +2755,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getWarningConfirmationNoButton() {
-		return ((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationNoButton();
+		return getWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
 	}
 	
 	/*
@@ -2779,7 +2779,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public Button getGlobalWarningConfirmationNoButton() {
 		return getGlobalWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
 	}
-	
+
 	
 	/*
 	 * (non-Javadoc)
@@ -3388,7 +3388,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setGlobalWarningConfirmationMessageAlert(WarningConfirmationMessageAlert globalWarningMessageAlert) {
 		globalWarningConfirmationMessageAlert = globalWarningMessageAlert;
 	}
-	
+
 	
 	/*
 	 * (non-Javadoc)
@@ -3426,7 +3426,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
-		((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationYesButton().setFocus(true);
+		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
 	@Override
@@ -3435,8 +3435,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
-		((WarningConfirmationMessageAlert)getGlobalWarningConfirmationMessageAlert()).getWarningConfirmationYesButton().setFocus(true);
+		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
-	
-	
 }

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -156,7 +155,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-
+	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 	
@@ -207,7 +206,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
 	
 	/** The function arg name map. */
-	private Map<String, CQLFunctionArgument> functionArgNameMap = new  TreeMap<String, CQLFunctionArgument>(String.CASE_INSENSITIVE_ORDER);
+	private Map<String, CQLFunctionArgument> functionArgNameMap = new  HashMap<String, CQLFunctionArgument>();
+	
 	
 	/**
 	 * ListBox defineNameListBox.
@@ -566,7 +566,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				//System.out.println("In addDefineEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
@@ -604,7 +603,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		funcNameListBox.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				//System.out.println("In addFuctionEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());	
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
 				if (getIsPageDirty()) {
@@ -697,15 +695,15 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void updateFunctionMap() {
 		functionMap.clear();
 		funcNameMap.clear();
-		functionArgNameMap.clear();
+		//functionArgNameMap.clear();
 		for (CQLFunctions function : viewFunctions) {
 			funcNameMap.put(function.getId(), function.getFunctionName());
 			functionMap.put(function.getId(), function);
-			if (function.getArgumentList() != null) {
+			/*if (function.getArgumentList() != null) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {
-					functionArgNameMap.put(argument.getArgumentName(), argument);
+					functionArgNameMap.put(argument.getArgumentName().toLowerCase(), argument);
 				}
-			}
+			}*/
 		}
 		updateSuggestFuncOracle();
 		functionBadge.setText("" + viewFunctions.size());
@@ -1488,6 +1486,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		
 		if ((argumentList != null) && (argumentList.size() > 0)) {
+			updateFunctionArgumentNameMap(argumentList);
 			argumentListTable = new CellTable<CQLFunctionArgument>();
 			argumentListTable.setStriped(true);
 			argumentListTable.setCondensed(true);
@@ -1532,6 +1531,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		 * cellTablePanel.add(tableHeader); cellTablePanel.add(new
 		 * SpacerWidget()); cellTablePanel.add(desc); }
 		 */
+		
+	}
+	
+	private void updateFunctionArgumentNameMap(List<CQLFunctionArgument> argumentList) {
+		functionArgNameMap.clear();
+		if (argumentList != null) {
+			for (CQLFunctionArgument argument : argumentList) {
+				functionArgNameMap.put(argument.getArgumentName().toLowerCase(), argument);
+			}
+		}
 		
 	}
 	
@@ -2403,7 +2412,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -2770,7 +2779,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public Button getGlobalWarningConfirmationNoButton() {
 		return getGlobalWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -3379,7 +3388,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setGlobalWarningConfirmationMessageAlert(WarningConfirmationMessageAlert globalWarningMessageAlert) {
 		globalWarningConfirmationMessageAlert = globalWarningMessageAlert;
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -3428,4 +3437,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		((WarningConfirmationMessageAlert)getGlobalWarningConfirmationMessageAlert()).getWarningConfirmationYesButton().setFocus(true);
 	}
+	
+	
 }

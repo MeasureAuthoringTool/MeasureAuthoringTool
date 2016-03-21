@@ -388,9 +388,9 @@ public class AddFunctionArgumentDialogBox {
 				}
 				// Argument Name Validation Check
 				if (isValid) {
-					boolean checkIfDuplicate = searchDisplay.getFunctionArgNameMap().containsKey(argumentName);
+					boolean checkIfDuplicate = searchDisplay.getFunctionArgNameMap().containsKey(argumentName.toLowerCase());
 					if (checkIfDuplicate && isEdit) {
-						CQLFunctionArgument tempArgObj = searchDisplay.getFunctionArgNameMap().get(argumentName);
+						CQLFunctionArgument tempArgObj = searchDisplay.getFunctionArgNameMap().get(argumentName.toLowerCase());
 						if (tempArgObj.getId().equalsIgnoreCase(functionArg.getId())) {
 							// this means same object is modified.
 							checkIfDuplicate = false;
@@ -434,7 +434,7 @@ public class AddFunctionArgumentDialogBox {
 								searchDisplay.getFunctionArgumentList().remove(i);
 								searchDisplay.getFunctionArgumentList().add(argument);
 								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
-								searchDisplay.getFunctionArgNameMap().put(argumentName, argument);
+								searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
 								break;
 							}
 						}
@@ -447,7 +447,7 @@ public class AddFunctionArgumentDialogBox {
 						functionArg.setOtherType(otherType);
 						searchDisplay.getFunctionArgumentList().add(functionArg);
 						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
-						searchDisplay.getFunctionArgNameMap().put(argumentName, functionArg);
+						searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
 					}
 					dialogModal.hide();
 				}

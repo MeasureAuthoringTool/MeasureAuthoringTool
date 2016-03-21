@@ -239,7 +239,7 @@ public class InsertIntoAceEditorDialogBox {
 									String[] str = itemNameToBeInserted.split("\\.");
 									StringBuilder sb = new StringBuilder();
 									sb = sb.append("[\"" + str[1]+"\"");
-									sb = sb.append(":'").append(str[0] + "']");
+									sb = sb.append(":\"").append(str[0] + "\"]");
 									itemNameToBeInserted = sb.toString();
 								}
 								searchDisplay.getDefineAceEditor().insertAtCursor(" " + itemNameToBeInserted);

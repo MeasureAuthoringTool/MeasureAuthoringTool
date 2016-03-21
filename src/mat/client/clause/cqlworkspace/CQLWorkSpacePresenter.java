@@ -743,7 +743,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				System.out.println("In Define Ace Editor onChangeSelection");
+				//System.out.println("In Define Ace Editor onChangeSelection");
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 		
@@ -755,7 +755,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				System.out.println("In Parameter Ace Editor onChangeSelection");
+				//System.out.println("In Parameter Ace Editor onChangeSelection");
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
@@ -765,7 +765,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onChangeSelection(AceSelection selection) {
-				System.out.println("In Function Ace Editor onChangeSelection");
+				//System.out.println("In Function Ace Editor onChangeSelection");
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.setIsPageDirty(true);
 			}
@@ -841,7 +841,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					
 					searchDisplay.setIsNavBarClick(false);
 					searchDisplay.setIsDoubleClick(false);
-					unsetActiveMenuItem(clickedMenu);					
+					
 					if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 						functionEvent();
 						//searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
@@ -856,6 +856,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					} else if (nextClickedMenu.equals(CQLWorkSpaceConstants.CQL_VIEW_MENU)) {
 						viewCqlEvent();
 					}
+					setActiveMenuItem(nextClickedMenu);
 				// clear button was selected	
 				} else {
 					// if clear button was selected
@@ -1717,6 +1718,35 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getViewCQL().setActive(false);
 		}
 	}
+	
+	
+	/**
+	 * Method to unset Anchor List Item selection for previous selection and set for new selections.
+	 *
+	 * @param menuClickedBefore the menu clicked before
+	 */
+	private void setActiveMenuItem(String menuClicked) {
+		searchDisplay.resetMessageDisplay();
+		if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
+			searchDisplay.getGeneralInformation().setActive(true);
+		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
+			searchDisplay.getParameterLibrary().setActive(true);
+			searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
+			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
+		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
+			searchDisplay.getDefinitionLibrary().setActive(true);
+			searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
+			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
+		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
+			searchDisplay.getFunctionLibrary().setActive(true);
+			searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
+			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
+		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
+			searchDisplay.getViewCQL().setActive(true);
+		}
+	}
+	
+
 	
 	/**
 	 * Method to build View for Anchor List item View CQL.

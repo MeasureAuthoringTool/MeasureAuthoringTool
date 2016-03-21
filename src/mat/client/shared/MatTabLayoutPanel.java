@@ -452,11 +452,11 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		cqlWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 		if (cqlWorkSpacePresenter.getSearchDisplay().getIsPageDirty()) {
 			isUnsavedData = true;
-			cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert().createAlert();
-			cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+			cqlWorkSpacePresenter.getSearchDisplay().getGlobalWarningConfirmationMessageAlert().createAlert();
+			cqlWorkSpacePresenter.getSearchDisplay().getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 			String auditMessage = cqlWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 			handleClickEventsOnUnsavedChangesMsg(selectedIndex, 
-					cqlWorkSpacePresenter.getSearchDisplay().getWarningConfirmationMessageAlert(), auditMessage);
+					cqlWorkSpacePresenter.getSearchDisplay().getGlobalWarningConfirmationMessageAlert(), auditMessage);
 		} else {
 			isUnsavedData = false;
 		}
@@ -503,7 +503,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 * @param auditMessage
 	 *            the audit message
 	 */
-	private void handleClickEventsOnUnsavedChangesMsg(int selIndex, final MessageAlert warningAlert, final String auditMessage) {
+	private void handleClickEventsOnUnsavedChangesMsg(int selIndex, final WarningConfirmationMessageAlert globalWarningAlert, final String auditMessage) {
 		isUnsavedData = true;
 		ClickHandler clickHandler = new ClickHandler() {
 			@Override
@@ -516,18 +516,18 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
 								null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
 					}
-					warningAlert.clearAlert();
+					globalWarningAlert.clearAlert();
 					updateOnBeforeSelection();
 					selectTab(selectedIndex);
 				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
 					selectTab(selectedIndex);
-					warningAlert.clearAlert();
+					globalWarningAlert.clearAlert();
 				}
 			}
 		};
 		
-		warningAlert.getWarningConfirmationYesButton().addClickHandler(clickHandler);
-		warningAlert.getWarningConfirmationNoButton().addClickHandler(clickHandler);
+		globalWarningAlert.getWarningConfirmationYesButton().addClickHandler(clickHandler);
+		globalWarningAlert.getWarningConfirmationNoButton().addClickHandler(clickHandler);
 		
 		if (isUnsavedData) {
 			MatContext.get().setErrorTabIndex(selIndex);

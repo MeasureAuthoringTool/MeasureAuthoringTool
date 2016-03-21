@@ -155,7 +155,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
 	/** The CQL warning message. */
-	private MessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+
+	/** The CQL warning message. */
+	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 	
 	/**
 	 * TextArea parameterNameTxtArea.
@@ -299,6 +302,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The clicked menu. */
 	public String clickedMenu = "general";
+	
+	/** The clicked menu. */
+	public String nextClickedMenu = "general";
 	
 	/** The current selected definition obj id. */
 	private String currentSelectedDefinitionObjId = null;
@@ -461,9 +467,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainPanel.add(mainFlowPanel);
 		
 		resetMessageDisplay();
-		// successMessageAlert.setVisible(false);
-		// errorMessageAlert.setVisible(false);
-		// warningConfirmationMessageAlert.setVisible(false);
 		
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(rightHandNavPanel);
@@ -526,6 +529,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
+				System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty());
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
 				if (getIsPageDirty()) {
@@ -870,6 +874,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		messagePanel.add(successMessageAlert);
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
+		messagePanel.add(globalWarningConfirmationMessageAlert);
 		
 		// rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
@@ -1097,9 +1102,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
-		// messagePanel.add(successMessageAlert);
-		// messagePanel.add(errorMessageAlert);
-		// messagePanel.add(warningConfirmationMessageAlert);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -1259,9 +1261,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineConextPanel.add(contextDefinePATRadioBtn);
 		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
-		// messagePanel.add(successMessageAlert);
-		// messagePanel.add(errorMessageAlert);
-		// messagePanel.add(warningConfirmationMessageAlert);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineLabel);
 		definitionVP.add(new SpacerWidget());
@@ -1441,9 +1440,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		funcConextPanel.add(contextFuncPOPRadioBtn);
 		funcConextPanel.setStyleName("contextToggleSwitch");
 		
-		// messagePanel.add(successMessageAlert);
-		// messagePanel.add(errorMessageAlert);
-		// messagePanel.add(warningConfirmationMessageAlert);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
@@ -2375,6 +2371,37 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setClickedMenu(String clickedMenu) {
 		this.clickedMenu = clickedMenu;
 	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getClickedMenu()
+	 */
+	/**
+	 * Gets the clicked menu.
+	 *
+	 * @return the clicked menu
+	 */
+	public String getNextClickedMenu() {
+		return nextClickedMenu;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
+	 * lang.String)
+	 */
+	/**
+	 * Sets the clicked menu.
+	 *
+	 * @param clickedMenu
+	 *            the new clicked menu
+	 */
+	public void setNextClickedMenu(String nextClickedMenu) {
+		this.nextClickedMenu = nextClickedMenu;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -2706,7 +2733,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getWarningConfirmationYesButton() {
-		return getWarningConfirmationMessageAlert().getWarningConfirmationYesButton();
+		return ((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationYesButton();
 	}
 	
 	/*
@@ -2717,8 +2744,31 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getWarningConfirmationNoButton() {
-		return getWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
+		return ((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationNoButton();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
+	 * getClearParameterYesButton()
+	 */
+	@Override
+	public Button getGlobalWarningConfirmationYesButton() {
+		return getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
+	 * getClearParameterNoButton()
+	 */
+	@Override
+	public Button getGlobalWarningConfirmationNoButton() {
+		return getGlobalWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -3268,6 +3318,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		getWarningConfirmationMessageAlert().clearAlert();
 		
+		getGlobalWarningConfirmationMessageAlert().clearAlert();
+		
 	}
 	
 	/*
@@ -3289,7 +3341,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getWarningConfirmationMessageAlert()
 	 */
 	@Override
-	public MessageAlert getWarningConfirmationMessageAlert() {
+	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
 		return warningConfirmationMessageAlert;
 	}
 	
@@ -3300,9 +3352,32 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * setWarningConfirmationMessageAlert(mat.client.shared.MessageAlert)
 	 */
 	@Override
-	public void setWarningConfirmationMessageAlert(MessageAlert warningMessageAlert) {
+	public void setWarningConfirmationMessageAlert(WarningConfirmationMessageAlert warningMessageAlert) {
 		warningConfirmationMessageAlert = warningMessageAlert;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
+	 * getGlobalWarningConfirmationMessageAlert()
+	 */
+	@Override
+	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
+		return globalWarningConfirmationMessageAlert;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
+	 * setGlobalWarningConfirmationMessageAlert(mat.client.shared.MessageAlert)
+	 */
+	@Override
+	public void setGlobalWarningConfirmationMessageAlert(WarningConfirmationMessageAlert globalWarningMessageAlert) {
+		globalWarningConfirmationMessageAlert = globalWarningMessageAlert;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -3338,7 +3413,17 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void showUnsavedChangesWarning() {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
+		getGlobalWarningConfirmationMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
-		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+		((WarningConfirmationMessageAlert)getWarningConfirmationMessageAlert()).getWarningConfirmationYesButton().setFocus(true);
+	}
+	
+	@Override
+	public void showGlobalUnsavedChangesWarning() {
+		getErrorMessageAlert().clearAlert();
+		getSuccessMessageAlert().clearAlert();
+		getWarningConfirmationMessageAlert().clearAlert();
+		getGlobalWarningConfirmationMessageAlert().createAlert();
+		((WarningConfirmationMessageAlert)getGlobalWarningConfirmationMessageAlert()).getWarningConfirmationYesButton().setFocus(true);
 	}
 }

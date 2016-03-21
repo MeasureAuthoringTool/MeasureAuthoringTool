@@ -68,16 +68,6 @@ public class MessageAlert extends Alert implements MessageAlertInterface {
 		return msgHtml;
 	}
 
-	public Button getWarningConfirmationYesButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Button getWarningConfirmationNoButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void createAlert() {
 		
 	}

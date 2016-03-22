@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -13,6 +14,7 @@ import mat.client.event.ClauseSpecificOccurenceEvent;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
@@ -1306,13 +1308,19 @@ public class ClauseWorkspaceContextMenu {
 		
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
 		String nodeName = selectedNodeName.replaceAll("\\s+", "").toLowerCase();
-		if (!xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
+		
+		/**Commenting this code for MAT-7076*/
+		
+		//For CQL, populations wont have a logical operator node under them by default
+		/*if (!xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
 			if (PopulationWorkSpaceConstants.topNodeOperatorMap.containsKey((nodeName))) {
 				String nodeTopLogicalOperator = PopulationWorkSpaceConstants.topNodeOperatorMap.get(nodeName);
 				clauseNode.createChild(nodeTopLogicalOperator.toUpperCase(),
 						nodeTopLogicalOperator.toUpperCase(), CellTreeNode.LOGICAL_OP_NODE);
 			}
-		}
+		}*/
+		
+		/**Commenting for MAT-7076 ends.*/
 		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}

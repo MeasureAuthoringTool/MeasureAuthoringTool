@@ -4,6 +4,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -169,14 +170,17 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATUM)) {
-					subMenuBar = new MenuBar(true);
-					popupMenuBar.setAutoOpen(true);
-					subMenuBar.setAutoOpen(true);
+					//subMenuBar = new MenuBar(true);
+					//popupMenuBar.setAutoOpen(true);
+					//subMenuBar.setAutoOpen(true);
+					/**MAT-7076 For CQL measure, we can no longer add logical nodes.
+					 
 					createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
 							, subMenuBar); // creating logical Operators Menu 2nd level
 					createAddClauseMenuItem(subMenuBar);
-					addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-					popupMenuBar.addItem(addMenu);
+					
+					*/
+					
 					if ((xmlTreeDisplay.getCopiedNode() != null)
 							&& xmlTreeDisplay.getCopiedNode().getParent().
 							equals(xmlTreeDisplay.getSelectedNode())) {
@@ -194,13 +198,19 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				//show the fist level menu to add clause
 				if(xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)
 						&& !xmlTreeDisplay.getSelectedNode().hasChildren()){
-					subMenuBar = new MenuBar(true);
-					popupMenuBar.setAutoOpen(true);
-					subMenuBar.setAutoOpen(true);
-					createAddClauseMenuItem(subMenuBar);
-					addMenu = new MenuItem("Add", subMenuBar);
-					popupMenuBar.addItem(addMenu);
+					//subMenuBar = new MenuBar(true);
+					//popupMenuBar.setAutoOpen(true);
+					//subMenuBar.setAutoOpen(true);
+					//createAddClauseMenuItem(subMenuBar); MAT-7076
 				}
+				
+				subMenuBar = new MenuBar(true);
+				popupMenuBar.setAutoOpen(true);
+				subMenuBar.setAutoOpen(true);
+				createAddCQLDefinitionMenuItem(subMenuBar);
+				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+				popupMenuBar.addItem(addMenu);
+				
 				addCommonMenus();
 				//Add "View Human Readable" right click option for all populations: Start
 				popupMenuBar.addItem(viewHumanReadableMenu);
@@ -372,6 +382,17 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			}
 		};
 		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
+		menuBar.addItem(item);
+	}
+	
+	private void createAddCQLDefinitionMenuItem(MenuBar menuBar){
+		Command addCQLDefinitionCmd = new Command() {
+			@Override
+			public void execute() {
+				
+			}
+		};
+		MenuItem item = new MenuItem("Definition", true, addCQLDefinitionCmd);
 		menuBar.addItem(item);
 	}
 	

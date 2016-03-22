@@ -18,9 +18,9 @@ public class CQLWorkSpaceConstants {
 		return AVAILABLE_ITEM_TO_INSERT;
 	}
 	
-	public static String CQL_FUNCTION_MENU = "func";
-	public static String CQL_VIEW_MENU = "view";
-	public static String CQL_DEFINE_MENU = "define";
-	public static String CQL_PARAMETER_MENU = "param";
-	public static String CQL_GENERAL_MENU = "general";
+	public final static String CQL_FUNCTION_MENU = "func";
+	public final static String CQL_VIEW_MENU = "view";
+	public final static String CQL_DEFINE_MENU = "define";
+	public final static String CQL_PARAMETER_MENU = "param";
+	public final static String CQL_GENERAL_MENU = "general";
 }

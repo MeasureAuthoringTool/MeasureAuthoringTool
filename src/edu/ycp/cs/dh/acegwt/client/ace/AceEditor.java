@@ -23,9 +23,17 @@ package edu.ycp.cs.dh.acegwt.client.ace;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.DomHandler;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.DomEvent.Type;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -391,6 +399,18 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		editor.setReadOnly(readOnly);
 	}-*/;
+	
+	/**
+	 * Set or unset read-only mode.
+	 *
+	 * @param readOnly true if editor should be set to readonly, false if the
+	 *                 editor should be set to read-write
+	 */
+	public native boolean getReadOnly() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		return editor.getReadOnly();
+	}-*/;
+	
 
 	/**
 	 * Set or unset highlighting of currently selected word.
@@ -761,4 +781,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		
 		return new AceCompletionCallbackImpl(jsCallback);
 	}
+	
+	 public HandlerRegistration addKeyDownHandler(KeyDownHandler keyDownHandler){
+		 return this.addDomHandler(keyDownHandler, KeyDownEvent.getType());
+	 }
 }

@@ -5,23 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -41,6 +25,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -84,9 +69,27 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -529,7 +532,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				//System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
+				System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
 				if (getIsPageDirty()) {
@@ -542,6 +545,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 						if(getParameterMap().get(selectedParamID) != null){
 							getParameterNameTxtArea().setText(getParameterMap().get(selectedParamID).getParameterName());
 							getParameterAceEditor().setText(getParameterMap().get(selectedParamID).getParameterLogic());
+							System.out.println("In Parameter DoubleClickHandler, doing setText()");
 							//disable parameterName and Logic fields for Default Parameter
 							boolean isReadOnly = getParameterMap().get(selectedParamID).isReadOnly();
 							
@@ -1090,6 +1094,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		paramAceEditorPanel.setSize("685px", "510px");
 		// parameterAceEditor.startEditor();
 		parameterAceEditor.setText("");
+		System.out.println("In buildParameterLibraryView setText to ace editor.");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
 		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
@@ -1782,6 +1787,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		defineAceEditor.setText("");
 		parameterAceEditor.setText("");
+		System.out.println(" in resetAll doing setText");
 		cqlAceEditor.setText("");
 		functionBodyAceEditor.setText("");
 		
@@ -2406,7 +2412,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Sets the clicked menu.
 	 *
-	 * @param clickedMenu
+	 * @param currentSection
 	 *            the new clicked menu
 	 */
 	public void setNextClickedMenu(String nextClickedMenu) {
@@ -3185,6 +3191,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
+		System.out.println("in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);

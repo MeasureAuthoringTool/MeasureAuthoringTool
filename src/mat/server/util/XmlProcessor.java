@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1150,10 +1151,14 @@ public class XmlProcessor {
 		clauseChildElem.setAttribute(TYPE, toCamelCase(dispName));
 		clauseChildElem.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
 		mainChildElem.appendChild(clauseChildElem);
+		
+		/**Commenting this code for MAT-7076*/
+		
 		//logical AND is not required by stratification clause at the
 		//time of creation of new Measure But Population and Measure Observations
 		// clauses will have Logical AND by Default.
-		if (!nodeName.equalsIgnoreCase("strata")&& (topNodeOperatorMap.containsKey(nodeName))) {
+		
+		/**if (!nodeName.equalsIgnoreCase("strata")&& (topNodeOperatorMap.containsKey(nodeName))) {
 			String nodeTopLogicalOperator = topNodeOperatorMap.get(nodeName);
 			if (nodeTopLogicalOperator != null) {
 				Element logicalOpElem = originalDoc.createElement("logicalOp");
@@ -1161,7 +1166,9 @@ public class XmlProcessor {
 				logicalOpElem.setAttribute(TYPE, nodeTopLogicalOperator);
 				clauseChildElem.appendChild(logicalOpElem);
 			}
-		}
+		}*/
+		
+		/**Commenting for MAT-7076 ends.*/
 		mainChildElem.appendChild(clauseChildElem);
 		
 		return mainChildElem;
@@ -1669,6 +1676,9 @@ public class XmlProcessor {
 				cqlNode.appendChild(definitionsChildElem);
 				cqlNode.appendChild(functionsChildElem);
 			}
+			
+			
+			
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

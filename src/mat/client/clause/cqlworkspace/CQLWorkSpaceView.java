@@ -5,7 +5,23 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
+import mat.client.CustomPager;
+import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -25,7 +41,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -69,27 +84,9 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -158,7 +155,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-
+	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 	
@@ -708,7 +705,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					functionArgNameMap.put(argument.getArgumentName().toLowerCase(), argument);
 				}
 			}*/
-			}
+		}
 		updateSuggestFuncOracle();
 		functionBadge.setText("" + viewFunctions.size());
 		
@@ -1075,7 +1072,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			getFunctionArgumentList().clear();
 		}
 		getFunctionArgNameMap().clear();
-		setIsPageDirty(false);
+		//setIsPageDirty(false);
 		mainFlowPanel.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
@@ -1222,7 +1219,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
 		getFunctionArgNameMap().clear();
-		setIsPageDirty(false);
+		//setIsPageDirty(false);
 		if (getFunctionArgumentList().size() > 0) {
 			getFunctionArgumentList().clear();
 		}
@@ -2398,6 +2395,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the clicked menu
 	 */
+	@Override
 	public String getNextClickedMenu() {
 		return nextClickedMenu;
 	}
@@ -2415,10 +2413,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @param currentSection
 	 *            the new clicked menu
 	 */
+	@Override
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -2785,7 +2784,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public Button getGlobalWarningConfirmationNoButton() {
 		return getGlobalWarningConfirmationMessageAlert().getWarningConfirmationNoButton();
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -3395,7 +3394,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setGlobalWarningConfirmationMessageAlert(WarningConfirmationMessageAlert globalWarningMessageAlert) {
 		globalWarningConfirmationMessageAlert = globalWarningMessageAlert;
 	}
-
+	
 	
 	/*
 	 * (non-Javadoc)

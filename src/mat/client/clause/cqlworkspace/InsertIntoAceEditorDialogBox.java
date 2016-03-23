@@ -136,27 +136,7 @@ public class InsertIntoAceEditorDialogBox {
 							if(functions.getArgumentList() != null){
 								for(int j=0;j<functions.getArgumentList().size();j++){
 									CQLFunctionArgument argument = functions.getArgumentList().get(j);
-									argumentType = argumentType.append(argument.getArgumentName() + " ");
-									/*if (argument.getArgumentType().toString()
-											.equalsIgnoreCase("QDM Datatype")) {
-										if (argument.getAttributeName() != null) {
-											argumentType = argumentType.append("\"").append(
-													argument.getQdmDataType());
-											argumentType = argumentType.append(".")
-													.append(argument.getAttributeName())
-													.append("\" ");
-											
-										}
-									} else if (argument
-											.getArgumentType()
-											.toString()
-											.equalsIgnoreCase(
-													CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-										argumentType = argumentType.append(argument.getOtherType());
-									} else {
-										argumentType = argumentType.append(argument
-												.getArgumentType());
-									}*/
+									argumentType = argumentType.append(argument.getArgumentName());
 									if(j <  (functions.getArgumentList().size()-1)){
 										argumentType.append(",");
 									}
@@ -243,6 +223,7 @@ public class InsertIntoAceEditorDialogBox {
 									itemNameToBeInserted = sb.toString();
 								}
 								searchDisplay.getDefineAceEditor().insertAtCursor(" " + itemNameToBeInserted);
+								searchDisplay.getDefineAceEditor().focus();
 								dialogModal.hide();
 							}
 						} else {

@@ -41,6 +41,8 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -943,29 +945,62 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	public void changeSectionSelection () {
+		
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
-				searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
+				unsetActiveMenuItem(currentSection);
+			searchDisplay.getFunctionLibrary().setActive(false);
+			break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
-				searchDisplay.getParameterLibrary().fireEvent(new ClickEvent(){});
+				unsetActiveMenuItem(currentSection);
+			searchDisplay.getParameterLibrary().setActive(false);
+			break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
-				searchDisplay.getDefinitionLibrary().fireEvent(new ClickEvent(){});
+				unsetActiveMenuItem(currentSection);
+			searchDisplay.getDefinitionLibrary().setActive(false);
+			break;
 			case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
-				searchDisplay.getGeneralInformation().fireEvent(new ClickEvent(){});
+				unsetActiveMenuItem(currentSection);
+			searchDisplay.getGeneralInformation().setActive(false);
+			break;
 			case (CQLWorkSpaceConstants.CQL_VIEW_MENU):
-				searchDisplay.getViewCQL().fireEvent(new ClickEvent(){});
+				unsetActiveMenuItem(currentSection);
+			searchDisplay.getViewCQL().setActive(false);
+			break;
+			default:
+				break;
 		}
 		switch (nextSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
-				searchDisplay.getFunctionLibrary().fireEvent(new ClickEvent(){});
+				currentSection = nextSection;
+			//searchDisplay.getFunctionLibrary().fireEvent(new DoubleClickEvent(){});
+			functionEvent();
+			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
+			break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
-				searchDisplay.getParameterLibrary().fireEvent(new ClickEvent(){});
+				currentSection = nextSection;
+			//searchDisplay.getParameterLibrary().fireEvent(new DoubleClickEvent(){});
+			parameterEvent();
+			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
+			break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
-				searchDisplay.getDefinitionLibrary().fireEvent(new ClickEvent(){});
+				currentSection = nextSection;
+			//searchDisplay.getDefinitionLibrary().fireEvent(new DoubleClickEvent(){});
+			definitionEvent();
+			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
+			break;
 			case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
-				searchDisplay.getGeneralInformation().fireEvent(new ClickEvent(){});
+				currentSection = nextSection;
+			//searchDisplay.getGeneralInformation().fireEvent(new DoubleClickEvent(){});
+			generalInfoEvent();
+			break;
 			case (CQLWorkSpaceConstants.CQL_VIEW_MENU):
-				searchDisplay.getViewCQL().fireEvent(new ClickEvent(){});
+				currentSection = nextSection;
+			searchDisplay.getViewCQL().fireEvent(new DoubleClickEvent(){});
+			//viewCqlEvent();
+			break;
+			default:
+				break;
 		}
 		//setActiveMenuItem(nextClickedMenu);
 	}
@@ -979,6 +1014,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				clearParameter();
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
 				clearDefinition();
+			default:
+				break;
 		}
 	}
 	
@@ -1595,14 +1632,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.setIsNavBarClick(true);
-				searchDisplay.setIsDoubleClick(false);
-				if (searchDisplay.getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					generalInfoEvent();
-				}
+				generalInfoEvent();
+			
 			}
 		});
 		
@@ -1611,14 +1642,8 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.setIsNavBarClick(true);
-				searchDisplay.setIsDoubleClick(false);
-				if (searchDisplay.getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					parameterEvent();
-				}
+				parameterEvent();
+				
 			}
 		});
 		
@@ -1626,14 +1651,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.setIsNavBarClick(true);
-				searchDisplay.setIsDoubleClick(false);
-				if (searchDisplay.getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					definitionEvent();
-				}
+				definitionEvent();
 			}
 		});
 		
@@ -1641,14 +1659,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.setIsNavBarClick(true);
-				searchDisplay.setIsDoubleClick(false);
-				if (searchDisplay.getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					functionEvent();
-				}
+				functionEvent();	
 			}
 		});
 		
@@ -1656,61 +1667,97 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.setIsNavBarClick(true);
-				searchDisplay.setIsDoubleClick(false);
-				if (searchDisplay.getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					viewCqlEvent();
-				}
+				viewCqlEvent();
 			}
 		});
 		
 	}
 	
 	
-	private void generalInfoEvent() {
-		unsetActiveMenuItem(currentSection);
-		searchDisplay.getGeneralInformation().setActive(true);
-		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-		searchDisplay.buildGeneralInformation();
+	private void generalInfoEvent() {		
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+		if (searchDisplay.getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+			searchDisplay.showUnsavedChangesWarning();
+			
+		} else {
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getGeneralInformation().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+			searchDisplay.buildGeneralInformation();
+		}
+		
 	}
 	
 	private void parameterEvent() {
 		unsetActiveMenuItem(currentSection);
-		searchDisplay.getParameterLibrary().setActive(true);
-		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-		searchDisplay.buildParameterLibraryView();
-		searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+		Element element = searchDisplay.getParamCollapse().getElement();
+		if( searchDisplay.getIsPageDirty() ){
+			nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+			searchDisplay.showUnsavedChangesWarning();
+			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
+		} else {
+			searchDisplay.getParameterLibrary().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+			searchDisplay.buildParameterLibraryView();
+			
+			searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+					.checkForEditPermission());
+		}
 		
 	}
 	
 	private void definitionEvent() {
-		unsetActiveMenuItem(currentSection);
-		searchDisplay.getDefinitionLibrary().setActive(true);
-		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-		searchDisplay.buildDefinitionLibraryView();
-		setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+		Element element = searchDisplay.getDefineCollapse().getElement();
+		if(searchDisplay.getIsPageDirty()){
+			nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+			searchDisplay.showUnsavedChangesWarning();
+			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
+		} else {
+			searchDisplay.getDefinitionLibrary().setActive(true);
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.buildDefinitionLibraryView();
+			currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+			setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
+					.checkForEditPermission());
+		}
 	}
 	
 	private void functionEvent() {
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
 		unsetActiveMenuItem(currentSection);
-		searchDisplay.getFunctionLibrary().setActive(true);
-		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-		searchDisplay.buildFunctionLibraryView();
-		setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+		if(searchDisplay.getIsPageDirty() ){
+			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
+			nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+			searchDisplay.showUnsavedChangesWarning();
+		} else {
+			searchDisplay.getFunctionLibrary().setActive(true);
+			searchDisplay.buildFunctionLibraryView();
+			setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
+					.checkForEditPermission());
+			currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+		}
 	}
 	
 	private void viewCqlEvent() {
-		unsetActiveMenuItem(currentSection);
-		searchDisplay.getViewCQL().setActive(true);
-		currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-		searchDisplay.buildCQLFileView();
-		buildCQLView();
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+		if (searchDisplay.getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
+			searchDisplay.showUnsavedChangesWarning();
+		} else {
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getViewCQL().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
+			searchDisplay.buildCQLFileView();
+			buildCQLView(); 
+		}
 		
 	}
 	
@@ -1720,29 +1767,31 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * @param menuClickedBefore the menu clicked before
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
-		searchDisplay.resetMessageDisplay();
-		if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
-			searchDisplay.getGeneralInformation().setActive(false);
-		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
-			searchDisplay.getParameterLibrary().setActive(false);
-			searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
-			if(searchDisplay.getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
-				searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
+		if(!searchDisplay.getIsPageDirty()){
+			searchDisplay.resetMessageDisplay();
+			if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
+				searchDisplay.getGeneralInformation().setActive(false);
+			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
+				searchDisplay.getParameterLibrary().setActive(false);
+				searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
+				if(searchDisplay.getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+					searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
+				}
+			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
+				searchDisplay.getDefinitionLibrary().setActive(false);
+				searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
+				if(searchDisplay.getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+					searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
+				}
+			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
+				searchDisplay.getFunctionLibrary().setActive(false);
+				searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
+				if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+					searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
+				}
+			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
+				searchDisplay.getViewCQL().setActive(false);
 			}
-		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
-			searchDisplay.getDefinitionLibrary().setActive(false);
-			searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
-			if(searchDisplay.getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
-				searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
-			}
-		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
-			searchDisplay.getFunctionLibrary().setActive(false);
-			searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
-			if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
-				searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
-			}
-		} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
-			searchDisplay.getViewCQL().setActive(false);
 		}
 	}
 	

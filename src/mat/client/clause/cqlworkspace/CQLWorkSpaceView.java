@@ -659,7 +659,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			getParameterMap().put(parameter.getId(), parameter);
 		}
 		updateSuggestOracle();
-		getParamBadge().setText("" + getViewParameterList().size());
+		if(getViewParameterList().size() < 10){
+			getParamBadge().setText("0" + getViewParameterList().size());
+		} else {
+			getParamBadge().setText("" + getViewParameterList().size());
+		}
+		
 		
 	}
 	
@@ -682,7 +687,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 		
 		updateSuggestDefineOracle();
-		getDefineBadge().setText("" + getViewDefinitions().size());
+		if(getViewDefinitions().size() < 10){
+			getDefineBadge().setText("0" + getViewDefinitions().size());
+		} else {
+			getDefineBadge().setText("" + getViewDefinitions().size());
+		}
+		
 		
 	}
 	
@@ -707,8 +717,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			}*/
 		}
 		updateSuggestFuncOracle();
-		functionBadge.setText("" + viewFunctions.size());
-		
+		if(viewFunctions.size() < 10){
+			functionBadge.setText("0" + viewFunctions.size());
+		} else {
+			functionBadge.setText("" + viewFunctions.size());
+		}
 	}
 	
 	/*
@@ -821,7 +834,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		Anchor paramAnchor = (Anchor) (parameterLibrary.getWidget(0));
 		paramLabel.setStyleName("transparentLabel");
 		paramAnchor.add(paramLabel);
-		paramBadge.setMarginLeft(65);
+		paramBadge.setPull(Pull.RIGHT);
+		//paramBadge.setMarginLeft(45);
 		paramAnchor.add(paramBadge);
 		paramAnchor.setDataParent("#navGroup");
 		paramAnchor.setDataToggle(Toggle.COLLAPSE);
@@ -835,7 +849,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		Anchor defineAnchor = (Anchor) (definitionLibrary.getWidget(0));
 		defineLabel.setStyleName("transparentLabel");
 		defineAnchor.add(defineLabel);
-		defineBadge.setMarginLeft(67);
+		defineBadge.setPull(Pull.RIGHT);
+		//defineBadge.setMarginLeft(52);
 		defineAnchor.add(defineBadge);
 		defineAnchor.setDataParent("#navGroup");
 		definitionLibrary.setDataToggle(Toggle.COLLAPSE);
@@ -851,7 +866,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		Anchor funcAnchor = (Anchor) (functionLibrary.getWidget(0));
 		functionLibLabel.setStyleName("transparentLabel");
 		funcAnchor.add(functionLibLabel);
-		functionBadge.setMarginLeft(67);
+		functionBadge.setPull(Pull.RIGHT);
+		
+		//functionBadge.setMarginLeft(57);
 		funcAnchor.add(functionBadge);
 		funcAnchor.setDataParent("#navGroup");
 		functionLibrary.setDataToggle(Toggle.COLLAPSE);

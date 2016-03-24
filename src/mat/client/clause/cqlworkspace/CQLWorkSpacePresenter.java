@@ -65,14 +65,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	/** The clicked menu. */
 	String currentSection = "general";
 	String nextSection = "general";
-	String currentParamSelection = "";
-	String previousParamSelection = "";
 	
 	QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
-	/** The view. */
-	String view ="";
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -280,7 +276,12 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		VerticalPanel getMainVPanel();
 		
 		
+		/**
+		 * Gets the message panel.
+		 * @return 
+		 */
 		HorizontalPanel getMessagePanel();
+		
 		/**
 		 * Gets the param badge.
 		 *
@@ -412,6 +413,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		/**
 		 * Gets the error message alert definition.
+		 * @param errorMessageAlert 
 		 *
 		 * @return the error message alert definition
 		 */
@@ -636,6 +638,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
+		/**
+		 * @param availableQDSAttributeList
+		 */
 		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
 		
 		InlineRadio getContextFuncPATRadioBtn();
@@ -827,7 +832,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println("In changeListboxSelection setting dirtyFlag to false and clearing Alert");
+				//System.out.println("In changeListboxSelection setting dirtyFlag to false and clearing Alert");
 				
 				searchDisplay.setIsPageDirty(false);
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
@@ -929,22 +934,27 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 	}
 	
-	public void changeListboxSelection () {
+	private void changeListboxSelection () {
 		
 		searchDisplay.setIsDoubleClick(false);
 		searchDisplay.setIsNavBarClick(false);
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
+				break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
 				searchDisplay.getParameterNameListBox().fireEvent(new DoubleClickEvent(){});
+				break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU) :
 				searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
+				break;
+			default:
+				break;
 		}
 		
 	}
 	
-	public void changeSectionSelection () {
+	private void changeSectionSelection () {
 		
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
@@ -973,31 +983,26 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		switch (nextSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				currentSection = nextSection;
-			//searchDisplay.getFunctionLibrary().fireEvent(new DoubleClickEvent(){});
 			functionEvent();
 			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
 			break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
 				currentSection = nextSection;
-			//searchDisplay.getParameterLibrary().fireEvent(new DoubleClickEvent(){});
 			parameterEvent();
 			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
 			break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
 				currentSection = nextSection;
-			//searchDisplay.getDefinitionLibrary().fireEvent(new DoubleClickEvent(){});
 			definitionEvent();
 			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
 			break;
 			case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
 				currentSection = nextSection;
-			//searchDisplay.getGeneralInformation().fireEvent(new DoubleClickEvent(){});
 			generalInfoEvent();
 			break;
 			case (CQLWorkSpaceConstants.CQL_VIEW_MENU):
 				currentSection = nextSection;
-			searchDisplay.getViewCQL().fireEvent(new DoubleClickEvent(){});
-			//viewCqlEvent();
+			viewCqlEvent();
 			break;
 			default:
 				break;
@@ -1005,15 +1010,18 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		//setActiveMenuItem(nextClickedMenu);
 	}
 	
-	public void clearSelection() {
+	private void clearSelection() {
 		
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				clearFunction();
+				break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
 				clearParameter();
+				break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
 				clearDefinition();
+				break;
 			default:
 				break;
 		}
@@ -1085,7 +1093,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getParameterAceEditor().getText() != null)) {
 			searchDisplay.getParameterAceEditor().setText("");
-			System.out.println("In clearParameter setting text.");
+			//System.out.println("In clearParameter setting text.");
 		}
 		if ((searchDisplay.getParameterNameTxtArea() != null)) {
 			searchDisplay.getParameterNameTxtArea().clear();
@@ -1713,7 +1721,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	private void definitionEvent() {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
-		Element element = searchDisplay.getDefineCollapse().getElement();
 		if(searchDisplay.getIsPageDirty()){
 			nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 			searchDisplay.showUnsavedChangesWarning();
@@ -1891,6 +1898,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	
+	/**
+	 * returns the searchDisplay
+	 * @return
+	 */
 	public ViewDisplay getSearchDisplay() {
 		
 		return searchDisplay;

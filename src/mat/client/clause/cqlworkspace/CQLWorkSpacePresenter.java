@@ -40,8 +40,6 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -57,17 +55,21 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 /**
  * The Class CQLPresenterNavBarWithList.
  */
-public class CQLWorkSpacePresenter implements MatPresenter{
+public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	/** The panel. */
-	SimplePanel panel = new SimplePanel();
+	private SimplePanel panel = new SimplePanel();
 	
 	/** The clicked menu. */
-	String currentSection = "general";
-	String nextSection = "general";
+	private String currentSection = "general";
+	/** The next clicked menu. */
+	private String nextSection = "general";
 	
-	QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+	/** QDSAttributesServiceAsync instance. */
+	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
+	/** The search display. */
+	private ViewDisplay searchDisplay;
 	
 	/**
 	 * The Interface ViewDisplay.
@@ -276,12 +278,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		VerticalPanel getMainVPanel();
 		
 		
-		/**
-		 * Gets the message panel.
-		 * @return 
-		 */
 		HorizontalPanel getMessagePanel();
-		
 		/**
 		 * Gets the param badge.
 		 *
@@ -413,7 +410,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		/**
 		 * Gets the error message alert definition.
-		 * @param errorMessageAlert 
 		 *
 		 * @return the error message alert definition
 		 */
@@ -638,9 +634,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
-		/**
-		 * @param availableQDSAttributeList
-		 */
 		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
 		
 		InlineRadio getContextFuncPATRadioBtn();
@@ -650,8 +643,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		boolean validateForSpecialChar(String identifierName);
 		
 		Map<String, CQLFunctionArgument> getFunctionArgNameMap();
-		
-		
 		
 		void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap);
 		
@@ -691,22 +682,26 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		
 	}
 	
-	/** The search display. */
-	ViewDisplay searchDisplay;
-	
-	private EventHandler handler;
 	
 	/**
 	 * Instantiates a new CQL presenter nav bar with list.
 	 *
 	 * @param srchDisplay the srch display
 	 */
-	public CQLWorkSpacePresenter(ViewDisplay srchDisplay) {
+	public CQLWorkSpacePresenter(final ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
 		addEventHandlers();
 		addObserverHandler();
 	}
 	
+	/**
+	 * Build Insert Pop up.
+	 */
+	private void buildInsertPopUp() {
+		searchDisplay.resetMessageDisplay();
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay, currentSection);
+		searchDisplay.setIsPageDirty(true);
+	}
 	/**
 	 * Adds the event handlers.
 	 * @param type
@@ -716,12 +711,16 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getDefineButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				InsertIntoAceEditorDialogBox.showListOfParametersDialogBox(searchDisplay);
-				searchDisplay.setIsPageDirty(true);
+				buildInsertPopUp();
 			}
 		});
 		
-		
+		searchDisplay.getFunctionButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				buildInsertPopUp();
+			}
+		});
 		searchDisplay.getAddDefineButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -745,43 +744,6 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				addAndModifyFunction();
 			}
 		});
-		
-		searchDisplay.getDefineAceEditor().addKeyDownHandler(new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(!searchDisplay.getDefineAceEditor().isReadOnly()){
-					//System.out.println("In Define Ace Editor addKeyDownHandler, setting dirtyflag = true");
-					searchDisplay.resetMessageDisplay();
-					searchDisplay.setIsPageDirty(true);
-				}
-			}
-		});
-		
-		searchDisplay.getParameterAceEditor().addKeyDownHandler(new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(!searchDisplay.getParameterAceEditor().isReadOnly()){
-					//System.out.println("In Define Ace Editor addKeyDownHandler, setting dirtyflag = true");
-					searchDisplay.resetMessageDisplay();
-					searchDisplay.setIsPageDirty(true);
-				}
-			}
-		});
-		
-		
-		searchDisplay.getFunctionBodyAceEditor().addKeyDownHandler(new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(!searchDisplay.getFunctionBodyAceEditor().isReadOnly()){
-					searchDisplay.resetMessageDisplay();
-					searchDisplay.setIsPageDirty(true);
-				}
-			}
-		});
-		
 		
 		searchDisplay.getEraseDefineButton().addClickHandler(new ClickHandler() {
 			
@@ -832,16 +794,14 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				//System.out.println("In changeListboxSelection setting dirtyFlag to false and clearing Alert");
-				
 				searchDisplay.setIsPageDirty(false);
 				searchDisplay.getWarningConfirmationMessageAlert().clearAlert();
 				if (searchDisplay.isDoubleClick()) {
-					changeListboxSelection();
+					clickEventOnListboxes();
 				} else if (searchDisplay.isNavBarClick()) {
 					changeSectionSelection();
 				} else {
-					clearSelection();
+					clearViewIfDirtyNotSet();
 				}
 				searchDisplay.setIsNavBarClick(false);
 				searchDisplay.setIsDoubleClick(false);
@@ -858,13 +818,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				}
 				if (currentSection.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 					searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
-					//unsetActiveMenuItem(nextClickedMenu);
 				} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 					searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
-					//unsetActiveMenuItem(nextClickedMenu);
 				} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 					searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
-					//unsetActiveMenuItem(nextClickedMenu);
 				}
 			}
 		});
@@ -873,18 +830,25 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox( addNewFunctionArgument , false, searchDisplay);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument , false, searchDisplay);
 				searchDisplay.setIsPageDirty(true);
 			}
 		});
 		
-		
+		addEventHandlerOnAceEditors();
+		addEventHandlersOnContextRadioButtons();
+	}
+	
+	/**
+	 * Event Handlers for Context Radio Buttons.
+	 */
+	private void addEventHandlersOnContextRadioButtons() {
 		searchDisplay.getContextDefinePATRadioBtn().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextDefinePATRadioBtn().getValue()){
+				if (searchDisplay.getContextDefinePATRadioBtn().getValue()) {
 					searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 				} else {
 					searchDisplay.getContextDefinePOPRadioBtn().setValue(true);
@@ -898,7 +862,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextDefinePOPRadioBtn().getValue()){
+				if (searchDisplay.getContextDefinePOPRadioBtn().getValue()) {
 					searchDisplay.getContextDefinePATRadioBtn().setValue(false);
 				} else {
 					searchDisplay.getContextDefinePATRadioBtn().setValue(true);
@@ -912,7 +876,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextFuncPATRadioBtn().getValue()){
+				if (searchDisplay.getContextFuncPATRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
 				} else {
 					searchDisplay.getContextFuncPOPRadioBtn().setValue(true);
@@ -925,7 +889,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				searchDisplay.setIsPageDirty(true);
-				if(searchDisplay.getContextFuncPOPRadioBtn().getValue()){
+				if (searchDisplay.getContextFuncPOPRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPATRadioBtn().setValue(false);
 				} else {
 					searchDisplay.getContextFuncPATRadioBtn().setValue(true);
@@ -934,28 +898,74 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 	}
 	
-	private void changeListboxSelection () {
+	/**
+	 * Event Handlers for Ace Editors.
+	 */
+	private void addEventHandlerOnAceEditors() {
+		searchDisplay.getDefineAceEditor().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (!searchDisplay.getDefineAceEditor().isReadOnly()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.setIsPageDirty(true);
+				}
+			}
+		});
+		
+		searchDisplay.getParameterAceEditor().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (!searchDisplay.getParameterAceEditor().isReadOnly()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.setIsPageDirty(true);
+				}
+			}
+		});
+		
+		
+		searchDisplay.getFunctionBodyAceEditor().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (!searchDisplay.getFunctionBodyAceEditor().isReadOnly()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.setIsPageDirty(true);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Method to trigger double Click on List Boxes based on section when user
+	 * clicks Yes on Warning message (Dirty Check).
+	 */
+	private void clickEventOnListboxes() {
 		
 		searchDisplay.setIsDoubleClick(false);
 		searchDisplay.setIsNavBarClick(false);
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				searchDisplay.getFuncNameListBox().fireEvent(new DoubleClickEvent(){});
-				break;
+			break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
 				searchDisplay.getParameterNameListBox().fireEvent(new DoubleClickEvent(){});
-				break;
+			break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU) :
 				searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent(){});
-				break;
+			break;
 			default:
 				break;
 		}
 		
 	}
-	
-	private void changeSectionSelection () {
-		
+	/**
+	 * Method to Unset current Left Nav section and set next selected section
+	 * when user clicks yes on warning message (Dirty Check).
+	 */
+	private void changeSectionSelection() {
+		// Unset current selected section.
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				unsetActiveMenuItem(currentSection);
@@ -980,6 +990,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			default:
 				break;
 		}
+		// Set Next Selected Section.
 		switch (nextSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				currentSection = nextSection;
@@ -1007,21 +1018,22 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			default:
 				break;
 		}
-		//setActiveMenuItem(nextClickedMenu);
 	}
 	
-	private void clearSelection() {
-		
+	/**
+	 * This method clears the view if isPageDirty flag is not set.
+	 */
+	private void clearViewIfDirtyNotSet() {
 		switch (currentSection) {
 			case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 				clearFunction();
-				break;
+			break;
 			case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
 				clearParameter();
-				break;
+			break;
 			case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
 				clearDefinition();
-				break;
+			break;
 			default:
 				break;
 		}
@@ -1039,7 +1051,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
-					AddFunctionArgumentDialogBox.showArgumentDialogBox(result,true,searchDisplay);
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true , searchDisplay);
 				}
 				
 			}
@@ -1062,6 +1074,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		});
 	}
 	
+	/**
+	 * Get Attributed for Selected Function Argument - QDM Data Type from db.
+	 * @param functionArg - CQLFunctionArgument.
+	 */
 	private void getAttributesForDataType(final CQLFunctionArgument functionArg){
 		attributeService.getAllAttributesByDataType(functionArg.getQdmDataType(),
 				new AsyncCallback<List<QDSAttributes>>() {
@@ -1078,7 +1094,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onSuccess(List<QDSAttributes> result) {
 				searchDisplay.setAvailableQDSAttributeList(result);
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg,true,searchDisplay);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay);
 				
 			}
 			
@@ -1086,28 +1102,27 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	/**
-	 * Clear parameter.
+	 * This method Clears parameter view on Erase Button click when isPageDirty is not set.
 	 */
 	private void clearParameter() {
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getParameterAceEditor().getText() != null)) {
 			searchDisplay.getParameterAceEditor().setText("");
-			//System.out.println("In clearParameter setting text.");
 		}
 		if ((searchDisplay.getParameterNameTxtArea() != null)) {
 			searchDisplay.getParameterNameTxtArea().clear();
 		}
 		
-		if(MatContext.get().getMeasureLockService()
-				.checkForEditPermission()){
+		if (MatContext.get().getMeasureLockService()
+				.checkForEditPermission()) {
 			searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
 		}
 	}
 	
 	/**
-	 * Clear definition.
+	 * This method Clears Definition view on Erase Button click when isPageDirty is not set.
 	 */
 	private void clearDefinition() {
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
@@ -1123,7 +1138,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	/**
-	 * Clear function.
+	 * This method Clears Function view on Erase Button click when isPageDirty is not set.
 	 */
 	private void clearFunction() {
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
@@ -1131,7 +1146,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
 		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getFunctionBodyAceEditor().getText()!= null)) {
+		if ((searchDisplay.getFunctionBodyAceEditor().getText() != null)) {
 			searchDisplay.getFunctionBodyAceEditor().setText("");
 		}
 		if ((searchDisplay.getFuncNameTxtArea() != null)) {
@@ -1143,7 +1158,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	
 	
 	/**
-	 * Adds the and modify function.
+	 * Adds  and modify function.
 	 */
 	protected void addAndModifyFunction() {
 		searchDisplay.resetMessageDisplay();
@@ -1520,7 +1535,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getViewCQL().getElement().setClassName("panel-collapse collapse");
-		if(searchDisplay.getFunctionArgumentList().size() >0){
+		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
@@ -1541,7 +1556,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		searchDisplay.resetMessageDisplay();
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		getAppliedQDMList(true);
-		if(searchDisplay.getFunctionArgumentList().size() >0){
+		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
 		panel.add(searchDisplay.getMainHPanel());
@@ -1553,7 +1568,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 *
 	 * @param isEditable the new definition widget read only
 	 */
-	private void setDefinitionWidgetReadOnly(boolean isEditable){
+	private void setDefinitionWidgetReadOnly(boolean isEditable) {
 		
 		searchDisplay.getDefineNameTxtArea().setEnabled(isEditable);
 		searchDisplay.getDefineAceEditor().setReadOnly(!isEditable);
@@ -1568,7 +1583,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 *
 	 * @param isEditable the new function widget read only
 	 */
-	private void setFunctionWidgetReadOnly(boolean isEditable){
+	private void setFunctionWidgetReadOnly(boolean isEditable) {
 		
 		searchDisplay.getFuncNameTxtArea().setEnabled(isEditable);
 		searchDisplay.getFunctionBodyAceEditor().setReadOnly(!isEditable);
@@ -1586,8 +1601,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 *
 	 * @return the CQL data
 	 */
-	private void getCQLData(){
-		MatContext.get().getMeasureService().getCQLData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
+	private void getCQLData() {
+		MatContext.get().getMeasureService().getCQLData(MatContext.get()
+				.getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1597,30 +1613,21 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				if(result.getCqlModel() != null){
-					
-					/*if(!result.getCqlModel().getContext().isEmpty()){
-						if(result.getCqlModel().getContext().equalsIgnoreCase("Patient")){
-							searchDisplay.getContextToggleSwitch().setValue(true);
-						} else {
-							searchDisplay.getContextToggleSwitch().setValue(false);
-						}
-					}*/
-					
+				if (result.getCqlModel() != null) {
 					if ((result.getCqlModel().getDefinitionList() != null) &&
-							(result.getCqlModel().getDefinitionList().size() >0)) {
+							(result.getCqlModel().getDefinitionList().size() > 0)) {
 						searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 						searchDisplay.clearAndAddDefinitionNamesToListBox();
 						searchDisplay.updateDefineMap();
 					}
 					if ((result.getCqlModel().getCqlParameters() != null) &&
-							(result.getCqlModel().getCqlParameters().size() >0)) {
+							(result.getCqlModel().getCqlParameters().size() > 0)) {
 						searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 						searchDisplay.clearAndAddParameterNamesToListBox();
 						searchDisplay.updateParamMap();
 					}
 					if ((result.getCqlModel().getCqlFunctions() != null) &&
-							(result.getCqlModel().getCqlFunctions().size() >0)) {
+							(result.getCqlModel().getCqlFunctions().size() > 0)) {
 						searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
 						searchDisplay.clearAndAddFunctionsNamesToListBox();
 						searchDisplay.updateFunctionMap();
@@ -1641,7 +1648,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				generalInfoEvent();
-			
+				
 			}
 		});
 		
@@ -1667,7 +1674,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				functionEvent();	
+				functionEvent();
 			}
 		});
 		
@@ -1682,7 +1689,10 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	}
 	
 	
-	private void generalInfoEvent() {		
+	/**
+	 * Build View for General info when General Info AnchorList item is clicked.
+	 */
+	private void generalInfoEvent() {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
 		if (searchDisplay.getIsPageDirty()) {
@@ -1697,13 +1707,15 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		
 	}
-	
+	/**
+	 * Build View for Parameter when Parameter AnchorList item is clicked.
+	 */
 	private void parameterEvent() {
 		unsetActiveMenuItem(currentSection);
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
 		Element element = searchDisplay.getParamCollapse().getElement();
-		if( searchDisplay.getIsPageDirty() ){
+		if (searchDisplay.getIsPageDirty()) {
 			nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 			searchDisplay.showUnsavedChangesWarning();
 			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
@@ -1717,7 +1729,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 		}
 		
 	}
-	
+	/**
+	 * Build View for Definition when Definition AnchorList item is clicked.
+	 */
 	private void definitionEvent() {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
@@ -1734,7 +1748,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 					.checkForEditPermission());
 		}
 	}
-	
+	/**
+	 * Build View for Function when Funtion AnchorList item is clicked.
+	 */
 	private void functionEvent() {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
@@ -1751,7 +1767,9 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		}
 	}
-	
+	/**
+	 * Build View for View Cql when View Cql AnchorList item is clicked.
+	 */
 	private void viewCqlEvent() {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
@@ -1763,7 +1781,7 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getViewCQL().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
 			searchDisplay.buildCQLFileView();
-			buildCQLView(); 
+			buildCQLView();
 		}
 		
 	}
@@ -1774,72 +1792,48 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 * @param menuClickedBefore the menu clicked before
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
-		if(!searchDisplay.getIsPageDirty()){
+		if (!searchDisplay.getIsPageDirty()) {
 			searchDisplay.resetMessageDisplay();
-			if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
+			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
 				searchDisplay.getGeneralInformation().setActive(false);
-			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 				searchDisplay.getParameterLibrary().setActive(false);
 				searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
-				if(searchDisplay.getParamCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+				if (searchDisplay.getParamCollapse().getElement().getClassName()
+						.equalsIgnoreCase("panel-collapse collapse in")) {
 					searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 				}
-			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
 				searchDisplay.getDefinitionLibrary().setActive(false);
 				searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
-				if(searchDisplay.getDefineCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+				if (searchDisplay.getDefineCollapse().getElement().getClassName()
+						.equalsIgnoreCase("panel-collapse collapse in")) {
 					searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 				}
-			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
 				searchDisplay.getFunctionLibrary().setActive(false);
 				searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
-				if(searchDisplay.getFunctionCollapse().getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")){
+				if (searchDisplay.getFunctionCollapse().getElement().getClassName()
+						.equalsIgnoreCase("panel-collapse collapse in")) {
 					searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
 				}
-			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)) {
 				searchDisplay.getViewCQL().setActive(false);
 			}
 		}
 	}
-	
-	//	/**
-	//	 * Method to unset Anchor List Item selection for previous selection and set for new selections.
-	//	 *
-	//	 * @param menuClickedBefore the menu clicked before
-	//	 */
-	//	private void setActiveMenuItem(String menuClicked) {
-	//		searchDisplay.resetMessageDisplay();
-	//		if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
-	//			searchDisplay.getGeneralInformation().setActive(true);
-	//		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
-	//			searchDisplay.getParameterLibrary().setActive(true);
-	//			searchDisplay.getParameterNameListBox().setSelectedIndex(-1);
-	//			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
-	//		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
-	//			searchDisplay.getDefinitionLibrary().setActive(true);
-	//			searchDisplay.getDefineNameListBox().setSelectedIndex(-1);
-	//			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
-	//		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
-	//			searchDisplay.getFunctionLibrary().setActive(true);
-	//			searchDisplay.getFuncNameListBox().setSelectedIndex(-1);
-	//			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
-	//		} else if(menuClicked.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
-	//			searchDisplay.getViewCQL().setActive(true);
-	//		}
-	//	}
-	
-	
-	
 	/**
 	 * Method to build View for Anchor List item View CQL.
 	 */
 	private void buildCQLView() {
 		
-		MatContext.get().getMeasureService().getCQLFileData(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
+		MatContext.get().getMeasureService().getCQLFileData(MatContext.get()
+				.getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				if(result.isSuccess()){
-					if((result.getCqlString() != null) && !result.getCqlString().isEmpty()){
+				if (result.isSuccess()) {
+					if ((result.getCqlString() != null)
+							&& !result.getCqlString().isEmpty()) {
 						searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 					}
 				}
@@ -1871,39 +1865,36 @@ public class CQLWorkSpacePresenter implements MatPresenter{
 	 */
 	private HTML getMsgPanel(IconType iconType, String message) {
 		Icon checkIcon = new Icon(iconType);
-		HTML msgHtml = new HTML(checkIcon + " <b>"+ message +"</b>");
+		HTML msgHtml = new HTML(checkIcon + " <b>" + message + "</b>");
 		return msgHtml;
 	}
 	
+	/**
+	 * Get All Applied QDM List from Measure XML.
+	 * @param checkForSupplementData - boolean.
+	 */
 	private void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
 			MatContext.get().getMeasureService().getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
 					new AsyncCallback<QualityDataModelWrapper>() {
-				
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Unable to Reterive QDM List");
-					
 				}
-				
 				@Override
 				public void onSuccess(QualityDataModelWrapper result) {
 					searchDisplay.setAppliedQdmList(result.getQualityDataDTO());
 				}
-				
 			});
 		}
 	}
-	
-	
 	/**
-	 * returns the searchDisplay
-	 * @return
+	 * returns the searchDisplay.
+	 * @return ViewDisplay.
 	 */
 	public ViewDisplay getSearchDisplay() {
-		
 		return searchDisplay;
 	}
 	

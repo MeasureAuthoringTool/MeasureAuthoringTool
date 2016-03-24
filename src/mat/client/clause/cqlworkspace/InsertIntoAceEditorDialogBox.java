@@ -27,16 +27,28 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 public class InsertIntoAceEditorDialogBox {
-	public static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
-	public static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
-	public static List<String> cqlFunctionsList = MatContext.get().getCqlGrammarDataType().getCqlFunctionsList();
+	/**
+	 * List of availableInsertItemList.
+	 */
+	private static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
+	/**
+	 * List of timingList.
+	 */
+	private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
+	/**
+	 * List of cqlFunctionsList.
+	 */
+	private static List<String> cqlFunctionsList = MatContext.get().getCqlGrammarDataType().getCqlFunctionsList();
 	
 	/**
-	 * @param searchDisplay
+	 * Public static method to build Pop up for Insert into Ace Editor.
+	 * @param searchDisplay - ViewDisplay.
+	 * @param currentSection - String.
 	 */
-	public static  void showListOfParametersDialogBox(final ViewDisplay searchDisplay){
+	public static  void showListOfItemAvailableForInsertDialogBox(final ViewDisplay searchDisplay, String currentSection) {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Item into Editor");
 		dialogModal.setClosable(true);
@@ -56,6 +68,8 @@ public class InsertIntoAceEditorDialogBox {
 		listAllItemNames.setWidth("350px");
 		listAllItemNames.clear();
 		listAllItemNames.setEnabled(false);
+		// Based on Current Section this method will reterive instance of Ace Editor.
+		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		
 		// main form
 		Form bodyForm = new Form();
@@ -106,6 +120,74 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		addChangeHandlerIntoLists(searchDisplay, availableItemToInsert, listAllItemNames, messageFormgroup,
+				helpBlock, availableItemTypeFormGroup, selectItemListFormGroup);
+		
+		addButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				int selectedItemIndex = availableItemToInsert.getSelectedIndex();
+				if (selectedItemIndex != 0) {
+					String itemTypeName = availableItemToInsert.getItemText(selectedItemIndex);
+					if (!itemTypeName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+						int selectedIndex = listAllItemNames.getSelectedIndex();
+						if (selectedIndex != 0) {
+							String itemNameToBeInserted = listAllItemNames.getItemTitle(selectedIndex);
+							if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+								helpBlock.setText("Please Select Valid Parameter name to"
+										+ " insert into Editor");
+								messageFormgroup.setValidationState(ValidationState.ERROR);
+							} else {
+								int columnIndex = editor.getCursorPosition().getColumn();
+								System.out.println(columnIndex);
+								if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
+									String[] str = itemNameToBeInserted.split("\\.");
+									StringBuilder sb = new StringBuilder();
+									sb = sb.append("[\"" + str[1] + "\"");
+									sb = sb.append(":\"").append(str[0] + "\"]");
+									itemNameToBeInserted = sb.toString();
+								}
+								editor.insertAtCursor(" " + itemNameToBeInserted);
+								editor.focus();
+								dialogModal.hide();
+							}
+						} else {
+							selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+							helpBlock.setText("Please Select Item name to insert into Editor");
+							messageFormgroup.setValidationState(ValidationState.ERROR);
+						}
+					} else {
+						availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText("Please Select Item Type to insert into Editor");
+						messageFormgroup.setValidationState(ValidationState.ERROR);
+					}
+				} else {
+					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please Select Item Type to insert into Editor");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+				}
+			}
+		});
+		dialogModal.show();
+	}
+	/**
+	 * This method add's addChangeHandler event to 'availableItemToInsert' and 'listAllItemNames' ListBox.
+	 * @param searchDisplay -ViewDisplay.
+	 * @param availableItemToInsert - ListBoxMVP.
+	 * @param listAllItemNames - ListBoxMVP.
+	 * @param messageFormgroup - FormGroup.
+	 * @param helpBlock - HelpBlock.
+	 * @param availableItemTypeFormGroup - FormGroup.
+	 * @param selectItemListFormGroup - FormGroup.
+	 */
+	private static void addChangeHandlerIntoLists(final ViewDisplay searchDisplay,
+			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames, final FormGroup messageFormgroup,
+			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup) {
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -133,11 +215,11 @@ public class InsertIntoAceEditorDialogBox {
 							StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
 							functionNameBuilder.append("(");
 							StringBuilder argumentType = new StringBuilder();
-							if(functions.getArgumentList() != null){
-								for(int j=0;j<functions.getArgumentList().size();j++){
+							if (functions.getArgumentList() != null) {
+								for (int j = 0; j < functions.getArgumentList().size(); j++) {
 									CQLFunctionArgument argument = functions.getArgumentList().get(j);
 									argumentType = argumentType.append(argument.getArgumentName());
-									if(j <  (functions.getArgumentList().size()-1)){
+									if (j <  (functions.getArgumentList().size() - 1)) {
 										argumentType.append(",");
 									}
 								}
@@ -157,7 +239,6 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						
 						for (int i = 0; i < timingList.size(); i++) {
 							listAllItemNames.addItem(timingList.get(i));
 						}
@@ -186,6 +267,8 @@ public class InsertIntoAceEditorDialogBox {
 				}
 			}
 		});
+		
+		
 		listAllItemNames.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -194,64 +277,34 @@ public class InsertIntoAceEditorDialogBox {
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
-			
 		});
-		addButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				int selectedItemIndex = availableItemToInsert.getSelectedIndex();
-				if(selectedItemIndex != 0){
-					String itemTypeName = availableItemToInsert.getItemText(selectedItemIndex);
-					if(!itemTypeName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-						int selectedIndex = listAllItemNames.getSelectedIndex();
-						if (selectedIndex != 0) {
-							String itemNameToBeInserted = listAllItemNames.getItemTitle(selectedIndex);
-							if(itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
-								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Select Valid Parameter name to insert into Editor");
-								messageFormgroup.setValidationState(ValidationState.ERROR);
-							} else {
-								int columnIndex = searchDisplay.getDefineAceEditor().getCursorPosition().getColumn();
-								System.out.println(columnIndex);
-								if(itemTypeName.equalsIgnoreCase("Applied QDM")){
-									String[] str = itemNameToBeInserted.split("\\.");
-									StringBuilder sb = new StringBuilder();
-									sb = sb.append("[\"" + str[1]+"\"");
-									sb = sb.append(":\"").append(str[0] + "\"]");
-									itemNameToBeInserted = sb.toString();
-								}
-								searchDisplay.getDefineAceEditor().insertAtCursor(" " + itemNameToBeInserted);
-								searchDisplay.getDefineAceEditor().focus();
-								dialogModal.hide();
-							}
-						} else {
-							selectItemListFormGroup.setValidationState(ValidationState.ERROR);
-							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Select Item name to insert into Editor");
-							messageFormgroup.setValidationState(ValidationState.ERROR);
-						}
-					} else {
-						availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
-						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Select Item Type to insert into Editor");
-						messageFormgroup.setValidationState(ValidationState.ERROR);
-					}
-					
-				} else {
-					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
-					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Select Item Type to insert into Editor");
-					messageFormgroup.setValidationState(ValidationState.ERROR);
-				}
-			}
-			
-		});
-		
-		dialogModal.show();
+	}
+	/**
+	 * Method to Reterive Instance of Ace Editor based on current Section in CQL WorkSpace.
+	 * @param searchDisplay - ViewDisplay.
+	 * @param currentSection - String.
+	 * @return AceEditor.
+	 */
+	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+		AceEditor editor = null;
+		switch(currentSection) {
+			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
+				editor = searchDisplay.getDefineAceEditor();
+				break;
+			case CQLWorkSpaceConstants.CQL_FUNCTION_MENU:
+				editor = searchDisplay.getFunctionBodyAceEditor();
+				break;
+			default:
+				editor = searchDisplay.getDefineAceEditor();
+				break;
+		}
+		return editor;
 	}
 	
+	/**
+	 * This method populates first drop down of the pop up.
+	 * @param availableItemToInsert - ListBoxMVP
+	 */
 	private static void addAvailableItems(ListBoxMVP availableItemToInsert) {
 		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {

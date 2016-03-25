@@ -727,7 +727,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				addAndModifyDefintions();
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+				   addAndModifyDefintions();
+				}
 			}
 		});
 		
@@ -735,7 +737,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				addAndModifyParameters();
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+				  addAndModifyParameters();
+				}
 			}
 			
 		});
@@ -743,7 +747,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getSaveFunctionButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				addAndModifyFunction();
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					addAndModifyFunction();
+				}
+				
 			}
 		});
 		
@@ -1285,6 +1292,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addAndModifyParameters() {
 		searchDisplay.resetMessageDisplay();
+		CQLParameter param = searchDisplay.getParameterMap().get(searchDisplay.getCurrentSelectedParamerterObjId());
+		//to check if Default Parameter is Editable
+		if(param != null && param.isReadOnly()){
+			return;
+		}
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty()) {

@@ -610,16 +610,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		CQLParameter parameter = new  CQLParameter();
 	
 		parameter.setId(UUID.randomUUID().toString());
-		parameter.setParameterName("MeasurementPeriod");
-		parameter.setParameterLogic("Interval<DateTime>");
-		parameter.setReadOnly(true);
-		
+		parameter.setParameterName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
+		parameter.setParameterLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
+		parameter.setReadOnly(true);	
 		String parStr = getCqlService().createParametersXML(parameter);
-		
-		/*String filteredString = removePatternFromXMLString(parStr.substring(parStr.indexOf("<measure>", 0)),
-				"<measure>", "");
-		filteredString = removePatternFromXMLString(filteredString, "</measure>", "");*/
-		
+	
 		try {
 			xmlProcessor.appendNode(parStr, "parameter", "/measure/cqlLookUp/parameters");
 		} catch (SAXException e) {

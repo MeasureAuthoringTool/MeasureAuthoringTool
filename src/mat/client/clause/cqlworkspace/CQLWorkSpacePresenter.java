@@ -680,6 +680,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		void showGlobalUnsavedChangesWarning();
 		
+		Badge getFunctionBadge();
+		
 	}
 	
 	
@@ -1619,18 +1621,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 						searchDisplay.clearAndAddDefinitionNamesToListBox();
 						searchDisplay.updateDefineMap();
+					} else {
+						searchDisplay.getDefineBadge().setText("00");
 					}
 					if ((result.getCqlModel().getCqlParameters() != null) &&
 							(result.getCqlModel().getCqlParameters().size() > 0)) {
 						searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 						searchDisplay.clearAndAddParameterNamesToListBox();
 						searchDisplay.updateParamMap();
+					} else {
+						searchDisplay.getParamBadge().setText("00");
 					}
 					if ((result.getCqlModel().getCqlFunctions() != null) &&
 							(result.getCqlModel().getCqlFunctions().size() > 0)) {
 						searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
 						searchDisplay.clearAndAddFunctionsNamesToListBox();
 						searchDisplay.updateFunctionMap();
+					} else {
+						searchDisplay.getFunctionBadge().setText("00");
 					}
 				}
 				

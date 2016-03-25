@@ -3095,6 +3095,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the function badge
 	 */
+	@Override
 	public Badge getFunctionBadge() {
 		return functionBadge;
 	}

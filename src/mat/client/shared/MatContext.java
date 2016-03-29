@@ -83,6 +83,7 @@ public class MatContext implements IsSerializable {
 	/** The Constant PLEASE_SELECT. */
 	public static final String PLEASE_SELECT = "--Select--";
 	
+	/** The cql keywords. */
 	public CQLKeywords cqlKeywords = new CQLKeywords();
 	
 	/** The instance. */
@@ -222,6 +223,17 @@ public class MatContext implements IsSerializable {
 	
 	/** The global copy paste. */
 	private GlobalCopyPasteObject globalCopyPaste;
+	
+	
+	/** The definitions. */
+	public List<String> definitions = new ArrayList<String>(); 
+	
+	/** The parameters. */
+	public List<String> parameters = new ArrayList<String>();
+	
+	/** The funcs. */
+	public List<String> funcs = new ArrayList<String>();
+	
 	
 	//private GlobalCopyPaste copyPaste;
 	
@@ -620,13 +632,11 @@ public class MatContext implements IsSerializable {
 	
 	/**
 	 * Checks if is valid user.
-	 * 
-	 * @param username
-	 *            the username
-	 * @param Password
-	 *            the password
-	 * @param callback
-	 *            the callback
+	 *
+	 * @param username            the username
+	 * @param Password            the password
+	 * @param oneTimePassword the one time password
+	 * @param callback            the callback
 	 */
 	public void isValidUser(String username, String Password, String oneTimePassword, AsyncCallback<LoginModel> callback){
 		getLoginService().isValidUser(username, Password, oneTimePassword, callback);
@@ -1208,6 +1218,14 @@ public class MatContext implements IsSerializable {
 	
 	
 	//recording the User Events
+	/**
+	 * Record user event.
+	 *
+	 * @param userId the user id
+	 * @param event the event
+	 * @param additionalInfo the additional info
+	 * @param isChildLogRequired the is child log required
+	 */
 	public void recordUserEvent(String userId, List<String> event, String additionalInfo, boolean isChildLogRequired) {
 		MatContext.get()
 		.getAuditService().recordUserEvent(userId, event, additionalInfo, isChildLogRequired, new AsyncCallback<Boolean>() {
@@ -1491,6 +1509,11 @@ public class MatContext implements IsSerializable {
 	}
 	// Get all CQL Data types/Timings/Functions from cqlTemplate.xml
 	// And All QDM Data types except Attributes.
+	/**
+	 * Gets the all cql keywords and qdm datatypes for cql work space.
+	 *
+	 * @return the all cql keywords and qdm datatypes for cql work space
+	 */
 	public void getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace(){
 		
 		measureService.getCQLKeywordsList(new AsyncCallback<CQLKeywords>() {
@@ -1785,8 +1808,73 @@ public class MatContext implements IsSerializable {
 	}
 	
 	
+	/**
+	 * Gets the cql grammar data type.
+	 *
+	 * @return the cql grammar data type
+	 */
 	public CQLKeywords getCqlGrammarDataType() {
 		return cqlKeywords;
+	}
+
+
+	/**
+	 * Gets the definitions.
+	 *
+	 * @return the definitions
+	 */
+	public List<String> getDefinitions() {
+		return definitions;
+	}
+
+
+	/**
+	 * Sets the definitions.
+	 *
+	 * @param definitions the new definitions
+	 */
+	public void setDefinitions(List<String> definitions) {
+		this.definitions = definitions;
+	}
+
+
+	/**
+	 * Gets the parameters.
+	 *
+	 * @return the parameters
+	 */
+	public List<String> getParameters() {
+		return parameters;
+	}
+
+
+	/**
+	 * Sets the parameters.
+	 *
+	 * @param parameters the new parameters
+	 */
+	public void setParameters(List<String> parameters) {
+		this.parameters = parameters;
+	}
+
+
+	/**
+	 * Gets the funcs.
+	 *
+	 * @return the funcs
+	 */
+	public List<String> getFuncs() {
+		return funcs;
+	}
+
+
+	/**
+	 * Sets the funcs.
+	 *
+	 * @param funcs the new funcs
+	 */
+	public void setFuncs(List<String> funcs) {
+		this.funcs = funcs;
 	}
 	
 	

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -24,6 +25,7 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
@@ -32,6 +34,7 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -49,6 +52,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
@@ -278,6 +282,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		VerticalPanel getMainVPanel();
 		
 		
+		/**
+		 * Gets the message panel.
+		 *
+		 * @return the message panel
+		 */
 		HorizontalPanel getMessagePanel();
 		/**
 		 * Gets the param badge.
@@ -411,6 +420,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Gets the error message alert definition.
 		 *
+		 * @param errorMessageAlert the new error message alert
 		 * @return the error message alert definition
 		 */
 		void setErrorMessageAlert(ErrorMessageAlert errorMessageAlert);
@@ -425,8 +435,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Sets the success message alert.
 		 *
-		 * @param successMessageAlert
-		 *            the new success message alert
+		 * @param warningMessageAlert the new warning confirmation message alert
 		 */
 		void setWarningConfirmationMessageAlert(WarningConfirmationMessageAlert warningMessageAlert);
 		
@@ -438,18 +447,43 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Sets the checks if is page dirty.
 		 *
-		 * @param isParameterDirty the new checks if is page dirty
+		 * @param isPageDirty the new checks if is page dirty
 		 */
 		void setIsPageDirty(Boolean isPageDirty);
 		
+		/**
+		 * Gets the checks if is page dirty.
+		 *
+		 * @return the checks if is page dirty
+		 */
 		Boolean getIsPageDirty();
 		
+		/**
+		 * Sets the checks if is double click.
+		 *
+		 * @param isDoubleClick the new checks if is double click
+		 */
 		void setIsDoubleClick(Boolean isDoubleClick);
 		
+		/**
+		 * Checks if is double click.
+		 *
+		 * @return the boolean
+		 */
 		Boolean isDoubleClick();
 		
+		/**
+		 * Sets the checks if is nav bar click.
+		 *
+		 * @param isDoubleClick the new checks if is nav bar click
+		 */
 		void setIsNavBarClick(Boolean isDoubleClick);
 		
+		/**
+		 * Checks if is nav bar click.
+		 *
+		 * @return the boolean
+		 */
 		Boolean isNavBarClick();
 		
 		
@@ -622,6 +656,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList);
 		
+		/**
+		 * Gets the erase function button.
+		 *
+		 * @return the erase function button
+		 */
 		Button getEraseFunctionButton();
 		
 		
@@ -632,55 +671,203 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 		
+		/**
+		 * Gets the available qds attribute list.
+		 *
+		 * @return the available qds attribute list
+		 */
 		List<QDSAttributes> getAvailableQDSAttributeList();
 		
+		/**
+		 * Sets the available qds attribute list.
+		 *
+		 * @param availableQDSAttributeList the new available qds attribute list
+		 */
 		void setAvailableQDSAttributeList(List<QDSAttributes> availableQDSAttributeList);
 		
+		/**
+		 * Gets the context func pat radio btn.
+		 *
+		 * @return the context func pat radio btn
+		 */
 		InlineRadio getContextFuncPATRadioBtn();
 		
+		/**
+		 * Gets the context func pop radio btn.
+		 *
+		 * @return the context func pop radio btn
+		 */
 		InlineRadio getContextFuncPOPRadioBtn();
 		
+		/**
+		 * Validate for special char.
+		 *
+		 * @param identifierName the identifier name
+		 * @return true, if successful
+		 */
 		boolean validateForSpecialChar(String identifierName);
 		
+		/**
+		 * Gets the function arg name map.
+		 *
+		 * @return the function arg name map
+		 */
 		Map<String, CQLFunctionArgument> getFunctionArgNameMap();
 		
+		/**
+		 * Sets the function arg name map.
+		 *
+		 * @param functionArgNameMap the function arg name map
+		 */
 		void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap);
 		
+		/**
+		 * Gets the func name list box.
+		 *
+		 * @return the func name list box
+		 */
 		org.gwtbootstrap3.client.ui.ListBox getFuncNameListBox();
 		
+		/**
+		 * Gets the warning confirmation yes button.
+		 *
+		 * @return the warning confirmation yes button
+		 */
 		Button getWarningConfirmationYesButton();
 		
+		/**
+		 * Gets the warning confirmation no button.
+		 *
+		 * @return the warning confirmation no button
+		 */
 		Button getWarningConfirmationNoButton();
 		
+		/**
+		 * Gets the applied qdm list.
+		 *
+		 * @return the applied qdm list
+		 */
 		List<QualityDataSetDTO> getAppliedQdmList();
 		
+		/**
+		 * Sets the applied qdm list.
+		 *
+		 * @param appliedQdmList the new applied qdm list
+		 */
 		void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList);
 		
+		/**
+		 * Reset message display.
+		 */
 		void resetMessageDisplay();
 		
+		/**
+		 * Gets the main h panel.
+		 *
+		 * @return the main h panel
+		 */
 		HorizontalPanel getMainHPanel();
 		
+		/**
+		 * Gets the argument text area.
+		 *
+		 * @return the argument text area
+		 */
 		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
 		
+		/**
+		 * Sets the parameter widget read only.
+		 *
+		 * @param isEditable the new parameter widget read only
+		 */
 		void setParameterWidgetReadOnly(boolean isEditable);
 		
+		/**
+		 * Show unsaved changes warning.
+		 */
 		void showUnsavedChangesWarning();
 		
+		/**
+		 * Sets the next clicked menu.
+		 *
+		 * @param nextClickedMenu the new next clicked menu
+		 */
 		void setNextClickedMenu(String nextClickedMenu);
 		
+		/**
+		 * Gets the next clicked menu.
+		 *
+		 * @return the next clicked menu
+		 */
 		Object getNextClickedMenu();
 		
+		/**
+		 * Gets the global warning confirmation yes button.
+		 *
+		 * @return the global warning confirmation yes button
+		 */
 		Button getGlobalWarningConfirmationYesButton();
 		
+		/**
+		 * Gets the global warning confirmation no button.
+		 *
+		 * @return the global warning confirmation no button
+		 */
 		Button getGlobalWarningConfirmationNoButton();
 		
+		/**
+		 * Gets the global warning confirmation message alert.
+		 *
+		 * @return the global warning confirmation message alert
+		 */
 		WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert();
 		
+		/**
+		 * Sets the global warning confirmation message alert.
+		 *
+		 * @param globalWarningMessageAlert the new global warning confirmation message alert
+		 */
 		void setGlobalWarningConfirmationMessageAlert(WarningConfirmationMessageAlert globalWarningMessageAlert);
 		
+		/**
+		 * Show global unsaved changes warning.
+		 */
 		void showGlobalUnsavedChangesWarning();
 		
+		/**
+		 * Gets the function badge.
+		 *
+		 * @return the function badge
+		 */
 		Badge getFunctionBadge();
+
+        /**
+         * Builds the info panel.
+         *
+         * @param source the source
+         */
+        void buildInfoPanel(Widget source);
+		
+		/**
+		 * Gets the define info button.
+		 *
+		 * @return the define info button
+		 */
+		Button getDefineInfoButton();
+
+		/**
+		 * Gets the param info button.
+		 *
+		 * @return the param info button
+		 */
+		Button getParamInfoButton();
+
+		/**
+		 * Gets the func info button.
+		 *
+		 * @return the func info button
+		 */
+		Button getFuncInfoButton();
 		
 	}
 	
@@ -706,7 +893,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 	/**
 	 * Adds the event handlers.
-	 * @param type
 	 */
 	private void addEventHandlers() {
 		
@@ -841,6 +1027,35 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
 				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument , false, searchDisplay);
 				searchDisplay.setIsPageDirty(true);
+			}
+		});
+		
+		
+		searchDisplay.getDefineInfoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.buildInfoPanel((Widget)event.getSource());
+				
+			}
+		});
+		
+		
+        searchDisplay.getParamInfoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.buildInfoPanel((Widget)event.getSource());
+				
+			}
+		});
+        
+        searchDisplay.getFuncInfoButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.buildInfoPanel((Widget)event.getSource());
+				
 			}
 		});
 		
@@ -1085,7 +1300,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	/**
 	 * Get Attributed for Selected Function Argument - QDM Data Type from db.
+	 *
 	 * @param functionArg - CQLFunctionArgument.
+	 * @return the attributes for data type
 	 */
 	private void getAttributesForDataType(final CQLFunctionArgument functionArg){
 		attributeService.getAllAttributesByDataType(functionArg.getQdmDataType(),
@@ -1203,6 +1420,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result.isSuccess()) {
 								searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
+								MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getSuccessMessageAlert().setVisible(true);
@@ -1244,6 +1462,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							if (result.isSuccess()) {
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
+								MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
@@ -1323,6 +1542,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							if (result.isSuccess()) {
 								
 								searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
+								MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
 								searchDisplay.getSuccessMessageAlert().createAlert(
@@ -1360,6 +1580,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result.isSuccess()) {
 								searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
+								MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
 								searchDisplay.getParameterNameTxtArea()
@@ -1444,6 +1665,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									if(result.isSuccess()){
 										
 										searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
+										MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
 										searchDisplay.clearAndAddDefinitionNamesToListBox();
 										searchDisplay.updateDefineMap();
 										searchDisplay.getSuccessMessageAlert().createAlert(
@@ -1486,6 +1708,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result.isSuccess()) {
 								searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
+								MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
 								searchDisplay.clearAndAddDefinitionNamesToListBox();
 								searchDisplay.updateDefineMap();
 								searchDisplay.setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
@@ -1633,6 +1856,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList());
 						searchDisplay.clearAndAddDefinitionNamesToListBox();
 						searchDisplay.updateDefineMap();
+						MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
 					} else {
 						searchDisplay.getDefineBadge().setText("00");
 					}
@@ -1641,6 +1865,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.setViewParameterList(result.getCqlModel().getCqlParameters());
 						searchDisplay.clearAndAddParameterNamesToListBox();
 						searchDisplay.updateParamMap();
+						MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
 					} else {
 						searchDisplay.getParamBadge().setText("00");
 					}
@@ -1649,6 +1874,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
 						searchDisplay.clearAndAddFunctionsNamesToListBox();
 						searchDisplay.updateFunctionMap();
+						MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 					} else {
 						searchDisplay.getFunctionBadge().setText("00");
 					}
@@ -1891,7 +2117,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	/**
 	 * Get All Applied QDM List from Measure XML.
+	 *
 	 * @param checkForSupplementData - boolean.
+	 * @return the applied qdm list
 	 */
 	private void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -1910,6 +2138,61 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			});
 		}
 	}
+	
+	
+	/**
+	 * Gets the definition list.
+	 *
+	 * @param definitionList the definition list
+	 * @return the definition list
+	 */
+	private List<String> getDefinitionList(
+			List<CQLDefinition> definitionList) {
+		
+		List<String> defineList = new ArrayList<String>();
+		
+		for(int i=0; i<definitionList.size(); i++){
+			defineList.add(definitionList.get(i).getDefinitionName());
+		}
+		return defineList;
+	}
+	
+	/**
+	 * Gets the paramater list.
+	 *
+	 * @param parameterList the parameter list
+	 * @return the paramater list
+	 */
+	private List<String> getParamaterList(
+			List<CQLParameter> parameterList) {
+		
+		List<String> paramList = new ArrayList<String>();
+		
+		for(int i=0; i<parameterList.size(); i++){
+			paramList.add(parameterList.get(i).getParameterName());
+		}
+		return paramList;
+	}
+	
+	/**
+	 * Gets the function list.
+	 *
+	 * @param functionList the function list
+	 * @return the function list
+	 */
+	private List<String> getFunctionList(
+			List<CQLFunctions> functionList) {
+		
+		List<String> funcList = new ArrayList<String>();
+		
+		for(int i=0; i<functionList.size(); i++){
+			funcList.add(functionList.get(i).getFunctionName());
+		}
+		return funcList;
+	}
+	
+	
+	
 	/**
 	 * returns the searchDisplay.
 	 * @return ViewDisplay.

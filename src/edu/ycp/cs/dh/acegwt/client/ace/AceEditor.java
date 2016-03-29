@@ -22,8 +22,12 @@ package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.HashMap;
 import java.util.List;
+
+import mat.client.shared.MatContext;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -34,6 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RequiresResize;
 
+// TODO: Auto-generated Javadoc
 /**
  * A GWT widget for the Ajax.org Code Editor (ACE).
  *
@@ -41,20 +46,28 @@ import com.google.gwt.user.client.ui.RequiresResize;
  */
 public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String> {
 	// Used to generate unique element ids for Ace widgets.
+	/** The next id. */
 	private static int nextId = 0;
 	
+	/** The element id. */
 	private final String elementId;
 	
+	/** The editor. */
 	private JavaScriptObject editor;
 	
+	/** The annotations. */
 	private JsArray<AceAnnotation> annotations = JavaScriptObject.createArray().cast();
 	
+	/** The div element. */
 	private Element divElement;
 	
+	/** The markers. */
 	private HashMap<Integer, AceRange> markers = new HashMap<Integer, AceRange>();
 	
+	/** The selection. */
 	private AceSelection selection = null;
 	
+	/** The command line. */
 	private AceCommandLine commandLine = null;
 	
 	/**
@@ -169,7 +182,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	/**
 	 * Enable a worker for the current session.
 	 *
-	 * @param userWorker true to enable a worker otherwise false
+	 * @param useWorker the new use worker
 	 */
 	public native void setUseWorker(boolean useWorker) /*-{
                 var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
@@ -201,7 +214,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
-	 * Give font size
+	 * Give font size.
+	 *
 	 * @return font size
 	 */
 	public native int getFontSize() /*-{
@@ -300,6 +314,13 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		return this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::getCursorPositionImpl(DD)(pos.row, pos.column);
 	}-*/;
 	
+	/**
+	 * Gets the cursor position impl.
+	 *
+	 * @param row the row
+	 * @param column the column
+	 * @return the cursor position impl
+	 */
 	private AceEditorCursorPosition getCursorPositionImpl(final double row, final double column) {
 		return new AceEditorCursorPosition((int) row, (int) column);
 	}
@@ -314,6 +335,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		return getIndexFromPositionImpl(position.toJsObject());
 	}
 	
+	/**
+	 * Gets the index from position impl.
+	 *
+	 * @param jsPosition the js position
+	 * @return the index from position impl
+	 */
 	private native int getIndexFromPositionImpl(JavaScriptObject jsPosition) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		return editor.getSession().getDocument().positionToIndex(jsPosition);
@@ -419,7 +446,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
-	 * Add an annotation to a the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;, but does not set it on the editor
+	 * Add an annotation to a the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;, but does not set it on the editor.
 	 *
 	 * @param row to which the annotation should be added
 	 * @param column to which the annotation applies
@@ -432,7 +459,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}
 	
 	/**
-	 * Set any annotations which have been added via <code>addAnnotation</code> on the editor
+	 * Set any annotations which have been added via <code>addAnnotation</code> on the editor.
 	 */
 	public native void setAnnotations() /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
@@ -442,7 +469,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	
 	/**
-	 * Clear any annotations from the editor and reset the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;
+	 * Clear any annotations from the editor and reset the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;.
 	 */
 	public native void clearAnnotations() /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
@@ -451,7 +478,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
-	 * Reset any annotations in the local <code>annotations</code> JsArray<AceAnnotation>
+	 * Reset any annotations in the local <code>annotations</code> JsArray<AceAnnotation>.
 	 */
 	private void resetAnnotations() {
 		annotations = JavaScriptObject.createArray().cast();
@@ -500,8 +527,9 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	/**
 	 * Execute a command with arguments (in case args is not null).
+	 *
 	 * @param command one word command
-	 * @param args command argument
+	 * @param arg the arg
 	 */
 	public void execCommand(String command, String arg) {
 		execCommandHidden(command, arg);
@@ -516,6 +544,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		execCommandHidden(command, args);
 	}
 	
+	/**
+	 * Exec command hidden.
+	 *
+	 * @param command the command
+	 * @param args the args
+	 */
 	private native void execCommandHidden(String command, Object args) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		if (args && typeof args !== "string")
@@ -525,7 +559,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
-	 * Remove commands, that may not be required, from the editor
+	 * Remove commands, that may not be required, from the editor.
 	 *
 	 * @param command to be removed, one of
 	 *          "gotoline", "findnext", "findprevious", "find", "replace", "replaceall"
@@ -571,7 +605,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
-	 * Set whether to use wrap mode or not
+	 * Set whether to use wrap mode or not.
 	 *
 	 * @param useWrapMode true if word wrap should be used, false otherwise
 	 */
@@ -588,11 +622,17 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		redisplay();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.TakesValue#setValue(java.lang.Object)
+	 */
 	@Override
 	public void setValue(String value) {
 		this.setText(value);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.TakesValue#getValue()
+	 */
 	@Override
 	public String getValue() {
 		return this.getText();
@@ -723,10 +763,21 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		}
 	}
 	
+	/**
+	 * Adds the marker.
+	 *
+	 * @param id the id
+	 * @param range the range
+	 */
 	private void addMarker(int id, AceRange range) {
 		markers.put(id, range);
 	}
 	
+	/**
+	 * Removes the registered marker.
+	 *
+	 * @param id the id
+	 */
 	private void removeRegisteredMarker(int id) {
 		AceRange range = markers.remove(id);
 		range.detach();
@@ -743,6 +794,11 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		return selection;
 	}
 	
+	/**
+	 * Gets the selection js.
+	 *
+	 * @return the selection js
+	 */
 	private native JavaScriptObject getSelectionJS() /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		return editor.getSession().getSelection();
@@ -764,6 +820,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		});
 	}
 	
+	/**
+	 * Wrap completion callback.
+	 *
+	 * @param jsCallback the js callback
+	 * @return the ace completion callback
+	 */
 	private static AceCompletionCallback wrapCompletionCallback(JavaScriptObject jsCallback) {
 		
 		return new AceCompletionCallbackImpl(jsCallback);
@@ -771,22 +833,85 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	//Method Added by MAT Team Start :
 	/**
-	 * 
 	 * Added Key down handler for Ace Editor.
-	 * 
-	 * */
+	 *
+	 * @param keyDownHandler the key down handler
+	 * @return the handler registration
+	 */
 	public HandlerRegistration addKeyDownHandler(KeyDownHandler keyDownHandler){
 		return this.addDomHandler(keyDownHandler, KeyDownEvent.getType());
 	}
 	
 	/**
 	 * Reterive ReadOnly State for Ace Editor.
-	 *
+	 * 
 	 * Return Boolean.
+	 *
+	 * @return true, if is read only
 	 */
 	public native boolean isReadOnly() /*-{
 			var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 			return editor.getReadOnly();
 		}-*/;
 	//Method Added by MAT Team End :
+	
+	
+	
+	/**
+	 * Adds the auto completions.
+	 * This method is used for CQL definitions, functions and parameters to be 
+	 * available for AceEditor dynamically on Keyboard Shortcuts.
+	 */
+	public static native void addAutoCompletions()/*-{
+	  $wnd.definitioList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createDefinitionsJsArrayString();
+	  
+	  $wnd.paramList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createParamsJsArrayString();
+	  
+	  $wnd.funcsList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createfuncsJsArrayString();
+	  
+	  
+	}-*/;
+	
+	/**
+	 * Creates the definitions js array string.
+	 *
+	 * @return the js array string
+	 */
+	private static JsArrayString createDefinitionsJsArrayString() {
+		List<String> defineList = MatContext.get().definitions;
+	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+	    for (String string : defineList) {
+	        jsArray.push(string);
+	    }
+	    return jsArray;
+	}
+	
+	/**
+	 * Creates the params js array string.
+	 *
+	 * @return the js array string
+	 */
+	private static JsArrayString createParamsJsArrayString() {
+		List<String> paramList = MatContext.get().parameters;
+	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+	    for (String string : paramList) {
+	        jsArray.push(string);
+	    }
+	    return jsArray;
+	}
+	
+	/**
+	 * Createfuncs js array string.
+	 *
+	 * @return the js array string
+	 */
+	private static JsArrayString createfuncsJsArrayString() {
+		List<String> funcsList = MatContext.get().funcs;
+	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+	    for (String string : funcsList) {
+	        jsArray.push(string);
+	    }
+	    return jsArray;
+	}
+	
 }

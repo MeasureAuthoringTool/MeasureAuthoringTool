@@ -1519,16 +1519,45 @@ var Autocomplete = function() {
                 return;
             
             var keyString = this.editor.keyString;
+          //  alert("keyString:"+keyString);
+            var timingKeywords = ["after","before","during","ends","includes","included in","meets","overlaps","same","starts","within"];
+            var functionKeywords = ["Age At","Avg", "Count", "Datetimediff", "Fifth","First", "Fourth", "Max","Median","Min","Most Recent","Satisfies All","Satisfies Any","Second","Sum","Third"];
+       	    var defineKeywords = window.definitioList();
+        	var funcsKeywords = window.funcsList();
+        	var paramKeywords = window.paramList();
+            
             if(keyString == "t"){
             	//alert("keyString:"+this.editor.keyString);
             	matches = [];
-            	var timingKeywords = ["after","before","during","ends","includes","included in","meets","overlaps","same","starts","within"];
-            	this.getSpecificKeyWords(timingKeywords,matches);
-            }else if(keyString == "f"){
+            	this.getSpecificKeyWords(timingKeywords,matches, "timings");
+            } else if(keyString == "f"){
             	//alert("keyString:"+this.editor.keyString);
             	matches = [];
-            	var functionKeywords = ["Age At","Avg", "Count", "Datetimediff", "Fifth","First", "Fourth", "Max","Median","Min","Most Recent","Satisfies All","Satisfies Any","Second","Sum","Third"];
-            	this.getSpecificKeyWords(functionKeywords,matches);
+            	var fk = [];
+            	for(var i=0;i<funcsKeywords.length;i++){
+            		fk.push(funcsKeywords[i]);	
+            	}
+            	//alert(fk);
+            	this.getSpecificKeyWords(fk,matches, "functions");
+            } else if(keyString == "u"){
+            	//alert("keyString:"+this.editor.keyString);
+            	matches = [];
+            	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
+            } else if(keyString == "p"){
+            	//alert("keyString:"+this.editor.keyString);
+            	matches = [];
+            	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
+            }  else if(keyString == "space"){
+            	this.getSpecificKeyWords(timingKeywords,matches, "timings");
+            	
+            	var fk1 = [];
+            	for(var i=0;i<funcsKeywords.length;i++){
+            		fk1.push(funcsKeywords[i]);
+            	}
+            	//alert(fk1);
+            	this.getSpecificKeyWords(fk1,matches, "functions");
+            	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
+            	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
             }
             this.completions = new FilteredList(matches);
             this.completions.setFilter(prefix);
@@ -1544,14 +1573,14 @@ var Autocomplete = function() {
         }.bind(this));
     };
     
-    this.getSpecificKeyWords = function(keyWordArray,matches){
+    this.getSpecificKeyWords = function(keyWordArray,matches, keyword){
     	for(var i=0;i<keyWordArray.length;i++){
     		matches.push(
     				{
     	                name: keyWordArray[i],
     	                value: keyWordArray[i],
-    	                score: 0,
-    	                meta: "keyword"
+    	                score: 1,
+    	                meta: keyword
     	            }
     				);
     	}
@@ -1647,7 +1676,7 @@ Autocomplete.startCommand = {
         editor.completer.showPopup(editor);
         editor.completer.cancelContextMenu();
     },
-    bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space|Ctrl-Shift-t|Ctrl-Shift-f"
+    bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space|Ctrl-Shift-t|Ctrl-Shift-f|Ctrl-Shift-u|Ctrl-Shift-p"
 };
 
 var FilteredList = function(array, filterText, mutateData) {

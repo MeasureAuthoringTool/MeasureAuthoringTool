@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import mat.client.CustomPager;
 import mat.client.shared.CQLSaveDeleteEraseButtonBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -22,6 +23,7 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -41,6 +43,7 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -78,12 +81,15 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -1080,6 +1086,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Builds the parameter library view.
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public void buildParameterLibraryView() {
 		setCurrentSelectedDefinitionObjId(null);
@@ -1114,6 +1121,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		parameterAceEditor.setSize("675px", "500px");
 		parameterAceEditor.setAutocompleteEnabled(true);
+		parameterAceEditor.addAutoCompletions();
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		paramAceEditorPanel.add(parameterAceEditor);
 		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
@@ -1230,6 +1238,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Builds the definition library view.
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public void buildDefinitionLibraryView() {
 		setCurrentSelectedDefinitionObjId(null);
@@ -1262,6 +1271,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		defineAceEditor.setSize("675px", "500px");
 		defineAceEditor.setAutocompleteEnabled(true);
+		defineAceEditor.addAutoCompletions();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defAceEditorPanel.add(defineAceEditor);
 		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
@@ -1398,6 +1408,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Builds the function library view.
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public void buildFunctionLibraryView() {
 		setCurrentSelectedDefinitionObjId(null);
@@ -1430,6 +1441,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		functionBodyAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		functionBodyAceEditor.setSize("675px", "500px");
 		functionBodyAceEditor.setAutocompleteEnabled(true);
+		defineAceEditor.addAutoCompletions();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
@@ -1553,6 +1565,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 	
+	/**
+	 * Update function argument name map.
+	 *
+	 * @param argumentList the argument list
+	 */
 	private void updateFunctionArgumentNameMap(List<CQLFunctionArgument> argumentList) {
 		functionArgNameMap.clear();
 		if (argumentList != null) {
@@ -2427,8 +2444,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Sets the clicked menu.
 	 *
-	 * @param currentSection
-	 *            the new clicked menu
+	 * @param nextClickedMenu the new next clicked menu
 	 */
 	@Override
 	public void setNextClickedMenu(String nextClickedMenu) {
@@ -3214,6 +3230,36 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
 	}
 	
+	
+	/* 
+	 * This Method is used to give information of Keyboard ShortcutKeys
+	 *  on AceEditor for Users. 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildInfoPanel(com.google.gwt.user.client.ui.Widget)
+	 */
+	@Override
+	public void buildInfoPanel(Widget sourceWidget){
+
+		PopupPanel panel = new PopupPanel();
+		panel.setAutoHideEnabled(true);
+		panel.setPopupPosition(sourceWidget.getAbsoluteLeft()+40, sourceWidget.getAbsoluteTop()+20);
+    	VerticalPanel dialogContents = new VerticalPanel();
+		dialogContents.getElement().setId("dialogContents_VerticalPanel");
+		panel.setWidget(dialogContents);
+		
+		HTML html1 = new HTML("CTRL-Shift-t  :timings");
+		HTML html2 = new HTML("Ctrl-Shift-f  :functions");
+		HTML html3 = new HTML("Ctrl-Shift-u  :definitions");
+		HTML html4 = new HTML("Ctrl-Shift-p  :parameters");
+		HTML html5 = new HTML("Ctrl-Space :all Keywords");
+		dialogContents.add(html1);
+		dialogContents.add(html2);
+		dialogContents.add(html3);
+		dialogContents.add(html4);
+		dialogContents.add(html5);
+		
+		panel.show();
+	}
+	
 	/**
 	 * The Class CustomTextAreaWithNoWhiteSpaces.
 	 */
@@ -3437,6 +3483,24 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getDefineInfoButton()
+	 */
+	@Override
+	public Button getDefineInfoButton(){
+		return defineButtonBar.getInfoButton();
+	}
+	
+	@Override
+	public Button getParamInfoButton(){
+		return parameterButtonBar.getInfoButton();
+	}
+	
+	@Override
+	public Button getFuncInfoButton(){
+		return functionButtonBar.getInfoButton();
+	}
+	
+	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getArgumentTextArea()
 	 */
 	@Override
@@ -3444,6 +3508,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return new CustomTextAreaWithNoWhiteSpaces(500);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#showUnsavedChangesWarning()
+	 */
 	@Override
 	public void showUnsavedChangesWarning() {
 		getErrorMessageAlert().clearAlert();
@@ -3453,6 +3520,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#showGlobalUnsavedChangesWarning()
+	 */
 	@Override
 	public void showGlobalUnsavedChangesWarning() {
 		getErrorMessageAlert().clearAlert();
@@ -3461,4 +3531,5 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
+
 }

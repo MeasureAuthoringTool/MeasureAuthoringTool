@@ -26,6 +26,9 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 	/** The erase button. */
 	private Button eraseButton = new Button();
 	
+	/** The info button. */
+	private Button infoButton = new Button();
+	
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
@@ -75,10 +78,21 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		eraseButton.setColor("#0964A2");
 		eraseButton.setSize("30px", "30px");
 		
+		infoButton.setType(ButtonType.LINK);
+		infoButton.getElement().setId("eraseButton_Button");
+		infoButton.setMarginTop(10);
+		infoButton.setTitle("Information");
+		infoButton.setIcon(IconType.INFO_CIRCLE);
+		infoButton.setIconSize(IconSize.LARGE);
+		infoButton.setColor("#0964A2");
+		infoButton.setSize("30px", "30px");
+		
+
 		buttonLayout.add(insertButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(eraseButton);
+		buttonLayout.add(infoButton);
 		initWidget(buttonLayout);
 		
 	}
@@ -94,9 +108,15 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		saveButton.setEnabled(isEnabled);
 		deleteButton.setEnabled(isEnabled);
 		eraseButton.setEnabled(isEnabled);
+		infoButton.setEnabled(isEnabled);
 	}
 	
 	
+	/**
+	 * Gets the insert button.
+	 *
+	 * @return the insert button
+	 */
 	public Button getInsertButton() {
 		return insertButton;
 	}
@@ -127,6 +147,15 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 	 */
 	public Button getEraseButton() {
 		return eraseButton;
+	}
+	
+	/**
+	 * Gets the info button.
+	 *
+	 * @return the info button
+	 */
+	public Button getInfoButton(){
+		return infoButton;
 	}
 	
 	

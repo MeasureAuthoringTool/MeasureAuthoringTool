@@ -11,7 +11,7 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.CustomTextAreaWithNoWhiteSpaces;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
@@ -626,21 +626,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the parameter button bar
 		 */
-		CQLSaveDeleteEraseButtonBar getParameterButtonBar();
+		CQLButtonToolBar getParameterButtonBar();
 		
 		/**
 		 * Gets the define button bar.
 		 *
 		 * @return the define button bar
 		 */
-		CQLSaveDeleteEraseButtonBar getDefineButtonBar();
+		CQLButtonToolBar getDefineButtonBar();
 		
 		/**
 		 * Gets the function button bar.
 		 *
 		 * @return the function button bar
 		 */
-		CQLSaveDeleteEraseButtonBar getFunctionButtonBar();
+		CQLButtonToolBar getFunctionButtonBar();
 		
 		/**
 		 * Gets the function argument list.

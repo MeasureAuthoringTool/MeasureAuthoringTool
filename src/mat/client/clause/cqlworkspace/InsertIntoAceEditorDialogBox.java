@@ -37,7 +37,7 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of timingList.
 	 */
-	private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
+	//private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
 	/**
 	 * List of cqlFunctionsList.
 	 */
@@ -235,14 +235,14 @@ public class InsertIntoAceEditorDialogBox {
 							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
 									.getDefinitionName());
 						}
-					} else if (itemTypeSelected.equalsIgnoreCase("timing")) {
+					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < timingList.size(); i++) {
 							listAllItemNames.addItem(timingList.get(i));
 						}
-					} else if (itemTypeSelected.equalsIgnoreCase("CQL Functions")) {
+					}*/ else if (itemTypeSelected.equalsIgnoreCase("Pre-Defined Functions")) {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);

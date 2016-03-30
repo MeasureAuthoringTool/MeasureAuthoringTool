@@ -10,9 +10,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class CQLSaveDeleteEraseButtonBar.
+ * The Class CQLButtonToolBar.
  */
-public class CQLSaveDeleteEraseButtonBar extends Composite {
+public class CQLButtonToolBar extends Composite {
 	
 	/** The Insert Param button. */
 	private Button insertButton = new Button();
@@ -33,21 +33,21 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
 	/**
-	 * Instantiates a new CQL save delete erase button bar.
+	 * Instantiates a new CQL Button tool bar.
 	 */
-	public CQLSaveDeleteEraseButtonBar() {
+	public CQLButtonToolBar() {
 		
 		
-		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
+		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		
 		insertButton.setType(ButtonType.LINK);
 		insertButton.getElement().setId("insertButton_Button");
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
-		insertButton.setIcon(IconType.PLUS_SQUARE);
+		insertButton.setIcon(IconType.GEARS);
 		insertButton.setIconSize(IconSize.LARGE);
-		insertButton.setColor("#00BFFF");
+		insertButton.setColor("#0964A2");
 		insertButton.setSize("30px", "30px");
 		
 		
@@ -57,7 +57,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		saveButton.setTitle("Save");
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setIconSize(IconSize.LARGE);
-		saveButton.setColor("#00BFFF");
+		saveButton.setColor("#0964A2");
 		saveButton.setSize("30px", "30px");
 		
 		deleteButton.setType(ButtonType.LINK);
@@ -79,7 +79,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		eraseButton.setSize("30px", "30px");
 		
 		infoButton.setType(ButtonType.LINK);
-		infoButton.getElement().setId("eraseButton_Button");
+		infoButton.getElement().setId("infoButton_Button");
 		infoButton.setMarginTop(10);
 		infoButton.setTitle("Information");
 		infoButton.setIcon(IconType.INFO_CIRCLE);
@@ -87,7 +87,7 @@ public class CQLSaveDeleteEraseButtonBar extends Composite {
 		infoButton.setColor("#0964A2");
 		infoButton.setSize("30px", "30px");
 		
-
+		
 		buttonLayout.add(insertButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(deleteButton);

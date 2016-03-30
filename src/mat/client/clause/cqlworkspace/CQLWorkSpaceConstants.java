@@ -12,8 +12,8 @@ public class CQLWorkSpaceConstants {
 		AVAILABLE_ITEM_TO_INSERT.add("Parameters");
 		AVAILABLE_ITEM_TO_INSERT.add("Definitions");
 		AVAILABLE_ITEM_TO_INSERT.add("Functions");
-		AVAILABLE_ITEM_TO_INSERT.add("Timing");
-		AVAILABLE_ITEM_TO_INSERT.add("CQL Functions");
+		/*AVAILABLE_ITEM_TO_INSERT.add("Timing");*/
+		AVAILABLE_ITEM_TO_INSERT.add("Pre-Defined Functions");
 		AVAILABLE_ITEM_TO_INSERT.add("Applied QDM");
 		return AVAILABLE_ITEM_TO_INSERT;
 	}

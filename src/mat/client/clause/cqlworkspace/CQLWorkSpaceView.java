@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mat.client.CustomPager;
-import mat.client.shared.CQLSaveDeleteEraseButtonBar;
+import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -278,7 +278,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private Button addNewArgument = new Button();
 	
 	/** The function button bar. */
-	CQLSaveDeleteEraseButtonBar functionButtonBar = new CQLSaveDeleteEraseButtonBar();
+	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar();
 	
 	/** The param badge. */
 	private Badge paramBadge = new Badge();
@@ -340,10 +340,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	
 	/** The define button bar. */
-	private CQLSaveDeleteEraseButtonBar defineButtonBar = new CQLSaveDeleteEraseButtonBar();
+	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar();
 	
 	/** The parameter button bar. */
-	private CQLSaveDeleteEraseButtonBar parameterButtonBar = new CQLSaveDeleteEraseButtonBar();
+	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar();
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
@@ -2918,7 +2918,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getParameterButtonBar()
 	 */
 	@Override
-	public CQLSaveDeleteEraseButtonBar getParameterButtonBar() {
+	public CQLButtonToolBar getParameterButtonBar() {
 		return parameterButtonBar;
 	}
 	
@@ -2929,7 +2929,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getDefineButtonBar()
 	 */
 	@Override
-	public CQLSaveDeleteEraseButtonBar getDefineButtonBar() {
+	public CQLButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
 	
@@ -2940,7 +2940,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getFunctionButtonBar()
 	 */
 	@Override
-	public CQLSaveDeleteEraseButtonBar getFunctionButtonBar() {
+	public CQLButtonToolBar getFunctionButtonBar() {
 		return functionButtonBar;
 	}
 	

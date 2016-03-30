@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.CustomPager;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -23,7 +22,6 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -43,7 +41,6 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -89,7 +86,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -1131,6 +1127,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
+		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -3235,18 +3232,18 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 	
-	/* 
+	/*
 	 * This Method is used to give information of Keyboard ShortcutKeys
-	 *  on AceEditor for Users. 
+	 *  on AceEditor for Users.
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildInfoPanel(com.google.gwt.user.client.ui.Widget)
 	 */
 	@Override
 	public void buildInfoPanel(Widget sourceWidget){
-
+		
 		PopupPanel panel = new PopupPanel();
 		panel.setAutoHideEnabled(true);
 		panel.setPopupPosition(sourceWidget.getAbsoluteLeft()+40, sourceWidget.getAbsoluteTop()+20);
-    	VerticalPanel dialogContents = new VerticalPanel();
+		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		panel.setWidget(dialogContents);
 		
@@ -3535,5 +3532,5 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
-
+	
 }

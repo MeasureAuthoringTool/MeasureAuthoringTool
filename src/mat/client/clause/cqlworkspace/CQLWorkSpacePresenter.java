@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -25,7 +24,6 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
-
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
@@ -34,7 +32,6 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,7 +49,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
@@ -840,13 +836,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the function badge
 		 */
 		Badge getFunctionBadge();
-
-        /**
-         * Builds the info panel.
-         *
-         * @param source the source
-         */
-        void buildInfoPanel(Widget source);
+		
+		/**
+		 * Builds the info panel.
+		 *
+		 * @param source the source
+		 */
+		void buildInfoPanel(Widget source);
 		
 		/**
 		 * Gets the define info button.
@@ -854,14 +850,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the define info button
 		 */
 		Button getDefineInfoButton();
-
+		
 		/**
 		 * Gets the param info button.
 		 *
 		 * @return the param info button
 		 */
 		Button getParamInfoButton();
-
+		
 		/**
 		 * Gets the func info button.
 		 *
@@ -914,7 +910,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
-				   addAndModifyDefintions();
+					addAndModifyDefintions();
 				}
 			}
 		});
@@ -924,7 +920,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
-				  addAndModifyParameters();
+					addAndModifyParameters();
 				}
 			}
 			
@@ -1041,7 +1037,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 		
 		
-        searchDisplay.getParamInfoButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getParamInfoButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1049,8 +1045,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 			}
 		});
-        
-        searchDisplay.getFuncInfoButton().addClickHandler(new ClickHandler() {
+		
+		searchDisplay.getFuncInfoButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1513,7 +1509,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		CQLParameter param = searchDisplay.getParameterMap().get(searchDisplay.getCurrentSelectedParamerterObjId());
 		//to check if Default Parameter is Editable
-		if(param != null && param.isReadOnly()){
+		if((param != null) && param.isReadOnly()){
 			return;
 		}
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
@@ -1979,6 +1975,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Build View for Definition when Definition AnchorList item is clicked.
 	 */
 	private void definitionEvent() {
+		unsetActiveMenuItem(currentSection);
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
 		if(searchDisplay.getIsPageDirty()){
@@ -1987,9 +1984,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
 		} else {
 			searchDisplay.getDefinitionLibrary().setActive(true);
-			unsetActiveMenuItem(currentSection);
-			searchDisplay.buildDefinitionLibraryView();
 			currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+			searchDisplay.buildDefinitionLibraryView();
 			setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
 		}

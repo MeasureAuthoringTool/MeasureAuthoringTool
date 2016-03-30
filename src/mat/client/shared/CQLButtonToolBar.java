@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public class CQLButtonToolBar extends Composite {
 	
-	/** The Insert Param button. */
+	/** The Insert button. */
 	private Button insertButton = new Button();
 	
 	/** The save button. */
@@ -45,7 +45,7 @@ public class CQLButtonToolBar extends Composite {
 		insertButton.getElement().setId("insertButton_Button");
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
-		insertButton.setIcon(IconType.GEARS);
+		insertButton.setIcon(IconType.PLUS_SQUARE);
 		insertButton.setIconSize(IconSize.LARGE);
 		insertButton.setColor("#0964A2");
 		insertButton.setSize("30px", "30px");
@@ -87,12 +87,11 @@ public class CQLButtonToolBar extends Composite {
 		infoButton.setColor("#0964A2");
 		infoButton.setSize("30px", "30px");
 		
-		
-		buttonLayout.add(insertButton);
 		buttonLayout.add(saveButton);
-		buttonLayout.add(deleteButton);
 		buttonLayout.add(eraseButton);
+		buttonLayout.add(insertButton);
 		buttonLayout.add(infoButton);
+		buttonLayout.add(deleteButton);
 		initWidget(buttonLayout);
 		
 	}
@@ -110,7 +109,6 @@ public class CQLButtonToolBar extends Composite {
 		eraseButton.setEnabled(isEnabled);
 		infoButton.setEnabled(isEnabled);
 	}
-	
 	
 	/**
 	 * Gets the insert button.

@@ -81,7 +81,7 @@ public class InsertIntoAceEditorDialogBox {
 		// CQL Data Type Drop down Form group
 		final FormGroup availableItemTypeFormGroup = new FormGroup();
 		FormLabel availableParamFormLabel = new FormLabel();
-		availableParamFormLabel.setText("Select Item type to insert");
+		availableParamFormLabel.setText("Item Type");
 		availableParamFormLabel.setTitle("Select Item type to insert");
 		availableParamFormLabel.setFor("listAvailableItemType");
 		availableItemTypeFormGroup.add(availableParamFormLabel);
@@ -89,7 +89,7 @@ public class InsertIntoAceEditorDialogBox {
 		
 		final FormGroup selectItemListFormGroup = new FormGroup();
 		FormLabel selectItemListFormLabel = new FormLabel();
-		selectItemListFormLabel.setText("Select Item Name to insert");
+		selectItemListFormLabel.setText("Item Name");
 		selectItemListFormLabel.setTitle("Select Item Name to insert");
 		selectItemListFormLabel.setFor("listItemType");
 		selectItemListFormGroup.add(selectItemListFormLabel);
@@ -136,8 +136,7 @@ public class InsertIntoAceEditorDialogBox {
 							if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Select Valid Parameter name to"
-										+ " insert into Editor");
+								helpBlock.setText("Please select Item Name.");
 								messageFormgroup.setValidationState(ValidationState.ERROR);
 							} else {
 								int columnIndex = editor.getCursorPosition().getColumn();
@@ -156,19 +155,19 @@ public class InsertIntoAceEditorDialogBox {
 						} else {
 							selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Select Item name to insert into Editor");
+							helpBlock.setText("Please select Item Name.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 					} else {
 						availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Select Item Type to insert into Editor");
+						helpBlock.setText("Please select Item Type.");
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				} else {
 					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Select Item Type to insert into Editor");
+					helpBlock.setText("Please select Item Type.");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 			}

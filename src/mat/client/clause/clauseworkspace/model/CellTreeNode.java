@@ -66,6 +66,9 @@ public interface CellTreeNode {
 	
 	/** The set op node. */
 	short SET_OP_NODE = 14;
+	
+	/** The CQL DEfinition node */
+	short CQL_DEFINITION_NODE = 15;  
 	/**
 	 * Append child.
 	 * 

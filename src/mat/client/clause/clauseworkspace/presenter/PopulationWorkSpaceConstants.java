@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.google.gwt.xml.client.Node;
 
 // TODO: Auto-generated Javadoc
@@ -95,6 +96,9 @@ public class PopulationWorkSpaceConstants {
 	public static LinkedHashMap<String, String> subTreeLookUpName;
 	/** The element look up node. */
 	public static LinkedHashMap<String, Node> subTreeLookUpNode;
+	
+	/** Map for CQL Definitions for this measure */
+	public static LinkedHashMap<String, Node> cqlDefinitionLookupNode;
 	
 	/**
 	 * Sets the sub tree look up node.

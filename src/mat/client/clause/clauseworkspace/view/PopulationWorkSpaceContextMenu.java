@@ -389,7 +389,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		Command addCQLDefinitionCmd = new Command() {
 			@Override
 			public void execute() {
-				
+				popupPanel.hide();
+				//To show CQL Definitions on Population Workspace
+				CQLDefinitionsDialogBox.showCQLDefinitionsDialogBox(xmlTreeDisplay, true);
 			}
 		};
 		MenuItem item = new MenuItem("Definition", true, addCQLDefinitionCmd);

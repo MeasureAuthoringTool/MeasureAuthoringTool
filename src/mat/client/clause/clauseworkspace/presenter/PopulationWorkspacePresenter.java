@@ -5,13 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -142,7 +141,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							populationClausePresenter.setOriginalXML(newXML);
 							measureObsClausePresenter.setOriginalXML(newXML);
 							stratificationClausePresenter.setOriginalXML(newXML);
-							setQdmElementsAndSubTreeLookUpMap(xml);
+							setMeasureElementsMap(xml);
 							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
 						} else {
@@ -185,13 +184,15 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Sets the qdm elements map also  reterives SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
-	 *
+	 * Sets the qdm elements map. 
+	 * Also finds SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
+	 * Also finds CQL dEfinitions and add to CQLDEfinitionsNode map.
 	 * @param xml            the new qdm elements map
 	 * @param measureId the measure id
 	 */
-	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
-		
+	private void setMeasureElementsMap(String xml) {
+		System.out.println("Measure XML:");
+		System.out.println(xml);
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
 		PopulationWorkSpaceConstants.elementLookUpDataTypeName = new TreeMap<String, String>();
@@ -201,6 +202,84 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 		
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
+		setupElementLookupQDMNodes(nodeList);
+		setupSubTreeLookupNodes(sortedClauses, document);
+		
+		setupCQLDefinitionNodes(document);
+		
+		List<String> dataTypeList = new ArrayList<String>();
+		dataTypeList.addAll(PopulationWorkSpaceConstants.getElementLookUpDataTypeName().values());
+		attributeService.getDatatypeList(dataTypeList, new AsyncCallback<Map<String, List<String>>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				//Window.alert("I failed");
+				
+			}
+			@Override
+			public void onSuccess(Map<String, List<String>> datatypeMap) {
+				PopulationWorkSpaceConstants.setDatatypeMap(datatypeMap);
+			}
+		});
+	}
+	
+	/**
+	 * Setup CQL Definitions in PopulationWorkSpaceConstants.
+	 * @param document
+	 */
+	private void setupCQLDefinitionNodes(Document document) {
+		PopulationWorkSpaceConstants.cqlDefinitionLookupNode = new LinkedHashMap<String, Node>();
+		
+		NodeList cqlLookupNodeList = document.getElementsByTagName("cqlLookUp");
+		if ( (null != cqlLookupNodeList) &&  (cqlLookupNodeList.getLength() > 0) ){
+		
+			NodeList cqlChildNodeList = cqlLookupNodeList.item(0).getChildNodes();
+			if ( (null != cqlChildNodeList) &&  (cqlChildNodeList.getLength() > 0) ){
+				
+				for(int i=0;i<cqlChildNodeList.getLength();i++){
+					
+					if(cqlChildNodeList.item(i).getNodeName().equals("definitions")){
+						Node cqlDefinitionsNode = cqlChildNodeList.item(i);
+						NodeList cqlDefinitionsList = cqlDefinitionsNode.getChildNodes();						
+						
+						for(int j=0;j < cqlDefinitionsList.getLength();j++){
+							Node cqlDefinitionNode = cqlDefinitionsList.item(j);
+							NamedNodeMap namedNodeMap = cqlDefinitionNode.getAttributes();
+							String definitionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
+							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
+							PopulationWorkSpaceConstants.cqlDefinitionLookupNode.put(definitionName + "~" + uuid, cqlDefinitionNode);
+						}
+						
+						break;
+					}
+				}			
+			}
+		}
+		System.out.println(PopulationWorkSpaceConstants.cqlDefinitionLookupNode);
+	}
+
+	public void setupSubTreeLookupNodes(
+			List<Entry<String, String>> sortedClauses, Document document) {
+		for (Entry<String, String> entry1 : sortedClauses) {
+		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
+		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
+			NodeList subTree = subTreesNodeList.item(0).getChildNodes();
+			for (int i = 0; i < subTree.getLength(); i++) {
+				if ("subTree".equals(subTree.item(i).getNodeName())) {
+					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
+					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+					if(uuid.equalsIgnoreCase(entry1.getKey())){
+						PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), subTree.item(i));
+						break;
+					}					
+				}
+			}
+		}
+			
+		}
+	}
+
+	public void setupElementLookupQDMNodes(NodeList nodeList) {
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
 			NodeList qdms = nodeList.item(0).getChildNodes();
 			for (int i = 0; i < qdms.getLength(); i++) {
@@ -230,44 +309,6 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			}
 			
 		}
-		for (Entry<String, String> entry1 : sortedClauses) {
-		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
-		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
-			NodeList subTree = subTreesNodeList.item(0).getChildNodes();
-			for (int i = 0; i < subTree.getLength(); i++) {
-				if ("subTree".equals(subTree.item(i).getNodeName())) {
-					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
-					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
-					
-					name = name.trim();
-					//					name = name.replaceAll("^\\s+|\\s+$", "");
-					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
-					if(uuid.equalsIgnoreCase(entry1.getKey())){
-						PopulationWorkSpaceConstants.subTreeLookUpNode.put(entry1.getValue() + "~" + entry1.getKey(), subTree.item(i));
-						break;
-					}					
-				}
-			}
-		}
-			
-		}
-		
-		List<String> dataTypeList = new ArrayList<String>();
-		dataTypeList.addAll(PopulationWorkSpaceConstants.getElementLookUpDataTypeName().values());
-		attributeService.getDatatypeList(dataTypeList, new AsyncCallback<Map<String, List<String>>>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				//Window.alert("I failed");
-				
-			}
-			@Override
-			public void onSuccess(Map<String, List<String>> datatypeMap) {
-				System.out.println("Data type map:" + datatypeMap);
-				PopulationWorkSpaceConstants.setDatatypeMap(datatypeMap);
-				
-			}
-		});
 	}	
 	
 	/* (non-Javadoc)

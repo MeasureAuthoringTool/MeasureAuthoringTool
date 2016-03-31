@@ -119,10 +119,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	
 	/** The to compare measure. */
 	private List<MeasureType> toCompareMeasure;
-	
-	/** The to compare item count. */
-	private List<QualityDataSetDTO> toCompareItemCount;
-	
+		
 	/** The to compare component measures. */
 	private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
 	
@@ -1175,8 +1172,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		result = (prime * result)
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
 		result = (prime * result)
-				+ ((toCompareItemCount == null) ? 0 : toCompareItemCount.hashCode());
-		result = (prime * result)
 				+ ((toCompareComponentMeasures == null) ? 0 : toCompareComponentMeasures.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
@@ -1425,13 +1420,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 			return false;
 		}
 		
-		if (toCompareItemCount == null) {
-			if (other.toCompareItemCount != null) {
-				return false;
-			}
-		} else if (!isEqual(toCompareItemCount, other.toCompareItemCount)) {
-			return false;
-		}
 		
 		if(toCompareComponentMeasures == null){
 			if(other.toCompareComponentMeasures != null){
@@ -1688,23 +1676,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		this.qdsSelectedList = qdsSelectedList;
 	}
 	
-	/**
-	 * Gets the to compare item count.
-	 *
-	 * @return the to compare item count
-	 */
-	public List<QualityDataSetDTO> getToCompareItemCount() {
-		return toCompareItemCount;
-	}
-	
-	/**
-	 * Sets the to compare item count.
-	 *
-	 * @param toCompareItemCount the new to compare item count
-	 */
-	public void setToCompareItemCount(List<QualityDataSetDTO> toCompareItemCount) {
-		this.toCompareItemCount = toCompareItemCount;
-	}
 	
 	/**
 	 * Gets the to compare component measures.
@@ -1879,7 +1850,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 				+ ", componentMeasuresSelectedList="
 				+ componentMeasuresSelectedList + ", toCompareAuthor="
 				+ toCompareAuthor + ", toCompareMeasure=" + toCompareMeasure
-				+ ", toCompareItemCount=" + toCompareItemCount
 				+ ", toCompareComponentMeasures=" + toCompareComponentMeasures
 				+ ", draft=" + draft + ", measureSetId=" + measureSetId
 				+ ", valueSetDate=" + valueSetDate + ", supplementalData="

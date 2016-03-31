@@ -384,7 +384,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				clearMessages();
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-				view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 				System.out.println("Overview Object"+ packageOverview.getClauses().size());
 				setNewMeasurePackage();
 			}
@@ -498,7 +497,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-				view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 				updateDetailsFromView(currentDetail);
 				if (isValid()) {
 					MatContext.get().getPackageService()
@@ -600,34 +598,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 	
-	/**
-	 * Get Applied QDM List for Item Count Table.
-	 *
-	 * @param checkForSupplementData - Boolean.
-	 * @return the applied qdm list
-	 */
-	public final void getAppliedQDMList(boolean checkForSupplementData) {
-		String measureId = MatContext.get().getCurrentMeasureId();
-		if ((measureId != null) && !measureId.equals("")) {
-			service.getAppliedQDMForItemCount(measureId,
-					checkForSupplementData,
-					new AsyncCallback<List<QualityDataSetDTO>>() {
-				@Override
-				public void onFailure(final Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-				}
-				
-				@Override
-				public void onSuccess(
-						final List<QualityDataSetDTO> result) {
-					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					appliedListModel.setAppliedQDMs(result);
-					view.setAppliedQdmList(appliedListModel);
-				}
-			});
-		}
-	}
+
 	/**
 	 * Clear messages.
 	 */
@@ -650,7 +621,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.clear();
 		panel.add(view.asWidget());
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 		view.getIncludeVSACData().setValue(false);
 	}
 	/* (non-Javadoc)
@@ -661,7 +631,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 		view.getIncludeVSACData().setValue(false);
 	}
 	/* (non-Javadoc)
@@ -674,9 +643,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
-			getAppliedQDMList(true);
 			view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-			view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 			view.getIncludeVSACData().setValue(false);
 		} else {
 			displayEmpty();
@@ -942,25 +909,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if (detail.getSequence().equals(measurePackageId)) {
 				currentDetail = detail;
 				setMeasurePackageDetailsOnView();
-				getItemCountListFromView(currentDetail.getPackageClauses());
 				break;
 			}
 		}
 	}
 	
-	/**
-	 * Gets the item count list from view.
-	 *
-	 * @param packageClauses the package clauses
-	 * @return the item count list from view
-	 */
-	public void getItemCountListFromView(List<MeasurePackageClauseDetail> packageClauses){
-		for(int i=0; i<dbPackageClauses.size(); i++){
-			dbPackageClauses.get(i).getDbItemCountList().addAll(packageClauses.get(i).getItemCountList());
-			dbPackageClauses.get(i).setDbAssociatedPopulationUUID(packageClauses.get(i).getAssociatedPopulationUUID());
-		}
-		
-	}
 	/**
 	 * setMeasurePackageDetailsOnView.
 	 */

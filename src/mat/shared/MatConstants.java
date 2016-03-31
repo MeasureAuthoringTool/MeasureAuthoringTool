@@ -86,7 +86,7 @@ public interface MatConstants {
 	/** The Constant PROPORTION. */
 	String PROPORTION = "proportion";
 	/** The Constant ITEM_COUNT. */
-	String ITEM_COUNT = "itemCount";
+	//String ITEM_COUNT = "itemCount";
 	/** The Constant SATISFIES. */
 	String SATISFIES = "SATISFIES";
 	/** The Constant STRATIFICATION. */

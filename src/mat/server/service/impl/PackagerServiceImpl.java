@@ -386,7 +386,6 @@ public class PackagerServiceImpl implements PackagerService {
 		detail.setName(name);
 		detail.setType(type);
 		detail.setAssociatedPopulationUUID(associatedPopulationUUID);
-		detail.setItemCountList(itemCountList);
 		return detail;
 	}
 	

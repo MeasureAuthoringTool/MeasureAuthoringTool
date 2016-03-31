@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -102,7 +103,7 @@ public class XmlProcessor {
 	private static final String XPATH_CQL_LOOKUP = "/measure/cqlLookUp";
 	
 	/** The Constant XPATH_DETAILS_ITEM_COUNT. */
-	private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
+	//private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
 	/** The Constant XPATH_DTLS_COMPONENT_MEASURE. */
 	private static final String XPATH_DTLS_COMPONENT_MEASURE = "/measure/measureDetails/componentMeasures";
@@ -967,14 +968,6 @@ public class XmlProcessor {
 				.insertBefore(componentMeasureElement,
 						measureTypeElement.getNextSibling());
 			}
-		}
-		if (findNode(originalDoc, XPATH_DETAILS_ITEM_COUNT) == null) {
-			Element itemCountElement = originalDoc
-					.createElement("itemCount");
-			Node componentMeasuresElement = findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE);
-			((Element) componentMeasuresElement.getParentNode())
-			.insertBefore(itemCountElement,
-					componentMeasuresElement.getNextSibling());
 		}
 		// create Measure Grouping node
 		if (findNode(originalDoc, XPATH_MEASURE_GROUPING) == null) {

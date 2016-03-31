@@ -698,14 +698,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(measureTypeSPanel);
 		//fPanel.add(addEditMeasureType);
 		fPanel.add(new SpacerWidget());
-		
-		Label itemCountTableLabel = (Label) LabelBuilder.buildLabel(cellTable, " Items Counted List");
-		itemCountTableLabel.setStyleName("measureDetailTableHeader");
-		fPanel.add(itemCountTableLabel);
-		fPanel.add(horzPanel);
-		fPanel.add(new SpacerWidget());
-		
-		
+	
 		Label CompMeasureTableLabel = (Label) LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures List");
 		CompMeasureTableLabel.setStyleName("measureDetailTableHeader");
 		fPanel.add(CompMeasureTableLabel);

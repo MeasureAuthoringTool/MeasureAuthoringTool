@@ -833,7 +833,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			@Override
 			public void update(int index, MeasurePackageDetail object, String value) {
 				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
-				packageGroupingWidget.getDisclosurePanelItemCountTable().setVisible(false);
 				observer.onEditClicked(object);
 			}
 		});
@@ -851,7 +850,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				@Override
 				public void update(int index, MeasurePackageDetail object, String value) {
 					packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
-					packageGroupingWidget.getDisclosurePanelItemCountTable().setVisible(false);
 					observer.onDeleteClicked(object);
 				}
 			});

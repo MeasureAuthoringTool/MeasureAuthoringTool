@@ -497,17 +497,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<ValidateMeasureResult> asyncCallback);
 	
 	/**
-	 * Gets the applied qdm for item count.
-	 *
-	 * @param measureId the measure id
-	 * @param checkForSupplementData the check for supplement data
-	 * @param asyncCallback the async callback
-	 * @return the applied qdm for item count
-	 */
-	void getAppliedQDMForItemCount(String measureId,boolean checkForSupplementData,
-			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
-	
-	/**
 	 * Gets the all measure types.
 	 *
 	 * @param asyncCallback the async callback

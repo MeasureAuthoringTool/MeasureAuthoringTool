@@ -269,9 +269,7 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 				 MeasurePackageClauseDetail val2 = (MeasurePackageClauseDetail) listB.get(i);
 				if (val1.compareTo(val2) != 0) {
 					return false;
-				} else if(!isEqual(val1.getItemCountList(), val2.getDbItemCountList())) { 
-					return false;
-				} else if((val1.getAssociatedPopulationUUID()!=null) && (val2.getDbAssociatedPopulationUUID()!=null)) { 
+				}  else if((val1.getAssociatedPopulationUUID()!=null) && (val2.getDbAssociatedPopulationUUID()!=null)) { 
 					if(val1.getAssociatedPopulationUUID()
 							.compareTo(val2.getDbAssociatedPopulationUUID()) != 0){
 						return false;	

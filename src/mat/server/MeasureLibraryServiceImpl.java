@@ -612,9 +612,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		parameter.setId(UUID.randomUUID().toString());
 		parameter.setParameterName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
 		parameter.setParameterLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
-		parameter.setReadOnly(true);	
+		parameter.setReadOnly(true);
+		
 		String parStr = getCqlService().createParametersXML(parameter);
-	
+		
 		try {
 			xmlProcessor.appendNode(parStr, "parameter", "/measure/cqlLookUp/parameters");
 		} catch (SAXException e) {
@@ -2865,13 +2866,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				//Update all elementRef's in SubTreeLookUp
 				updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
-				
-				//Update all elementRef's in ItemCount
-				updateItemCount(processor, modifyWithDTO, modifyDTO);
-				
-				//Update all elementsRefs in Package Clauses
-				updatePackageClauseItemCount(processor, modifyWithDTO, modifyDTO);
-				
+								
 				// update elementLookUp Tag
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
 				updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
@@ -3007,49 +3002,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp End :  ");
 	}
 	
-	/**
-	 * Update item count.
-	 *
-	 * @param processor the processor
-	 * @param modifyWithDTO the modify with dto
-	 * @param modifyDTO the modify dto
-	 */
-	private void updateItemCount(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
-			final QualityDataSetDTO modifyDTO) {
-		
-		logger.debug(" MeasureLibraryServiceImpl: updateItemCount Start :  ");
-		// XPath to find All elementRef's under itemCount element nodes for to be modified QDM.
-		String XPATH_EXPRESSION_ItemCount_ELEMENTREF = "/measure//measureDetails//itemCount//elementRef[@id='"
-				+ modifyDTO.getUuid() + "']";
-		try {
-			NodeList nodesItemCount = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ItemCount_ELEMENTREF,
-					processor.getOriginalDoc(),	XPathConstants.NODESET);
-			for (int i = 0; i < nodesItemCount.getLength(); i++) {
-				Node newNode = nodesItemCount.item(i);
-				String instance = new String();
-				String name = new String();
-				String dataType = new String();
-				String oid = new String();
-				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
-					instance = instance.concat(modifyWithDTO.getOccurrenceText());
-					newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
-				}
-				name = modifyWithDTO.getCodeListName();
-				dataType = modifyWithDTO.getDataType();
-				oid = modifyWithDTO.getOid();
-				newNode.getAttributes().getNamedItem("name").setNodeValue(name);
-				newNode.getAttributes().getNamedItem("dataType").setNodeValue(dataType);
-				newNode.getAttributes().getNamedItem("oid").setNodeValue(oid);
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-			
-		}
-		logger.debug(" MeasureLibraryServiceImpl: updateItemCount End :  ");
-	}
-	
-	
-	
 	
 	/**
 	 * This method updates MeasureXML - ElementRef's under Population and
@@ -3113,52 +3065,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification End :  ");
 	}
 	
-	/**
-	 * Update package clause item count.
-	 *
-	 * @param processor the processor
-	 * @param modifyWithDTO the modify with dto
-	 * @param modifyDTO the modify dto
-	 */
-	private void updatePackageClauseItemCount(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
-			final QualityDataSetDTO modifyDTO) {
-		
-		logger.debug(" MeasureLibraryServiceImpl: updatePackageClauseItemCount Start :  ");
-		// XPath to find All elementRef's under itemCount element nodes for to be modified QDM.
-		String XPATH_EXPRESSION_ItemCount_ELEMENTREF = "/measure//measureGrouping//packageClause//elementRef[@id='"
-				+ modifyDTO.getUuid() + "']";
-		try {
-			NodeList nodesItemCount = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ItemCount_ELEMENTREF,
-					processor.getOriginalDoc(),	XPathConstants.NODESET);
-			for (int i = 0; i < nodesItemCount.getLength(); i++) {
-				Node newNode = nodesItemCount.item(i);
-				String instance = new String();
-				String name = new String();
-				String dataType = new String();
-				String oid = new String();
-				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
-					instance = instance.concat(modifyWithDTO.getOccurrenceText());
-					if (newNode.getAttributes().getNamedItem("instance") != null) {
-						newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
-					} else {
-						Attr instanceAttr = newNode.getOwnerDocument().createAttribute("instance");
-						instanceAttr.setValue(instance);
-						((Element) newNode).setAttributeNode(instanceAttr);
-					}
-				}
-				name = modifyWithDTO.getCodeListName();
-				dataType = modifyWithDTO.getDataType();
-				oid = modifyWithDTO.getOid();
-				newNode.getAttributes().getNamedItem("name").setNodeValue(name);
-				newNode.getAttributes().getNamedItem("dataType").setNodeValue(dataType);
-				newNode.getAttributes().getNamedItem("oid").setNodeValue(oid);
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-			
-		}
-		logger.debug(" MeasureLibraryServiceImpl: updatePackageClauseItemCount End :  ");
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#updatePrivateColumnInMeasure(java.lang.String, boolean)
@@ -4310,32 +4217,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#getAppliedQDMForItemCount(java.lang.String, boolean)
-	 */
-	@Override
-	public final List<QualityDataSetDTO> getAppliedQDMForItemCount(final String measureId,
-			final boolean checkForSupplementData){
-		//to be modified
-		QualityDataModelWrapper details = getAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
-		List<QualityDataSetDTO> qdmList = details.getQualityDataDTO();
-		List<QualityDataSetDTO> filterQDMList = new ArrayList<QualityDataSetDTO>();
-		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
-		for (QualityDataSetDTO qdsDTO : qdmList) {
-			DataType dataType = dataTypeDAO.findByDataTypeName(qdsDTO.getDataType());
-			if ("Timing Element".equals(qdsDTO
-					.getDataType()) || "attribute".equals(qdsDTO.getDataType())
-					|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
-							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
-									.getDataType()) || (dataType == null)) {
-				filterQDMList.add(qdsDTO);
-			}
-		}
-		
-		qdmList.removeAll(filterQDMList);
-		return qdmList;
-		
-	}
 	
 	/**
 	 * Gets the all measure types.

@@ -480,16 +480,6 @@ public interface MeasureLibraryService {
 	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 	
 	/**
-	 * Gets the applied qdm for item count.
-	 *
-	 * @param measureId the measure id
-	 * @param checkForSupplementData the check for supplement data
-	 * @return the applied qdm for item count
-	 */
-	List<QualityDataSetDTO> getAppliedQDMForItemCount(String measureId,
-			boolean checkForSupplementData);
-	
-	/**
 	 * Gets the all measure types.
 	 *
 	 * @return the all measure types

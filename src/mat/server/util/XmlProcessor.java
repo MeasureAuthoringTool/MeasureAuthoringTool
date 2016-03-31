@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,7 +57,7 @@ public class XmlProcessor {
 	private static final String COHORT = "COHORT";
 	
 	/** The Constant MEASUREMENT_PERIOD_OID. */
-	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
+	//private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 	
 	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
 	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
@@ -1435,13 +1434,14 @@ public class XmlProcessor {
 		
 		if (originalDoc != null) {
 			try {
-				// Measurement Period
-				Node measurementPeriodNode = this.findNode(originalDoc,
+				// Measurement Period commented - MAT-7104.
+				// Default Measurement Period is created in Parameter section so it is not required in Elementlookup.
+				/*Node measurementPeriodNode = this.findNode(originalDoc,
 						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_PERIOD_OID + "']");
 				if (measurementPeriodNode == null) {
 					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
-				}
+				}*/
 				
 				//Patient Characteristic Birth Data
 				Node patientCharacteristicBirthDateNode = this.findNode(originalDoc,

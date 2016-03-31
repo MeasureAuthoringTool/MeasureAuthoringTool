@@ -56,6 +56,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
  * The Class CQLPresenterNavBarWithList.
  */
 public class CQLWorkSpacePresenter implements MatPresenter {
+	/** The Measurement Period OID . */
+	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 	
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
@@ -2129,7 +2131,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				@Override
 				public void onSuccess(QualityDataModelWrapper result) {
-					searchDisplay.setAppliedQdmList(result.getQualityDataDTO());
+					List<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+					for (QualityDataSetDTO dto : result.getQualityDataDTO()) {
+						if (!dto.getOid().equalsIgnoreCase(MEASUREMENT_PERIOD_OID)) {
+							appliedQDMList.add(dto);
+						} else {
+							System.out.print("Skipping Measurement Period from QDM List.");
+						}
+					}
+					searchDisplay.setAppliedQdmList(appliedQDMList);
 				}
 			});
 		}

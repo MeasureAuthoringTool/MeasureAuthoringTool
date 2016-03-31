@@ -50,7 +50,7 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	public static  void showListOfItemAvailableForInsertDialogBox(final ViewDisplay searchDisplay, String currentSection) {
 		final Modal dialogModal = new Modal();
-		dialogModal.setTitle("Insert Item into Editor");
+		dialogModal.setTitle("Insert Item into CQL Editor");
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);

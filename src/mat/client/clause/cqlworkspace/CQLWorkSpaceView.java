@@ -274,7 +274,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private Button addNewArgument = new Button();
 	
 	/** The function button bar. */
-	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar();
+	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar("function");
 	
 	/** The param badge. */
 	private Badge paramBadge = new Badge();
@@ -336,10 +336,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	
 	/** The define button bar. */
-	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar();
+	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar("definition");
 	
 	/** The parameter button bar. */
-	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar();
+	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");

@@ -35,14 +35,14 @@ public class CQLButtonToolBar extends Composite {
 	/**
 	 * Instantiates a new CQL Button tool bar.
 	 */
-	public CQLButtonToolBar() {
+	public CQLButtonToolBar(String sectionName) {
 		
 		
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		
 		insertButton.setType(ButtonType.LINK);
-		insertButton.getElement().setId("insertButton_Button");
+		insertButton.getElement().setId("insertButton_"+sectionName);
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
 		insertButton.setIcon(IconType.PLUS_SQUARE);
@@ -52,7 +52,7 @@ public class CQLButtonToolBar extends Composite {
 		
 		
 		saveButton.setType(ButtonType.LINK);
-		saveButton.getElement().setId("saveButton_Button");
+		saveButton.getElement().setId("saveButton_"+sectionName);
 		saveButton.setMarginTop(10);
 		saveButton.setTitle("Save");
 		saveButton.setIcon(IconType.SAVE);
@@ -61,7 +61,7 @@ public class CQLButtonToolBar extends Composite {
 		saveButton.setSize("30px", "30px");
 		
 		deleteButton.setType(ButtonType.LINK);
-		deleteButton.getElement().setId("deleteButton_Button");
+		deleteButton.getElement().setId("deleteButton_"+sectionName);
 		deleteButton.setMarginTop(10);
 		deleteButton.setTitle("Delete");
 		deleteButton.setIcon(IconType.TRASH);
@@ -70,7 +70,7 @@ public class CQLButtonToolBar extends Composite {
 		deleteButton.setSize("30px", "30px");
 		
 		eraseButton.setType(ButtonType.LINK);
-		eraseButton.getElement().setId("eraseButton_Button");
+		eraseButton.getElement().setId("eraseButton_"+sectionName);
 		eraseButton.setMarginTop(10);
 		eraseButton.setTitle("Erase");
 		eraseButton.setIcon(IconType.ERASER);
@@ -79,7 +79,7 @@ public class CQLButtonToolBar extends Composite {
 		eraseButton.setSize("30px", "30px");
 		
 		infoButton.setType(ButtonType.LINK);
-		infoButton.getElement().setId("infoButton_Button");
+		infoButton.getElement().setId("infoButton_"+sectionName);
 		infoButton.setMarginTop(10);
 		infoButton.setTitle("Information");
 		infoButton.setIcon(IconType.INFO_CIRCLE);

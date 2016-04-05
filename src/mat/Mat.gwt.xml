@@ -3,13 +3,14 @@
 	<!-- Inherit the core Web Toolkit stuff. -->
 	<inherits name='com.google.gwt.user.User' />
 	<!-- Compiling gwt code only for ie7,ie8& firefox 3 & above. -->
-	<set-property name="user.agent" value="ie8,ie9,safari,gecko1_8" />
+	<set-property name="user.agent" value="ie9,ie10,safari,gecko1_8" />
 	<!-- Inherit the default GWT style sheet. You can change -->
 	<!-- the theme of your GWT application by uncommenting -->
 	<!-- any one of the following lines. -->
 	<!--  <inherits name='com.google.gwt.user.theme.clean.Clean'/> -->
 	<inherits name='com.google.gwt.user.theme.standard.Standard' />
 	 <inherits name="org.gwtbootstrap3.GwtBootstrap3" />
+	 <!-- <inherits name="org.gwtbootstrap3.GwtBootstrap3Theme"/> -->
 	 <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
 	<public path="resource">
 		<include name="css/*.*" />

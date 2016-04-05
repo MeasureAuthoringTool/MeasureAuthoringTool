@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -1892,7 +1891,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				generalInfoEvent();
-				
 			}
 		});
 		
@@ -1901,7 +1899,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				parameterEvent();
+				if (searchDisplay.getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+					searchDisplay.showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					parameterEvent();
+				}
 				
 			}
 		});
@@ -1910,7 +1914,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				definitionEvent();
+				if (searchDisplay.getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+					searchDisplay.showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					definitionEvent();
+				}
 			}
 		});
 		
@@ -1918,7 +1928,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				functionEvent();
+				if (searchDisplay.getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+					searchDisplay.showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					functionEvent();
+				}
 			}
 		});
 		
@@ -1958,20 +1974,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		unsetActiveMenuItem(currentSection);
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
-		Element element = searchDisplay.getParamCollapse().getElement();
-		if (searchDisplay.getIsPageDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-			searchDisplay.showUnsavedChangesWarning();
-			searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse in");
-		} else {
-			searchDisplay.getParameterLibrary().setActive(true);
-			currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-			searchDisplay.buildParameterLibraryView();
-			
-			searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
-					.checkForEditPermission());
-		}
 		
+		searchDisplay.getParameterLibrary().setActive(true);
+		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+		searchDisplay.buildParameterLibraryView();
+		
+		searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
 	}
 	/**
 	 * Build View for Definition when Definition AnchorList item is clicked.
@@ -1980,17 +1989,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		unsetActiveMenuItem(currentSection);
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
-		if(searchDisplay.getIsPageDirty()){
-			nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-			searchDisplay.showUnsavedChangesWarning();
-			searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse in");
-		} else {
-			searchDisplay.getDefinitionLibrary().setActive(true);
-			currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-			searchDisplay.buildDefinitionLibraryView();
-			setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
-					.checkForEditPermission());
-		}
+		
+		searchDisplay.getDefinitionLibrary().setActive(true);
+		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+		searchDisplay.buildDefinitionLibraryView();
+		setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
 	}
 	/**
 	 * Build View for Function when Funtion AnchorList item is clicked.
@@ -1999,17 +2003,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setIsNavBarClick(true);
 		searchDisplay.setIsDoubleClick(false);
 		unsetActiveMenuItem(currentSection);
-		if(searchDisplay.getIsPageDirty() ){
-			searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse in");
-			nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-			searchDisplay.showUnsavedChangesWarning();
-		} else {
-			searchDisplay.getFunctionLibrary().setActive(true);
-			searchDisplay.buildFunctionLibraryView();
-			setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
-					.checkForEditPermission());
-			currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-		}
+		searchDisplay.getFunctionLibrary().setActive(true);
+		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+		searchDisplay.buildFunctionLibraryView();
+		setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+		
 	}
 	/**
 	 * Build View for View Cql when View Cql AnchorList item is clicked.

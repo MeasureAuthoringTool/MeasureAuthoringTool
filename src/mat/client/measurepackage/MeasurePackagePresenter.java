@@ -909,10 +909,25 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if (detail.getSequence().equals(measurePackageId)) {
 				currentDetail = detail;
 				setMeasurePackageDetailsOnView();
+				getAssociationListFromView(currentDetail.getPackageClauses());
 				break;
 			}
 		}
 	}
+	
+	/**
+	 * Gets the association list from view.
+	 *
+	 * @param packageClauses the package clauses
+	 * @return the association list from view
+	 */
+	public void getAssociationListFromView(List<MeasurePackageClauseDetail> packageClauses){
+		for(int i=0; i<dbPackageClauses.size(); i++){
+			dbPackageClauses.get(i).setDbAssociatedPopulationUUID(packageClauses.get(i).getAssociatedPopulationUUID());
+		}
+		
+	}
+
 	
 	/**
 	 * setMeasurePackageDetailsOnView.

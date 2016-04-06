@@ -173,8 +173,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.CQL_DEFINITION_NODE:				
 			case CellTreeNode.CQL_FUNCTION_NODE:
-				viewHumanReadableMenu.setEnabled(true);
-				
 				deleteMenu.setEnabled(true);
 				copyMenu.setEnabled(true);
 				cutMenu.setEnabled(true);
@@ -186,22 +184,19 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				popupMenuBar.setVisible(true);
 				popupPanel.add(popupMenuBar);
 				
-				popupMenuBar.addItem(viewHumanReadableMenu);
 				break;
 			case CellTreeNode.CQL_AGG_FUNCTION_NODE:	
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);				
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+				addMenu = new MenuItem("Add", subMenuBar); 
 				popupMenuBar.addItem(addMenu);
 				createAddCQLFunctionsMenuItem(subMenuBar);
 				
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
 				}
-				
-				viewHumanReadableMenu.setEnabled(true);
-				
+							
 				deleteMenu.setEnabled(true);
 				copyMenu.setEnabled(true);
 				cutMenu.setEnabled(true);

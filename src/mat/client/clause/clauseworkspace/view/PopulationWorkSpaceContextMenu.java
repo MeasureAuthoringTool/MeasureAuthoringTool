@@ -54,8 +54,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
 					String measureId = MatContext.get().getCurrentMeasureId();
-					//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
-					//					Window.open(url + "&type=open", "_blank", "");
 					xmlTreeDisplay.validatePopulationCellTreeNodes(xmlTreeDisplay.getSelectedNode());
 					if (xmlTreeDisplay.isValidHumanReadable()) {
 						MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
@@ -217,30 +215,13 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				popupPanel.add(popupMenuBar);
 				break;	
 			case CellTreeNode.CLAUSE_NODE:							
-				subMenuBar = new MenuBar(true);
-				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);				
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-				popupMenuBar.addItem(addMenu);
-				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
-					addMenu.setEnabled(false);
-				}
-				addCommonMenus();
-				//Add "View Human Readable" right click option for all populations: Start
-				popupMenuBar.addItem(viewHumanReadableMenu);
-				viewHumanReadableMenu.setEnabled(true);
-				//Add "View Human Readable" right click option for all populations: End
-				copyMenu.setEnabled(true);
-				/*
-				 * POC Global Copy Paste.
-				 * copyToClipBoardMenu.setEnabled(true);*/
-				//pasteMenu.setEnabled(false);
-				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
-					deleteMenu.setEnabled(true);
-				}
-				cutMenu.setEnabled(false);
-				
+					
 				if(!xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)) {
+					subMenuBar = new MenuBar(true);
+					subMenuBar.setAutoOpen(true);				
+					addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+					popupMenuBar.addItem(addMenu);
+					
 					createAddCQLDefinitionMenuItem(subMenuBar);
 					
 					if ((xmlTreeDisplay.getCopiedNode() != null)
@@ -249,6 +230,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						pasteMenu.setEnabled(true);
 					}
 				}else{
+					subMenuBar = new MenuBar(true);
+					subMenuBar.setAutoOpen(true);	
 					addMenu = new MenuItem("Add", subMenuBar);
 					popupMenuBar.addItem(addMenu);
 					
@@ -266,6 +249,22 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						pasteMenu.setEnabled(true);
 					}
 				}
+				popupMenuBar.setAutoOpen(true);
+				
+				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+					addMenu.setEnabled(false);
+				}
+				addCommonMenus();
+				copyMenu.setEnabled(true);
+				
+				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
+					deleteMenu.setEnabled(true);
+				}
+				cutMenu.setEnabled(false);
+				//Add "View Human Readable" right click option for all populations: Start
+				popupMenuBar.addItem(viewHumanReadableMenu);
+				viewHumanReadableMenu.setEnabled(true);
+				//Add "View Human Readable" right click option for all populations: End
 							
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:

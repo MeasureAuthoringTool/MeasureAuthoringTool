@@ -1774,6 +1774,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getMessagePanel().clear();
+		//searchDisplay.getDefineAceEditor().detach();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 	}
@@ -1899,6 +1900,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1914,6 +1917,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1928,6 +1933,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1972,8 +1979,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void parameterEvent() {
 		unsetActiveMenuItem(currentSection);
-		searchDisplay.setIsNavBarClick(true);
-		searchDisplay.setIsDoubleClick(false);
+		
 		
 		searchDisplay.getParameterLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;

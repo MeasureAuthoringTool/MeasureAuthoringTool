@@ -3,11 +3,14 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -387,7 +390,10 @@ public class XmlConversionlHelper {
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CLAUSE_TYPE)) {
 					cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
 					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
-				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.LOG_OP)) {
+				} else if(nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CQL_DEFINITION_TYPE)) {
+					cellTreeNodeType =  CellTreeNode.CQL_DEFINITION_NODE;
+					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
+				}else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.LOG_OP)) {
 					cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;
 				}  else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.SET_OP)) {
 					cellTreeNodeType = CellTreeNode.SET_OP_NODE;
@@ -510,6 +516,9 @@ public class XmlConversionlHelper {
 	@SuppressWarnings("unchecked")
 	private static Element getNodeName(CellTreeNode cellTreeNode, Document document) {
 		Element element = null;
+		System.out.println("Node name:"+cellTreeNode.getName());
+		System.out.println("Node type:"+cellTreeNode.getNodeType());
+		System.out.println();
 		switch (cellTreeNode.getNodeType()) {
 			case CellTreeNode.MASTER_ROOT_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.get(cellTreeNode.getName()));
@@ -531,6 +540,11 @@ public class XmlConversionlHelper {
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				}
 				
+				break;
+			case CellTreeNode.CQL_DEFINITION_NODE:
+				element = document.createElement(PopulationWorkSpaceConstants.CQL_DEFINITION_TYPE);
+				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());				
+				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.CLAUSE_TYPE);

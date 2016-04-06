@@ -36,6 +36,9 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant CLAUSE_TYPE. */
 	public static final String CLAUSE_TYPE = "clause";
 	
+	/** The Constant CQL Definition Type. */
+	public static final String CQL_DEFINITION_TYPE = "cqldefinition";
+	
 	/** The Constant TYPE. */
 	public static final String TYPE = "type";
 	

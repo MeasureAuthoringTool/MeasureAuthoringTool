@@ -168,49 +168,42 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					deleteMenu.setEnabled(true);
 				}
 				break;
-			case CellTreeNode.CLAUSE_NODE:
-				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATUM)) {
-					//subMenuBar = new MenuBar(true);
-					//popupMenuBar.setAutoOpen(true);
-					//subMenuBar.setAutoOpen(true);
-					/**MAT-7076 For CQL measure, we can no longer add logical nodes.
-					 
-					createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-							, subMenuBar); // creating logical Operators Menu 2nd level
-					createAddClauseMenuItem(subMenuBar);
-					
-					*/
+			case CellTreeNode.CQL_DEFINITION_NODE:
+				viewHumanReadableMenu.setEnabled(true);
+				
+				deleteMenu.setEnabled(true);
+				copyMenu.setEnabled(true);
+				cutMenu.setEnabled(true);
+								
+				popupMenuBar.addItem(copyMenu);
+				popupMenuBar.addItem(cutMenu);
+				popupMenuBar.addItem(deleteMenu);
+				
+				popupMenuBar.setVisible(true);
+				popupPanel.add(popupMenuBar);
+				
+				popupMenuBar.addItem(viewHumanReadableMenu);
+				break;
+			case CellTreeNode.CLAUSE_NODE:							
+				subMenuBar = new MenuBar(true);
+				
+				if(!xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)) {
+					createAddCQLDefinitionMenuItem(subMenuBar);
 					
 					if ((xmlTreeDisplay.getCopiedNode() != null)
-							&& xmlTreeDisplay.getCopiedNode().getParent().
-							equals(xmlTreeDisplay.getSelectedNode())) {
+							&& (!xmlTreeDisplay.getSelectedNode().hasChildren()) 
+							&& xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CQL_DEFINITION_NODE) {
 						pasteMenu.setEnabled(true);
 					}
-					/*
-					 * POC Global Copy Paste.
-					 * if ((copiedNode != null)
-							&& copiedNode.getParent().
-							equals(xmlTreeDisplay.getSelectedNode())) {
-						pasteMenu.setEnabled(true);
-						pasteFromClipboardMenu.setEnabled(true);
-					}*/
 				}
-				//show the fist level menu to add clause
-				if(xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)
-						&& !xmlTreeDisplay.getSelectedNode().hasChildren()){
-					//subMenuBar = new MenuBar(true);
-					//popupMenuBar.setAutoOpen(true);
-					//subMenuBar.setAutoOpen(true);
-					//createAddClauseMenuItem(subMenuBar); MAT-7076
-				}
-				
-				subMenuBar = new MenuBar(true);
+								
 				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
-				createAddCQLDefinitionMenuItem(subMenuBar);
+				subMenuBar.setAutoOpen(true);				
 				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 				popupMenuBar.addItem(addMenu);
-				
+				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+					addMenu.setEnabled(false);
+				}
 				addCommonMenus();
 				//Add "View Human Readable" right click option for all populations: Start
 				popupMenuBar.addItem(viewHumanReadableMenu);

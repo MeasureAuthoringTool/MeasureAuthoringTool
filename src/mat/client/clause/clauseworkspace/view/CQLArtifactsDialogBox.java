@@ -35,7 +35,7 @@ import com.google.gwt.xml.client.Node;
  * The Class CQLDefinitionsDialogBox.
  * This class is used to show a pop-up of all the CQL Definitions which can be attached to the population workspace.
  */
-public class CQLDefinitionsDialogBox {
+public class CQLArtifactsDialogBox {
 	
 	
 	/** The is selected. */
@@ -49,27 +49,19 @@ public class CQLDefinitionsDialogBox {
 	 * @param isAdd
 	 *            the is add
 	 */
-	public static void showCQLDefinitionsDialogBox(final XmlTreeDisplay xmlTreeDisplay,
-			boolean isAdd){
-		showCQLDEfinitionDialogBox(xmlTreeDisplay, isAdd);
-	}
-	
-	/**
-	 * Show CQL Definition dialog box. (used for Clause workspace)
-	 *
-	 * @param xmlTreeDisplay the xml tree display
-	 * @param isAdd the is add
-	 * @param isClauseWorkspace the is clause workspace
-	 */
-	public static void showCQLDEfinitionDialogBox(final XmlTreeDisplay xmlTreeDisplay,
-			boolean isAdd) {
+	public static void showCQLArtifactsDialogBox(final XmlTreeDisplay xmlTreeDisplay,
+			boolean isAdd, boolean isCQLDefinitions) {
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		setSelected(false);
-		dialogBox.setText("Double Click to Select a CQL Definition.");
-		dialogBox.setTitle("Double Click to Select a CQL Definition.");
-		dialogBox.getElement().setAttribute("id", "CQLDefinitionDialogBox");
+		String cqlString = "CQL Definition";
+		if(!isCQLDefinitions){
+			cqlString  = "CQL Functions";
+		}
+		dialogBox.setText("Double Click to Select a "+cqlString + ".");
+		dialogBox.setTitle("Double Click to Select a "+cqlString + ".");
+		dialogBox.getElement().setAttribute("id", "CQLArtifactsDialogBox");
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
@@ -104,8 +96,7 @@ public class CQLDefinitionsDialogBox {
 		listBox.setVisibleItemCount(10);
 		String currentSelectedCQLDefinitionuid = xmlTreeDisplay.getSelectedNode()
 				.getUUID();
-		System.out.println("currentSelectedCQLDefinitionuid:"+currentSelectedCQLDefinitionuid);
-		addCQLDefinitionNamesToListBox(listBox, currentSelectedCQLDefinitionuid);
+		addCQLNamesToListBox(listBox, currentSelectedCQLDefinitionuid, isCQLDefinitions);
 		
 		// Add listbox to vertical panel and align it in center.
 		dialogContents.add(listBox);
@@ -145,7 +136,7 @@ public class CQLDefinitionsDialogBox {
 				HasHorizontalAlignment.ALIGN_RIGHT);
 		
 		addSuggestHandler(suggestBox, listBox);
-		addListBoxHandler(listBox, suggestBox, xmlTreeDisplay, dialogBox, isAdd);
+		addListBoxHandler(listBox, suggestBox, xmlTreeDisplay, dialogBox, isAdd, isCQLDefinitions);
 		
 		dialogBox.center();
 	}
@@ -166,7 +157,7 @@ public class CQLDefinitionsDialogBox {
 	 */
 	private static void addListBoxHandler(final ListBox listBox,
 			final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay,
-			final DialogBox dialogBox, final boolean isAdd) {
+			final DialogBox dialogBox, final boolean isAdd, final boolean isCQLDefinitions) {
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -187,7 +178,7 @@ public class CQLDefinitionsDialogBox {
 					String uuid = listBox.getValue(listBox.getSelectedIndex());
 					if (isAdd) {
 						xmlTreeDisplay.addNode(value, value, uuid,
-								CellTreeNode.CQL_DEFINITION_NODE);
+								(isCQLDefinitions?CellTreeNode.CQL_DEFINITION_NODE:CellTreeNode.CQL_FUNCTION_NODE));
 					} else {
 						xmlTreeDisplay.editNode(value, value, uuid);
 					}
@@ -232,17 +223,20 @@ public class CQLDefinitionsDialogBox {
 	 * @param currentSelectedSubTreeUuid the current selected SubTree uuid
 	 * @param isClauseWorkSpace the is clause work space
 	 */
-	private static void addCQLDefinitionNamesToListBox(ListBox listBox,
-			String currentSelectedCQLDefinitionUuid) {
-		Set<Entry<String, Node>> cqlDefinitionNodes = PopulationWorkSpaceConstants
+	private static void addCQLNamesToListBox(ListBox listBox,
+			String currentSelectedCQLUuid, boolean isDefinition) {
+		Set<Entry<String, Node>> cqlNodes = PopulationWorkSpaceConstants
 				.cqlDefinitionLookupNode.entrySet();
-		for (Entry<String, Node> cqlDefinition : cqlDefinitionNodes) {
+		if(!isDefinition){
+			cqlNodes = PopulationWorkSpaceConstants.cqlFunctionLookupNode.entrySet();
+		}
+		for (Entry<String, Node> cqlDefinition : cqlNodes) {
 			String key = cqlDefinition.getKey();
 			int lastIndexOfTilde = key.lastIndexOf("~");
 			String uuid = key.substring(lastIndexOfTilde + 1);
 			listBox.addItem(key.substring(0, lastIndexOfTilde), uuid);
 			
-			if (uuid.equals(currentSelectedCQLDefinitionUuid)) {
+			if (uuid.equals(currentSelectedCQLUuid)) {
 				listBox.setItemSelected(listBox.getItemCount() - 1, true);
 			}
 		}
@@ -286,7 +280,7 @@ public class CQLDefinitionsDialogBox {
 	 * @param isSelected the new selected
 	 */
 	public static void setSelected(boolean isSelected) {
-		CQLDefinitionsDialogBox.isSelected = isSelected;
+		CQLArtifactsDialogBox.isSelected = isSelected;
 	}
 	
 }

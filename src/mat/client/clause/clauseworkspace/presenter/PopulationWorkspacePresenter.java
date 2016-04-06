@@ -205,7 +205,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 		setupElementLookupQDMNodes(nodeList);
 		setupSubTreeLookupNodes(sortedClauses, document);
 		
-		setupCQLDefinitionNodes(document);
+		setupCQLArtifactsNodes(document);
 		
 		List<String> dataTypeList = new ArrayList<String>();
 		dataTypeList.addAll(PopulationWorkSpaceConstants.getElementLookUpDataTypeName().values());
@@ -227,8 +227,9 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	 * Setup CQL Definitions in PopulationWorkSpaceConstants.
 	 * @param document
 	 */
-	private void setupCQLDefinitionNodes(Document document) {
+	private void setupCQLArtifactsNodes(Document document) {
 		PopulationWorkSpaceConstants.cqlDefinitionLookupNode = new LinkedHashMap<String, Node>();
+		PopulationWorkSpaceConstants.cqlFunctionLookupNode = new LinkedHashMap<String, Node>();
 		
 		NodeList cqlLookupNodeList = document.getElementsByTagName("cqlLookUp");
 		if ( (null != cqlLookupNodeList) &&  (cqlLookupNodeList.getLength() > 0) ){
@@ -249,9 +250,20 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
 							PopulationWorkSpaceConstants.cqlDefinitionLookupNode.put(definitionName + "~" + uuid, cqlDefinitionNode);
 						}
+							
+					}else if(cqlChildNodeList.item(i).getNodeName().equals("functions")){
+						Node cqlFunctionsNode = cqlChildNodeList.item(i);
+						NodeList cqlFunctionsList = cqlFunctionsNode.getChildNodes();						
 						
-						break;
-					}
+						for(int j=0;j < cqlFunctionsList.getLength();j++){
+							Node cqlFunctionNode = cqlFunctionsList.item(j);
+							NamedNodeMap namedNodeMap = cqlFunctionNode.getAttributes();
+							String functionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
+							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
+							PopulationWorkSpaceConstants.cqlFunctionLookupNode.put(functionName + "~" + uuid, cqlFunctionNode);
+						}
+				
+					} 
 				}			
 			}
 		}

@@ -393,7 +393,13 @@ public class XmlConversionlHelper {
 				} else if(nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CQL_DEFINITION_TYPE)) {
 					cellTreeNodeType =  CellTreeNode.CQL_DEFINITION_NODE;
 					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
-				}else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.LOG_OP)) {
+				}else if(nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CQL_FUNCTION_TYPE)) {
+					cellTreeNodeType =  CellTreeNode.CQL_FUNCTION_NODE;
+					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
+				} else if(nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CQL_AGG_FUNCTION_TYPE)){
+					cellTreeNodeType =  CellTreeNode.CQL_AGG_FUNCTION_NODE;
+				}
+				else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.LOG_OP)) {
 					cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;
 				}  else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.SET_OP)) {
 					cellTreeNodeType = CellTreeNode.SET_OP_NODE;
@@ -545,6 +551,15 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.CQL_DEFINITION_TYPE);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());				
 				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
+				break;
+			case CellTreeNode.CQL_FUNCTION_NODE:
+				element = document.createElement(PopulationWorkSpaceConstants.CQL_FUNCTION_TYPE);
+				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());				
+				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
+				break;
+			case CellTreeNode.CQL_AGG_FUNCTION_NODE:
+				element = document.createElement(PopulationWorkSpaceConstants.CQL_AGG_FUNCTION_TYPE);
+				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());				
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.CLAUSE_TYPE);

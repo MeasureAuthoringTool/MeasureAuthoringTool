@@ -69,6 +69,8 @@ public interface CellTreeNode {
 	
 	/** The CQL DEfinition node */
 	short CQL_DEFINITION_NODE = 15;  
+	short CQL_FUNCTION_NODE = 16;
+	short CQL_AGG_FUNCTION_NODE = 17;
 	/**
 	 * Append child.
 	 * 

@@ -39,6 +39,12 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant CQL Definition Type. */
 	public static final String CQL_DEFINITION_TYPE = "cqldefinition";
 	
+	/** The Constant CQL Function Type */
+	public static final String CQL_FUNCTION_TYPE = "cqlfunction";
+	
+	/** The Constant CQL Aggregate function type */
+	public static final String CQL_AGG_FUNCTION_TYPE = "cqlaggfunction";
+	
 	/** The Constant TYPE. */
 	public static final String TYPE = "type";
 	
@@ -103,6 +109,7 @@ public class PopulationWorkSpaceConstants {
 	/** Map for CQL Definitions for this measure */
 	public static LinkedHashMap<String, Node> cqlDefinitionLookupNode;
 	
+	public static LinkedHashMap<String, Node> cqlFunctionLookupNode;
 	/**
 	 * Sets the sub tree look up node.
 	 *

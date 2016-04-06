@@ -1291,13 +1291,17 @@ public class CQLServiceImpl implements CQLService {
 				.getCQLTemplateXmlProcessor();
 		String XPATH_DATATYPES = "/cqlTemplate/datatypes/datatype";
 		String XPATH_TIMINGS = "/cqlTemplate/timings/timing";
+		String XPATH_FUNCTIONS = "/cqlTemplate/functions/function";
 		List<String> cqlDataTypeList = new ArrayList<String>();
 		List<String> cqlTimingList = new ArrayList<String>();
+		List<String> cqlFunctionList = new ArrayList<String>();
 		try {
 			NodeList dataTypeNodeList = cqlXMLProcessor.findNodeList(
 					cqlXMLProcessor.getOriginalDoc(), XPATH_DATATYPES);
 			NodeList timingNodeList = cqlXMLProcessor.findNodeList(
 					cqlXMLProcessor.getOriginalDoc(), XPATH_TIMINGS);
+			NodeList functionNodeList = cqlXMLProcessor.findNodeList(
+					cqlXMLProcessor.getOriginalDoc(), XPATH_FUNCTIONS);
 			if (dataTypeNodeList != null) {
 				for (int i = 0; i < dataTypeNodeList.getLength(); i++) {
 					Node node = dataTypeNodeList.item(i);
@@ -1310,11 +1314,18 @@ public class CQLServiceImpl implements CQLService {
 					cqlTimingList.add(node.getTextContent());
 				}
 			}
+			if (functionNodeList != null) {
+				for (int i = 0; i < functionNodeList.getLength(); i++) {
+					Node node = functionNodeList.item(i);
+					cqlFunctionList.add(node.getTextContent());
+				}
+			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 		cqlKeywords.setCqlDataTypeList(cqlDataTypeList);
 		cqlKeywords.setCqlTimingList(cqlTimingList);
+		cqlKeywords.setCqlFunctionsList(cqlFunctionList);
 		return cqlKeywords;
 	}
 	

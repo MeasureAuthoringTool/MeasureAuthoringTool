@@ -866,6 +866,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		Button getFuncInfoButton();
 		
+		void hideAceEditorAutoCompletePopUp();
+		
 	}
 	
 	
@@ -892,6 +894,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the event handlers.
 	 */
 	private void addEventHandlers() {
+		
 		
 		searchDisplay.getDefineButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -1021,6 +1024,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
 				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument , false, searchDisplay);
 				searchDisplay.setIsPageDirty(true);
@@ -1055,6 +1059,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 			}
 		});
+		ClickHandler cHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getDefineAceEditor().detach();
+				searchDisplay.getParameterAceEditor().detach();
+				searchDisplay.getFunctionBodyAceEditor().detach();
+			}
+		};
+		searchDisplay.getMainPanel().addDomHandler(cHandler, ClickEvent.getType());
 		
 		addEventHandlerOnAceEditors();
 		addEventHandlersOnContextRadioButtons();
@@ -1082,6 +1095,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextDefinePOPRadioBtn().getValue()) {
 					searchDisplay.getContextDefinePATRadioBtn().setValue(false);
@@ -1096,6 +1110,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextFuncPATRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
@@ -1109,6 +1124,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextFuncPOPRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPATRadioBtn().setValue(false);
@@ -1774,7 +1790,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getMessagePanel().clear();
-		//searchDisplay.getDefineAceEditor().detach();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 	}
@@ -1891,6 +1906,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				generalInfoEvent();
 			}
 		});
@@ -1902,6 +1918,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1919,6 +1936,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1935,6 +1953,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.setIsNavBarClick(true);
 				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				if (searchDisplay.getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 					searchDisplay.showUnsavedChangesWarning();
@@ -1949,6 +1968,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				viewCqlEvent();
 			}
 		});

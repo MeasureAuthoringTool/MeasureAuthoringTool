@@ -3393,15 +3393,18 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void resetMessageDisplay() {
-		
 		getSuccessMessageAlert().clearAlert();
-		
 		getErrorMessageAlert().clearAlert();
-		
 		getWarningConfirmationMessageAlert().clearAlert();
-		
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
+		hideAceEditorAutoCompletePopUp();
 		
+	}
+	@Override
+	public void hideAceEditorAutoCompletePopUp() {
+		defineAceEditor.detach();
+		parameterAceEditor.detach();
+		functionBodyAceEditor.detach();
 	}
 	
 	/*

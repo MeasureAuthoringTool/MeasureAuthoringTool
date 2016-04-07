@@ -480,7 +480,7 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				if (!MatContext.get().getMeasureLockService()
+				if (MatContext.get().getMeasureLockService()
 						.checkForEditPermission()) {
 					xmlTreeDisplay.clearMessages();
 					xmlTreeDisplay.setDirty(false);

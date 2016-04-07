@@ -577,7 +577,7 @@ public class XmlTreePresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if (!MatContext.get().getMeasureLockService()
+				if (MatContext.get().getMeasureLockService()
 						.checkForEditPermission()) {
 					xmlTreeDisplay.clearMessages();
 					String measureId = MatContext.get().getCurrentMeasureId();

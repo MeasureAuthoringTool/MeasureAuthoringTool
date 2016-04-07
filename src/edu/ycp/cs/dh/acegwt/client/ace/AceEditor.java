@@ -22,9 +22,7 @@ package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.HashMap;
 import java.util.List;
-
 import mat.client.shared.MatContext;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -127,6 +125,16 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		editor.renderer.updateFull();
 		editor.resize();
 		editor.focus();
+	}-*/;
+	
+	/**
+	 * This method will hide editor completer pop up.
+	 */
+	public native void detach() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		if (editor && editor.completer)
+    		editor.completer.detach();
+		
 	}-*/;
 	
 	/**
@@ -859,7 +867,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	/**
 	 * Adds the auto completions.
-	 * This method is used for CQL definitions, functions and parameters to be 
+	 * This method is used for CQL definitions, functions and parameters to be
 	 * available for AceEditor dynamically on Keyboard Shortcuts.
 	 */
 	public static native void addAutoCompletions()/*-{
@@ -879,11 +887,11 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 */
 	private static JsArrayString createDefinitionsJsArrayString() {
 		List<String> defineList = MatContext.get().definitions;
-	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-	    for (String string : defineList) {
-	        jsArray.push(string);
-	    }
-	    return jsArray;
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : defineList) {
+			jsArray.push(string);
+		}
+		return jsArray;
 	}
 	
 	/**
@@ -893,11 +901,11 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 */
 	private static JsArrayString createParamsJsArrayString() {
 		List<String> paramList = MatContext.get().parameters;
-	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-	    for (String string : paramList) {
-	        jsArray.push(string);
-	    }
-	    return jsArray;
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : paramList) {
+			jsArray.push(string);
+		}
+		return jsArray;
 	}
 	
 	/**
@@ -907,11 +915,11 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 */
 	private static JsArrayString createfuncsJsArrayString() {
 		List<String> funcsList = MatContext.get().funcs;
-	    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-	    for (String string : funcsList) {
-	        jsArray.push(string);
-	    }
-	    return jsArray;
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : funcsList) {
+			jsArray.push(string);
+		}
+		return jsArray;
 	}
 	
 }

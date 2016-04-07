@@ -209,8 +209,11 @@ public interface MeasureService extends RemoteService {
 	 * 
 	 * @param measureID
 	 *            the measure id
+	 *            
+	 * @param loginUserId
+	 *            the loginUser id           
 	 */
-	void saveAndDeleteMeasure(String measureID);
+	void saveAndDeleteMeasure(String measureID, String loginUserId);
 	
 	/**
 	 * Save finalized version.

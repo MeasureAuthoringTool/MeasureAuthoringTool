@@ -985,10 +985,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
-				resetQDSMsgPanel();
-				updateVSACValueSets();
-				
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
+					resetQDSMsgPanel();
+					updateVSACValueSets();
+
+				}
 			}
 		});
 		
@@ -1036,10 +1038,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				resetQDSMsgPanel();
-				String version = null;
-				String expansionProfile = null;
-				searchValueSetInVsac(version, expansionProfile);
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					resetQDSMsgPanel();
+					String version = null;
+					String expansionProfile = null;
+					searchValueSetInVsac(version, expansionProfile);
+				}
 			}
 		});
 		
@@ -1053,14 +1057,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				MatContext.get().clearDVIMessages();
-				resetQDSMsgPanel();
-				if(isModified && (modifyValueSetDTO != null)){
-					modifyQDM(isUserDefined);
-				} else {
-					addSelectedCodeListtoMeasure(isUserDefined);
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					MatContext.get().clearDVIMessages();
+					resetQDSMsgPanel();
+					if(isModified && (modifyValueSetDTO != null)){
+						modifyQDM(isUserDefined);
+					} else {
+						addSelectedCodeListtoMeasure(isUserDefined);
+					}
+
 				}
-				
 			}
 		});
 		
@@ -1162,27 +1168,29 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// code for adding profile to List to applied QDM
-				resetQDSMsgPanel();
-				if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
-					// Login
-					// Validation
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
-					return ;
-				}
-				searchDisplay.getSearchHeader().setText("Search");
-				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
-				//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
-				if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
-					expIdentifierToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
-					updateAllQDMsWithExpProfile(appliedQDMList);
-				} else if(!searchDisplay.getToggleSwitch().getValue()){
-					expIdentifierToAllQDM = "";
-					updateAllQDMsWithExpProfile(appliedQDMList);
-				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getVsacExpansionIdentifierSelection());
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					// code for adding profile to List to applied QDM
+					resetQDSMsgPanel();
+					if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
+						// Login
+						// Validation
+						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+								.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+						return ;
+					}
+					searchDisplay.getSearchHeader().setText("Search");
+					//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
+					//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
+					if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
+						expIdentifierToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
+						updateAllQDMsWithExpProfile(appliedQDMList);
+					} else if(!searchDisplay.getToggleSwitch().getValue()){
+						expIdentifierToAllQDM = "";
+						updateAllQDMsWithExpProfile(appliedQDMList);
+					} else {
+						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+								.getMessageDelegate().getVsacExpansionIdentifierSelection());
+					}
 				}
 			}
 		});

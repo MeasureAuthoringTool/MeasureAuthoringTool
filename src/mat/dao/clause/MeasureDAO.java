@@ -309,4 +309,13 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public boolean getMeasure(String measureId);
 	
 	List<Measure> getMeasureListForMeasureOwner(User user);
+	
+	
+	/**
+	 * Gets the MeasureShareDTO.
+	 *
+	 * @param measureId the measure id
+	 * @return the MeasureShareDTO.
+	 */
+	MeasureShareDTO extractDTOFromMeasure(Measure measure);
 }

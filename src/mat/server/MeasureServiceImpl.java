@@ -209,8 +209,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#saveAndDeleteMeasure(java.lang.String)
 	 */
 	@Override
-	public void saveAndDeleteMeasure(String measureID) {
-		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID);
+	public void saveAndDeleteMeasure(String measureID,  String loginUserId) {
+		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID,loginUserId);
 	}
 	
 	/* (non-Javadoc)
@@ -430,7 +430,7 @@ MeasureService {
 		return this.getMeasureLibraryService().validateForGroup(model);
 	}
 	
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getAllMeasureTypes()
 	 */

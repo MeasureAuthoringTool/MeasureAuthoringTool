@@ -232,8 +232,10 @@ public interface MeasureServiceAsync {
 	 *            the measure id
 	 * @param callback
 	 *            the callback
+	 * @param loginUserId
+	 *            the login id of user
 	 */
-	void saveAndDeleteMeasure(String measureID, AsyncCallback<Void> callback);
+	void saveAndDeleteMeasure(String measureID, String loginUserId, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save finalized version.

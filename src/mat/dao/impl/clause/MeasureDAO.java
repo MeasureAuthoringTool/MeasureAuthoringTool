@@ -356,7 +356,8 @@ mat.dao.clause.MeasureDAO {
 	 *            the measure
 	 * @return the measure share dto
 	 */
-	private MeasureShareDTO extractDTOFromMeasure(Measure measure) {
+	@Override
+	public MeasureShareDTO extractDTOFromMeasure(Measure measure) {
 		MeasureShareDTO dto = new MeasureShareDTO();
 		
 		dto.setMeasureId(measure.getId());

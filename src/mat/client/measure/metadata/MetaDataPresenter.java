@@ -1071,16 +1071,20 @@ public class MetaDataPresenter  implements MatPresenter {
 			
 			@Override
 			public void onClick(final ClickEvent event) {
-				DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
-				DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
+				
+				if(isMeasureDeletable()){
 					
-					@Override
-					public void onClick(final ClickEvent event) {
+					DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
+					DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
 						
-						checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
-						DeleteMeasureConfirmationBox.getDialogBox().hide();
-					}
-				});
+						@Override
+						public void onClick(final ClickEvent event) {
+							
+							checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
+							DeleteMeasureConfirmationBox.getDialogBox().hide();
+						}
+					});
+				}
 			}
 		});
 		
@@ -1432,8 +1436,8 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 	
 	
-
-	
+				
+			
 	/**
 	 * Gets the all measure types.
 	 *
@@ -1481,27 +1485,31 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Generate and save new emeasureid.
 	 */
 	private void generateAndSaveNewEmeasureid() {
-		MeasureServiceAsync service = MatContext.get().getMeasureService();
-		service.generateAndSaveMaxEmeasureId(currentMeasureDetail, new AsyncCallback<Integer>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+		if(editable && currentMeasureDetail.geteMeasureId()==0){
+			MatContext.get().getMeasureService().generateAndSaveMaxEmeasureId(currentMeasureDetail, new AsyncCallback<Integer>() {
 				
-			}
-			
-			@Override
-			public void onSuccess(Integer result) {
-				maxEmeasureId = result.intValue();
-				if (maxEmeasureId < 1000000) {
-					metaDataDisplay.setGenerateEmeasureIdButtonEnabled(false);
-					metaDataDisplay.getEmeasureId().setValue(maxEmeasureId + "");
-					((TextBox) metaDataDisplay.getEmeasureId()).setFocus(true);
+				@Override
+				public void onFailure(Throwable caught) {
+					metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+					
 				}
-			}
-			
-		});
+				
+				@Override
+				public void onSuccess(Integer result) {
+					if(result > 0){
+						maxEmeasureId = result.intValue();
+						if (maxEmeasureId < 1000000) {
+							metaDataDisplay.setGenerateEmeasureIdButtonEnabled(false);
+							metaDataDisplay.getEmeasureId().setValue(maxEmeasureId + "");
+							((TextBox) metaDataDisplay.getEmeasureId()).setFocus(true);
+							currentMeasureDetail.seteMeasureId(maxEmeasureId);
+						}
+					}
+					}
+			});
+		}
+		
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
@@ -1660,13 +1668,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.enableEndorseByRadioButtons(editable);
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
-		
-		if ((currentMeasureDetail.getMeasureOwnerId() != null) && !currentMeasureDetail.getMeasureOwnerId()
-				.equalsIgnoreCase(MatContext.get().getLoggedinUserId())) {
-			metaDataDisplay.getDeleteMeasure().setEnabled(false);
-		} else {
-			metaDataDisplay.getDeleteMeasure().setEnabled(true);
-		}
+		metaDataDisplay.getDeleteMeasure().setEnabled(isMeasureDeletable());
 		currentMeasureDetail.setEditable(editable);
 		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE) && editable){
 			metaDataDisplay.setMeasurementPeriodButtonsVisible(true);
@@ -2149,28 +2151,33 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Delete measure.
 	 */
 	private void deleteMeasure() {
-		MatContext.get().getMeasureService().saveAndDeleteMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>(){
+		
+		if ((currentMeasureDetail.getMeasureOwnerId() != null) && currentMeasureDetail.getMeasureOwnerId()
+				.equalsIgnoreCase(MatContext.get().getLoggedinUserId())) {
 			
-			@Override
-			public void onFailure(Throwable caught) {
-				fireBackToMeasureLibraryEvent();
+			MatContext.get().getMeasureService().saveAndDeleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), new AsyncCallback<Void>(){
 				
-				fireSuccessfullDeletionEvent(false, null);
-			}
-			
-			@Override
-			public void onSuccess(Void result) {
-				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,
-						"MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
-				// this is set to avoid showing dirty check message if user has modified Measure details and is deleting without saving.
-				currentMeasureDetail.setDeleted(true);
-				MatContext.get().setMeasureDeleted(true);
-				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(true, MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
+				@Override
+				public void onFailure(Throwable caught) {
+					fireBackToMeasureLibraryEvent();
+					
+					fireSuccessfullDeletionEvent(false, null);
+				}
 				
-			}
-			
-		});
+				@Override
+				public void onSuccess(Void result) {
+					MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,
+							"MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
+					// this is set to avoid showing dirty check message if user has modified Measure details and is deleting without saving.
+					currentMeasureDetail.setDeleted(true);
+					MatContext.get().setMeasureDeleted(true);
+					fireBackToMeasureLibraryEvent();
+					fireSuccessfullDeletionEvent(true, MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
+					
+				}
+				
+			});
+		}
 		
 		
 	}
@@ -2366,6 +2373,20 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public void setMeasureXmlModel(MeasureXmlModel measureXmlModel) {
 		this.measureXmlModel = measureXmlModel;
+	}
+
+	/**
+	 * Checks if is measure deletable.
+	 *
+	 * @return true, if is measure deletable
+	 */
+	private boolean isMeasureDeletable(){
+		if ((currentMeasureDetail.getMeasureOwnerId() != null) && !currentMeasureDetail.getMeasureOwnerId()
+				.equalsIgnoreCase(MatContext.get().getLoggedinUserId())) {
+			return false;
+		} 			
+		return true;
+		
 	}
 	
 }

@@ -835,6 +835,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterLibrary.setTitle("Parameter");
 		paramBadge.setText("" + viewParameterList.size());
 		Anchor paramAnchor = (Anchor) (parameterLibrary.getWidget(0));
+		// Double Click causing issues.So Event is not propogated
+		paramAnchor.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				event.stopPropagation();
+			}
+		});
 		paramLabel.setStyleName("transparentLabel");
 		paramAnchor.add(paramLabel);
 		paramBadge.setPull(Pull.RIGHT);
@@ -850,6 +858,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		definitionLibrary.setTitle("Define");
 		defineBadge.setText("" + viewDefinitions.size());
 		Anchor defineAnchor = (Anchor) (definitionLibrary.getWidget(0));
+		// Double Click causing issues.So Event is not propogated
+		defineAnchor.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				event.stopPropagation();
+			}
+		});
 		defineLabel.setStyleName("transparentLabel");
 		defineAnchor.add(defineLabel);
 		defineBadge.setPull(Pull.RIGHT);
@@ -867,6 +883,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		functionBadge.setText("" + viewFunctions.size());
 		Anchor funcAnchor = (Anchor) (functionLibrary.getWidget(0));
+		// Double Click causing issues.So Event is not propogated
+		funcAnchor.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				event.stopPropagation();
+			}
+		});
 		functionLibLabel.setStyleName("transparentLabel");
 		funcAnchor.add(functionLibLabel);
 		functionBadge.setPull(Pull.RIGHT);

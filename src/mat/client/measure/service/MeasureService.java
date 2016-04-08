@@ -608,5 +608,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the CQL data type list
 	 */
 	CQLKeywords getCQLKeywordsList();
+
+	String getJSONObjectFromXML();
 	
 }

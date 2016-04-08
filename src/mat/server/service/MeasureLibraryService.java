@@ -676,5 +676,7 @@ public interface MeasureLibraryService {
 	 * @return the CQL data type list
 	 */
 	CQLKeywords getCQLKeywordsLists();
+
+	String getJSONObjectFromXML();
 	
 }

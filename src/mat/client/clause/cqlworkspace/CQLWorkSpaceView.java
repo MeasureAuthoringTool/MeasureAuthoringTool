@@ -1152,6 +1152,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 		
 		parameterButtonBar.getInsertButton().setVisible(false);
+		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -3558,6 +3559,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getWarningConfirmationMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+	}
+	
+	@Override
+	public Button getDefineTimingExpButton(){
+		return getDefineButtonBar().getTimingExpButton();
+	}
+	
+	@Override
+	public Button getFuncTimingExpButton(){
+		return getFunctionButtonBar().getTimingExpButton();
 	}
 	
 }

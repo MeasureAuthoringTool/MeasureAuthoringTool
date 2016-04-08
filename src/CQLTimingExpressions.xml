@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cqlTimingExpressions>
+	<timingExpression name="same as" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same as $"/>
+	<timingExpression name="starts same as" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as "/>
+	<timingExpression name="starts same as start" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as start of"/>
+	<timingExpression name="starts same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as end of"/>
+	<timingExpression name="ends same as" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as"/>
+	<timingExpression name="ends same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as start of"/>
+	<timingExpression name="ends same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as end of"/>
+	<timingExpression name="same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start of"/>
+	<timingExpression name="same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start of"/>
+	
+	<timingExpression name="same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or before"/>
+	<timingExpression name="starts same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or before"/>
+	<timingExpression name="starts same or before start" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or before start of"/>
+	<timingExpression name="starts same or before end" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or before end of"/>
+	<timingExpression name="ends same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or before"/>
+	<timingExpression name="ends same or before start" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or before start of"/>
+	<timingExpression name="ends same or before end" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or before end of"/>
+	<timingExpression name="same or before start" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or before start of"/>
+	<timingExpression name="same or before end" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or before end of"/>
+	
+	<timingExpression name="same or after" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or after"/>
+	<timingExpression name="starts same or after" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or after"/>
+	<timingExpression name="starts same or after start" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or after start of"/>
+	<timingExpression name="starts same or after end" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or after end of"/>
+	<timingExpression name="ends same or after" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or after"/>
+	<timingExpression name="ends same or after start" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or after start of"/>
+	<timingExpression name="ends same or after end" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ or after end of"/>
+	<timingExpression name="same or after start" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or after start of"/>
+	<timingExpression name="same or after end" option="sameOrAfterTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or after end of"/>
+
+	<timingExpression name="after" option="afterTimingExpressions" />
+	<timingExpression name="starts after" option="afterTimingExpressions" />
+	<timingExpression name="starts after start" option="afterTimingExpressions" />
+	<timingExpression name="starts after end" option="afterTimingExpressions" />
+	<timingExpression name="ends after" option="afterTimingExpressions" />
+	<timingExpression name="ends after start" option="afterTimingExpressions" />
+	<timingExpression name="ends after end" option="afterTimingExpressions" />
+	<timingExpression name="after start" option="afterTimingExpressions" />
+	<timingExpression name="after end" option="afterTimingExpressions" />
+	<timingExpression name="before" option="beforeTimingExpressions" />
+	<timingExpression name="starts before" option="beforeTimingExpressions" />
+	<timingExpression name="starts before start" option="beforeTimingExpressions" />
+	<timingExpression name="starts before end" option="beforeTimingExpressions" />
+	<timingExpression name="ends before" option="beforeTimingExpressions" />
+	<timingExpression name="ends before start" option="beforeTimingExpressions" />
+	<timingExpression name="ends before end" option="beforeTimingExpressions" />
+	<timingExpression name="before start" option="beforeTimingExpressions" />
+	<timingExpression name="before end" option="beforeTimingExpressions" />	
+	<timingExpression name="includes" option="includesTimingExpressions" />
+	<timingExpression name="includes start" option="includesTimingExpressions" />
+	<timingExpression name="includes end" option="includesTimingExpressions" />
+	<timingExpression name="during" option="duringTimingExpression" />
+	<timingExpression name="starts during" option="duringTimingExpression" />
+	<timingExpression name="ends during" option="duringTimingExpression" />
+	<timingExpression name="meets" option="meetsTimingExpression" />
+	<timingExpression name="meets before" option="meetsTimingExpression" />
+	<timingExpression name="meets after" option="meetsTimingExpression" />
+	<timingExpression name="overlaps" option="overlapsTimingExpression" />
+	<timingExpression name="overlaps before" option="overlapsTimingExpression" />
+	<timingExpression name="overlaps after" option="overlapsTimingExpression" />
+	<timingExpression name="within" option="withinTimingExpression" />
+	<timingExpression name="starts within" option="withinTimingExpression" />
+	<timingExpression name="ends within" option="withinTimingExpression" />
+	
+	<timingExpression ref="overlapsTimingExpression">
+		<option name="overlaps" />
+		<option name="overlaps before" />
+		<option name="overlaps after" />
+	</timingExpression>
+	
+	<timingExpression ref="withinTimingExpression">
+		<option name="within" />
+		<option name="starts within" />
+		<option name="ends within" />
+	</timingExpression>
+	
+	<timingExpression ref="includesTimingExpressions">
+		<option name="includes" />
+		<option name="includes start" />
+		<option name="includes end" />
+	</timingExpression>
+	
+	<timingExpression ref="duringTimingExpression">
+		<option name="during" />
+		<option name="starts during" />
+		<option name="ends during" />
+	</timingExpression>
+	
+	<timingExpression ref="meetsTimingExpression">
+		<option name="meets" />
+		<option name="meets before" />
+		<option name="meets after" />
+	</timingExpression>
+	
+	<timingExpression ref="sameAsTimingExpressions">
+		<option name="starts same as" />
+		<option name="starts same as start" />
+		<option name="starts same as end" />
+		<option name="ends same as" />
+		<option name="ends same as start" />
+		<option name="ends same as end" />
+		<option name="same as start" />
+		<option name="same as end" />
+	</timingExpression>
+	
+	<timingExpression ref="sameOrAfterTimingExpressions">
+		<option name="starts same or after" />
+		<option name="starts same or after start" />
+		<option name="starts same or after end" />
+		<option name="ends same or after" />
+		<option name="ends same or after start" />
+		<option name="ends same or after end" />
+		<option name="same or after start" />
+		<option name="same or after end" />
+	</timingExpression>
+	
+	<timingExpression ref="sameOrBeforeTimingExpressions">
+		<option name="starts same or before" />
+		<option name="starts same or before start" />
+		<option name="starts same or before end" />
+		<option name="ends same or before" />
+		<option name="ends same or before start" />
+		<option name="ends same or before end" />
+		<option name="same or before start" />
+		<option name="same or before end" />
+	</timingExpression>
+	
+	<timingExpression ref="beforeTimingExpressions">
+		<option name="before" />
+		<option name="starts before" />
+		<option name="starts before start" />
+		<option name="starts before end" />
+		<option name="ends before" />
+		<option name="ends before start" />
+		<option name="ends before end" />
+		<option name="before start" />
+		<option name="before end" />
+	</timingExpression>
+	
+	<timingExpression ref="afterTimingExpressions">
+		<option name="after" />
+		<option name="starts after" />
+		<option name="starts after start" />
+		<option name="starts after end" />
+		<option name="ends after" />
+		<option name="ends after start" />
+		<option name="ends after end" />
+		<option name="after start" />
+		<option name="after end" />
+	</timingExpression>
+</cqlTimingExpressions>

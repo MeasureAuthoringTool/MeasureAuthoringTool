@@ -111,4 +111,6 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLFileData(String measureId);
 
 	String createParametersXML(CQLParameter parameter);
+
+	String getJSONObjectFromXML();
 }

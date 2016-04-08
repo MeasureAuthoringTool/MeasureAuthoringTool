@@ -29,6 +29,8 @@ public class CQLButtonToolBar extends Composite {
 	/** The info button. */
 	private Button infoButton = new Button();
 	
+	private Button timingExpIcon = new Button();
+	
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
@@ -87,11 +89,21 @@ public class CQLButtonToolBar extends Composite {
 		infoButton.setColor("#0964A2");
 		infoButton.setSize("30px", "30px");
 		
+		timingExpIcon.setType(ButtonType.LINK);
+		timingExpIcon.getElement().setId("timingExpButton_"+sectionName);
+		timingExpIcon.setMarginTop(10);
+		timingExpIcon.setTitle("Timing Expression");
+		timingExpIcon.setIcon(IconType.TEXT_WIDTH);
+		timingExpIcon.setIconSize(IconSize.LARGE);
+		timingExpIcon.setColor("#0964A2");
+		timingExpIcon.setSize("30px", "30px");
+		
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
 		buttonLayout.add(infoButton);
 		buttonLayout.add(deleteButton);
+		buttonLayout.add(timingExpIcon);
 		initWidget(buttonLayout);
 		
 	}
@@ -154,6 +166,10 @@ public class CQLButtonToolBar extends Composite {
 	 */
 	public Button getInfoButton(){
 		return infoButton;
+	}
+	
+	public Button getTimingExpButton(){
+		return timingExpIcon;
 	}
 	
 	

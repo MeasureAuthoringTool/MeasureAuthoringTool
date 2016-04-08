@@ -675,5 +675,6 @@ public interface MeasureServiceAsync {
 	 */
 	void getCQLKeywordsList(AsyncCallback<CQLKeywords> callback);
 	
+	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
 	
 }

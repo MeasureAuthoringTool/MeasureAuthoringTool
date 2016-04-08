@@ -4783,5 +4783,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return getCqlService().getCQLKeyWords();
 	}
 	
+	@Override
+	public String getJSONObjectFromXML(){
+		return getCqlService().getJSONObjectFromXML();
+	}
+	
 }
 

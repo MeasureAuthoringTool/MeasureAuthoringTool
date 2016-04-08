@@ -576,5 +576,10 @@ MeasureService {
 	public CQLKeywords getCQLKeywordsList() {
 		return this.getMeasureLibraryService().getCQLKeywordsLists();
 	}
+
+	@Override
+	public String getJSONObjectFromXML() {
+		return this.getMeasureLibraryService().getJSONObjectFromXML();
+	}
 	
 }

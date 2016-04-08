@@ -12,6 +12,7 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceView.CustomTextAreaWithNoWhite
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
@@ -865,8 +866,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the func info button
 		 */
 		Button getFuncInfoButton();
+
+		Button getDefineTimingExpButton();
 		
 		void hideAceEditorAutoCompletePopUp();
+
+		Button getFuncTimingExpButton();
 		
 	}
 	
@@ -880,6 +885,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay = srchDisplay;
 		addEventHandlers();
 		addObserverHandler();
+		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 	}
 	
 	/**
@@ -894,7 +900,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the event handlers.
 	 */
 	private void addEventHandlers() {
-		
 		
 		searchDisplay.getDefineButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -1036,6 +1041,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget)event.getSource());
 				
 			}
@@ -1046,6 +1052,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget)event.getSource());
 				
 			}
@@ -1055,6 +1062,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget)event.getSource());
 				
 			}
@@ -1068,6 +1076,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		};
 		searchDisplay.getMainPanel().addDomHandler(cHandler, ClickEvent.getType());
+		
+		searchDisplay.getDefineTimingExpButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
+			}
+		});
+		
+		
+		searchDisplay.getFuncTimingExpButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
+			}
+		});
+		
 		
 		addEventHandlerOnAceEditors();
 		addEventHandlersOnContextRadioButtons();
@@ -1095,7 +1123,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextDefinePOPRadioBtn().getValue()) {
 					searchDisplay.getContextDefinePATRadioBtn().setValue(false);
@@ -1110,7 +1137,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextFuncPATRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
@@ -1124,7 +1150,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				
 				searchDisplay.setIsPageDirty(true);
 				if (searchDisplay.getContextFuncPOPRadioBtn().getValue()) {
 					searchDisplay.getContextFuncPATRadioBtn().setValue(false);

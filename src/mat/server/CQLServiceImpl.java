@@ -1,8 +1,14 @@
 package mat.server;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +19,7 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
+import mat.client.shared.MatContext;
 import mat.dao.clause.CQLDAO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDataModel;
@@ -35,6 +42,10 @@ import mat.server.service.MeasurePackageService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.SaveUpdateCQLResult;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -360,6 +371,10 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId,
 			CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
+		if(currentObj.isReadOnly()){
+			return null;
+		}
+		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
 				measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -1549,6 +1564,57 @@ public class CQLServiceImpl implements CQLService {
 		
 		return funcList;
 	}
+	
+	
+	@Override
+	public String getJSONObjectFromXML() {
+		String result = null;
+		try {
+			result = convertXmlToString();
+			XMLSerializer xmlSerializer = new XMLSerializer();
+			xmlSerializer.setForceTopLevelObject(true);
+			xmlSerializer.setTypeHintsEnabled(false);
+			JSON json = xmlSerializer.read(result);
+			JSONObject jsonObject = JSONObject.fromObject(json.toString());
+			result = jsonObject.toString(4);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		return result;
+	}
+	
+	
+	@SuppressWarnings("resource")
+	private String convertXmlToString() {
+		String fileName = "CQLTimingExpressions.xml";
+		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
+		File xmlFile = null;
+		FileReader fr;
+		String line = "";
+		StringBuilder sb = new StringBuilder();
+		try {
+			try {
+				xmlFile = new File(templateFileUrl.toURI());
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+			fr = new FileReader(xmlFile);
+			BufferedReader br = new BufferedReader(fr);
+			
+			try {
+				while ((line = br.readLine()) != null) {
+					sb.append(line.trim());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
 	
 	/**
 	 * Gets the service.

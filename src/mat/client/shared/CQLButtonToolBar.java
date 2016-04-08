@@ -101,9 +101,9 @@ public class CQLButtonToolBar extends Composite {
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
+		buttonLayout.add(timingExpIcon);
 		buttonLayout.add(infoButton);
 		buttonLayout.add(deleteButton);
-		buttonLayout.add(timingExpIcon);
 		initWidget(buttonLayout);
 		
 	}

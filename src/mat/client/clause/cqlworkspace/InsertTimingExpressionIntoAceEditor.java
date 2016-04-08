@@ -41,6 +41,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -50,12 +51,6 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
  * The Class InsertTimingExpressionIntoAceEditor.
  */
 public class InsertTimingExpressionIntoAceEditor {
-
-	/** The available timing list. */
-	public static List<String> availableTimingList = null;// JSONCQLTimingExpressionUtility.getAllCQLTimingList();
-
-	/** The xml tree display. */
-	private static XmlTreeDisplay xmlTreeDisplay;
 	
 	/** The timing expression obj. */
 	private static TimingExpressionObj timingExpressionObj = null;
@@ -63,21 +58,17 @@ public class InsertTimingExpressionIntoAceEditor {
 	/** The Constant dialogModal. */
 	private static Modal dialogModal;
 
-	/** The editor. */
-	private static AceEditor editor = null;
-	
-	
-	/** The primary timing sub menu. */
-	static DropDownSubMenu primaryTimingSubMenu;
+		/** The primary timing sub menu. */
+	private static DropDownSubMenu primaryTimingSubMenu;
 	
 	/** The date time precision sub menu. */
-	static DropDownSubMenu dateTimePrecisionSubMenu; 
+	private static DropDownSubMenu dateTimePrecisionSubMenu; 
 	
 	/** The primary timing list. */
-	static List<String> primaryTimingList =  CQLWorkSpaceConstants.getPrimaryTimings();
+	private static List<String> primaryTimingList =  CQLWorkSpaceConstants.getPrimaryTimings();
 	
 	/** The timing precision list. */
-	static List<String> timingPrecisionList =  CQLWorkSpaceConstants.getTimingPrecisions();
+	private static List<String> timingPrecisionList =  CQLWorkSpaceConstants.getTimingPrecisions();
 	
 	
 	/**
@@ -94,73 +85,69 @@ public class InsertTimingExpressionIntoAceEditor {
 	    dateTimePrecisionSubMenu = new DropDownSubMenu();
 		Button insertButton = new Button();
 	    Button cancelButton = new Button();
+	    final HelpBlock helpBlock = new HelpBlock();
 	    final AnchorListItem timingQualifierItem = new AnchorListItem();
 		final AnchorListItem quantityOffsetItem = new AnchorListItem();
 		final AnchorListItem timePrecisionItem = new AnchorListItem();
 		timePrecisionItem.setText("Time Precision");
-		VerticalPanel mainPanel = new VerticalPanel();
-		mainPanel.clear();
-		mainPanel.setHeight("100px");
-		dialogModal.setTitle("Insert Item into Editor");
+		
+		dialogModal.setTitle("Insert Timing Expression into CQL Editor");
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		//dialogModal.setSize("375px","350px");
 		dialogModal.setId("InsertItemToAceEditor_Modal");
-		dialogModal.setSize(ModalSize.MEDIUM);
+		//dialogModal.setSize(ModalSize.MEDIUM);
+		dialogModal.setWidth("400px");
 		ModalBody modalBody = new ModalBody();
 		modalBody.clear();
+		
         //modalBody.setSize("375px","350px");
 		final Button mainButton = new Button();
 		final Button anchorButton = new Button();
 		
-		mainButton.setWidth("290px");
+		mainButton.setWidth("300px");
 		createPrimaryTimingsSubMenu(mainButton, "Primary Timings", primaryTimingList);
 		mainButton.setEnabled(false);
-		mainButton.setText("Split DropDown");
+		mainButton.setText(CQLWorkSpaceConstants.CQL_TIMING_EXPRESSION);
+		mainButton.setTitle(CQLWorkSpaceConstants.CQL_TIMING_EXPRESSION);
 		mainButton.setType(ButtonType.DEFAULT);
 		
-		editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		Label cqlTimingExpressionLabel = new Label(LabelType.INFO, "Cql Timing Expression");
 		cqlTimingExpressionLabel.setMarginTop(5);
 		cqlTimingExpressionLabel.setId("cqlTimingExpresionLabel");
-		DropDown dropDown = new DropDown();		
+		final DropDown dropDown = new DropDown();		
 		anchorButton.setDataToggle(Toggle.DROPDOWN);
 		anchorButton.setIcon(IconType.ELLIPSIS_H);
 			
 		dropDown.add(mainButton);
 		dropDown.add(anchorButton);
-		final DropDownMenu mainDropDownMenu = new DropDownMenu(); //ul element
+		final DropDownMenu mainDropDownMenu = new DropDownMenu(); 
 		timingQualifierItem.setText("Time Qualifiers");
-		
 		timingQualifierItem.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				Anchor anchor = (Anchor)event.getSource();
-				createMoreViableOptionModal(mainButton, anchor.getText());
+				createAvailableTimingQualifiersModal(mainButton, anchor.getText());
 				
 			}
 		});
 		
 		quantityOffsetItem.setText("Quantity Offset");
-		
 		quantityOffsetItem.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				createQuantityModal();
-				
+				createQuantityModal();	
 			}
 		});
 		
-		
-		
 		dropDown.add(mainDropDownMenu);
 		
-		HorizontalPanel buttonPanel = new HorizontalPanel(); 
-		//buttonPanel.setStyleName("div-first buttonPadding");
-		buttonPanel.setStyleName("measureExportButtonContainer");
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		
 		insertButton.setType(ButtonType.PRIMARY);
 		insertButton.getElement().setId("cqlInsertButton_Button");
 		insertButton.setMarginTop(10);
@@ -173,30 +160,42 @@ public class InsertTimingExpressionIntoAceEditor {
 		cancelButton.setTitle("Cancel");
 		cancelButton.setText("Cancel");
 		
-		buttonPanel.add(insertButton);
-		buttonPanel.add(cancelButton);
+		buttonToolBar.add(insertButton);
+		buttonToolBar.add(cancelButton);
 	
-		mainPanel.add(cqlTimingExpressionLabel);
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(dropDown);
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(buttonPanel);
-		modalBody.add(mainPanel);
+		Form bodyForm = new Form();
+		
+		final FormGroup messageFormgroup = new FormGroup();
+		messageFormgroup.add(helpBlock);
+		messageFormgroup.getElement().setAttribute("role", "alert");
+		
+		final FormGroup timingExpressionFormgroup = new FormGroup();
+		timingExpressionFormgroup.add(cqlTimingExpressionLabel);
+		timingExpressionFormgroup.add(new SpacerWidget());
+		timingExpressionFormgroup.add(new SpacerWidget());
+		timingExpressionFormgroup.add(dropDown);
+		timingExpressionFormgroup.add(new SpacerWidget());
+		timingExpressionFormgroup.add(new SpacerWidget());
+	
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(messageFormgroup);
+		formFieldSet.add(timingExpressionFormgroup);
+		bodyForm.add(formFieldSet);
+		
+		ModalFooter modalFooter = new ModalFooter();
+		modalFooter.add(buttonToolBar);
+		modalBody.setHeight("240px");
+		modalBody.add(bodyForm);
 		dialogModal.add(modalBody);
+		dialogModal.add(modalFooter);
 		dialogModal.show();
 		
 		anchorButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				int width = mainDropDownMenu.getElement().getClientWidth();
 				mainDropDownMenu.clear();
-				mainDropDownMenu.setWidth("290px");
-				mainDropDownMenu.setWidth(Integer.toString(width));
+				mainDropDownMenu.setWidth("300px");
 				mainDropDownMenu.add(primaryTimingSubMenu);
 				mainDropDownMenu.add(timingQualifierItem);
 				mainDropDownMenu.add(quantityOffsetItem);
@@ -220,7 +219,10 @@ public class InsertTimingExpressionIntoAceEditor {
 					quantityOffsetItem.setEnabled(false);
 					timePrecisionItem.setEnabled(false);
 					mainDropDownMenu.add(timePrecisionItem);
-				}	
+				}
+				
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
 		});
 	
@@ -230,9 +232,18 @@ public class InsertTimingExpressionIntoAceEditor {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				editor.insertAtCursor(" " + mainButton.getText());
-				editor.focus();
-				dialogModal.hide();
+				if(mainButton.getText().equalsIgnoreCase(
+						CQLWorkSpaceConstants.CQL_TIMING_EXPRESSION)){
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please select CQL Timing Expression");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+					anchorButton.setFocus(true);
+					/*dropDown.setStyleName("dropdown-error");*/
+				} else {
+					editor.insertAtCursor(" " + mainButton.getText());
+					editor.focus();
+					dialogModal.hide();
+				}
 			}
 		});
 
@@ -267,6 +278,7 @@ public class InsertTimingExpressionIntoAceEditor {
 			public void onClick(ClickEvent event) {	
 				Anchor menuItem = (Anchor)event.getSource(); 
 				mainButton.setText(menuItem.getText());
+				mainButton.setTitle(menuItem.getText());
 			}
 		};
 		
@@ -303,6 +315,7 @@ public class InsertTimingExpressionIntoAceEditor {
 				Anchor menuItem = (Anchor)event.getSource(); 
 				String replaceStr = timingExpressionObj.getDateTimePrecOffset().replace("$", menuItem.getText());
 				mainButton.setText(replaceStr);
+				mainButton.setTitle(replaceStr);
 			}
 		};
 		
@@ -324,7 +337,7 @@ public class InsertTimingExpressionIntoAceEditor {
 	 * @param mainAnchor the main anchor
 	 * @param modalName the modal name
 	 */
-	private static void createMoreViableOptionModal(final Button mainAnchor, String modalName){
+	private static void createAvailableTimingQualifiersModal(final Button mainAnchor, String modalName){
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("More Options for " + modalName);
 		dialogModal.setClosable(true);
@@ -333,7 +346,8 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertCQLTimingToAceEditor_Modal");
 		//dialogModal.setSize("375px","350px");
-		dialogModal.setSize(ModalSize.SMALL);
+		//dialogModal.setSize(ModalSize.SMALL);
+		dialogModal.setWidth("400px");
 		ModalBody modalBody = new ModalBody();
 		//modalBody.setSize("375px", "350px");
 		Form bodyForm = new Form();
@@ -363,7 +377,6 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		bodyForm.add(formFieldSet);
 		modalBody.add(bodyForm);
-		
 		
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();

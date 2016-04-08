@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CQLWorkSpaceConstants {
 	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
 	public static String CQL_OTHER_DATA_TYPE ="Others";
-	public static String CQL_TIMING_EXPRESSION ="CQL Timing Expression";
+	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";
 	private static final ArrayList<String> AVAILABLE_ITEM_TO_INSERT = new ArrayList<String>();
 	
 	private static final ArrayList<String> PRIMARY_TIMINGS = new ArrayList<String>();

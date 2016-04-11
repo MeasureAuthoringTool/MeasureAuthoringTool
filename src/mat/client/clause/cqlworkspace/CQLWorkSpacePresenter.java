@@ -867,10 +867,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		Button getFuncInfoButton();
 
+		/**
+		 * Gets the define timing exp button.
+		 *
+		 * @return the define timing exp button
+		 */
 		Button getDefineTimingExpButton();
 		
+		/**
+		 * Hide ace editor auto complete pop up.
+		 */
 		void hideAceEditorAutoCompletePopUp();
 
+		/**
+		 * Gets the func timing exp button.
+		 *
+		 * @return the func timing exp button
+		 */
 		Button getFuncTimingExpButton();
 		
 	}
@@ -896,6 +909,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay, currentSection);
 		searchDisplay.setIsPageDirty(true);
 	}
+	
+	/**
+	 * Builds the timing expression pop up.
+	 */
+	private void buildTimingExpressionPopUp() {
+		searchDisplay.resetMessageDisplay();
+		InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
+		searchDisplay.setIsPageDirty(true);
+	}
+	
 	/**
 	 * Adds the event handlers.
 	 */
@@ -1081,9 +1104,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
-				searchDisplay.setIsPageDirty(true);
+				buildTimingExpressionPopUp();
 			}
 		});
 		
@@ -1092,9 +1113,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
-				searchDisplay.setIsPageDirty(true);
+				buildTimingExpressionPopUp();
 			}
 		});
 		

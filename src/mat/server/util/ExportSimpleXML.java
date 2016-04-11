@@ -1260,7 +1260,6 @@ public class ExportSimpleXML {
 					if(uuidAttributeNode!=null){
 						node.getAttributes().removeNamedItem("uuid");
 					}
-					
 				}
 			}
 		}

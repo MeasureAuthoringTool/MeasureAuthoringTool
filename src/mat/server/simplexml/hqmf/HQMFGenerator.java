@@ -9,7 +9,7 @@ import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
-import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
 import org.w3c.dom.Element;
@@ -72,7 +72,7 @@ public class HQMFGenerator implements Generator {
 	 * @param me the me
 	 */
 	private void generateNarrative(MeasureExport me) {
-		String humanReadableHTML = HumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
+		String humanReadableHTML = HQMFHumanReadableGenerator.generateHTMLForMeasure(me.getMeasure().getId(), me.getSimpleXML());
 		humanReadableHTML = tidyfyHTML(humanReadableHTML);
 		humanReadableHTML = humanReadableHTML.substring(humanReadableHTML.indexOf(" <body>"),humanReadableHTML.indexOf("</body>")+"</body>".length());
 		

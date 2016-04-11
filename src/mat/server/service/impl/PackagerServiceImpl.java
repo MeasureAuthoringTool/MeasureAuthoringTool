@@ -25,7 +25,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
-import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;

@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 /**
  * The Class HumanReadableGenerator.
  */
-public class HumanReadableGenerator implements MatConstants{
+public class HQMFHumanReadableGenerator implements MatConstants{
 	
 	/** The Constant ELEMENT_LOOK_UP. */
 	private static final String ELEMENT_LOOK_UP = "elementLookUp";

@@ -35,7 +35,7 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
@@ -373,7 +373,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
 		String measureXML = measureExport.getMeasureXMLAsString();
-		String html = HumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,populationSubXML,measureXML);
+		String html = HQMFHumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,populationSubXML,measureXML);
 		//String html = "<html><body>This is human readable HTML. If you can read this you are definitely human. If not, err, Best of luck.</body></html>";
 		
 		result.export = html;
@@ -535,7 +535,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	private String getHumanReadableForMeasure(String measureId,
 			String simpleXmlStr) {
-		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
+		String html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
 		return html;
 
 	}

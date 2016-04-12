@@ -191,20 +191,23 @@ public class MeasureNotesPresenter implements MatPresenter{
 				notesDisplay.setObserver(new Observer() {
 					@Override
 					public void onDeleteClicked(MeasureNoteDTO result) {
-						service.deleteMeasureNotes(result, new AsyncCallback<Void>() {
-							@Override
-							public void onSuccess(Void result) {
-								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_SUCCESS_MESSAGE());
-								search();
-							}
-							@Override
-							public void onFailure(Throwable caught) {
-								showSearchingBusy(false);
-								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-						});
+						if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+							service.deleteMeasureNotes(result, new AsyncCallback<Void>() {
+								@Override
+								public void onSuccess(Void result) {
+									clearMessages();
+									notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_SUCCESS_MESSAGE());
+									search();
+								}
+								@Override
+								public void onFailure(Throwable caught) {
+									showSearchingBusy(false);
+									clearMessages();
+									notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								}
+							});
+						}
+						
 					}
 					
 					@Override

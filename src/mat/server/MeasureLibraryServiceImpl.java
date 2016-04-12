@@ -980,7 +980,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
 		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
 		try {
-			getMeasureNotesService().deleteMeasureNote(measureNotes);
+			if(MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(),measureNoteDTO.getMeasureId())){
+				getMeasureNotesService().deleteMeasureNote(measureNotes);
+			}
+			
 			logger.info("MeasureNotes Deleted Successfully :: " + measureNotes.getId());
 		} catch (Exception e) {
 			logger.info("MeasureNotes not deleted. Exception occured. Measure notes Id :: " + measureNotes.getId());

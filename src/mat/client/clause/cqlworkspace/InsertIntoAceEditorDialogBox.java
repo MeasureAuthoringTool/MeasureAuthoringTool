@@ -211,20 +211,8 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
 							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
-							StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
-							functionNameBuilder.append("(");
-							StringBuilder argumentType = new StringBuilder();
-							if (functions.getArgumentList() != null) {
-								for (int j = 0; j < functions.getArgumentList().size(); j++) {
-									CQLFunctionArgument argument = functions.getArgumentList().get(j);
-									argumentType = argumentType.append(argument.getArgumentName());
-									if (j <  (functions.getArgumentList().size() - 1)) {
-										argumentType.append(",");
-									}
-								}
-							}
-							functionNameBuilder.append(argumentType + ")");
-							listAllItemNames.addItem(functionNameBuilder.toString());
+							
+							listAllItemNames.addItem(getFunctionArgumentValueBuilder(functions), getFunctionArgumentToolTipBuilder(functions));
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();
@@ -311,4 +299,40 @@ public class InsertIntoAceEditorDialogBox {
 		}
 		
 	}
+	
+	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		functionNameBuilder.append("(");
+		StringBuilder argumentType = new StringBuilder();
+		if (functions.getArgumentList() != null) {
+			for (int j = 0; j < functions.getArgumentList().size(); j++) {
+				CQLFunctionArgument argument = functions.getArgumentList().get(j);
+				argumentType = argumentType.append(argument.getArgumentName());
+				if (j <  (functions.getArgumentList().size() - 1)) {
+					argumentType.append(",");
+				}
+			}
+		}
+		functionNameBuilder.append(argumentType + ")");
+		return functionNameBuilder.toString();
+	}
+	
+	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		functionNameBuilder.append("(");
+		StringBuilder argumentType = new StringBuilder();
+		if (functions.getArgumentList() != null) {
+			for (int j = 0; j < functions.getArgumentList().size(); j++) {
+				CQLFunctionArgument argument = functions.getArgumentList().get(j);
+				argumentType = argumentType.append(argument.getArgumentName());
+				argumentType = argumentType.append(" " +argument.getArgumentType());
+				if (j <  (functions.getArgumentList().size() - 1)) {
+					argumentType.append(",");
+				}
+			}
+		}
+		functionNameBuilder.append(argumentType + ")");
+		return functionNameBuilder.toString();
+	}
+	
 }

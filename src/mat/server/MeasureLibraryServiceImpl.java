@@ -4173,7 +4173,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		List<String> message = new ArrayList<String>();
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		if(MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(),model.getMeasureId())){
+		if(MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(),model.getId())){
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(model.getId());
 
 			if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {

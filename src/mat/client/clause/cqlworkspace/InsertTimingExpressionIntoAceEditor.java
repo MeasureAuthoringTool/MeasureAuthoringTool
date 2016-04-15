@@ -199,9 +199,16 @@ public class InsertTimingExpressionIntoAceEditor {
 				mainDropDownMenu.add(primaryTimingSubMenu);
 				mainDropDownMenu.add(timingQualifierItem);
 				mainDropDownMenu.add(quantityOffsetItem);
-				timingExpressionObj = JSONCQLTimingExpressionUtility.getMoreViableOptionsList(mainButton.getText());
+				timingExpressionObj = JSONCQLTimingExpressionUtility.getAvaialableTimingQualifierList(mainButton.getText());
 				if(timingExpressionObj != null){
-					timingQualifierItem.setEnabled(true);
+	
+					if(timingExpressionObj.getOptionList() != null 
+							&& timingExpressionObj.getOptionList().size()>0){
+						timingQualifierItem.setEnabled(true);
+					} else {
+						timingQualifierItem.setEnabled(false);
+					}
+					
 					if(timingExpressionObj.isQuantity() && timingExpressionObj.isUnits()){
 						quantityOffsetItem.setEnabled(true);
 					} else {

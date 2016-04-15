@@ -73,78 +73,85 @@ public class JSONCQLTimingExpressionUtility {
 	 *            the timing expression
 	 * @return the more viable options list
 	 */
-	public static TimingExpressionObj getMoreViableOptionsList(
+	public static TimingExpressionObj getAvaialableTimingQualifierList(
 			String timingExpression) {
 		TimingExpressionObj timingExpressionObj = null;
-		
+
 		List<String> optionList = new ArrayList<String>();
 		if (jsonObjectMap.get("timingExpression").isArray() != null) {
 			JSONArray arrayObject = jsonObjectMap.get("timingExpression")
 					.isArray();
 			for (int i = 0; i < arrayObject.size(); i++) {
 				JSONObject attrJSONObject = (JSONObject) arrayObject.get(i);
-				if(attrJSONObject.get("@name")==null){
-					return null;
-				}
-				JSONString attrObject = attrJSONObject.get("@name").isString();
-				String timingName = attrObject.toString();
-				timingName = timingName.replace("\"", "");
-				if (timingName.equalsIgnoreCase(timingExpression)) {
+				if (attrJSONObject.get("@name") != null) {
 
-					timingExpressionObj = new TimingExpressionObj();
-					timingExpressionObj.setName(timingExpression);
-					if(attrJSONObject.get("@quantity")!=null){
-						JSONString quantityBoolean = attrJSONObject
-								.get("@quantity").isString();
-						String quantity = quantityBoolean.toString().replaceAll(
-								"\"", "");
-						if (quantity.equals("true")) {
-							timingExpressionObj.setQuantity(true);
-						} else {
-							timingExpressionObj.setQuantity(false);
-						}
-					}
-					
-					if(attrJSONObject.get("@units")!=null){
-						JSONString unitsBoolean = attrJSONObject.get("@units")
-								.isString();
-						String units = unitsBoolean.toString().replaceAll("\"", "");
-						if (units.equals("true")) {
-							timingExpressionObj.setUnits(true);
-						} else {
-							timingExpressionObj.setUnits(false);
-						}
-					}
-					
-					if(attrJSONObject.get("@dateTimePrecision")!=null){
-						JSONString dateTimePreBoolean = attrJSONObject.get(
-								"@dateTimePrecision").isString();
-						String dateTimePrecision = dateTimePreBoolean.toString()
-								.replaceAll("\"", "");
-						if (dateTimePrecision.equals("true")) {
-							timingExpressionObj.setDateTimePrecesion(true);
-						} else {
-							timingExpressionObj.setDateTimePrecesion(false);
-						}
-					}
-					
-					if(attrJSONObject.get("@dateTimePrecision")!=null){
-						JSONString dateTimePrecisionOffset = attrJSONObject.get(
-								"@dateTimePrecisionOffset").isString();
-						String dateTimePrecisionOffsetStr = dateTimePrecisionOffset.toString()
-								.replaceAll("\"", "");
-						timingExpressionObj.setDateTimePrecOffset(dateTimePrecisionOffsetStr);
-					}
-						
-					JSONString moreViableOptionObject = attrJSONObject.get(
-							"@option").isString();
-					String optionName = moreViableOptionObject.toString();
-					optionName = optionName.replace("\"", "");
-					optionList = getOptionList(optionName);
-					timingExpressionObj.setOptionList(optionList);
-					break;
-				}
+					JSONString attrObject = attrJSONObject.get("@name")
+							.isString();
+					String timingName = attrObject.toString();
+					timingName = timingName.replace("\"", "");
+					if (timingName.equalsIgnoreCase(timingExpression)) {
 
+						timingExpressionObj = new TimingExpressionObj();
+						timingExpressionObj.setName(timingExpression);
+						if (attrJSONObject.get("@quantity") != null) {
+							JSONString quantityBoolean = attrJSONObject.get(
+									"@quantity").isString();
+							String quantity = quantityBoolean.toString()
+									.replaceAll("\"", "");
+							if (quantity.equals("true")) {
+								timingExpressionObj.setQuantity(true);
+							} else {
+								timingExpressionObj.setQuantity(false);
+							}
+						}
+
+						if (attrJSONObject.get("@units") != null) {
+							JSONString unitsBoolean = attrJSONObject.get(
+									"@units").isString();
+							String units = unitsBoolean.toString().replaceAll(
+									"\"", "");
+							if (units.equals("true")) {
+								timingExpressionObj.setUnits(true);
+							} else {
+								timingExpressionObj.setUnits(false);
+							}
+						}
+
+						if (attrJSONObject.get("@dateTimePrecision") != null) {
+							JSONString dateTimePreBoolean = attrJSONObject.get(
+									"@dateTimePrecision").isString();
+							String dateTimePrecision = dateTimePreBoolean
+									.toString().replaceAll("\"", "");
+							if (dateTimePrecision.equals("true")) {
+								timingExpressionObj.setDateTimePrecesion(true);
+							} else {
+								timingExpressionObj.setDateTimePrecesion(false);
+							}
+						}
+
+						if (attrJSONObject.get("@dateTimePrecision") != null) {
+							JSONString dateTimePrecisionOffset = attrJSONObject
+									.get("@dateTimePrecisionOffset").isString();
+							String dateTimePrecisionOffsetStr = dateTimePrecisionOffset
+									.toString().replaceAll("\"", "");
+							timingExpressionObj
+									.setDateTimePrecOffset(dateTimePrecisionOffsetStr);
+						}
+						if (attrJSONObject.get("@option") != null) {
+							JSONString moreViableOptionObject = attrJSONObject
+									.get("@option").isString();
+							String optionName = moreViableOptionObject
+									.toString();
+							optionName = optionName.replace("\"", "");
+							optionList = getOptionList(optionName);
+							timingExpressionObj.setOptionList(optionList);
+							break;
+						} else {
+							return timingExpressionObj;
+						}
+					}
+
+				}
 			}
 		}
 

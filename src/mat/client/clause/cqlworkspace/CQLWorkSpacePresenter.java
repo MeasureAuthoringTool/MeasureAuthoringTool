@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -885,6 +886,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the func timing exp button
 		 */
 		Button getFuncTimingExpButton();
+
+		SuggestBox getSearchSuggestFuncTextBox();
+
+		SuggestBox getSearchSuggestDefineTextBox();
+
+		SuggestBox getSearchSuggestTextBox();
 		
 	}
 	
@@ -1404,6 +1411,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
 		}
+		//Below lines are to clear search suggestion textbox and listbox selection after erase.
+		searchDisplay.getSearchSuggestTextBox().setText("");
+		if(searchDisplay.getParameterNameListBox().getSelectedIndex() >= 0){
+			searchDisplay.getParameterNameListBox().setItemSelected(searchDisplay.getParameterNameListBox().getSelectedIndex(), false);
+		}		
 	}
 	
 	/**
@@ -1417,6 +1429,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getDefineNameTxtArea() != null)) {
 			searchDisplay.getDefineNameTxtArea().clear();
+		}
+		//Below lines are to clear search suggestion textbox and listbox selection after erase.
+		searchDisplay.getSearchSuggestDefineTextBox().setText("");
+		if(searchDisplay.getDefineNameListBox().getSelectedIndex() >= 0){
+			searchDisplay.getDefineNameListBox().setItemSelected(searchDisplay.getDefineNameListBox().getSelectedIndex(), false);
 		}
 		searchDisplay.getContextDefinePATRadioBtn().setValue(true);
 		searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
@@ -1436,6 +1453,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getFuncNameTxtArea() != null)) {
 			searchDisplay.getFuncNameTxtArea().clear();
+		}
+	//Below lines are to clear search suggestion textbox and listbox selection after erase.
+		searchDisplay.getSearchSuggestFuncTextBox().setText("");
+		if(searchDisplay.getFuncNameListBox().getSelectedIndex() >= 0){
+			searchDisplay.getFuncNameListBox().setItemSelected(searchDisplay.getFuncNameListBox().getSelectedIndex(), false);
 		}
 		searchDisplay.getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getContextFuncPOPRadioBtn().setValue(false);

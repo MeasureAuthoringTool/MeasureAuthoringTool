@@ -3091,6 +3091,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the search suggest text box
 	 */
+	@Override
 	public SuggestBox getSearchSuggestTextBox() {
 		return searchSuggestTextBox;
 	}
@@ -3110,6 +3111,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the search suggest define text box
 	 */
+	@Override
 	public SuggestBox getSearchSuggestDefineTextBox() {
 		return searchSuggestDefineTextBox;
 	}
@@ -3119,6 +3121,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the search suggest func text box
 	 */
+	@Override
 	public SuggestBox getSearchSuggestFuncTextBox() {
 		return searchSuggestFuncTextBox;
 	}

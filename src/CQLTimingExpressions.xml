@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cqlTimingExpressions>
-	<timingExpression name="same as" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same as $"/>
+	<timingExpression name="same as" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as"/>
 	<timingExpression name="starts same as" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as "/>
-	<timingExpression name="starts same as start" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as start of"/>
-	<timingExpression name="starts same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as end of"/>
+	<timingExpression name="starts same as start" option="sameAsTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as start"/>
+	<timingExpression name="starts same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ as end"/>
 	<timingExpression name="ends same as" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as"/>
-	<timingExpression name="ends same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as start of"/>
-	<timingExpression name="ends same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as end of"/>
-	<timingExpression name="same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start of"/>
-	<timingExpression name="same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start of"/>
+	<timingExpression name="ends same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as start"/>
+	<timingExpression name="ends same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as end"/>
+	<timingExpression name="same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start"/>
+	<timingExpression name="same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start"/>
 	
 	<timingExpression name="same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or before"/>
 	<timingExpression name="starts same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or before"/>

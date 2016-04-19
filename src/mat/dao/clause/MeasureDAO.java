@@ -6,6 +6,7 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ShareLevel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -309,7 +310,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public boolean getMeasure(String measureId);
 	
 	List<Measure> getMeasureListForMeasureOwner(User user);
-	
+
 	
 	/**
 	 * Gets the MeasureShareDTO.
@@ -318,4 +319,13 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the MeasureShareDTO.
 	 */
 	MeasureShareDTO extractDTOFromMeasure(Measure measure);
+
+	/**
+	 * Find share level for user.
+	 *
+	 * @param measureId the measure id
+	 * @param userID the user id
+	 * @return the share level
+	 */
+	ShareLevel findShareLevelForUser(String measureId, String userID);
 }

@@ -2217,8 +2217,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				} catch (XPathExpressionException e) {
 					e.printStackTrace();
 				}
+				getService().saveMeasureXml(measureXmlModel);
 			}
-			
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
@@ -2252,8 +2252,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureXmlModel.setXml(result);
 			XmlProcessor processor1 = new XmlProcessor(measureXmlModel.getXml());
 			measureXmlModel.setXml(processor1.checkForStratificationAndAdd());
+			getService().saveMeasureXml(measureXmlModel);
 		}
-		getService().saveMeasureXml(measureXmlModel);
 	}
 	
 	
@@ -2843,17 +2843,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final void updateMeasureNotes(final MeasureNoteDTO measureNoteDTO, final String userId) {
 		try {
-			MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
-			MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
-			measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
-			measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
-			User user = getUserService().getById(userId);
-			if (user != null) {
-				measureNotes.setModifyUser(user);
+			if(MatContextServiceUtil.get()
+					.isCurrentMeasureEditable(getMeasureDAO(),measureNoteDTO.getMeasureId())){
+				MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
+				MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
+				measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
+				measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
+				User user = getUserService().getById(userId);
+				if (user != null) {
+					measureNotes.setModifyUser(user);
+				}
+				measureNotes.setLastModifiedDate(new Date());
+				getMeasureNotesService().saveMeasureNote(measureNotes);
+				logger.info("Edited MeasureNotes Saved Successfully. Measure notes Id :: " + measureNoteDTO.getId());
 			}
-			measureNotes.setLastModifiedDate(new Date());
-			getMeasureNotesService().saveMeasureNote(measureNotes);
-			logger.info("Edited MeasureNotes Saved Successfully. Measure notes Id :: " + measureNoteDTO.getId());
+			
 		} catch (Exception e) {
 			logger.info("Edited MeasureNotes not saved. Exception occured. Measure notes Id :: " + measureNoteDTO.getId());
 		}

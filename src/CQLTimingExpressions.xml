@@ -8,7 +8,7 @@
 	<timingExpression name="ends same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as start"/>
 	<timingExpression name="ends same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends same $ as end"/>
 	<timingExpression name="same as start" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start"/>
-	<timingExpression name="same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as start"/>
+	<timingExpression name="same as end" option="sameAsTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ as end"/>
 	
 	<timingExpression name="same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="same $ or before"/>
 	<timingExpression name="starts same or before" option="sameOrBeforeTimingExpressions"  quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts same $ or before"/>
@@ -50,22 +50,22 @@
 	<timingExpression name="before start" option="beforeTimingExpressions" />
 	<timingExpression name="before end" option="beforeTimingExpressions" />	
 	
-	<timingExpression name="includes" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $"/>
-	<timingExpression name="includes start" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $ start"/>
-	<timingExpression name="includes end" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $ end"/>
-	<timingExpression name="properly includes" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $"/>
-	<timingExpression name="properly includes start" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $ start"/>
-	<timingExpression name="properly includes end" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $ end"/>
+	<timingExpression name="includes" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $ of"/>
+	<timingExpression name="includes start" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $ of start"/>
+	<timingExpression name="includes end" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="includes $ of end"/>
+	<timingExpression name="properly includes" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $ of"/>
+	<timingExpression name="properly includes start" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $ of start"/>
+	<timingExpression name="properly includes end" option="includesTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly includes $ of end"/>
 	
-	<timingExpression name="included in" option="includedInTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="included in $"/>
-	<timingExpression name="properly included in" option="includedInTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly included in $"/>
+	<timingExpression name="included in" option="includedInTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="included in $ of"/>
+	<timingExpression name="properly included in" option="includedInTimingExpressions" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly included in $ of"/>
 	
-	<timingExpression name="during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="during $"/>
-	<timingExpression name="starts during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts during $"/>
-	<timingExpression name="ends during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends during $"/>
-	<timingExpression name="properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly during $"/>
-	<timingExpression name="starts properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts properly during $"/>
-	<timingExpression name="ends properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends properly during $"/>
+	<timingExpression name="during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="during $ of"/>
+	<timingExpression name="starts during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts during $ of"/>
+	<timingExpression name="ends during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends during $ of"/>
+	<timingExpression name="properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="properly during $ of"/>
+	<timingExpression name="starts properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts properly during $ of"/>
+	<timingExpression name="ends properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends properly during $ of"/>
 	
 	<timingExpression name="meets" option="meetsTimingExpression" />
 	<timingExpression name="meets before" option="meetsTimingExpression" />
@@ -79,8 +79,8 @@
 	<timingExpression name="starts within" option="withinTimingExpression" />
 	<timingExpression name="ends within" option="withinTimingExpression" />
 	
-	<timingExpression name="starts" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts $"/>
-	<timingExpression name="ends" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends $"/>
+	<timingExpression name="starts" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts $ of"/>
+	<timingExpression name="ends" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends $ of"/>
 	
 	<timingExpression ref="overlapsTimingExpression">
 		<option name="overlaps before" />

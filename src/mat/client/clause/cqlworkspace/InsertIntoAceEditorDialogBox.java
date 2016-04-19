@@ -325,7 +325,15 @@ public class InsertIntoAceEditorDialogBox {
 			for (int j = 0; j < functions.getArgumentList().size(); j++) {
 				CQLFunctionArgument argument = functions.getArgumentList().get(j);
 				argumentType = argumentType.append(argument.getArgumentName());
-				argumentType = argumentType.append(" " +argument.getArgumentType());
+				if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
+					argumentType = argumentType.append(" " +'"' + argument.getQdmDataType() + '"');
+				}
+				else if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+					argumentType = argumentType.append(" " + argument.getOtherType());
+				}
+				else{
+					argumentType = argumentType.append(" " +argument.getArgumentType());
+				}
 				if (j <  (functions.getArgumentList().size() - 1)) {
 					argumentType.append(",");
 				}

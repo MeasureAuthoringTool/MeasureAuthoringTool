@@ -3716,8 +3716,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String XPATH_SUBTREE = "//subTreeLookUp/subTree[@uuid='"+uuid+"']";
 				node = (Node) xPath.evaluate(XPATH_SUBTREE, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODE);
+				if(node.hasChildNodes()){
+					node = node.getChildNodes().item(0);
+				}
 			}
-			if (node.hasChildNodes()) {
+			if (node.getChildNodes() != null && node.getChildNodes().getLength() > 0 
+					&& !node.getNodeName().equalsIgnoreCase("subTree")) {
 				currentCounter = currentCounter + 1;
 			}
 			if (currentCounter > NESTED_CLAUSE_DEPTH) {

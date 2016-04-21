@@ -1171,8 +1171,8 @@ public class CQLServiceImpl implements CQLService {
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 				cqlStr = cqlStr.append("valueset "
-						+ valueset.getQDMElement() + ":"
-						+ valueset.getOid());
+						+'"'+ valueset.getCodeListName() +'"'+ ":"
+						+"'"+ valueset.getOid()+"'");
 						
 				cqlStr = cqlStr.append("\n\n");
 			}

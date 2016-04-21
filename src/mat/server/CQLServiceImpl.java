@@ -21,6 +21,8 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLDAO;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
@@ -33,11 +35,13 @@ import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.cqlparser.MATCQLListener;
 import mat.server.cqlparser.cqlLexer;
 import mat.server.cqlparser.cqlParser;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
@@ -75,6 +79,10 @@ public class CQLServiceImpl implements CQLService {
 	/** The cql dao. */
 	@Autowired
 	private CQLDAO cqlDAO;
+	
+	/** The measure library service. */
+	@Autowired
+	private MeasureLibraryService measureLibraryService;
 	
 	/** The context. */
 	@Autowired
@@ -671,6 +679,10 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = getCQLGeneratlInfo(measureId);
 		result.setCqlModel(cqlModel);
+		QualityDataModelWrapper valuesetWrapper = measureLibraryService.getAppliedQDMFromMeasureXml(measureId,true);
+		List<CQLQualityDataSetDTO> cqlDataSet = new ArrayList<CQLQualityDataSetDTO>();
+		cqlDataSet = convertToCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO());
+		result.getCqlModel().setValueSetList(cqlDataSet);
 		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
 		result.getCqlModel().setDefinitionList(
 				defineWrapper.getCqlDefinitions());
@@ -681,6 +693,28 @@ public class CQLServiceImpl implements CQLService {
 		result.getCqlModel().setCqlFunctions(
 				functionWrapper.getCqlFunctionsList());
 		return result;
+	}
+	
+	private List<CQLQualityDataSetDTO> convertToCQLQualityDataSetDTO(List<QualityDataSetDTO> qualityDataSetDTO){
+		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
+		
+		for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
+			CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
+				convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
+				convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
+				convertedCQLDataSet.setDataType(tempDataSet.getDataType());
+				convertedCQLDataSet.setId(tempDataSet.getId());
+				convertedCQLDataSet.setOid(tempDataSet.getOid());
+				convertedCQLDataSet.setSuppDataElement(tempDataSet.isSuppDataElement());
+				convertedCQLDataSet.setTaxonomy(tempDataSet.getTaxonomy());
+				convertedCQLDataSet.setType(tempDataSet.getType());
+				convertedCQLDataSet.setUuid(tempDataSet.getUuid());
+				convertedCQLDataSet.setVersion(tempDataSet.getVersion());
+				convertedCQLDataSetList.add(convertedCQLDataSet);
+			
+		}
+		return convertedCQLDataSetList;
+		
 	}
 	
 	/**
@@ -1130,6 +1164,19 @@ public class CQLServiceImpl implements CQLService {
 		// Using
 		cqlStr = cqlStr.append("using QDM");
 		cqlStr = cqlStr.append("\n\n");
+		
+		
+		//Valuesets
+		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
+		if (valueSetList != null) {
+			for (CQLQualityDataSetDTO valueset : valueSetList) {
+				cqlStr = cqlStr.append("valueset "
+						+ valueset.getQDMElement() + ":"
+						+ valueset.getOid());
+						
+				cqlStr = cqlStr.append("\n\n");
+			}
+		}
 		
 		// parameters
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();

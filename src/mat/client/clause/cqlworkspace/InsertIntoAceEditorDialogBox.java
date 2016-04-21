@@ -128,11 +128,11 @@ public class InsertIntoAceEditorDialogBox {
 			public void onClick(ClickEvent event) {
 				int selectedItemIndex = availableItemToInsert.getSelectedIndex();
 				if (selectedItemIndex != 0) {
-					String itemTypeName = availableItemToInsert.getItemText(selectedItemIndex);
+					String itemTypeName = availableItemToInsert.getItemText (selectedItemIndex);
 					if (!itemTypeName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 						int selectedIndex = listAllItemNames.getSelectedIndex();
 						if (selectedIndex != 0) {
-							String itemNameToBeInserted = listAllItemNames.getItemText(selectedIndex);
+							String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex);
 							if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);

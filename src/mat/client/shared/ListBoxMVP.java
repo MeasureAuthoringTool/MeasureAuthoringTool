@@ -113,7 +113,7 @@ public class ListBoxMVP extends ListBox implements HasValue<String> {
 	 */
 	@Override
 	 public void insertItem(String item, String value, int index) {
-		insertItem(item, value, value, index);
+		insertItem(item, item, value, index);
 	}
 	
 	/**

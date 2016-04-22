@@ -3,6 +3,7 @@ package mat.server.simplexml;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -30,10 +31,27 @@ import org.xml.sax.InputSource;
 
 public class CQLHumanReadableGenerator {
 	
+	private static final String[] keyWordListArray = {"library","version","using","include","called","public","private",
+														"parameter","default","codesystem","valueset","codesystems","define",
+														"function","with","without","in","from","where","return",
+														"all","distinct","sort","by","asc","desc","is","not","cast","as","between",
+														"difference","contains","and","or","xor","union","intersection","year","month",
+														"day","hour","minute","second","millisecond","when","then","or","or less", 
+														"before","after","or more","more","less","context","using", "QDM","Interval",
+														"DateTime","Patient","Population","such that"};
+	
+	private static final String[] cqlFunctionsListArray = {"date","time","timezone","starts","ends",
+															"occurs","overlaps","Interval",
+															"Tuple","List","DateTime","AgeInYearsAt"};
+	
 	private static List<String> definitionsAlreadyDisplayed = new ArrayList<String>();
+	private static List<String> cqlObjects = new ArrayList<String>();
 	
 	public static String generateHTMLForPopulation(String measureId,
 			XmlProcessor subXMLProcessor, String measureXML) {
+		
+		definitionsAlreadyDisplayed.clear();
+		cqlObjects.clear();
 		
 		Node cqlNode = subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild();
 		
@@ -43,7 +61,7 @@ public class CQLHumanReadableGenerator {
 		String cqlFileString = getCQLStringFromMeasureXML(measureXML);
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
-		
+			
 		String humanReadableHTML = "";
 		humanReadableHTML = generateCQLHumanReadableForSinglePopulation(cqlNode.getParentNode(), cqlFileObject);
 		
@@ -166,6 +184,9 @@ public class CQLHumanReadableGenerator {
 public static String generateCQLHumanReadableForSinglePopulation(Node populationNode, CQLFileObject cqlFileObject){
 		
 		definitionsAlreadyDisplayed.clear();
+		cqlObjects.clear();
+		
+		populateCQLObjectsList(cqlFileObject);
 		
 		Node cqlNode = populationNode.getFirstChild();
 		String populationName = populationNode.getAttributes().getNamedItem("displayName").getNodeValue();
@@ -278,20 +299,20 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 		Element subLiElement = subULElement.appendElement("li");
 		Element subDivElement = subLiElement.appendElement("div");
 		
-		Element spanElem = getSpanElementWithClass(subDivElement, "cql-keyword-new");
+		Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
 		spanElem.appendText("define ");
 		
 		Element spanElemDefName = getSpanElementWithClass(subDivElement, "cql-class");
 		spanElemDefName.appendText(definitionIdentifier+":");
 		
 		List<String> definitionLineList = getDefinitionLineList(cqlDefinitionModelObject);
-		subDivElement.appendText(" " + definitionLineList.get(0));
+		subDivElement.append("&nbsp;" + definitionLineList.get(0));
 		
 		subDivElement.appendElement("br");
 		
 		for(int i=1;i<definitionLineList.size();i++){
 			Element spanElemDefBody = getSpanElementWithClass(subDivElement, "cql-definition-body");
-			spanElemDefBody.appendText(definitionLineList.get(i));
+			spanElemDefBody.append(definitionLineList.get(i));
 		}
 		subDivElement.appendElement("br");
 		
@@ -341,10 +362,9 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 				}
 				else
 				{
-					tokenString += " " + childTokens.get(tokenCounter);
+					tokenString += " " + wrapWithCssClass(childTokens.get(tokenCounter));
 				}
 			}
-			System.out.println("Adding "+definitionLineList);
 		}
 		else if(childTokens.size() > 1 && 
 				childTokens.get(1).trim().length() == 1 
@@ -352,7 +372,7 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 				Character.isLetter(childTokens.get(1).trim().charAt(0)))//check for something like "MeasurementPeriodEncounters E"
 		{
 			tokenCounter = 2;
-			definitionLineList.add(childTokens.get(0) + " " + childTokens.get(1));
+			definitionLineList.add(childTokens.get(0) + " " + wrapWithCssClass(childTokens.get(1)));
 		}
 		
 		String tokenString = "";
@@ -363,7 +383,7 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 		
 		for(;tokenCounter < childTokens.size();tokenCounter++){
 			if(breakAtKeywords.contains(childTokens.get(tokenCounter).trim().toLowerCase()) && tokenString.length() > 0){
-				definitionLineList.add(tokenString + " " + childTokens.get(tokenCounter));
+				definitionLineList.add(tokenString + " " + wrapWithCssClass(childTokens.get(tokenCounter)));
 				tokenString = "";
 			}else {
 				String fillerSpace = " ";
@@ -375,22 +395,52 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 				//noSpaceTokens.add("[");
 				//noSpaceTokens.add("]");
 				String token = childTokens.get(tokenCounter);
-				String lastChar = tokenString.length() > 0 ? tokenString.charAt(tokenString.length()-1)+"" : "";
+				//String lastToken = tokenString.length() > 0 ? tokenString.charAt(tokenString.length()-1)+"" : "";
 				
-				if(noSpaceTokens.contains(token) || noSpaceTokens.contains(lastChar)){
+				String lastToken = (tokenCounter > 0) ? childTokens.get(tokenCounter - 1) : "";
+				
+				if(noSpaceTokens.contains(token) || noSpaceTokens.contains(lastToken)){
 					fillerSpace = "";
 				}
-				tokenString += fillerSpace + childTokens.get(tokenCounter);
+				tokenString += fillerSpace + wrapWithCssClass(childTokens.get(tokenCounter));
 			}
-			
 		}
 		
 		if(tokenString.length() > 0){
-			System.out.println("Addingg:"+tokenString);
 			definitionLineList.add(tokenString);
 		}
 		
 		return definitionLineList;
+	}
+
+	private static String wrapWithCssClass(String string) {
+		
+		String cssClass = "";
+		if(string.trim().startsWith("\"") && string.endsWith("\"")){
+			cssClass = "cql_string";
+			 
+		}else if(string.trim().length() == 1){
+			cssClass = "cql_identifier";
+		}else if(contains(keyWordListArray,string.trim())){
+			cssClass = "cql_keyword";
+		}else if(contains(cqlFunctionsListArray,string.trim())){
+			cssClass = "cql_function";
+		}else if(cqlObjects.contains(string)){
+			cssClass = "cql-object";
+		}
+		
+		string  = "<span class=\"" + cssClass + "\">" + string + "</span>";
+		return string;
+	}
+
+	private static boolean contains(String[] stringArray, String tokenString) {
+		
+		for(int i=0;i<stringArray.length;i++){
+			if(tokenString.equals(stringArray[i])){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static Element getSpanElementWithClass(Element subLiElement, String cssClassName) {
@@ -423,6 +473,13 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 	private static void appendStyleNode(Element head) {
 		String styleTagString = MATCssCQLUtil.getCSS();
 		head.append(styleTagString);
+	}
+	
+	private static void populateCQLObjectsList(CQLFileObject cqlFileObject) {
+		
+		Map<String, CQLDefinitionModelObject> cqlDefinitionMap = cqlFileObject.getDefinitionsMap();
+		cqlObjects.addAll(cqlDefinitionMap.keySet());
+		
 	}
 	
 }

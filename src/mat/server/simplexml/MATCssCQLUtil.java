@@ -74,7 +74,7 @@ public class MATCssCQLUtil {
 			"}\r\n" + 
 			"\r\n" + 
 			".list-header {\r\n" + 
-			"    font-size: 12px;\r\n" + 
+			"    font-size: 14px;\r\n" + 
 			"    color: rgb(0, 0, 238);\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
@@ -90,7 +90,7 @@ public class MATCssCQLUtil {
 			"    margin-bottom: 1em;\r\n" + 
 			"    padding: 10px;\r\n" + 
 			"    line-height: 1.5em;\r\n" + 
-			"    font-size: 13px;\r\n" + 
+			"    font-size: 14px;\r\n" + 
 			"    overflow: auto;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
@@ -116,39 +116,16 @@ public class MATCssCQLUtil {
 			"    color: rgb(25, 127, 157);\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
-			"/*.cql-function {\r\n" + 
-			"    color: rgb(25, 127, 157);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-keyword {\r\n" + 
-			"    color: rgb(0, 0, 255);\r\n" + 
+			".cql_keyword {\r\n" + 
+			"    color: rgb(127, 0, 85);\r\n" + 
 			"    font-weight: 700;\r\n" + 
+			"}\r\n" +
+			".cql_string {\r\n" + 
+			"    color: rgb(42, 0, 255);\r\n" + 
+			"}\r\n" +
+			".cql_identifier .cql_function {\r\n" + 
+			"    color: rgb(60, 76, 114);\r\n" + 
 			"}\r\n" + 
-			"\r\n" + 
-			".cql-variable, .cql-property {\r\n" + 
-			"    color: rgb(128, 0, 0);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-interface {\r\n" + 
-			"    color: rgb(43, 170, 175);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-literal, .cql-operator {\r\n" + 
-			"    color: rgb(64,64,64);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-reserved {\r\n" + 
-			"    color: rgb(0,0,0);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-string {\r\n" + 
-			"    color: rgb(163, 21, 21);\r\n" + 
-			"}\r\n" + 
-			"\r\n" + 
-			".cql-comment {\r\n" + 
-			"    color: rgb(0, 128, 0);\r\n" + 
-			"}*/\r\n" + 
-			"\r\n" + 
 			"hr.style13 {\r\n" + 
 			"	height: 10px;\r\n" + 
 			"	border: 0;\r\n" + 

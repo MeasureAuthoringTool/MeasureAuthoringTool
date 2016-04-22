@@ -9,14 +9,21 @@ public class HumanReadableGenerator {
 			String subXML, String measureXML) {
 		
 		XmlProcessor subXMLProcessor = new XmlProcessor(subXML);
-		String firstNodeName = subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild().getNodeName();
-		System.out.println("firstNodeName:"+firstNodeName);
 		String html = "";
-		if("cqldefinition".equals(firstNodeName) || "cqlfunction".equals(firstNodeName) || "cqlaggfunction".equals(firstNodeName)){
-			html = CQLHumanReadableGenerator.generateHTMLForPopulation(measureId, subXMLProcessor, measureXML);
+		
+		if(subXMLProcessor.getOriginalDoc().getDocumentElement().hasChildNodes()){			
+			String firstNodeName = subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild().getNodeName();
+			System.out.println("firstNodeName:"+firstNodeName);
+			
+			if("cqldefinition".equals(firstNodeName) || "cqlfunction".equals(firstNodeName) || "cqlaggfunction".equals(firstNodeName)){
+				html = CQLHumanReadableGenerator.generateHTMLForPopulation(measureId, subXMLProcessor, measureXML);
+			}else{
+				html = HQMFHumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,subXML,measureXML);
+			}
 		}else{
-			html = HQMFHumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,subXML,measureXML);
+			return "<html></html>";
 		}
+		
 		return html;
 	}
 	

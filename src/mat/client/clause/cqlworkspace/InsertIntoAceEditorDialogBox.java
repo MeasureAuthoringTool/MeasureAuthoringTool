@@ -43,6 +43,7 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlGrammarDataType().getCqlFunctionsList();
 	
+	private static final int INSERT_AT_END = -1;
 	/**
 	 * Public static method to build Pop up for Insert into Ace Editor.
 	 * @param searchDisplay - ViewDisplay.
@@ -211,8 +212,9 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
 							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
-							
-							listAllItemNames.addItem(getFunctionArgumentValueBuilder(functions), getFunctionArgumentToolTipBuilder(functions));
+							String funcArg = getFunctionArgumentValueBuilder(functions);
+							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
+							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();

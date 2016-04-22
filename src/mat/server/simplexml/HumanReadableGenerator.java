@@ -13,7 +13,7 @@ public class HumanReadableGenerator {
 		System.out.println("firstNodeName:"+firstNodeName);
 		String html = "";
 		if("cqldefinition".equals(firstNodeName) || "cqlfunction".equals(firstNodeName) || "cqlaggfunction".equals(firstNodeName)){
-			html = CQLHumanReadableGenerator.generateHTMLForPopulation(measureId, subXML, measureXML);
+			html = CQLHumanReadableGenerator.generateHTMLForPopulation(measureId, subXMLProcessor, measureXML);
 		}else{
 			html = HQMFHumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,subXML,measureXML);
 		}

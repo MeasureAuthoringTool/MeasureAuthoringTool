@@ -15,11 +15,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
-import mat.client.shared.MatContext;
 import mat.dao.clause.CQLDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -38,7 +38,6 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.CQLTemplateXML;
-import mat.server.cqlparser.MATCQLListener;
 import mat.server.cqlparser.cqlLexer;
 import mat.server.cqlparser.cqlParser;
 import mat.server.service.MeasureLibraryService;
@@ -52,7 +51,6 @@ import net.sf.json.xml.XMLSerializer;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -91,12 +89,6 @@ public class CQLServiceImpl implements CQLService {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
 	
-	/** The Constant PATIENT. */
-	private static final String PATIENT = "patient";
-	
-	/** The Constant POPULATION. */
-	private static final String POPULATION = "population";
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,14 +110,13 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public CQLModel parseCQL(String cqlBuilder) {
 		
-		// CQLValidationResult result = new CQLValidationResult();
 		CQLModel cqlModel = new CQLModel();
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
 		System.out.println(cqlBuilder);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		cqlParser parser = new cqlParser(tokens);
 		CQLErrorListener cqlErrorListener = new CQLErrorListener();
-		MATCQLListener cqlListener = new MATCQLListener();
+		/*MATCQLListener cqlListener = new MATCQLListener();
 		cqlListener.setCqlModel(cqlModel);
 		cqlListener.setParser(cqlListener);
 		cqlListener.setLexer(lexer);
@@ -138,17 +129,9 @@ public class CQLServiceImpl implements CQLService {
 		
 		System.out.println(parser.getNumberOfSyntaxErrors());
 		System.out.println(cqlErrorListener.getErrors());
-		
-		// if(cqlErrorListener.getErrors().size() != 0){
-		// result.setValid(false);
-		// result.setErrorList(cqlErrorListener.getErrors());
-		// } else {
-		// result.setValid(true);
-		// }
-		
-		// tree.inspect(parser);
-		cqlModel = cqlListener.getCqlModel();
-		
+				
+		cqlModel = cqlListener.getCqlModel();*/
+				
 		return cqlModel;
 	}
 	
@@ -1148,171 +1131,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private StringBuilder getCqlString(CQLModel cqlModel) {
 		
-		StringBuilder cqlStr = new StringBuilder();
-		
-		// library Name
-		if (cqlModel.getLibrary() != null) {
-			cqlStr = cqlStr.append("library "
-					+ cqlModel.getLibrary().getLibraryName());
-			if (cqlModel.getLibrary().getVersionUsed() != null) {
-				cqlStr = cqlStr.append("version "
-						+ cqlModel.getLibrary().getVersionUsed());
-			}
-			cqlStr = cqlStr.append("\n\n");
-		}
-		
-		// Using
-		cqlStr = cqlStr.append("using QDM");
-		cqlStr = cqlStr.append("\n\n");
-		
-		
-		//Valuesets
-		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
-		if (valueSetList != null) {
-			for (CQLQualityDataSetDTO valueset : valueSetList) {
-				cqlStr = cqlStr.append("valueset "
-						+'"'+ valueset.getCodeListName() +'"'+ ":"
-						+"'"+ valueset.getOid()+"'");
-						
-				cqlStr = cqlStr.append("\n\n");
-			}
-		}
-		
-		// parameters
-		List<CQLParameter> paramList = cqlModel.getCqlParameters();
-		if (paramList != null) {
-			for (CQLParameter parameter : paramList) {
-				cqlStr = cqlStr.append("parameter "
-						+ parameter.getParameterName() + " "
-						+ parameter.getParameterLogic());
-				cqlStr = cqlStr.append("\n\n");
-			}
-		}
-		
-		// Definitions and Functions by Context
-		cqlStr = getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
-				cqlModel.getCqlFunctions(), cqlStr);
-		
-		return cqlStr;
-	}
-	
-	/**
-	 * Gets the define and funcs by context.
-	 * 
-	 * @param defineList
-	 *            the define list
-	 * @param functionsList
-	 *            the functions list
-	 * @param cqlStr
-	 *            the cql str
-	 * @return the define and funcs by context
-	 */
-	private StringBuilder getDefineAndFunctionsByContext(
-			List<CQLDefinition> defineList, List<CQLFunctions> functionsList,
-			StringBuilder cqlStr) {
-		
-		List<CQLDefinition> contextPatDefineList = new ArrayList<CQLDefinition>();
-		List<CQLDefinition> contextPopDefineList = new ArrayList<CQLDefinition>();
-		List<CQLFunctions> contextPatFuncList = new ArrayList<CQLFunctions>();
-		List<CQLFunctions> contextPopFuncList = new ArrayList<CQLFunctions>();
-		
-		if (defineList != null) {
-			for (int i = 0; i < defineList.size(); i++) {
-				if (defineList.get(i).getContext().equalsIgnoreCase(PATIENT)) {
-					contextPatDefineList.add(defineList.get(i));
-				} else {
-					contextPopDefineList.add(defineList.get(i));
-				}
-			}
-		}
-		if (functionsList != null) {
-			for (int i = 0; i < functionsList.size(); i++) {
-				if (functionsList.get(i).getContext().equalsIgnoreCase(PATIENT)) {
-					contextPatFuncList.add(functionsList.get(i));
-				} else {
-					contextPopFuncList.add(functionsList.get(i));
-				}
-			}
-		}
-		
-		if ((contextPatDefineList.size() > 0) || (contextPatFuncList.size() > 0)) {
-			
-			getDefineAndFunctionsByContext(contextPatDefineList,
-					contextPatFuncList, PATIENT, cqlStr);
-		}
-		
-		if ((contextPopDefineList.size() > 0) || (contextPopFuncList.size() > 0)) {
-			
-			getDefineAndFunctionsByContext(contextPopDefineList,
-					contextPopFuncList, POPULATION, cqlStr);
-		}
-		
-		return cqlStr;
-		
-	}
-	
-	/**
-	 * Gets the define and functions by context.
-	 * 
-	 * @param definitionList
-	 *            the definition list
-	 * @param functionsList
-	 *            the functions list
-	 * @param context
-	 *            the context
-	 * @param cqlStr
-	 *            the cql str
-	 * @return the define and functions by context
-	 */
-	private StringBuilder getDefineAndFunctionsByContext(
-			List<CQLDefinition> definitionList,
-			List<CQLFunctions> functionsList, String context,
-			StringBuilder cqlStr) {
-		
-		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
-		for (CQLDefinition definition : definitionList) {
-			cqlStr = cqlStr.append("define " + definition.getDefinitionName()
-					+ ": ");
-			cqlStr = cqlStr.append(definition.getDefinitionLogic());
-			cqlStr = cqlStr.append("\n\n");
-		}
-		
-		for (CQLFunctions function : functionsList) {
-			cqlStr = cqlStr.append("define function "
-					+ function.getFunctionName() + "(");
-			if(function.getArgumentList()!=null) {
-			for (CQLFunctionArgument argument : function.getArgumentList()) {
-				StringBuilder argumentType = new StringBuilder();
-				if (argument.getArgumentType().toString()
-						.equalsIgnoreCase("QDM Datatype")) {
-					argumentType = argumentType.append("\"").append(
-							argument.getQdmDataType());
-					if (argument.getAttributeName() != null) {
-						argumentType = argumentType.append(".")
-								.append(argument.getAttributeName());
-					}
-					argumentType = argumentType.append("\"");
-				} else if (argument
-						.getArgumentType()
-						.toString()
-						.equalsIgnoreCase(
-								CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-					argumentType = argumentType.append(argument.getOtherType());
-				} else {
-					argumentType = argumentType.append(argument
-							.getArgumentType());
-				}
-				cqlStr = cqlStr.append(argument.getArgumentName() + " "
-						+ argumentType + ", ");
-			}
-			cqlStr.deleteCharAt(cqlStr.length() - 2);
-		}
-			
-			cqlStr = cqlStr.append("): " + function.getFunctionLogic());
-			cqlStr = cqlStr.append("\n\n");
-		}
-		
-		return cqlStr;
+		return CQLUtilityClass.getCqlString(cqlModel);
 	}
 	
 	/**

@@ -2108,6 +2108,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				//}
 				break;
+			case CellTreeNode.CQL_AGG_FUNCTION_NODE:
+			case CellTreeNode.CQL_DEFINITION_NODE:
+			case CellTreeNode.CQL_FUNCTION_NODE:
+				editNode(true, cellTreeNode);
+				break;
 			default:
 				editNode(false, cellTreeNode);
 				if(!inValidNodeAtPopulationWorkspace

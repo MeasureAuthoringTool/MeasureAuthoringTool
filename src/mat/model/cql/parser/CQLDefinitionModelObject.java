@@ -1,30 +1,33 @@
 package mat.model.cql.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
-	
+
 	private String expression = "";
-	private String id;
+	private List<String> childTokens = new ArrayList<String>();
+	/**
+	 * This is a list of all Definition object that are being 'referred to'/'called from' from this definition.
+	 */
+	private List<CQLDefinitionModelObject> referredToDefinitions = new ArrayList<CQLDefinitionModelObject>();
 	
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+	/**
+	 * This is list of all definitions that this definition is 'referred by'/'called at'.
+	 */
+	private List<CQLDefinitionModelObject> referredByDefinitions = new ArrayList<CQLDefinitionModelObject>();
 	
 	public String getExpression() {
 		return expression;
 	}
-	
+
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
 	
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'version'
+	 * Override this to do nothing, since Context definitions don't have a 'version' 
 	 * attribute.
 	 */
 	public String getVersion() {
@@ -33,7 +36,7 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
 	
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'version'
+	 * Override this to do nothing, since Context definitions don't have a 'version' 
 	 * attribute.
 	 */
 	public void setVersion(String version) {
@@ -41,24 +44,24 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
 	
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'typeSpecifier'
+	 * Override this to do nothing, since Context definitions don't have a 'typeSpecifier' 
 	 * attribute.
 	 */
 	public String getTypeSpecifier() {
 		return "";
 	}
-	
+
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'typeSpecifier'
+	 * Override this to do nothing, since Context definitions don't have a 'typeSpecifier' 
 	 * attribute.
 	 */
 	public void setTypeSpecifier(String typeSpecifier) {
 	}
-	
+
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'defaultExpression'
+	 * Override this to do nothing, since Context definitions don't have a 'defaultExpression' 
 	 * attribute.
 	 */
 	public String getDefaultExpression() {
@@ -67,10 +70,54 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
 	
 	@Override
 	/**
-	 * Override this to do nothing, since Context definitions don't have a 'defaultExpression'
+	 * Override this to do nothing, since Context definitions don't have a 'defaultExpression' 
 	 * attribute.
 	 */
-	public void setDefaultExpression(String defaultExpression) {
+	public void setDefaultExpression(String defaultExpression) {		
+	}
+
+	public List<String> getChildTokens() {
+		return childTokens;
+	}
+
+	public void setChildTokens(List<String> childTokens) {
+		this.childTokens = childTokens;
+	}
+
+	public List<CQLDefinitionModelObject> getReferredToDefinitions() {
+		return referredToDefinitions;
+	}
+
+	public void setReferredToDefinitions(List<CQLDefinitionModelObject> referredToDefinitions) {
+		this.referredToDefinitions = referredToDefinitions;
+	}
+
+	public List<CQLDefinitionModelObject> getReferredByDefinitions() {
+		return referredByDefinitions;
+	}
+
+	public void setReferredByDefinitions(List<CQLDefinitionModelObject> referredByDefinitions) {
+		this.referredByDefinitions = referredByDefinitions;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer opString = new StringBuffer();
+		
+		opString.append("\r\n"+this.getIdentifier()+"\r\n");
+		opString.append(this.getChildTokens()+"\r\n");
+		opString.append("Definitions referred to by "+this.getIdentifier()+":");
+		
+		for(CQLDefinitionModelObject referredToDefinition:this.getReferredToDefinitions()){
+			opString.append(referredToDefinition.getIdentifier()+",");
+		}
+		
+		opString.append("\r\nDefinitions referring to "+this.getIdentifier() + ":");
+		
+		for(CQLDefinitionModelObject referredByDefinition:this.getReferredByDefinitions()){
+			opString.append(referredByDefinition.getIdentifier()+",");
+		}
+		
+		return opString.toString();
+	}
 }

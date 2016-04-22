@@ -344,6 +344,7 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 					tokenString += " " + childTokens.get(tokenCounter);
 				}
 			}
+			System.out.println("Adding "+definitionLineList);
 		}
 		else if(childTokens.size() > 1 && 
 				childTokens.get(1).trim().length() == 1 
@@ -362,12 +363,12 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 		
 		for(;tokenCounter < childTokens.size();tokenCounter++){
 			if(breakAtKeywords.contains(childTokens.get(tokenCounter).trim().toLowerCase()) && tokenString.length() > 0){
-				definitionLineList.add(tokenString);
+				definitionLineList.add(tokenString + " " + childTokens.get(tokenCounter));
 				tokenString = "";
 			}else {
 				String fillerSpace = " ";
 				
-				List<String> noSpaceTokens = new ArrayList();
+				List<String> noSpaceTokens = new ArrayList<String>();
 				noSpaceTokens.add(".");
 				noSpaceTokens.add("(");
 				//noSpaceTokens.add(")");
@@ -381,9 +382,11 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 				}
 				tokenString += fillerSpace + childTokens.get(tokenCounter);
 			}
+			
 		}
 		
 		if(tokenString.length() > 0){
+			System.out.println("Addingg:"+tokenString);
 			definitionLineList.add(tokenString);
 		}
 		

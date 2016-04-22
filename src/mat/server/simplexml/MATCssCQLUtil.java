@@ -49,7 +49,7 @@ public class MATCssCQLUtil {
 			"	vertical-align: top;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
-			"/*Begin Joshua Clingo's changes*/\r\n" + 
+			"\r\n" + 
 			"\r\n" + 
 			"a {\r\n" + 
 			"	/*color: rgb(0, 0, 255);\r\n" + 
@@ -253,7 +253,7 @@ public class MATCssCQLUtil {
 			"}\r\n" + 
 			"\r\n" + 
 			"\r\n" + 
-			"/*End Joshua Clingo's changes*/\r\n" + 
+			"\r\n" + 
 			"\r\n" + 
 			".h1center {\r\n" + 
 			"	font-size: 12pt;\r\n" + 

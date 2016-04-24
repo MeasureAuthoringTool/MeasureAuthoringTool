@@ -380,6 +380,7 @@ public static String generateCQLHumanReadableForSinglePopulation(Node population
 		breakAtKeywords.add("where");
 		breakAtKeywords.add("with");
 		breakAtKeywords.add("and");
+		//breakAtKeywords.add("such that");
 		
 		for(;tokenCounter < childTokens.size();tokenCounter++){
 			if(breakAtKeywords.contains(childTokens.get(tokenCounter).trim().toLowerCase()) && tokenString.length() > 0){

@@ -683,6 +683,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
 			CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
+			if(!tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") && !tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
 				convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
 				convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
 				convertedCQLDataSet.setDataType(tempDataSet.getDataType());
@@ -694,6 +695,7 @@ public class CQLServiceImpl implements CQLService {
 				convertedCQLDataSet.setUuid(tempDataSet.getUuid());
 				convertedCQLDataSet.setVersion(tempDataSet.getVersion());
 				convertedCQLDataSetList.add(convertedCQLDataSet);
+			}
 			
 		}
 		return convertedCQLDataSetList;

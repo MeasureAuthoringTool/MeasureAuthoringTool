@@ -13,7 +13,20 @@ import org.jsoup.nodes.Element;
 import org.w3c.dom.Node;
 
 public class CQLHumanReadableHTMLCreator {
+	
+	private static final String[] keyWordListArray = {"library","version","using","include","called","public","private",
+		"parameter","default","codesystem","valueset","codesystems","define",
+		"function","with","without","in","from","where","return",
+		"all","distinct","sort","by","asc","desc","is","not","cast","as","between",
+		"difference","contains","and","or","xor","union","intersection","year","month",
+		"day","hour","minute","second","millisecond","when","then","or","or less", 
+		"before","after","or more","more","less","context","using", "QDM","Interval",
+		"DateTime","Patient","Population","such that"};
 
+	private static final String[] cqlFunctionsListArray = {"date","time","timezone","starts","ends",
+			"occurs","overlaps","Interval",
+			"Tuple","List","DateTime","AgeInYearsAt"};
+	
 	private static List<String> definitionsAlreadyDisplayed = new ArrayList<String>();
 	private static List<String> cqlObjects = new ArrayList<String>();
 

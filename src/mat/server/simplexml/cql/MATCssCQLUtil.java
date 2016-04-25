@@ -1,4 +1,4 @@
-package mat.server.simplexml;
+package mat.server.simplexml.cql;
 
 public class MATCssCQLUtil {
 	

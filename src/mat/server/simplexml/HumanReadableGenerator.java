@@ -1,5 +1,6 @@
 package mat.server.simplexml;
 
+import mat.server.simplexml.cql.CQLHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
 public class HumanReadableGenerator {

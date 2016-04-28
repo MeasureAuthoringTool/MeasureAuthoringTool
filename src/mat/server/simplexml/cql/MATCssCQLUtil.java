@@ -348,6 +348,9 @@ public class MATCssCQLUtil {
 			"	display: block;\r\n" + 
 			"	text-indent: 20px;\r\n" + 
 			"}" + 
+			"li {"
+			+ "  padding-left: 15px;"
+			+ "}" +
 			"	</style>";
 
 		public static String getCSS() {

@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
+import mat.model.cql.parser.CQLFunctionModelObject;
+import mat.model.cql.parser.CQLFunctionModelObject.FunctionArgument;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
@@ -27,13 +30,13 @@ public class CQLHumanReadableHTMLCreator {
 			"occurs","overlaps","Interval",
 			"Tuple","List","DateTime","AgeInYearsAt"};
 	
-	private static List<String> definitionsAlreadyDisplayed = new ArrayList<String>();
+	private static List<String> definitionsOrFunctionsAlreadyDisplayed = new ArrayList<String>();
 	private static List<String> cqlObjects = new ArrayList<String>();
 
 	public static String generateCQLHumanReadableForSinglePopulation(
 			Node populationNode, CQLFileObject cqlFileObject) {
 
-		definitionsAlreadyDisplayed.clear();
+		definitionsOrFunctionsAlreadyDisplayed.clear();
 		cqlObjects.clear();
 
 		populateCQLObjectsList(cqlFileObject);
@@ -74,20 +77,34 @@ public class CQLHumanReadableHTMLCreator {
 		mainULElement.attr("class", "list-unstyled");
 
 		String cqlNodeType = cqlNode.getNodeName();
-		String cqlName = cqlNode.getAttributes().getNamedItem("displayName")
-				.getNodeValue();
+		String cqlName = cqlNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		
 		System.out.println("Generating Human readable for:" + cqlNodeType + ":"
 				+ cqlName);
 
 		if ("cqldefinition".equals(cqlNodeType)) {
-			generateHTMLForPopulation(mainULElement, cqlFileObject,
+			generateHTMLForPopulation(mainULElement, cqlFileObject.getDefinitionsMap().get(cqlName),
 					populationName, cqlName);
+		} else if ("cqlfunction".equals(cqlNodeType)){
+			generateHTMLForPopulation(mainULElement, cqlFileObject.getFunctionsMap().get(cqlName),
+					populationName, cqlName);
+		} else if("cqlaggfunction".equals(cqlNodeType)){
+			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
+			cqlAggregateFunction.setIdentifier(cqlName + " of:");
+			
+			Node childCQLNode = cqlNode.getChildNodes().item(0);
+			String childCQLName = childCQLNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(childCQLName);
+			
+			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
+			
+			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, cqlName);
 		}
 
 	}
 
 	private static void generateHTMLForPopulation(Element mainElement,
-			CQLFileObject cqlFileObject, String populationName,
+			CQLBaseStatementInterface cqlBaseStatementObject, String populationName,
 			String mainDefinitionName) {
 
 		// create a base LI element
@@ -100,10 +117,10 @@ public class CQLHumanReadableHTMLCreator {
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		if (definitionsAlreadyDisplayed.contains(populationName)) {
+		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
-			definitionsAlreadyDisplayed.add(populationName);
+			definitionsOrFunctionsAlreadyDisplayed.add(populationName);
 		}
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
@@ -112,19 +129,36 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element strongElement = definitionLabelElement.appendElement("strong");
 		strongElement.appendText(populationName);
-
+		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println(mainDefinitionName);
-		generateHTMLForDefinition(
-				cqlFileObject.getDefinitionsMap().get(mainDefinitionName),
-				mainliElement, true);
+		generateHTMLForDefinitionOrFunction(cqlBaseStatementObject, mainliElement, true);
 	}
 
-	private static void generateHTMLForDefinition(
-			CQLDefinitionModelObject cqlDefinitionModelObject,
+	private static void generateHTMLForDefinitionOrFunction(
+			CQLBaseStatementInterface cqlBaseStatementObject,
 			Element mainElement, boolean isTopDefinition) {
 
-		String definitionIdentifier = cqlDefinitionModelObject.getIdentifier();
+		String statementIdentifier = cqlBaseStatementObject.getIdentifier();
+		
+		//If this cqlBaseStatementObject is a function, then we need to consider 
+		//arguments to the function.
+		String statementSignature = statementIdentifier;
+		
+		List<FunctionArgument> argumentList = cqlBaseStatementObject.getArguments();
+		if(argumentList != null && argumentList.size() > 0){
+			statementSignature += "(";
+		}
+		for(FunctionArgument functionArgument:argumentList){
+			statementSignature += functionArgument.getArgumentName() + " " + functionArgument.getArgumentType() + ", ";
+		}
+		
+		if(argumentList != null && argumentList.size() > 0){
+			if(statementSignature.endsWith(", ")){
+				statementSignature = statementSignature.substring(0, statementSignature.length()-2);
+			}
+			statementSignature += ")";
+		}
 
 		Element mainULElement = mainElement;
 		if (isTopDefinition) {
@@ -143,72 +177,97 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element checkBoxElement = mainDivElement.appendElement("input");
 		checkBoxElement.attr("type", "checkbox");
-		String id = "test-" + definitionIdentifier + "_"
+		String id = "test-" + statementIdentifier + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		if (definitionsAlreadyDisplayed.contains(definitionIdentifier)) {
+		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
 			checkBoxElement.attr("checked", "");
 		} else {
-			definitionsAlreadyDisplayed.add(definitionIdentifier);
+			definitionsOrFunctionsAlreadyDisplayed.add(statementIdentifier);
 		}
 
-		Element definitionLabelElement = mainDivElement.appendElement("label");
-		definitionLabelElement.attr("for", id);
-		definitionLabelElement.attr("class", "list-header");
+		Element defnOrFuncLabelElement = mainDivElement.appendElement("label");
+		defnOrFuncLabelElement.attr("for", id);
+		defnOrFuncLabelElement.attr("class", "list-header");
 
-		Element strongElement = definitionLabelElement.appendElement("strong");
-		strongElement.appendText(definitionIdentifier);
-
-		definitionLabelElement.appendText(" (click to expand/collapse)");
+		Element strongElement = defnOrFuncLabelElement.appendElement("strong");
+		strongElement.appendText(statementIdentifier);
+				
+		defnOrFuncLabelElement.appendText(" (click to expand/collapse)");
 
 		Element subULElement = mainDivElement.appendElement("ul");
 		Element subLiElement = subULElement.appendElement("li");
 		Element subDivElement = subLiElement.appendElement("div");
-
-		Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
-		spanElem.appendText("define ");
-
-		Element spanElemDefName = getSpanElementWithClass(subDivElement,
-				"cql-class");
-		spanElemDefName.appendText(definitionIdentifier + ":");
-
-		List<String> definitionLineList = getDefinitionLineList(cqlDefinitionModelObject);
-		subDivElement.append("&nbsp;" + definitionLineList.get(0));
-
-		subDivElement.appendElement("br");
-
-		for (int i = 1; i < definitionLineList.size(); i++) {
-			Element spanElemDefBody = getSpanElementWithClass(subDivElement,
-					"cql-definition-body");
-			spanElemDefBody.append(definitionLineList.get(i));
+		
+		if(!(cqlBaseStatementObject instanceof CQLAggregateFunction)){
+			
+			Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
+			if(cqlBaseStatementObject instanceof CQLFunctionModelObject){
+				spanElem.appendText("define function ");
+			}else {
+				spanElem.appendText("define ");
+			}
+	
+			Element spanElemDefName = getSpanElementWithClass(subDivElement,
+					"cql-class");
+			spanElemDefName.appendText(statementSignature + ":");
+			
+			List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
+			
+			if(codeLineList.size() > 0){
+				subDivElement.append("&nbsp;" + codeLineList.get(0));
+		
+				subDivElement.appendElement("br");
+		
+				for (int i = 1; i < codeLineList.size(); i++) {
+					Element spanElemDefBody = getSpanElementWithClass(subDivElement,
+							"cql-definition-body");
+					spanElemDefBody.append(codeLineList.get(i));
+				}
+			}
+			subDivElement.appendElement("br");
 		}
-		subDivElement.appendElement("br");
+		
 
-		List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlDefinitionModelObject
+		List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlBaseStatementObject
 				.getReferredToDefinitions();
-		for (int j = 0; j < referredToDefinitionsModelObjectList.size(); j++) {
-			CQLDefinitionModelObject referredTDefinitionModelObject = referredToDefinitionsModelObjectList
-					.get(j);
-			generateHTMLForDefinition(referredTDefinitionModelObject,
-					subDivElement, false);
+		
+		for(CQLDefinitionModelObject referredTDefinitionModelObject : referredToDefinitionsModelObjectList){
+			generateHTMLForDefinitionOrFunction(referredTDefinitionModelObject, subDivElement, false);
 		}
+		
+		List<CQLFunctionModelObject> referredToFunctionsModelObjectList = cqlBaseStatementObject.getReferredToFunctions();
+		
+		for(CQLFunctionModelObject referredToFunctionModelObject : referredToFunctionsModelObjectList){
+			generateHTMLForDefinitionOrFunction(referredToFunctionModelObject, subDivElement, false);
+		}
+		
 	}
 
 	/**
 	 * This method will go through definition body and try to format it in
 	 * series of lines for easier reading.
 	 * 
-	 * @param cqlDefinitionModelObject
+	 * @param cqlBaseStatementObject
 	 * @return
 	 */
-	private static List<String> getDefinitionLineList(
-			CQLDefinitionModelObject cqlDefinitionModelObject) {
+	private static List<String> getDefnOrFuncLineList(
+			CQLBaseStatementInterface cqlBaseStatementObject) {
 
-		List<String> definitionLineList = new ArrayList<String>();
+		List<String> lineList = new ArrayList<String>();
+		
+		if(cqlBaseStatementObject instanceof CQLFunctionModelObject){
+			lineList.add("");
+		}
+		
 		int tokenCounter = 0;
 
-		List<String> childTokens = cqlDefinitionModelObject.getChildTokens();
+		List<String> childTokens = cqlBaseStatementObject.getChildTokens();
+		
+		if(childTokens.size() == 0){
+			return new ArrayList<String>();
+		}
 
 		// find the first line
 		if (childTokens.get(0).trim().equals("["))// Try to check for something
@@ -225,21 +284,21 @@ public class CQLHumanReadableHTMLCreator {
 								.trim();
 						if (nextToken.length() == 1
 								&& Character.isLetter(nextToken.charAt(0))) {
-							definitionLineList.add(tokenString + "] "
+							lineList.add(tokenString + "] "
 									+ nextToken);
 							tokenCounter += 2;
 						} else { // check for something like " ["Diagnosis,
 									// Active": "Acute
 									// Pharyngitis"] union ["Diagnosis,
 									// Active": "Acute Tonsillitis"]"
-							definitionLineList.add(" ");
+							lineList.add(" ");
 							tokenCounter = 0;
 						}
 					} else {// check for something like " ["Diagnosis,
 							// Active": "Acute Pharyngitis"] union ["Diagnosis,
 							// Active": "Acute Tonsillitis"]"
-						definitionLineList.add(" ");
-						definitionLineList.add(tokenString + "] ");
+						lineList.add(" ");
+						lineList.add(tokenString + "] ");
 						tokenCounter += 1;
 					}
 					break;
@@ -257,7 +316,7 @@ public class CQLHumanReadableHTMLCreator {
 																			// "MeasurementPeriodEncounters E"
 		{
 			tokenCounter = 2;
-			definitionLineList.add(childTokens.get(0) + " "
+			lineList.add(childTokens.get(0) + " "
 					+ wrapWithCssClass(childTokens.get(1)));
 		}
 
@@ -272,7 +331,7 @@ public class CQLHumanReadableHTMLCreator {
 			if (breakAtKeywords.contains(childTokens.get(tokenCounter).trim()
 					.toLowerCase())
 					&& tokenString.length() > 0) {
-				definitionLineList.add(tokenString + " "
+				lineList.add(tokenString + " "
 						+ wrapWithCssClass(childTokens.get(tokenCounter)));
 				tokenString = "";
 			} else {
@@ -290,21 +349,27 @@ public class CQLHumanReadableHTMLCreator {
 
 				String lastToken = (tokenCounter > 0) ? childTokens
 						.get(tokenCounter - 1) : "";
-
+				
+				System.out.println("token:"+token);
+				System.out.println("lastToken:"+lastToken);
+				
 				if (noSpaceTokens.contains(token)
 						|| noSpaceTokens.contains(lastToken)) {
 					fillerSpace = "";
 				}
+				System.out.println("filler:"+fillerSpace+"!");
 				tokenString += fillerSpace
 						+ wrapWithCssClass(childTokens.get(tokenCounter));
+				System.out.println("tokenString:" + tokenString);
+				System.out.println();
 			}
 		}
 
 		if (tokenString.length() > 0) {
-			definitionLineList.add(tokenString);
+			lineList.add(tokenString);
 		}
 
-		return definitionLineList;
+		return lineList;
 	}
 
 	private static String wrapWithCssClass(String string) {
@@ -375,7 +440,53 @@ public class CQLHumanReadableHTMLCreator {
 		Map<String, CQLDefinitionModelObject> cqlDefinitionMap = cqlFileObject.getDefinitionsMap();
 		cqlObjects.addAll(cqlDefinitionMap.keySet());
 		
+		Map<String, CQLFunctionModelObject> cqlFunctionsMap = cqlFileObject.getFunctionsMap();
+		cqlObjects.addAll(cqlFunctionsMap.keySet());
 	}
 	
+	class CQLAggregateFunction implements CQLBaseStatementInterface {
 
+		private String identifier = "";
+		private List<CQLFunctionModelObject> referredToFunctions = new ArrayList<CQLFunctionModelObject>();
+		
+		@Override
+		public String getIdentifier() {
+			return identifier;
+		}
+		
+		public void setIdentifier(String identifierName) {
+			identifier = identifierName;
+		}
+
+		@Override
+		public List<String> getChildTokens() {
+			return new ArrayList<String>();
+		}
+
+		@Override
+		public List<FunctionArgument> getArguments() {
+			return new ArrayList<FunctionArgument>();
+		}
+
+		@Override
+		public List<CQLDefinitionModelObject> getReferredToDefinitions() {
+			return new ArrayList<CQLDefinitionModelObject>();
+		}
+
+		@Override
+		public List<CQLDefinitionModelObject> getReferredByDefinitions() {
+			return new ArrayList<CQLDefinitionModelObject>();
+		}
+
+		@Override
+		public List<CQLFunctionModelObject> getReferredToFunctions() {
+			return referredToFunctions;
+		}
+		
+		@Override
+		public List<CQLFunctionModelObject> getReferredByFunctions() {
+			return new ArrayList<CQLFunctionModelObject>();
+		}
+		
+	}
 }

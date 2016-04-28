@@ -3,10 +3,13 @@ package mat.model.cql.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
+import mat.model.cql.parser.CQLFunctionModelObject.FunctionArgument;
+
+public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject implements CQLBaseStatementInterface{
 
 	private String expression = "";
 	private List<String> childTokens = new ArrayList<String>();
+	
 	/**
 	 * This is a list of all Definition object that are being 'referred to'/'called from' from this definition.
 	 */
@@ -16,6 +19,16 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
 	 * This is list of all definitions that this definition is 'referred by'/'called at'.
 	 */
 	private List<CQLDefinitionModelObject> referredByDefinitions = new ArrayList<CQLDefinitionModelObject>();
+	
+	/**
+	 * This is a list of all functions 'referred to'/'called from' from this definition.
+	 */
+	private List<CQLFunctionModelObject> referredToFunctions = new ArrayList<CQLFunctionModelObject>();
+	
+	/**
+	 * This is list of all functions that this definition is 'referred by'/'called at'.
+	 */
+	private List<CQLFunctionModelObject> referredByFunctions = new ArrayList<CQLFunctionModelObject>();
 	
 	public String getExpression() {
 		return expression;
@@ -119,5 +132,26 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject {
 		}
 		
 		return opString.toString();
+	}
+
+	public List<CQLFunctionModelObject> getReferredToFunctions() {
+		return referredToFunctions;
+	}
+
+	public void setReferredToFunctions(List<CQLFunctionModelObject> referredToFunctions) {
+		this.referredToFunctions = referredToFunctions;
+	}
+
+	public List<CQLFunctionModelObject> getReferredByFunctions() {
+		return referredByFunctions;
+	}
+
+	public void setReferredByFunctions(List<CQLFunctionModelObject> referredByFunctions) {
+		this.referredByFunctions = referredByFunctions;
+	}
+
+	@Override
+	public List<FunctionArgument> getArguments() {
+		return new ArrayList<CQLFunctionModelObject.FunctionArgument>();
 	}
 }

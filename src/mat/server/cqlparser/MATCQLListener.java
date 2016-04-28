@@ -5,11 +5,14 @@ import java.util.List;
 
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
+import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.server.cqlparser.cqlParser.AccessorExpressionTermContext;
 import mat.server.cqlparser.cqlParser.AliasedQuerySourceContext;
 import mat.server.cqlparser.cqlParser.BooleanExpressionContext;
 import mat.server.cqlparser.cqlParser.ExpressionDefinitionContext;
+import mat.server.cqlparser.cqlParser.FunctionDefinitionContext;
 import mat.server.cqlparser.cqlParser.LogicContext;
+import mat.server.cqlparser.cqlParser.OperandDefinitionContext;
 import mat.server.cqlparser.cqlParser.QueryContext;
 import mat.server.cqlparser.cqlParser.QuerySourceContext;
 import mat.server.cqlparser.cqlParser.RetrieveContext;
@@ -67,7 +70,7 @@ public class MATCQLListener extends cqlBaseListener {
 	
 	public void exitStatement(cqlParser.StatementContext ctx) { 
 		if(ctx.functionDefinition() != null){
-			extractCQLFunctionDetails();
+			extractCQLFunctionDetails(ctx);
 		}else if(ctx.expressionDefinition() != null){
 			extractCQLDefinitionDetails(ctx);
 			
@@ -78,9 +81,38 @@ public class MATCQLListener extends cqlBaseListener {
 		//System.out.println("\r\n");
 	}
 
-	private void extractCQLFunctionDetails() {
+	private void extractCQLFunctionDetails(cqlParser.StatementContext ctx) {
 		System.out.println("Found Function definition...");
-		//System.out.println(ctx.functionDefinition().identifier().getText());
+		System.out.println(ctx.functionDefinition().identifier().getText());
+		
+		List<String> childTokens = findFunctionChildren(ctx);
+		
+		CQLFunctionModelObject cqlFunctionModelObject = new CQLFunctionModelObject();
+		cqlFunctionModelObject.setIdentifier(ctx.functionDefinition().identifier().getText());
+		
+		if(ctx.functionDefinition().accessModifier() != null){
+			cqlFunctionModelObject.setAccessModifier(ctx.functionDefinition().accessModifier().getText());
+		}
+		
+		cqlFunctionModelObject.setChildTokens(childTokens);
+		
+		FunctionDefinitionContext functionDefinitionContext = ctx.functionDefinition();
+		List<OperandDefinitionContext> operandDefinitionContextList = functionDefinitionContext.operandDefinition();
+		
+		for(OperandDefinitionContext operandDefinitionContext:operandDefinitionContextList){
+			String argumentName = operandDefinitionContext.identifier().getText();
+			String argumentType = operandDefinitionContext.typeSpecifier().getText();
+			System.out.println("With arguments:"+argumentName + " and type:"+argumentType);
+			
+			CQLFunctionModelObject.FunctionArgument functionArgument = cqlFunctionModelObject.new FunctionArgument();
+			functionArgument.setArgumentName(argumentName);
+			functionArgument.setArgumentType(argumentType);
+			
+			cqlFunctionModelObject.getArguments().add(functionArgument);
+		}
+		
+		
+		this.cqlFileObject.getFunctionsMap().put(cqlFunctionModelObject.getIdentifier(), cqlFunctionModelObject);
 	}
 
 	private void extractCQLDefinitionDetails(cqlParser.StatementContext ctx) {
@@ -204,10 +236,25 @@ public class MATCQLListener extends cqlBaseListener {
 		
 		return false;
 	}
-
+	
+	private List<String> findFunctionChildren(cqlParser.StatementContext ctx) {
+		FunctionDefinitionContext functionDefinitionContext = ctx.functionDefinition();
+		List<ParseTree> parseTreeList = functionDefinitionContext.children;
+		return findDefinitionChildren(parseTreeList);
+	}
+	
+	/**
+	 * Find children for definition.
+	 * @param ctx
+	 * @return
+	 */
 	private List<String> findDefinitionChildren(cqlParser.StatementContext ctx) {
 		ExpressionDefinitionContext expressionDefinitionContext = ctx.expressionDefinition();
 		List<ParseTree> parseTreeList = expressionDefinitionContext.children;
+		return findDefinitionChildren(parseTreeList);
+	}
+
+	public List<String> findDefinitionChildren(List<ParseTree> parseTreeList) {
 		List<String> childTokens = new ArrayList<String>();
 		
 		for(ParseTree tree:parseTreeList){
@@ -266,21 +313,55 @@ public class MATCQLListener extends cqlBaseListener {
 	}
 
 	private void mapDefinitionReferences() {
-		List<CQLDefinitionModelObject> definitionsList = new ArrayList(this.cqlFileObject.getDefinitionsMap().values());
+		List<CQLDefinitionModelObject> definitionsList = new ArrayList<CQLDefinitionModelObject>(this.cqlFileObject.getDefinitionsMap().values());
+		List<CQLFunctionModelObject> functionsList = new ArrayList<CQLFunctionModelObject>(this.cqlFileObject.getFunctionsMap().values());
 		
-		//find definitions referring to other definitions
-		for(CQLDefinitionModelObject cqlDefinitionModelObject:definitionsList){
-			
-			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList);
-			
+		//find functions referring to other definitions/functions
+		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
+			findFunctionsReferences(cqlFunctionModelObject, definitionsList, functionsList);
 		}
+		
+		//find definitions referring to other definitions/functions
+		for(CQLDefinitionModelObject cqlDefinitionModelObject:definitionsList){			
+			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList, functionsList);			
+		}
+	}
+	
+	private void findFunctionsReferences(CQLFunctionModelObject cqlFunctionModelObject,
+			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
+		
+		String cqlFunctionName = cqlFunctionModelObject.getIdentifier();
+		
+		for(CQLFunctionModelObject cqlFuncModelObject:functionsList){
+			if(cqlFuncModelObject.getChildTokens().contains(cqlFunctionName)){
+				cqlFuncModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
+				cqlFunctionModelObject.getReferredByFunctions().add(cqlFuncModelObject);
+			}
+		}
+		
+		for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
+			if(cqlDefnModelObject.getChildTokens().contains(cqlFunctionName)){
+				cqlDefnModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
+				cqlFunctionModelObject.getReferredByDefinitions().add(cqlDefnModelObject);
+			}
+		}
+		
 	}
 
 	private void findDefinitionsReferences(CQLDefinitionModelObject cqlDefinitionModelObject,
-			List<CQLDefinitionModelObject> definitionsList) {
+			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
+		
+		String cqlDefinitionName = cqlDefinitionModelObject.getIdentifier();
+		
+		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
+			if(cqlFunctionModelObject.getChildTokens().contains(cqlDefinitionName)){
+				cqlFunctionModelObject.getReferredToDefinitions().add(cqlDefinitionModelObject);
+				cqlDefinitionModelObject.getReferredByFunctions().add(cqlFunctionModelObject);
+			}
+		}
 		
 		for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
-			if(cqlDefnModelObject.getChildTokens().contains(cqlDefinitionModelObject.getIdentifier())){
+			if(cqlDefnModelObject.getChildTokens().contains(cqlDefinitionName)){
 				cqlDefnModelObject.getReferredToDefinitions().add(cqlDefinitionModelObject);
 				cqlDefinitionModelObject.getReferredByDefinitions().add(cqlDefnModelObject);
 			}

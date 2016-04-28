@@ -19,10 +19,11 @@ public class MATCQLParser {
     	parser.addErrorListener(cqlErrorListener);
     	MATCQLListener matcqlListener = new MATCQLListener(this);
     	parser.addParseListener(matcqlListener);
+    	
     	ParserRuleContext tree = parser.logic();
     	
-    	System.out.println(parser.getNumberOfSyntaxErrors());
-    	System.out.println(cqlErrorListener.getErrors());
+    	/*System.out.println(parser.getNumberOfSyntaxErrors());
+    	System.out.println(cqlErrorListener.getErrors());*/
     	
     	return matcqlListener.getCqlFileObject();
 	}

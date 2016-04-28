@@ -1536,7 +1536,7 @@ public class ClauseWorkspaceContextMenu {
 		//alert("port:"+window.location.port);
 		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/humanreadable.html";
 		//alert("dummyURL:"+dummyURL);
-		var humanReadableWindow = window.open(dummyURL,"","width=1000,height=700,scrollbars=yes,resizable=yes");
+		var humanReadableWindow = window.open(dummyURL,"","width=1200,height=700,scrollbars=yes,resizable=yes");
 		
 		if(humanReadableWindow && humanReadableWindow.top){
 			//Populate the human readable in the new window.

@@ -33,6 +33,7 @@ public class CQLHumanReadableGenerator {
 		System.out.println("cqlNodeString:"+cqlNodeString);
 		
 		String cqlFileString = getCQLStringFromMeasureXML(measureXML);
+				
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 			
@@ -64,8 +65,7 @@ public class CQLHumanReadableGenerator {
 		String usingModelStr = "";
 		CQLLibraryModel libraryModel = new CQLLibraryModel();
 		CQLDataModel usingModel = new CQLDataModel();
-		
-		
+				
 		if (measureXMLProcessor != null) {
 					
 			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";

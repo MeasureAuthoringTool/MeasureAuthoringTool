@@ -6,7 +6,7 @@ import java.util.Map;
 public class CQLFileObject {
 	
 	private Map<String, CQLDefinitionModelObject> definitionsMap = new HashMap<String, CQLDefinitionModelObject>();
-
+	private Map<String, CQLFunctionModelObject> functionsMap = new HashMap<String, CQLFunctionModelObject>();
 	
 	
 	public Map<String, CQLDefinitionModelObject> getDefinitionsMap() {
@@ -99,6 +99,18 @@ public class CQLFileObject {
 		}
 		
 		return buffer.toString();
+	}
+
+
+
+	public Map<String, CQLFunctionModelObject> getFunctionsMap() {
+		return functionsMap;
+	}
+
+
+
+	public void setFunctionsMap(Map<String, CQLFunctionModelObject> functionsMap) {
+		this.functionsMap = functionsMap;
 	}
 
 }

@@ -24,12 +24,14 @@ public class ChangePasswordWidget extends Composite {
 		
 		password = new PasswordTextBox();
 		password.getElement().setId("password_PasswordTextBox");
+		password.setTitle("Enter New Password");
 		mainPanel.add(LabelBuilder.buildRequiredLabel(password, "New Password"));
 		mainPanel.add(password);
 		mainPanel.add(new SpacerWidget());
 		
 		confirmPassword = new PasswordTextBox();
 		confirmPassword.getElement().setId("confirmPassword_PasswordTextBox");
+		confirmPassword.setTitle("Enter New Password again to confirm");
 		mainPanel.add(LabelBuilder.buildRequiredLabel(confirmPassword, "Confirm New Password"));
 		mainPanel.add(confirmPassword);
 		mainPanel.add(new SpacerWidget());

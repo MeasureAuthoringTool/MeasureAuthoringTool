@@ -666,7 +666,7 @@ public class ExportServlet extends HttpServlet {
 		//Add data rows
 		for (User user:allNonAdminActiveUsersList) {
 			csvStringBuilder.append("\"" + user.getLoginId() 
-					+"\"" + user.getLastName() + "\",\"" + user.getFirstName()
+					+ "\",\"" + user.getLastName() + "\",\"" + user.getFirstName()
 					+ "\",\"" + user.getEmailAddress() + "\",\"" + user.getOrganizationName()
 					+ "\",\"" + user.getSecurityRole().getDescription()
 					+ "\",\"" + user.getOrgOID() + "\"");
@@ -687,7 +687,7 @@ public class ExportServlet extends HttpServlet {
 		//Add data rows
 		for (User user:allNonAdminActiveUsersList) {
 			csvStringBuilder.append("\"" + user.getLoginId() 
-					+"\"" + user.getLastName() + "\",\"" + user.getFirstName()
+					+ "\",\"" + user.getLastName() + "\",\"" + user.getFirstName()
 					+ "\",\"" + user.getOrganizationName()
 					+ "\",\"" + user.getOrgOID()
 					+ "\",\"" + user.getEmailAddress()

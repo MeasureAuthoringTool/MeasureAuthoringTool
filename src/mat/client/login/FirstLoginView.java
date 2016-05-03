@@ -62,6 +62,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		
 		SimplePanel titleHolder = new SimplePanel();
 		Label titlePanel = new Label("Initial Sign In");
+		titlePanel.setTitle("Initial Sign In");
 		titleHolder.add(titlePanel);
 		titleHolder.setStylePrimaryName("loginBlueTitleHolder");
 		titleHolder.setWidth("100%");

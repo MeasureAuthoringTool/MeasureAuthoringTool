@@ -6,10 +6,10 @@ import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.NameValuePair;
+import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.PasswordRules;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -98,7 +98,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		bluePanel.add(new SpacerWidget());
 		
 		bluePanel.add(secErrorMessages);
-		FocusPanel securityInstructionsFocusPanel = new FocusPanel(buildInstructions("Security Questions &amp; Answersdsdsd"));
+		FocusPanel securityInstructionsFocusPanel = new FocusPanel(buildInstructions("Security Questions &amp; Answers"));
 		securityInstructionsFocusPanel.setTitle("Security Questions and Answers.");
 		bluePanel.add(securityInstructionsFocusPanel);
 		bluePanel.add(securityQuestionsWidget);

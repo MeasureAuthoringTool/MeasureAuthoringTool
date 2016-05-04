@@ -5,11 +5,11 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.PasswordRules;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -73,17 +73,20 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
 		buttons.getSaveButton().setTitle("Save");
-		passwordPanel.add(buttons);
+		buttons.addStyleName("floatLeft");
+		//passwordPanel.add(buttons);
 		passwordPanel.addStyleName("floatLeft");
 		horzPanel.add(passwordPanel);
 		
 		PasswordRules rules = new PasswordRules();
+		rules.addStyleName("leftAligned_small_text");
 		rules.addStyleName("floatLeft");
-		rules.addStyleName("leftAligned");
+		//rules.addStyleName("leftAligned");
 		rules.addStyleName("myAccountPasswordRules");
 		
 		horzPanel.add(rules);
 		mainPanel.add(horzPanel);
+		mainPanel.add(buttons);
 		SimplePanel clearPanel = new SimplePanel();
 		clearPanel.addStyleName("clearBoth");
 		mainPanel.add(clearPanel);

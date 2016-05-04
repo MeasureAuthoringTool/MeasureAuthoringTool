@@ -9,9 +9,10 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.TempPasswordRules;
+import mat.client.shared.PasswordRules;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -62,8 +63,9 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		
 		SimplePanel titleHolder = new SimplePanel();
 		Label titlePanel = new Label("Initial Sign In");
-		titlePanel.setTitle("Initial Sign In");
-		titleHolder.add(titlePanel);
+		FocusPanel focusTitlePanel = new FocusPanel(titlePanel);
+		focusTitlePanel.setTitle("Initial Sign In");
+		titleHolder.add(focusTitlePanel);
 		titleHolder.setStylePrimaryName("loginBlueTitleHolder");
 		titleHolder.setWidth("100%");
 		titlePanel.setStylePrimaryName("loginBlueTitle");
@@ -86,7 +88,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		bluePanel.add(buildInstructions("Change Password"));
 		hPanel.add(changePasswordWidget);
 		
-		TempPasswordRules rules = new TempPasswordRules();
+		PasswordRules rules = new PasswordRules();
 		rules.addStyleName("leftAligned_small_text");
 		rules.addStyleName("myAccountPasswordRules");
 		hPanel.add(rules);
@@ -95,7 +97,9 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		bluePanel.add(new SpacerWidget());
 		
 		bluePanel.add(secErrorMessages);
-		bluePanel.add(buildInstructions("Security Questions &amp; Answers"));
+		FocusPanel securityInstructionsFocusPanel = new FocusPanel(buildInstructions("Security Questions &amp; Answers"));
+		securityInstructionsFocusPanel.setTitle("Security Questions and Answers.");
+		bluePanel.add(securityInstructionsFocusPanel);
 		bluePanel.add(securityQuestionsWidget);
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);

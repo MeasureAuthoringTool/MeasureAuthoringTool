@@ -3,6 +3,7 @@ package mat.client.shared;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -57,35 +58,52 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		fp.getElement().setId("fp_FlowPanel");
 		
 		HTML b1 = new HTML("<img src='images/bullet.png'/><span style='font-size:1.5 em;'> You must select three questions and enter an answer for each question.</span>");
-		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
-		HTML b3 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> Answers are NOT case sensitive (caps or no caps are OK).</span>");
+		FocusPanel b1FocusPanel = new FocusPanel(b1);
+		b1FocusPanel.setTitle("You must select three questions and enter an answer for each question.");
 		
-		fp.add(b1);
-		fp.add(b2);
-		fp.add(b3);
+		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
+		FocusPanel b2FocusPanel = new FocusPanel(b2);
+		b2FocusPanel.setTitle("You cannot use the same question more than once.");
+		
+		HTML b3 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> Answers are NOT case sensitive (caps or no caps are OK).</span>");
+		FocusPanel b3FocusPanel = new FocusPanel(b3);
+		b3FocusPanel.setTitle("Answers are NOT case sensitive (caps or no caps are OK).");
+		
+		fp.add(b1FocusPanel);
+		fp.add(b2FocusPanel);
+		fp.add(b3FocusPanel);
 		container.add(fp);
 		
 		container.add(new SpacerWidget());
 		
-		container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
+		FocusPanel securityQuestion1FocusPanel = new FocusPanel(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
+		securityQuestion1FocusPanel.setTitle("Security Question 1");
+		container.add(securityQuestion1FocusPanel);
 		container.add(wrap(securityQuestion1));
-		container.add(LabelBuilder.buildLabel(answer1, "Security Answer 1"));
+		
+		FocusPanel securityAnswer1FocusPanel = new FocusPanel(LabelBuilder.buildLabel(answer1, "Security Answer 1"));
+		securityAnswer1FocusPanel.setTitle("Security Answer 1");
+		container.add(securityAnswer1FocusPanel);
 		container.add(wrap(answer1));
 		answer1.setFocus(false);
 		container.add(new SpacerWidget());
 		
-		container.add(LabelBuilder.buildLabel(securityQuestion2, "Security Question 2"));
+		FocusPanel securityQuestion2FocusPanel = new FocusPanel(LabelBuilder.buildLabel(securityQuestion2, "Security Question 2"));
+		container.add(securityQuestion2FocusPanel);
 		container.add(wrap(securityQuestion2));
-		container.add(LabelBuilder.buildLabel(answer2, "Security Answer 2"));
 		
+		FocusPanel securityAnswer2FocusPanel = new FocusPanel(LabelBuilder.buildLabel(answer2, "Security Answer 2"));
+		container.add(securityAnswer2FocusPanel);		
 		container.add(wrap(answer2));
 		answer2.setFocus(false);
 		container.add(new SpacerWidget());
 		
-		container.add(LabelBuilder.buildLabel(securityQuestion3, "Security Question 3"));
+		FocusPanel securityQuestion3FocusPanel = new FocusPanel(LabelBuilder.buildLabel(securityQuestion3, "Security Question 3"));
+		container.add(securityQuestion3FocusPanel);
 		container.add(wrap(securityQuestion3));
-		container.add(LabelBuilder.buildLabel(answer3, "Security Answer 3"));
 		
+		FocusPanel securityAnswer3FocusPanel = new FocusPanel(LabelBuilder.buildLabel(answer3, "Security Answer 3"));
+		container.add(securityAnswer3FocusPanel);		
 		container.add(wrap(answer3));
 		answer3.setFocus(false);
 		container.add(new SpacerWidget());

@@ -25,6 +25,7 @@ public class ChangePasswordWidget extends Composite {
 		password = new PasswordTextBox();
 		password.getElement().setId("password_PasswordTextBox");
 		password.setTitle("Enter New Password");
+		password.getElement().setAttribute("aria-describedby", "passwordRulesLabel descLabel b1Label b2Label b3Label b4Label");
 		mainPanel.add(LabelBuilder.buildRequiredLabel(password, "New Password"));
 		mainPanel.add(password);
 		mainPanel.add(new SpacerWidget());

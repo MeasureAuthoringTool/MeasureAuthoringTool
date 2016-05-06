@@ -46,9 +46,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public void appendAndSaveNode(MeasureXmlModel measureXmlModel,
-			String nodeName) {
-		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName);
+	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel, String newNodeName) {
+		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName, newMeasureXmlModel, newNodeName);
 		
 	}
 	
@@ -580,6 +579,12 @@ MeasureService {
 	@Override
 	public String getJSONObjectFromXML() {
 		return this.getMeasureLibraryService().getJSONObjectFromXML();
+	}
+
+	@Override
+	public void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM) {
+		this.getMeasureLibraryService().createAndSaveCQLLookUp(list, measureID, expProfileToAllQDM);
+		
 	}
 	
 }

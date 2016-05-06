@@ -36,7 +36,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
-import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
@@ -46,8 +45,6 @@ import mat.shared.ValidationUtility;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 // TODO: Auto-generated Javadoc
 /**

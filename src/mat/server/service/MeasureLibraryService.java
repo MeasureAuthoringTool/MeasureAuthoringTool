@@ -48,8 +48,13 @@ public interface MeasureLibraryService {
 	 *            the measure xml model
 	 * @param nodeName
 	 *            the node name
+	 * @param measureXmlModel
+	 *            the new measure xml model
+	 * @param nodeName
+	 *            the new node name
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
+			String newNodeName);
 	
 	/**
 	 * Check for timing elements and append.
@@ -678,5 +683,15 @@ public interface MeasureLibraryService {
 	CQLKeywords getCQLKeywordsLists();
 
 	String getJSONObjectFromXML();
+
+	/**
+	 * Creates the and save cql look up.
+	 *
+	 * @param list            the list
+	 * @param measureID            the measure id
+	 * @param expProfileToAllQDM the exp profile to all qdm
+	 */
+	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+
 	
 }

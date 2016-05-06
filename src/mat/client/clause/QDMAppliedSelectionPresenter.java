@@ -553,16 +553,25 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 *
 	 * @param qdmXMLString the qdm xml string
 	 */
-	private void saveMeasureXML(final String qdmXMLString) {
+	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString) {
 		final String nodeName = "qdm";
+		final String newNodeName = "valueset";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		exportModal.setParentNode("/measure/elementLookUp");
 		exportModal.setToReplaceNode("qdm");
+		MeasureXmlModel newExportModal = new MeasureXmlModel();
+		newExportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
+		newExportModal.setToReplaceNode("valueset");
+		
 		System.out.println("XML " + qdmXMLString);
 		exportModal.setXml(qdmXMLString);
+		System.out.println("NEW XML " + valuesetXMLString);
+		newExportModal.setXml(valuesetXMLString);
 		
-		service.appendAndSaveNode(exportModal, nodeName,
+		
+		service.appendAndSaveNode(exportModal, nodeName, newExportModal, newNodeName,
 				new AsyncCallback<Void>() {
 			
 			@Override
@@ -579,6 +588,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 	}
 	
+		
 	/**
 	 * Save measure xml.
 	 *
@@ -1464,9 +1474,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							public void onSuccess(
 									final SaveUpdateCodeListResult result) {
 								if(result.isSuccess()) {
-									if (result.getXmlString() != null) {
-										saveMeasureXML(result.getXmlString());
-										
+									if (result.getXmlString() != null && result.getnewXmlString() != null) {
+										saveMeasureXML(result.getXmlString(), result.getnewXmlString());
 										String message = MatContext
 												.get()
 												.getMessageDelegate()
@@ -1551,8 +1560,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						@Override
 						public void onSuccess(SaveUpdateCodeListResult result) {
 							String message = "";
-							if (result.getXmlString() != null) {
-								saveMeasureXML(result.getXmlString());
+							if (result.getXmlString() != null && result.getnewXmlString() != null) {
+								saveMeasureXML(result.getXmlString(), result.getnewXmlString());
 							}
 							searchDisplay.getSpecificOccChkBox().getValue();
 							if (result.isSuccess()) {

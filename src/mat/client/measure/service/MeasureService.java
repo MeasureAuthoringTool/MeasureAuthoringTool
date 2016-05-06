@@ -20,12 +20,12 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.shared.SaveUpdateCQLResult;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -43,8 +43,13 @@ public interface MeasureService extends RemoteService {
 	 *            the measure xml model
 	 * @param nodeName
 	 *            the node name
+	 * @param measureXmlModel
+	 *            the new measure xml model
+	 * @param nodeName
+	 *            the new node name
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
+			String newNodeName);
 	
 	/**
 	 * Clone measure xml.
@@ -65,6 +70,8 @@ public interface MeasureService extends RemoteService {
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM);
+	
+	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 	
 	/**
 	 * Delete measure notes.
@@ -610,5 +617,6 @@ public interface MeasureService extends RemoteService {
 	CQLKeywords getCQLKeywordsList();
 
 	String getJSONObjectFromXML();
+
 	
 }

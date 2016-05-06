@@ -40,11 +40,13 @@ public interface MeasureServiceAsync {
 	 *            the measure xml model
 	 * @param nodeName
 	 *            the node name
-	 * @param callback
-	 *            the callback
+	 * @param measureXmlModel
+	 *            the new measure xml model
+	 * @param nodeName
+	 *            the new node name
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName,
-			AsyncCallback<Void> callback);
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
+			String newNodeName, AsyncCallback<Void> callback);
 	
 	/**
 	 * Clone measure xml.
@@ -70,6 +72,17 @@ public interface MeasureServiceAsync {
 	 * @param callback            the callback
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
+			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
+	
+	/**
+	 * Creates the and save cql look up.
+	 *
+	 * @param list            the list
+	 * @param measureID            the measure id
+	 * @param expProfileToAllQDM the exp profile to all qdm
+	 * @param callback            the callback
+	 */
+	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
 	
 	/**

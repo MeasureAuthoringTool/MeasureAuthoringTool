@@ -6,6 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -32,10 +38,6 @@ import mat.server.service.UserService;
 import mat.server.service.ValueSetLastModifiedDateNotUniqueException;
 import mat.shared.ConstantMessages;
 import mat.shared.ListObjectModelValidator;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * The Class CodeListServiceImpl.
@@ -570,13 +572,20 @@ implements mat.client.codelist.service.CodeListService {
 	 */
 	private void saveAndAppendElementLookup(SaveUpdateCodeListResult result, String measureId) {
 		String nodeName = "qdm";
+		String newNodeName = "valueset";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(measureId);
 		exportModal.setParentNode("/measure/elementLookUp");
 		exportModal.setToReplaceNode("qdm");
+		MeasureXmlModel newExportModal = new MeasureXmlModel();
+		newExportModal.setMeasureId(measureId);
+		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
+		newExportModal.setToReplaceNode("valueset");
 		System.out.println("XML " + result.getXmlString());
 		exportModal.setXml(result.getXmlString());
+		newExportModal.setXml(result.getnewXmlString());
+		System.out.println("New XML " + result.getnewXmlString());
 		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
-		measureService.appendAndSaveNode(exportModal,nodeName);
+		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName);
 	}
 }

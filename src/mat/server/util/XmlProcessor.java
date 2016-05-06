@@ -90,9 +90,6 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_RAV_ELEMENTS. */
 	private static final String XPATH_MEASURE_RAV_ELEMENTS = "/measure/riskAdjustmentVariables";
 	
-	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
-	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
-	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
 	
@@ -1656,6 +1653,7 @@ public class XmlProcessor {
 				Element contextChildElem = originalDoc.createElement("cqlContext");
 				contextChildElem.setTextContent("Patient");
 				
+				Element valueSetsChildElem = originalDoc.createElement("valuesets");
 				Element parametersChildElem = originalDoc.createElement("parameters");
 				
 				Element definitionsChildElem = originalDoc.createElement("definitions");
@@ -1665,6 +1663,7 @@ public class XmlProcessor {
 				cqlNode.appendChild(libraryChildElem);
 				cqlNode.appendChild(usingChildElem);
 				cqlNode.appendChild(contextChildElem);
+				cqlNode.appendChild(valueSetsChildElem);
 				cqlNode.appendChild(parametersChildElem);
 				cqlNode.appendChild(definitionsChildElem);
 				cqlNode.appendChild(functionsChildElem);

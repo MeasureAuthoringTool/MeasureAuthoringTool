@@ -78,10 +78,6 @@ public class CQLServiceImpl implements CQLService {
 	@Autowired
 	private CQLDAO cqlDAO;
 	
-	/** The measure library service. */
-	@Autowired
-	private MeasureLibraryService measureLibraryService;
-	
 	/** The context. */
 	@Autowired
 	private ApplicationContext context;
@@ -659,101 +655,12 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult getCQLData(String measureId) {
 		
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLModel cqlModel = new CQLModel();
-		cqlModel = getCQLGeneratlInfo(measureId);
-		result.setCqlModel(cqlModel);
-		QualityDataModelWrapper valuesetWrapper = measureLibraryService.getAppliedQDMFromMeasureXml(measureId,true);
-		List<CQLQualityDataSetDTO> cqlDataSet = new ArrayList<CQLQualityDataSetDTO>();
-		cqlDataSet = convertToCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO());
-		result.getCqlModel().setValueSetList(cqlDataSet);
-		CQLDefinitionsWrapper defineWrapper = getCQLDefinitionsFromMeasureXML(measureId);
-		result.getCqlModel().setDefinitionList(
-				defineWrapper.getCqlDefinitions());
-		CQLParametersWrapper paramWrapper = getCQLParametersFromMeasureXML(measureId);
-		result.getCqlModel().setCqlParameters(
-				paramWrapper.getCqlParameterList());
-		CQLFunctionsWrapper functionWrapper = getCQLFunctionsFromMeasureXML(measureId);
-		result.getCqlModel().setCqlFunctions(
-				functionWrapper.getCqlFunctionsList());
-		return result;
-	}
-	
-	private List<CQLQualityDataSetDTO> convertToCQLQualityDataSetDTO(List<QualityDataSetDTO> qualityDataSetDTO){
-		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
-		
-		for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
-			CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
-			if(!tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") && !tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
-				convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
-				convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
-				convertedCQLDataSet.setDataType(tempDataSet.getDataType());
-				convertedCQLDataSet.setId(tempDataSet.getId());
-				convertedCQLDataSet.setOid(tempDataSet.getOid());
-				convertedCQLDataSet.setSuppDataElement(tempDataSet.isSuppDataElement());
-				convertedCQLDataSet.setTaxonomy(tempDataSet.getTaxonomy());
-				convertedCQLDataSet.setType(tempDataSet.getType());
-				convertedCQLDataSet.setUuid(tempDataSet.getUuid());
-				convertedCQLDataSet.setVersion(tempDataSet.getVersion());
-				convertedCQLDataSetList.add(convertedCQLDataSet);
-			}
-			
-		}
-		return convertedCQLDataSetList;
-		
-	}
-	
-	/**
-	 * Gets the CQL generatl info.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the CQL generatl info
-	 */
-	private CQLModel getCQLGeneratlInfo(String measureId) {
-		
-		String libraryNameStr = "";
-		String usingModelStr = "";
-		CQLModel cqlModel = new CQLModel();
-		CQLLibraryModel libraryModel = new CQLLibraryModel();
-		CQLDataModel usingModel = new CQLDataModel();
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
 				measureId);
-		
-		if (xmlModel != null) {
-			
-			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
-			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
-			
-			try {
-				
-				Node nodeCQLLibrary = processor.findNode(
-						processor.getOriginalDoc(),
-						XPATH_EXPRESSION_CQLLOOKUP_lIBRARY);
-				Node nodeCQLUsingModel = processor.findNode(
-						processor.getOriginalDoc(),
-						XPATH_EXPRESSION_CQLLOOKUP_USING);
-				
-				if (nodeCQLLibrary != null) {
-					libraryNameStr = nodeCQLLibrary.getTextContent();
-					libraryModel.setLibraryName(libraryNameStr);
-					/* libraryModel.setVersionUsed("2"); */
-				}
-				
-				if (nodeCQLUsingModel != null) {
-					usingModelStr = nodeCQLUsingModel.getTextContent();
-					usingModel.setName(usingModelStr);
-				}
-				
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-			
-		}
-		
-		cqlModel.setLibrary(libraryModel);
-		cqlModel.setUsedModel(usingModel);
-		return cqlModel;
+		CQLModel cqlModel = new CQLModel();
+		cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(xmlModel.getXml(),measureId);
+		result.setCqlModel(cqlModel);
+		return result;
 	}
 	
 	/**
@@ -774,50 +681,6 @@ public class CQLServiceImpl implements CQLService {
 			if ((wrapper.getCqlDefinitions() != null)
 					&& (wrapper.getCqlDefinitions().size() > 0)) {
 				sortDefinitionsList(wrapper.getCqlDefinitions());
-			}
-		}
-		return wrapper;
-	}
-	
-	/**
-	 * Gets the CQL parameters from measure xml.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the CQL parameters from measure xml
-	 */
-	private CQLParametersWrapper getCQLParametersFromMeasureXML(String measureId) {
-		
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(
-				measureId);
-		CQLParametersWrapper wrapper = null;
-		if (measureXmlModel != null) {
-			wrapper = convertXmltoCQLParameterModel(measureXmlModel);
-			if ((wrapper.getCqlParameterList() != null)
-					&& (wrapper.getCqlParameterList().size() > 0)) {
-				sortParametersList(wrapper.getCqlParameterList());
-			}
-		}
-		return wrapper;
-	}
-	
-	/**
-	 * Gets the CQL parameters from measure xml.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the CQL parameters from measure xml
-	 */
-	private CQLFunctionsWrapper getCQLFunctionsFromMeasureXML(String measureId) {
-		
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(
-				measureId);
-		CQLFunctionsWrapper wrapper = null;
-		if (measureXmlModel != null) {
-			wrapper = convertXmltoCQLFunctionModel(measureXmlModel);
-			if ((wrapper.getCqlFunctionsList() != null)
-					&& (wrapper.getCqlFunctionsList().size() > 0)) {
-				sortFunctionssList(wrapper.getCqlFunctionsList());
 			}
 		}
 		return wrapper;

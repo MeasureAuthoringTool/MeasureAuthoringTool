@@ -67,17 +67,17 @@
 	<timingExpression name="starts properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts properly during $ of"/>
 	<timingExpression name="ends properly during" option="duringTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends properly during $ of"/>
 	
-	<timingExpression name="meets" option="meetsTimingExpression" />
-	<timingExpression name="meets before" option="meetsTimingExpression" />
-	<timingExpression name="meets after" option="meetsTimingExpression" />
+	<timingExpression name="meets" option="meetsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="meets $ of"/>
+	<timingExpression name="meets before" option="meetsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="meets $ before"/>
+	<timingExpression name="meets after" option="meetsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="meets $ after"/>
 	
-	<timingExpression name="overlaps" option="overlapsTimingExpression" />
-	<timingExpression name="overlaps before" option="overlapsTimingExpression" />
-	<timingExpression name="overlaps after" option="overlapsTimingExpression" />
+	<timingExpression name="overlaps" option="overlapsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="overlaps $ of"/>
+	<timingExpression name="overlaps before" option="overlapsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="overlaps $ before"/>
+	<timingExpression name="overlaps after" option="overlapsTimingExpression" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="overlaps $ after"/>
 	
-	<timingExpression name="within" option="withinTimingExpression" />
-	<timingExpression name="starts within" option="withinTimingExpression" />
-	<timingExpression name="ends within" option="withinTimingExpression" />
+	<timingExpression name="within" option="withinTimingExpression" quantity="true" units="true" dateTimePrecision="false" dateTimePrecisionOffset="within $ of"/>
+	<timingExpression name="starts within" option="withinTimingExpression" quantity="true" units="true" dateTimePrecision="false" dateTimePrecisionOffset="starts within $ of"/>
+	<timingExpression name="ends within" option="withinTimingExpression" quantity="true" units="true" dateTimePrecision="false" dateTimePrecisionOffset="ends within $ of"/>
 	
 	<timingExpression name="starts" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="starts $ of"/>
 	<timingExpression name="ends" quantity="false" units="false" dateTimePrecision="true" dateTimePrecisionOffset="ends $ of"/>

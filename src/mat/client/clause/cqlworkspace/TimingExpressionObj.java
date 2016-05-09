@@ -23,6 +23,13 @@ public class TimingExpressionObj {
 	/** The is date time precesion. */
 	boolean isDateTimePrecesion;
 	
+	/** The is relative qualifier. */
+	boolean isRelativeQualifier;
+	
+	/** The is quantity offset req. */
+	boolean isQuantityOffsetReq;
+	
+	/** The date time prec offset. */
 	String dateTimePrecOffset;
 
 	/**
@@ -120,12 +127,58 @@ public class TimingExpressionObj {
 		this.optionList = optionList;
 	}
 
+	/**
+	 * Gets the date time prec offset.
+	 *
+	 * @return the date time prec offset
+	 */
 	public String getDateTimePrecOffset() {
 		return dateTimePrecOffset;
 	}
 
+	/**
+	 * Sets the date time prec offset.
+	 *
+	 * @param dateTimePrecOffset the new date time prec offset
+	 */
 	public void setDateTimePrecOffset(String dateTimePrecOffset) {
 		this.dateTimePrecOffset = dateTimePrecOffset;
+	}
+
+	/**
+	 * Checks if is relative qualifier.
+	 *
+	 * @return true, if is relative qualifier
+	 */
+	public boolean isRelativeQualifier() {
+		return isRelativeQualifier;
+	}
+
+	/**
+	 * Sets the relative qualifier.
+	 *
+	 * @param isRelativeQualifier the new relative qualifier
+	 */
+	public void setRelativeQualifier(boolean isRelativeQualifier) {
+		this.isRelativeQualifier = isRelativeQualifier;
+	}
+
+	/**
+	 * Checks if is quantity offset req.
+	 *
+	 * @return true, if is quantity offset req
+	 */
+	public boolean isQuantityOffsetReq() {
+		return isQuantityOffsetReq;
+	}
+
+	/**
+	 * Sets the quantity offset req.
+	 *
+	 * @param isQuantityOffsetReq the new quantity offset req
+	 */
+	public void setQuantityOffsetReq(boolean isQuantityOffsetReq) {
+		this.isQuantityOffsetReq = isQuantityOffsetReq;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SaveCancelButtonBar;
@@ -62,7 +63,10 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		
 		container.add(securityQuestionsWidget);
 		container.add(new SpacerWidget());
-		container.add (passwordEditInfoWidget);
+		password.getElement().setId("password_ExistingPasswordTextBox");
+		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));
+		container.add(new SpacerWidget());
+		container.add (password);
 		container.add(new SpacerWidget());
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
@@ -85,9 +89,9 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * 
 	 * @return the password text box
 	 */
-	public PasswordTextBox getPasswordTextBox() {
+/*	public PasswordTextBox getPasswordTextBox() {
 		return password;
-	}
+	}*/
 	
 	/**
 	 * Gets the password text box.
@@ -96,9 +100,9 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 *            the password
 	 * @return the password text box
 	 */
-	public void getPasswordTextBox(PasswordTextBox password) {
+	/*public void getPasswordTextBox(PasswordTextBox password) {
 		this.password = password;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#addQuestionTexts(java.util.List)
@@ -201,17 +205,17 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getPasswordEditInfoWidget()
 	 */
-	@Override
+	/*@Override
 	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
 		return passwordEditInfoWidget;
-	}
+	}*/
 		
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getPassword()
 	 */
 	@Override
 	public HasValue<String> getPassword() {
-		return passwordEditInfoWidget.getPassword();
+		return password;
 	}
 	
 	/* (non-Javadoc)

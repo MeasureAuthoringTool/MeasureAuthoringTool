@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -193,7 +194,8 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the password edit info widget
 		 */
-		PasswordEditInfoWidget getPasswordEditInfoWidget();
+		//PasswordEditInfoWidget getPasswordEditInfoWidget();
+		
 		
 	}
 	
@@ -347,7 +349,9 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		});
 		
 		// if the user enters the "Enter" key on the password field, do a save.
-		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
+		//display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
+		PasswordTextBox passwordTextBox = (PasswordTextBox)display.getPassword();
+		passwordTextBox.addKeyDownHandler(submitOnEnterHandler);
 	}
 	
 	/**

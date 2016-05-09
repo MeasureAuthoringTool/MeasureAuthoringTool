@@ -116,6 +116,31 @@ public class JSONCQLTimingExpressionUtility {
 								timingExpressionObj.setUnits(false);
 							}
 						}
+						
+						if (attrJSONObject.get("@relativeQualifer") != null) {
+							JSONString unitsBoolean = attrJSONObject.get(
+									"@relativeQualifer").isString();
+							String units = unitsBoolean.toString().replaceAll(
+									"\"", "");
+							if (units.equals("true")) {
+								timingExpressionObj.setRelativeQualifier(true);
+							} else {
+								timingExpressionObj.setRelativeQualifier(false);
+							}
+						}
+						
+						if (attrJSONObject.get("@quantityOffsetReq") != null) {
+							JSONString unitsBoolean = attrJSONObject.get(
+									"@quantityOffsetReq").isString();
+							String units = unitsBoolean.toString().replaceAll(
+									"\"", "");
+							if (units.equals("true")) {
+								timingExpressionObj.setQuantityOffsetReq(true);
+							} else {
+								timingExpressionObj.setQuantityOffsetReq(false);
+							}
+						}
+						
 
 						if (attrJSONObject.get("@dateTimePrecision") != null) {
 							JSONString dateTimePreBoolean = attrJSONObject.get(
@@ -129,7 +154,7 @@ public class JSONCQLTimingExpressionUtility {
 							}
 						}
 
-						if (attrJSONObject.get("@dateTimePrecision") != null) {
+						if (attrJSONObject.get("@dateTimePrecisionOffset") != null) {
 							JSONString dateTimePrecisionOffset = attrJSONObject
 									.get("@dateTimePrecisionOffset").isString();
 							String dateTimePrecisionOffsetStr = dateTimePrecisionOffset

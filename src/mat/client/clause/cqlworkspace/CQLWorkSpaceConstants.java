@@ -6,12 +6,19 @@ public class CQLWorkSpaceConstants {
 	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
 	public static String CQL_OTHER_DATA_TYPE ="Others";
 	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";
+	public static String CQL_PRIMARY_TIMING_WITHIN ="within";
+	
 	private static final ArrayList<String> AVAILABLE_ITEM_TO_INSERT = new ArrayList<String>();
 	
 	private static final ArrayList<String> PRIMARY_TIMINGS = new ArrayList<String>();
 	
 	private static final ArrayList<String> TIMING_PRECISIONS = new ArrayList<String>();
 	
+	private static final ArrayList<String> QUANTITY_OFFSET_UNITS = new ArrayList<String>();
+	
+	private static final ArrayList<String> RELATIVE_QUALIFIER = new ArrayList<String>();
+	
+	private static final ArrayList<String> WITHIN_TIMING_EXP = new ArrayList<String>();	
 	public static ArrayList<String> getAvailableItem() {
 		AVAILABLE_ITEM_TO_INSERT.clear();
 		AVAILABLE_ITEM_TO_INSERT.add("Parameters");
@@ -54,6 +61,54 @@ public class CQLWorkSpaceConstants {
 		return TIMING_PRECISIONS;
 	}
 	
+	public static ArrayList<String> getRelativeQualifiers() {
+		RELATIVE_QUALIFIER.clear();
+		RELATIVE_QUALIFIER.add("or more");
+		RELATIVE_QUALIFIER.add("or less");
+		return RELATIVE_QUALIFIER;
+	}
+	
+	
+	public static ArrayList<String> getQuantityOffsetUnits() {
+		QUANTITY_OFFSET_UNITS.clear();
+		QUANTITY_OFFSET_UNITS.add("day");
+		QUANTITY_OFFSET_UNITS.add("days");
+		QUANTITY_OFFSET_UNITS.add("hour");
+		QUANTITY_OFFSET_UNITS.add("hours");
+		QUANTITY_OFFSET_UNITS.add("millisecond");
+		QUANTITY_OFFSET_UNITS.add("milliseconds");
+		QUANTITY_OFFSET_UNITS.add("minute");
+		QUANTITY_OFFSET_UNITS.add("minutes");
+		QUANTITY_OFFSET_UNITS.add("month");
+		QUANTITY_OFFSET_UNITS.add("months");
+		QUANTITY_OFFSET_UNITS.add("second");
+		QUANTITY_OFFSET_UNITS.add("seconds");
+		QUANTITY_OFFSET_UNITS.add("year");
+		QUANTITY_OFFSET_UNITS.add("years");
+		return QUANTITY_OFFSET_UNITS;
+	}
+	
+
+	public static ArrayList<String> getWithinTimingExp() {
+		WITHIN_TIMING_EXP.clear();
+		WITHIN_TIMING_EXP.add("within");
+		WITHIN_TIMING_EXP.add("ends within");
+		WITHIN_TIMING_EXP.add("starts within");
+		WITHIN_TIMING_EXP.add("properly within");
+		WITHIN_TIMING_EXP.add("ends properly within");
+		WITHIN_TIMING_EXP.add("starts properly within");
+		WITHIN_TIMING_EXP.add("ends within end");
+		WITHIN_TIMING_EXP.add("ends within start");
+		WITHIN_TIMING_EXP.add("starts within end");
+		WITHIN_TIMING_EXP.add("starts within start");
+		WITHIN_TIMING_EXP.add("properly within end");
+		WITHIN_TIMING_EXP.add("properly within start");
+		WITHIN_TIMING_EXP.add("ends properly within end");
+		WITHIN_TIMING_EXP.add("ends properly within start");
+		WITHIN_TIMING_EXP.add("starts properly within end");
+		WITHIN_TIMING_EXP.add("starts properly within start");
+		return WITHIN_TIMING_EXP;
+	}
 	
 	
 	public final static String CQL_FUNCTION_MENU = "func";

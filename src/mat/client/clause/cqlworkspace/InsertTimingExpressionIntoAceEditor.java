@@ -2,8 +2,6 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.List;
 
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.DropDownSubMenu;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
@@ -26,7 +24,6 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
-import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -39,10 +36,11 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
@@ -70,6 +68,11 @@ public class InsertTimingExpressionIntoAceEditor {
 	/** The timing precision list. */
 	private static List<String> timingPrecisionList =  CQLWorkSpaceConstants.getTimingPrecisions();
 	
+	private static String timingExpStr = null;
+	
+	private static String dateTimePrecisonExp = null;
+	
+	private static String quantityOffsetExp = null;
 	
 	/**
 	 * Show timing expression dialog box.
@@ -140,7 +143,7 @@ public class InsertTimingExpressionIntoAceEditor {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				createQuantityModal();	
+				createQuantityModal(mainButton);	
 			}
 		});
 		
@@ -199,7 +202,7 @@ public class InsertTimingExpressionIntoAceEditor {
 				mainDropDownMenu.add(primaryTimingSubMenu);
 				mainDropDownMenu.add(timingQualifierItem);
 				mainDropDownMenu.add(quantityOffsetItem);
-				timingExpressionObj = JSONCQLTimingExpressionUtility.getAvaialableTimingQualifierList(mainButton.getText());
+				timingExpressionObj = JSONCQLTimingExpressionUtility.getAvaialableTimingQualifierList(timingExpStr);
 				if(timingExpressionObj != null){
 	
 					if(timingExpressionObj.getOptionList() != null 
@@ -246,6 +249,11 @@ public class InsertTimingExpressionIntoAceEditor {
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					anchorButton.setFocus(true);
 					/*dropDown.setStyleName("dropdown-error");*/
+				} else if( CQLWorkSpaceConstants.getWithinTimingExp().contains(mainButton.getText())){
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("QuantityOffset is Required for following CQL Timing Expression");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+					anchorButton.setFocus(true);
 				} else {
 					editor.insertAtCursor(" " + mainButton.getText());
 					editor.focus();
@@ -286,6 +294,9 @@ public class InsertTimingExpressionIntoAceEditor {
 				Anchor menuItem = (Anchor)event.getSource(); 
 				mainButton.setText(menuItem.getText());
 				mainButton.setTitle(menuItem.getText());
+				timingExpStr = menuItem.getText();
+				dateTimePrecisonExp = null;
+				quantityOffsetExp = null;
 			}
 		};
 		
@@ -320,7 +331,13 @@ public class InsertTimingExpressionIntoAceEditor {
 			@Override
 			public void onClick(ClickEvent event) {	
 				Anchor menuItem = (Anchor)event.getSource(); 
+				dateTimePrecisonExp = menuItem.getText();
 				String replaceStr = timingExpressionObj.getDateTimePrecOffset().replace("$", menuItem.getText());
+				if(quantityOffsetExp!=null){
+					replaceStr = replaceStr.replace("@", quantityOffsetExp);
+				} {
+					replaceStr = replaceStr.replace("@", "");
+				}
 				mainButton.setText(replaceStr);
 				mainButton.setTitle(replaceStr);
 			}
@@ -411,6 +428,9 @@ public class InsertTimingExpressionIntoAceEditor {
 				if(selectedIndex !=-1){
 					String selectedItem = listBox.getItemText(selectedIndex);
 					mainAnchor.setText(selectedItem);
+					timingExpStr = selectedItem;
+					dateTimePrecisonExp = null;
+					quantityOffsetExp = null;
 					helpBlock.setText("");
 					messageFormgroup.setValidationState(ValidationState.NONE);
 				} else {
@@ -428,7 +448,7 @@ public class InsertTimingExpressionIntoAceEditor {
 	/**
 	 * Creates the quantity modal.
 	 */
-	private static void createQuantityModal(){
+	private static void createQuantityModal(final Button mainButton){
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Add Quantity");
 		dialogModal.setClosable(true);
@@ -436,41 +456,66 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertItemToAceEditor_Modal");
-		dialogModal.setSize(ModalSize.SMALL);
+		dialogModal.setWidth("400px");
+		//dialogModal.setSize(ModalSize.SMALL);
 		ModalBody modalBody = new ModalBody();
+		modalBody.setHeight("250px");
 		final ListBoxMVP unitList = new ListBoxMVP();
 		unitList.clear();
-		unitList.setWidth("250px");
-		List<String> units = PopulationWorkSpaceConstants.units;
+		//unitList.setWidth("250px");
+		List<String> units = CQLWorkSpaceConstants.getQuantityOffsetUnits();
 		unitList.addItem(MatContext.get().PLEASE_SELECT);
 		for(int i=0;i< units.size();i++){
 			unitList.addItem(units.get(i));
 		}
+		unitList.setEnabled(timingExpressionObj.isUnits());
+		
+		
+		final ListBoxMVP relativeQualifier = new ListBoxMVP();
+		relativeQualifier.clear();
+		List<String> relativeQualifierList = CQLWorkSpaceConstants.getRelativeQualifiers();
+		relativeQualifier.addItem(MatContext.get().PLEASE_SELECT);
+		for(int i=0;i< relativeQualifierList.size();i++){
+			relativeQualifier.addItem(relativeQualifierList.get(i));
+		}
+		relativeQualifier.setEnabled(timingExpressionObj.isRelativeQualifier());
+		
 		Form bodyForm = new Form();
-		FormGroup messageFormgroup = new FormGroup();
+		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();
 		messageFormgroup.add(helpBlock);
 		messageFormgroup.getElement().setAttribute("role", "alert");
 		
-		FormGroup quantForm = new FormGroup();
+		final FormGroup quantForm = new FormGroup();
 		FormLabel quantityValueLabel = new FormLabel();
 		quantityValueLabel.setText("Quantity Value");
 		quantityValueLabel.setTitle("Quantity Value");
 		final TextBox quantText = new TextBox();
+		quantText.setEnabled(timingExpressionObj.isQuantity());
 		quantForm.add(quantityValueLabel);
 		quantForm.add(quantText);
 		
-		FormGroup unitForm = new FormGroup();
+		final FormGroup unitForm = new FormGroup();
 		FormLabel unitsValueLabel = new FormLabel();
 		unitsValueLabel.setText("Units");
 		unitsValueLabel.setTitle("Units");
 		unitForm.add(unitsValueLabel);
 		unitForm.add(unitList);
 		
+		final FormGroup relativeQualifierForm = new FormGroup();
+		FormLabel relativeQualifierLabel = new FormLabel();
+		relativeQualifierLabel.setText("Relative Qualifier");
+		relativeQualifierLabel.setTitle("Relative Qualifier");
+		//final TextBox relativeQualifierText = new TextBox();
+		relativeQualifierForm.add(relativeQualifierLabel);
+		relativeQualifierForm.add(relativeQualifier);
+		
+		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(quantForm);
 		formFieldSet.add(unitForm);
+		formFieldSet.add(relativeQualifierForm);
 		
 		bodyForm.add(formFieldSet);
 		modalBody.add(bodyForm);
@@ -494,25 +539,106 @@ public class InsertTimingExpressionIntoAceEditor {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		
+		quantText.addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				quantForm.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");	
+			}
+		});
+		
+		
+		unitList.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				unitForm.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");	
+			}
+		});
+		
+		relativeQualifier.addValueChangeHandler(new ValueChangeHandler<String>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				relativeQualifierForm.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");		
+			}
+		});
+	
+		
 		addButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
 				StringBuilder displayName = new StringBuilder();
-				if((quantText.getText() != null) || !quantText.getText().isEmpty()){
-					displayName = displayName.append(quantText.getText());
+				boolean isInValid = false;
+				boolean isEmpty = !quantText.getText().isEmpty();
+				if(quantText.getText() != null && isEmpty){
+					displayName = displayName.append(quantText.getText()).append(" ");
+				} else {
+					isInValid = true;
+					quantForm.setValidationState(ValidationState.ERROR);
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please Enter Following Fields");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
+				//Units
 				int selectedItemIndex = unitList.getSelectedIndex();
 				if(selectedItemIndex !=0){
 					String unitName = unitList.getItemText(selectedItemIndex);
 					if(!unitName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-						displayName = displayName.append(unitName);
+						displayName = displayName.append(unitName).append(" ");
+					} else {
+						isInValid = true;
+						unitForm.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText("Please Enter Following Fields");
+						messageFormgroup.setValidationState(ValidationState.ERROR);
+					}
+				} else {
+					isInValid = true;
+					unitForm.setValidationState(ValidationState.ERROR);
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please Enter Following Fields");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+				}
+				//relativeQualifier
+				int selectedRelativeQualifierIndex = relativeQualifier.getSelectedIndex();
+				if(selectedRelativeQualifierIndex !=0){
+					String relativeQualifierName = relativeQualifier.getItemText(selectedRelativeQualifierIndex);
+					if(!relativeQualifierName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						displayName = displayName.append(relativeQualifierName).append(" ");
+					} else {
+						
+					}
+				} else {
+					if(timingExpressionObj.isRelativeQualifier()){
+						relativeQualifierForm.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText("Please Enter Following Fields");
+						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				}
-				if(displayName.length() >0){
-//					xmlTreeDisplay.addNode(displayName.toString(),displayName.toString(),CellTreeNode.CQL_TIMING_NODE);
+				
+				if(displayName.length() >0 && !isInValid) {
+					quantityOffsetExp = displayName.toString();
+					String replaceStr = timingExpressionObj.getDateTimePrecOffset().replace("@", displayName.toString());
+					if(dateTimePrecisonExp!=null){
+						replaceStr = replaceStr.replace("$", dateTimePrecisonExp);
+					} {
+						replaceStr = replaceStr.replace("$ of", "");
+					}
+					mainButton.setText(replaceStr);
+					mainButton.setTitle(replaceStr);
+					dialogModal.hide();
 				}
-				dialogModal.hide();
+				
 			}
 			
 		});

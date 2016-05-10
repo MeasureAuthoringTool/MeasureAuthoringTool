@@ -177,7 +177,6 @@
 	</timingExpression>
 	
 	<timingExpression ref="beforeTimingExpressions">
-		<option name="before" />
 		<option name="starts before" />
 		<option name="starts before start" />
 		<option name="starts before end" />
@@ -189,7 +188,6 @@
 	</timingExpression>
 	
 	<timingExpression ref="afterTimingExpressions">
-		<option name="after" />
 		<option name="starts after" />
 		<option name="starts after start" />
 		<option name="starts after end" />

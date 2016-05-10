@@ -51,7 +51,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 public class InsertTimingExpressionIntoAceEditor {
 	
 	/** The timing expression obj. */
-	private static TimingExpressionObj timingExpressionObj = null;
+	private static TimingExpressionObj timingExpressionObj;
 	
 	/** The Constant dialogModal. */
 	private static Modal dialogModal;
@@ -68,11 +68,11 @@ public class InsertTimingExpressionIntoAceEditor {
 	/** The timing precision list. */
 	private static List<String> timingPrecisionList =  CQLWorkSpaceConstants.getTimingPrecisions();
 	
-	private static String timingExpStr = null;
+	private static String timingExpStr;
 	
-	private static String dateTimePrecisonExp = null;
+	private static String dateTimePrecisonExp;
 	
-	private static String quantityOffsetExp = null;
+	private static String quantityOffsetExp;
 	
 	/**
 	 * Show timing expression dialog box.
@@ -86,6 +86,10 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal = new Modal();
         primaryTimingSubMenu = new DropDownSubMenu();
 	    dateTimePrecisionSubMenu = new DropDownSubMenu();
+	    timingExpressionObj = null;
+	    timingExpStr = null;
+	    dateTimePrecisonExp = null;
+	    quantityOffsetExp = null;
 		Button insertButton = new Button();
 	    Button cancelButton = new Button();
 	    final HelpBlock helpBlock = new HelpBlock();

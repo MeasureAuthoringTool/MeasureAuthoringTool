@@ -32,7 +32,7 @@
 
 	<timingExpression name="after" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="@ after $ of"/>
 	<timingExpression name="starts after" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ after $ of"/>
-	<timingExpression name="starts after start" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ after $ of"/>
+	<timingExpression name="starts after start" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ after $ of start"/>
 	<timingExpression name="starts after end" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ after $ of end"/>
 	<timingExpression name="ends after" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="ends @ after $ of"/>
 	<timingExpression name="ends after start" option="afterTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="ends @ after $ of start"/>
@@ -42,7 +42,7 @@
 	
 	<timingExpression name="before" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="@ before $ of"/>
 	<timingExpression name="starts before" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ before $ of"/>
-	<timingExpression name="starts before start" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ before $ of"/>
+	<timingExpression name="starts before start" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ before $ of start"/>
 	<timingExpression name="starts before end" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="starts @ before $ of end"/>
 	<timingExpression name="ends before" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="ends @ before $ of"/>
 	<timingExpression name="ends before start" option="beforeTimingExpressions" quantity="true" units="true" relativeQualifer="true" dateTimePrecision="true" quantityOffsetReq="false" dateTimePrecisionOffset="ends @ before $ of start"/>

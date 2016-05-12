@@ -1734,9 +1734,9 @@ public class XmlProcessor {
 				// ONC Administrative Sex
 				Node oncAdminSexNode = this.findNode(originalDoc,
 						"/measure/cqlLookUp//definition[@name='"
-								+ "ONCAdministrativeSex" + "']");
+								+ "Sex" + "']");
 				if (oncAdminSexNode == null) {
-					missingDefaultDefinitionsList.add("ONCAdministrativeSex");
+					missingDefaultDefinitionsList.add("Sex");
 				}
 				
 			} catch (XPathExpressionException e) {

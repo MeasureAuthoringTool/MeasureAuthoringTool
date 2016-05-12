@@ -609,12 +609,17 @@ List<String> missingDefaultCQLDefinitions = xmlProcessor.checkForDefaultDefiniti
 		SupplementalData.add("Ethnicity");
 		SupplementalData.add("Payer");
 		SupplementalData.add("Race");
-		SupplementalData.add("ONC Administrative Sex");
+		SupplementalData.add("Sex");
 		
 		for(String sData : SupplementalData){
 			definition.setId(UUID.randomUUID().toString());
 			definition.setDefinitionName(sData);
-			definition.setDefinitionLogic(sData);
+			if(definition.getDefinitionName().equalsIgnoreCase("Sex")){
+				definition.setDefinitionLogic("ONC Administrative Sex");
+			}
+			else{
+				definition.setDefinitionLogic(sData);
+			}
 			definition.setContext(CQLWorkSpaceConstants.CQL_DEFAULT_DEFINITON_CONTEXT);
 			definition.setReadOnly(true);
 			String defStr = getCqlService().createDefinitionsXML(definition);

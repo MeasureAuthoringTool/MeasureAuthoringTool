@@ -590,8 +590,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								getContextDefinePOPRadioBtn().setValue(true);
 								getContextDefinePATRadioBtn().setValue(false);
 							}
-							//disable definitionName and fields for Default definitions
-							boolean isReadOnly = getDefinitionMap().get(selectedDefinitionID).isReadOnly();
+							//disable definitionName and fields for Supplemental data definitions
+							boolean isReadOnly = getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
 							
 							if(MatContext.get().getMeasureLockService()
 									.checkForEditPermission()){

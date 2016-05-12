@@ -621,7 +621,7 @@ List<String> missingDefaultCQLDefinitions = xmlProcessor.checkForDefaultDefiniti
 				definition.setDefinitionLogic(sData);
 			}
 			definition.setContext(CQLWorkSpaceConstants.CQL_DEFAULT_DEFINITON_CONTEXT);
-			definition.setReadOnly(true);
+			definition.setSupplDataElement(true);
 			String defStr = getCqlService().createDefinitionsXML(definition);
 			
 			try {

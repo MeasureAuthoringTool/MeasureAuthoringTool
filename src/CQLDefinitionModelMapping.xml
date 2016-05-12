@@ -29,8 +29,8 @@
 						<bind-xml name="context" node="attribute" />
 					</field>
 					
-					<field name="readOnly" type="java.lang.Boolean">
-						<bind-xml name="readOnly" node="attribute" />
+					<field name="supplDataElement" type="java.lang.Boolean">
+						<bind-xml name="supplDataElement" node="attribute" />
 					</field>
 
 				</class>

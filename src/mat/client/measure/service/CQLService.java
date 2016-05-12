@@ -113,4 +113,7 @@ public interface CQLService {
 	String createParametersXML(CQLParameter parameter);
 
 	String getJSONObjectFromXML();
+
+	String createDefinitionsXML(CQLDefinition definition);
+
 }

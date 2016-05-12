@@ -7,6 +7,7 @@ public class CQLDefinition implements IsSerializable{
 	private String definitionName;
 	private String definitionLogic;
 	private String context;
+	private boolean readOnly;
 	
 	
 	
@@ -48,5 +49,11 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 	}
 	public void setContext(String context) {
 		this.context = context;
+	}
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+	public void setReadOnly(boolean isReadOnly) {
+		this.readOnly = isReadOnly;
 	}
 }

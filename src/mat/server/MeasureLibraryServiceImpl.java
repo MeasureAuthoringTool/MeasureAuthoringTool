@@ -591,6 +591,46 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
+	 * Append cql parameters.
+	 *
+	 * @param xmlProcessor the xml processor
+	 */
+	public void checkForDefaultCQLDefinitionsAndAppend(XmlProcessor xmlProcessor) {
+List<String> missingDefaultCQLDefinitions = xmlProcessor.checkForDefaultDefinitions();
+		
+		if (missingDefaultCQLDefinitions.isEmpty()) {
+			logger.info("All Default parameter elements present in the measure.");
+			return;
+		}
+		logger.info("Found the following Default definition elements missing:" + missingDefaultCQLDefinitions);
+		CQLDefinition definition = new CQLDefinition();
+		
+		List<String> SupplementalData = new ArrayList<String>();
+		SupplementalData.add("Ethnicity");
+		SupplementalData.add("Payer");
+		SupplementalData.add("Race");
+		SupplementalData.add("ONC Administrative Sex");
+		
+		for(String sData : SupplementalData){
+			definition.setId(UUID.randomUUID().toString());
+			definition.setDefinitionName(sData);
+			definition.setDefinitionLogic(sData);
+			definition.setContext(CQLWorkSpaceConstants.CQL_DEFAULT_DEFINITON_CONTEXT);
+			definition.setReadOnly(true);
+			String defStr = getCqlService().createDefinitionsXML(definition);
+			
+			try {
+				xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	/**
 	 * Check for default cql parameters and append.
 	 *
 	 * @param xmlProcessor the xml processor
@@ -2231,6 +2271,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					xmlProcessor.checkForScoringType();
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
+					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 					if(! scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
 						deleteExistingGroupings(xmlProcessor);
 					}
@@ -2247,6 +2288,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			processor.checkForScoringType();
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
+			checkForDefaultCQLDefinitionsAndAppend(processor);
 			measureXmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			
 			QualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(

@@ -590,6 +590,13 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								getContextDefinePOPRadioBtn().setValue(true);
 								getContextDefinePATRadioBtn().setValue(false);
 							}
+							//disable definitionName and fields for Default definitions
+							boolean isReadOnly = getDefinitionMap().get(selectedDefinitionID).isReadOnly();
+							
+							if(MatContext.get().getMeasureLockService()
+									.checkForEditPermission()){
+								setDefinitionWidgetReadOnly(!isReadOnly);
+							}
 						}
 					}
 					
@@ -3257,6 +3264,24 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
+	}
+	
+	/**
+	 * Sets the define widget read only.
+	 *
+	 * @param isEditable the new definition widget read only
+	 */
+	@Override
+	public void setDefinitionWidgetReadOnly(boolean isEditable){
+		
+		getDefineNameTxtArea().setEnabled(isEditable);
+		getDefineAceEditor().setReadOnly(!isEditable);
+		getContextDefinePATRadioBtn().setEnabled(isEditable);
+		getContextDefinePOPRadioBtn().setEnabled(isEditable);
+		System.out.println("in setDefinitionWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
+		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
+		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
+		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 	}
 	
 	

@@ -892,6 +892,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		SuggestBox getSearchSuggestDefineTextBox();
 
 		SuggestBox getSearchSuggestTextBox();
+
+		void setDefinitionWidgetReadOnly(boolean isEditable);
 		
 	}
 	

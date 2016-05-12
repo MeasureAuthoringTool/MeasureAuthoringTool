@@ -1704,4 +1704,46 @@ public class XmlProcessor {
 		}
 		return missingDefaultParameterList;
 	}
+
+	public List<String> checkForDefaultDefinitions() {
+		List<String> missingDefaultDefinitionsList = new ArrayList<String>();
+		
+		if (originalDoc != null) {
+			try {
+				// Ethinicity
+				Node ethinicityNode = this.findNode(originalDoc,
+						"/measure/cqlLookUp//definition[@name='"
+								+ "Ethnicity" + "']");
+				if (ethinicityNode == null) {
+					missingDefaultDefinitionsList.add("Ethnicity");
+				}
+				// Payer
+				Node payerNode = this.findNode(originalDoc,
+						"/measure/cqlLookUp//definition[@name='"
+								+ "Payer" + "']");
+				if (payerNode == null) {
+					missingDefaultDefinitionsList.add("Payer");
+				}
+				// Race
+				Node raceNode = this.findNode(originalDoc,
+						"/measure/cqlLookUp//definition[@name='"
+								+ "Race" + "']");
+				if (raceNode == null) {
+					missingDefaultDefinitionsList.add("Race");
+				}
+				// ONC Administrative Sex
+				Node oncAdminSexNode = this.findNode(originalDoc,
+						"/measure/cqlLookUp//definition[@name='"
+								+ "ONCAdministrativeSex" + "']");
+				if (oncAdminSexNode == null) {
+					missingDefaultDefinitionsList.add("ONCAdministrativeSex");
+				}
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return missingDefaultDefinitionsList;
+	}
+	
 }

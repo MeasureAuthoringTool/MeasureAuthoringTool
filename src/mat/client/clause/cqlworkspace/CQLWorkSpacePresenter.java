@@ -1437,6 +1437,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if(searchDisplay.getDefineNameListBox().getSelectedIndex() >= 0){
 			searchDisplay.getDefineNameListBox().setItemSelected(searchDisplay.getDefineNameListBox().getSelectedIndex(), false);
 		}
+		
+		//Functionality to reset the disabled features for supplemental data definitions when erased.
+		searchDisplay.getDefineNameTxtArea().setEnabled(true);
+		searchDisplay.getDefineAceEditor().setReadOnly(false);
+		searchDisplay.getContextDefinePATRadioBtn().setEnabled(true);
+		searchDisplay.getContextDefinePOPRadioBtn().setEnabled(true);
+		searchDisplay.getDefineButtonBar().getSaveButton().setEnabled(true);
+		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
+		searchDisplay.getDefineButtonBar().getInsertButton().setEnabled(true);
+		searchDisplay.getDefineButtonBar().getTimingExpButton().setEnabled(true);
 		searchDisplay.getContextDefinePATRadioBtn().setValue(true);
 		searchDisplay.getContextDefinePOPRadioBtn().setValue(false);
 	}

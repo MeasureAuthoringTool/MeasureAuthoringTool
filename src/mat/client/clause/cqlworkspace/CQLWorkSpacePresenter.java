@@ -8,7 +8,6 @@ import java.util.Map;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView.CustomTextAreaWithNoWhiteSpaces;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -48,6 +47,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -175,7 +175,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the parameter name txt area
 		 */
-		TextArea getParameterNameTxtArea();
+		TextBox getParameterNameTxtArea();
 		
 		
 		/**
@@ -264,7 +264,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the define name txt area
 		 */
-		TextArea getDefineNameTxtArea();
+		TextBox getDefineNameTxtArea();
 		
 		/**
 		 * Gets the adds the define button.
@@ -508,7 +508,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the func name txt area
 		 */
-		TextArea getFuncNameTxtArea();
+		TextBox getFuncNameTxtArea();
 		
 		/**
 		 * Gets the save function button.
@@ -772,7 +772,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the argument text area
 		 */
-		CustomTextAreaWithNoWhiteSpaces getArgumentTextArea();
+		TextBox getArgumentTextArea();
 		
 		/**
 		 * Sets the parameter widget read only.
@@ -1405,7 +1405,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getParameterAceEditor().setText("");
 		}
 		if ((searchDisplay.getParameterNameTxtArea() != null)) {
-			searchDisplay.getParameterNameTxtArea().clear();
+			searchDisplay.getParameterNameTxtArea().setText("");
 		}
 		
 		if (MatContext.get().getMeasureLockService()
@@ -1430,7 +1430,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getDefineAceEditor().setText("");
 		}
 		if ((searchDisplay.getDefineNameTxtArea() != null)) {
-			searchDisplay.getDefineNameTxtArea().clear();
+			searchDisplay.getDefineNameTxtArea().setText("");
 		}
 		//Below lines are to clear search suggestion textbox and listbox selection after erase.
 		searchDisplay.getSearchSuggestDefineTextBox().setText("");
@@ -1464,7 +1464,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getFunctionBodyAceEditor().setText("");
 		}
 		if ((searchDisplay.getFuncNameTxtArea() != null)) {
-			searchDisplay.getFuncNameTxtArea().clear();
+			searchDisplay.getFuncNameTxtArea().setText("");
 		}
 	//Below lines are to clear search suggestion textbox and listbox selection after erase.
 		searchDisplay.getSearchSuggestFuncTextBox().setText("");

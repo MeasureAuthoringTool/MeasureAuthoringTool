@@ -30,7 +30,7 @@ public class CQLFunctions implements IsSerializable {
 	 * @return the function name
 	 */
 	public String getFunctionName() {
-		return functionName.replaceAll(" ", "").trim();
+		return functionName.trim();
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class CQLFunctions implements IsSerializable {
 	 * @param functionName the new function name
 	 */
 	public void setFunctionName(String functionName) {
-		this.functionName = functionName.replaceAll(" ", "").trim();
+		this.functionName = functionName.trim();
 	}
 	
 	/**

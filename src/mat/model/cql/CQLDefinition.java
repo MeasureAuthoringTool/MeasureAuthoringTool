@@ -32,10 +32,10 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 		this.id = id;
 	}
 	public String getDefinitionName() {
-		return definitionName.replaceAll(" ", "").trim();
+		return definitionName.trim();
 	}
 	public void setDefinitionName(String definitionName) {
-		this.definitionName = definitionName.replaceAll(" ", "").trim();
+		this.definitionName = definitionName.trim();
 	}
 	public String getDefinitionLogic() {
 		return definitionLogic;

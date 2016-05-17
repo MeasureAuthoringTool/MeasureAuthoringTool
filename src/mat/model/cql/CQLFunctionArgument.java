@@ -18,10 +18,10 @@ public class CQLFunctionArgument implements IsSerializable, Cloneable {
 		this.isValid = isValid;
 	}
 	public String getArgumentName() {
-		return argumentName.replaceAll(" ", "").trim();
+		return argumentName.trim();
 	}
 	public void setArgumentName(String argumentName) {
-		this.argumentName = argumentName.replaceAll(" ", "").trim();
+		this.argumentName = argumentName.trim();
 	}
 	public String getArgumentType() {
 		return argumentType;

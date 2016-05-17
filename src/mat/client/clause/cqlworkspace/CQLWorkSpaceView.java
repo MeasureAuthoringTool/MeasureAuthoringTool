@@ -82,6 +82,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -164,7 +165,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
-	private CustomTextAreaWithNoWhiteSpaces parameterNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
+	private TextBox parameterNameTxtArea = new TextBox();
 	
 	/** The parameter ace editor. */
 	private AceEditor parameterAceEditor = new AceEditor();
@@ -223,12 +224,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private CustomTextAreaWithNoWhiteSpaces defineNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
+	private TextBox defineNameTxtArea = new TextBox();
 	
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private CustomTextAreaWithNoWhiteSpaces funcNameTxtArea = new CustomTextAreaWithNoWhiteSpaces(500);
+	private TextBox funcNameTxtArea = new TextBox();
 	
 	/**
 	 * SuggestBox searchSuggestDefineTextBox.
@@ -346,6 +347,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The context pop toggle switch. */
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
+	
+	private AnchorListItem includeLibrary;
 	
 	/**
 	 * The Interface Observer.
@@ -828,6 +831,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		navPills.setStacked(true);
 		
 		generalInformation = new AnchorListItem();
+		includeLibrary = new AnchorListItem();
 		parameterLibrary = new AnchorListItem();
 		definitionLibrary = new AnchorListItem();
 		functionLibrary = new AnchorListItem();
@@ -837,6 +841,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInformation.setText("General Information");
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
+		
+		includeLibrary.setIcon(IconType.INFO);
+		includeLibrary.setText("Inlude library");
+		includeLibrary.setTitle("Inlude library");
+		includeLibrary.setActive(true);
 		
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -915,6 +924,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		viewCQL.setTitle("View CQL");
 		
 		navPills.add(generalInformation);
+		navPills.add(includeLibrary);
 		navPills.add(parameterLibrary);
 		
 		navPills.add(definitionLibrary);
@@ -1133,9 +1143,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
 		parameterNameTxtArea.setText("");
-		parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
+		//parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
 		parameterNameTxtArea.setSize("260px", "25px");
-		parameterNameTxtArea.setId("parameterNameField");
+		//parameterNameTxtArea.setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		parameterLabel.setText("Parameter");
 		
@@ -1288,9 +1298,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineLabel.setMarginTop(5);
 		defineLabel.setId("Definition_Label");
 		defineNameTxtArea.setText("");
-		defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
+		//defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("260px", "25px");
-		defineNameTxtArea.setId("defineNameField");
+		//defineNameTxtArea.setId("defineNameField");
 		defineNameTxtArea.setName("defineName");
 		defineLabel.setText("Definition Name");
 		
@@ -1459,9 +1469,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		functionNameLabel.setMarginTop(5);
 		functionNameLabel.setId("Function_Label");
 		funcNameTxtArea.setText("");
-		funcNameTxtArea.setPlaceholder("Enter Function Name here.");
+		//funcNameTxtArea.setPlaceholder("Enter Function Name here.");
 		funcNameTxtArea.setSize("260px", "25px");
-		funcNameTxtArea.setId("FunctionNameField");
+		//funcNameTxtArea.setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
 		functionNameLabel.setText("Function Name");
 		
@@ -1883,7 +1893,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public boolean validateForSpecialChar(String identifierName) {
 		
-		if ((identifierName == null) || "".equals(identifierName) || !Character.isLetter(identifierName.charAt(0))) {
+		if ((identifierName == null) || "".equals(identifierName)) {
 			return true;
 		}
 		
@@ -1958,6 +1968,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return generalInformation;
 	}
 	
+	/*@Override
+	public AnchorListItem getIncludeLibrary() {
+		return includeLibrary;
+	}
+	*/
 	/**
 	 * Sets the general information.
 	 *
@@ -2100,7 +2115,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the parameter name txt area
 	 */
 	@Override
-	public CustomTextAreaWithNoWhiteSpaces getParameterNameTxtArea() {
+	public TextBox getParameterNameTxtArea() {
 		return parameterNameTxtArea;
 	}
 	
@@ -2317,7 +2332,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the define name txt area
 	 */
 	@Override
-	public CustomTextAreaWithNoWhiteSpaces getDefineNameTxtArea() {
+	public TextBox getDefineNameTxtArea() {
 		return defineNameTxtArea;
 	}
 	
@@ -2636,7 +2651,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the func name txt area
 	 */
 	@Override
-	public CustomTextAreaWithNoWhiteSpaces getFuncNameTxtArea() {
+	public TextBox getFuncNameTxtArea() {
 		return funcNameTxtArea;
 	}
 	
@@ -2646,7 +2661,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @param funcNameTxtArea
 	 *            the new func name txt area
 	 */
-	public void setFuncNameTxtArea(CustomTextAreaWithNoWhiteSpaces funcNameTxtArea) {
+	public void setFuncNameTxtArea(TextBox funcNameTxtArea) {
 		this.funcNameTxtArea = funcNameTxtArea;
 	}
 	
@@ -3282,7 +3297,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
-		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
 	}
 	
 	
@@ -3318,17 +3332,17 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * The Class CustomTextAreaWithNoWhiteSpaces.
 	 */
-	public class CustomTextAreaWithNoWhiteSpaces extends TextArea {
+	/*public class CustomTextAreaWithNoWhiteSpaces extends TextArea {
 		
-		/** The max length. */
+		*//** The max length. *//*
 		private int maxLength;
 		
-		/**
+		*//**
 		 * Constructor.
 		 *
 		 * @param maxLen
 		 *            the max len
-		 */
+		 *//*
 		public CustomTextAreaWithNoWhiteSpaces(int maxLen) {
 			
 			super(Document.get().createTextAreaElement());
@@ -3341,7 +3355,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				@Override
 				public void onValueChange(ValueChangeEvent<String> event) {
 					if (!CustomTextAreaWithNoWhiteSpaces.this.isReadOnly()) {
-						String nameTextArea = event.getValue().replaceAll(" ", "").trim();
+//						String nameTextArea = event.getValue().replaceAll(" ", "").trim();
+						String nameTextArea = event.getValue().trim();
 						CustomTextAreaWithNoWhiteSpaces.this.setText(nameTextArea);
 						
 						if (nameTextArea.length() >= maxLength) {
@@ -3359,12 +3374,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			});
 		}
 		
-		/**
+		*//**
 		 * Description: Takes the browser event.
 		 *
 		 * @param event
 		 *            declared.
-		 */
+		 *//*
 		@Override
 		public void onBrowserEvent(Event event) {
 			
@@ -3400,9 +3415,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE) && (event.getKeyCode() != KeyCodes.KEY_SHIFT)
 					&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
 				event.preventDefault();
-			} else if ((event.getTypeInt() == Event.ONKEYDOWN) && (event.getKeyCode() == KeyCodes.KEY_SPACE)) {
+			} 
+			else if ((event.getTypeInt() == Event.ONKEYDOWN) && (event.getKeyCode() == KeyCodes.KEY_SPACE)) {
 				event.preventDefault();
-			} else if ((event.getTypeInt() == Event.ONKEYDOWN) && (nameTextArea.length() <= maxLength)) {
+			} 
+			else if ((event.getTypeInt() == Event.ONKEYDOWN) && (nameTextArea.length() <= maxLength)) {
 				if ((event.getKeyCode() != KeyCodes.KEY_LEFT) && (event.getKeyCode() != KeyCodes.KEY_TAB)
 						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT) && (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
 					if (!event.getCtrlKey()) {
@@ -3418,27 +3435,27 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			}
 		}
 		
-		/**
+		*//**
 		 * Getter for maximum length.
 		 * 
 		 * @return - int.
-		 */
+		 *//*
 		public int getMaxLength() {
 			return maxLength;
 		}
 		
-		/**
+		*//**
 		 * Setter for maximum length.
 		 *
 		 * @param maxLength
 		 *            the new max length
-		 */
+		 *//*
 		@Override
 		public void setMaxLength(int maxLength) {
 			this.maxLength = maxLength;
 		}
 	}
-	
+	*/
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -3562,8 +3579,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getArgumentTextArea()
 	 */
 	@Override
-	public CustomTextAreaWithNoWhiteSpaces getArgumentTextArea(){
-		return new CustomTextAreaWithNoWhiteSpaces(500);
+	public TextBox getArgumentTextArea(){
+		return new TextBox();
 	}
 	
 	/* (non-Javadoc)

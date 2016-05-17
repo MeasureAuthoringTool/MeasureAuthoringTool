@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.TextBox;
 
 
 
@@ -142,11 +143,11 @@ public class AddFunctionArgumentDialogBox {
 		argumentNameFormLabel.setTitle("Argument Name");
 		argumentNameFormLabel.setFor("inputArgumentName");
 		argumentNameFormLabel.setId("ArgumentNameLanel");
-		final TextArea argumentNameTextArea = searchDisplay.getArgumentTextArea();
-		argumentNameTextArea.setPlaceholder("Enter Argument Name");
+		final TextBox argumentNameTextArea = new TextBox();
+		//argumentNameTextArea.setPlaceholder("Enter Argument Name");
 		argumentNameTextArea.setWidth("290px");
 		argumentNameTextArea.setHeight("38px");
-		argumentNameTextArea.setId("inputArgumentName");
+		//argumentNameTextArea.setId("inputArgumentName");
 		argumentNameFormGroup.add(argumentNameFormLabel);
 		argumentNameFormGroup.add(argumentNameTextArea);
 		// Other Type Form group

@@ -76,7 +76,7 @@ public class CQLUtilityClass {
 		if (paramList != null) {
 			for (CQLParameter parameter : paramList) {
 				cqlStr = cqlStr.append("parameter "
-						+ parameter.getParameterName() + " "
+						+ "\""+parameter.getParameterName()+ "\"" + " "
 						+ parameter.getParameterLogic());
 				cqlStr = cqlStr.append("\n\n");
 			}
@@ -168,7 +168,7 @@ public class CQLUtilityClass {
 		
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
-			cqlStr = cqlStr.append("define " + definition.getDefinitionName()
+			cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
 					+ ": ");
 			cqlStr = cqlStr.append(definition.getDefinitionLogic());
 			cqlStr = cqlStr.append("\n\n");
@@ -176,7 +176,7 @@ public class CQLUtilityClass {
 		
 		for (CQLFunctions function : functionsList) {
 			cqlStr = cqlStr.append("define function "
-					+ function.getFunctionName() + "(");
+					+ "\""+ function.getFunctionName() + "\"" + "(");
 			if(function.getArgumentList()!=null) {
 			for (CQLFunctionArgument argument : function.getArgumentList()) {
 				StringBuilder argumentType = new StringBuilder();
@@ -199,7 +199,7 @@ public class CQLUtilityClass {
 					argumentType = argumentType.append(argument
 							.getArgumentType());
 				}
-				cqlStr = cqlStr.append(argument.getArgumentName() + " "
+				cqlStr = cqlStr.append("\""+ argument.getArgumentName() + "\" "
 						+ argumentType + ", ");
 			}
 			cqlStr.deleteCharAt(cqlStr.length() - 2);

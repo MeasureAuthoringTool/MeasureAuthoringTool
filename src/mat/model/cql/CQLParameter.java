@@ -12,10 +12,10 @@ public class CQLParameter implements IsSerializable{
 	private boolean readOnly;
 	
 	public String getParameterName() {
-		return parameterName.replaceAll(" ", "").trim();
+		return parameterName.trim();
 	}
 	public void setParameterName(String parameterName) {
-		this.parameterName = parameterName.replaceAll(" ", "").trim();
+		this.parameterName = parameterName.trim();
 	}
 	public String getCqlType() {
 		return cqlType;

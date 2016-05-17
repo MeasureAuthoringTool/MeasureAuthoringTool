@@ -21,26 +21,17 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.service.CQLService;
 import mat.dao.clause.CQLDAO;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
 import mat.model.clause.CQLData;
-import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.CQLTemplateXML;
-import mat.server.cqlparser.cqlLexer;
-import mat.server.cqlparser.cqlParser;
-import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
@@ -49,8 +40,6 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -107,12 +96,13 @@ public class CQLServiceImpl implements CQLService {
 	public CQLModel parseCQL(String cqlBuilder) {
 		
 		CQLModel cqlModel = new CQLModel();
-		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
+		/*cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
 		System.out.println(cqlBuilder);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		cqlParser parser = new cqlParser(tokens);
+		MATCQLParser cqlParser = new MATCQLParser();
 		CQLErrorListener cqlErrorListener = new CQLErrorListener();
-		/*MATCQLListener cqlListener = new MATCQLListener();
+		MATCQLListener cqlListener = new MATCQLListener(cqlParser);
 		cqlListener.setCqlModel(cqlModel);
 		cqlListener.setParser(cqlListener);
 		cqlListener.setLexer(lexer);
@@ -206,13 +196,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getFunctionName().equalsIgnoreCase(
 						currentObj.getFunctionName())) {
 					
-					isDuplicate = checkForCQLKeywords(currentObj
+					/*isDuplicate = checkForCQLKeywords(currentObj
 							.getFunctionName());
 					if (isDuplicate) {
 						result.setSuccess(false);
 						result.setFailureReason(result.NAME_NOT_KEYWORD);
 						return result;
-					}
+					}*/
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getFunctionName(), measureId);
 				}
@@ -221,14 +211,14 @@ public class CQLServiceImpl implements CQLService {
 					
 					// validation for argument name to check if it is not a
 					// keyword.
-					result = checkIfKeywordForFuncArguments(result, currentObj);
+					/*result = checkIfKeywordForFuncArguments(result, currentObj);
 					isDuplicate = result.isSuccess();
 					if (isDuplicate) {
 						result.setSuccess(false);
 						result.setFailureReason(result.NAME_NOT_KEYWORD);
 						result.setFunction(currentObj);
 						return result;
-					}
+					}*/
 					
 					String cqlString = createFunctionsXML(currentObj);
 					
@@ -278,26 +268,26 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkForCQLKeywords(currentObj.getFunctionName());
+				/*isDuplicate = checkForCQLKeywords(currentObj.getFunctionName());
 				if (isDuplicate) {
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_KEYWORD);
 					return result;
-				}
+				}*/
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getFunctionName(), measureId);
 				if (!isDuplicate) {
 					
 					// validation for argument name to check if it is not a
 					// keyword.
-					result = checkIfKeywordForFuncArguments(result, currentObj);
+					/*result = checkIfKeywordForFuncArguments(result, currentObj);
 					isDuplicate = result.isSuccess();
 					if (isDuplicate) {
 						result.setSuccess(false);
 						result.setFailureReason(result.NAME_NOT_KEYWORD);
 						result.setFunction(currentObj);
 						return result;
-					}
+					}*/
 					
 					String cqlString = createFunctionsXML(currentObj);
 					
@@ -378,13 +368,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getParameterName().equalsIgnoreCase(
 						currentObj.getParameterName())) {
 					
-					isDuplicate = checkForCQLKeywords(currentObj
-							.getParameterName());
-					if (isDuplicate) {
-						result.setSuccess(false);
-						result.setFailureReason(result.NAME_NOT_KEYWORD);
-						return result;
-					}
+//					isDuplicate = checkForCQLKeywords(currentObj
+//							.getParameterName());
+//					if (isDuplicate) {
+//						result.setSuccess(false);
+//						result.setFailureReason(result.NAME_NOT_KEYWORD);
+//						return result;
+//					}
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getParameterName(), measureId);
 				}
@@ -437,13 +427,13 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkForCQLKeywords(currentObj.getParameterName());
+				/*isDuplicate = checkForCQLKeywords(currentObj.getParameterName());
 				if (isDuplicate) {
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_KEYWORD);
 					return result;
 				}
-				
+				*/
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getParameterName(), measureId);
 				
@@ -527,13 +517,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(
 						currentObj.getDefinitionName())) {
 					
-					isDuplicate = checkForCQLKeywords(currentObj
+					/*isDuplicate = checkForCQLKeywords(currentObj
 							.getDefinitionName());
 					if (isDuplicate) {
 						result.setSuccess(false);
 						result.setFailureReason(result.NAME_NOT_KEYWORD);
 						return result;
-					}
+					}*/
 					
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getDefinitionName(), measureId);
@@ -582,13 +572,13 @@ public class CQLServiceImpl implements CQLService {
 				}
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = checkForCQLKeywords(currentObj
+				/*isDuplicate = checkForCQLKeywords(currentObj
 						.getDefinitionName());
 				if (isDuplicate) {
 					result.setSuccess(false);
 					result.setFailureReason(result.NAME_NOT_KEYWORD);
 					return result;
-				}
+				}*/
 				
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getDefinitionName(), measureId);

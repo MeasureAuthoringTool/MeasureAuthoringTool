@@ -267,7 +267,7 @@ public class XmlProcessor {
 	private Document originalDoc;
 	
 	/** The Constant PARAMETER_MEASUREMENT_PERIOD. */
-	private static final String PARAMETER_MEASUREMENT_PERIOD = "MeasurementPeriod";
+	private static final String PARAMETER_MEASUREMENT_PERIOD = "Measurement Period";
 	
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {

@@ -155,15 +155,6 @@ public class LoginNewPresenter {
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getHelpBlock().setText("");
 		view.getSubmitButton().setEnabled(false);
-		//view.getUserIdText().setValue("RaTadepa1432");
-		//view.getPasswordInput().setValue("J6,klneq");
-		//view.getPasswordInput().setValue("K2%youwo");
-		/*view.getUserIdText().setValue("RaTadepa4097");
-		view.getPasswordInput().setValue("Rtadepally_87");
-		view.getSecurityCodeInput().setValue("123456");*/
-		view.getUserIdText().setValue("liwisham0002");
-		view.getPasswordInput().setValue("Newpassword123?");
-		view.getSecurityCodeInput().setValue("123456");
 		
 		if (view.getUserIdText().getText().isEmpty()) {
 			view.getUserIdGroup().setValidationState(ValidationState.ERROR);
@@ -218,7 +209,6 @@ public class LoginNewPresenter {
 					secRole = result.getRole().getDescription();
 				}
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole, result.getLoginId());
-				 
 				if (loginModel.isLoginFailedEvent()) {
 					view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 					view.getMessageFormGrp().setValidationState(ValidationState.ERROR);

@@ -166,10 +166,10 @@ public class LoginPresenter {
 					secRole = result.getRole().getDescription();
 				}
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole,result.getLoginId());
-				if(loginModel.isInitialPassword()){
-					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
-				}else if(loginModel.isLoginFailedEvent()){
+			    if(loginModel.isLoginFailedEvent()){
 					display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
+				}if(loginModel.isInitialPassword()){
+					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
 				}else if(loginModel.isTemporaryPassword()){
 					MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());
 				}else{
@@ -233,6 +233,14 @@ public class LoginPresenter {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		
+		display.getUserid().setValue("RaTadepa1432");
+		display.getPassword().setValue("K2%youwo");
+		/*display.getUserid().setValue("RaTadepa4097");
+		display.getPassword().setValue("S3-vpzlr");*/
+   		display.getOneTimePassword().setValue("123456");
+		/*display.getUserid().setValue("JyN1896");
+		display.getPassword().setValue("Newpassword123?");
+		display.getOneTimePassword().setValue("123456");*/
 		display.getSubmitButton().setEnabled(false);
 		if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());

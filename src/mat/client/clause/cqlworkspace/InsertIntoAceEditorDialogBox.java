@@ -63,12 +63,14 @@ public class InsertIntoAceEditorDialogBox {
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
 		availableItemToInsert.clear();
 		availableItemToInsert.setWidth("350px");
+		availableItemToInsert.getElement().setId("availableItemToInsert_ListBox");
 		addAvailableItems(availableItemToInsert);
 		
 		final ListBoxMVP listAllItemNames = new ListBoxMVP();
 		listAllItemNames.setWidth("350px");
 		listAllItemNames.clear();
 		listAllItemNames.setEnabled(false);
+		listAllItemNames.getElement().setId("listAllItemNames_ListBox");
 		// Based on Current Section this method will reterive instance of Ace Editor.
 		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		
@@ -110,12 +112,14 @@ public class InsertIntoAceEditorDialogBox {
 		addButton.setTitle("Insert");
 		addButton.setType(ButtonType.PRIMARY);
 		addButton.setSize(ButtonSize.SMALL);
+		addButton.setId("addButton_Insert");
 		Button closeButton = new Button();
 		closeButton.setText("Close");
 		closeButton.setTitle("Close");
 		closeButton.setType(ButtonType.DANGER);
 		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
+		closeButton.setId("closeButton_Cancel");
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);
 		modalFooter.add(buttonToolBar);

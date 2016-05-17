@@ -85,7 +85,9 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		dialogModal = new Modal();
         primaryTimingSubMenu = new DropDownSubMenu();
+        primaryTimingSubMenu.setId("primaryTimingSubMenu_Id");
 	    dateTimePrecisionSubMenu = new DropDownSubMenu();
+	    dateTimePrecisionSubMenu.setId("dateTimePrecisionSubMenu_Id");
 	    timingExpressionObj = null;
 	    timingExpStr = null;
 	    dateTimePrecisonExp = null;
@@ -96,6 +98,9 @@ public class InsertTimingExpressionIntoAceEditor {
 	    final AnchorListItem timingQualifierItem = new AnchorListItem();
 		final AnchorListItem quantityOffsetItem = new AnchorListItem();
 		final AnchorListItem timePrecisionItem = new AnchorListItem();
+		timingQualifierItem.setId("timingQualifierItem_Id");
+		quantityOffsetItem.setId("quantityOffsetItem_Id");
+		timePrecisionItem.setId("timePrecisionItem_Id");
 		timePrecisionItem.setText("Time Precision");
 		
 		dialogModal.setTitle("Insert Timing Expression into CQL Editor");
@@ -119,6 +124,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		mainButton.setText(CQLWorkSpaceConstants.CQL_TIMING_EXPRESSION);
 		mainButton.setTitle(CQLWorkSpaceConstants.CQL_TIMING_EXPRESSION);
 		mainButton.setType(ButtonType.DEFAULT);
+		mainButton.setId("mainButton_id");
 		
 		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		Label cqlTimingExpressionLabel = new Label(LabelType.INFO, "Cql Timing Expression");
@@ -127,10 +133,12 @@ public class InsertTimingExpressionIntoAceEditor {
 		final DropDown dropDown = new DropDown();		
 		anchorButton.setDataToggle(Toggle.DROPDOWN);
 		anchorButton.setIcon(IconType.ELLIPSIS_H);
+		anchorButton.setId("anchorButton_id");
 			
 		dropDown.add(mainButton);
 		dropDown.add(anchorButton);
 		final DropDownMenu mainDropDownMenu = new DropDownMenu(); 
+		mainDropDownMenu.setId("mainDropDownMenu_Id");
 		timingQualifierItem.setText("Time Qualifiers");
 		timingQualifierItem.addClickHandler(new ClickHandler() {
 			
@@ -160,13 +168,13 @@ public class InsertTimingExpressionIntoAceEditor {
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
 		insertButton.setText("Insert");
-		
+		insertButton.setId("InsertButton_Id");
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.getElement().setId("cqlCancelButton_Button");
 		cancelButton.setMarginTop(10);
 		cancelButton.setTitle("Cancel");
 		cancelButton.setText("Cancel");
-		
+		cancelButton.setId("CancelButton_Id");
 		buttonToolBar.add(insertButton);
 		buttonToolBar.add(cancelButton);
 	
@@ -288,9 +296,10 @@ public class InsertTimingExpressionIntoAceEditor {
 		primaryTimingSubMenu.clear();
 		Anchor anchor = new Anchor();
 		anchor.setText(menuStr);
+		anchor.setId("PrimaryTimingSubMenu_achor");
 		
 		DropDownMenu dropDownMenu = new DropDownMenu();
-		
+		dropDownMenu.setId("PrimaryTimingsSubMenu_DropDownMenu");
 		ClickHandler clkHandler = new ClickHandler() {
 			
 			@Override
@@ -328,8 +337,9 @@ public class InsertTimingExpressionIntoAceEditor {
 		dateTimePrecisionSubMenu.clear();
 		Anchor timePrecisionAnchor = new Anchor();
 		timePrecisionAnchor.setText(menuStr);
+		timePrecisionAnchor.setId("timePrecisionAnchor_Id");
 		DropDownMenu dropDownMenu = new DropDownMenu();
-		
+		dropDownMenu.setId("TimePrecisionSubMenu_Anchor");
 		ClickHandler clkHandler = new ClickHandler() {
 			
 			@Override
@@ -388,6 +398,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		listBox.getElement().setId("listBox_ListBox");
 		listBox.setWidth("18em");
 		listBox.setVisibleItemCount(10);
+		listBox.getElement().setId("TimingQualifier_listBox");
 		List<String> moreOptionsList = timingExpressionObj.getOptionList();
 		for(int i=0;i<moreOptionsList.size();i++){
 			listBox.addItem(moreOptionsList.get(i));
@@ -413,12 +424,14 @@ public class InsertTimingExpressionIntoAceEditor {
 		addButton.setTitle("Replace");
 		addButton.setType(ButtonType.PRIMARY);
 		addButton.setSize(ButtonSize.SMALL);
+		addButton.setId("addButton_Button");
 		Button closeButton = new Button();
 		closeButton.setText("Cancel");
 		closeButton.setTitle("Cancel");
 		closeButton.setType(ButtonType.DANGER);
 		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
+		closeButton.setId("Cancel_button");
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);
 		modalFooter.add(buttonToolBar);
@@ -465,6 +478,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		ModalBody modalBody = new ModalBody();
 		modalBody.setHeight("250px");
 		final ListBoxMVP unitList = new ListBoxMVP();
+		unitList.getElement().setId("ListBox_unitList");
 		unitList.clear();
 		//unitList.setWidth("250px");
 		List<String> units = CQLWorkSpaceConstants.getQuantityOffsetUnits();
@@ -476,6 +490,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		
 		final ListBoxMVP relativeQualifier = new ListBoxMVP();
+		relativeQualifier.getElement().setId("ListBox_relativeQualifier");
 		relativeQualifier.clear();
 		List<String> relativeQualifierList = CQLWorkSpaceConstants.getRelativeQualifiers();
 		relativeQualifier.addItem(MatContext.get().PLEASE_SELECT);
@@ -495,6 +510,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		quantityValueLabel.setText("Quantity Value");
 		quantityValueLabel.setTitle("Quantity Value");
 		final TextBox quantText = new TextBox();
+		quantText.setId("Textbox_Quantity");
 		quantText.setEnabled(timingExpressionObj.isQuantity());
 		quantForm.add(quantityValueLabel);
 		quantForm.add(quantText);

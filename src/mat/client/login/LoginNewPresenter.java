@@ -131,7 +131,6 @@ public class LoginNewPresenter {
 	}
 	
 	public void go(HasWidgets container) {
-		reset();
 		container.add(view.asWidget());
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getWelcomeHeading().setVisible(true);
@@ -209,12 +208,12 @@ public class LoginNewPresenter {
 					secRole = result.getRole().getDescription();
 				}
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole, result.getLoginId());
-				if (loginModel.isLoginFailedEvent()) {
+				if (loginModel.isInitialPassword()) {
+					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
+				} else if (loginModel.isLoginFailedEvent()) {
 					view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 					view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 					view.getHelpBlock().setText(loginModel.getErrorMessage());
-				} else if (loginModel.isInitialPassword()) {
-					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
 				} else if (loginModel.isTemporaryPassword()) {
 					MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());
 				} else {

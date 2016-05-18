@@ -166,10 +166,10 @@ public class LoginPresenter {
 					secRole = result.getRole().getDescription();
 				}
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole,result.getLoginId());
-			    if(loginModel.isLoginFailedEvent()){
-					display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
-				}if(loginModel.isInitialPassword()){
+				if(loginModel.isInitialPassword()){
 					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
+				}else if(loginModel.isLoginFailedEvent()){
+					display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
 				}else if(loginModel.isTemporaryPassword()){
 					MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());
 				}else{

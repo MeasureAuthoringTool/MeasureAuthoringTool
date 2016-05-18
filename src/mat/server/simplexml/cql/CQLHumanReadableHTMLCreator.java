@@ -78,6 +78,7 @@ public class CQLHumanReadableHTMLCreator {
 
 		String cqlNodeType = cqlNode.getNodeName();
 		String cqlName = cqlNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		cqlName = "\"" + cqlName + "\"";
 		
 		System.out.println("Generating Human readable for:" + cqlNodeType + ":"
 				+ cqlName);

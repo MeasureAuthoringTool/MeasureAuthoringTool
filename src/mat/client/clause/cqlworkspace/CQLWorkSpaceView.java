@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import mat.client.CustomPager;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
@@ -348,7 +351,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The context pop toggle switch. */
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
 	
-	private AnchorListItem includeLibrary;
+	//private AnchorListItem includeLibrary;
 	
 	/**
 	 * The Interface Observer.
@@ -831,7 +834,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		navPills.setStacked(true);
 		
 		generalInformation = new AnchorListItem();
-		includeLibrary = new AnchorListItem();
+		//includeLibrary = new AnchorListItem();
 		parameterLibrary = new AnchorListItem();
 		definitionLibrary = new AnchorListItem();
 		functionLibrary = new AnchorListItem();
@@ -842,10 +845,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
 		
-		includeLibrary.setIcon(IconType.INFO);
-		includeLibrary.setText("Inlude library");
-		includeLibrary.setTitle("Inlude library");
-		includeLibrary.setActive(true);
+		//includeLibrary.setIcon(IconType.INFO);
+		//includeLibrary.setText("Inlude library");
+		//includeLibrary.setTitle("Inlude library");
+		//includeLibrary.setActive(true);
 		
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -924,7 +927,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		viewCQL.setTitle("View CQL");
 		
 		navPills.add(generalInformation);
-		navPills.add(includeLibrary);
+		//snavPills.add(includeLibrary);
 		navPills.add(parameterLibrary);
 		
 		navPills.add(definitionLibrary);
@@ -1883,28 +1886,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		resetMessageDisplay();
 	}
 	
-	/**
-	 * Validation for special characters.
-	 *
-	 * @param identifierName
-	 *            the identifier name
-	 * @return true, if successful
-	 */
-	@Override
-	public boolean validateForSpecialChar(String identifierName) {
-		
-		if ((identifierName == null) || "".equals(identifierName)) {
-			return true;
-		}
-		
-		for (int i = 0; i < identifierName.length(); i++) {
-			if (!Character.isLetter(identifierName.charAt(i)) && !Character.isDigit(identifierName.charAt(i))
-					&& (identifierName.charAt(i) != '_') && (identifierName.charAt(i) != ' ')) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
 	/*
 	 * (non-Javadoc)

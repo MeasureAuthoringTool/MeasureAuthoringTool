@@ -5,6 +5,7 @@ import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLFunctionArgument;
+import mat.shared.CQLModelValidator;
 import mat.shared.UUIDUtilClient;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -399,7 +400,8 @@ public class AddFunctionArgumentDialogBox {
 							checkIfDuplicate = false;
 						}
 					}
-					boolean isInValidName = searchDisplay.validateForSpecialChar(argumentName);
+					CQLModelValidator validator = new CQLModelValidator();
+					boolean isInValidName = validator.validateForSpecialChar(argumentName);
 					if (!isInValidName && !checkIfDuplicate) {
 						//&& !searchDisplay.getFuncNameTxtArea().getText().equalsIgnoreCase(argumentName)){
 						isValid = true;

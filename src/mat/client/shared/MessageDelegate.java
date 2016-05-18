@@ -203,11 +203,11 @@ public class MessageDelegate {
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
 	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
 	public final String ERROR_PARAMETER_NAME_NO_SPECIAL_CHAR  = "Invalid Parameter name. " +
-			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
+			"Duplicate name or use of restricted character(s).";
 	public final String ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR  = "Invalid Definition name. " +
-			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
+			"Duplicate name or use of restricted character(s).";
 	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
-			"Name may not begin with number or underscore, and name should not be a CQL reserved word.";
+			"Duplicate name or use of restricted character(s).";
 	
 	/**
 	 * Gets the measure save server error message.

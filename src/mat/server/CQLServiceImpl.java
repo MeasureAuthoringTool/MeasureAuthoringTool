@@ -35,6 +35,7 @@ import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
@@ -185,6 +186,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
+		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
 		String XPATH_EXPRESSION_FUNCTIONS = "/measure/cqlLookUp/functions";
 		if (xmlModel != null) {
@@ -196,13 +198,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getFunctionName().equalsIgnoreCase(
 						currentObj.getFunctionName())) {
 					
-					/*isDuplicate = checkForCQLKeywords(currentObj
+					isDuplicate = validator.validateForSpecialChar(currentObj
 							.getFunctionName());
 					if (isDuplicate) {
 						result.setSuccess(false);
-						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						result.setFailureReason(result.NO_SPECIAL_CHAR);
 						return result;
-					}*/
+					}
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getFunctionName(), measureId);
 				}
@@ -268,12 +270,13 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				/*isDuplicate = checkForCQLKeywords(currentObj.getFunctionName());
+				isDuplicate = validator.validateForSpecialChar(currentObj
+						.getFunctionName());
 				if (isDuplicate) {
 					result.setSuccess(false);
-					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					result.setFailureReason(result.NO_SPECIAL_CHAR);
 					return result;
-				}*/
+				}
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getFunctionName(), measureId);
 				if (!isDuplicate) {
@@ -358,6 +361,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		CQLParametersWrapper wrapper = new CQLParametersWrapper();
+		CQLModelValidator validtor = new CQLModelValidator();
 		boolean isDuplicate = false;
 		if (xmlModel != null) {
 			
@@ -368,13 +372,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getParameterName().equalsIgnoreCase(
 						currentObj.getParameterName())) {
 					
-//					isDuplicate = checkForCQLKeywords(currentObj
-//							.getParameterName());
-//					if (isDuplicate) {
-//						result.setSuccess(false);
-//						result.setFailureReason(result.NAME_NOT_KEYWORD);
-//						return result;
-//					}
+					isDuplicate = validtor.validateForSpecialChar(currentObj
+							.getParameterName());
+					if (isDuplicate) {
+						result.setSuccess(false);
+						result.setFailureReason(result.NO_SPECIAL_CHAR);
+						return result;
+					}
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getParameterName(), measureId);
 				}
@@ -427,13 +431,13 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				/*isDuplicate = checkForCQLKeywords(currentObj.getParameterName());
+				isDuplicate = validtor.validateForSpecialChar(currentObj
+						.getParameterName());
 				if (isDuplicate) {
 					result.setSuccess(false);
-					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					result.setFailureReason(result.NO_SPECIAL_CHAR);
 					return result;
 				}
-				*/
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getParameterName(), measureId);
 				
@@ -506,6 +510,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
+		CQLModelValidator validator= new CQLModelValidator();
 		boolean isDuplicate = false;
 		if (xmlModel != null) {
 			
@@ -517,14 +522,13 @@ public class CQLServiceImpl implements CQLService {
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(
 						currentObj.getDefinitionName())) {
 					
-					/*isDuplicate = checkForCQLKeywords(currentObj
+					isDuplicate = validator.validateForSpecialChar(currentObj
 							.getDefinitionName());
 					if (isDuplicate) {
 						result.setSuccess(false);
-						result.setFailureReason(result.NAME_NOT_KEYWORD);
+						result.setFailureReason(result.NO_SPECIAL_CHAR);
 						return result;
-					}*/
-					
+					}
 					isDuplicate = isDuplicateIdentifierName(
 							currentObj.getDefinitionName(), measureId);
 				}
@@ -572,13 +576,13 @@ public class CQLServiceImpl implements CQLService {
 				}
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
-				/*isDuplicate = checkForCQLKeywords(currentObj
+				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getDefinitionName());
 				if (isDuplicate) {
 					result.setSuccess(false);
-					result.setFailureReason(result.NAME_NOT_KEYWORD);
+					result.setFailureReason(result.NO_SPECIAL_CHAR);
 					return result;
-				}*/
+				}
 				
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getDefinitionName(), measureId);
@@ -997,7 +1001,7 @@ public class CQLServiceImpl implements CQLService {
 	 *            the name
 	 * @return true, if successful
 	 */
-	private boolean checkForCQLKeywords(String name) {
+	/*private boolean checkForCQLKeywords(String name) {
 		
 		XmlProcessor cqlXMLProcessor = CQLTemplateXML
 				.getCQLTemplateXmlProcessor();
@@ -1013,7 +1017,7 @@ public class CQLServiceImpl implements CQLService {
 			e.printStackTrace();
 		}
 		return false;
-	}
+	}*/
 	
 	/*
 	 * (non-Javadoc)
@@ -1114,7 +1118,7 @@ public class CQLServiceImpl implements CQLService {
 	 *            the current obj
 	 * @return the save update cql result
 	 */
-	private SaveUpdateCQLResult checkIfKeywordForFuncArguments(
+	/*private SaveUpdateCQLResult checkIfKeywordForFuncArguments(
 			SaveUpdateCQLResult result, CQLFunctions currentObj) {
 		
 		List<CQLFunctionArgument> argList = currentObj.getArgumentList();
@@ -1134,7 +1138,7 @@ public class CQLServiceImpl implements CQLService {
 		}
 		result.setFunction(currentObj);
 		return result;
-	}
+	}*/
 	
 	/**
 	 * Modfiy cql Parameter List list.

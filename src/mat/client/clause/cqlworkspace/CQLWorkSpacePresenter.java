@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -23,15 +24,17 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
+import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -50,6 +53,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
@@ -73,6 +77,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			.create(QDSAttributesService.class);
 	/** The search display. */
 	private ViewDisplay searchDisplay;
+	
+	CQLModelValidator validator = new CQLModelValidator();
 	
 	/**
 	 * The Interface ViewDisplay.
@@ -697,14 +703,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the context func pop radio btn
 		 */
 		InlineRadio getContextFuncPOPRadioBtn();
-		
-		/**
-		 * Validate for special char.
-		 *
-		 * @param identifierName the identifier name
-		 * @return true, if successful
-		 */
-		boolean validateForSpecialChar(String identifierName);
 		
 		/**
 		 * Gets the function arg name map.
@@ -1490,8 +1488,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			funcContext = "Population";
 		}
 		if (!functionName.isEmpty()) {
-			
-			if(!searchDisplay.validateForSpecialChar(functionName.trim())) {
+			if(!validator.validateForSpecialChar(functionName.trim())) {
 				
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
@@ -1613,7 +1610,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty()) {
 			
-			if(!searchDisplay.validateForSpecialChar(parameterName.trim())) {
+			if(!validator.validateForSpecialChar(parameterName.trim())) {
 				
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
@@ -1730,7 +1727,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if (!definitionName.isEmpty()) {
 			
-			if(!searchDisplay.validateForSpecialChar(definitionName.trim())) {
+			if(!validator.validateForSpecialChar(definitionName.trim())) {
 				
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);

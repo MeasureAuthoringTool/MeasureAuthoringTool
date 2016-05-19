@@ -25,8 +25,7 @@ public class CQLModelValidator {
 		
 		boolean isValidSpecialChar = regExp.test(identifierName);
 		
-		if ((identifierName == null) || "".equals(identifierName) || !(Character.isLetter(identifierName.charAt(0)) 
-				||identifierName.charAt(0) == '_') || isValidSpecialChar) {
+		if ((identifierName == null) || "".equals(identifierName) || isValidSpecialChar) {
 			return true;
 		}
 		return false;

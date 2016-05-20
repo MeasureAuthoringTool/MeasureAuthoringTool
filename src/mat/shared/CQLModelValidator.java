@@ -10,7 +10,7 @@ import com.google.gwt.regexp.shared.RegExp;
 public class CQLModelValidator {
 
 	/** The regex expression. */
-	private final String REGEX_EXPRESSION = "[\"<>/]";
+	private final String REGEX_EXPRESSION = "[\"<>'/]";
 	
 	/** The reg exp. */
 	private final RegExp regExp = RegExp.compile(REGEX_EXPRESSION);

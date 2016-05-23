@@ -19,10 +19,12 @@ import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.shared.MatContext;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -107,6 +109,9 @@ public class PackagerServiceImpl implements PackagerService {
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
 	
+	@Autowired
+	private MeasureDAO measureDAO;
+	
 	/**
 	 * 1) Loads the MeasureXml from DB and converts into Xml Document Object
 	 * 2) XPATH retrieves all Clause nodes in Measure_Xml except for  Clause type "stratum"
@@ -134,6 +139,7 @@ public class PackagerServiceImpl implements PackagerService {
 		// Load Measure Xml
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		Measure measure = measureDAO.find(measureId);
 		boolean isGroupRemoved = false;
 		List<QualityDataSetDTO> qdmSelectedList;
 		try {
@@ -264,13 +270,13 @@ public class PackagerServiceImpl implements PackagerService {
 		overview.setQdmElements(finalMap.get("QDM"));
 		overview.setSuppDataElements(finalMap.get("SDE"));
 		
-		Node node = checkIfSubTreeLookUpExist(processor);
-		if(node != null){
-			overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
-			overview.setRiskAdjList(clauseMap.get("RISKADJ"));
-		} else {
+		if(measure.getReleaseVersion() != null && 
+				measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
 			overview.setSubTreeClauseList(definitionMap.get("CQLDEF"));
 			overview.setRiskAdjList(definitionMap.get("CQLRISKADJ"));
+		} else {
+			overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
+			overview.setRiskAdjList(clauseMap.get("RISKADJ"));
 		}
 		
 		if (isGroupRemoved) {
@@ -281,7 +287,7 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 	
 	
-	private Node checkIfSubTreeLookUpExist(XmlProcessor processor){
+	/*private Node checkIfSubTreeLookUpExist(XmlProcessor processor){
 		Node node = null;
 		try {
 			node = processor.findNode(processor.getOriginalDoc(), XPATH_MEASURE_SUBTREE_LOOKUP);
@@ -290,7 +296,7 @@ public class PackagerServiceImpl implements PackagerService {
 			e.printStackTrace();
 		}
 		return node;
-	}
+	}*/
 	/**
 	 * Method to create XML from QualityDataModelWrapper object for
 	 * supplementalDataElement .
@@ -952,13 +958,14 @@ public class PackagerServiceImpl implements PackagerService {
 				.getRiskAdjVars();
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail
 				.getMeasureId());
+		Measure measure = measureDAO.find(measureXML.getMeasure_id());
 		XmlProcessor processor = new XmlProcessor(
 				measureXML.getMeasureXMLAsString());
-		Node node = checkIfSubTreeLookUpExist(processor);
-		if(node != null){
-			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
-		} else {
+		if(measure.getReleaseVersion() != null 
+				&& measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
 			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
+		} else {
+			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
 		}
 		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 		measureXMLDAO.save(measureXML);

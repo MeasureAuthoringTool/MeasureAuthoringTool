@@ -2068,9 +2068,11 @@ List<String> missingDefaultCQLDefinitions = xmlProcessor.checkForDefaultDefiniti
 				setMeasureCreated(false);
 				pkg = new Measure();
 				/*model.setMeasureStatus("In Progress");*/
+				pkg.setReleaseVersion("v4.5");
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
+				
 				getService().save(measureSet);
 			}
 			pkg.setMeasureSet(measureSet);

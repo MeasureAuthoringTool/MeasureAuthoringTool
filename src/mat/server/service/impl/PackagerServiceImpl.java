@@ -24,6 +24,8 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.service.PackagerService;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.ResourceLoader;
@@ -69,11 +71,15 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/subTreeRef/@id";
 	
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/cqlDefinition/@id";
+	
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
 	
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/subTreeRef[@id";
+	
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/cqlDefinition[@id";
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
@@ -84,6 +90,12 @@ public class PackagerServiceImpl implements PackagerService {
 	private static final String XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/subTreeRef";	
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
+	
+	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqlDefinition";	
+	
+	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
+	
+	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
 	
 	/** The Constant INSTANCE. */
 	private static final String INSTANCE = "instance";
@@ -247,15 +259,37 @@ public class PackagerServiceImpl implements PackagerService {
 		overview.setPackages(pkgs);
 		Map<String, ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(processor, measureId);
 		Map<String, ArrayList<RiskAdjustmentDTO>> clauseMap = getAllClauseList(processor, measureId);
+		Map<String, ArrayList<RiskAdjustmentDTO>> definitionMap = getAllDefinitionsList(processor, measureId);
+		
 		overview.setQdmElements(finalMap.get("QDM"));
 		overview.setSuppDataElements(finalMap.get("SDE"));
-		overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
-		overview.setRiskAdjList(clauseMap.get("RISKADJ"));
+		
+		Node node = checkIfSubTreeLookUpExist(processor);
+		if(node != null){
+			overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
+			overview.setRiskAdjList(clauseMap.get("RISKADJ"));
+		} else {
+			overview.setSubTreeClauseList(definitionMap.get("CQLDEF"));
+			overview.setRiskAdjList(definitionMap.get("CQLRISKADJ"));
+		}
+		
 		if (isGroupRemoved) {
 			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 			measureXMLDAO.save(measureXML);
 		}
 		return overview;
+	}
+	
+	
+	private Node checkIfSubTreeLookUpExist(XmlProcessor processor){
+		Node node = null;
+		try {
+			node = processor.findNode(processor.getOriginalDoc(), XPATH_MEASURE_SUBTREE_LOOKUP);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return node;
 	}
 	/**
 	 * Method to create XML from QualityDataModelWrapper object for
@@ -329,6 +363,43 @@ public class PackagerServiceImpl implements PackagerService {
 						+ e, e);
 		}
 		logger.info("Exiting PackagerServiceImpl.convertclauseToRiskAdjVarXML()");
+		return stream;
+	
+		
+	}
+	
+	
+	private ByteArrayOutputStream convertdefinitionsToRiskAdjVarXML(CQLDefinitionsWrapper riskAdjVarDTO){
+
+		logger.info("In PackagerServiceImpl.convertdefinitionsToRiskAdjVarXML()");
+		Mapping mapping = new Mapping();
+		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader()
+			.getResourceAsURL("CQLDefinitionsToRiskAdjusVariables.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
+					stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(riskAdjVarDTO);
+			logger.debug("Marshalling of CQLDefinitionsToRiskAdjusVariables is successful in convertdefinitionsToRiskAdjVarXML()"
+					+ stream.toString());
+		}catch(IOException e) {
+			logger.info("Failed to load CQLDefinitionsToRiskAdjusVariables.xml in convertdefinitionsToRiskAdjVarXML()"
+						+ e, e);
+		}catch(MappingException e){
+			logger.info("Mapping Failed in convertdefinitionsToRiskAdjVarXML()"
+						+ e, e);
+		}catch(MarshalException e) {
+			logger.info("Unmarshalling Failed in convertdefinitionsToRiskAdjVarXML()"
+						+ e, e);
+		}catch(ValidationException e) {
+			logger.info("Validation Exception in convertdefinitionsToRiskAdjVarXML()"
+						+ e, e);
+		}catch(Exception e) {
+			logger.info("Other Exception in convertdefinitionsToRiskAdjVarXML()"
+						+ e, e);
+		}
+		logger.info("Exiting PackagerServiceImpl.convertdefinitionsToRiskAdjVarXML()");
 		return stream;
 	
 		
@@ -427,6 +498,13 @@ public class PackagerServiceImpl implements PackagerService {
 		return finalClauseMap;
 	}
 	
+	private Map<String, ArrayList<RiskAdjustmentDTO>> getAllDefinitionsList(XmlProcessor  processor, String measureId){
+		Map<String, ArrayList<RiskAdjustmentDTO>> finalDefinitionMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
+		finalDefinitionMap = getNewRiskAdjVariablesForMeasurePackager(processor);
+		logger.info("finalMap()of RiskAdjClause ::" + finalDefinitionMap.size());
+		return finalDefinitionMap;
+	}
+	
 	
 	/**
 	 * Gets the risk adj variables for measure packager.
@@ -487,6 +565,58 @@ public class PackagerServiceImpl implements PackagerService {
 		
 		riskMap.put("RISKADJ", riskAdkVariableList);
 		riskMap.put("SUBTREEREF", subTreeList);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return riskMap;
+	}
+	
+	
+	public Map<String, ArrayList<RiskAdjustmentDTO>> getNewRiskAdjVariablesForMeasurePackager(XmlProcessor  processor){
+		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
+		ArrayList<RiskAdjustmentDTO> definitionList = new ArrayList<RiskAdjustmentDTO>();
+		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		if (processor.getOriginalDoc() == null) {
+			return riskMap;
+		}
+		try{
+		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE,
+				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+		for(int j=0; j<riskAdjustmentVarNodeList.getLength();j++){
+			Node newNode = riskAdjustmentVarNodeList.item(j);					
+			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+			riskAdkVariableList.add(riskDTO);
+		}
+		String uuidXPathString = "";
+		for(int m=0;m<riskAdkVariableList.size();m++){
+			uuidXPathString += "@id != '"+riskAdkVariableList.
+					get(m).getUuid() + "' and";
+		}
+		String xpathStringForDefinition = "";
+		if(!uuidXPathString.isEmpty()){
+			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
+			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS+"["+uuidXPathString +"]" + 
+			"[@supplDataElement='false']"; 
+		} else {
+			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS + 
+			"[@supplDataElement='false']";
+		}
+		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForDefinition,
+				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+		for(int i=0;i<nodesSubTreeLookUpAll.getLength();i++){
+			Node newNode = nodesSubTreeLookUpAll.item(i);	
+			String id = newNode.getAttributes().getNamedItem("id").getNodeValue();
+			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
+			riskDTO.setName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+			riskDTO.setUuid(id);
+			definitionList.add(riskDTO);
+		}
+		
+		riskMap.put("CQLRISKADJ", riskAdkVariableList);
+		riskMap.put("CQLDEF", definitionList);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -820,13 +950,27 @@ public class PackagerServiceImpl implements PackagerService {
 	public void saveRiskAdjVariables(MeasurePackageDetail detail) {
 		ArrayList<RiskAdjustmentDTO> allRiskAdjVars = (ArrayList<RiskAdjustmentDTO>) detail
 				.getRiskAdjVars();
-		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		wrapper.setRiskAdjVarDTO(allRiskAdjVars);
-		ByteArrayOutputStream stream = convertclauseToRiskAdjVarXML(wrapper);
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail
 				.getMeasureId());
 		XmlProcessor processor = new XmlProcessor(
 				measureXML.getMeasureXMLAsString());
+		Node node = checkIfSubTreeLookUpExist(processor);
+		if(node != null){
+			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
+		} else {
+			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
+		}
+		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+		measureXMLDAO.save(measureXML);
+	}
+	
+	private void saveRiskAdjVariableWithClauses(List<RiskAdjustmentDTO> allRiskAdjVars, 
+			XmlProcessor processor) {
+		
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		wrapper.setRiskAdjVarDTO(allRiskAdjVars);
+		ByteArrayOutputStream stream = convertclauseToRiskAdjVarXML(wrapper);
+		
 		if (allRiskAdjVars.size() > 0) {
 			processor.replaceNode(stream.toString(), RISK_ADJUSTMENT_VARIABLES,
 					MEASURE);
@@ -855,8 +999,43 @@ public class PackagerServiceImpl implements PackagerService {
 				e.printStackTrace();
 			}
 		}
-		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-		measureXMLDAO.save(measureXML);
+	}
+	
+	private void saveRiskAdjVariableWithDefinitions(List<RiskAdjustmentDTO> allRiskAdjVars, 
+			XmlProcessor processor) {
+		
+		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
+		wrapper.setRiskAdjVarDTOList(allRiskAdjVars);
+		ByteArrayOutputStream stream = convertdefinitionsToRiskAdjVarXML(wrapper);
+		
+		if (allRiskAdjVars.size() > 0) {
+			processor.replaceNode(stream.toString(), RISK_ADJUSTMENT_VARIABLES,
+					MEASURE);
+		} else {
+
+			try {
+				javax.xml.xpath.XPath xPath = XPathFactory.newInstance()
+						.newXPath();
+				NodeList nodesRiskAdjustmentVarData = (NodeList) xPath.evaluate(
+						XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES,
+						processor.getOriginalDoc().getDocumentElement(),
+						XPathConstants.NODESET);
+				for (int i = 0; i < nodesRiskAdjustmentVarData.getLength(); i++) {
+					String xPathString = XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION
+							.concat("='")
+							.concat(nodesRiskAdjustmentVarData.item(i)
+									.getNodeValue().toString()).concat("']");
+					Node newNode = processor.findNode(
+							processor.getOriginalDoc(), xPathString);
+					Node parentNode = newNode.getParentNode();
+					parentNode.removeChild(newNode);
+				}
+
+			} catch (XPathExpressionException e) {
+
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	

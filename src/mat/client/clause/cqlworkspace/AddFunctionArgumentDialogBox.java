@@ -45,7 +45,7 @@ public class AddFunctionArgumentDialogBox {
 	/**
 	 * String Message - Argument name is not unique.
 	 */
-	private static final String ARGUMENT_NAME_IS_INVALID = "Invalid argument Name. Name may not begin with number or underscore.";
+	private static final String ARGUMENT_NAME_IS_INVALID = "Invalid Argument Name. Duplicate name or use of restricted character(s).";
 	/**
 	 * String Message - CQL datatype is required.
 	 */

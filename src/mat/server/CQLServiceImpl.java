@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -554,6 +555,8 @@ public class CQLServiceImpl implements CQLService {
 							Node logicNode = nodeDefinition.getFirstChild();
 							logicNode.setTextContent(currentObj
 									.getDefinitionLogic());
+							//to update Definition Name on RiskAdjusment Variable Section
+							updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
@@ -640,6 +643,27 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
+	private void updateRiskAdjustmentVariables(XmlProcessor processor,
+			CQLDefinition toBeModifiedObj, CQLDefinition currentObj) {
+		
+		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables Start :  ");
+		// XPath to find All cqlDefinitions in riskAdjustmentVariables to be modified Definitions.
+		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/riskAdjustmentVariables/cqlDefinition[@id='"
+				+ toBeModifiedObj.getId() + "']";
+		try {
+			NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_SDE_ELEMENTREF);
+			for (int i = 0; i < nodesSDE.getLength(); i++) {
+				Node newNode = nodesSDE.item(i);
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(currentObj.getDefinitionName());
+			}
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables End :  ");
+		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

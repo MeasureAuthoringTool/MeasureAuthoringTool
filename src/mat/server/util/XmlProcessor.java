@@ -941,13 +941,13 @@ public class XmlProcessor {
 			.insertBefore(elementLookUpElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		if (findNode(originalDoc, XPATH_MEASURE_SUBTREE_LOOKUP) == null) {
+		/*if (findNode(originalDoc, XPATH_MEASURE_SUBTREE_LOOKUP) == null) {
 			Element subTreeLookUpElement = originalDoc
 					.createElement("subTreeLookUp");
 			((Element) supplementaDataElementsElement.getParentNode())
 			.insertBefore(subTreeLookUpElement,
 					supplementaDataElementsElement.getNextSibling());
-		}
+		}*/
 		
 		if (findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE) == null) {
 			Element componentMeasureElement = originalDoc

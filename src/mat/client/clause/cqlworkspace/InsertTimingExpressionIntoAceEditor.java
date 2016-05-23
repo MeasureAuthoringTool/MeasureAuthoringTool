@@ -263,7 +263,7 @@ public class InsertTimingExpressionIntoAceEditor {
 					/*dropDown.setStyleName("dropdown-error");*/
 				} else if( CQLWorkSpaceConstants.getWithinTimingExp().contains(mainButton.getText())){
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("QuantityOffset is Required for following CQL Timing Expression");
+					helpBlock.setText("QuantityOffset is required for the following CQL Timing Expression");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					anchorButton.setFocus(true);
 				} else {
@@ -605,7 +605,7 @@ public class InsertTimingExpressionIntoAceEditor {
 					isInValid = true;
 					quantForm.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Enter Following Fields");
+					helpBlock.setText("Please enter the following fields");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 				//Units
@@ -618,14 +618,14 @@ public class InsertTimingExpressionIntoAceEditor {
 						isInValid = true;
 						unitForm.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Enter Following Fields");
+						helpBlock.setText("Please enter the following fields");
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				} else {
 					isInValid = true;
 					unitForm.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Enter Following Fields");
+					helpBlock.setText("Please enter the following fields");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 				//relativeQualifier

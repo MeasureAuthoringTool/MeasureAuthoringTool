@@ -1,8 +1,15 @@
 package mat.model.cql;
 
+import java.util.Set;
+
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CQLDefinition implements IsSerializable{
+public class CQLDefinition implements IsSerializable, Cell<CQLDefinition>{
 	private String id;
 	private String definitionName;
 	private String definitionLogic;
@@ -55,5 +62,39 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 	}
 	public void setSupplDataElement(boolean supplDataElement) {
 		this.supplDataElement = supplDataElement;
+	}
+	
+	@Override
+	public boolean dependsOnSelection() {
+		return false;
+	}
+	@Override
+	public Set<String> getConsumedEvents() {
+		return null;
+	}
+	@Override
+	public boolean handlesSelection() {
+		return false;
+	}
+	@Override
+	public boolean isEditing(com.google.gwt.cell.client.Cell.Context context, Element parent, CQLDefinition value) {
+		return false;
+	}
+	@Override
+	public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent, CQLDefinition value,
+			NativeEvent event, ValueUpdater<CQLDefinition> valueUpdater) {
+		
+	}
+	@Override
+	public void render(com.google.gwt.cell.client.Cell.Context context, CQLDefinition value, SafeHtmlBuilder sb) {
+		
+	}
+	@Override
+	public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context, Element parent, CQLDefinition value) {
+		return false;
+	}
+	@Override
+	public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, CQLDefinition value) {
+		
 	}
 }

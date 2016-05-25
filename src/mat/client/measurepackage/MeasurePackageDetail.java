@@ -7,6 +7,7 @@ import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.cql.CQLDefinition;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -30,6 +31,12 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	
 	/** The supp data elements. */
 	private List<QualityDataSetDTO> suppDataElements = new ArrayList<QualityDataSetDTO>();
+	
+	/** The cql supp data elements. */
+	private List<CQLDefinition> cqlSuppDataElements = new ArrayList<CQLDefinition>();
+	
+	/** The cql qdm elements. */
+	private List<CQLDefinition> cqlQdmElements = new ArrayList<CQLDefinition>();
 	
 	/** The value set date. */
 	private String valueSetDate;
@@ -170,6 +177,44 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	 */
 	public void setSuppDataElements(List<QualityDataSetDTO> suppDataElements) {
 		this.suppDataElements = suppDataElements;
+	}
+	
+	/**
+	 * Gets the cql supp data elements.
+	 * 
+	 * @return the cql supp data elements
+	 */
+	public List<CQLDefinition> getCqlSuppDataElements() {
+		return cqlSuppDataElements;
+	}
+	
+	/**
+	 * Sets the cql supp data elements.
+	 * 
+	 * @param cqlSuppDataElements
+	 *            the new supp data elements
+	 */
+	public void setCqlSuppDataElements(List<CQLDefinition> cqlSuppDataElements) {
+		this.cqlSuppDataElements = cqlSuppDataElements;
+	}
+	
+	/**
+	 * Gets the cql qdm elements.
+	 * 
+	 * @return the cql qdm elements
+	 */
+	public List<CQLDefinition> getCqlQdmElements() {
+		return cqlQdmElements;
+	}
+
+	/**
+	 * Sets the cql qdm elements.
+	 * 
+	 * @param cqlSuppDataElements
+	 *            the new cql qdm elements
+	 */
+	public void setCqlQdmElements(List<CQLDefinition> CqlQdmElements) {
+		this.cqlQdmElements = CqlQdmElements;
 	}
 	
 	/* (non-Javadoc)

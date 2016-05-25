@@ -27,6 +27,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.cql.CQLDefinition;
 import mat.shared.MeasurePackageClauseValidator;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
@@ -196,11 +197,39 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
 		
 		/**
+		 * Sets the CQL qDM elements in supp elements.
+		 *
+		 * @param clauses the new CQL qDM elements in supp elements
+		 */
+		void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
+		
+		/**
 		 * Gets the qDM elements in supp elements.
 		 *
 		 * @return the qDM elements in supp elements
 		 */
 		List<QualityDataSetDTO> getQDMElementsInSuppElements();
+		
+		/**
+		 * Gets the CQL qDM elements in supp elements.
+		 *
+		 * @return the CQL qDM elements in supp elements
+		 */
+		List<CQLDefinition> getCQLElementsInSuppElements();
+		
+		/**
+		 * Sets the cql qDM elements.
+		 *
+		 * @param clauses the new cql qDM elements
+		 */
+		void setCQLQDMElements(List<CQLDefinition> clauses);
+		
+		/**
+		 * Gets the cql qDM elements.
+		 *
+		 * @return the cql qDM elements
+		 */
+		List<CQLDefinition> getCQLQDMElements();
 		
 		/**
 		 * Sets the qDM elements.
@@ -358,6 +387,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setSubTreeInRiskAdjVarList(
 				List<RiskAdjustmentDTO> riskAdjClauseList);
 		InProgressMessageDisplay getInProgressMessageDisplay();
+		void setCQLMeasure(boolean isCQLMeasure);
 	}
 	
 	/** The vsacapi service async. */
@@ -782,7 +812,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	public void updateSuppDataDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
+		currentDetail.setCqlSuppDataElements(view.getCQLElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
+		currentDetail.setCqlQdmElements(view.getCQLQDMElements());
 		currentDetail.setToCompareSuppDataElements(dbSuppDataElements);
 	}
 	
@@ -942,8 +974,18 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
-		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
-		view.setQDMElements(packageOverview.getQdmElements());
+		if(packageOverview.getReleaseVersion() != null 
+				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v4.5")){
+			view.setCQLMeasure(true);
+			view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());
+			view.setCQLQDMElements(packageOverview.getCqlQdmElements());
+		}
+		else{
+			view.setCQLMeasure(false);
+			view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
+			view.setQDMElements(packageOverview.getQdmElements());
+		}
+		//view.setQDMElements(packageOverview.getQdmElements());
 		view.setSubTreeInRiskAdjVarList(packageOverview.getRiskAdjList());
 		view.setSubTreeClauseList(packageOverview.getSubTreeClauseList());
 		dbPackageClauses.clear();

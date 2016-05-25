@@ -2,6 +2,7 @@ package mat.server.service.impl;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import mat.model.RiskAdjustmentDTO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLModel;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.service.PackagerService;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
@@ -43,11 +45,13 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,6 +96,11 @@ public class PackagerServiceImpl implements PackagerService {
 	private static final String XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/subTreeRef";	
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
+	
+	private static final String XPATH_SD_ELEMENTS_CQLDEF = "/measure/supplementalDataElements/cqldefinition";
+	private static final String XPATH_MEASURE_CQL_LOOKUP_DEF = "/measure/cqlLookUp/definitions";
+	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition";
+	private static final String XPATH_MEASURE_CQL_LOOKUP_VALUESETS ="/measure/cqlLookUp/valuesets/valueset";
 	
 	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqlDefinition";	
 	
@@ -260,28 +269,36 @@ public class PackagerServiceImpl implements PackagerService {
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);
 		}
-		Collections.sort(pkgs);
-		overview.setClauses(clauses);
-		overview.setPackages(pkgs);
-		Map<String, ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(processor, measureId);
-		Map<String, ArrayList<RiskAdjustmentDTO>> clauseMap = getAllClauseList(processor, measureId);
-		Map<String, ArrayList<RiskAdjustmentDTO>> definitionMap = getAllDefinitionsList(processor, measureId);
-		
-		overview.setQdmElements(finalMap.get("QDM"));
-		overview.setSuppDataElements(finalMap.get("SDE"));
-		
-		if(measure.getReleaseVersion() != null && 
-				measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
-			overview.setSubTreeClauseList(definitionMap.get("CQLDEF"));
-			overview.setRiskAdjList(definitionMap.get("CQLRISKADJ"));
-		} else {
-			overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
-			overview.setRiskAdjList(clauseMap.get("RISKADJ"));
+		try {
+			Collections.sort(pkgs);
+			overview.setClauses(clauses);
+			overview.setPackages(pkgs);
+			Map<String, ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(processor, measureId);
+			Map<String, ArrayList<RiskAdjustmentDTO>> clauseMap = getAllClauseList(processor, measureId);
+			Map<String, ArrayList<RiskAdjustmentDTO>> definitionMap = getAllDefinitionsList(processor, measureId);
+			//With new measures have QDM and SDE in CQLLookup tags use below Lists.
+			Map<String, ArrayList<CQLDefinition>> finalCQLMap = qdmAndSupplDataforMeasurePackager(processor);
+			overview.setReleaseVersion(measure.getReleaseVersion());
+			if(measure.getReleaseVersion() != null && 
+					measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
+				overview.setCqlSuppDataElements(finalCQLMap.get("SDE"));
+				overview.setCqlQdmElements(finalCQLMap.get("QDM"));
+				overview.setSubTreeClauseList(definitionMap.get("CQLDEF"));
+				overview.setRiskAdjList(definitionMap.get("CQLRISKADJ"));
+			} else {
+				overview.setQdmElements(finalMap.get("QDM"));
+				overview.setSuppDataElements(finalMap.get("SDE"));
+				overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
+				overview.setRiskAdjList(clauseMap.get("RISKADJ"));
+			}
+
+			if (isGroupRemoved) {
+				measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+				measureXMLDAO.save(measureXML);
+			}
 		}
-		
-		if (isGroupRemoved) {
-			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-			measureXMLDAO.save(measureXML);
+		catch (Exception e) {
+			logger.info("Exception while trying to check CQLLookupTag: "+e.getMessage());
 		}
 		return overview;
 	}
@@ -786,13 +803,13 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType
-						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) 
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
+							.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
+							&& !dataType
+							.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) 
+							&& !oid
+							.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid
+							.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)
@@ -819,13 +836,13 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType
-						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
-						&& !oid
-						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
+							.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
+							&& !dataType
+							.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+							&& !oid
+							.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid
+							.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)
@@ -846,6 +863,70 @@ public class PackagerServiceImpl implements PackagerService {
 		}
 		return map;
 	}
+	
+	/**
+	 * QDM and SDE for measure packager from CQLLookup.
+	 *
+	 * @param processor the processor
+	 * @return the map
+	 */
+	public Map<String, ArrayList<CQLDefinition>> qdmAndSupplDataforMeasurePackager(XmlProcessor  processor) {
+		Map<String, ArrayList<CQLDefinition>> map = new HashMap<String, ArrayList<CQLDefinition>>();
+		List<CQLDefinition> supplementalDataList = new ArrayList<CQLDefinition>();
+		List<CQLDefinition> qdmList = new ArrayList<CQLDefinition>();
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		if (processor.getOriginalDoc() == null) {
+			return map;
+		}
+		try {
+			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
+					XPATH_MEASURE_CQL_LOOKUP_SUPP,
+					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+			for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
+				Node newNode = nodesSupplementalData.item(i);
+				CQLDefinition cqlDef = new CQLDefinition();
+				String nodeID = newNode.getAttributes().getNamedItem("id")
+						.getNodeValue();
+				String nodeName = newNode.getAttributes().getNamedItem("name")
+						.getNodeValue();
+				String nodeSupplData = newNode.getAttributes().getNamedItem("supplDataElement")
+						.getNodeValue();
+				if (nodeSupplData.equalsIgnoreCase("true")) {
+					cqlDef.setId(nodeID);
+					cqlDef.setDefinitionName(nodeName);
+					if(nodeName.equalsIgnoreCase("sex")){
+						cqlDef.setDefinitionLogic("ONC Administrative Sex");
+					}
+					else{
+						cqlDef.setDefinitionLogic(nodeName);
+					}
+					cqlDef.setSupplDataElement(true);
+					
+					if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
+						supplementalDataList.add(cqlDef);
+					}
+				}
+				else{
+					cqlDef.setId(nodeID);
+					cqlDef.setDefinitionName(nodeName);
+					cqlDef.setDefinitionLogic("");
+					cqlDef.setSupplDataElement(false);
+					
+					if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
+						qdmList.add(cqlDef);
+					}
+				}
+				map.put("QDM", (ArrayList<CQLDefinition>)qdmList);
+				map.put("SDE", (ArrayList<CQLDefinition>)supplementalDataList);
+			}
+
+		}catch (XPathExpressionException e) {
+			logger.info("Error while getting default supplemental data elements : " +e.getMessage());
+		}
+		return map;
+	}
+	
+	
 	/**
 	 * Creates measureGrouping XML chunk from MeasurePackageDetail using castor
 	 * and "MeasurePackageClauseDetail.xml" mapping file. Finds the Group Node

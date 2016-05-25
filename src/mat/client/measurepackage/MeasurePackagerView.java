@@ -23,6 +23,8 @@ import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.cql.CQLDefinition;
+
 import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -174,20 +176,38 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The qdm cell list. */
 	private CellList<QualityDataSetDTO> qdmCellList;
 	
+	/** The cql qdm cell list. */
+	private CellList<CQLDefinition> cqlQdmCellList;
+	
 	/** The qdm list prov. */
 	private ListDataProvider<QualityDataSetDTO> qdmListProv;
+	
+	/** The cql qdm list prov. */
+	private ListDataProvider<CQLDefinition> cqlQdmListProv;
 	
 	/** The qdm population list. */
 	private ArrayList<QualityDataSetDTO> qdmPopulationList = new ArrayList<QualityDataSetDTO>();
 	
+	/** cql qdm population list. */
+	private ArrayList<CQLDefinition> cqlQdmPopulationList = new ArrayList<CQLDefinition>();
+	
 	/** The sup data cell list. */
 	private CellList<QualityDataSetDTO> supDataCellList;
+	
+	/** The cql sup data cell list. */
+	private CellList<CQLDefinition> cqlSupDataCellList;
 	
 	/** The sup list prov. */
 	private ListDataProvider<QualityDataSetDTO> supListProv;
 	
+	/** The cql sup list prov. */
+	private ListDataProvider<CQLDefinition> cqlSupListProv;
+	
 	/** The sup population list. */
 	private ArrayList<QualityDataSetDTO> supPopulationList = new ArrayList<QualityDataSetDTO>();
+	
+	/** The cql sup population list. */
+	private ArrayList<CQLDefinition> cqlSupPopulationList = new ArrayList<CQLDefinition>();
 	
 	/** The qdm sel model. */
 	private SingleSelectionModel<QualityDataSetDTO> qdmSelModel	=
@@ -196,6 +216,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The sup data sel model. */
 	private SingleSelectionModel<QualityDataSetDTO> supDataSelModel =
 			new SingleSelectionModel<QualityDataSetDTO>();
+	
+	/** The cql sup data sel model. */
+	private SingleSelectionModel<CQLDefinition> cqlSupDataSelModel =
+			new SingleSelectionModel<CQLDefinition>();
+	
+	/** The cql qdm sel model. */
+	private SingleSelectionModel<CQLDefinition> cqlQdmSelModel	=
+			new SingleSelectionModel<CQLDefinition>();
 	
 	/** The left pager panel. */
 	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel("LeftSidePanel");
@@ -265,6 +293,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The package measure and export. */
 	private PrimaryButton packageMeasureAndExport = new PrimaryButton(
 			"Create Package and Export", "primaryButton");
+	
+	private boolean isCQLMeasure;
 	
 	/**
 	 * Constructor.
@@ -416,9 +446,31 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					//					rightPagerPanel.add(getSupCellList());
 					//					leftPagerPanel.clear();
 					//					leftPagerPanel.add(getQdmCellList());
-					rightPagerPanel.setDisplay(getSupCellList());
-					leftPagerPanel.setDisplay(getQdmCellList());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
 					qdmSelModel.clear();
+				}
+				if ((cqlQdmPopulationList.size() > 0)
+						&& (cqlQdmSelModel.getSelectedObject() != null)) {
+					cqlSupPopulationList.add(cqlQdmSelModel.getSelectedObject());
+					cqlQdmPopulationList.remove(cqlQdmSelModel.getSelectedObject());
+					Collections.sort(cqlSupPopulationList , new CQLDefinition.Comparator());
+					Collections.sort(cqlQdmPopulationList, new CQLDefinition.Comparator());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
+					cqlQdmSelModel.clear();
 				}
 			}
 		});
@@ -435,9 +487,31 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					rightPagerPanel.add(getSupCellList());
 					leftPagerPanel.clear();
 					leftPagerPanel.add(getQdmCellList());*/
-					rightPagerPanel.setDisplay(getSupCellList());
-					leftPagerPanel.setDisplay(getQdmCellList());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
 					supDataSelModel.clear();
+				}
+				if ((cqlSupPopulationList.size() > 0)
+						&& (cqlSupDataSelModel.getSelectedObject() != null)) {
+					cqlQdmPopulationList.add(cqlSupDataSelModel.getSelectedObject());
+					cqlSupPopulationList.remove(cqlSupDataSelModel.getSelectedObject());
+					Collections.sort(cqlSupPopulationList , new CQLDefinition.Comparator());
+					Collections.sort(cqlQdmPopulationList, new CQLDefinition.Comparator());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
+					cqlSupDataSelModel.clear();
 				}
 			}
 		});
@@ -455,8 +529,29 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					leftPagerPanel.clear();
 					leftPagerPanel.add(getQdmCellList());
 					 */
-					rightPagerPanel.setDisplay(getSupCellList());
-					leftPagerPanel.setDisplay(getQdmCellList());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
+				}
+				if (cqlQdmPopulationList.size() != 0) {
+					cqlSupPopulationList.addAll(cqlQdmPopulationList);
+					cqlQdmPopulationList.removeAll(cqlQdmPopulationList);
+					Collections.sort(cqlSupPopulationList , new CQLDefinition.Comparator());
+					cqlSupDataSelModel.clear();
+					cqlQdmSelModel.clear();
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
 				}
 			}
 		});
@@ -473,8 +568,29 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					rightPagerPanel.add(getSupCellList());
 					leftPagerPanel.clear();
 					leftPagerPanel.add(getQdmCellList());*/
-					rightPagerPanel.setDisplay(getSupCellList());
-					leftPagerPanel.setDisplay(getQdmCellList());
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
+				}
+				if (cqlSupPopulationList.size() != 0) {
+					cqlQdmPopulationList.addAll(cqlSupPopulationList);
+					cqlSupPopulationList.removeAll(cqlSupPopulationList);
+					Collections.sort(cqlQdmPopulationList , new CQLDefinition.Comparator());
+					cqlSupDataSelModel.clear();
+					cqlQdmSelModel.clear();
+					if(isCQLMeasure()){
+						rightPagerPanel.setDisplay(getCQLSupCellList());
+						leftPagerPanel.setDisplay(getCQLQdmCellList());
+					}
+					else{
+						rightPagerPanel.setDisplay(getSupCellList());
+						leftPagerPanel.setDisplay(getQdmCellList());
+					}
 				}
 			}
 		});
@@ -578,7 +694,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		leftPagerPanel.setSize("320px", "200px");
 		/*leftPagerPanel.setAlwaysShowScrollBars(true);
 		leftPagerPanel.add(getQdmCellList());*/
-		leftPagerPanel.setDisplay(getQdmCellList());
+		if(isCQLMeasure()){
+			leftPagerPanel.setDisplay(getCQLQdmCellList());
+		}
+		else{
+			leftPagerPanel.setDisplay(getQdmCellList());
+		}
 		sPanel.add(leftPagerPanel);
 		
 		//		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
@@ -590,7 +711,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		rightPagerPanel.setSize("320px", "200px");
 		/*rightPagerPanel.setAlwaysShowScrollBars(true);
 		rightPagerPanel.add(getSupCellList());*/
-		rightPagerPanel.setDisplay(getSupCellList());
+		if(isCQLMeasure()){
+			rightPagerPanel.setDisplay(getCQLSupCellList());
+		}
+		else{
+			rightPagerPanel.setDisplay(getSupCellList());
+		}
 		vPanel.add(new HTML("<b style='margin-left:15px;'> Supplemental Data Elements </b>"));
 		vPanel.add(rightPagerPanel);
 		suppElementsPanel.add(vPanel);
@@ -749,6 +875,81 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		}
 		//End
 		return supDataCellList;
+	}
+	
+	/**
+	 * Gets the cql sup cell list.
+	 *
+	 * @return the cql sup cell list
+	 */
+	private CellList<CQLDefinition> getCQLSupCellList()
+	{
+		//left cell list initialization
+		cqlSupDataCellList = new CellList<CQLDefinition>(new CQLDefinitionCell());
+		cqlSupDataCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		cqlSupListProv = new ListDataProvider<CQLDefinition>(cqlSupPopulationList);
+		cqlSupListProv.addDataDisplay(cqlSupDataCellList);
+		cqlSupDataSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				if (cqlSupDataSelModel.getSelectedObject() == null) {
+					return;
+				}
+				if (cqlQdmSelModel.getSelectedObject()!=null){
+					cqlQdmSelModel.clear();
+				}
+				
+			}
+		});
+		
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			cqlSupDataCellList.setSelectionModel(cqlSupDataSelModel
+					, DefaultSelectionEventManager.<CQLDefinition> createDefaultManager());
+		} else {
+			cqlSupDataCellList.setSelectionModel(new NoSelectionModel<CQLDefinition>()
+					, DefaultSelectionEventManager.<CQLDefinition> createDefaultManager());
+		}
+		//End
+		return cqlSupDataCellList;
+	}
+	
+	/**
+	 * Gets the qdm cell list.
+	 *
+	 * @return the qdm cell list
+	 */
+	private CellList<CQLDefinition> getCQLQdmCellList()
+	{
+		//left cell list initialization
+		cqlQdmCellList = new CellList<CQLDefinition>(new CQLDefinitionCell());
+		cqlQdmCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		cqlQdmSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				if (cqlQdmSelModel.getSelectedObject() == null) {
+					return;
+				}
+				if (cqlSupDataSelModel.getSelectedObject()!=null){
+					cqlSupDataSelModel.clear();
+				}
+			}
+		});
+		
+		cqlQdmListProv = new ListDataProvider<CQLDefinition>(cqlQdmPopulationList);
+		cqlQdmListProv.addDataDisplay(cqlQdmCellList);
+		
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			cqlQdmCellList.setSelectionModel(cqlQdmSelModel
+					, DefaultSelectionEventManager.<CQLDefinition> createDefaultManager());
+		} else {
+			cqlQdmCellList.setSelectionModel(new NoSelectionModel<CQLDefinition>()
+					, DefaultSelectionEventManager.<CQLDefinition> createDefaultManager());
+		}
+		
+		//End
+		return cqlQdmCellList;
 	}
 	
 	/**
@@ -951,6 +1152,24 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		rightPagerPanel.setDisplay(getSupCellList());
 		supDataSelModel.clear();
 	}
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setCQLElementsInSuppElements(java.util.List)
+	 */
+	@Override
+	public final void setCQLElementsInSuppElements(final List<CQLDefinition> clauses) {
+		cqlSupPopulationList.clear();
+		for(CQLDefinition cqlDef:clauses){
+			if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
+					cqlSupPopulationList.add(cqlDef);
+			}
+		}
+		Collections.sort(cqlSupPopulationList, new CQLDefinition.Comparator());
+		/*rightPagerPanel.clear();
+		rightPagerPanel.add(getSupCellList());*/
+		rightPagerPanel.setDisplay(getCQLSupCellList());
+		cqlQdmSelModel.clear();
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getQDMElementsInSuppElements()
 	 */
@@ -1358,6 +1577,90 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 	}
 	
+	/**
+	 * CQLDefinitionCell Cell Class.
+	 *
+	 */
+	class CQLDefinitionCell implements Cell<CQLDefinition> {
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+		 */
+		@Override
+		public void render(com.google.gwt.cell.client.Cell.Context context, CQLDefinition value, SafeHtmlBuilder sb) {
+			if (value == null) {
+				return;
+			}
+			if (value.getDefinitionName() != null) {
+				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getDefinitionName());
+				SafeHtml rendered = templates.cell(value.getDefinitionName(), safeValue);
+				sb.append(rendered);
+			}
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#dependsOnSelection()
+		 */
+		@Override
+		public boolean dependsOnSelection() {
+			return false;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#getConsumedEvents()
+		 */
+		@Override
+		public Set<String> getConsumedEvents() {
+			return null;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#handlesSelection()
+		 */
+		@Override
+		public boolean handlesSelection() {
+			return false;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
+		@Override
+		public boolean isEditing(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, CQLDefinition value) {
+			return false;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+		 */
+		@Override
+		public void onBrowserEvent(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, CQLDefinition value, NativeEvent event,
+				ValueUpdater<CQLDefinition> valueUpdater) {
+			
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#resetFocus(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
+		@Override
+		public boolean resetFocus(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, CQLDefinition value) {
+			return false;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#setValue(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
+		@Override
+		public void setValue(com.google.gwt.cell.client.Cell.Context context,
+				Element parent, CQLDefinition value) {
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getIncludeVSACData()
 	 */
@@ -1411,8 +1714,44 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjVarSelModel.clear();
 		
 	}
-	
-	
-	
+
+	public ArrayList<CQLDefinition> getCqlSupPopulationList() {
+		return cqlSupPopulationList;
+	}
+
+	public void setCqlSupPopulationList(ArrayList<CQLDefinition> cqlSupPopulationList) {
+		this.cqlSupPopulationList = cqlSupPopulationList;
+	}
+
+	@Override
+	public ArrayList<CQLDefinition> getCQLElementsInSuppElements() {
+		return cqlSupPopulationList;
+	}
+
+	@Override
+	public void setCQLQDMElements(List<CQLDefinition> clauses) {
+		cqlQdmPopulationList.clear();
+		cqlQdmPopulationList.addAll(clauses);
+		Collections.sort(cqlQdmPopulationList, new CQLDefinition.Comparator());
+		/*leftPagerPanel.clear();
+		leftPagerPanel.add(getQdmCellList());*/
+		leftPagerPanel.setDisplay(getCQLQdmCellList());
+		cqlQdmSelModel.clear();
+		
+	}
+
+	@Override
+	public List<CQLDefinition> getCQLQDMElements() {
+		return cqlQdmPopulationList;
+	}
+
+	public boolean isCQLMeasure() {
+		return isCQLMeasure;
+	}
+
+	@Override
+	public void setCQLMeasure(boolean isCQLMeasure) {
+		this.isCQLMeasure = isCQLMeasure;
+	}
 	
 }

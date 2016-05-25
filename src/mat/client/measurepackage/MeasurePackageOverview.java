@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
+import mat.model.cql.CQLDefinition;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -26,11 +27,28 @@ public class MeasurePackageOverview implements IsSerializable{
 	/** The supp data elements. */
 	private List<QualityDataSetDTO> suppDataElements = new ArrayList<QualityDataSetDTO>();
 	
+	/** The cql supp data elements. */
+	private List<CQLDefinition> cqlSuppDataElements = new ArrayList<CQLDefinition>();
+	
+	/** The cql qdm elements. */
+	private List<CQLDefinition> cqlQdmElements = new ArrayList<CQLDefinition>();
+	
 	/** The master clause list. */
 	private List<RiskAdjustmentDTO> subTreeClauseList = new ArrayList<RiskAdjustmentDTO>();
 	
 	/** The risk adj list. */
 	private List<RiskAdjustmentDTO> riskAdjList = new ArrayList<RiskAdjustmentDTO>();
+	
+	private String releaseVersion ;
+	
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	public void setReleaseVersion(String releaseVersion) {
+		this.releaseVersion = releaseVersion;
+	}
+
 	/**
 	 * Gets the clauses.
 	 * 
@@ -95,6 +113,44 @@ public class MeasurePackageOverview implements IsSerializable{
 	 */
 	public List<QualityDataSetDTO> getSuppDataElements() {
 		return suppDataElements;
+	}
+	
+	/**
+	 * Gets the cql supp data elements.
+	 * 
+	 * @return the cql supp data elements
+	 */
+	public List<CQLDefinition> getCqlSuppDataElements() {
+		return cqlSuppDataElements;
+	}
+
+	/**
+	 * Sets the cql supp data elements.
+	 * 
+	 * @param cqlSuppDataElements
+	 *            the new cql supp data elements
+	 */
+	public void setCqlSuppDataElements(List<CQLDefinition> cqlSuppDataElements) {
+		this.cqlSuppDataElements = cqlSuppDataElements;
+	}
+	
+	/**
+	 * Gets the cql qdm elements.
+	 * 
+	 * @return the cql qdm elements
+	 */
+	public List<CQLDefinition> getCqlQdmElements() {
+		return cqlQdmElements;
+	}
+
+	/**
+	 * Sets the cql qdm elements.
+	 * 
+	 * @param cqlSuppDataElements
+	 *            the new cql qdm elements
+	 */
+	public void setCqlQdmElements(List<CQLDefinition> CqlQdmElements) {
+		this.cqlQdmElements = CqlQdmElements;
 	}
 	
 	/**

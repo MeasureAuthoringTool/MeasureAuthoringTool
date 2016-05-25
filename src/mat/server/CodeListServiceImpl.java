@@ -534,6 +534,7 @@ implements mat.client.codelist.service.CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		List<MatValueSetTransferObject> matValueSetTransferObjects = gbCopyPaste.getMatValueSetList();
 		StringBuilder finalXmlString = new StringBuilder("<elementLookUp>");
+		StringBuilder finalNewXmlString = new StringBuilder("<valuesets>");
 		for (MatValueSetTransferObject  transferObject : matValueSetTransferObjects) {
 			transferObject.scrubForMarkUp();
 			transferObject.setAppliedQDMList(qdmList);
@@ -549,16 +550,20 @@ implements mat.client.codelist.service.CodeListService {
 				saCodeListResult = getCodeListService().saveUserDefinedQDStoMeasure(transferObject);
 				if ((saCodeListResult.getXmlString() != null) && !StringUtils.isEmpty(saCodeListResult.getXmlString())) {
 					finalXmlString = finalXmlString.append(saCodeListResult.getXmlString());
+					finalNewXmlString = finalNewXmlString.append(saCodeListResult.getnewXmlString());
 				}
 			} else {
 				saCodeListResult = getCodeListService().saveQDStoMeasure(transferObject);
 				if ((saCodeListResult.getXmlString() != null) && !StringUtils.isEmpty(saCodeListResult.getXmlString())) {
 					finalXmlString = finalXmlString.append(saCodeListResult.getXmlString());
+					finalNewXmlString = finalNewXmlString.append(saCodeListResult.getnewXmlString());
 				}
 			}
 		}
 		finalXmlString.append("</elementLookUp>");
+		finalNewXmlString.append("</valuesets>");
 		result.setXmlString(finalXmlString.toString());
+		result.setnewXmlString(finalNewXmlString.toString());
 		// Temporary Commentted - Add code to append ElementLoopUp tags and then Invoke this method.
 		saveAndAppendElementLookup(result, measureId);
 		result.setAppliedQDMList(qdmList);

@@ -2,7 +2,6 @@ package mat.server.service.impl;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,10 +27,8 @@ import mat.model.RiskAdjustmentDTO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLModel;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.service.PackagerService;
-import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -45,13 +42,11 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -97,16 +92,10 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
-	private static final String XPATH_SD_ELEMENTS_CQLDEF = "/measure/supplementalDataElements/cqldefinition";
-	private static final String XPATH_MEASURE_CQL_LOOKUP_DEF = "/measure/cqlLookUp/definitions";
 	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition";
-	private static final String XPATH_MEASURE_CQL_LOOKUP_VALUESETS ="/measure/cqlLookUp/valuesets/valueset";
-	
 	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqlDefinition";	
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
-	
-	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
 	
 	/** The Constant INSTANCE. */
 	private static final String INSTANCE = "instance";
@@ -273,23 +262,14 @@ public class PackagerServiceImpl implements PackagerService {
 			Collections.sort(pkgs);
 			overview.setClauses(clauses);
 			overview.setPackages(pkgs);
-			Map<String, ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(processor, measureId);
-			Map<String, ArrayList<RiskAdjustmentDTO>> clauseMap = getAllClauseList(processor, measureId);
-			Map<String, ArrayList<RiskAdjustmentDTO>> definitionMap = getAllDefinitionsList(processor, measureId);
-			//With new measures have QDM and SDE in CQLLookup tags use below Lists.
-			Map<String, ArrayList<CQLDefinition>> finalCQLMap = qdmAndSupplDataforMeasurePackager(processor);
 			overview.setReleaseVersion(measure.getReleaseVersion());
 			if(measure.getReleaseVersion() != null && 
 					measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
-				overview.setCqlSuppDataElements(finalCQLMap.get("SDE"));
-				overview.setCqlQdmElements(finalCQLMap.get("QDM"));
-				overview.setSubTreeClauseList(definitionMap.get("CQLDEF"));
-				overview.setRiskAdjList(definitionMap.get("CQLRISKADJ"));
+				qdmAndSupplDataforMeasurePackager(overview, processor);
+				getNewRiskAdjVariablesForMeasurePackager(overview, processor);
 			} else {
-				overview.setQdmElements(finalMap.get("QDM"));
-				overview.setSuppDataElements(finalMap.get("SDE"));
-				overview.setSubTreeClauseList(clauseMap.get("SUBTREEREF"));
-				overview.setRiskAdjList(clauseMap.get("RISKADJ"));
+				getIntersectionOfQDMAndSDE(overview, processor, measureId);
+				getRiskAdjVariablesForMeasurePackager(overview, processor);
 			}
 
 			if (isGroupRemoved) {
@@ -508,41 +488,15 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 	
 	/**
-	 * Gets the all clause list.
-	 *
-	 * @param processor the processor
-	 * @param measureId the measure id
-	 * @return the all clause list
-	 */
-	private Map<String, ArrayList<RiskAdjustmentDTO>> getAllClauseList(XmlProcessor  processor, String measureId){
-		Map<String, ArrayList<RiskAdjustmentDTO>> finalClauseMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
-		finalClauseMap = getRiskAdjVariablesForMeasurePackager(processor);
-		logger.info("finalMap()of RiskAdjClause ::" + finalClauseMap.size());
-		return finalClauseMap;
-	}
-	
-	private Map<String, ArrayList<RiskAdjustmentDTO>> getAllDefinitionsList(XmlProcessor  processor, String measureId){
-		Map<String, ArrayList<RiskAdjustmentDTO>> finalDefinitionMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
-		finalDefinitionMap = getNewRiskAdjVariablesForMeasurePackager(processor);
-		logger.info("finalMap()of RiskAdjClause ::" + finalDefinitionMap.size());
-		return finalDefinitionMap;
-	}
-	
-	
-	/**
 	 * Gets the risk adj variables for measure packager.
 	 *
 	 * @param processor the processor
 	 * @return the risk adj variables for measure packager
 	 */
-	public Map<String, ArrayList<RiskAdjustmentDTO>> getRiskAdjVariablesForMeasurePackager(XmlProcessor  processor){
-		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
+	public void getRiskAdjVariablesForMeasurePackager(MeasurePackageOverview overview, XmlProcessor  processor){
 		ArrayList<RiskAdjustmentDTO> subTreeList = new ArrayList<RiskAdjustmentDTO>();
 		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (processor.getOriginalDoc() == null) {
-			return riskMap;
-		}
 		try{
 		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_RISK_ADJSUTMENT_VARIABLE,
 				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
@@ -585,24 +539,18 @@ public class PackagerServiceImpl implements PackagerService {
 				subTreeList.add(riskDTO);
 			}
 		}
-		
-		riskMap.put("RISKADJ", riskAdkVariableList);
-		riskMap.put("SUBTREEREF", subTreeList);
+		overview.setRiskAdjList(riskAdkVariableList);
+		overview.setSubTreeClauseList(subTreeList);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return riskMap;
 	}
 	
 	
-	public Map<String, ArrayList<RiskAdjustmentDTO>> getNewRiskAdjVariablesForMeasurePackager(XmlProcessor  processor){
-		Map<String, ArrayList<RiskAdjustmentDTO>> riskMap = new HashMap<String, ArrayList<RiskAdjustmentDTO>>();
+	public void getNewRiskAdjVariablesForMeasurePackager(MeasurePackageOverview overview, XmlProcessor  processor){
 		ArrayList<RiskAdjustmentDTO> definitionList = new ArrayList<RiskAdjustmentDTO>();
 		ArrayList<RiskAdjustmentDTO> riskAdkVariableList = new ArrayList<RiskAdjustmentDTO>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (processor.getOriginalDoc() == null) {
-			return riskMap;
-		}
 		try{
 		NodeList riskAdjustmentVarNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE,
 				processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
@@ -637,13 +585,11 @@ public class PackagerServiceImpl implements PackagerService {
 			riskDTO.setUuid(id);
 			definitionList.add(riskDTO);
 		}
-		
-		riskMap.put("CQLRISKADJ", riskAdkVariableList);
-		riskMap.put("CQLDEF", definitionList);
+		overview.setRiskAdjList(riskAdkVariableList);
+		overview.setSubTreeClauseList(definitionList);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return riskMap;
 	}
 	
 	/**
@@ -693,11 +639,10 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @param measureId            the measure id
 	 * @return the intersection of qdm and sde
 	 */
-	private Map<String, ArrayList<QualityDataSetDTO>> getIntersectionOfQDMAndSDE(XmlProcessor  processor, String measureId) {
+	private void getIntersectionOfQDMAndSDE(MeasurePackageOverview overview, XmlProcessor  processor, String measureId) {
 		Map<String, ArrayList<QualityDataSetDTO>> finalMap = new HashMap<String, ArrayList<QualityDataSetDTO>>();
-		finalMap = sortSDEAndQDMsForMeasurePackager(processor);
+		sortSDEAndQDMsForMeasurePackager(overview,processor);
 		logger.info("finalMap()of QualityDataSetDTO ::" + finalMap.size());
-		return finalMap;
 		
 	}
 	
@@ -707,15 +652,12 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @param processor the processor
 	 * @return the map
 	 */
-	public Map<String, ArrayList<QualityDataSetDTO>> sortSDEAndQDMsForMeasurePackager(XmlProcessor  processor) {
-		Map<String, ArrayList<QualityDataSetDTO>> map = new HashMap<String, ArrayList<QualityDataSetDTO>>();
+	public void sortSDEAndQDMsForMeasurePackager(MeasurePackageOverview overview, XmlProcessor  processor) {
+		new HashMap<String, ArrayList<QualityDataSetDTO>>();
 		ArrayList<QualityDataSetDTO> qdmList = new ArrayList<QualityDataSetDTO>();
 		ArrayList<QualityDataSetDTO> masterList = new ArrayList<QualityDataSetDTO>();
 		ArrayList<QualityDataSetDTO> supplementalDataList = new ArrayList<QualityDataSetDTO>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (processor.getOriginalDoc() == null) {
-			return map;
-		}
 		try {
 			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(
 					XPATH_MEASURE_ELEMENT_LOOKUP_QDM,
@@ -855,13 +797,15 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 				}
 			}
-			map.put("QDM", qdmList);
-			map.put("SDE", supplementalDataList);
-			map.put("MASTER", masterList);
+			overview.setQdmElements(qdmList);
+			overview.setSuppDataElements(supplementalDataList);
+			//map.put("QDM", qdmList);
+			//map.put("SDE", supplementalDataList);
+			//map.put("MASTER", masterList);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return map;
+		//return map;
 	}
 	
 	/**
@@ -870,14 +814,10 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @param processor the processor
 	 * @return the map
 	 */
-	public Map<String, ArrayList<CQLDefinition>> qdmAndSupplDataforMeasurePackager(XmlProcessor  processor) {
-		Map<String, ArrayList<CQLDefinition>> map = new HashMap<String, ArrayList<CQLDefinition>>();
+	private void qdmAndSupplDataforMeasurePackager(MeasurePackageOverview overview,XmlProcessor  processor) {
 		List<CQLDefinition> supplementalDataList = new ArrayList<CQLDefinition>();
 		List<CQLDefinition> qdmList = new ArrayList<CQLDefinition>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		if (processor.getOriginalDoc() == null) {
-			return map;
-		}
 		try {
 			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
 					XPATH_MEASURE_CQL_LOOKUP_SUPP,
@@ -916,14 +856,13 @@ public class PackagerServiceImpl implements PackagerService {
 						qdmList.add(cqlDef);
 					}
 				}
-				map.put("QDM", (ArrayList<CQLDefinition>)qdmList);
-				map.put("SDE", (ArrayList<CQLDefinition>)supplementalDataList);
+				overview.setCqlQdmElements(qdmList);
+				overview.setCqlSuppDataElements(supplementalDataList);
 			}
 
 		}catch (XPathExpressionException e) {
 			logger.info("Error while getting default supplemental data elements : " +e.getMessage());
 		}
-		return map;
 	}
 	
 	

@@ -2320,8 +2320,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);			
-
+			
+			//Add QDM elements for Supplemental Definitions for Race, Payer, Sex, Ethnicity
+			measureXmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+			QualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(
+					measureXmlModel.getMeasureId(), false, null);
+			
+			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
+						
+			String filteredString = removePatternFromXMLString(
+					streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)), "<measure>", "");
+			filteredString = removePatternFromXMLString(filteredString, "</measure>", "");
+			
+			String result = callAppendNode(measureXmlModel, filteredString, "qdm", "/measure/elementLookUp");
+			measureXmlModel.setXml(result);
+			processor = new XmlProcessor(measureXmlModel.getXml());
+			
 			Document measureXMLDocument = processor.getOriginalDoc();
+			
 			//find the "<supplementalDataElements>" tag.
 			String supplementalDataElementsXPath = "/measure/supplementalDataElements";
 			try {
@@ -2336,7 +2352,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				//append CQL definitions created for supplemental section to supplementalDataElement tag
 				NodeList defaultCQLDefNodeList = findDefaultDefinitions(processor);
 
-				//create "<cqldefinition>" tag with displayName and uuid pointing to the default CQL definitions
+				//create "<cqldefinition>" tag with displayName and uuid pointing to the default CQL definitions and append it to "<supplementalDataElements>"
 				for(int i=0;i<defaultCQLDefNodeList.getLength();i++){
 					Node cqlDefNode = defaultCQLDefNodeList.item(i);
 					Element cqlDefinitionRefNode = measureXMLDocument.createElement("cqldefinition");

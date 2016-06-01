@@ -140,4 +140,8 @@ public class FileNameUtility {
 	public String getCSVFileName(String name , String currentTime){
 		return (name.concat(currentTime)).replaceAll("\\W","").concat(".csv");
 	}
+	
+	public String getCQLFileName(String name) {
+		return name.replaceAll("\\W","") + "_CQL.cql";
+	}
 }

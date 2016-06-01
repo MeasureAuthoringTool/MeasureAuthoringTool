@@ -107,6 +107,10 @@ public class ExportServlet extends HttpServlet {
 	/** The context. */
 	protected ApplicationContext context;
 	
+	private static final String CQL_LIBRARY = "cqlLibrary";
+	
+	private static final String TEXT_CQL = "text/cql";
+	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -143,6 +147,9 @@ public class ExportServlet extends HttpServlet {
 			} else if (CODELIST.equals(format)) {
 				export = exportCodeListXLS(resp, measureLibraryService, id,
 						measure, fnu);
+			} else if (CQL_LIBRARY.equals(format)) {
+				export = exportCQLLibraryFile(resp, measureLibraryService, id, type,
+						measure, fnu);
 			} else if (ZIP.equals(format)) {
 				export = exportEmeasureZip(resp, measureLibraryService, id,
 						measure, exportDate, fnu);
@@ -174,6 +181,27 @@ public class ExportServlet extends HttpServlet {
 	
 	
 	
+	private ExportResult exportCQLLibraryFile(HttpServletResponse resp,
+			MeasureLibraryService measureLibraryService, String id,
+			String type, Measure measure, FileNameUtility fnu) throws Exception {
+		ExportResult export;
+		export = getService().getCQLLibraryFile(id);
+		if (SAVE.equals(type)) {
+			String currentReleaseVersion = measure.getReleaseVersion();
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+			}
+			System.out.println("Release version zip " + currentReleaseVersion);
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCQLFileName(export.measureName + "_" + currentReleaseVersion));
+		} else {
+			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
+		}
+		return export;
+	}
+
+
+
 	public ExportResult exportMeasureNotesCSV(HttpServletResponse resp,
 			String id, Measure measure, FileNameUtility fnu) throws Exception,
 			XPathExpressionException, IOException {

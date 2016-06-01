@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.model.MatValueSet;
 import mat.model.clause.MeasureExport;
+import mat.server.service.SimpleEMeasureService.ExportResult;
 
 
 /**
@@ -136,5 +137,7 @@ public interface SimpleEMeasureService {
 
 	ExportResult getNewEMeasureHTML(String measureId) throws Exception;
 	public ExportResult getNewEMeasureXML(String measureId);
+
+	ExportResult getCQLLibraryFile(String measureId) throws Exception;
 
 }

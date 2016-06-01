@@ -303,6 +303,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the new measure name
 		 */
 		public void setMeasureName(String name);
+
+		boolean isCQLLibrary();
 	}
 	
 	/**
@@ -1157,7 +1159,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		url += (exportDisplay.isEMeasure() ? "emeasure" : exportDisplay
 				.isSimpleXML() ? "simplexml"
-						: exportDisplay.isCodeList() ? "codelist" : "zip");
+						: exportDisplay.isCodeList() ? "codelist" : 
+							exportDisplay.isCQLLibrary() ? "cqlLibrary" : "zip");
 		return url;
 	}
 	

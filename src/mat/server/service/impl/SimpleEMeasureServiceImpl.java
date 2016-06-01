@@ -33,6 +33,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
+import mat.server.CQLUtilityClass;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
@@ -292,6 +293,18 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.export = measureExport.getSimpleXML();
 		return result;
 	}
+	
+	@Override
+	public final ExportResult getCQLLibraryFile(final String measureId) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
+		String measureXML = measureXml.getMeasureXMLAsString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML, measureId)).toString();
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		result.export = cqlFileString;
+		return result;
+	}
 
 	/* (non-Javadoc)
 	 * @see mat.server.service.SimpleEMeasureService#getEMeasureXML(java.lang.String)
@@ -521,8 +534,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				//String emeasureXML = getEMeasureXML(me);
 				//String emeasureXML = "";
 				String emeasureXML = getNewEMeasureXML(me);
+		        ExportResult exportResult = getCQLLibraryFile(measureId);
+		        String cqlFileStr = exportResult.export;
 				ZipPackager zp = new ZipPackager();
-				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML, me.getMeasure().getReleaseVersion());
+				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), 
+						emeasureHTMLStr, simpleXmlStr,emeasureXML, cqlFileStr, me.getMeasure().getReleaseVersion());
 		}
 	
 	
@@ -587,10 +603,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
+		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
+		String cqlFileStr = cqlExportResult.export;
 
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName,exportDate, releaseVersion, wkbkbarr, emeasureXMLStr,
-				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, cqlFileStr);
 	}
 
 	/**
@@ -761,11 +779,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		//String emeasureXMLStr = "";
 		String emeasureName = me.getMeasure().getaBBRName();
 		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
-		
+		ExportResult cqlEportResult = getCQLLibraryFile(measureId);
+		String cqlFileStr = cqlEportResult.export;
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum,currentReleaseVersion);
+				seqNum,currentReleaseVersion, cqlFileStr);
 	}
 
 	/**
@@ -803,10 +822,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
+		ExportResult cqlEportResult = getCQLLibraryFile(measureId);
+		String cqlFileStr = cqlEportResult.export;
 		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName,exportDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum, me.getMeasure().getReleaseVersion());
+				seqNum, me.getMeasure().getReleaseVersion(), cqlFileStr);
 	}
 }

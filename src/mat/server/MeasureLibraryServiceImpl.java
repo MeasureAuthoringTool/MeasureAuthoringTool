@@ -2356,8 +2356,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				for(int i=0;i<defaultCQLDefNodeList.getLength();i++){
 					Node cqlDefNode = defaultCQLDefNodeList.item(i);
 					Element cqlDefinitionRefNode = measureXMLDocument.createElement("cqldefinition");
-					cqlDefinitionRefNode.setAttribute("displayName", cqlDefNode.getAttributes().getNamedItem("name").getNodeValue());
-					cqlDefinitionRefNode.setAttribute("uuid", cqlDefNode.getAttributes().getNamedItem("id").getNodeValue());
+					cqlDefinitionRefNode.setAttribute("name", cqlDefNode.getAttributes().getNamedItem("name").getNodeValue());
+					cqlDefinitionRefNode.setAttribute("id", cqlDefNode.getAttributes().getNamedItem("id").getNodeValue());
 					supplementalDataElementNode.appendChild(cqlDefinitionRefNode);
 				}
 

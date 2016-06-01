@@ -69,18 +69,22 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
 	
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION = "/measure/supplementalDataElements/cqldefinition/@id";
+	
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/subTreeRef/@id";
 	
-	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/cqlDefinition/@id";
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/cqldefinition/@id";
 	
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
 	
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEF_EXPRESSION = "/measure/supplementalDataElements/cqldefinition[@id";
+	
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/subTreeRef[@id";
 	
-	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/cqlDefinition[@id";
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/cqldefinition[@id";
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
@@ -93,9 +97,11 @@ public class PackagerServiceImpl implements PackagerService {
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition";
-	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqlDefinition";	
+	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqldefinition";	
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
+	
+	private static final String XPATH_SD_ELEMENTS_CQLDEFINITION = "/measure/supplementalDataElements/cqldefinition";
 	
 	/** The Constant INSTANCE. */
 	private static final String INSTANCE = "instance";
@@ -326,6 +332,33 @@ public class PackagerServiceImpl implements PackagerService {
 			}
 		}
 		logger.info("Exiting PackagerServiceImpl.convertQDMOToSuppleDataXML");
+		return stream;
+	}
+	
+	private ByteArrayOutputStream convertDefinitionsToSuppleDataXML(CQLDefinitionsWrapper cqlDefineWrapper) {
+		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("DefinitionToSupplementalDataElements.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(cqlDefineWrapper);
+			logger.info("Marshalling of QualityDataSetDTO is successful in convertDefinitionsToSuppleDataXML()" + stream.toString());
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load DefinitionToSupplementalDataElements.xml in convertDefinitionsToSuppleDataXML()" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed in convertDefinitionsToSuppleDataXML()" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed in convertDefinitionsToSuppleDataXML()" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception in convertDefinitionsToSuppleDataXML()" + e);
+			} else {
+				logger.info("Other Exception in convertDefinitionsToSuppleDataXML()" + e);
+			}
+		}
+		logger.info("Exiting PackagerServiceImpl.convertDefinitionsToSuppleDataXML");
 		return stream;
 	}
 	
@@ -816,49 +849,99 @@ public class PackagerServiceImpl implements PackagerService {
 	 */
 	private void qdmAndSupplDataforMeasurePackager(MeasurePackageOverview overview,XmlProcessor  processor) {
 		List<CQLDefinition> supplementalDataList = new ArrayList<CQLDefinition>();
-		List<CQLDefinition> qdmList = new ArrayList<CQLDefinition>();
+		List<CQLDefinition> definitionList = new ArrayList<CQLDefinition>();
+		List<CQLDefinition> masterList = new ArrayList<CQLDefinition>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
-			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
+			NodeList nodesCQLDefinitionsAll = (NodeList) xPath.evaluate(
 					XPATH_MEASURE_CQL_LOOKUP_SUPP,
 					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
-			for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
-				Node newNode = nodesSupplementalData.item(i);
+			for (int i = 0; i < nodesCQLDefinitionsAll.getLength(); i++) {
+				Node newNode = nodesCQLDefinitionsAll.item(i);
 				CQLDefinition cqlDef = new CQLDefinition();
-				String nodeID = newNode.getAttributes().getNamedItem("id")
-						.getNodeValue();
-				String nodeName = newNode.getAttributes().getNamedItem("name")
-						.getNodeValue();
-				String nodeSupplData = newNode.getAttributes().getNamedItem("supplDataElement")
-						.getNodeValue();
-				if (nodeSupplData.equalsIgnoreCase("true")) {
-					cqlDef.setId(nodeID);
-					cqlDef.setDefinitionName(nodeName);
-					if(nodeName.equalsIgnoreCase("sex")){
-						cqlDef.setDefinitionLogic("ONC Administrative Sex");
-					}
-					else{
-						cqlDef.setDefinitionLogic(nodeName);
-					}
+				
+				cqlDef.setId(newNode.getAttributes().getNamedItem("id")
+						.getNodeValue());
+				cqlDef.setDefinitionName(newNode.getAttributes().getNamedItem("name")
+						.getNodeValue());
+				cqlDef.setDefinitionLogic(newNode.getFirstChild().getTextContent());
+				
+				cqlDef.setContext(newNode.getAttributes().getNamedItem("context")
+				        .getNodeValue());
+				if(newNode.getAttributes().getNamedItem("supplDataElement")
+						.getNodeValue().toString().equalsIgnoreCase("true")){
 					cqlDef.setSupplDataElement(true);
-					
-					if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
-						supplementalDataList.add(cqlDef);
-					}
-				}
-				else{
-					cqlDef.setId(nodeID);
-					cqlDef.setDefinitionName(nodeName);
-					cqlDef.setDefinitionLogic("");
+				} else {
 					cqlDef.setSupplDataElement(false);
-					
-					if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
-						qdmList.add(cqlDef);
+				}
+				
+				masterList.add(cqlDef);
+			}
+	
+			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
+					XPATH_SD_ELEMENTS_CQLDEFINITION,
+					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+			// If SupplementDataElement contains cqlDefinitions, intersection of Definitions
+						// and SupplementDataElement is evaluated.
+			if (nodesSupplementalData.getLength() > 0) {
+				StringBuilder expression = new StringBuilder(
+						XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS.concat("["));
+				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
+					Node newNode = nodesSupplementalData.item(i);
+					String nodeID = newNode.getAttributes().getNamedItem("id")
+							.getNodeValue();
+					expression = expression.append("@id!= '").append(nodeID)
+							.append("'").append(" and ");
+					for (CQLDefinition cqlDefinition : masterList) {
+						if (cqlDefinition.getId().equalsIgnoreCase(nodeID)) {
+							supplementalDataList.add(cqlDefinition);
+							break;
+						}
 					}
 				}
-				overview.setCqlQdmElements(qdmList);
-				overview.setCqlSuppDataElements(supplementalDataList);
+				
+				String xpathUniqueQDM = expression.toString();
+				// Final XPath Expression.
+				xpathUniqueQDM = xpathUniqueQDM.substring(0,
+						xpathUniqueQDM.lastIndexOf(" and")).concat("]");
+				XPathExpression expr = xPath.compile(xpathUniqueQDM);
+				// Intersection List of QDM and SDE. Elements which are
+				// referenced in SDE are filtered out.
+				NodeList nodesFinal = (NodeList) expr.evaluate(
+						processor.getOriginalDoc().getDocumentElement(),
+						XPathConstants.NODESET);
+				// populate Definition List
+				
+				for (int i = 0; i < nodesFinal.getLength(); i++) {
+					Node newNode = nodesFinal.item(i);
+					String nodeID = newNode.getAttributes()
+							.getNamedItem("id").getNodeValue();
+					for (CQLDefinition cqlDefinition : masterList) {
+						if (cqlDefinition.getId().equalsIgnoreCase(
+								nodeID)) {
+							definitionList.add(cqlDefinition);
+							break;
+						}
+					}
+				}
+			} else {
+				for (int i = 0; i < nodesCQLDefinitionsAll.getLength(); i++) {
+					Node newNode = nodesCQLDefinitionsAll.item(i);
+					String nodeID = newNode.getAttributes()
+							.getNamedItem("id").getNodeValue();
+					for (CQLDefinition cqlDefinition : masterList) {
+						if (cqlDefinition.getId().equalsIgnoreCase(
+								nodeID)) {
+							definitionList.add(cqlDefinition);
+							break;
+						}
+					}
+				}
 			}
+		
+			
+			overview.setCqlQdmElements(definitionList);
+			overview.setCqlSuppDataElements(supplementalDataList);
 
 		}catch (XPathExpressionException e) {
 			logger.info("Error while getting default supplemental data elements : " +e.getMessage());
@@ -931,11 +1014,21 @@ public class PackagerServiceImpl implements PackagerService {
 	 */
 	@Override
 	public void saveQDMData(MeasurePackageDetail detail) {
-		ArrayList<QualityDataSetDTO> supplementDataElementsAll = (ArrayList<QualityDataSetDTO>) detail.getSuppDataElements();
+		Measure measure = measureDAO.find(detail.getMeasureId());
+		MeasureXML measureXML = measureXMLDAO.findForMeasure( measure.getId());
+		if(measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
+			saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
+		} else {
+			saveQDMData(measureXML, detail.getSuppDataElements());
+		}
+	}
+	
+	
+	private void saveQDMData(MeasureXML measureXML, List<QualityDataSetDTO> supplQDMList){
+		ArrayList<QualityDataSetDTO> supplementDataElementsAll = (ArrayList<QualityDataSetDTO>) supplQDMList;
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(supplementDataElementsAll);
 		ByteArrayOutputStream stream = convertQDMOToSuppleDataXML(wrapper);
-		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		if (supplementDataElementsAll.size() > 0) {
 			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
@@ -954,6 +1047,46 @@ public class PackagerServiceImpl implements PackagerService {
 						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
 					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION.concat("='")
+							.concat(nodesSupplementalData.item(i).getNodeValue().toString()).concat("']");
+					Node newNode = processor.findNode(processor.getOriginalDoc(), xPathString);
+					Node parentNode = newNode.getParentNode();
+					parentNode.removeChild(newNode);
+				}
+				//setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements(), detail.getQdmElements());
+			} catch (XPathExpressionException e) {
+				
+				e.printStackTrace();
+			}
+		}
+		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+		measureXMLDAO.save(measureXML);
+	}
+	
+	
+	/**
+	 * Save definitions data.
+	 *
+	 * @param measureXML the measure xml
+	 * @param supplDefinitionList the suppl definition list
+	 */
+	private void saveDefinitionsData(MeasureXML measureXML, List<CQLDefinition> supplDefinitionList){
+		ArrayList<CQLDefinition> supplementDataElementsAll = (ArrayList<CQLDefinition>) supplDefinitionList;
+		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
+		wrapper.setCqlDefinitions(supplementDataElementsAll);
+		ByteArrayOutputStream stream = convertDefinitionsToSuppleDataXML(wrapper);
+		
+		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		if (supplementDataElementsAll.size() > 0) {
+			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		} else {
+			
+			try {
+				// In case all elements from SupplementDataElements are moved to QDM, this will remove all.
+				javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+				NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION,
+						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
+					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEF_EXPRESSION.concat("='")
 							.concat(nodesSupplementalData.item(i).getNodeValue().toString()).concat("']");
 					Node newNode = processor.findNode(processor.getOriginalDoc(), xPathString);
 					Node parentNode = newNode.getParentNode();

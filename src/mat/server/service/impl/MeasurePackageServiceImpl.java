@@ -256,7 +256,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		export.setSimpleXML(exportedXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
-		measure.setReleaseVersion(getCurrentReleaseVersion());
+		//measure.setReleaseVersion(getCurrentReleaseVersion());
 		measure.setExportedDate(new Date());
 		measureDAO.save(measure);
 		measureExportDAO.save(export);

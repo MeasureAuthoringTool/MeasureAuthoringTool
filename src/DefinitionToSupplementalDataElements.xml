@@ -5,16 +5,16 @@
 <mapping>
 	<class name="mat.model.cql.CQLDefinitionsWrapper">
 		<map-to xml="measure" />
-		<field name="riskAdjVarDTOList" type="mat.model.RiskAdjustmentDTO"
-			get-method="getRiskAdjVarDTOList" set-method="setRiskAdjVarDTOList"
+		<field name="cqldefinition" type="mat.model.cql.CQLDefinition"
+			get-method="getCqlDefinitions" set-method="setCqlDefinitions"
 			collection="arraylist">
-			<bind-xml name="cqldefinition" location="riskAdjustmentVariables">
-				<class name="mat.model.RiskAdjustmentDTO">
-					<field name="uuid" type="java.lang.String">
+			<bind-xml name="cqldefinition" location="supplementalDataElements">
+				<class name="mat.model.cql.CQLDefinition">
+					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
-					<field name="name" type="java.lang.String">
-						<bind-xml name="displayName" node="attribute" />
+					<field name="definitionName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

@@ -562,6 +562,11 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							title = "Click to Export MAT v4.3";
 							sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
 									+ "' tabindex=\"0\" class=\" " + cssClass + "\">Export MAT v4.3</button>");	
+					} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4.5")) {
+						cssClass = "customExportButtonRed";
+						title = "Click to Export MAT v4.5";
+						sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
+								+ "' tabindex=\"0\" class=\" " + cssClass + "\">Export MAT v4.5</button>");	
 					}
 				}
 				return sb.toSafeHtml();

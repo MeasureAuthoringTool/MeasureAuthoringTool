@@ -384,10 +384,35 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the risk adj success message display
 		 */
 		SuccessMessageDisplayInterface getRiskAdjSuccessMessageDisplay();
+		
+		/**
+		 * Sets the sub tree in risk adj var list.
+		 *
+		 * @param riskAdjClauseList the new sub tree in risk adj var list
+		 */
 		void setSubTreeInRiskAdjVarList(
 				List<RiskAdjustmentDTO> riskAdjClauseList);
+		
+		/**
+		 * Gets the in progress message display.
+		 *
+		 * @return the in progress message display
+		 */
 		InProgressMessageDisplay getInProgressMessageDisplay();
+		
+		/**
+		 * Sets the CQL measure.
+		 *
+		 * @param isCQLMeasure the new CQL measure
+		 */
 		void setCQLMeasure(boolean isCQLMeasure);
+		
+		/**
+		 * Sets the risk adjust label.
+		 *
+		 * @param isCQLMeasure the new risk adjust label
+		 */
+		void setRiskAdjustLabel(boolean isCQLMeasure);
 	}
 	
 	/** The vsacapi service async. */
@@ -977,11 +1002,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		if(packageOverview.getReleaseVersion() != null 
 				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v4.5")){
 			view.setCQLMeasure(true);
+			view.setRiskAdjustLabel(true);
 			view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());
 			view.setCQLQDMElements(packageOverview.getCqlQdmElements());
 		}
 		else{
 			view.setCQLMeasure(false);
+			view.setRiskAdjustLabel(false);
 			view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 			view.setQDMElements(packageOverview.getQdmElements());
 		}

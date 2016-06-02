@@ -62,6 +62,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackagerView.
  */
@@ -127,6 +128,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
 	/** The supp data success messages. */
 	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
+	
+	/** The in progress message display. */
 	@SuppressWarnings("unused")
 	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
 	/** The package measure. */
@@ -294,7 +297,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private PrimaryButton packageMeasureAndExport = new PrimaryButton(
 			"Create Package and Export", "primaryButton");
 	
+	/** The is cql measure. */
 	private boolean isCQLMeasure;
+	
+	/** The risk adjust label. */
+	private HTML riskAdjustLabel = new HTML();
 	
 	/**
 	 * Constructor.
@@ -623,8 +630,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		//		Widget riskAdjustmentsLabel = LabelBuilder.buildLabel(riskAdjClauseCellList,"Clauses");
 		//		riskAdjustmentsLabel.addStyleName("bold");
-		riskSPanel.add(new HTML("<b style='margin-left:15px;'> Clauses </b>"));
-		
+		riskSPanel.add(getRiskAdjustLabel());
 		/*leftRiskAdjPanel.addStyleName("measurePackagerSupplementalDatascrollable");*/
 		leftRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
 		leftRiskAdjPanel.setSize("320px", "200px");
@@ -1269,6 +1275,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return packageGroupingWidget.getErrorMessages();
 	}
 	/**
+	 * Gets the in progress message display.
+	 *
 	 * @return the inProgressMessageDisplay
 	 */
 	@Override
@@ -1277,6 +1285,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	/**
+	 * Sets the in progress message display.
+	 *
 	 * @param inProgressMessageDisplay the inProgressMessageDisplay to set
 	 */
 	public void setInProgressMessageDisplay(InProgressMessageDisplay inProgressMessageDisplay) {
@@ -1715,19 +1725,35 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 	}
 
+	/**
+	 * Gets the cql sup population list.
+	 *
+	 * @return the cql sup population list
+	 */
 	public ArrayList<CQLDefinition> getCqlSupPopulationList() {
 		return cqlSupPopulationList;
 	}
 
+	/**
+	 * Sets the cql sup population list.
+	 *
+	 * @param cqlSupPopulationList the new cql sup population list
+	 */
 	public void setCqlSupPopulationList(ArrayList<CQLDefinition> cqlSupPopulationList) {
 		this.cqlSupPopulationList = cqlSupPopulationList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getCQLElementsInSuppElements()
+	 */
 	@Override
 	public ArrayList<CQLDefinition> getCQLElementsInSuppElements() {
 		return cqlSupPopulationList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setCQLQDMElements(java.util.List)
+	 */
 	@Override
 	public void setCQLQDMElements(List<CQLDefinition> clauses) {
 		cqlQdmPopulationList.clear();
@@ -1740,18 +1766,51 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getCQLQDMElements()
+	 */
 	@Override
 	public List<CQLDefinition> getCQLQDMElements() {
 		return cqlQdmPopulationList;
 	}
 
+	/**
+	 * Checks if is CQL measure.
+	 *
+	 * @return true, if is CQL measure
+	 */
 	public boolean isCQLMeasure() {
 		return isCQLMeasure;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setCQLMeasure(boolean)
+	 */
 	@Override
 	public void setCQLMeasure(boolean isCQLMeasure) {
 		this.isCQLMeasure = isCQLMeasure;
+	}
+
+	/**
+	 * Gets the risk adjust label.
+	 *
+	 * @return the risk adjust label
+	 */
+	public HTML getRiskAdjustLabel() {
+		return riskAdjustLabel;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setRiskAdjustLabel(boolean)
+	 */
+	@Override
+	public void setRiskAdjustLabel(boolean isCQLMeasure) {
+		if(isCQLMeasure){
+			riskAdjustLabel.setHTML("<b style='margin-left:15px;'> Definitions </b>");
+		} else {
+			riskAdjustLabel.setHTML("<b style='margin-left:15px;'> Clauses </b>");
+		}
+		
 	}
 	
 }

@@ -3,7 +3,6 @@ package mat.client.clause;
 import java.util.List;
 import java.util.Map;
 
-import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -71,4 +70,12 @@ public interface QDSAttributesServiceAsync {
 	 * @return the JSON object from xml
 	 */
 	void getJSONObjectFromXML( AsyncCallback<String> asyncCallback);
+
+	/**
+	 * Gets the all attributes.
+	 *
+	 * @param callback the callback
+	 * @return the all attributes
+	 */
+	void getAllAttributes(AsyncCallback<List<String>> callback);
 }

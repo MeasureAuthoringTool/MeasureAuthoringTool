@@ -11,9 +11,11 @@ import mat.model.clause.QDSAttributes;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDSAttributesDAO.
  */
@@ -152,5 +154,16 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 	private DataType getDataTypeFromName(String dataTypeName,DataTypeDAO dataTypeDAO){
 		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
 		return dataType;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.QDSAttributesDAO#getAllAttributes()
+	 */
+	public List<String> getAllAttributes() {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(QDSAttributes.class);
+		criteria.setProjection(Projections.distinct(Projections.property("name")));
+		List<String> list = criteria.list();
+		return list;
 	}
 }

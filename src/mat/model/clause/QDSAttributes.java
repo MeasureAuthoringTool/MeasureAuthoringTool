@@ -7,6 +7,22 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class QDSAttributes implements IsSerializable {
 	
+	
+	
+  public static class Comparator implements java.util.Comparator<QDSAttributes>, IsSerializable {
+		
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public int compare(QDSAttributes o1,
+				QDSAttributes o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+		
+	}
+	
+	
 	/** The id. */
 	private String id;
 	

@@ -215,4 +215,12 @@ implements QDSAttributesService {
 		return sb.toString();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#getAllAttributes()
+	 */
+	@Override
+	public List<String> getAllAttributes() {
+		return getDAO().getAllAttributes();
+	}
+	
 }

@@ -9,6 +9,7 @@ import mat.model.clause.QDSAttributes;
 
 import org.springframework.context.ApplicationContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface QDSAttributesDAO.
  */
@@ -66,4 +67,11 @@ public interface QDSAttributesDAO extends IDAO<QDSAttributes, String> {
 	 * @return the list
 	 */
 	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context);
+
+	/**
+	 * Gets the all attributes.
+	 *
+	 * @return the all attributes
+	 */
+	public List<String> getAllAttributes();
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -16,6 +17,8 @@ import mat.client.audit.service.AuditServiceAsync;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
@@ -115,6 +118,9 @@ public class MatContext implements IsSerializable {
 	
 	/** The vsacapi service async. */
 	private VSACAPIServiceAsync vsacapiServiceAsync;
+	
+	/** The qds attributes service async. */
+	private QDSAttributesServiceAsync qdsAttributesServiceAsync;
 	
 	/** The event bus. */
 	private HandlerManager eventBus;
@@ -233,6 +239,9 @@ public class MatContext implements IsSerializable {
 	
 	/** The funcs. */
 	public List<String> funcs = new ArrayList<String>();
+	
+	/** The all attribute list. */
+	public List<String> allAttributeList = new ArrayList<String>();
 	
 	
 	//private GlobalCopyPaste copyPaste;
@@ -1619,6 +1628,43 @@ public class MatContext implements IsSerializable {
 	}
 	
 	/**
+	 * Gets the all attributes list.
+	 *
+	 * @return the all attributes list
+	 */
+	public void getAllAttributesList(){
+		getQdsAttributesServiceAsync().getAllAttributes(new AsyncCallback<List<String>>() {
+			
+			@Override
+			public void onSuccess(List<String> result) {
+				setAllAttributesList(result);
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	/**
+	 * Sets the all attributes list.
+	 *
+	 * @param result the new all attributes list
+	 */
+	protected void setAllAttributesList(List<String> result) {
+		if(result != null){
+			allAttributeList.clear();
+			Collections.sort(result);
+			allAttributeList.addAll(result);
+		}
+		
+	}
+
+
+	/**
 	 * Gets the all profile list.
 	 *
 	 * @return the all profile list
@@ -1875,6 +1921,51 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setFuncs(List<String> funcs) {
 		this.funcs = funcs;
+	}
+
+
+	/**
+	 * Gets the qds attributes service async.
+	 *
+	 * @return the qds attributes service async
+	 */
+	public QDSAttributesServiceAsync getQdsAttributesServiceAsync() {
+		
+		if(qdsAttributesServiceAsync == null){
+			qdsAttributesServiceAsync = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
+		}
+		
+		return qdsAttributesServiceAsync;
+	}
+
+
+	/**
+	 * Sets the qds attributes service async.
+	 *
+	 * @param qdsAttributesServiceAsync the new qds attributes service async
+	 */
+	public void setQdsAttributesServiceAsync(QDSAttributesServiceAsync qdsAttributesServiceAsync) {
+		this.qdsAttributesServiceAsync = qdsAttributesServiceAsync;
+	}
+
+
+	/**
+	 * Gets the all attribute list.
+	 *
+	 * @return the all attribute list
+	 */
+	public List<String> getAllAttributeList() {
+		return allAttributeList;
+	}
+
+
+	/**
+	 * Sets the all attribute list.
+	 *
+	 * @param allAttributeList the new all attribute list
+	 */
+	public void setAllAttributeList(List<String> allAttributeList) {
+		this.allAttributeList = allAttributeList;
 	}
 	
 	

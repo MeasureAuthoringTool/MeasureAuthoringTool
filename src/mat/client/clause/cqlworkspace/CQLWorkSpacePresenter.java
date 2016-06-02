@@ -906,6 +906,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addEventHandlers();
 		addObserverHandler();
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
+		MatContext.get().getAllAttributesList();
 	}
 	
 	/**

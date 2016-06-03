@@ -3301,15 +3301,20 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		HTML html2 = new HTML("Ctrl-Shift-f  :functions");
 		HTML html3 = new HTML("Ctrl-Shift-u  :definitions");
 		HTML html4 = new HTML("Ctrl-Shift-p  :parameters");
-		HTML html5 = new HTML("Ctrl-Space :all Keywords");
+		HTML html5 = new HTML("Ctrl-Shift-a  :attributes");
+		HTML html6 = new HTML("Ctrl-Space :all Keywords");
 		dialogContents.add(html1);
 		dialogContents.add(html2);
 		dialogContents.add(html3);
 		dialogContents.add(html4);
 		dialogContents.add(html5);
+		dialogContents.add(html6);
 		
 		panel.show();
 	}
+	
+	
+	
 	
 	/**
 	 * The Class CustomTextAreaWithNoWhiteSpaces.

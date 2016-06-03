@@ -877,6 +877,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	  
 	  $wnd.funcsList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createfuncsJsArrayString();
 	  
+	  $wnd.allAttributeList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createAttributesJsArrayString();
 	  
 	}-*/;
 	
@@ -920,6 +921,31 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 			jsArray.push(string);
 		}
 		return jsArray;
+	}
+	
+	private static JsArrayString createAttributesJsArrayString() {
+		List<String> funcsList = MatContext.get().allAttributeList;
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : funcsList) {
+			jsArray.push(convertToCamelCase(string));
+		}
+		return jsArray;
+	}
+	
+	private static String convertToCamelCase(String str){
+        String result = "";
+        char firstChar = str.charAt(0);
+        result = result + Character.toLowerCase(firstChar);
+        for (int i = 1; i < str.length(); i++) {
+            char currentChar = str.charAt(i);
+            char previousChar = str.charAt(i - 1);
+            if (previousChar == ' ') {
+                result = result + Character.toUpperCase(currentChar);
+            } else {
+                result = result + currentChar;
+            }
+        }
+        return result.replaceAll(" ", "");
 	}
 	
 }

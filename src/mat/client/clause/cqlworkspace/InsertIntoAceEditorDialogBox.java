@@ -578,7 +578,7 @@ public class InsertIntoAceEditorDialogBox {
 	private static String convertToCamelCase(String str){
         String result = "";
         char firstChar = str.charAt(0);
-        result = result + Character.toUpperCase(firstChar);
+        result = result + Character.toLowerCase(firstChar);
         for (int i = 1; i < str.length(); i++) {
             char currentChar = str.charAt(i);
             char previousChar = str.charAt(i - 1);

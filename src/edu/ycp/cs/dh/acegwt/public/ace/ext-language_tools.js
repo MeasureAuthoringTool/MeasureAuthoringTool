@@ -1525,6 +1525,7 @@ var Autocomplete = function() {
        	    var defineKeywords = window.definitioList();
         	var funcsKeywords = window.funcsList();
         	var paramKeywords = window.paramList();
+        	var attributesKeywords = window.allAttributeList();
             
             if(keyString == "t"){
             	//alert("keyString:"+this.editor.keyString);
@@ -1547,7 +1548,10 @@ var Autocomplete = function() {
             	//alert("keyString:"+this.editor.keyString);
             	matches = [];
             	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
-            }  else if(keyString == "space"){
+            } else if(keyString == "a"){
+            	matches = [];
+            	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
+            } else if(keyString == "space"){
             	this.getSpecificKeyWords(timingKeywords,matches, "timings");
             	
             	var fk1 = [];
@@ -1558,6 +1562,7 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(fk1,matches, "functions");
             	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
             	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
+            	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
             }
             this.completions = new FilteredList(matches);
             this.completions.setFilter(prefix);
@@ -1676,7 +1681,7 @@ Autocomplete.startCommand = {
         editor.completer.showPopup(editor);
         editor.completer.cancelContextMenu();
     },
-    bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space|Ctrl-Shift-t|Ctrl-Shift-f|Ctrl-Shift-u|Ctrl-Shift-p"
+    bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space|Ctrl-Shift-t|Ctrl-Shift-f|Ctrl-Shift-u|Ctrl-Shift-p|Ctrl-Shift-a"
 };
 
 var FilteredList = function(array, filterText, mutateData) {

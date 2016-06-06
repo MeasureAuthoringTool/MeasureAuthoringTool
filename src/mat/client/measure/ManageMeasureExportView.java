@@ -70,8 +70,8 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		content.add(wrapRadioButton(simpleXMLRadio));
 		content.add(wrapRadioButton(eMeasureRadio));
 		content.add(wrapRadioButton(codeListRadio));
-		content.add(wrapRadioButton(eMeasurePackageRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
+		content.add(wrapRadioButton(eMeasurePackageRadio));
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		

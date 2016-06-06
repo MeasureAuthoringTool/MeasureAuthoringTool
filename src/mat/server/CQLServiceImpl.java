@@ -648,7 +648,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables Start :  ");
 		// XPath to find All cqlDefinitions in riskAdjustmentVariables to be modified Definitions.
-		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/riskAdjustmentVariables/cqlDefinition[@id='"
+		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/riskAdjustmentVariables/cqldefinition[@id='"
 				+ toBeModifiedObj.getId() + "']";
 		try {
 			NodeList nodesSDE = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_SDE_ELEMENTREF);

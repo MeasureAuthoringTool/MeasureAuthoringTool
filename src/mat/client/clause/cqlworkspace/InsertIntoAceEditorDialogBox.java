@@ -296,6 +296,8 @@ public class InsertIntoAceEditorDialogBox {
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
 				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
+				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableItemToInsert.getSelectedIndex();
@@ -413,7 +415,7 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
-				availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
+				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableDatatypes.getSelectedIndex();

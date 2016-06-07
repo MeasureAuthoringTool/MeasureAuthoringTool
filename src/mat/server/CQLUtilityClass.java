@@ -34,10 +34,10 @@ import mat.server.util.XmlProcessor;
 public class CQLUtilityClass {
 	
 	/** The Constant PATIENT. */
-	private static final String PATIENT = "patient";
+	private static final String PATIENT = "Patient";
 	
 	/** The Constant POPULATION. */
-	private static final String POPULATION = "population";
+	private static final String POPULATION = "Population";
 
 	public static StringBuilder getCqlString(CQLModel cqlModel) {
 

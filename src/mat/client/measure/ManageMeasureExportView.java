@@ -40,6 +40,9 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/** The e measure package radio. */
 	private RadioButton eMeasurePackageRadio = new RadioButton("format", "eMeasure Package");
 	
+	/** The ELM radio */
+	private RadioButton elmRadio = new RadioButton("format", "ELM"); 
+	
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
 	/** The save button. */
@@ -71,6 +74,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		content.add(wrapRadioButton(eMeasureRadio));
 		content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
+		content.add(wrapRadioButton(elmRadio));
 		content.add(wrapRadioButton(eMeasurePackageRadio));
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
@@ -163,6 +167,13 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	@Override
 	public boolean isEMeasure() {
 		return eMeasureRadio.getValue();
+	}
+	
+	/* (non-Javadoc
+	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isELM()
+	 */
+	public boolean isELM() {
+		return elmRadio.getValue(); 
 	}
 	
 	/* (non-Javadoc)

@@ -38,7 +38,7 @@ public class ZipPackager {
 	 * @throws Exception             the exception
 	 */
 	public byte[] getZipBarr(String emeasureName,Date exportDate, String releaseVersion, byte[] wkbkbarr, String emeasureXMLStr, 
-			String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr, String cqlFileStr) throws Exception{
+			String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr, String cqlFileStr, String elmFileStr) throws Exception{
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -60,6 +60,7 @@ public class ZipPackager {
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
 			String cqlFilePath = "";
+			String elmFilePath = "";
 			
 			if(releaseVersion.contains(".")){
 				releaseVersion = releaseVersion.replace(".", "_");
@@ -72,6 +73,8 @@ public class ZipPackager {
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + releaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + releaseVersion);
 			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + releaseVersion);
+			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + releaseVersion);
+
 			
 			
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -83,6 +86,7 @@ public class ZipPackager {
 		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(cqlFilePath, cqlFileStr.getBytes(), zip);
+		    addBytesToZip(elmFilePath, elmFileStr.getBytes(), zip);
 		    
 		    zip.close();
 		    ret = baos.toByteArray();
@@ -130,7 +134,7 @@ public class ZipPackager {
 	 * @throws Exception             the exception
 	 */
 	public void createBulkExportZip(String emeasureName,Date exportDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, String cqlFileStr) throws Exception{
+			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, String cqlFileStr, String elmFileStr) throws Exception{
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try{
@@ -150,6 +154,7 @@ public class ZipPackager {
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
 			String cqlFilePath = "";
+			String elmFilePath = "";
           
 			if(releaseVersion.contains(".")){
 				releaseVersion = releaseVersion.replace(".", "_");
@@ -162,6 +167,7 @@ public class ZipPackager {
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName +"_" + releaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + releaseVersion);
 			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + releaseVersion);
+			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + releaseVersion);
 			
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureXSLPath, emeasureXSLBarr);
@@ -169,6 +175,7 @@ public class ZipPackager {
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(cqlFilePath, cqlFileStr.getBytes());
+			filesMap.put(elmFilePath, elmFileStr.getBytes());
 		    
 		  
 		}catch(Exception e){
@@ -189,10 +196,11 @@ public class ZipPackager {
 	 * @param simpleXmlStr the simple xml str
 	 * @param currentRealeaseVersion 
 	 * @param string 
+	 * @param string 
 	 * @return the zip barr
 	 */
 	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, String cqlFileStr, String currentRealeaseVersion) {
+						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, String cqlFileStr, String elmFileStr, String currentRealeaseVersion) {
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -205,6 +213,7 @@ public class ZipPackager {
 			String simpleXMLPath = "";
 			String emeasureXMLPath = "";
 			String cqlFilePath = "";
+			String elmFilePath = "";
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 		    
@@ -218,12 +227,13 @@ public class ZipPackager {
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_" + currentRealeaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
 			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + currentRealeaseVersion);
-			
+			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + currentRealeaseVersion);			
 		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
 		    addBytesToZip(cqlFilePath,cqlFileStr.getBytes(),zip);
+		    addBytesToZip(elmFilePath, elmFileStr.getBytes(), zip);
 		    
 		    zip.close();
 		    ret = baos.toByteArray();
@@ -246,12 +256,13 @@ public class ZipPackager {
 	 * @param filesMap the files map
 	 * @param seqNum the seq num
 	 * @param currentReleaseVersion 
+	 * @param elmFileStr 
 	 * @throws Exception the exception
 	 */
 	public void createBulkExportZip(String emeasureName, byte[] wkbkbarr,
 			String emeasureXMLStr, String emeasureHTMLStr,
 			String packageDate, String simpleXmlStr,
-			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, String cqlFileStr) throws Exception{
+			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, String cqlFileStr, String elmFileStr) throws Exception{
 		FileNameUtility fnu = new FileNameUtility();
 
 		try{
@@ -261,6 +272,7 @@ public class ZipPackager {
 			String simpleXMLPath = "";
 			String emeasureXMLPath = "";
 			String cqlFilePath = "";
+			String elmFilePath = "";
 			
 			if (currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
@@ -272,11 +284,15 @@ public class ZipPackager {
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + currentReleaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
 			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + currentReleaseVersion);
+			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + currentReleaseVersion);
+
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(cqlFilePath, cqlFileStr.getBytes());
+			filesMap.put(elmFilePath, elmFileStr.getBytes());
+
 			
 		}catch(Exception e){
 			System.out.println(e.toString());

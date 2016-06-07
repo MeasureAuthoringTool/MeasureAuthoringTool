@@ -29,6 +29,8 @@ import mat.shared.InCorrectUserRoleException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.jsoup.nodes.Element;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -108,6 +110,7 @@ public class ExportServlet extends HttpServlet {
 	protected ApplicationContext context;
 	
 	private static final String CQL_LIBRARY = "cqlLibrary";
+	private static final String ELM = "elm"; 
 	
 	private static final String TEXT_CQL = "text/cql";
 	
@@ -150,6 +153,10 @@ public class ExportServlet extends HttpServlet {
 			} else if (CQL_LIBRARY.equals(format)) {
 				export = exportCQLLibraryFile(resp, measureLibraryService, id, type,
 						measure, fnu);
+			} else if(ELM.equals(format)) {
+				export = exportELMFile(resp, measureLibraryService, id, type, 
+						measure, fnu); 
+					
 			} else if (ZIP.equals(format)) {
 				export = exportEmeasureZip(resp, measureLibraryService, id,
 						measure, exportDate, fnu);
@@ -181,6 +188,27 @@ public class ExportServlet extends HttpServlet {
 	
 	
 	
+	private ExportResult exportELMFile(HttpServletResponse resp, MeasureLibraryService measureLibraryService, String id,
+			String type, Measure measure, FileNameUtility fnu) throws Exception {
+		
+		ExportResult export = getService().getELMFile(id); 
+		
+		if (SAVE.equals(type)) {
+			String currentReleaseVersion = measure.getReleaseVersion();
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+			}
+			System.out.println("Release version zip " + currentReleaseVersion);
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getELMFileName(export.measureName + "_" + currentReleaseVersion));
+		} else {
+			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
+		}
+		return export;
+	}
+
+
+
 	private ExportResult exportCQLLibraryFile(HttpServletResponse resp,
 			MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure, FileNameUtility fnu) throws Exception {
@@ -199,9 +227,7 @@ public class ExportServlet extends HttpServlet {
 		}
 		return export;
 	}
-
-
-
+	
 	public ExportResult exportMeasureNotesCSV(HttpServletResponse resp,
 			String id, Measure measure, FileNameUtility fnu) throws Exception,
 			XPathExpressionException, IOException {

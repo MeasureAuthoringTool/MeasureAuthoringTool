@@ -144,4 +144,8 @@ public class FileNameUtility {
 	public String getCQLFileName(String name) {
 		return name.replaceAll("\\W","") + "_CQL.cql";
 	}
+	
+	public String getELMFileName(String name) {
+		return name.replaceAll("\\W","") + "_ELM.xml";
+	}
 }

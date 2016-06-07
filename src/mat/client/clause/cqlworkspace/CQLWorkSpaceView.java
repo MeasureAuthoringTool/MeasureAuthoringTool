@@ -1148,7 +1148,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterNameTxtArea.setText("");
 		//parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
 		parameterNameTxtArea.setSize("260px", "25px");
-		//parameterNameTxtArea.setId("parameterNameField");
+		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		parameterLabel.setText("Parameter");
 		
@@ -1303,7 +1303,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineNameTxtArea.setText("");
 		//defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("260px", "25px");
-		//defineNameTxtArea.setId("defineNameField");
+		defineNameTxtArea.getElement().setId("defineNameField");
 		defineNameTxtArea.setName("defineName");
 		defineLabel.setText("Definition Name");
 		
@@ -1474,7 +1474,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		funcNameTxtArea.setText("");
 		//funcNameTxtArea.setPlaceholder("Enter Function Name here.");
 		funcNameTxtArea.setSize("260px", "25px");
-		//funcNameTxtArea.setId("FunctionNameField");
+		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
 		functionNameLabel.setText("Function Name");
 		

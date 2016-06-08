@@ -148,7 +148,7 @@ public class AddFunctionArgumentDialogBox {
 		//argumentNameTextArea.setPlaceholder("Enter Argument Name");
 		argumentNameTextArea.setWidth("290px");
 		argumentNameTextArea.setHeight("38px");
-		//argumentNameTextArea.setId("inputArgumentName");
+		argumentNameTextArea.getElement().setId("inputArgumentName");
 		argumentNameFormGroup.add(argumentNameFormLabel);
 		argumentNameFormGroup.add(argumentNameTextArea);
 		// Other Type Form group

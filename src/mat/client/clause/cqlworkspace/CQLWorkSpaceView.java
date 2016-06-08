@@ -1498,6 +1498,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		addNewArgument.setTitle("Add Argument");
 		addNewArgument.setText("Add Argument");
+		addNewArgument.setId("Add_Argument_ID");
 		addNewArgument.setIcon(IconType.PLUS);
 		addNewArgument.setSize(ButtonSize.SMALL);
 		

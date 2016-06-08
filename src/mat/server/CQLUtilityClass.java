@@ -43,7 +43,7 @@ public class CQLUtilityClass {
 
 		StringBuilder cqlStr = new StringBuilder();
 
-		// library Name
+		// library Name and Using 
 		if (cqlModel.getLibrary() != null) {
 			cqlStr = cqlStr.append("library "
 					+ cqlModel.getLibrary().getLibraryName());
@@ -52,13 +52,12 @@ public class CQLUtilityClass {
 						+ cqlModel.getLibrary().getVersionUsed());
 			}
 			cqlStr = cqlStr.append("\n\n");
+			
+			cqlStr = cqlStr.append("using QDM");
+			cqlStr = cqlStr.append("\n\n");
 		}
 
-		// Using
-		cqlStr = cqlStr.append("using QDM");
-		cqlStr = cqlStr.append("\n\n");
-
-
+		
 		//Valuesets
 		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
 		if (valueSetList != null) {

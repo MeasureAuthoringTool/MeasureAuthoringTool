@@ -200,7 +200,7 @@ public class ExportServlet extends HttpServlet {
 			}
 			System.out.println("Release version zip " + currentReleaseVersion);
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getELMFileName(export.measureName + "_" + currentReleaseVersion));
+					+ fnu.getELMFileName(export.getCqlLibraryName()));
 		} else {
 			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
 		}
@@ -221,7 +221,7 @@ public class ExportServlet extends HttpServlet {
 			}
 			System.out.println("Release version zip " + currentReleaseVersion);
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getCQLFileName(export.measureName + "_" + currentReleaseVersion));
+					+ fnu.getCQLFileName(export.getCqlLibraryName()));
 		} else {
 			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
 		}

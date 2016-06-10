@@ -6,11 +6,16 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
+import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
+import org.eclipse.persistence.jaxb.compiler.XMLProcessor;
+import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -72,8 +77,14 @@ public class ZipPackager {
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + releaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + releaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + releaseVersion);
-			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + releaseVersion);
-			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + releaseVersion);
+			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
+			if(cqlLibraryName.isEmpty()) {
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
+			} else {			
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
+			}
 
 			
 			
@@ -146,7 +157,7 @@ public class ZipPackager {
 			byte[] emeasureXSLBarr = new byte[contentLength];
 			openStream.read(emeasureXSLBarr);
 			openStream.close();
-			
+						
 			String parentPath = "";
 			String emeasureXSLPath = "";
 			String emeasureXMLPath = "";
@@ -166,8 +177,14 @@ public class ZipPackager {
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName +"_" + releaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + releaseVersion);
-			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + releaseVersion);
-			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + releaseVersion);
+			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
+			if(cqlLibraryName.isEmpty()) {
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
+			} else {			
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
+			}
 			
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureXSLPath, emeasureXSLBarr);
@@ -226,8 +243,14 @@ public class ZipPackager {
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_" + currentRealeaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_" + currentRealeaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
-			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + currentRealeaseVersion);
-			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + currentRealeaseVersion);			
+			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
+			if(cqlLibraryName.isEmpty()) {
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
+			} else {			
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
+			}			
 		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
@@ -283,8 +306,16 @@ public class ZipPackager {
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_" + currentReleaseVersion,packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + currentReleaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
-			cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName + "_" + currentReleaseVersion);
-			elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName + "_" + currentReleaseVersion);
+			
+			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
+			if(cqlLibraryName.isEmpty()) {
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
+			} else {			
+				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
+				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
+			}
+
 
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
@@ -300,5 +331,29 @@ public class ZipPackager {
 		}
 		
 	}	 
+	
+	private String getCQLLibraryName(String simpleXMLString) {
+		
+		// get the name from the simple xml
+		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
+		XmlProcessor xmlProcessor = new XmlProcessor(simpleXMLString); 
+		Node cqlFileName = null;
+		try {
+			cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		if(cqlFileName == null) {
+			return ""; 
+		}
+		
+		else {
+			return cqlFileName.getTextContent(); 
+		}
+		
+		
+	}
 	 
 }

@@ -18,6 +18,8 @@ public interface SimpleEMeasureService {
 	 */
 	public static class ExportResult {
 		
+		private String cqlLibraryName; 
+		
 		/** The measure name. */
 		public String measureName;
 		
@@ -38,6 +40,14 @@ public interface SimpleEMeasureService {
 		
 		/** The last modified date. */
 		public String lastModifiedDate;
+
+		public String getCqlLibraryName() {
+			return cqlLibraryName;
+		}
+
+		public void setCqlLibraryName(String cqlLibraryName) {
+			this.cqlLibraryName = cqlLibraryName;
+		}	
 	}
 	
 	/**

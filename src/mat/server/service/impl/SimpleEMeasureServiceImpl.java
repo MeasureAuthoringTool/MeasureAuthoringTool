@@ -21,6 +21,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.dao.ListObjectDAO;
@@ -39,6 +40,7 @@ import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
+import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
@@ -294,16 +296,34 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.export = measureExport.getSimpleXML();
 		return result;
 	}
-	
+		
 	@Override
 	public final ExportResult getCQLLibraryFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
 		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
 		String measureXML = measureXml.getMeasureXMLAsString();
+		System.out.println(measureXML);
+
+		
+		// get the name from the simple xml
+		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
+		XmlProcessor xmlProcessor = new XmlProcessor(measureXML); 
+		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName); 
+		
 		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML, measureId)).toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;
+		
+		// if the cql file name is blank(before 4.5 measures, then we'll give the file name as
+		// the measure name. 
+		if(cqlFileName == null) {
+			result.setCqlLibraryName(result.measureName);
+		} else {
+			result.setCqlLibraryName(cqlFileName.getTextContent());
+		}
+		
+		
 		return result;
 	}
 
@@ -314,15 +334,32 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String measureXML = measureXml.getMeasureXMLAsString();
 		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML, measureId)).toString();
 		ExportResult result = new ExportResult();
-		String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, false);	
-		result.measureName = measureExport.getMeasure().getaBBRName();
 		
+		String elmString = ""; 
 		
-		if(result.export != null) {
-			result.export = elmString;
+		System.out.println(cqlFileString);
+		
+		// if the cqlFile String is blank, don't even parse it.
+		if(!cqlFileString.isEmpty()) {
+			System.out.println("CQL String was Empty");
+			elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, false);	
+			
+			// get cql library name from the elm file. 
+			// it is located at /library/identifier/@id
+			String xPathIdentifier = "/library/identifier/@id";
+			XmlProcessor xmlProcessor = new XmlProcessor(elmString);
+			Node cqlLibraryName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathIdentifier);		
+			result.setCqlLibraryName(cqlLibraryName.getTextContent());
+			
+
 		} else {
-			result.export = "";
+			elmString = "";
+			result.measureName = measureExport.getMeasure().getaBBRName();
+			result.setCqlLibraryName(result.measureName);
 		}
+		
+		result.export = elmString; 
+		
 		
 		return result;
 	}

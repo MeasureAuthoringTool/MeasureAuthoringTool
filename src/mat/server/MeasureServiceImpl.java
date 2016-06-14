@@ -1,8 +1,16 @@
 package mat.server;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -586,5 +594,28 @@ MeasureService {
 		this.getMeasureLibraryService().createAndSaveCQLLookUp(list, measureID, expProfileToAllQDM);
 		
 	}
+
+	@Override
+	public SaveUpdateCQLResult parseCQLForErrors(String cqlString) {
+		SaveUpdateCQLResult sucr = new SaveUpdateCQLResult();
+		List<String> Errors = new ArrayList<String>();
+		List<CqlTranslatorException> CQLErrors = new ArrayList<CqlTranslatorException>();
+		try {
+			if(!StringUtils.isBlank(cqlString)){
+				String elmString = CQLtoELM.doTranslation(cqlString, "XML", false, false, true);
+				CQLErrors.addAll(CqlTranslator.getErrors());
+			}
+			for(CqlTranslatorException cte : CQLErrors){
+				Errors.add(cte.getMessage());
+			}
+			sucr.setCqlErrors(Errors);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	return sucr;
+	}
+	
+	
 	
 }

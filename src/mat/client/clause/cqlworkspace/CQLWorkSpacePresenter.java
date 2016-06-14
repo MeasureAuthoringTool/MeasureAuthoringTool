@@ -1490,7 +1490,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if (!functionName.isEmpty()) {
 			if(!validator.validateForSpecialChar(functionName.trim())) {
-				
+				if ((functionBody != null)){
+					MatContext.get().getMeasureService().parseCQLForErrors(functionBody, new AsyncCallback<SaveUpdateCQLResult>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+				}
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);

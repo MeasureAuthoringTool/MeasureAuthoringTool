@@ -3,6 +3,9 @@ package mat.client.measure.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -617,6 +620,8 @@ public interface MeasureService extends RemoteService {
 	CQLKeywords getCQLKeywordsList();
 
 	String getJSONObjectFromXML();
+	
+	SaveUpdateCQLResult parseCQLForErrors(String cqlString);
 
 	
 }

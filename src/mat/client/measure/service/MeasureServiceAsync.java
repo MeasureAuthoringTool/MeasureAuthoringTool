@@ -3,6 +3,9 @@ package mat.client.measure.service;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -689,5 +692,7 @@ public interface MeasureServiceAsync {
 	void getCQLKeywordsList(AsyncCallback<CQLKeywords> callback);
 	
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
+
+	void parseCQLForErrors(String cqlString, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 }

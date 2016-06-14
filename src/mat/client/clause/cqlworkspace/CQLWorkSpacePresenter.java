@@ -1629,6 +1629,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			if(!validator.validateForSpecialChar(parameterName.trim())) {
 				
+				if ((parameterLogic != null)){
+					MatContext.get().getMeasureService().parseCQLForErrors(parameterLogic, new AsyncCallback<SaveUpdateCQLResult>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+				}
+				
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
 				parameter.setParameterName(parameterName);
@@ -1745,6 +1763,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (!definitionName.isEmpty()) {
 			
 			if(!validator.validateForSpecialChar(definitionName.trim())) {
+				
+				if ((definitionLogic != null)){
+					MatContext.get().getMeasureService().parseCQLForErrors(definitionLogic, new AsyncCallback<SaveUpdateCQLResult>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+				}
+
 				
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);

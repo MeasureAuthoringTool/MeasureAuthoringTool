@@ -141,6 +141,10 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		securityCodeInput.setPlaceholder("Enter Security Code");
 		securityCodeInput.setTitle("Enter Security Code");
 		
+		userIdText.setText("RaChikka6581");
+		passwordInput.setText("Ravi+4321");
+		securityCodeInput.setText("123456");
+		
 		InputGroup securityInputGroup = new InputGroup();
 		InputGroupAddon addon = new InputGroupAddon();
 		addon.setIcon(IconType.KEY);

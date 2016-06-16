@@ -159,7 +159,7 @@ implements MeasureCloningService {
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
 			if(measure.getReleaseVersion() != null){
-				clonedMeasure.setReleaseVersion("v4.5");
+				clonedMeasure.setReleaseVersion("v5.0");
 			}
 			/*clonedMeasure.setMeasureStatus("In Progress");*/
 			clonedMeasure.setDraft(TRUE);

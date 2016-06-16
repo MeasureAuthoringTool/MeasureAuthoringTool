@@ -1000,7 +1000,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null 
-				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v4.5")){
+				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v5.0")){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
 			view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());

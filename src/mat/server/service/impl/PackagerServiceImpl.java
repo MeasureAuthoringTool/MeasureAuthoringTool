@@ -270,7 +270,7 @@ public class PackagerServiceImpl implements PackagerService {
 			overview.setPackages(pkgs);
 			overview.setReleaseVersion(measure.getReleaseVersion());
 			if(measure.getReleaseVersion() != null && 
-					measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
+					measure.getReleaseVersion().equalsIgnoreCase("v5.0")){
 				qdmAndSupplDataforMeasurePackager(overview, processor);
 				getNewRiskAdjVariablesForMeasurePackager(overview, processor);
 			} else {
@@ -1016,7 +1016,7 @@ public class PackagerServiceImpl implements PackagerService {
 	public void saveQDMData(MeasurePackageDetail detail) {
 		Measure measure = measureDAO.find(detail.getMeasureId());
 		MeasureXML measureXML = measureXMLDAO.findForMeasure( measure.getId());
-		if(measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
+		if(measure.getReleaseVersion().equalsIgnoreCase("v5.0")){
 			saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
 		} else {
 			saveQDMData(measureXML, detail.getSuppDataElements());
@@ -1115,7 +1115,7 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor processor = new XmlProcessor(
 				measureXML.getMeasureXMLAsString());
 		if(measure.getReleaseVersion() != null 
-				&& measure.getReleaseVersion().equalsIgnoreCase("v4.5")){
+				&& measure.getReleaseVersion().equalsIgnoreCase("v5.0")){
 			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
 		} else {
 			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);

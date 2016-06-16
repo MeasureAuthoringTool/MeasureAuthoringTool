@@ -82,6 +82,8 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.parser.CQLFileObject;
+import mat.server.cqlparser.MATCQLParser;
 import mat.server.model.MatUserDetails;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasureLibraryService;
@@ -2092,7 +2094,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(false);
 				pkg = new Measure();
 				/*model.setMeasureStatus("In Progress");*/
-				pkg.setReleaseVersion("v4.5");
+				pkg.setReleaseVersion("v5.0");
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
@@ -3476,11 +3478,116 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	@Override
+	public ValidateMeasureResult validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
+		boolean isInvalid = false;
+		ValidateMeasureResult result = new ValidateMeasureResult();
+		result.setValid(true);
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		List<String> message = new ArrayList<String>();
+		message.add("Validation for CQL Measure.");
+		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			
+			//validate only from MeasureGrouping
+			String XAPTH_MEASURE_GROUPING="/measure/measureGrouping/ group/packageClause" +
+					"[not(@uuid = preceding:: group/packageClause/@uuid)]";
+			
+			List<String> measureGroupingIDList = new ArrayList<String>();;
+			
+			try {
+				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				
+				for(int i=0 ; i<measureGroupingNodeList.getLength();i++){
+					Node childNode = measureGroupingNodeList.item(i);
+					String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					String type = childNode.getAttributes().getNamedItem("type").getNodeValue();
+					if(type.equals("stratification")){
+						List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, xmlProcessor);
+						measureGroupingIDList.addAll(stratificationClausesIDlist);
+						
+					} else {
+						measureGroupingIDList.add(uuid);
+					}
+				}
+			} catch (XPathExpressionException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			String uuidXPathString = "";
+			for (String uuidString: measureGroupingIDList) {
+				uuidXPathString += "@uuid = '" + uuidString + "' or";
+			}
+			
+			uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
+			System.out.println("UUID: "+uuidXPathString);
+			
+			String XPATH_POPULATION = "/measure//clause["+uuidXPathString+"]";
+			
+			try {
+				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XPATH_POPULATION, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				for(int i=0; i<measureGroupingNodeList.getLength(); i++){
+					Node clauseNode = measureGroupingNodeList.item(i);
+					if(clauseNode.hasChildNodes()) {
+						Node childNode = clauseNode.getFirstChild();
+						if(!childNode.getNodeName().equalsIgnoreCase("cqldefinition") && 
+								!childNode.getNodeName().equalsIgnoreCase("cqlaggfunction") && 
+								!childNode.getNodeName().equalsIgnoreCase("cqlfunction")) {
+							result.setValid(false);
+							result.setValidationMessages(message);
+						} else { //if the Measure is a CQL Measure.
+							
+							isInvalid = parseCQLFile(measureXmlModel.getXml(),
+									measureXmlModel.getMeasureId());
+							
+							if(isInvalid) {
+								result.setValid(false);
+								result.setValidationMessages(message);
+							} else {
+								
+							}
+							
+						}
+					}
+					
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+//		result.setValid(false);
+//		result.setValidationMessages(message);
+		return result;
+	}
+	
+	
+	private boolean validateCQLMeasure(String measureXML, String measureId){
+		boolean isInvalid = false;
+		isInvalid = parseCQLFile(measureXML, measureXML);
+		return isInvalid;
+	}
+	
+	private boolean parseCQLFile(String measureXML, String measureId){
+		boolean isInvalid = false;
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,measureId)).toString();
+		MATCQLParser matcqlParser = new MATCQLParser();
+		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		if(matcqlParser.getCQLErrorListener().getErrors().size()>0){
+			isInvalid = true;
+		}
+		return isInvalid;
+	}	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#validateMeasureXmlInpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
 	 */
-	@Override
-	public ValidateMeasureResult validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
+	//@Override
+	public ValidateMeasureResult validateMeasureXmlAtbyCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean isInvalid = false;
 		ValidateMeasureResult result = new ValidateMeasureResult();
 		result.setValid(true);

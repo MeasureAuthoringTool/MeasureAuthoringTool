@@ -8,12 +8,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 
 public class MATCQLParser {
-	
+	CQLErrorListener cqlErrorListener;
 	public CQLFileObject parseCQL(String cqlString){
 		
 		cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlString));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-    	CQLErrorListener cqlErrorListener = new CQLErrorListener();
+        cqlErrorListener = new CQLErrorListener();
     	cqlParser parser = new cqlParser(tokens);
     	parser.setBuildParseTree(true);
     	parser.addErrorListener(cqlErrorListener);
@@ -22,10 +22,15 @@ public class MATCQLParser {
     	
     	ParserRuleContext tree = parser.logic();
     	
-    	/*System.out.println(parser.getNumberOfSyntaxErrors());
-    	System.out.println(cqlErrorListener.getErrors());*/
+    	System.out.println(parser.getNumberOfSyntaxErrors());
+    	System.out.println(cqlErrorListener.getErrors());
     	
     	return matcqlListener.getCqlFileObject();
+	}
+	
+
+	public CQLErrorListener getCQLErrorListener(){
+		return cqlErrorListener;
 	}
 
 }

@@ -30,6 +30,24 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject imple
 	 */
 	private List<CQLFunctionModelObject> referredByFunctions = new ArrayList<CQLFunctionModelObject>();
 	
+	
+	private List<CQLValueSetModelObject> referredToValueSets = new ArrayList<CQLValueSetModelObject>();
+	
+	/**
+	 * This is list of all functions that this function is 'referred by'/'called by'.
+	 */
+	private List<CQLValueSetModelObject> referredByValueSets = new ArrayList<CQLValueSetModelObject>();
+	
+	
+	private List<CQLParameterModelObject> referredToParameters = new ArrayList<CQLParameterModelObject>();
+	
+	/**
+	 * This is list of all functions that this function is 'referred by'/'called by'.
+	 */
+	private List<CQLParameterModelObject> referredByParameters = new ArrayList<CQLParameterModelObject>();
+	
+	
+	
 	public String getExpression() {
 		return expression;
 	}
@@ -154,4 +172,42 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject imple
 	public List<FunctionArgument> getArguments() {
 		return new ArrayList<CQLFunctionModelObject.FunctionArgument>();
 	}
+
+	@Override
+	public List<CQLParameterModelObject> getReferredByParameters() {
+		return referredByParameters;
+	}
+
+	@Override
+	public List<CQLValueSetModelObject> getReferredToValueSets() {
+		return referredToValueSets;
+	}
+
+	@Override
+	public List<CQLValueSetModelObject> getReferredByValueSets() {
+		return referredByValueSets;
+	}
+
+	@Override
+	public List<CQLParameterModelObject> getReferredToParameters() {
+		return referredToParameters;
+	}
+
+	public void setReferredToValueSets(List<CQLValueSetModelObject> referredToValueSets) {
+		this.referredToValueSets = referredToValueSets;
+	}
+
+	public void setReferredByValueSets(List<CQLValueSetModelObject> referredByValueSets) {
+		this.referredByValueSets = referredByValueSets;
+	}
+
+	public void setReferredToParameters(List<CQLParameterModelObject> referredToParameters) {
+		this.referredToParameters = referredToParameters;
+	}
+
+	public void setReferredByParameters(List<CQLParameterModelObject> referredByParameters) {
+		this.referredByParameters = referredByParameters;
+	}
+
+
 }

@@ -7,6 +7,8 @@ public class CQLFileObject {
 	
 	private Map<String, CQLDefinitionModelObject> definitionsMap = new HashMap<String, CQLDefinitionModelObject>();
 	private Map<String, CQLFunctionModelObject> functionsMap = new HashMap<String, CQLFunctionModelObject>();
+	private Map<String, CQLValueSetModelObject> valueSetsMap = new HashMap<String, CQLValueSetModelObject>();
+	private Map<String, CQLParameterModelObject>  parametersMap = new HashMap<String, CQLParameterModelObject>();
 	
 	
 	public Map<String, CQLDefinitionModelObject> getDefinitionsMap() {
@@ -111,6 +113,30 @@ public class CQLFileObject {
 
 	public void setFunctionsMap(Map<String, CQLFunctionModelObject> functionsMap) {
 		this.functionsMap = functionsMap;
+	}
+
+
+
+	public Map<String, CQLValueSetModelObject> getValueSetsMap() {
+		return valueSetsMap;
+	}
+
+
+
+	public void setValueSetsMap(Map<String, CQLValueSetModelObject> valueSetsMap) {
+		this.valueSetsMap = valueSetsMap;
+	}
+
+
+
+	public Map<String, CQLParameterModelObject> getParametersMap() {
+		return parametersMap;
+	}
+
+
+
+	public void setParametersMap(Map<String, CQLParameterModelObject> parametersMap) {
+		this.parametersMap = parametersMap;
 	}
 
 }

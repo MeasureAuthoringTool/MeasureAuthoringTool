@@ -6,6 +6,8 @@ import java.util.List;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
+import mat.model.cql.parser.CQLParameterModelObject;
+import mat.model.cql.parser.CQLValueSetModelObject;
 import mat.server.cqlparser.cqlParser.AccessorExpressionTermContext;
 import mat.server.cqlparser.cqlParser.AliasedQuerySourceContext;
 import mat.server.cqlparser.cqlParser.BooleanExpressionContext;
@@ -59,6 +61,7 @@ public class MATCQLListener extends cqlBaseListener {
 		//System.out.println("Found parameter definition...");
 		//System.out.println(ctx.identifier().getText());
 		//System.out.println("\r\n");
+		extractParameterDetails(ctx);
 	}
 	
 	public void exitValuesetDefinition(cqlParser.ValuesetDefinitionContext ctx) { 
@@ -66,6 +69,7 @@ public class MATCQLListener extends cqlBaseListener {
 		//System.out.println(ctx.identifier().getText());
 		//System.out.println(ctx.valuesetId().getText());
 		//System.out.println("\r\n");
+		extractValueSetDetails(ctx);
 	}
 	
 	public void exitStatement(cqlParser.StatementContext ctx) { 
@@ -80,6 +84,41 @@ public class MATCQLListener extends cqlBaseListener {
 		}
 		//System.out.println("\r\n");
 	}
+	
+	
+	private void extractValueSetDetails(cqlParser.ValuesetDefinitionContext ctx){
+		System.out.println("Found ValueSet definition...");
+		System.out.println(ctx.identifier().getText());
+		List<String> childTokens = findValueSetChildren(ctx);
+		//System.out.println("Depth:"+ctx.expressionDefinition().expression().children.get(0).getClass().getSimpleName());
+					
+		CQLValueSetModelObject cqlValueSetModelObject = new CQLValueSetModelObject();
+		cqlValueSetModelObject.setIdentifier(ctx.identifier().getText());
+		
+		if(ctx.accessModifier() != null){
+			cqlValueSetModelObject.setAccessModifier(ctx.accessModifier().getText());
+		}
+		cqlValueSetModelObject.setChildTokens(childTokens);
+		this.cqlFileObject.getValueSetsMap().put(cqlValueSetModelObject.getIdentifier(), cqlValueSetModelObject);
+	}
+	
+	
+	private void extractParameterDetails(cqlParser.ParameterDefinitionContext ctx){
+		System.out.println("Found Parameter definition...");
+		System.out.println(ctx.identifier().getText());
+		List<String> childTokens = findParameterChildren(ctx);
+		//System.out.println("Depth:"+ctx.expressionDefinition().expression().children.get(0).getClass().getSimpleName());
+					
+		CQLParameterModelObject cqlParameterModelObject = new CQLParameterModelObject();
+		cqlParameterModelObject.setIdentifier(ctx.identifier().getText());
+		
+		if(ctx.accessModifier() != null){
+			cqlParameterModelObject.setAccessModifier(ctx.accessModifier().getText());
+		}
+		cqlParameterModelObject.setChildTokens(childTokens);
+		this.cqlFileObject.getParametersMap().put(cqlParameterModelObject.getIdentifier(), cqlParameterModelObject);
+	}
+
 
 	private void extractCQLFunctionDetails(cqlParser.StatementContext ctx) {
 		System.out.println("Found Function definition...");
@@ -253,6 +292,20 @@ public class MATCQLListener extends cqlBaseListener {
 		List<ParseTree> parseTreeList = expressionDefinitionContext.children;
 		return findDefinitionChildren(parseTreeList);
 	}
+	
+	
+	private List<String> findValueSetChildren(cqlParser.ValuesetDefinitionContext ctx) {
+		//ExpressionDefinitionContext expressionDefinitionContext = ctx.children;
+		List<ParseTree> parseTreeList = ctx.children;
+		return findDefinitionChildren(parseTreeList);
+	}
+	
+	private List<String> findParameterChildren(cqlParser.ParameterDefinitionContext ctx) {
+		//ExpressionDefinitionContext expressionDefinitionContext = ctx.children;
+		List<ParseTree> parseTreeList = ctx.children;
+		return findDefinitionChildren(parseTreeList);
+	}
+	
 
 	public List<String> findDefinitionChildren(List<ParseTree> parseTreeList) {
 		List<String> childTokens = new ArrayList<String>();
@@ -315,6 +368,8 @@ public class MATCQLListener extends cqlBaseListener {
 	private void mapDefinitionReferences() {
 		List<CQLDefinitionModelObject> definitionsList = new ArrayList<CQLDefinitionModelObject>(this.cqlFileObject.getDefinitionsMap().values());
 		List<CQLFunctionModelObject> functionsList = new ArrayList<CQLFunctionModelObject>(this.cqlFileObject.getFunctionsMap().values());
+		List<CQLValueSetModelObject> valueSetsList = new ArrayList<CQLValueSetModelObject>(this.cqlFileObject.getValueSetsMap().values());
+		List<CQLParameterModelObject> parametersList = new ArrayList<CQLParameterModelObject>(this.cqlFileObject.getParametersMap().values());
 		
 		//find functions referring to other definitions/functions
 		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
@@ -325,8 +380,23 @@ public class MATCQLListener extends cqlBaseListener {
 		for(CQLDefinitionModelObject cqlDefinitionModelObject:definitionsList){			
 			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList, functionsList);			
 		}
+		
+		//find definitions referring to other definitions/functions
+		for(CQLDefinitionModelObject cqlDefinitionModelObject:definitionsList){			
+			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList, functionsList);			
+		}
+				
+		//find definitions referring to other definitions/functions
+		for(CQLValueSetModelObject cqlValueSetModelObject:valueSetsList){			
+			findValueSetReferences(cqlValueSetModelObject,definitionsList, functionsList);			
+		}		
+		
+		for(CQLParameterModelObject cqlParameterModelObject:parametersList){			
+			findParameterReferences(cqlParameterModelObject,definitionsList, functionsList);			
+		}	
 	}
 	
+
 	private void findFunctionsReferences(CQLFunctionModelObject cqlFunctionModelObject,
 			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
 		
@@ -368,6 +438,55 @@ public class MATCQLListener extends cqlBaseListener {
 		}
 		
 	}
+	
+	
+	private void findValueSetReferences(CQLValueSetModelObject cqlValueSetModelObject,
+			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
+		
+		String cqlValueSetName = cqlValueSetModelObject.getIdentifier();
+		
+		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
+			if(cqlFunctionModelObject.getChildTokens().contains(cqlValueSetName)){
+				cqlValueSetModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
+				cqlFunctionModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
+			}
+		}
+		
+		for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
+			if(cqlDefnModelObject.getChildTokens().contains(cqlValueSetName)){
+				cqlValueSetModelObject.getReferredToDefinitions().add(cqlDefnModelObject);
+				cqlDefnModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
+			}
+		}
+		
+	}
+	
+	
+	private void findParameterReferences(CQLParameterModelObject cqlParameterModelObject,
+			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
+
+	
+		String cqlParameterName = cqlParameterModelObject.getIdentifier();
+		
+		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
+			if(cqlFunctionModelObject.getChildTokens().contains(cqlParameterName)){
+				cqlParameterModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
+				cqlFunctionModelObject.getReferredByParameters().add(cqlParameterModelObject);
+				
+			}
+		}
+		
+		for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
+			if(cqlDefnModelObject.getChildTokens().contains(cqlParameterName)){
+				cqlParameterModelObject.getReferredToDefinitions().add(cqlDefnModelObject);
+				cqlDefnModelObject.getReferredByParameters().add(cqlParameterModelObject);
+			}
+		}
+
+		
+	}
+
+	
 
 	public MATCQLParser getMatCQLListener() {
 		return matCQLListener;

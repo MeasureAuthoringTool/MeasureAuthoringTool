@@ -9,6 +9,8 @@ import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLFunctionModelObject.FunctionArgument;
+import mat.model.cql.parser.CQLParameterModelObject;
+import mat.model.cql.parser.CQLValueSetModelObject;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
@@ -489,6 +491,30 @@ public class CQLHumanReadableHTMLCreator {
 		@Override
 		public List<CQLFunctionModelObject> getReferredByFunctions() {
 			return new ArrayList<CQLFunctionModelObject>();
+		}
+
+		@Override
+		public List<CQLParameterModelObject> getReferredToParameters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<CQLParameterModelObject> getReferredByParameters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<CQLValueSetModelObject> getReferredToValueSets() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<CQLValueSetModelObject> getReferredByValueSets() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

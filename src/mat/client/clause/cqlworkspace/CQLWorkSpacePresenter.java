@@ -1504,6 +1504,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getSuccessMessageAlert().clearAlert();
 								searchDisplay.getErrorMessageAlert()
 								.createAlert("Validation Failure Check Text in Editor.");
 								searchDisplay.getFunctionBodyAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
@@ -1535,6 +1536,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();
+								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().setVisible(true);
 								searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
 										MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY()));
@@ -1579,6 +1581,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
 								searchDisplay.setCurrentSelectedFunctionObjId(result.getFunction().getId());
+								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());
 							} else if (result.getFailureReason() == 1) {
@@ -1646,6 +1649,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getSuccessMessageAlert().clearAlert();
 								searchDisplay.getErrorMessageAlert()
 								.createAlert("Validation Failure Check Text in Editor.");
 								searchDisplay.getParameterAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
@@ -1678,6 +1682,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
+								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().createAlert(
 										MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
 								searchDisplay.getParameterNameTxtArea()
@@ -1719,6 +1724,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getParameterNameTxtArea()
 								.setText(result.getParameter().getParameterName());
 								searchDisplay.setCurrentSelectedParamerterObjId(result.getParameter().getId());
+								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER());
 								searchDisplay.setIsPageDirty(false);
@@ -1784,6 +1790,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getSuccessMessageAlert().clearAlert();
 								searchDisplay.getErrorMessageAlert()
 								.createAlert("Validation Failure Check Text in Editor.");
 								searchDisplay.getDefineAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.TEXT, true);
@@ -1824,6 +1831,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
 										searchDisplay.clearAndAddDefinitionNamesToListBox();
 										searchDisplay.updateDefineMap();
+										searchDisplay.getErrorMessageAlert().clearAlert();
 										searchDisplay.getSuccessMessageAlert().createAlert(
 												MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
 										searchDisplay.getDefineNameTxtArea()
@@ -1868,6 +1876,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.clearAndAddDefinitionNamesToListBox();
 								searchDisplay.updateDefineMap();
 								searchDisplay.setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
+								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION());
 								searchDisplay.getDefineNameTxtArea()

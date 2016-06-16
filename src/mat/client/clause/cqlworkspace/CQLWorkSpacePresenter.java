@@ -55,6 +55,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceMarkerType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceRange;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1495,14 +1497,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
+							searchDisplay.getErrorMessageAlert().createAlert(
+									MatContext.get().getMessageDelegate().getGenericErrorMessage());							
 						}
 
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
-							// TODO Auto-generated method stub
-							
+							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getErrorMessageAlert()
+								.createAlert("Validation Failure Check Text in Editor.");
+								searchDisplay.getFunctionBodyAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
+							}
 						}
 						
 					});
@@ -1634,14 +1639,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
+							searchDisplay.getErrorMessageAlert().createAlert(
+									MatContext.get().getMessageDelegate().getGenericErrorMessage());							
 						}
 
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
-							// TODO Auto-generated method stub
-							
+							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getErrorMessageAlert()
+								.createAlert("Validation Failure Check Text in Editor.");
+								searchDisplay.getParameterAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
+							}
 						}
 						
 					});
@@ -1769,19 +1777,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
+							searchDisplay.getErrorMessageAlert().createAlert(
+									MatContext.get().getMessageDelegate().getGenericErrorMessage());							
 						}
 
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
-							// TODO Auto-generated method stub
+							if(!result.getCqlErrors().isEmpty()){
+								searchDisplay.getErrorMessageAlert()
+								.createAlert("Validation Failure Check Text in Editor.");
+								searchDisplay.getDefineAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.TEXT, true);
+							}
 							
 						}
 						
 					});
 				}
-
+				
 				
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);

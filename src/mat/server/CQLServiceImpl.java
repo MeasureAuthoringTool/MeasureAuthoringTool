@@ -76,6 +76,31 @@ public class CQLServiceImpl implements CQLService {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
 	
+	private String cqlSupplementalDefinitionXMLString =
+			
+			"<supplementalDefinitions>"
+			
+			+ "<definition context=\"Patient\" name=\"Ethnicity\" "
+				+ " supplDataElement=\"true\" id=\"999\"> "
+				+ "<logic>[\"Patient Characteristic Ethnicity\": \"Ethnicity\"]</logic> "
+			+ "</definition>"
+			
+			+ "<definition context=\"Patient\" name=\"Payer\" "
+            		+ " supplDataElement=\"true\" id=\"999\">  "
+            		+ "<logic>[\"Patient Characteristic Payer\": \"Payer\"]</logic>"
+            + "</definition>"
+            		
+            + "<definition context=\"Patient\" name=\"Race\" "
+            		+ " supplDataElement=\"true\" id=\"999\"> "
+            		+ "<logic>[\"Patient Characteristic Race\": \"Race\"]</logic>"
+            + "</definition>"
+            		
+            + "<definition context=\"Patient\" name=\"Sex\" "
+            		+ " supplDataElement=\"true\" id=\"999\">  "
+            		+ "<logic>[\"Patient Characteristic Sex\": \"ONC Administrative Sex\"]</logic>"
+            + "</definition>"
+            		
+            + "</supplementalDefinitions>"		;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1373,6 +1398,13 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private MeasurePackageService getService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
+	}
+
+	@Override
+	public String getSupplementalDefinitions() {
+		
+		return cqlSupplementalDefinitionXMLString;
+		
 	}
 	
 }

@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceMarkerType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceRange;
@@ -1779,7 +1780,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if(!validator.validateForSpecialChar(definitionName.trim())) {
 				
 				if ((definitionLogic != null)){
-					MatContext.get().getMeasureService().parseCQLForErrors(definitionLogic, new AsyncCallback<SaveUpdateCQLResult>(){
+					MatContext.get().getMeasureService().parseCQLForErrors(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>(){
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -1789,12 +1790,46 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
+							
 							if(!result.getCqlErrors().isEmpty()){
 								searchDisplay.getSuccessMessageAlert().clearAlert();
+								StringBuilder strBuilder = new StringBuilder("Validation failed with following errors.");
+								for(int i=0; i<result.getCqlErrors().size(); i++) {
+									strBuilder.append("\n\n");
+									strBuilder.append(result.getCqlErrors().get(i));	
+								}
+								searchDisplay.getErrorMessageAlert()
+								.createAlert(strBuilder.toString());
+								
+								/*searchDisplay.getParameterAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);*/
+							}
+							//if(!result.getCqlErrors().isEmpty()){
+								/*searchDisplay.getSuccessMessageAlert().clearAlert();
 								searchDisplay.getErrorMessageAlert()
 								.createAlert("Validation Failure Check Text in Editor.");
-								searchDisplay.getDefineAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.TEXT, true);
-							}
+								//searchDisplay.getDefineAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.TEXT, true);
+								for(CQLErrors error : result.getErrorList()){
+									searchDisplay.getSuccessMessageAlert().clearAlert();
+									searchDisplay.getErrorMessageAlert()
+									.createAlert("Validation Failure in Editor.");
+									String errorMessage = new String();
+									errorMessage = errorMessage.concat("Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset());
+									HTML html = new HTML("<h6>" + errorMessage + "</h6>");
+									//alert.add(html);
+									int line = error.getErrorInLine();
+									int column = error.getErrorAtOffeset();
+									System.out.println("line: " + line + "  column: " + column);
+									searchDisplay.getDefineAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.WARNING);
+									//searchDisplay.getDefineAceEditor().setAnnotations();
+									// try SCREEN_LINE, FULL_LINE, TEXT          underline_squiggly
+									//int id = searchDisplay.getDefineAceEditor().addMarker(AceRange.create(line - 1, 1, line-1, 15), "underline_squiggly", AceMarkerType.FULL_LINE, false);
+									int id = searchDisplay.getDefineAceEditor().addMarker(AceRange.create(line - 1, column, line - 1, column + 50), "underline", AceMarkerType.TEXT, false);
+								}*/
+								
+								searchDisplay.getDefineAceEditor().setAnnotations();
+								searchDisplay.getDefineAceEditor().redisplay();
+								
+							//}
 							
 						}
 						

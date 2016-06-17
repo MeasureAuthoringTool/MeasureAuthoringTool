@@ -596,24 +596,50 @@ MeasureService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult parseCQLForErrors(String cqlString) {
-		SaveUpdateCQLResult sucr = new SaveUpdateCQLResult();
+	public SaveUpdateCQLResult parseCQLForErrors(String measureId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		List<String> Errors = new ArrayList<String>();
-		List<CqlTranslatorException> CQLErrors = new ArrayList<CqlTranslatorException>();
+		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
+		//MATCQLParser matcqlParser = new MATCQLParser();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId)).toString();
+		/*cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlFileString));
+		System.out.println(cqlFileString);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		cqlParser parser = new cqlParser(tokens);
+		CQLErrorListener cqlErrorListener = new CQLErrorListener();
+		parser.addErrorListener(cqlErrorListener);
+		parser.setBuildParseTree(true);
+
+		ParserRuleContext tree = parser.logic();
+		parser.notifyErrorListeners("");
+
+		System.out.println(parser.getNumberOfSyntaxErrors());
+		System.out.println(cqlErrorListener.getErrors());
+
+		if(cqlErrorListener.getErrors().size()!=0){
+			//result.setValid(false);
+			result.setErrorList(cqlErrorListener.getErrors());
+		} else {
+			//result.setValid(true);
+		}
+*/
+		
+		List<CqlTranslatorException> cqlErrors = new ArrayList<CqlTranslatorException>();
 		try {
-			if(!StringUtils.isBlank(cqlString)){
-				String elmString = CQLtoELM.doTranslation(cqlString, "XML", false, false, true);
-				CQLErrors.addAll(CqlTranslator.getErrors());
+			if(!StringUtils.isBlank(cqlFileString)){
+				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
+				cqlErrors.addAll(CqlTranslator.getErrors());
 			}
-			for(CqlTranslatorException cte : CQLErrors){
+			for(CqlTranslatorException cte : cqlErrors){
 				Errors.add(cte.getMessage());
+				
 			}
-			sucr.setCqlErrors(Errors);
+			result.setCqlErrors(null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-	return sucr;
+	return result;
 	}
 	
 	

@@ -6,14 +6,6 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -30,6 +22,14 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 public class CQLUtilityClass {
 	
@@ -63,8 +63,9 @@ public class CQLUtilityClass {
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 				cqlStr = cqlStr.append("valueset "
-						+'"'+ valueset.getCodeListName() +'"'+ ":"
-						+"'"+ valueset.getOid()+"'");
+						+'"'+ valueset.getDataType() +'"'+ ":"
+						+"'"+ valueset.getOid()+"'"
+						);
 
 				cqlStr = cqlStr.append("\n\n");
 			}

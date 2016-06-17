@@ -3485,7 +3485,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setValid(true);
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		List<String> message = new ArrayList<String>();
-		message.add("Validation for CQL Measure.");
+		message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_POPULATION_WORK_SPACE());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			
@@ -3540,16 +3540,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							result.setValidationMessages(message);
 						} else { //if the Measure is a CQL Measure.
 							
-							//isInvalid = parseCQLFile(measureXmlModel.getXml(),
-								//	measureXmlModel.getMeasureId());
-							isInvalid = false;
+							isInvalid = parseCQLFile(measureXmlModel.getXml(),
+									measureXmlModel.getMeasureId());
 							if(isInvalid) {
 								result.setValid(false);
 								result.setValidationMessages(message);
-							} else {
-								
 							}
-							
 						}
 					}
 					

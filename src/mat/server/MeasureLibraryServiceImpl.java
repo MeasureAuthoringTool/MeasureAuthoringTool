@@ -654,7 +654,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		if (originalDoc != null) {
 			try {				
-				String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='Ethnicity' or @name='Payer' or @name='Race' or @name='Sex']";
+				String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='define_Ethnicity' or @name='define_Payer' or @name='define_Race' or @name='define_Sex']";
 				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultDefinitionsXPath);
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();

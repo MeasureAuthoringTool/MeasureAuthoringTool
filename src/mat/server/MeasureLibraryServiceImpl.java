@@ -100,6 +100,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -586,7 +587,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		filteredString = removePatternFromXMLString(filteredString, "</measure>", "");
 		
 		try {
+			System.out.println("timing qdm String:"+filteredString);
 			xmlProcessor.appendNode(filteredString, "qdm", "/measure/elementLookUp");
+			String cqlValueSetString = filteredString.replaceAll("<qdm", "<valueset");
+			System.out.println("timing cql valueset string:"+cqlValueSetString);
+			xmlProcessor.appendNode(cqlValueSetString, "valueset", "/measure/cqlLookUp/valuesets");
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -609,36 +614,33 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return;
 		}
 		
-		CQLDefinition definition = new CQLDefinition();
-		
-		List<String> supplementalData = new ArrayList<String>();
-		supplementalData.add("Ethnicity");
-		supplementalData.add("Payer");
-		supplementalData.add("Race");
-		supplementalData.add("Sex");
-		
-		for(String sData : supplementalData){
-			definition.setId(UUID.randomUUID().toString());
-			definition.setDefinitionName(sData);
-			if(definition.getDefinitionName().equalsIgnoreCase("Sex")){
-				definition.setDefinitionLogic("ONC Administrative Sex");
-			}else{
-				definition.setDefinitionLogic(sData);
-			}
-			definition.setContext(CQLWorkSpaceConstants.CQL_DEFAULT_DEFINITON_CONTEXT);
-			definition.setSupplDataElement(true);
-			String defStr = getCqlService().createDefinitionsXML(definition);
+		String defStr = getCqlService().getSupplementalDefinitions();
+		System.out.println("defStr:"+defStr);
+		try {
+			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 			
-			try {
-				xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			NodeList supplementalDefnNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), 
+					"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
+			
+			if(supplementalDefnNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<supplementalDefnNodes.getLength();i++){
+					Node supplNode = supplementalDefnNodes.item(i);
+				    System.out.println("name:"+supplNode.getAttributes().getNamedItem("name").getNodeValue());
+				    System.out.println("id:"+supplNode.getAttributes().getNamedItem("id").getNodeValue());
+					supplNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
 			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 	}
+	
 	
 	/**
 	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and try and NodeList for Definitions with the following names;
@@ -2338,6 +2340,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureXmlModel.setXml(result);
 			processor = new XmlProcessor(measureXmlModel.getXml());
 			
+			String cqlFilteredString = filteredString.replaceAll("<qdm", "<valueset");
+			try {
+				processor.appendNode(cqlFilteredString, "valueset", "/measure/cqlLookUp/valuesets");
+			} catch (SAXException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			Document measureXMLDocument = processor.getOriginalDoc();
 			
 			//find the "<supplementalDataElements>" tag.
@@ -3477,6 +3487,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return result;
 	}
+	
 	
 	@Override
 	public ValidateMeasureResult validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {

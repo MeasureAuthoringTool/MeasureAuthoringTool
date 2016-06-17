@@ -63,7 +63,7 @@ public class CQLUtilityClass {
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 				cqlStr = cqlStr.append("valueset "
-						+'"'+ valueset.getDataType() +'"'+ ":"
+						+'"'+ valueset.getCodeListName() +'"'+ ":"
 						+"'"+ valueset.getOid()+"'"
 						);
 

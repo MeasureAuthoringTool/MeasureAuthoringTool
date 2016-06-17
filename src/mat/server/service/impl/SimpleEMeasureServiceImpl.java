@@ -21,7 +21,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.dao.ListObjectDAO;
@@ -343,7 +342,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		if(!cqlFileString.isEmpty()) {
 			System.out.println("CQL String was Empty");
 			elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, false);	
-			
+			LOGGER.info(elmString);
 			// get cql library name from the elm file. 
 			// it is located at /library/identifier/@id
 			String xPathIdentifier = "/library/identifier/@id";

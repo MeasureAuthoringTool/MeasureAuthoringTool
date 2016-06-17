@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -25,7 +24,6 @@ import mat.dao.clause.CQLDAO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
-import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLKeywords;
@@ -80,22 +78,22 @@ public class CQLServiceImpl implements CQLService {
 			
 			"<supplementalDefinitions>"
 			
-			+ "<definition context=\"Patient\" name=\"Ethnicity\" "
+			+ "<definition context=\"Patient\" name=\"define_Ethnicity\" "
 				+ " supplDataElement=\"true\" id=\"999\"> "
 				+ "<logic>[\"Patient Characteristic Ethnicity\": \"Ethnicity\"]</logic> "
 			+ "</definition>"
 			
-			+ "<definition context=\"Patient\" name=\"Payer\" "
+			+ "<definition context=\"Patient\" name=\"define_Payer\" "
             		+ " supplDataElement=\"true\" id=\"999\">  "
             		+ "<logic>[\"Patient Characteristic Payer\": \"Payer\"]</logic>"
             + "</definition>"
             		
-            + "<definition context=\"Patient\" name=\"Race\" "
+            + "<definition context=\"Patient\" name=\"define_Race\" "
             		+ " supplDataElement=\"true\" id=\"999\"> "
             		+ "<logic>[\"Patient Characteristic Race\": \"Race\"]</logic>"
             + "</definition>"
             		
-            + "<definition context=\"Patient\" name=\"Sex\" "
+            + "<definition context=\"Patient\" name=\"define_Sex\" "
             		+ " supplDataElement=\"true\" id=\"999\">  "
             		+ "<logic>[\"Patient Characteristic Sex\": \"ONC Administrative Sex\"]</logic>"
             + "</definition>"

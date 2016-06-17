@@ -634,7 +634,7 @@ MeasureService {
 				Errors.add(cte.getMessage());
 				
 			}
-			result.setCqlErrors(null);
+			result.setCqlErrors(Errors);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

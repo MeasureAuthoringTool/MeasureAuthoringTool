@@ -4,7 +4,6 @@ import java.util.List;
 
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
@@ -115,5 +114,7 @@ public interface CQLService {
 	String getJSONObjectFromXML();
 
 	String createDefinitionsXML(CQLDefinition definition);
+
+	String getSupplementalDefinitions();
 
 }

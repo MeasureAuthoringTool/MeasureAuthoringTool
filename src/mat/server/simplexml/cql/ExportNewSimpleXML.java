@@ -431,41 +431,41 @@ public class ExportNewSimpleXML {
 			}
 			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
 			
-			String xPathForUnunsedDefinitionsTreeNodes = "measure/cqlLookUp//definition["+uuidXPathString+"]";
-			String xPathForUnunsedFunctionsTreeNodes = "measure/cqlLookUp//function["+uuidXPathString+"]";
-			String xPathForUnunsedValueSetsTreeNodes = "measure/cqlLookUp//definition["+uuidXPathString+"]";
-			String xPathForUnunsedParametersTreeNodes = "measure/cqlLookUp//valueset["+uuidXPathString+"]";
+			String xPathForUnunsedDefinitionsTreeNodes = "/measure/cqlLookUp//definition["+uuidXPathString+"]";
+			String xPathForUnunsedFunctionsTreeNodes = "/measure/cqlLookUp//function["+uuidXPathString+"]";
+			String xPathForUnunsedValueSetsTreeNodes = "/measure/cqlLookUp//valueset["+uuidXPathString+"]";
+			String xPathForUnunsedParametersTreeNodes = "/measure/cqlLookUp//parameter["+uuidXPathString+"]";
 			
 			try {
-				NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedDefinitionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-				if(unUnsedSubTreeNodes.getLength() > 0){
-					Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
-					for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
-						parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
+				NodeList unUnsedDefineNodes = (NodeList) xPath.evaluate(xPathForUnunsedDefinitionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				if(unUnsedDefineNodes.getLength() > 0){
+					Node parentSubTreeNode = unUnsedDefineNodes.item(0).getParentNode();
+					for(int i=0;i<unUnsedDefineNodes.getLength();i++){
+						parentSubTreeNode.removeChild(unUnsedDefineNodes.item(i));
 					}
 				}
 				
 				//to remove functions
 				NodeList unUnsedFunctionNodes = (NodeList) xPath.evaluate(xPathForUnunsedFunctionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-				if(unUnsedSubTreeNodes.getLength() > 0){
+				if(unUnsedFunctionNodes.getLength() > 0){
 					Node parentSubTreeNode = unUnsedFunctionNodes.item(0).getParentNode();
-					for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
+					for(int i=0;i<unUnsedFunctionNodes.getLength();i++){
 						parentSubTreeNode.removeChild(unUnsedFunctionNodes.item(i));
 					}
 				}
 				
 				NodeList unUnsedValueSetNodes = (NodeList) xPath.evaluate(xPathForUnunsedValueSetsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-				if(unUnsedSubTreeNodes.getLength() > 0){
+				if(unUnsedValueSetNodes.getLength() > 0){
 					Node parentSubTreeNode = unUnsedValueSetNodes.item(0).getParentNode();
-					for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
+					for(int i=0;i<unUnsedValueSetNodes.getLength();i++){
 						parentSubTreeNode.removeChild(unUnsedValueSetNodes.item(i));
 					}
 				}
 				
 				NodeList unUnsedParameterNodes = (NodeList) xPath.evaluate(xPathForUnunsedParametersTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-				if(unUnsedSubTreeNodes.getLength() > 0){
+				if(unUnsedParameterNodes.getLength() > 0){
 					Node parentSubTreeNode = unUnsedParameterNodes.item(0).getParentNode();
-					for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
+					for(int i=0;i<unUnsedParameterNodes.getLength();i++){
 						parentSubTreeNode.removeChild(unUnsedParameterNodes.item(i));
 					}
 				}
@@ -1022,8 +1022,8 @@ public class ExportNewSimpleXML {
 				                      .get(cqlName).getReferredToDefinitions();
 				
 				for(int j=0 ;j<referredToDefinitionsModelObjectList.size();j++){
-					if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1031,8 +1031,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredToFunctions();
 				
 				for(int m=0 ;m<referredToFunctionsModelObjectList.size();m++){
-					if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1040,8 +1040,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredByValueSets();
 				
 				for(int k=0 ;k<valueSetsReferredByDefinitionsModelObjectList.size();k++){
-					if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1049,8 +1049,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredByParameters();
 				
 				for(int n=0 ;n<referredByDefinitionsModelObjectList.size();n++){
-					if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 
@@ -1081,8 +1081,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredToDefinitions();
 				
 				for(int j=0 ;j<referredToDefinitionsModelObjectList.size();j++){
-					if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1090,8 +1090,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredToFunctions();
 				
 				for(int m=0 ;m<referredToFunctionsModelObjectList.size();m++){
-					if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1099,8 +1099,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredByValueSets();
 				
 				for(int k=0 ;k<valueSetsReferredByDefinitionsModelObjectList.size();k++){
-					if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 				
@@ -1108,8 +1108,8 @@ public class ExportNewSimpleXML {
 						.get(cqlName).getReferredByParameters();
 				
 				for(int n=0 ;n<referredByDefinitionsModelObjectList.size();n++){
-					if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(i).getIdentifier())){
-						usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(i).getIdentifier().replaceAll("\"", ""));
+					if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""))){
+						usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""));
 					}
 				}
 

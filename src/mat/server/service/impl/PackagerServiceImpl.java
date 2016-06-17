@@ -69,22 +69,22 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
 	
-	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION = "/measure/supplementalDataElements/cqldefinition/@id";
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION = "/measure/supplementalDataElements/cqldefinition/@uuid";
 	
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/subTreeRef/@id";
 	
-	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/cqldefinition/@id";
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES = "/measure/riskAdjustmentVariables/cqldefinition/@uuid";
 	
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
 	
-	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEF_EXPRESSION = "/measure/supplementalDataElements/cqldefinition[@id";
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEF_EXPRESSION = "/measure/supplementalDataElements/cqldefinition[@uuid";
 	
 	/** The Constant XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION. */
 	private static final String XPATH_MEASURE_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/subTreeRef[@id";
 	
-	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/cqldefinition[@id";
+	private static final String XPATH_MEASURE_NEW_RISK_ADJ_VARIABLES_EXPRESSION = "/measure/riskAdjustmentVariables/cqldefinition[@uuid";
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
@@ -537,7 +537,7 @@ public class PackagerServiceImpl implements PackagerService {
 			Node newNode = riskAdjustmentVarNodeList.item(j);					
 			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
 			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
 			riskAdkVariableList.add(riskDTO);
 		}
 		String uuidXPathString = "";
@@ -591,7 +591,7 @@ public class PackagerServiceImpl implements PackagerService {
 			Node newNode = riskAdjustmentVarNodeList.item(j);					
 			RiskAdjustmentDTO riskDTO = new RiskAdjustmentDTO();
 			riskDTO.setName(newNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			riskDTO.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+			riskDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue());
 			riskAdkVariableList.add(riskDTO);
 		}
 		String uuidXPathString = "";
@@ -888,7 +888,7 @@ public class PackagerServiceImpl implements PackagerService {
 						XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS.concat("["));
 				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
 					Node newNode = nodesSupplementalData.item(i);
-					String nodeID = newNode.getAttributes().getNamedItem("id")
+					String nodeID = newNode.getAttributes().getNamedItem("uuid")
 							.getNodeValue();
 					expression = expression.append("@id!= '").append(nodeID)
 							.append("'").append(" and ");

@@ -2358,8 +2358,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				for(int i=0;i<defaultCQLDefNodeList.getLength();i++){
 					Node cqlDefNode = defaultCQLDefNodeList.item(i);
 					Element cqlDefinitionRefNode = measureXMLDocument.createElement("cqldefinition");
-					cqlDefinitionRefNode.setAttribute("name", cqlDefNode.getAttributes().getNamedItem("name").getNodeValue());
-					cqlDefinitionRefNode.setAttribute("id", cqlDefNode.getAttributes().getNamedItem("id").getNodeValue());
+					cqlDefinitionRefNode.setAttribute("displayName", cqlDefNode.getAttributes().getNamedItem("name").getNodeValue());
+					cqlDefinitionRefNode.setAttribute("uuid", cqlDefNode.getAttributes().getNamedItem("id").getNodeValue());
 					supplementalDataElementNode.appendChild(cqlDefinitionRefNode);
 				}
 
@@ -3540,9 +3540,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							result.setValidationMessages(message);
 						} else { //if the Measure is a CQL Measure.
 							
-							isInvalid = parseCQLFile(measureXmlModel.getXml(),
-									measureXmlModel.getMeasureId());
-							
+							//isInvalid = parseCQLFile(measureXmlModel.getXml(),
+								//	measureXmlModel.getMeasureId());
+							isInvalid = false;
 							if(isInvalid) {
 								result.setValid(false);
 								result.setValidationMessages(message);

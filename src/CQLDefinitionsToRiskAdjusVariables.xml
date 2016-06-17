@@ -11,7 +11,7 @@
 			<bind-xml name="cqldefinition" location="riskAdjustmentVariables">
 				<class name="mat.model.RiskAdjustmentDTO">
 					<field name="uuid" type="java.lang.String">
-						<bind-xml name="id" node="attribute" />
+						<bind-xml name="uuid" node="attribute" />
 					</field>
 					<field name="name" type="java.lang.String">
 						<bind-xml name="displayName" node="attribute" />

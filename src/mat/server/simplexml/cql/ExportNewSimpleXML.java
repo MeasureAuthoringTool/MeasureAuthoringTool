@@ -101,37 +101,6 @@ public class ExportNewSimpleXML {
 		return exportedXML;
 	}
 	
-	/**
-	 * Sets the qdm id as uuid.
-	 * 
-	 * @param xmlString
-	 *            the xml string
-	 * @return the string
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 * @throws ParserConfigurationException
-	 *             the parser configuration exception
-	 * @throws SAXException
-	 *             the sAX exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public static String setQDMIdAsUUID(String xmlString) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException{
-		//Code to replace all @id attributes of <qdm> with @uuid attribute value
-		
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
-		Document originalDoc = docBuilder.parse(oldXmlstream);
-		
-		NodeList allQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for(int i=0;i<allQDMs.getLength();i++){
-			Node qdmNode = allQDMs.item(i);
-			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			qdmNode.getAttributes().getNamedItem("id").setNodeValue(uuid);
-		}
-		
-		return transform(originalDoc);
-	}
 	
 	/**
 	 * This will work with the existing Measure XML & assume that it is correct
@@ -173,32 +142,16 @@ public class ExportNewSimpleXML {
 		updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
 		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
-		
 		//using the above list we need to traverse the originalDoc and remove the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
-		//to get SubTreeRefIds from Population WorkSpace
-		//List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(usedClauseIds, originalDoc);
-		//to get SubTreeIds From Clause WorksPace in a Whole
-		//List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
-		/*	usedSubTreeIds = getUsedSubRefFromRiskAdjustmentVariables(usedSubTreeIds, originalDoc);
-		usedSubTreeIds = checkUnUsedSubTreeRef(usedSubTreeIds, originalDoc);*/
-		//formatAttributeDateInQDMAttribute(usedSubTreeIds, originalDoc);
-		//this will remove unUsed SubTrees From SubTreeLookUp
 		List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc);
 		removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
-		//to add UUID attribute for QDM Attribute
-		//addUUIDtoQDMAttribute(usedSubTreeIds, originalDoc);
-		//List<String> usedQDMIds = getUsedQDMIds(originalDoc);
-		//using the above list we need to traverse the originalDoc and remove the unused QDM's
 		removeNode("/measure/subTreeLookUp",originalDoc);
 		removeNode("/measure/elementLookUp",originalDoc);
 		expandAndHandleGrouping(originalDoc);
 		//addUUIDToFunctions(originalDoc);
 		//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
 		modifyHeaderStart_Stop_Dates(originalDoc);
-		//modifyElementLookUpForOccurances(originalDoc);
-		//modifySubTreeLookUpForOccurances(originalDoc);
-		// re-order measure Grouping sequence.
 		modifyMeasureGroupingSequence(originalDoc);
 		//Remove Empty Comments nodes from population Logic.
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
@@ -236,89 +189,8 @@ public class ExportNewSimpleXML {
 			}
 		}
 	}
-	/**
-	 * Gets the used sub ref from risk adjustment variables.
-	 *
-	 * @param usedSubTreeIds the used sub tree ids
-	 * @param originalDoc the original doc
-	 * @return the used sub ref from risk adjustment variables
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static List<String> getUsedSubRefFromRiskAdjustmentVariables(
-			List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException {
-		
-		List<String> subTreeRefIdsInRAVList = new ArrayList<String>();
-		String xpathforSubTreeInRAV = "/measure/riskAdjustmentVariables/subTreeRef/@id";
-		NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate(xpathforSubTreeInRAV,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for(int i=0;i<subTreeRefIdsNodeList.getLength();i++){
-			subTreeRefIdsInRAVList.add(subTreeRefIdsNodeList.item(i).getNodeValue());
-		}
-		usedSubTreeIds.removeAll(subTreeRefIdsInRAVList);
-		subTreeRefIdsInRAVList.addAll(usedSubTreeIds);
-		return subTreeRefIdsInRAVList;
-	}
 	
-	/**
-	 * Format attribute date in qdm attribute.
-	 *
-	 * @param usedSubTreeIds the used sub tree ids
-	 * @param originalDoc the original doc
-	 */
-	private static void formatAttributeDateInQDMAttribute(List<String> usedSubTreeIds,
-			Document originalDoc) {
-		
-		String XPATH_EXP_ATTR_DATE = "/measure/subTreeLookUp//elementRef/attribute";
-		try {
-			NodeList qdmAttributeList = (NodeList) xPath.evaluate(XPATH_EXP_ATTR_DATE,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			for(int i = 0; i< qdmAttributeList.getLength(); i++){
-				Node attrNode = qdmAttributeList.item(i);
-				if(attrNode.getAttributes().getNamedItem("attrDate")!=null){
-					String date = attrNode.getAttributes().getNamedItem("attrDate").getNodeValue();
-					attrNode.getAttributes().getNamedItem("attrDate").setNodeValue(formatDate(date));
-				}
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	
-	/**
-	 * Adds the uuid to qdm attribute.
-	 *
-	 * @param usedSubTreeIds the used sub tree ids
-	 * @param originalDoc the original doc
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void addUUIDtoQDMAttribute(List<String> usedSubTreeIds,
-			Document originalDoc) throws XPathExpressionException {
-		
-		if (usedSubTreeIds.size() == 0) {
-			return;
-		}
-		
-		String uuidXPathString = "";
-		for(String uuidString: usedSubTreeIds){
-			uuidXPathString += "@uuid = '"+uuidString + "' or";
-		}
-		
-		
-		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
-		String XPATH_QDM_UUID_ATTRIBUTE = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]//elementRef/attribute";
-		NodeList qdmAttrNodeList = (NodeList) xPath.evaluate(XPATH_QDM_UUID_ATTRIBUTE, originalDoc, XPathConstants.NODESET);
-		for(int i = 0; i < qdmAttrNodeList.getLength(); i++){
-			Node qdmAttrNode = qdmAttrNodeList.item(i);
-			
-			Attr uuidAttr = originalDoc.createAttribute("attrUUID");
-			uuidAttr.setValue(UUID.randomUUID().toString());
-			
-			qdmAttrNode.getAttributes().setNamedItem(uuidAttr);
-		}
-		
-	}
 	
 	/**
 	 * Update versionfor measure details.
@@ -476,113 +348,9 @@ public class ExportNewSimpleXML {
 			}
 		}
 			
-//		} else {
-//			NodeList allSubTreeNodeList = (NodeList) xPath.evaluate("/measure/subTreeLookUp/subTree",
-//					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-//			for(int i = 0; i<allSubTreeNodeList.getLength(); i++ ) {
-//				removeNode("/measure/cqlLookUp",originalDoc);
-//			}
-//		}
-		
 	}
 	
-	/**
-	 * Modify element look up for occurances.
-	 *
-	 * @param originalDoc the original doc
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void modifyElementLookUpForOccurances(Document originalDoc) throws XPathExpressionException {
-		NodeList allOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@instance]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		List<String> qdmOID_Datatype_List = new ArrayList<String>();
-		
-		for(int i=0;i<allOccuranceQDMs.getLength();i++){
-			Node qdmNode = allOccuranceQDMs.item(i);
-			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
-			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			String instance = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
-			
-			if(qdmOID_Datatype_List.contains(datatype + oid)){
-				continue;
-			}else{
-				qdmOID_Datatype_List.add(datatype + oid);
-			}
-			
-			NodeList nonOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@datatype='"+datatype+"'][@oid='"+oid+"'][not(@instance)]",
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			if(nonOccuranceQDMs.getLength() > 0){
-				Node nonOccuranceQDM = nonOccuranceQDMs.item(0);
-				Node parentNode = nonOccuranceQDM.getParentNode();
-				parentNode.removeChild(nonOccuranceQDM);
-				parentNode.appendChild(nonOccuranceQDM.cloneNode(true));
-			}else{
-				Node newNode = qdmNode.cloneNode(true);
-				Node parentNode = qdmNode.getParentNode();
-				newNode.getAttributes().removeNamedItem("instance");
-				String uuid = UUID.randomUUID().toString();
-				newNode.getAttributes().getNamedItem("uuid").setNodeValue(uuid);
-				newNode.getAttributes().getNamedItem("id").setNodeValue(uuid);
-				parentNode.appendChild(newNode);
-			}
-		}
-	}
 	
-	/**
-	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with
-	 * an "instanceOf" attribute, we need to fetch the corresponding <subTree> and copy its children.
-	 *
-	 * @param originalDoc the original doc
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void modifySubTreeLookUpForOccurances(Document originalDoc) throws XPathExpressionException{
-		NodeList qdmVariableSubTreeList = (NodeList)xPath.evaluate("/measure/subTreeLookUp/subTree[@instanceOf]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for(int i=0;i<qdmVariableSubTreeList.getLength();i++){
-			Node qdmVariableNode = qdmVariableSubTreeList.item(i);
-			String uuid = qdmVariableNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
-			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
-			displayName = "Occurrence "+occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
-			
-			qdmVariableNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
-			
-			String referencedUUID = qdmVariableNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
-			
-			Node referencedSubTreeNode = (Node)xPath.evaluate("/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']", originalDoc.getDocumentElement(),XPathConstants.NODE);
-			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
-			Node mainChildClone = mainChild.cloneNode(true);
-			qdmVariableNode.appendChild(mainChildClone);
-			findAllElementRefNodes(qdmVariableNode);
-		}
-	}
-	
-	/**
-	 * Logic copied to Occ Clause Logic Nodes in Simple xml from actual Clause
-	 * requires attrUUID to be updated to new in case there are elementRef's at
-	 * any level with Attributes. This method is doing the same.
-	 * @param qdmVariableNode - Node.
-	 */
-	private static void findAllElementRefNodes(Node qdmVariableNode) {
-		if ((qdmVariableNode != null) && qdmVariableNode.hasChildNodes()) {
-			for (int i = 0; i < qdmVariableNode.getChildNodes().getLength(); i++) {
-				Node childNode = qdmVariableNode.getChildNodes().item(i);
-				if (childNode.getNodeName().equalsIgnoreCase("elementRef")) {
-					if (childNode.hasChildNodes()) {
-						System.out.println(childNode.getFirstChild().getNodeName());
-						Node attrNode = childNode.getFirstChild();
-						if (attrNode.getAttributes().getNamedItem("attrUUID") != null) {
-							attrNode.getAttributes().getNamedItem("attrUUID")
-							.setNodeValue(UUIDUtilClient.uuid());
-						}
-					}
-				} else {
-					if (childNode.hasChildNodes()) {
-						findAllElementRefNodes(childNode);
-					}
-				}
-			}
-		}
-	}
 	/**
 	 * Method to re order Measure Grouping Sequence.
 	 * @param originalDoc - Document.
@@ -629,20 +397,6 @@ public class ExportNewSimpleXML {
 		}
 		_logger.info("Document object to ByteArray transformation complete");
 		return arrayOutputStream.toString();
-	}
-	
-	/**
-	 * Removes un-wanted qdms, except 'Measurement Period', 'Expired', 'Birthdate' QDM elements.
-	 * 
-	 * @param usedQDMIds
-	 *            the used qdm ids
-	 * @param originalDoc
-	 *            the original doc
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private static void removeElementLookUp(Document originalDoc) throws XPathExpressionException {
-		
 	}
 	
 	/**
@@ -871,7 +625,8 @@ public class ExportNewSimpleXML {
 		//		for(int i = 0; i<logicalNode.getLength();i++){
 		for(int i = logicalNode.getLength()-1; i>-1; i--){
 			Node innerNode = logicalNode.item(i);
-			if(newClauseNode.getAttributes().getNamedItem("displayName").
+			newClauseNode.removeChild(innerNode);
+			/*if(newClauseNode.getAttributes().getNamedItem("displayName").
 					getNodeValue().contains("stratum")){
 				newClauseNode.removeChild(innerNode);
 			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
@@ -883,7 +638,7 @@ public class ExportNewSimpleXML {
 					Node child = innerNodeChildren.item(j);
 					innerNode.removeChild(child);
 				}
-			}
+			}*/
 		}
 		groupNode.appendChild(newClauseNode);
 	}
@@ -1125,112 +880,6 @@ public class ExportNewSimpleXML {
 	}
 	
 	
-	/**
-	 * Check un used sub tree ref.
-	 *
-	 * @param usedSubTreeRefIds the used sub tree ref ids
-	 * @param originalDoc the original doc
-	 * @return the list
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static List<String> checkUnUsedSubTreeRef(List<String> usedSubTreeRefIds, Document originalDoc) throws XPathExpressionException{
-		
-		List<String> allSubTreeRefIds = new ArrayList<String>();
-		NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//subTreeRef/@id",
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
-			Node subTreeRefIdAttributeNode = subTreeRefIdsNodeList.item(i);
-			if(!allSubTreeRefIds.contains(subTreeRefIdAttributeNode.getNodeValue())){
-				allSubTreeRefIds.add(subTreeRefIdAttributeNode.getNodeValue());
-			}
-		}
-		allSubTreeRefIds.removeAll(usedSubTreeRefIds);
-		
-		List<String> referencedSubTrees = getReferencedSubTrees(usedSubTreeRefIds, allSubTreeRefIds, originalDoc);
-		usedSubTreeRefIds.addAll(referencedSubTrees);
-		
-		return usedSubTreeRefIds;
-	}
-	
-	/**
-	 * Gets the referenced sub trees.
-	 *
-	 * @param usedSubTreeRefIds the used sub tree ref ids
-	 * @param allSubTreeRefIds the all sub tree ref ids
-	 * @param originalDoc the original doc
-	 * @return the referenced sub trees
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static List<String> getReferencedSubTrees(List<String> usedSubTreeRefIds, List<String> allSubTreeRefIds, Document originalDoc) throws XPathExpressionException{
-		List<String> referencedIds = new ArrayList<String>();
-		
-		for(int i = 0; i< usedSubTreeRefIds.size(); i++){
-			for(int j=0; j<allSubTreeRefIds.size(); j++){
-				Node usedSubTreeRefNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+
-						usedSubTreeRefIds.get(i)+ "']//subTreeRef[@id='"+allSubTreeRefIds.get(j)+"']",
-						originalDoc.getDocumentElement(), XPathConstants.NODE);
-				if(usedSubTreeRefNode != null){
-					if(!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))){
-						referencedIds.add(allSubTreeRefIds.get(j));
-					}
-				}
-			}
-		}
-		
-		if(referencedIds.size() > 0){
-			
-			//for each used subTree id, find out if this an occurance of a QDM Variable.
-			//If Yes, then find out the real subTree being referenced and make sure it is
-			//a part of the used SubTree List
-			List<String> usedQDMOccuranceRefs = new ArrayList<String>();
-			for(String uuid: referencedIds){
-				Node subTreeNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+uuid+"'][@instanceOf]",
-						originalDoc.getDocumentElement(), XPathConstants.NODE);
-				
-				if(subTreeNode != null){
-					NamedNodeMap namedNodeMap = subTreeNode.getAttributes();
-					String attributeValue = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
-					if(!usedSubTreeRefIds.contains(attributeValue)){
-						usedQDMOccuranceRefs.add(attributeValue);
-					}
-				}
-			}
-			referencedIds.addAll(usedQDMOccuranceRefs);
-			
-			allSubTreeRefIds.removeAll(referencedIds);
-			referencedIds.addAll(getReferencedSubTrees(referencedIds, allSubTreeRefIds, originalDoc));
-			
-		}
-		
-		return referencedIds;
-	}
-	
-	/**
-	 * Gets the used qdm ids.
-	 * 
-	 * @param originalDoc
-	 *            the original doc
-	 * @return the used qdm ids
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private static List<String> getUsedQDMIds(Document originalDoc) throws XPathExpressionException {
-		List<String> usedQDMIds = new ArrayList<String>();
-		NodeList elementRefNodeList = (NodeList)xPath.evaluate("/measure//elementRef", originalDoc, XPathConstants.NODESET);
-		for(int i=0;i<elementRefNodeList.getLength();i++){
-			Node elementRefNode = elementRefNodeList.item(i);
-			Node idAttributeNode = elementRefNode.getAttributes().getNamedItem("id");
-			usedQDMIds.add(idAttributeNode.getNodeValue());
-		}
-		NodeList elementInQDMAttributesList = (NodeList)xPath.evaluate("/measure//attribute/@qdmUUID", originalDoc, XPathConstants.NODESET);
-		for(int i=0;i<elementInQDMAttributesList.getLength();i++){
-			Node elementRefNode = elementInQDMAttributesList.item(i);
-			usedQDMIds.add(elementRefNode.getNodeValue());
-		}
-		_logger.info("usedQDMIds:"+usedQDMIds);
-		return usedQDMIds;
-	}
 	
 	/**
 	 * Gets the XML document.
@@ -1338,27 +987,7 @@ public class ExportNewSimpleXML {
 		}
 	}
 	
-	/**
-	 * This method will go through the entire XML file and find <functionalOp>
-	 * tags and add a 'uuid' attribute to each.
-	 * 
-	 * @param originalDoc
-	 *            the original doc
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private static void addUUIDToFunctions(Document originalDoc) throws XPathExpressionException {
-		NodeList functionalOpNodes = (NodeList)xPath.evaluate("/measure//clause//functionalOp", originalDoc, XPathConstants.NODESET);
-		
-		for(int i=0;i<functionalOpNodes.getLength();i++){
-			Node functionalOpNode = functionalOpNodes.item(i);
-			
-			Attr uuidAttr = originalDoc.createAttribute("uuid");
-			uuidAttr.setValue(UUID.randomUUID().toString());
-			
-			functionalOpNode.getAttributes().setNamedItem(uuidAttr);
-		}
-	}
+	
 	/**
 	 * This method will expect Date String in MM/DD/YYYY format And convert it
 	 * to YYYYMMDD format.

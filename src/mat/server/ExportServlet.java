@@ -79,6 +79,9 @@ public class ExportServlet extends HttpServlet {
 	/** The Constant TEXT_HTML. */
 	private static final String TEXT_HTML = "text/html";
 	
+	/** The Constant TEST_PLAN */
+	private static final String TEXT_PLAIN = "text/plain"; 
+	
 	/** The Constant CONTENT_TYPE. */
 	private static final String CONTENT_TYPE = "Content-Type";
 	
@@ -202,7 +205,7 @@ public class ExportServlet extends HttpServlet {
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 					+ fnu.getELMFileName(export.getCqlLibraryName()));
 		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
+			resp.setHeader(CONTENT_TYPE, TEXT_XML);
 		}
 		return export;
 	}
@@ -223,7 +226,7 @@ public class ExportServlet extends HttpServlet {
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 					+ fnu.getCQLFileName(export.getCqlLibraryName()));
 		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_CQL);
+			resp.setHeader(CONTENT_TYPE, TEXT_PLAIN);
 		}
 		return export;
 	}

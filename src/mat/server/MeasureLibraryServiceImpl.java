@@ -644,7 +644,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	/**
 	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and try and NodeList for Definitions with the following names;
-	 * 'Ethnicity','Payer','Race','Sex'.
+	 * 'SDE Ethnicity','SDE Payer','SDE Race','SDE Sex'.
 	 * @param xmlProcessor
 	 * @return
 	 */

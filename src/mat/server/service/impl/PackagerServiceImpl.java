@@ -28,6 +28,10 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.parser.CQLDefinitionModelObject;
+import mat.model.cql.parser.CQLFileObject;
+import mat.server.CQLUtilityClass;
+import mat.server.cqlparser.MATCQLParser;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
@@ -939,16 +943,49 @@ public class PackagerServiceImpl implements PackagerService {
 				}
 			}
 		
+			System.out.println("supplementalDataList:"+supplementalDataList);
+			
+			try{
+				checkForPossibleSupplementalCQLDefinitions(processor, definitionList);
+			}catch(Exception ee){
+				ee.printStackTrace();
+			}
+			System.out.println("definitionList:"+definitionList);
 			
 			overview.setCqlQdmElements(definitionList);
 			overview.setCqlSuppDataElements(supplementalDataList);
-
 		}catch (XPathExpressionException e) {
 			logger.info("Error while getting default supplemental data elements : " +e.getMessage());
 		}
 	}
 	
 	
+	private void checkForPossibleSupplementalCQLDefinitions(
+			XmlProcessor processor, List<CQLDefinition> definitionList) {
+		
+		String measureXML = processor.transform(processor.getOriginalDoc());
+		
+		MATCQLParser matcqlParser = new MATCQLParser();
+
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,"")).toString();
+
+		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		
+		List<CQLDefinition> possibleSuppDefinitionList = new ArrayList<CQLDefinition>();
+		
+		for(CQLDefinition cqlDefinition:definitionList){
+			System.out.println("Check:"+cqlDefinition.getDefinitionName());
+			CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get("\"" + cqlDefinition.getDefinitionName() + "\"");
+			if(cqlDefinitionModelObject != null && cqlDefinitionModelObject.isPossibleSupplementalDef()){
+				possibleSuppDefinitionList.add(cqlDefinition);
+			}
+		}
+		
+		definitionList.retainAll(possibleSuppDefinitionList);
+		
+	}
+
+
 	/**
 	 * Creates measureGrouping XML chunk from MeasurePackageDetail using castor
 	 * and "MeasurePackageClauseDetail.xml" mapping file. Finds the Group Node

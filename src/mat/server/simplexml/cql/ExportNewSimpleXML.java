@@ -6,7 +6,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -67,6 +69,8 @@ public class ExportNewSimpleXML {
 	private static String measure_Id;
 	
 	private static CQLFileObject cqlObject;
+	
+	private static Map<String, String> usedPopulations = new HashMap<String, String>();
 	
 	/**
 	 * Export.
@@ -156,7 +160,156 @@ public class ExportNewSimpleXML {
 		//Remove Empty Comments nodes from population Logic.
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
 		//addLocalVariableNameToQDMs(originalDoc);
+		createUsedCQLArtifactsWithPopulationNames(originalDoc);
 		return transform(originalDoc);
+	}
+	
+	/*private static void createUsedCQLArtifactsWithPopulations(Document originalDoc){
+		
+		try {
+			NodeList popClauseNodes = (NodeList) xPath.evaluate("/measure/measureGrouping//clause",
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			
+			for(int i=0; i<popClauseNodes.getLength(); i++){
+				Node popNode = popClauseNodes.item(i);
+				String popString = popNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				
+				if(popNode.hasChildNodes()){
+					Node childNode = popNode.getFirstChild();
+					String cqlAtrifactStr = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					usedPopulations.put(popString, cqlAtrifactStr);
+				}
+			}
+			
+			
+			createUsedCQLArtifactsWithPopulationNames(originalDoc);
+			
+			if(checkForMultipleGrouping(originalDoc)){
+				
+			}
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}*/
+	
+	private static void createUsedCQLArtifactsWithPopulationNames(Document originalDoc) {
+		
+		try {
+			NodeList paclkageClauseNodes = (NodeList) xPath.evaluate("/measure/measureGrouping//clause",
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			int count = 1;
+			String prevseq = "";
+			for(int i=0; i<paclkageClauseNodes.getLength(); i++){
+				Node node = paclkageClauseNodes.item(i);
+				String popUUIDString = node.getAttributes().getNamedItem("uuid").getNodeValue();
+				String popTypeString = node.getAttributes().getNamedItem("type").getNodeValue();
+				Node parentNode = node.getParentNode();
+				String currsequence = "";
+				if(checkForMultipleGrouping(originalDoc)){
+					currsequence = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
+				} 
+				
+				if(checkifScoringRatio(originalDoc) 
+						&& popTypeString.equalsIgnoreCase("initialPopulation") 
+						&& prevseq.equals(currsequence)){
+					currsequence = currsequence + "_"+ count++;
+				} else {
+					count = 1;
+					currsequence = currsequence + "_"+ count++;
+				}
+				
+				prevseq = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
+				
+				if(node.hasChildNodes()){
+					Node childNode = node.getFirstChild();
+					String cqlAtrifactStr = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					usedPopulations.put(popUUIDString, cqlAtrifactStr);
+				}
+				
+				createCQLArtifacts(originalDoc, node, getPopulationString(popTypeString), popUUIDString , currsequence);
+			}
+			
+			
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
+	}
+	
+	
+	private static void createCQLArtifacts(Document originalDoc, Node childNode, String popTypeString, String popUUIDStr, String sequence){
+		
+		String artifactUUIDStr = usedPopulations.get(popUUIDStr);
+		try {
+			Node cqldefArtifactNode = (Node) xPath.evaluate("/measure/cqlLookUp/definitions",
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			Node cqlArtifactNode = (Node) xPath.evaluate("/measure/cqlLookUp//node()[@id='"+artifactUUIDStr+"']",
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			if(!sequence.isEmpty()){
+				popTypeString = popTypeString + " " + sequence;
+			}
+			
+			
+			if(cqlArtifactNode!=null){
+				String context = cqlArtifactNode.getAttributes().getNamedItem("context").getNodeValue();
+				String defName = cqlArtifactNode.getAttributes().getNamedItem("name").getNodeValue();
+				
+				Node newDefNode = cqldefArtifactNode.getFirstChild().cloneNode(true);
+				newDefNode.getAttributes().getNamedItem("context").setNodeValue(context);
+				newDefNode.getAttributes().getNamedItem("id").setNodeValue(popUUIDStr);
+				newDefNode.getAttributes().getNamedItem("supplDataElement").setNodeValue("false");
+				
+				Attr attrNode = originalDoc.createAttribute("popDefinition");
+				attrNode.setNodeValue("true");
+				newDefNode.getAttributes().setNamedItem(attrNode);
+				
+				newDefNode.getAttributes().getNamedItem("name").setNodeValue(popTypeString);
+				if(newDefNode.hasChildNodes()){
+					newDefNode.getFirstChild().getNextSibling().setTextContent(defName);
+				}
+				cqldefArtifactNode.appendChild(newDefNode);
+			}
+			
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private static boolean checkifScoringRatio(Document originalDoc){
+		boolean isScoringTypeRatio = false;
+		try {
+			isScoringTypeRatio = (Boolean)xPath.evaluate("/measure/measureDetails/scoring/@id='RATIO'",
+					originalDoc.getDocumentElement(), XPathConstants.BOOLEAN);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isScoringTypeRatio;
+	}
+
+
+	private static boolean checkForMultipleGrouping(Document originalDoc){
+		boolean isMeasureGroupingMul = false;
+		try {
+			NodeList usedDefinitionsUuids = (NodeList) xPath.evaluate("/measure//measureGrouping/group",
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			
+			if(usedDefinitionsUuids.getLength()>1){
+				isMeasureGroupingMul = true;
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isMeasureGroupingMul;
 	}
 	
 	
@@ -289,16 +442,16 @@ public class ExportNewSimpleXML {
 	/**
 	 * Removes the unwanted sub trees.
 	 *
-	 * @param usedSubTreeIds the used sub tree ids
+	 * @param usedCQLAtrifactsIds the used sub tree ids
 	 * @param originalDoc the original doc
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private static void removeUnwantedCQLArtifacts(List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException{
-		if((usedSubTreeIds !=null) && (usedSubTreeIds.size()>0)){
+	private static void removeUnwantedCQLArtifacts(List<String> usedCQLAtrifactsIds, Document originalDoc) throws XPathExpressionException{
+		if((usedCQLAtrifactsIds !=null) && (usedCQLAtrifactsIds.size()>0)){
 			
 			String uuidXPathString = "";
 			
-			for(String uuidString:usedSubTreeIds){
+			for(String uuidString:usedCQLAtrifactsIds){
 				uuidXPathString += "@name != '"+uuidString + "' and";
 			}
 			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
@@ -1013,5 +1166,33 @@ public class ExportNewSimpleXML {
 		}
 		return dateString;
 	}
+	
+	
+	private static String getPopulationString(String str){
+		String popString = "";
+		if(str.equalsIgnoreCase("initialPopulation")){
+			popString = "Initial Population";
+		} else if(str.equalsIgnoreCase("denominators")){
+			popString =  "Denominator";
+		} else if(str.equalsIgnoreCase("denominatorExclusions")){
+			popString = "Denominator Exclusion";
+		} else if(str.equalsIgnoreCase("denominatorExceptions")){
+			popString = "Denominator Exception";
+		} else if(str.equalsIgnoreCase("numerators")){
+			popString = "Numerator";
+		} else if(str.equalsIgnoreCase("numeratorExclusions")){
+			popString = "Numerator Exclusion";
+		} else if(str.equalsIgnoreCase("measurePopulation")){
+			popString = "Measure Population";
+		} else if(str.equalsIgnoreCase("measurePopulationExclusions")){
+			popString = "Measure Population Exclusion";
+		} else if(str.equalsIgnoreCase("measureObservation")){
+			popString = "Measure Observation";
+		} else if(str.equalsIgnoreCase("initialPopulations")){
+			popString = "Stratification";
+		}
+		return popString;
+	}
+	
 	
 }

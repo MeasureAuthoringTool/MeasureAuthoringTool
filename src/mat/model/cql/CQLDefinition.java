@@ -97,4 +97,9 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 	public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, CQLDefinition value) {
 		
 	}
+	
+	@Override
+	public String toString() {
+		return this.definitionName;
+	}
 }

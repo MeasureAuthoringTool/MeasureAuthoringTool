@@ -46,6 +46,9 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject imple
 	 */
 	private List<CQLParameterModelObject> referredByParameters = new ArrayList<CQLParameterModelObject>();
 	
+	//Boolean field to indicate If this definition might be a possible supplemental definition.
+	private boolean possibleSupplementalDef;
+	
 	
 	
 	public String getExpression() {
@@ -207,6 +210,14 @@ public class CQLDefinitionModelObject extends CQLBaseModelDefinitionObject imple
 
 	public void setReferredByParameters(List<CQLParameterModelObject> referredByParameters) {
 		this.referredByParameters = referredByParameters;
+	}
+
+	public void setPossibleSupplementalDef(boolean possibleSupplementalDef) {
+		this.possibleSupplementalDef = possibleSupplementalDef;		
+	}
+	
+	public boolean isPossibleSupplementalDef(){
+		return this.possibleSupplementalDef;
 	}
 
 

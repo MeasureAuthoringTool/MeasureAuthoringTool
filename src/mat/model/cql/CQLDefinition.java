@@ -15,6 +15,7 @@ public class CQLDefinition implements IsSerializable, Cell<CQLDefinition>{
 	private String definitionLogic;
 	private String context;
 	private boolean supplDataElement;
+	private boolean popDefinition;
 	
 	
 	
@@ -101,5 +102,11 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 	@Override
 	public String toString() {
 		return this.definitionName;
+	}
+	public boolean isPopDefinition() {
+		return popDefinition;
+	}
+	public void setPopDefinition(boolean popDefinition) {
+		this.popDefinition = popDefinition;
 	}
 }

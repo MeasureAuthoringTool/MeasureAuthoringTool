@@ -170,7 +170,12 @@ public class CQLUtilityClass {
 		for (CQLDefinition definition : definitionList) {
 			cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
 					+ ": ");
-			cqlStr = cqlStr.append(definition.getDefinitionLogic());
+			if(definition.isPopDefinition()){
+				cqlStr = cqlStr.append("exists (\"");
+				cqlStr = cqlStr.append(definition.getDefinitionLogic()).append("\")");
+			} else {
+				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+			}
 			cqlStr = cqlStr.append("\n\n");
 		}
 		

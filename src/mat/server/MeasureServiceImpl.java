@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.lang.StringUtils;
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.CqlTranslator;
@@ -37,7 +40,11 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.server.cqlparser.CQLErrorListener;
+import mat.server.cqlparser.cqlLexer;
+import mat.server.cqlparser.cqlParser;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.CQLErrors;
 import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
@@ -618,23 +625,31 @@ MeasureService {
 
 		if(cqlErrorListener.getErrors().size()!=0){
 			//result.setValid(false);
-			result.setErrorList(cqlErrorListener.getErrors());
+			result.setCqlErrors(cqlErrorListener.getErrors());
 		} else {
 			//result.setValid(true);
-		}
-*/
+		}*/
+
 		
-		List<CqlTranslatorException> cqlErrors = new ArrayList<CqlTranslatorException>();
+		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		try {
 			if(!StringUtils.isBlank(cqlFileString)){
 				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
-				cqlErrors.addAll(CqlTranslator.getErrors());
+				cqlErrorsList.addAll(CqlTranslator.getErrors());
 			}
-			for(CqlTranslatorException cte : cqlErrors){
-				Errors.add(cte.getMessage());
-				
+			
+			for(CqlTranslatorException cte : cqlErrorsList){
+				/*Errors.add(cte.getMessage());*/
+				/*result.getCqlErrors().add(cte);*/
+				CQLErrors cqlErrors = new CQLErrors();
+				cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+				cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+				cqlErrors.setErrorMessage(cte.getMessage());
+				errors.add(cqlErrors);
 			}
-			result.setCqlErrors(Errors);
+			
+			result.setCqlErrors(errors);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

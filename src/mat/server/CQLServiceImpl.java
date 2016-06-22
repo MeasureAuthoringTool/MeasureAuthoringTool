@@ -79,22 +79,22 @@ public class CQLServiceImpl implements CQLService {
 			"<supplementalDefinitions>"
 			
 			+ "<definition context=\"Patient\" name=\"SDE Ethnicity\" "
-				+ " supplDataElement=\"true\" id=\"999\"> "
+				+ " supplDataElement=\"true\" popDefinition=\"false\" id=\"999\"> "
 				+ "<logic>[\"Patient Characteristic Ethnicity\": \"Ethnicity\"]</logic> "
 			+ "</definition>"
 			
 			+ "<definition context=\"Patient\" name=\"SDE Payer\" "
-            		+ " supplDataElement=\"true\" id=\"999\">  "
+            		+ " supplDataElement=\"true\" popDefinition=\"false\" id=\"999\">  "
             		+ "<logic>[\"Patient Characteristic Payer\": \"Payer\"]</logic>"
             + "</definition>"
             		
             + "<definition context=\"Patient\" name=\"SDE Race\" "
-            		+ " supplDataElement=\"true\" id=\"999\"> "
+            		+ " supplDataElement=\"true\" popDefinition=\"false\"  id=\"999\"> "
             		+ "<logic>[\"Patient Characteristic Race\": \"Race\"]</logic>"
             + "</definition>"
             		
             + "<definition context=\"Patient\" name=\"SDE Sex\" "
-            		+ " supplDataElement=\"true\" id=\"999\">  "
+            		+ " supplDataElement=\"true\"  popDefinition=\"false\" id=\"999\">  "
             		+ "<logic>[\"Patient Characteristic Sex\": \"ONC Administrative Sex\"]</logic>"
             + "</definition>"
             		

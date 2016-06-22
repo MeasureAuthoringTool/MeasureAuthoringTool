@@ -299,17 +299,18 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Override
 	public final ExportResult getCQLLibraryFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
-		String measureXML = measureXml.getMeasureXMLAsString();
-		System.out.println(measureXML);
+		//MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
+		//String measureXML = measureXml.getMeasureXMLAsString();
+		String simpleXML = measureExport.getSimpleXML();
+		System.out.println(simpleXML);
 
 		
 		// get the name from the simple xml
 		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
-		XmlProcessor xmlProcessor = new XmlProcessor(measureXML); 
+		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML); 
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName); 
 		
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML, measureId)).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(simpleXML, measureId)).toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;

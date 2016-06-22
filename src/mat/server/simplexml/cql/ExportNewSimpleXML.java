@@ -211,14 +211,33 @@ public class ExportNewSimpleXML {
 				if(checkForMultipleGrouping(originalDoc)){
 					currsequence = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
 				} 
+				NodeList initialPopSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
+				currsequence+"']/packageClause[@type='initialPopulation']",
+						originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				NodeList stratPopSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
+						currsequence+"']/packageClause[@type='stratum']",
+								originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				
-				if(checkifScoringRatio(originalDoc) 
-						&& popTypeString.equalsIgnoreCase("initialPopulation") 
-						&& prevseq.equals(currsequence)){
-					currsequence = currsequence + "_"+ count++;
-				} else {
-					count = 1;
-					currsequence = currsequence + "_"+ count++;
+				if(popTypeString.equalsIgnoreCase("initialPopulation") && 
+						checkifScoringRatio(originalDoc)){
+					
+					if(prevseq.equals(currsequence) && initialPopSeqList.getLength()>1){
+						if(currsequence.isEmpty()){
+							currsequence = ""+count++;
+						} else {
+							currsequence = currsequence + "_"+ count++;
+						}
+					}
+					
+				} else if(popTypeString.equalsIgnoreCase("stratum")) {
+					
+					if(prevseq.equals(currsequence) && stratPopSeqList.getLength()>1){
+						if(currsequence.isEmpty()){
+							currsequence = ""+count++;
+						} else {
+							currsequence = currsequence + "_"+ count++;
+						}
+					} 
 				}
 				
 				prevseq = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
@@ -263,14 +282,27 @@ public class ExportNewSimpleXML {
 				newDefNode.getAttributes().getNamedItem("context").setNodeValue(context);
 				newDefNode.getAttributes().getNamedItem("id").setNodeValue(popUUIDStr);
 				newDefNode.getAttributes().getNamedItem("supplDataElement").setNodeValue("false");
-				
-				Attr attrNode = originalDoc.createAttribute("popDefinition");
+				newDefNode.getAttributes().getNamedItem("popDefinition").setNodeValue("true");
+				/*Attr attrNode = originalDoc.createAttribute("popDefinition");
 				attrNode.setNodeValue("true");
-				newDefNode.getAttributes().setNamedItem(attrNode);
+				newDefNode.getAttributes().setNamedItem(attrNode);*/
 				
 				newDefNode.getAttributes().getNamedItem("name").setNodeValue(popTypeString);
+				/*if(newDefNode.hasChildNodes()){
+					if(newDefNode.getFirstChild().getNextSibling() != null){
+						newDefNode.getFirstChild().getNextSibling().setTextContent(defName);
+					} else {
+						newDefNode.getFirstChild().setTextContent(defName);
+					}
+				}*/
+				
 				if(newDefNode.hasChildNodes()){
-					newDefNode.getFirstChild().getNextSibling().setTextContent(defName);
+					for(int i=0;i<newDefNode.getChildNodes().getLength();i++){
+						Node logicNode = newDefNode.getChildNodes().item(i);
+						if(logicNode.getNodeName().equals("logic")){
+							logicNode.setTextContent(defName);
+						}
+					}
 				}
 				cqldefArtifactNode.appendChild(newDefNode);
 			}

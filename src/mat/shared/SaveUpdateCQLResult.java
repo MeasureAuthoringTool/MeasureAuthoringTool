@@ -1,5 +1,6 @@
 package mat.shared;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.shared.GenericResult;
@@ -18,7 +19,7 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private String cqlString;
 	
-	private List<String> cqlErrors;
+	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
 	
 	/** The definition. */
 	private CQLDefinition definition;
@@ -40,11 +41,11 @@ public class SaveUpdateCQLResult extends GenericResult{
 		this.cqlString = cqlString;
 	}
 	
-	public List<String> getCqlErrors() {
+	public List<CQLErrors> getCqlErrors() {
 		return cqlErrors;
 	}
 
-	public void setCqlErrors(List<String> cqlErrors) {
+	public void setCqlErrors(List<CQLErrors> cqlErrors) {
 		this.cqlErrors = cqlErrors;
 	}
 

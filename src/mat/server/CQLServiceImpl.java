@@ -222,7 +222,6 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 				if (!toBeModifiedObj.getFunctionName().equalsIgnoreCase(
 						currentObj.getFunctionName())) {
 					
@@ -268,6 +267,7 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
+							parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj,
 									currentObj, functionsList);
 							result.setSuccess(true);
@@ -298,7 +298,6 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getFunctionName());
 				if (isDuplicate) {
@@ -335,6 +334,7 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
+								parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 								functionsList.add(currentObj);
 								wrapper.setCqlFunctionsList(functionsList);
 								result.setSuccess(true);
@@ -397,7 +397,6 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
 				if (!toBeModifiedObj.getParameterName().equalsIgnoreCase(
 						currentObj.getParameterName())) {
 					
@@ -435,7 +434,7 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
-							
+							parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
 							wrapper = modfiyCQLParameterList(toBeModifiedObj,
 									currentObj, parameterList);
 							result.setSuccess(true);
@@ -460,7 +459,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
-				parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
+				
 				isDuplicate = validtor.validateForSpecialChar(currentObj
 						.getParameterName());
 				if (isDuplicate) {
@@ -488,6 +487,7 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
+								parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
 								result.setSuccess(true);
@@ -547,7 +547,6 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
 				// if the modified Name and current Name are not same
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(
 						currentObj.getDefinitionName())) {
@@ -589,6 +588,7 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
+							parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj,
 									currentObj, definitionList);
 							result.setSuccess(true);
@@ -634,7 +634,7 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
-								
+								parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
 								result.setSuccess(true);
 								result.setDefinition(currentObj);
 								definitionList.add(currentObj);

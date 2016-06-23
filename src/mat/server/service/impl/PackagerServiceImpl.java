@@ -967,7 +967,7 @@ public class PackagerServiceImpl implements PackagerService {
 		
 		MATCQLParser matcqlParser = new MATCQLParser();
 
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,"")).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,""),"").toString();
 
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		

@@ -30,10 +30,10 @@ public class CQLParameter implements IsSerializable{
 		this.defaultValue = defaultValue;
 	}
 	public String getParameterLogic() {
-		return parameterLogic;
+		return parameterLogic.trim();
 	}
 	public void setParameterLogic(String parameterLogic) {
-		this.parameterLogic = parameterLogic;
+		this.parameterLogic = parameterLogic.trim();
 	}
 	public String getId() {
 		return id;

@@ -46,11 +46,11 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 		this.definitionName = definitionName.trim();
 	}
 	public String getDefinitionLogic() {
-		return definitionLogic;
+		return definitionLogic.trim();
 	}
 	public void setDefinitionLogic(String definitionLogic) {
 		//this.definitionLogic = "<![CDATA[" + definitionLogic + "]]>";
-		this.definitionLogic = definitionLogic;
+		this.definitionLogic = definitionLogic.trim();
 	}
 	public String getContext() {
 		return context;

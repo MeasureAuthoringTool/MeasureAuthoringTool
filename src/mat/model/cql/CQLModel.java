@@ -14,6 +14,8 @@ public class CQLModel implements IsSerializable{
 	private List<CQLDefinition> cqlDefinitions;
 	private List<CQLFunctions> cqlFunctions;
 	
+	private int lines;
+	
 	public CQLDataModel getUsedModel() {
 		return usedModel;
 	}
@@ -67,6 +69,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setCqlFunctions(List<CQLFunctions> cqlFunctions) {
 		this.cqlFunctions = cqlFunctions;
+	}
+	public int getLines() {
+		return lines;
+	}
+	public void setLines(int lines) {
+		this.lines = lines;
 	}
 	
 }

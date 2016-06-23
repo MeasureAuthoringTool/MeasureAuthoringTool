@@ -48,7 +48,7 @@ public class CQLFunctions implements IsSerializable {
 	 * @return the function logic
 	 */
 	public String getFunctionLogic() {
-		return functionLogic;
+		return functionLogic.trim();
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class CQLFunctions implements IsSerializable {
 	 * @param functionLogic the new function logic
 	 */
 	public void setFunctionLogic(String functionLogic) {
-		this.functionLogic = functionLogic;
+		this.functionLogic = functionLogic.trim();
 	}
 	
 	/**

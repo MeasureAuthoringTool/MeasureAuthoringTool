@@ -245,7 +245,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		Measure measure = measureDAO.find(measureId);
 		String exportedXML = "";
 		MATCQLParser matcqlParser = new MATCQLParser();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getMeasureXMLAsString(),measureId)).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getMeasureXMLAsString(),measureId),"").toString();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		if(measure.getReleaseVersion().equalsIgnoreCase("v5.0")){
 			exportedXML = ExportNewSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlFileObject);

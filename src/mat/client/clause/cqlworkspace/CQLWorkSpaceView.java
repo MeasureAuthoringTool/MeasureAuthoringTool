@@ -513,6 +513,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlAceEditor.setAutocompleteEnabled(true);
 		cqlAceEditor.setReadOnly(true);
 		cqlAceEditor.setUseWrapMode(true);
+		cqlAceEditor.clearAnnotations();
+		cqlAceEditor.redisplay();
 		Label viewCQlFileLabel = new Label(LabelType.INFO);
 		viewCQlFileLabel.setText("View CQL file here");
 		viewCQlFileLabel.setTitle("View CQL file here");
@@ -1164,6 +1166,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterAceEditor.setAutocompleteEnabled(true);
 		parameterAceEditor.addAutoCompletions();
 		parameterAceEditor.setUseWrapMode(true);
+		parameterAceEditor.clearAnnotations();
+		parameterAceEditor.redisplay();
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		paramAceEditorPanel.add(parameterAceEditor);
 		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
@@ -1317,6 +1321,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.addAutoCompletions();
 		defineAceEditor.setUseWrapMode(true);
+		defineAceEditor.clearAnnotations();
+		defineAceEditor.redisplay();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defAceEditorPanel.add(defineAceEditor);
 		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
@@ -1488,6 +1494,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		functionBodyAceEditor.setAutocompleteEnabled(true);
 		functionBodyAceEditor.addAutoCompletions();
 		functionBodyAceEditor.setUseWrapMode(true);
+		functionBodyAceEditor.clearAnnotations();
+		functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");

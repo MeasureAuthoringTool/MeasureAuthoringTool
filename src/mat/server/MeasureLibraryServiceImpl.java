@@ -3582,7 +3582,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private boolean parseCQLFile(String measureXML, String measureId){
 		boolean isInvalid = false;
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,measureId)).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,measureId), "").toString();
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		if(matcqlParser.getCQLErrorListener().getErrors().size()>0){

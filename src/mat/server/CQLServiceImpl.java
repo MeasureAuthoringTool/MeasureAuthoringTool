@@ -34,6 +34,7 @@ import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLErrors;
 import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
 import net.sf.json.JSON;
@@ -44,6 +45,9 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -218,7 +222,7 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				
+				parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 				if (!toBeModifiedObj.getFunctionName().equalsIgnoreCase(
 						currentObj.getFunctionName())) {
 					
@@ -294,6 +298,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
+				parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
 				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getFunctionName());
 				if (isDuplicate) {
@@ -392,7 +397,7 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				
+				parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
 				if (!toBeModifiedObj.getParameterName().equalsIgnoreCase(
 						currentObj.getParameterName())) {
 					
@@ -455,6 +460,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				
 				currentObj.setId(UUID.randomUUID().toString());
+				parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
 				isDuplicate = validtor.validateForSpecialChar(currentObj
 						.getParameterName());
 				if (isDuplicate) {
@@ -541,7 +547,7 @@ public class CQLServiceImpl implements CQLService {
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
-				
+				parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
 				// if the modified Name and current Name are not same
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(
 						currentObj.getDefinitionName())) {
@@ -602,6 +608,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
+				parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
 				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getDefinitionName());
 				if (isDuplicate) {
@@ -1038,7 +1045,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private StringBuilder getCqlString(CQLModel cqlModel) {
 		
-		return CQLUtilityClass.getCqlString(cqlModel);
+		return CQLUtilityClass.getCqlString(cqlModel, "");
 	}
 	
 	/**
@@ -1404,5 +1411,58 @@ public class CQLServiceImpl implements CQLService {
 		return cqlSupplementalDefinitionXMLString;
 		
 	}
+	
+	
+	public SaveUpdateCQLResult parseCQLDefForErrors(SaveUpdateCQLResult result, String measureId, String toBeInserted) {
+		
+		List<String> Errors = new ArrayList<String>();
+		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass
+				.getCQLStringFromMeasureXML(measureXML.getXml(),measureId), toBeInserted).toString();
+		
+		result.getCqlModel().setLines(countLines(cqlFileString));
+		if(CQLUtilityClass.getStrToBeInserted() != null 
+				&& !CQLUtilityClass.getStrToBeInserted().toString().isEmpty()){
+			cqlFileString = cqlFileString + CQLUtilityClass.getStrToBeInserted().toString();
+		}
+		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
+		//int lines = countLines(cqlFileString);
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		try {
+			if(!StringUtils.isBlank(cqlFileString)){
+				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
+				cqlErrorsList.addAll(CqlTranslator.getErrors());
+			}
+			
+			for(CqlTranslatorException cte : cqlErrorsList){
+				CQLErrors cqlErrors = new CQLErrors();
+				cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+				cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+				cqlErrors.setErrorMessage(cte.getMessage());
+				errors.add(cqlErrors);
+			}
+			
+			result.setCqlErrors(errors);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	return result;
+	}
+	
+	
+	public static int countLines(String str) {
+	    if(str == null || str.isEmpty())
+	    {
+	        return 0;
+	    }
+	    int lines = 1;
+	    int pos = 0;
+	    while ((pos = str.indexOf("\n\n", pos) + 1) != 0) {
+	        lines = lines + 2;
+	    }
+	    return lines;
+	}
+	
 	
 }

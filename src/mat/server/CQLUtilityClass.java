@@ -38,11 +38,18 @@ public class CQLUtilityClass {
 	
 	/** The Constant POPULATION. */
 	private static final String POPULATION = "Population";
+	
+	private static StringBuilder toBeInsertedAtEnd;
+	
+	
+	public static StringBuilder getStrToBeInserted(){
+		return toBeInsertedAtEnd;
+	}
 
-	public static StringBuilder getCqlString(CQLModel cqlModel) {
+	public static StringBuilder getCqlString(CQLModel cqlModel, String toBeInserted) {
 
 		StringBuilder cqlStr = new StringBuilder();
-
+		toBeInsertedAtEnd = new  StringBuilder();
 		// library Name and Using 
 		if (cqlModel.getLibrary() != null) {
 			cqlStr = cqlStr.append("library "
@@ -75,16 +82,28 @@ public class CQLUtilityClass {
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();
 		if (paramList != null) {
 			for (CQLParameter parameter : paramList) {
-				cqlStr = cqlStr.append("parameter "
-						+ "\""+parameter.getParameterName()+ "\"" + " "
-						+ parameter.getParameterLogic());
-				cqlStr = cqlStr.append("\n\n");
+				if(parameter.getParameterName().equalsIgnoreCase(toBeInserted)){
+					toBeInsertedAtEnd = toBeInsertedAtEnd.append("parameter "
+							+ "\""+parameter.getParameterName()+ "\"" + " "
+							+ parameter.getParameterLogic());
+					//cqlStr = cqlStr.append("\n\n");
+				} else {
+					cqlStr = cqlStr.append("parameter "
+							+ "\""+parameter.getParameterName()+ "\"" + " "
+							+ parameter.getParameterLogic());
+					cqlStr = cqlStr.append("\n\n");
+				}
 			}
 		}
 
 		// Definitions and Functions by Context
 		cqlStr = getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
-				cqlModel.getCqlFunctions(), cqlStr);
+				cqlModel.getCqlFunctions(), cqlStr, toBeInserted);
+		//cqlModel.setLines(countLines(cqlStr.toString()));
+		
+		/*if(!toBeInsertedAtEnd.toString().isEmpty()){
+			cqlStr = cqlStr.append(toBeInsertedAtEnd.toString());
+		}*/
 
 		return cqlStr;
 
@@ -106,7 +125,7 @@ public class CQLUtilityClass {
 	 */
 	private static StringBuilder getDefineAndFunctionsByContext(
 			List<CQLDefinition> defineList, List<CQLFunctions> functionsList,
-			StringBuilder cqlStr) {
+			StringBuilder cqlStr, String toBeInserted) {
 		
 		List<CQLDefinition> contextPatDefineList = new ArrayList<CQLDefinition>();
 		List<CQLDefinition> contextPopDefineList = new ArrayList<CQLDefinition>();
@@ -135,13 +154,13 @@ public class CQLUtilityClass {
 		if ((contextPatDefineList.size() > 0) || (contextPatFuncList.size() > 0)) {
 			
 			getDefineAndFunctionsByContext(contextPatDefineList,
-					contextPatFuncList, PATIENT, cqlStr);
+					contextPatFuncList, PATIENT, cqlStr, toBeInserted);
 		}
 		
 		if ((contextPopDefineList.size() > 0) || (contextPopFuncList.size() > 0)) {
 			
 			getDefineAndFunctionsByContext(contextPopDefineList,
-					contextPopFuncList, POPULATION, cqlStr);
+					contextPopFuncList, POPULATION, cqlStr, toBeInserted);
 		}
 		
 		return cqlStr;
@@ -164,54 +183,100 @@ public class CQLUtilityClass {
 	private static StringBuilder getDefineAndFunctionsByContext(
 			List<CQLDefinition> definitionList,
 			List<CQLFunctions> functionsList, String context,
-			StringBuilder cqlStr) {
-		
+			StringBuilder cqlStr, String toBeInserted) {
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
-			cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
-					+ ": ");
-			if(definition.isPopDefinition()){
-				cqlStr = cqlStr.append("exists (\"");
-				cqlStr = cqlStr.append(definition.getDefinitionLogic()).append("\")");
+			if(definition.getDefinitionName().equalsIgnoreCase(toBeInserted)){
+				toBeInsertedAtEnd = toBeInsertedAtEnd.append("define " + "\""+ definition.getDefinitionName() + "\""
+						+ ": ");
+				toBeInsertedAtEnd = toBeInsertedAtEnd.append(definition.getDefinitionLogic());
+				//toBeInsertedAtEnd = toBeInsertedAtEnd.append("\n\n");
 			} else {
-				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
+						+ ": ");
+				if(definition.isPopDefinition()){
+					cqlStr = cqlStr.append("exists (\"");
+					cqlStr = cqlStr.append(definition.getDefinitionLogic()).append("\")");
+				} else {
+					cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				}
+				cqlStr = cqlStr.append("\n\n");
 			}
-			cqlStr = cqlStr.append("\n\n");
+			
 		}
 		
 		for (CQLFunctions function : functionsList) {
-			cqlStr = cqlStr.append("define function "
-					+ "\""+ function.getFunctionName() + "\"" + "(");
-			if(function.getArgumentList()!=null) {
-			for (CQLFunctionArgument argument : function.getArgumentList()) {
-				StringBuilder argumentType = new StringBuilder();
-				if (argument.getArgumentType().toString()
-						.equalsIgnoreCase("QDM Datatype")) {
-					argumentType = argumentType.append("\"").append(
-							argument.getQdmDataType());
-					if (argument.getAttributeName() != null) {
-						argumentType = argumentType.append(".")
-								.append(argument.getAttributeName());
-					}
-					argumentType = argumentType.append("\"");
-				} else if (argument
-						.getArgumentType()
-						.toString()
-						.equalsIgnoreCase(
-								CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-					argumentType = argumentType.append(argument.getOtherType());
-				} else {
-					argumentType = argumentType.append(argument
-							.getArgumentType());
-				}
-				cqlStr = cqlStr.append("\""+ argument.getArgumentName() + "\" "
-						+ argumentType + ", ");
-			}
-			cqlStr.deleteCharAt(cqlStr.length() - 2);
-		}
 			
-			cqlStr = cqlStr.append("): " + function.getFunctionLogic());
-			cqlStr = cqlStr.append("\n\n");
+			if(function.getFunctionName().equalsIgnoreCase(toBeInserted)){
+				toBeInsertedAtEnd = toBeInsertedAtEnd.append("define function "
+						+ "\""+ function.getFunctionName() + "\"" + "(");
+				if(function.getArgumentList()!=null) {
+				for (CQLFunctionArgument argument : function.getArgumentList()) {
+					StringBuilder argumentType = new StringBuilder();
+					if (argument.getArgumentType().toString()
+							.equalsIgnoreCase("QDM Datatype")) {
+						argumentType = argumentType.append("\"").append(
+								argument.getQdmDataType());
+						if (argument.getAttributeName() != null) {
+							argumentType = argumentType.append(".")
+									.append(argument.getAttributeName());
+						}
+						argumentType = argumentType.append("\"");
+					} else if (argument
+							.getArgumentType()
+							.toString()
+							.equalsIgnoreCase(
+									CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+						argumentType = argumentType.append(argument.getOtherType());
+					} else {
+						argumentType = argumentType.append(argument
+								.getArgumentType());
+					}
+					toBeInsertedAtEnd = toBeInsertedAtEnd.append("\""+ argument.getArgumentName() + "\" "
+							+ argumentType + ", ");
+				}
+				toBeInsertedAtEnd.deleteCharAt(toBeInsertedAtEnd.length() - 2);
+			}
+				
+				toBeInsertedAtEnd = toBeInsertedAtEnd.append("): " + function.getFunctionLogic());
+				//toBeInsertedAtEnd = toBeInsertedAtEnd.append("\n\n");
+			} else {
+				cqlStr = cqlStr.append("define function "
+						+ "\""+ function.getFunctionName() + "\"" + "(");
+				if(function.getArgumentList()!=null) {
+				for (CQLFunctionArgument argument : function.getArgumentList()) {
+					StringBuilder argumentType = new StringBuilder();
+					if (argument.getArgumentType().toString()
+							.equalsIgnoreCase("QDM Datatype")) {
+						argumentType = argumentType.append("\"").append(
+								argument.getQdmDataType());
+						if (argument.getAttributeName() != null) {
+							argumentType = argumentType.append(".")
+									.append(argument.getAttributeName());
+						}
+						argumentType = argumentType.append("\"");
+					} else if (argument
+							.getArgumentType()
+							.toString()
+							.equalsIgnoreCase(
+									CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
+						argumentType = argumentType.append(argument.getOtherType());
+					} else {
+						argumentType = argumentType.append(argument
+								.getArgumentType());
+					}
+					cqlStr = cqlStr.append("\""+ argument.getArgumentName() + "\" "
+							+ argumentType + ", ");
+				}
+				cqlStr.deleteCharAt(cqlStr.length() - 2);
+			}
+				
+				cqlStr = cqlStr.append("): " + function.getFunctionLogic());
+				cqlStr = cqlStr.append("\n\n");
+			}
+ 			
+			
+			
 		}
 		
 		return cqlStr;
@@ -373,6 +438,19 @@ public class CQLUtilityClass {
 			}
 		return convertedCQLDataSetList;
 		
+	}
+	
+	public static int countLines(String str) {
+	    if(str == null || str.isEmpty())
+	    {
+	        return 0;
+	    }
+	    int lines = 1;
+	    int pos = 0;
+	    while ((pos = str.indexOf("\n\n", pos) + 1) != 0) {
+	        lines = lines + 2;
+	    }
+	    return lines;
 	}
 	
 }

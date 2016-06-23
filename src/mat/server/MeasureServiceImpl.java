@@ -608,7 +608,7 @@ MeasureService {
 		List<String> Errors = new ArrayList<String>();
 		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
 		//MATCQLParser matcqlParser = new MATCQLParser();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId)).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId),"").toString();
 		/*cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlFileString));
 		System.out.println(cqlFileString);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -635,13 +635,13 @@ MeasureService {
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		try {
 			if(!StringUtils.isBlank(cqlFileString)){
-				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
+				String elmString = CQLtoELM.doTranslation(cqlFileString.trim(), "XML", false, false, true);
 				cqlErrorsList.addAll(CqlTranslator.getErrors());
 			}
 			
 			for(CqlTranslatorException cte : cqlErrorsList){
-				/*Errors.add(cte.getMessage());*/
-				/*result.getCqlErrors().add(cte);*/
+				//Errors.add(cte.getMessage());
+				//result.getCqlErrors().add(cte);
 				CQLErrors cqlErrors = new CQLErrors();
 				cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
 				cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());

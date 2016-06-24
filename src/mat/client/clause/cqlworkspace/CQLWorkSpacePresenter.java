@@ -1526,7 +1526,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
-									//searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
+									searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 									searchDisplay.getFunctionBodyAceEditor().redisplay();
 									validateCQLArtifact(result, currentSection);
 									searchDisplay.getFunctionBodyAceEditor().setAnnotations();
@@ -1578,7 +1578,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());
 								searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
-								//searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
+								searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 								searchDisplay.getFunctionBodyAceEditor().redisplay();
 								validateCQLArtifact(result, currentSection);
 								searchDisplay.getFunctionBodyAceEditor().setAnnotations();
@@ -1665,7 +1665,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									.setText(result.getParameter().getParameterName());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getParameterAceEditor().clearAnnotations();
-									//searchDisplay.getParameterAceEditor().removeAllMarkers();
+									searchDisplay.getParameterAceEditor().removeAllMarkers();
 									searchDisplay.getParameterAceEditor().redisplay();
 									validateCQLArtifact(result, currentSection);
 									searchDisplay.getParameterAceEditor().setAnnotations();
@@ -1712,7 +1712,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER());
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.getParameterAceEditor().clearAnnotations();
-								//searchDisplay.getParameterAceEditor().removeAllMarkers();
+								searchDisplay.getParameterAceEditor().removeAllMarkers();
 								searchDisplay.getParameterAceEditor().redisplay();
 								validateCQLArtifact(result, currentSection);
 								searchDisplay.getParameterAceEditor().setAnnotations();
@@ -1802,7 +1802,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											.setText(result.getDefinition().getDefinitionName());
 											searchDisplay.setIsPageDirty(false);
 											searchDisplay.getDefineAceEditor().clearAnnotations();
-											//searchDisplay.getDefineAceEditor().removeAllMarkers();
+											searchDisplay.getDefineAceEditor().removeAllMarkers();
 											searchDisplay.getDefineAceEditor().redisplay();
 											validateCQLArtifact(result, currentSection);
 											searchDisplay.getDefineAceEditor().setAnnotations();
@@ -1855,7 +1855,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								.setText(result.getDefinition().getDefinitionName());
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.getDefineAceEditor().clearAnnotations();
-								//searchDisplay.getDefineAceEditor().removeAllMarkers();
+								searchDisplay.getDefineAceEditor().removeAllMarkers();
 								searchDisplay.getDefineAceEditor().redisplay();
 								validateCQLArtifact(result, currentSection);
 								searchDisplay.getDefineAceEditor().setAnnotations();
@@ -2235,7 +2235,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							&& !result.getCqlString().isEmpty()) {
 						searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 					}
-					validateViewCQLFile();
+					//validateViewCQLFile();
 				}
 			}
 			@Override
@@ -2387,7 +2387,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					//searchDisplay.getCqlAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
 				}*/
 				searchDisplay.getCqlAceEditor().clearAnnotations();
-				//searchDisplay.getCqlAceEditor().removeAllMarkers();
+				searchDisplay.getCqlAceEditor().removeAllMarkers();
 				searchDisplay.getCqlAceEditor().redisplay();
 				if(!result.getCqlErrors().isEmpty()){
 					/*searchDisplay.getErrorMessageAlert()

@@ -20,6 +20,7 @@
 
 package edu.ycp.cs.dh.acegwt.client.ace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import mat.client.shared.MatContext;
@@ -765,9 +766,17 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	/**
 	 * Remove all the displayed markers.
 	 */
-	public void removeAllMarkers() {
+	/*public void removeAllMarkers() {
+		List<Integer> key = new ArrayList<Integer>(markers.keySet());
 		for (Integer id : markers.keySet()) {
 			removeMarker(id);
+		}
+	}*/
+	
+	public void removeAllMarkers() {
+		List<Integer> key = new ArrayList<Integer>(markers.keySet());
+		for (int i=0; i<key.size();i++) {
+			removeMarker(key.get(i));
 		}
 	}
 	

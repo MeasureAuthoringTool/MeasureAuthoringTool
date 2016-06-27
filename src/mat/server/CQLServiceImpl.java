@@ -1458,8 +1458,8 @@ public class CQLServiceImpl implements CQLService {
 	    }
 	    int lines = 1;
 	    int pos = 0;
-	    while ((pos = str.indexOf("\n\n", pos) + 1) != 0) {
-	        lines = lines + 2;
+	    while ((pos = str.indexOf("\n", pos) + 1) != 0) {
+	        lines = lines + 1;
 	    }
 	    return lines;
 	}

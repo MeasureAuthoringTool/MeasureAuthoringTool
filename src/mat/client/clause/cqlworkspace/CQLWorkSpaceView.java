@@ -542,6 +542,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				parameterAceEditor.clearAnnotations();
+				parameterAceEditor.removeAllMarkers();
 				parameterAceEditor.redisplay();
 				System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
@@ -582,6 +583,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				defineAceEditor.clearAnnotations();
+				defineAceEditor.removeAllMarkers();
 				defineAceEditor.redisplay();
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
@@ -628,6 +630,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				functionBodyAceEditor.clearAnnotations();
+				functionBodyAceEditor.removeAllMarkers();
 				functionBodyAceEditor.redisplay();
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
@@ -1174,6 +1177,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		parameterAceEditor.addAutoCompletions();
 		parameterAceEditor.setUseWrapMode(true);
 		parameterAceEditor.clearAnnotations();
+		parameterAceEditor.removeAllMarkers();
 		parameterAceEditor.redisplay();
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		paramAceEditorPanel.add(parameterAceEditor);
@@ -1328,6 +1332,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		defineAceEditor.setAutocompleteEnabled(true);
 		defineAceEditor.addAutoCompletions();
 		defineAceEditor.setUseWrapMode(true);
+		defineAceEditor.removeAllMarkers();
 		defineAceEditor.clearAnnotations();
 		defineAceEditor.redisplay();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
@@ -1502,6 +1507,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		functionBodyAceEditor.addAutoCompletions();
 		functionBodyAceEditor.setUseWrapMode(true);
 		functionBodyAceEditor.clearAnnotations();
+		functionBodyAceEditor.removeAllMarkers();
 		functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		funcAceEditorPanel.add(functionBodyAceEditor);

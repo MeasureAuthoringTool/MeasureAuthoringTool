@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
+
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -1403,6 +1405,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void clearParameter() {
 		searchDisplay.setCurrentSelectedParamerterObjId(null);
+		searchDisplay.getParameterAceEditor().clearAnnotations();
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getParameterAceEditor().getText() != null)) {
 			searchDisplay.getParameterAceEditor().setText("");
@@ -1428,6 +1431,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void clearDefinition() {
 		searchDisplay.setCurrentSelectedDefinitionObjId(null);
+		searchDisplay.getDefineAceEditor().clearAnnotations();
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getDefineAceEditor().getText() != null)) {
 			searchDisplay.getDefineAceEditor().setText("");
@@ -1461,6 +1465,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setCurrentSelectedFunctionObjId(null);
 		searchDisplay.getFunctionArgumentList().clear();
 		searchDisplay.getFunctionArgNameMap().clear();
+		searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getFunctionBodyAceEditor().getText() != null)) {
@@ -1521,14 +1526,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.updateFunctionMap();
 									searchDisplay.getErrorMessageAlert().clearAlert();
 									searchDisplay.getSuccessMessageAlert().setVisible(true);
-									searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
-											MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY()));
+									
 									searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 									searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 									searchDisplay.getFunctionBodyAceEditor().redisplay();
-									validateCQLArtifact(result, currentSection);
+									if(validateCQLArtifact(result, currentSection)){
+										/*searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
+												MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS()));
+												*/
+										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
+
+										} else {
+											searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+													.getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
+									}
 									searchDisplay.getFunctionBodyAceEditor().setAnnotations();
 									searchDisplay.getFunctionBodyAceEditor().redisplay();
 							
@@ -1580,7 +1594,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 								searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 								searchDisplay.getFunctionBodyAceEditor().redisplay();
-								validateCQLArtifact(result, currentSection);
+								if(validateCQLArtifact(result, currentSection)){
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS());
+								} else {
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());
+								}
 								searchDisplay.getFunctionBodyAceEditor().setAnnotations();
 								searchDisplay.getFunctionBodyAceEditor().redisplay();
 							} else if (result.getFailureReason() == 1) {
@@ -1659,15 +1679,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.clearAndAddParameterNamesToListBox();
 									searchDisplay.updateParamMap();
 									searchDisplay.getErrorMessageAlert().clearAlert();
-									searchDisplay.getSuccessMessageAlert().createAlert(
-											MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
 									searchDisplay.getParameterNameTxtArea()
 									.setText(result.getParameter().getParameterName());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getParameterAceEditor().clearAnnotations();
 									searchDisplay.getParameterAceEditor().removeAllMarkers();
 									searchDisplay.getParameterAceEditor().redisplay();
-									validateCQLArtifact(result, currentSection);
+									if(validateCQLArtifact(result, currentSection)){
+										searchDisplay.getSuccessMessageAlert().createAlert(
+												MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
+										
+									} else {
+										searchDisplay.getSuccessMessageAlert().createAlert(
+												MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
+										
+									}
 									searchDisplay.getParameterAceEditor().setAnnotations();
 									searchDisplay.getParameterAceEditor().redisplay();
 							
@@ -1708,13 +1734,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								.setText(result.getParameter().getParameterName());
 								searchDisplay.setCurrentSelectedParamerterObjId(result.getParameter().getId());
 								searchDisplay.getErrorMessageAlert().clearAlert();
-								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
-										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER());
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.getParameterAceEditor().clearAnnotations();
 								searchDisplay.getParameterAceEditor().removeAllMarkers();
 								searchDisplay.getParameterAceEditor().redisplay();
-								validateCQLArtifact(result, currentSection);
+								if(validateCQLArtifact(result, currentSection)){
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS());
+								} else {
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER());
+								}
 								searchDisplay.getParameterAceEditor().setAnnotations();
 								searchDisplay.getParameterAceEditor().redisplay();
 							} else if (result.getFailureReason() == 1) {
@@ -1796,15 +1826,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.clearAndAddDefinitionNamesToListBox();
 											searchDisplay.updateDefineMap();
 											searchDisplay.getErrorMessageAlert().clearAlert();
-											searchDisplay.getSuccessMessageAlert().createAlert(
-													MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
 											searchDisplay.getDefineNameTxtArea()
 											.setText(result.getDefinition().getDefinitionName());
 											searchDisplay.setIsPageDirty(false);
 											searchDisplay.getDefineAceEditor().clearAnnotations();
 											searchDisplay.getDefineAceEditor().removeAllMarkers();
 											searchDisplay.getDefineAceEditor().redisplay();
-											validateCQLArtifact(result, currentSection);
+											if(validateCQLArtifact(result, currentSection)){
+												searchDisplay.getSuccessMessageAlert().createAlert(
+														MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
+											} else {
+												searchDisplay.getSuccessMessageAlert().createAlert(
+														MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
+											}
 											searchDisplay.getDefineAceEditor().setAnnotations();
 											searchDisplay.getDefineAceEditor().redisplay();
 										
@@ -1849,15 +1883,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.updateDefineMap();
 								searchDisplay.setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
 								searchDisplay.getErrorMessageAlert().clearAlert();
-								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
-										.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION());
 								searchDisplay.getDefineNameTxtArea()
 								.setText(result.getDefinition().getDefinitionName());
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.getDefineAceEditor().clearAnnotations();
 								searchDisplay.getDefineAceEditor().removeAllMarkers();
 								searchDisplay.getDefineAceEditor().redisplay();
-								validateCQLArtifact(result, currentSection);
+								if(validateCQLArtifact(result, currentSection)){
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS());
+								} else {
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION());
+								}
+								
 								searchDisplay.getDefineAceEditor().setAnnotations();
 								searchDisplay.getDefineAceEditor().redisplay();
 							} else {
@@ -2422,9 +2461,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 	
-	private void validateCQLArtifact(SaveUpdateCQLResult result ,String currentSect){
+	private boolean validateCQLArtifact(SaveUpdateCQLResult result ,String currentSect){
+		boolean isInvalid = false;
 		if(!result.getCqlErrors().isEmpty()){
 			final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+			
 			for(CQLErrors error : result.getCqlErrors()){
 				if(error.getErrorInLine() >= result.getCqlModel().getLines()){
 					String errorMessage = new String();
@@ -2439,10 +2480,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					// try SCREEN_LINE, FULL_LINE, TEXT          underline_squiggly
 					//int id = searchDisplay.getDefineAceEditor().addMarker(AceRange.create(line - 1, 1, line-1, 15), "underline_squiggly", AceMarkerType.FULL_LINE, false);
 					int id = editor.addMarker(AceRange.create(line-1, column, line-1, column + 50), "underline", AceMarkerType.FULL_LINE, false);
+					if(!isInvalid){
+						isInvalid = true;
+					}
 				}
 			}
 		}
-
+		
+		return isInvalid;
 	}
 	
 	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {

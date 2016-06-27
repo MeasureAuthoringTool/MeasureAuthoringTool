@@ -192,16 +192,24 @@ public class MessageDelegate {
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully saved CQL general information.";
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
 	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully saved function into CQL.";
-	
-	
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully saved parameter into CQL.";
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name.";
+	
+	public final String SUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS  = "Successfully saved definition into CQL with errors.";
+	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS  = "Successfully saved function into CQL  with errors.";
+	public final String SUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS  = "Successfully saved parameter into CQL  with errors.";
+	
 	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name.";
 	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name.";
 	public final String ERROR_DUPLICATE_IDENTIFIER_NAME  = "Name already exists.";
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
 	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
+	
+	public final String SUCESS_DEFINITION_MODIFY_WITH_ERRORS  = "Successfully modified definition with errors.";
+	public final String SUCESS_PARAMETER_MODIFY_WITH_ERRORS  = "Successfully modified parameter with errors.";
+	public final String SUCESS_FUNCTION_MODIFY_WITH_ERRORS  = "Successfully modified function with errors.";
+	
 	public final String ERROR_PARAMETER_NAME_NO_SPECIAL_CHAR  = "Invalid Parameter name. " +
 			"Duplicate name or use of restricted character(s).";
 	public final String ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR  = "Invalid Definition name. " +
@@ -2551,4 +2559,30 @@ public class MessageDelegate {
 	public String getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR;
 	}
+	
+	public String getSUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS() {
+		return SUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS;
+	}
+
+	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS() {
+		return SUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS;
+	}
+
+	public String getSUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS() {
+		return SUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS;
+	}
+	
+	public String getSUCESS_DEFINITION_MODIFY_WITH_ERRORS() {
+		return SUCESS_DEFINITION_MODIFY_WITH_ERRORS;
+	}
+
+	public String getSUCESS_PARAMETER_MODIFY_WITH_ERRORS() {
+		return SUCESS_PARAMETER_MODIFY_WITH_ERRORS;
+	}
+
+	public String getSUCESS_FUNCTION_MODIFY_WITH_ERRORS() {
+		return SUCESS_FUNCTION_MODIFY_WITH_ERRORS;
+	}
+
+
 }

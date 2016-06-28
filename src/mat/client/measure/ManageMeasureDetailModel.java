@@ -877,7 +877,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	 * @param copyright
 	 *            the new copyright
 	 */
-	public void setCopyright(String cfopyright) {
+	public void setCopyright(String copyright) {
 		this.copyright = doTrim(copyright);
 	}
 	
@@ -2059,7 +2059,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	
 	@Override
 	public void scrubForMarkUp() {
-		System.out.println(this.getIsPatientBasedMeasure());
 		String markupRegExp = "<[^>]+>";
 		if(this.getName() != null) {
 			String noMarkupText = this.getName().trim().replaceAll(markupRegExp, "");

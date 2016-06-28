@@ -1889,12 +1889,9 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
 		
 		// check for patient based measure
-		if(metaDataDisplay.getYesPatientBased().getValue() == true) {
-			currentMeasureDetail.setIsPatientBasedMeasure(true);
-		} else {
-			currentMeasureDetail.setIsPatientBasedMeasure(false);
-		}
 		
+		currentMeasureDetail.setIsPatientBasedMeasure(metaDataDisplay.getYesPatientBased().getValue());
+				
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());
 		currentMeasureDetail.setClinicalRecomms(metaDataDisplay.getClinicalRecommendation().getValue());
 		currentMeasureDetail.setDefinitions(metaDataDisplay.getDefinitions().getValue());

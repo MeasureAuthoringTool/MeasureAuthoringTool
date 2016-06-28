@@ -6,7 +6,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -26,6 +28,11 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.parser.CQLDefinitionModelObject;
+import mat.model.cql.parser.CQLFileObject;
+import mat.model.cql.parser.CQLFunctionModelObject;
+import mat.model.cql.parser.CQLParameterModelObject;
+import mat.model.cql.parser.CQLValueSetModelObject;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
@@ -62,6 +69,17 @@ public class ExportSimpleXML {
 	/** The measure_ id. */
 	private static String measure_Id;
 	
+	/** The Constant Continuous Variable. */
+	private static final String SCORING_TYPE_CONTVAR = "CONTVAR";
+	
+	/** The Constant RATIO. */
+	private static final String RATIO = "RATIO";
+	
+	/** The Constant PROPOR. */
+	private static final String PROPOR = "PROPOR";
+	
+	private static final String COHORT = "COHORT";
+	
 	/**
 	 * Export.
 	 *
@@ -90,6 +108,38 @@ public class ExportSimpleXML {
 		} /*catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}*/
+		measure_Id = null;
+		return exportedXML;
+	}
+	
+	/**
+	 * Export a CQL measure.
+	 *
+	 * @param measureXMLObject            the measure xml object
+	 * @param message            the message
+	 * @param measureDAO TODO
+	 * @param organizationDAO the organization dao
+	 * @return the string
+	 */
+	public static String export(MeasureXML measureXMLObject, List<String> message, 
+			MeasureDAO measureDAO, OrganizationDAO organizationDAO, CQLFileObject cqlFileObject) {
+		String exportedXML = "";
+        //Validate the XML
+		Document measureXMLDocument;
+		try {
+			measureXMLDocument = getXMLDocument(measureXMLObject);
+			/*if(validateMeasure(measureXMLDocument, message)){*/
+			measure_Id = measureXMLObject.getMeasure_id();
+			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id, cqlFileObject);
+			//}
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		measure_Id = null;
 		return exportedXML;
 	}
 	
@@ -146,6 +196,27 @@ public class ExportSimpleXML {
 		return "";
 	}
 	
+	/**
+	 * This will work with the existing CQL Measure XML & assume that it is correct
+	 * and validated, to generate the exported XML.
+	 *
+	 * @param measureXMLDocument            the measure xml document
+	 * @param organizationDAO the organization dao
+	 * @param measureDAO TODO
+	 * @param measure_Id TODO
+	 * @return the string
+	 */
+	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO, MeasureDAO measureDAO, String measure_Id, CQLFileObject cqlFileObject) {
+		_logger.info("In ExportSimpleXML.generateExportedXML()");
+		try {
+			return traverseXML(measureXMLDocument,organizationDAO, measureDAO, measure_Id, cqlFileObject);
+		} catch (Exception e) {
+			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	//This will walk through the original Measure XML and generate the Measure Export XML.
 	/**
 	 * Traverse xml.
@@ -195,6 +266,502 @@ public class ExportSimpleXML {
 		//addLocalVariableNameToQDMs(originalDoc);
 		return transform(originalDoc);
 	}
+	
+	//This will walk through the original CQL Measure XML and generate the Measure Export XML.
+		/**
+		 * Traverse xml.
+		 *
+		 * @param originalDoc            the original doc
+		 * @param organizationDAO the organization dao
+		 * @param MeasureDAO TODO
+		 * @param measure_Id TODO
+		 * @return the string
+		 * @throws XPathExpressionException             the x path expression exception
+		 */
+		private static String traverseXML(Document originalDoc, OrganizationDAO organizationDAO,
+				MeasureDAO MeasureDAO, String measure_Id, CQLFileObject cqlFileObject) throws XPathExpressionException {
+			//set attributes
+			updateVersionforMeasureDetails(originalDoc, MeasureDAO, measure_Id);
+			//update Steward and developer's node id with oid.
+			updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
+			setAttributesForComponentMeasures(originalDoc, MeasureDAO);
+			List<String> usedClauseIds = getUsedClauseIds(originalDoc);
+			//using the above list we need to traverse the originalDoc and remove the unused Clauses
+			removeUnwantedClauses(usedClauseIds, originalDoc);
+			List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc, cqlFileObject);
+			removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
+			removeNode("/measure/subTreeLookUp",originalDoc);
+			removeNode("/measure/elementLookUp",originalDoc);
+			expandAndHandleGrouping(originalDoc);
+			//addUUIDToFunctions(originalDoc);
+			//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
+			modifyHeaderStart_Stop_Dates(originalDoc);
+			modifyMeasureGroupingSequence(originalDoc);
+			//Remove Empty Comments nodes from population Logic.
+			removeEmptyCommentsFromPopulationLogic(originalDoc);
+			//addLocalVariableNameToQDMs(originalDoc);
+			createUsedCQLArtifactsWithPopulationNames(originalDoc);
+			return transform(originalDoc);
+		}
+		
+		private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){
+			List<String> masterList = new ArrayList<String>();
+			masterList = getAllCQLDefnArtifacts(originalDoc, cqlFileObject);
+			List<String> funcList = getAllCQLFuncArtifacts(originalDoc, cqlFileObject);
+			for(int i=0;i<funcList.size();i++){
+				if(!masterList.contains(funcList.get(i))){
+					masterList.add(funcList.get(i));
+				}
+			}
+			
+			return masterList;
+		}
+		
+		private static List<String> getAllCQLDefnArtifacts(Document originalDoc, CQLFileObject cqlObject){
+			List<String> usedAllCQLArtifacts = new ArrayList<String>();
+			try {
+				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqldefinition/@displayName",
+						originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				
+				for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
+					Node cqlDefnNameAttributeNode = subTreeRefIdsNodeList.item(i);
+					
+					if(!usedAllCQLArtifacts.contains(cqlDefnNameAttributeNode.getNodeValue())){
+						usedAllCQLArtifacts.add(cqlDefnNameAttributeNode.getNodeValue());
+					}
+					for ( String key : cqlObject.getDefinitionsMap().keySet() ) {
+					    System.out.println( key );
+					}
+					
+					String cqlName = cqlDefnNameAttributeNode.getNodeValue();
+				    cqlName = "\"" + cqlName + "\""; 
+					List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlObject.getDefinitionsMap()
+					                      .get(cqlName).getReferredToDefinitions();
+					
+					for(int j=0 ;j<referredToDefinitionsModelObjectList.size();j++){
+						if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLFunctionModelObject> referredToFunctionsModelObjectList = cqlObject.getDefinitionsMap()
+							.get(cqlName).getReferredToFunctions();
+					
+					for(int m=0 ;m<referredToFunctionsModelObjectList.size();m++){
+						if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLValueSetModelObject> valueSetsReferredByDefinitionsModelObjectList = cqlObject.getDefinitionsMap()
+							.get(cqlName).getReferredByValueSets();
+					
+					for(int k=0 ;k<valueSetsReferredByDefinitionsModelObjectList.size();k++){
+						if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLParameterModelObject> referredByDefinitionsModelObjectList = cqlObject.getDefinitionsMap()
+							.get(cqlName).getReferredByParameters();
+					
+					for(int n=0 ;n<referredByDefinitionsModelObjectList.size();n++){
+						if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+
+				}
+				
+				
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+			return usedAllCQLArtifacts;
+		}
+		
+		private static List<String> getAllCQLFuncArtifacts(Document originalDoc, CQLFileObject cqlObject){
+			List<String> usedAllCQLArtifacts = new ArrayList<String>();
+			try {
+				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqlfunction/@displayName",
+						originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
+					Node cqlfuncNameAttributeNode = subTreeRefIdsNodeList.item(i);
+					
+					if(!usedAllCQLArtifacts.contains(cqlfuncNameAttributeNode.getNodeValue())){
+						usedAllCQLArtifacts.add(cqlfuncNameAttributeNode.getNodeValue());
+					}
+					String cqlName = cqlfuncNameAttributeNode.getNodeValue();
+				    cqlName = "\"" + cqlName + "\""; 
+					List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlObject.getFunctionsMap()
+							.get(cqlName).getReferredToDefinitions();
+					
+					for(int j=0 ;j<referredToDefinitionsModelObjectList.size();j++){
+						if(!usedAllCQLArtifacts.contains(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredToDefinitionsModelObjectList.get(j).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLFunctionModelObject> referredToFunctionsModelObjectList = cqlObject.getFunctionsMap()
+							.get(cqlName).getReferredToFunctions();
+					
+					for(int m=0 ;m<referredToFunctionsModelObjectList.size();m++){
+						if(!usedAllCQLArtifacts.contains(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredToFunctionsModelObjectList.get(m).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLValueSetModelObject> valueSetsReferredByDefinitionsModelObjectList = cqlObject.getFunctionsMap()
+							.get(cqlName).getReferredByValueSets();
+					
+					for(int k=0 ;k<valueSetsReferredByDefinitionsModelObjectList.size();k++){
+						if(!usedAllCQLArtifacts.contains(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(valueSetsReferredByDefinitionsModelObjectList.get(k).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+					
+					List<CQLParameterModelObject> referredByDefinitionsModelObjectList = cqlObject.getFunctionsMap()
+							.get(cqlName).getReferredByParameters();
+					
+					for(int n=0 ;n<referredByDefinitionsModelObjectList.size();n++){
+						if(!usedAllCQLArtifacts.contains(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""))){
+							usedAllCQLArtifacts.add(referredByDefinitionsModelObjectList.get(n).getIdentifier().replaceAll("\"", ""));
+						}
+					}
+
+				}
+				
+				
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return usedAllCQLArtifacts;
+		}
+		
+		/**
+		 * Removes the unwanted CQL definitions, functions, valuesets abd parameters.
+		 *
+		 * @param usedCQLAtrifactsIds the used sub tree ids
+		 * @param originalDoc the original doc
+		 * @throws XPathExpressionException the x path expression exception
+		 */
+		private static void removeUnwantedCQLArtifacts(List<String> usedCQLAtrifactsIds, Document originalDoc) throws XPathExpressionException{
+			if((usedCQLAtrifactsIds !=null) && (usedCQLAtrifactsIds.size()>0)){
+				
+				String uuidXPathString = "";
+				
+				for(String uuidString:usedCQLAtrifactsIds){
+					uuidXPathString += "@name != '"+uuidString + "' and";
+				}
+				uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
+				
+				String xPathForUnunsedDefinitionsTreeNodes = "/measure/cqlLookUp//definition["+uuidXPathString+"]";
+				String xPathForUnunsedFunctionsTreeNodes = "/measure/cqlLookUp//function["+uuidXPathString+"]";
+				String xPathForUnunsedValueSetsTreeNodes = "/measure/cqlLookUp//valueset["+uuidXPathString+"]";
+				String xPathForUnunsedParametersTreeNodes = "/measure/cqlLookUp//parameter["+uuidXPathString+"]";
+				
+				try {
+					NodeList unUnsedDefineNodes = (NodeList) xPath.evaluate(xPathForUnunsedDefinitionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+					if(unUnsedDefineNodes.getLength() > 0){
+						Node parentSubTreeNode = unUnsedDefineNodes.item(0).getParentNode();
+						for(int i=0;i<unUnsedDefineNodes.getLength();i++){
+							parentSubTreeNode.removeChild(unUnsedDefineNodes.item(i));
+						}
+					}
+					
+					//to remove functions
+					NodeList unUnsedFunctionNodes = (NodeList) xPath.evaluate(xPathForUnunsedFunctionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+					if(unUnsedFunctionNodes.getLength() > 0){
+						Node parentSubTreeNode = unUnsedFunctionNodes.item(0).getParentNode();
+						for(int i=0;i<unUnsedFunctionNodes.getLength();i++){
+							parentSubTreeNode.removeChild(unUnsedFunctionNodes.item(i));
+						}
+					}
+					
+					NodeList unUnsedValueSetNodes = (NodeList) xPath.evaluate(xPathForUnunsedValueSetsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+					if(unUnsedValueSetNodes.getLength() > 0){
+						Node parentSubTreeNode = unUnsedValueSetNodes.item(0).getParentNode();
+						for(int i=0;i<unUnsedValueSetNodes.getLength();i++){
+							parentSubTreeNode.removeChild(unUnsedValueSetNodes.item(i));
+						}
+					}
+					
+					NodeList unUnsedParameterNodes = (NodeList) xPath.evaluate(xPathForUnunsedParametersTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+					if(unUnsedParameterNodes.getLength() > 0){
+						Node parentSubTreeNode = unUnsedParameterNodes.item(0).getParentNode();
+						for(int i=0;i<unUnsedParameterNodes.getLength();i++){
+							parentSubTreeNode.removeChild(unUnsedParameterNodes.item(i));
+						}
+					}
+					
+				} catch (XPathExpressionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+				
+		}
+		
+		private static void createUsedCQLArtifactsWithPopulationNames(Document originalDoc) {
+			
+			try {
+				NodeList paclkageClauseNodes = (NodeList) xPath.evaluate("/measure/measureGrouping//clause",
+						originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				int count = 1;
+				String prevseq = "";
+				String prevPopString ="";
+				for(int i=0; i<paclkageClauseNodes.getLength(); i++) {
+					Node node = paclkageClauseNodes.item(i);
+					String popUUIDString = node.getAttributes().getNamedItem("uuid").getNodeValue();
+					String popTypeString = node.getAttributes().getNamedItem("type").getNodeValue();
+					Node parentNode = node.getParentNode();
+					String currsequence = "";
+					String sequence = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
+					//if multilple Grouping then sequence number is added else no sequence is added.
+					if(checkForMultipleGrouping(originalDoc)){
+						currsequence = sequence;
+					} 
+					NodeList popSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
+							sequence+"']/clause[@type='"+popTypeString+"']",
+							originalDoc.getDocumentElement(), XPathConstants.NODESET);
+					/*NodeList stratPopSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
+							sequence+"']/packageClause[@type='stratum']",
+									originalDoc.getDocumentElement(), XPathConstants.NODESET);*/
+					
+					
+					if(popSeqList.getLength()>1){
+						
+						if(!prevPopString.equalsIgnoreCase(popTypeString) && 
+								!prevseq.equalsIgnoreCase(sequence)){
+							count = 1;
+						} 
+						
+						if(!currsequence.isEmpty()){
+							currsequence = currsequence + "_"+count++;
+						}
+						else {
+							currsequence = ""+count++;
+						}
+					} 
+					
+					/*if(popTypeString.equalsIgnoreCase("initialPopulation") && 
+							checkifScoringRatio(originalDoc)){
+						
+					} else {
+						if(!currsequence.isEmpty()){
+							
+						}
+					}*/
+					
+					
+					
+//					if(popTypeString.equalsIgnoreCase("initialPopulation") && 
+//							checkifScoringRatio(originalDoc)){
+//						
+//						if(prevseq.equals(currsequence) && initialPopSeqList.getLength()>1){
+//							if(currsequence.isEmpty()){
+//								currsequence = ""+count++;
+//							} else {
+//								currsequence = currsequence + "_"+ count++;
+//							}
+//						}
+//						
+//					} else if(popTypeString.equalsIgnoreCase("stratum")) {
+//						
+//						if(prevseq.equals(currsequence) && stratPopSeqList.getLength()>1){
+//							if(currsequence.isEmpty()){
+//								currsequence = ""+count++;
+//							} else {
+//								currsequence = currsequence + "_"+ count++;
+//							}
+//						} 
+//					} else {
+//						count = 1;
+//						if(currsequence.isEmpty()){
+//							currsequence = ""+count++;
+//						} else {
+//							currsequence = currsequence + "_"+ count++;
+//						}
+//					}
+					
+					prevseq = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
+					prevPopString = popTypeString;
+					
+					Map<String, String> usedPopulations = new HashMap<String, String>();
+					
+					if(node.hasChildNodes()){
+						Node childNode = node.getFirstChild();
+						String cqlAtrifactStr = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+						usedPopulations.put(popUUIDString, cqlAtrifactStr);
+					} else if(checkPopulationByScoring(getScoringType(originalDoc), popTypeString)) {
+						usedPopulations.put(popUUIDString, "");
+					}
+					
+					createCQLArtifacts(originalDoc, node, getPopulationString(popTypeString), popUUIDString , currsequence, usedPopulations);
+				}
+				
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 
+		}
+		
+		private static void createCQLArtifacts(Document originalDoc, Node childNode, String popTypeString, String popUUIDStr, String sequence, Map<String, String> usedPopulations){
+			
+			String artifactUUIDStr = usedPopulations.get(popUUIDStr);
+			try {
+				Node cqldefArtifactNode = (Node) xPath.evaluate("/measure/cqlLookUp/definitions",
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				Node cqlArtifactNode = (Node) xPath.evaluate("/measure/cqlLookUp//node()[@id='"+artifactUUIDStr+"']",
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				if(!sequence.isEmpty()){
+					popTypeString = popTypeString + " " + sequence;
+				}
+				
+				
+				if(cqlArtifactNode!=null){
+					String context = cqlArtifactNode.getAttributes().getNamedItem("context").getNodeValue();
+					String defName = cqlArtifactNode.getAttributes().getNamedItem("name").getNodeValue();
+					
+					Node newDefNode = cqldefArtifactNode.getFirstChild().cloneNode(true);
+					newDefNode.getAttributes().getNamedItem("context").setNodeValue(context);
+					newDefNode.getAttributes().getNamedItem("id").setNodeValue(popUUIDStr);
+					newDefNode.getAttributes().getNamedItem("supplDataElement").setNodeValue("false");
+					newDefNode.getAttributes().getNamedItem("popDefinition").setNodeValue("true");
+					newDefNode.getAttributes().getNamedItem("name").setNodeValue(popTypeString);
+					if(newDefNode.hasChildNodes()){
+						for(int i=0;i<newDefNode.getChildNodes().getLength();i++){
+							Node logicNode = newDefNode.getChildNodes().item(i);
+							if(logicNode.getNodeName().equals("logic")){
+								logicNode.setTextContent(defName);
+							}
+						}
+					}
+					cqldefArtifactNode.appendChild(newDefNode);
+				} else if(cqlArtifactNode==null && artifactUUIDStr!=null 
+						&& artifactUUIDStr.isEmpty()){
+					//String context = cqlArtifactNode.getAttributes().getNamedItem("context").getNodeValue();
+					//String defName = cqlArtifactNode.getAttributes().getNamedItem("name").getNodeValue();
+					
+					Node newDefNode = cqldefArtifactNode.getFirstChild().cloneNode(true);
+					newDefNode.getAttributes().getNamedItem("context").setNodeValue("patient");
+					newDefNode.getAttributes().getNamedItem("id").setNodeValue(popUUIDStr);
+					newDefNode.getAttributes().getNamedItem("supplDataElement").setNodeValue("false");
+					newDefNode.getAttributes().getNamedItem("popDefinition").setNodeValue("true");
+					newDefNode.getAttributes().getNamedItem("name").setNodeValue(popTypeString);
+					if(newDefNode.hasChildNodes()){
+						for(int i=0;i<newDefNode.getChildNodes().getLength();i++){
+							Node logicNode = newDefNode.getChildNodes().item(i);
+							if(logicNode.getNodeName().equals("logic")){
+								logicNode.setTextContent("true");
+							}
+						}
+					}
+					cqldefArtifactNode.appendChild(newDefNode);
+				}
+				
+				
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		private static String getScoringType(Document originalDoc){
+			String XPATH_MEASURE_SCORING = "/measure/measureDetails/scoring/@id";
+			Node scoringNode;
+			String scoringType = "";
+			try {
+				scoringNode = (Node) xPath.evaluate(XPATH_MEASURE_SCORING,
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				scoringType = scoringNode.getNodeValue();
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return scoringType;
+		}
+		
+		private static String getPopulationString(String str){
+			String popString = "";
+			if(str.equalsIgnoreCase("initialPopulation")){
+				popString = "Initial Population";
+			} else if(str.equalsIgnoreCase("denominator")){
+				popString =  "Denominator";
+			} else if(str.equalsIgnoreCase("denominatorExclusions")){
+				popString = "Denominator Exclusion";
+			} else if(str.equalsIgnoreCase("denominatorExceptions")){
+				popString = "Denominator Exception";
+			} else if(str.equalsIgnoreCase("numerator")){
+				popString = "Numerator";
+			} else if(str.equalsIgnoreCase("numeratorExclusions")){
+				popString = "Numerator Exclusion";
+			} else if(str.equalsIgnoreCase("measurePopulation")){
+				popString = "Measure Population";
+			} else if(str.equalsIgnoreCase("measurePopulationExclusions")){
+				popString = "Measure Population Exclusion";
+			} else if(str.equalsIgnoreCase("measureObservation")){
+				popString = "Measure Observation";
+			} else if(str.equalsIgnoreCase("startum")){
+				popString = "Stratification";
+			}
+			return popString;
+		}
+		
+		private static boolean checkForMultipleGrouping(Document originalDoc){
+			boolean isMeasureGroupingMul = false;
+			try {
+				NodeList usedDefinitionsUuids = (NodeList) xPath.evaluate("/measure//measureGrouping/group",
+						originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				
+				if(usedDefinitionsUuids.getLength()>1){
+					isMeasureGroupingMul = true;
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return isMeasureGroupingMul;
+		}
+		
+		private static boolean checkPopulationByScoring(String scoringType, String population){
+			boolean isReqPopulation = false;
+			if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
+				if(population.equalsIgnoreCase("initialPopulation") || 
+					population.equalsIgnoreCase("measurePopulation") || 
+						population.equalsIgnoreCase("measureObservation")){
+					return true;
+					}
+			} else if (RATIO.equals(scoringType) || PROPOR.equals(scoringType)) {
+				if(population.equalsIgnoreCase("initialPopulation") || 
+						population.equalsIgnoreCase("denominator") || 
+							population.equalsIgnoreCase("numerator")) {
+						return true;
+					}
+			} else if (COHORT.equals(scoringType)) {
+				if(population.equalsIgnoreCase("initialPopulation")){
+						return true;
+					}
+			} 
+			
+			/*else if (PROPOR.equals(scoringType)) {
+				if(population.equalsIgnoreCase("initialPopulation") || 
+						population.equalsIgnoreCase("denominator") || 
+							population.equalsIgnoreCase("numerator")){
+						return true;
+					}
+			}*/
+			
+			
+			return isReqPopulation;
+		}	
+		
 	/**
 	 * This method will remove empty comments nodes from clauses which are part of Measure Grouping.
 	 * @param originalDoc - Document
@@ -816,7 +1383,7 @@ public class ExportSimpleXML {
 	 *
 	 * @param groupNode the group node
 	 * @param type the type
-	 * @param origionalDoc the origional doc
+	 * @param origionalDoc the original doc
 	 */
 	private static void generateClauseNode(Node groupNode, String type,Document origionalDoc) {
 		// TODO Auto-generated method stub

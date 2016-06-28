@@ -194,16 +194,7 @@ public class CQLUtilityClass {
 			} else {
 				cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
 						+ ": ");
-				if(definition.isPopDefinition()){
-					if(!definition.getDefinitionLogic().isEmpty()){
-						cqlStr = cqlStr.append("exists(\"");
-						cqlStr = cqlStr.append(definition.getDefinitionLogic()).append("\")");
-					} else {
-						cqlStr = cqlStr.append("true");
-					}
-				} else {
-					cqlStr = cqlStr.append(definition.getDefinitionLogic());
-				}
+				cqlStr = cqlStr.append(definition.getDefinitionLogic());
 				cqlStr = cqlStr.append("\n\n");
 			}
 			

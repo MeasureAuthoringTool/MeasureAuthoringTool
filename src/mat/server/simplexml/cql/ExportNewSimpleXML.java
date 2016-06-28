@@ -38,10 +38,8 @@ import mat.server.util.UuidUtility;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -68,10 +66,6 @@ public class ExportNewSimpleXML {
 	/** The measure_ id. */
 	private static String measure_Id;
 	
-	private static CQLFileObject cqlObject;
-	
-	private static Map<String, String> usedPopulations = new HashMap<String, String>();
-
 	/** The Constant Continuous Variable. */
 	private static final String SCORING_TYPE_CONTVAR = "CONTVAR";
 	
@@ -95,14 +89,14 @@ public class ExportNewSimpleXML {
 	public static String export(MeasureXML measureXMLObject, List<String> message, 
 			MeasureDAO measureDAO, OrganizationDAO organizationDAO, CQLFileObject cqlFileObject) {
 		String exportedXML = "";
-        cqlObject = cqlFileObject;
+        //cqlObject = cqlFileObject;
 		//Validate the XML
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
 			/*if(validateMeasure(measureXMLDocument, message)){*/
 			measure_Id = measureXMLObject.getMeasure_id();
-			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id);
+			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id, cqlFileObject);
 			//}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -127,10 +121,10 @@ public class ExportNewSimpleXML {
 	 * @param measure_Id TODO
 	 * @return the string
 	 */
-	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO, MeasureDAO measureDAO, String measure_Id) {
+	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO, MeasureDAO measureDAO, String measure_Id, CQLFileObject cqlFileObject) {
 		_logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
-			return traverseXML(measureXMLDocument,organizationDAO, measureDAO, measure_Id);
+			return traverseXML(measureXMLDocument,organizationDAO, measureDAO, measure_Id, cqlFileObject);
 		} catch (Exception e) {
 			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
@@ -150,16 +144,16 @@ public class ExportNewSimpleXML {
 	 * @throws XPathExpressionException             the x path expression exception
 	 */
 	private static String traverseXML(Document originalDoc, OrganizationDAO organizationDAO,
-			MeasureDAO MeasureDAO, String measure_Id) throws XPathExpressionException {
+			MeasureDAO MeasureDAO, String measure_Id, CQLFileObject cqlFileObject) throws XPathExpressionException {
 		//set attributes
 		updateVersionforMeasureDetails(originalDoc, MeasureDAO, measure_Id);
 		//update Steward and developer's node id with oid.
 		updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
 		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
-		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
+		//List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		//using the above list we need to traverse the originalDoc and remove the unused Clauses
-		removeUnwantedClauses(usedClauseIds, originalDoc);
-		List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc);
+		//removeUnwantedClauses(usedClauseIds, originalDoc);
+		List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc, cqlFileObject);
 		removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
 		removeNode("/measure/subTreeLookUp",originalDoc);
 		removeNode("/measure/elementLookUp",originalDoc);
@@ -205,6 +199,291 @@ public class ExportNewSimpleXML {
 		}
 		
 	}*/
+	
+	/**
+	 * This method will go through individual <group> tags and each
+	 * <packageClause> child. For each <packageClause> it will copy the original
+	 * <clause> to <group> and remove the <packageClause> tag. Finally, at the
+	 * end of the method it will remove the <populations> tag from the document.
+	 * 
+	 * @param originalDoc
+	 *            the original doc
+	 * @throws XPathExpressionException
+	 *             the x path expression exception
+	 */
+	private static void expandAndHandleGrouping(Document originalDoc) throws XPathExpressionException {
+		Node measureGroupingNode = (Node)xPath.evaluate("/measure/measureGrouping",
+				originalDoc.getDocumentElement(), XPathConstants.NODE);
+		
+		NodeList groupNodes = measureGroupingNode.getChildNodes();
+		List<Node> groupNodesList = reArrangeGroupsBySequence(groupNodes);
+		
+		for(int j=0;j<groupNodesList.size();j++){
+			Node groupNode = groupNodesList.get(j);
+			String groupSequence = groupNode.getAttributes().getNamedItem("sequence").getNodeValue();
+			NodeList packageClauses = groupNode.getChildNodes();
+			List<Node> clauseNodes = new ArrayList<Node>();
+			for(int i=0;i<packageClauses.getLength();i++){
+				
+				Node packageClause = packageClauses.item(i);
+				
+				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
+				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
+				
+				Node clauseNode = findClauseByUUID(uuid, type, originalDoc).cloneNode(true);
+				
+				if("stratification".equals(clauseNode.getNodeName())){
+					NodeList stratificationClauses = clauseNode.getChildNodes();
+					
+					for(int h=0;h<stratificationClauses.getLength();h++){
+						Node stratificationClause = stratificationClauses.item(h);
+						//add childCount to clauseNode
+						if((packageClause.getChildNodes()!=null) && (packageClause.getChildNodes().getLength()>0)){
+							Node itemCount = packageClause.getChildNodes().item(0);
+							Node clonedItemCount = itemCount.cloneNode(true);
+							stratificationClause.appendChild(clonedItemCount);
+						}
+						Node clonedClauseNode = stratificationClause.cloneNode(true);
+						//set a new 'uuid' attribute value for <clause>
+						String cureUUID = UUIDUtilClient.uuid();
+						clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
+						clauseNodes.add(clonedClauseNode);
+					}
+				}else{
+					//add childCount to clauseNode
+					if((packageClause.getChildNodes()!=null) && (packageClause.getChildNodes().getLength()>0)){
+						Node itemCount = packageClause.getChildNodes().item(0);
+						Node clonedItemCount = itemCount.cloneNode(true);
+						clauseNode.appendChild(clonedItemCount);
+					}
+					
+					//add associatedPopulationUUID to clauseNode
+					if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
+						Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
+						if((hasAssociatedPopulationUUID != null) && !hasAssociatedPopulationUUID.toString().isEmpty()){
+							String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
+							Node attr = originalDoc.createAttribute("associatedPopulationUUID");
+							attr.setNodeValue(associatedPopulationUUID);
+							clauseNode.getAttributes().setNamedItem(attr);
+						}
+					}
+					
+					//deep clone the <clause> tag
+					//Node clonedClauseNode = clauseNode.cloneNode(true);
+					
+					//set a new 'uuid' attribute value for <clause>
+					String cureUUID = UUIDUtilClient.uuid();
+					clauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
+					//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
+					//set a new 'displayName' for <clause>
+					//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
+					
+					//modify associcatedUUID
+					modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
+					clauseNodes.add(clauseNode);
+				}
+				
+			}
+			//finally remove the all the <packageClause> tags from <group>
+			for(int i=packageClauses.getLength();i>0;i--){
+				groupNode.removeChild(packageClauses.item(0));
+			}
+			//set the cloned <clause>'s as children of <group>
+			for(Node cNode:clauseNodes){
+				groupNode.appendChild(cNode);
+			}
+			
+		}
+		
+		addMissingEmptyClauses(groupNodes,originalDoc);
+		
+		//reArrangeClauseNodes(originalDoc);
+		removeNode("/measure/populations",originalDoc);
+		removeNode("/measure/measureObservations",originalDoc);
+		removeNode("/measure/strata",originalDoc);
+	}
+	
+	/**
+	 * This method finds a <clause> tag in <measure>/<populations> with a
+	 * specified 'uuid' attribute.
+	 *
+	 * @param uuid the uuid
+	 * @param type the type
+	 * @param originalDoc the original doc
+	 * @return the node
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static Node findClauseByUUID(String uuid, String type, Document originalDoc) throws XPathExpressionException {
+		Node clauseNode = null;
+		if(type.equalsIgnoreCase("stratification")){
+			String startificationXPath = "/measure/strata/stratification[@uuid='"+uuid+"']";
+			clauseNode = (Node)xPath.evaluate(startificationXPath, originalDoc,XPathConstants.NODE);
+			
+		}else{
+			clauseNode = (Node)xPath.evaluate("/measure//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);
+		}
+		return clauseNode;
+	}
+	
+	/**
+	 * Modify associated popid.
+	 *
+	 * @param previousUUID the previous uuid
+	 * @param currentUUID the current uuid
+	 * @param groupSequence the group sequence
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void modifyAssociatedPOPID(String previousUUID, String currentUUID,String groupSequence,  Document originalDoc) throws XPathExpressionException {
+		NodeList nodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
+				groupSequence +"']/packageClause[@associatedPopulationUUID='"+ previousUUID +"']",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i = 0; i<nodeList.getLength(); i++){
+			Node childNode = nodeList.item(i);
+			childNode.getAttributes().getNamedItem("associatedPopulationUUID").setNodeValue(currentUUID);
+		}
+		
+	}
+	
+	/**
+	 * Re arrange groups by sequence.
+	 *
+	 * @param groupNodes the group nodes
+	 * @return the list
+	 */
+	private static List<Node> reArrangeGroupsBySequence(NodeList groupNodes) {
+		List<Node> nodeList = new ArrayList<Node>();
+		for(int i=0;i<groupNodes.getLength();i++){
+			nodeList.add(groupNodes.item(i));
+		}
+		Collections.sort(nodeList, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				if("group".equals(o1.getNodeName()) && "group".equals(o2.getNodeName())){
+					return 0;
+				}
+				String o1Sequence = o1.getAttributes().getNamedItem("sequence").getNodeValue();
+				String o2Sequence = o2.getAttributes().getNamedItem("sequence").getNodeValue();
+				if(Integer.parseInt(o1Sequence) >= Integer.parseInt(o2Sequence)){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		});
+		return nodeList;
+	}
+	
+	/**
+	 * Adds the missing empty clauses.
+	 *
+	 * @param groupNodes the group nodes
+	 * @param originalDoc the original doc
+	 * @throws DOMException the DOM exception
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void addMissingEmptyClauses(NodeList groupNodes,
+			Document originalDoc) throws DOMException, XPathExpressionException {
+		
+		
+		Node node = (Node)xPath.evaluate("/measure/measureDetails/scoring",
+				originalDoc.getDocumentElement(), XPathConstants.NODE);
+		Node groupNode;
+		Node childNode;
+		
+		for(int i = 0; i< groupNodes.getLength(); i++){
+			List<String> existingClauses = new ArrayList<String>();
+			List<String> clauseList = new ArrayList<String>();
+			clauseList = getRequiredClauses(node.getTextContent());
+			groupNode = groupNodes.item(i);
+			
+			NodeList children = groupNode.getChildNodes();
+			
+			for(int j = 0; j<children.getLength(); j++){
+				childNode = children.item(j);
+				NamedNodeMap map = childNode.getAttributes();
+				existingClauses.add(map.getNamedItem("type").getNodeValue());
+			}
+			if(clauseList.removeAll(existingClauses)){
+				for(int x = 0; x<clauseList.size();x++){
+					generateClauseNode(groupNode,clauseList.get(x),originalDoc);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Generate clause node.
+	 *
+	 * @param groupNode the group node
+	 * @param type the type
+	 * @param origionalDoc the origional doc
+	 */
+	private static void generateClauseNode(Node groupNode, String type,Document origionalDoc) {
+		// TODO Auto-generated method stub
+		Node newClauseNode = groupNode.getFirstChild().cloneNode(true);
+		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
+		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
+		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
+		
+		NodeList logicalNode = newClauseNode.getChildNodes();
+		
+		//		for(int i = 0; i<logicalNode.getLength();i++){
+		for(int i = logicalNode.getLength()-1; i>-1; i--){
+			Node innerNode = logicalNode.item(i);
+			if(newClauseNode.getAttributes().getNamedItem("displayName").
+					getNodeValue().contains("stratum")){
+				newClauseNode.removeChild(innerNode);
+			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
+				newClauseNode.removeChild(innerNode);
+			}else {
+				NodeList innerNodeChildren = innerNode.getChildNodes();
+				int length =  innerNodeChildren.getLength();
+				for(int j = length - 1; j>-1; j--){
+					Node child = innerNodeChildren.item(j);
+					innerNode.removeChild(child);
+				}
+			}
+		}
+		groupNode.appendChild(newClauseNode);
+	}
+	
+	/**
+	 * Gets the required clauses.
+	 *
+	 * @param type the type
+	 * @return the required clauses
+	 */
+	private static List<String> getRequiredClauses(String type){
+		List<String> list = new ArrayList<String>();
+		if("Cohort".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+		}else if("Continuous Variable".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("measurePopulation");
+			list.add("measurePopulationExclusions");
+			list.add("measureObservation");
+			list.add("stratum");
+		}else if("Proportion".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("denominator");
+			list.add("denominatorExclusions");
+			list.add("numerator");
+			list.add("numeratorExclusions");
+			list.add("denominatorExceptions");
+			list.add("stratum");
+		}else if("Ratio".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("denominator");
+			list.add("denominatorExclusions");
+			list.add("numerator");
+			list.add("numeratorExclusions");
+			list.add("measureObservation");
+			list.add("stratum");
+		}
+		return list;
+	}
 	
 	private static void createUsedCQLArtifactsWithPopulationNames(Document originalDoc) {
 		
@@ -291,6 +570,7 @@ public class ExportNewSimpleXML {
 				prevseq = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
 				prevPopString = popTypeString;
 				
+				Map<String, String> usedPopulations = new HashMap<String, String>();
 				if(node.hasChildNodes()){
 					Node childNode = node.getFirstChild();
 					String cqlAtrifactStr = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
@@ -299,7 +579,7 @@ public class ExportNewSimpleXML {
 					usedPopulations.put(popUUIDString, "");
 				}
 				
-				createCQLArtifacts(originalDoc, node, getPopulationString(popTypeString), popUUIDString , currsequence);
+				createCQLArtifacts(originalDoc, node, getPopulationString(popTypeString), popUUIDString , currsequence, usedPopulations);
 			}
 			
 		} catch (XPathExpressionException e) {
@@ -327,7 +607,7 @@ public class ExportNewSimpleXML {
 	
 
 
-	private static void createCQLArtifacts(Document originalDoc, Node childNode, String popTypeString, String popUUIDStr, String sequence){
+	private static void createCQLArtifacts(Document originalDoc, Node childNode, String popTypeString, String popUUIDStr, String sequence, Map<String, String> usedPopulations){
 		
 		String artifactUUIDStr = usedPopulations.get(popUUIDStr);
 		try {
@@ -355,6 +635,7 @@ public class ExportNewSimpleXML {
 						Node logicNode = newDefNode.getChildNodes().item(i);
 						if(logicNode.getNodeName().equals("logic")){
 							logicNode.setTextContent(defName);
+							break;
 						}
 					}
 				}
@@ -374,7 +655,8 @@ public class ExportNewSimpleXML {
 					for(int i=0;i<newDefNode.getChildNodes().getLength();i++){
 						Node logicNode = newDefNode.getChildNodes().item(i);
 						if(logicNode.getNodeName().equals("logic")){
-							logicNode.setTextContent("");
+							logicNode.setTextContent("true");
+							break;
 						}
 					}
 				}
@@ -389,19 +671,6 @@ public class ExportNewSimpleXML {
 		
 	}
 	
-	private static boolean checkifScoringRatio(Document originalDoc){
-		boolean isScoringTypeRatio = false;
-		try {
-			isScoringTypeRatio = (Boolean)xPath.evaluate("/measure/measureDetails/scoring/@id='RATIO'",
-					originalDoc.getDocumentElement(), XPathConstants.BOOLEAN);
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return isScoringTypeRatio;
-	}
-
-
 	private static boolean checkForMultipleGrouping(Document originalDoc){
 		boolean isMeasureGroupingMul = false;
 		try {
@@ -419,10 +688,10 @@ public class ExportNewSimpleXML {
 	}
 	
 	
-	private static List<String> checkForUsedCQLArtifacts(Document originalDoc){
+	private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){
 		List<String> masterList = new ArrayList<String>();
-		masterList = getAllCQLDefnArtifacts(originalDoc);
-		List<String> funcList = getAllCQLFuncArtifacts(originalDoc);
+		masterList = getAllCQLDefnArtifacts(originalDoc, cqlFileObject);
+		List<String> funcList = getAllCQLFuncArtifacts(originalDoc, cqlFileObject);
 		for(int i=0;i<funcList.size();i++){
 			if(!masterList.contains(funcList.get(i))){
 				masterList.add(funcList.get(i));
@@ -570,34 +839,34 @@ public class ExportNewSimpleXML {
 			try {
 				NodeList unUnsedDefineNodes = (NodeList) xPath.evaluate(xPathForUnunsedDefinitionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				if(unUnsedDefineNodes.getLength() > 0){
-					Node parentSubTreeNode = unUnsedDefineNodes.item(0).getParentNode();
+					Node parentNode = unUnsedDefineNodes.item(0).getParentNode();
 					for(int i=0;i<unUnsedDefineNodes.getLength();i++){
-						parentSubTreeNode.removeChild(unUnsedDefineNodes.item(i));
+						parentNode.removeChild(unUnsedDefineNodes.item(i));
 					}
 				}
 				
 				//to remove functions
 				NodeList unUnsedFunctionNodes = (NodeList) xPath.evaluate(xPathForUnunsedFunctionsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				if(unUnsedFunctionNodes.getLength() > 0){
-					Node parentSubTreeNode = unUnsedFunctionNodes.item(0).getParentNode();
+					Node parentNode = unUnsedFunctionNodes.item(0).getParentNode();
 					for(int i=0;i<unUnsedFunctionNodes.getLength();i++){
-						parentSubTreeNode.removeChild(unUnsedFunctionNodes.item(i));
+						parentNode.removeChild(unUnsedFunctionNodes.item(i));
 					}
 				}
 				
 				NodeList unUnsedValueSetNodes = (NodeList) xPath.evaluate(xPathForUnunsedValueSetsTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				if(unUnsedValueSetNodes.getLength() > 0){
-					Node parentSubTreeNode = unUnsedValueSetNodes.item(0).getParentNode();
+					Node parentNode = unUnsedValueSetNodes.item(0).getParentNode();
 					for(int i=0;i<unUnsedValueSetNodes.getLength();i++){
-						parentSubTreeNode.removeChild(unUnsedValueSetNodes.item(i));
+						parentNode.removeChild(unUnsedValueSetNodes.item(i));
 					}
 				}
 				
 				NodeList unUnsedParameterNodes = (NodeList) xPath.evaluate(xPathForUnunsedParametersTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				if(unUnsedParameterNodes.getLength() > 0){
-					Node parentSubTreeNode = unUnsedParameterNodes.item(0).getParentNode();
+					Node parentNode = unUnsedParameterNodes.item(0).getParentNode();
 					for(int i=0;i<unUnsedParameterNodes.getLength();i++){
-						parentSubTreeNode.removeChild(unUnsedParameterNodes.item(i));
+						parentNode.removeChild(unUnsedParameterNodes.item(i));
 					}
 				}
 				
@@ -658,370 +927,14 @@ public class ExportNewSimpleXML {
 		return arrayOutputStream.toString();
 	}
 	
-	/**
-	 * This method will search for <clause> tags in the XML and check if the
-	 * UUID attribute matches the usedClauseIds list. If not removes the
-	 * <clause> tag from its parent.
-	 * 
-	 * @param usedClauseIds
-	 *            the used clause ids
-	 * @param originalDoc
-	 *            the original doc
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private static void removeUnwantedClauses(List<String> usedClauseIds, Document originalDoc) throws XPathExpressionException {
-		//"/measure//clause/@uuid" will get us uuid attribute of all the <clause> tags where ever they are on underneath the <measure> tag
-		NodeList allClauseIDs = (NodeList) xPath.evaluate("/measure//clause/@uuid", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for(int i=0;i<allClauseIDs.getLength();i++){
-			Node clauseIdNode = allClauseIDs.item(i);
-			String clauseNodeUuid = clauseIdNode.getNodeValue();
-			
-			if(!usedClauseIds.contains(clauseNodeUuid)){
-				Node clauseNode = ((Attr)clauseIdNode).getOwnerElement();
-				Node clauseParentNode = clauseNode.getParentNode();
-				//Ignore if the clause is a Stratification clause.
-				if(!STRATIFICATION.equals(clauseParentNode.getNodeName())){
-					clauseParentNode.removeChild(clauseNode);
-					
-					//Check if the parent of the clause is now empty. If yes, remove the parent from its parent.
-					if(!clauseParentNode.hasChildNodes()){
-						Node parentOfClauseParent = clauseParentNode.getParentNode();
-						parentOfClauseParent.removeChild(clauseParentNode);
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * This method will go through individual <group> tags and each
-	 * <packageClause> child. For each <packageClause> it will copy the original
-	 * <clause> to <group> and remove the <packageClause> tag. Finally, at the
-	 * end of the method it will remove the <populations> tag from the document.
-	 * 
-	 * @param originalDoc
-	 *            the original doc
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private static void expandAndHandleGrouping(Document originalDoc) throws XPathExpressionException {
-		Node measureGroupingNode = (Node)xPath.evaluate("/measure/measureGrouping",
-				originalDoc.getDocumentElement(), XPathConstants.NODE);
-		
-		NodeList groupNodes = measureGroupingNode.getChildNodes();
-		List<Node> groupNodesList = reArrangeGroupsBySequence(groupNodes);
-		
-		for(int j=0;j<groupNodesList.size();j++){
-			Node groupNode = groupNodesList.get(j);
-			String groupSequence = groupNode.getAttributes().getNamedItem("sequence").getNodeValue();
-			NodeList packageClauses = groupNode.getChildNodes();
-			List<Node> clauseNodes = new ArrayList<Node>();
-			for(int i=0;i<packageClauses.getLength();i++){
-				
-				Node packageClause = packageClauses.item(i);
-				
-				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
-				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
-				
-				Node clauseNode = findClauseByUUID(uuid, type, originalDoc).cloneNode(true);
-				
-				if("stratification".equals(clauseNode.getNodeName())){
-					NodeList stratificationClauses = clauseNode.getChildNodes();
-					
-					for(int h=0;h<stratificationClauses.getLength();h++){
-						Node stratificationClause = stratificationClauses.item(h);
-						//add childCount to clauseNode
-						if((packageClause.getChildNodes()!=null) && (packageClause.getChildNodes().getLength()>0)){
-							Node itemCount = packageClause.getChildNodes().item(0);
-							Node clonedItemCount = itemCount.cloneNode(true);
-							stratificationClause.appendChild(clonedItemCount);
-						}
-						Node clonedClauseNode = stratificationClause.cloneNode(true);
-						//set a new 'uuid' attribute value for <clause>
-						String cureUUID = UUIDUtilClient.uuid();
-						clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
-						clauseNodes.add(clonedClauseNode);
-					}
-				}else{
-					//add childCount to clauseNode
-					if((packageClause.getChildNodes()!=null) && (packageClause.getChildNodes().getLength()>0)){
-						Node itemCount = packageClause.getChildNodes().item(0);
-						Node clonedItemCount = itemCount.cloneNode(true);
-						clauseNode.appendChild(clonedItemCount);
-					}
-					
-					//add associatedPopulationUUID to clauseNode
-					if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
-						Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
-						if((hasAssociatedPopulationUUID != null) && !hasAssociatedPopulationUUID.toString().isEmpty()){
-							String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
-							Node attr = originalDoc.createAttribute("associatedPopulationUUID");
-							attr.setNodeValue(associatedPopulationUUID);
-							clauseNode.getAttributes().setNamedItem(attr);
-						}
-					}
-					
-					//deep clone the <clause> tag
-					//Node clonedClauseNode = clauseNode.cloneNode(true);
-					
-					//set a new 'uuid' attribute value for <clause>
-					String cureUUID = UUIDUtilClient.uuid();
-					clauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
-					//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
-					//set a new 'displayName' for <clause>
-					//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
-					
-					//modify associcatedUUID
-					modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
-					clauseNodes.add(clauseNode);
-				}
-				
-			}
-			//finally remove the all the <packageClause> tags from <group>
-			for(int i=packageClauses.getLength();i>0;i--){
-				groupNode.removeChild(packageClauses.item(0));
-			}
-			//set the cloned <clause>'s as children of <group>
-			for(Node cNode:clauseNodes){
-				groupNode.appendChild(cNode);
-			}
-			
-		}
-		
-		addMissingEmptyClauses(groupNodes,originalDoc);
-		
-		//reArrangeClauseNodes(originalDoc);
-		removeNode("/measure/populations",originalDoc);
-		removeNode("/measure/measureObservations",originalDoc);
-		removeNode("/measure/strata",originalDoc);
-	}
-	
-	/**
-	 * Re arrange groups by sequence.
-	 *
-	 * @param groupNodes the group nodes
-	 * @return the list
-	 */
-	private static List<Node> reArrangeGroupsBySequence(NodeList groupNodes) {
-		List<Node> nodeList = new ArrayList<Node>();
-		for(int i=0;i<groupNodes.getLength();i++){
-			nodeList.add(groupNodes.item(i));
-		}
-		Collections.sort(nodeList, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				if("group".equals(o1.getNodeName()) && "group".equals(o2.getNodeName())){
-					return 0;
-				}
-				String o1Sequence = o1.getAttributes().getNamedItem("sequence").getNodeValue();
-				String o2Sequence = o2.getAttributes().getNamedItem("sequence").getNodeValue();
-				if(Integer.parseInt(o1Sequence) >= Integer.parseInt(o2Sequence)){
-					return 1;
-				}else{
-					return -1;
-				}
-			}
-		});
-		return nodeList;
-	}
-	
-	/**
-	 * Adds the missing empty clauses.
-	 *
-	 * @param groupNodes the group nodes
-	 * @param originalDoc the original doc
-	 * @throws DOMException the DOM exception
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void addMissingEmptyClauses(NodeList groupNodes,
-			Document originalDoc) throws DOMException, XPathExpressionException {
-		
-		
-		Node node = (Node)xPath.evaluate("/measure/measureDetails/scoring",
-				originalDoc.getDocumentElement(), XPathConstants.NODE);
-		Node groupNode;
-		Node childNode;
-		
-		for(int i = 0; i< groupNodes.getLength(); i++){
-			List<String> existingClauses = new ArrayList<String>();
-			List<String> clauseList = new ArrayList<String>();
-			clauseList = getRequiredClauses(node.getTextContent());
-			groupNode = groupNodes.item(i);
-			
-			NodeList children = groupNode.getChildNodes();
-			
-			for(int j = 0; j<children.getLength(); j++){
-				childNode = children.item(j);
-				NamedNodeMap map = childNode.getAttributes();
-				existingClauses.add(map.getNamedItem("type").getNodeValue());
-			}
-			if(clauseList.removeAll(existingClauses)){
-				for(int x = 0; x<clauseList.size();x++){
-					generateClauseNode(groupNode,clauseList.get(x),originalDoc);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Generate clause node.
-	 *
-	 * @param groupNode the group node
-	 * @param type the type
-	 * @param origionalDoc the origional doc
-	 */
-	private static void generateClauseNode(Node groupNode, String type,Document origionalDoc) {
-		// TODO Auto-generated method stub
-		Node newClauseNode = groupNode.getFirstChild().cloneNode(true);
-		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
-		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
-		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
-		
-		NodeList logicalNode = newClauseNode.getChildNodes();
-		
-		//		for(int i = 0; i<logicalNode.getLength();i++){
-		for(int i = logicalNode.getLength()-1; i>-1; i--){
-			Node innerNode = logicalNode.item(i);
-			newClauseNode.removeChild(innerNode);
-			/*if(newClauseNode.getAttributes().getNamedItem("displayName").
-					getNodeValue().contains("stratum")){
-				newClauseNode.removeChild(innerNode);
-			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
-				newClauseNode.removeChild(innerNode);
-			}else {
-				NodeList innerNodeChildren = innerNode.getChildNodes();
-				int length =  innerNodeChildren.getLength();
-				for(int j = length - 1; j>-1; j--){
-					Node child = innerNodeChildren.item(j);
-					innerNode.removeChild(child);
-				}
-			}*/
-		}
-		groupNode.appendChild(newClauseNode);
-	}
-	
-	/**
-	 * Gets the required clauses.
-	 *
-	 * @param type the type
-	 * @return the required clauses
-	 */
-	private static List<String> getRequiredClauses(String type){
-		List<String> list = new ArrayList<String>();
-		if("Cohort".equalsIgnoreCase(type)){
-			list.add("initialPopulation");
-		}else if("Continuous Variable".equalsIgnoreCase(type)){
-			list.add("initialPopulation");
-			list.add("measurePopulation");
-			list.add("measurePopulationExclusions");
-			list.add("measureObservation");
-			list.add("stratum");
-		}else if("Proportion".equalsIgnoreCase(type)){
-			list.add("initialPopulation");
-			list.add("denominator");
-			list.add("denominatorExclusions");
-			list.add("numerator");
-			list.add("numeratorExclusions");
-			list.add("denominatorExceptions");
-			list.add("stratum");
-		}else if("Ratio".equalsIgnoreCase(type)){
-			list.add("initialPopulation");
-			list.add("denominator");
-			list.add("denominatorExclusions");
-			list.add("numerator");
-			list.add("numeratorExclusions");
-			list.add("measureObservation");
-			list.add("stratum");
-		}
-		return list;
-	}
-	
-	/**
-	 * Modify associated popid.
-	 *
-	 * @param previousUUID the previous uuid
-	 * @param currentUUID the current uuid
-	 * @param groupSequence the group sequence
-	 * @param originalDoc the original doc
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void modifyAssociatedPOPID(String previousUUID, String currentUUID,String groupSequence,  Document originalDoc) throws XPathExpressionException {
-		NodeList nodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
-				groupSequence +"']/packageClause[@associatedPopulationUUID='"+ previousUUID +"']",
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for(int i = 0; i<nodeList.getLength(); i++){
-			Node childNode = nodeList.item(i);
-			childNode.getAttributes().getNamedItem("associatedPopulationUUID").setNodeValue(currentUUID);
-		}
-		
-	}
-	
-	/**
-	 * Gets the used clause ids.
-	 *
-	 * @param originalDoc the original doc
-	 * @return the used clause ids
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {
-		List<String> usedClauseIds = new ArrayList<String>();
-		
-		NodeList measureGrpupingNodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/ group/packageClause" +
-				"[not(@uuid = preceding:: group/packageClause/@uuid)]",
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
-		for(int i=0;i<measureGrpupingNodeList.getLength();i++){
-			Node childNode = measureGrpupingNodeList.item(i);
-			String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			String type = childNode.getAttributes().getNamedItem("type").getNodeValue();
-			if(type.equals("stratification")){
-				List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, originalDoc);
-				usedClauseIds.addAll(stratificationClausesIDlist);
-			} else {
-				usedClauseIds.add(uuid);
-			}
-		}
-		_logger.info("usedClauseIds:"+usedClauseIds);
-		return usedClauseIds;
-	}
-	
-	/**
-	 * Gets the stratification clasues id list.
-	 *
-	 * @param uuid the uuid
-	 * @param originalDoc the original doc
-	 * @return the stratification clasues id list
-	 */
-	private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) {
-		
-		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" +
-				"[@uuid='"+uuid+"']/clause/@uuid";
-		List<String> clauseList = new ArrayList<String>();
-		try {
-			NodeList stratificationClausesNodeList = (NodeList)xPath.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES,
-					originalDoc,XPathConstants.NODESET);
-			for(int i=0;i<stratificationClausesNodeList.getLength();i++){
-				clauseList.add(stratificationClausesNodeList.item(i).getNodeValue());
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return clauseList;
-	}
-	
-	
-	private static List<String> getAllCQLDefnArtifacts(Document originalDoc){
+	private static List<String> getAllCQLDefnArtifacts(Document originalDoc, CQLFileObject cqlObject){
 		List<String> usedAllCQLArtifacts = new ArrayList<String>();
 		try {
-			NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqldefinition/@displayName",
+			NodeList cqlDefRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqldefinition/@displayName",
 					originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			
-			for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
-				Node cqlDefnNameAttributeNode = subTreeRefIdsNodeList.item(i);
+			for (int i = 0; i < cqlDefRefIdsNodeList.getLength(); i++) {
+				Node cqlDefnNameAttributeNode = cqlDefRefIdsNodeList.item(i);
 				
 				if(!usedAllCQLArtifacts.contains(cqlDefnNameAttributeNode.getNodeValue())){
 					usedAllCQLArtifacts.add(cqlDefnNameAttributeNode.getNodeValue());
@@ -1078,13 +991,13 @@ public class ExportNewSimpleXML {
 		return usedAllCQLArtifacts;
 	}
 	
-	private static List<String> getAllCQLFuncArtifacts(Document originalDoc){
+	private static List<String> getAllCQLFuncArtifacts(Document originalDoc, CQLFileObject cqlObject){
 		List<String> usedAllCQLArtifacts = new ArrayList<String>();
 		try {
-			NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqlfunction/@displayName",
+			NodeList cqlDefRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqlfunction/@displayName",
 					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
-				Node cqlfuncNameAttributeNode = subTreeRefIdsNodeList.item(i);
+			for (int i = 0; i < cqlDefRefIdsNodeList.getLength(); i++) {
+				Node cqlfuncNameAttributeNode = cqlDefRefIdsNodeList.item(i);
 				
 				if(!usedAllCQLArtifacts.contains(cqlfuncNameAttributeNode.getNodeValue())){
 					usedAllCQLArtifacts.add(cqlfuncNameAttributeNode.getNodeValue());
@@ -1155,28 +1068,6 @@ public class ExportNewSimpleXML {
 		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;
-	}
-	
-	/**
-	 * This method finds a <clause> tag in <measure>/<populations> with a
-	 * specified 'uuid' attribute.
-	 *
-	 * @param uuid the uuid
-	 * @param type the type
-	 * @param originalDoc the original doc
-	 * @return the node
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static Node findClauseByUUID(String uuid, String type, Document originalDoc) throws XPathExpressionException {
-		Node clauseNode = null;
-		if(type.equalsIgnoreCase("stratification")){
-			String startificationXPath = "/measure/strata/stratification[@uuid='"+uuid+"']";
-			clauseNode = (Node)xPath.evaluate(startificationXPath, originalDoc,XPathConstants.NODE);
-			
-		}else{
-			clauseNode = (Node)xPath.evaluate("/measure//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);
-		}
-		return clauseNode;
 	}
 	
 	/**
@@ -1331,6 +1222,5 @@ public class ExportNewSimpleXML {
 		
 		return isReqPopulation;
 	}
-	
 	
 }

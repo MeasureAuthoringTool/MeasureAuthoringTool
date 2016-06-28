@@ -26,6 +26,11 @@
       <bind-xml name="emeasureid" node="element"/>
     </field>    
     
+    <field name="isPatientBasedMeasure"
+        type="boolean" get-method="getIsPatientBasedMeasure" set-method="setIsPatientBasedMeasure">
+      	<bind-xml name="patientBasedMeasure" node="element"/>
+     </field>
+    
     <field name="finalizedDate"
            type="java.lang.String">
       <bind-xml name="finalizedDate" node="element"/>

@@ -69,6 +69,9 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	/** The nqf id. */
 	private String nqfId;
 	
+	/** Is patient based measure */
+	private Boolean isPatientBasedMeasure = true; 
+	
 	/** The description. */
 	private String description;
 	
@@ -771,6 +774,14 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		return nqfId;
 	}
 	
+	public Boolean getIsPatientBasedMeasure() {
+		return isPatientBasedMeasure;
+	}
+
+	public void setIsPatientBasedMeasure(Boolean isPatientBasedMeasure) {
+		this.isPatientBasedMeasure = isPatientBasedMeasure;
+	}
+
 	/**
 	 * Sets the nqf id.
 	 * 
@@ -866,7 +877,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	 * @param copyright
 	 *            the new copyright
 	 */
-	public void setCopyright(String copyright) {
+	public void setCopyright(String cfopyright) {
 		this.copyright = doTrim(copyright);
 	}
 	
@@ -2048,6 +2059,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	
 	@Override
 	public void scrubForMarkUp() {
+		System.out.println(this.getIsPatientBasedMeasure());
 		String markupRegExp = "<[^>]+>";
 		if(this.getName() != null) {
 			String noMarkupText = this.getName().trim().replaceAll(markupRegExp, "");

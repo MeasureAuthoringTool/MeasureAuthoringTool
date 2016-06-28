@@ -618,6 +618,16 @@ public class ExportSimpleXML {
 						originalDoc.getDocumentElement(), XPathConstants.NODE);
 				Node cqlArtifactNode = (Node) xPath.evaluate("/measure/cqlLookUp//node()[@id='"+artifactUUIDStr+"']",
 						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				
+				Node patientBasedNode = (Node) xPath.evaluate("/measure/measureDetails/patientBasedMeasure", originalDoc.getDocumentElement(), XPathConstants.NODE); 
+				boolean isPatientBasedMeasure = true;
+				if(patientBasedNode != null){
+					String patientBasedNodeValue = patientBasedNode.getTextContent();
+					if(patientBasedNodeValue.equalsIgnoreCase("false")){
+						isPatientBasedMeasure = false;
+					}
+				}
+				
 				if(!sequence.isEmpty()){
 					popTypeString = popTypeString + " " + sequence;
 				}
@@ -637,7 +647,11 @@ public class ExportSimpleXML {
 						for(int i=0;i<newDefNode.getChildNodes().getLength();i++){
 							Node logicNode = newDefNode.getChildNodes().item(i);
 							if(logicNode.getNodeName().equals("logic")){
-								logicNode.setTextContent(defName);
+								if(isPatientBasedMeasure) {
+									logicNode.setTextContent("exists(\"" + defName + "\")");
+								} else {
+									logicNode.setTextContent("\"" + defName +"\"");
+								}
 							}
 						}
 					}

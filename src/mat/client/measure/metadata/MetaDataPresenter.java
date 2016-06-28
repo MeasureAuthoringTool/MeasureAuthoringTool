@@ -190,6 +190,18 @@ public class MetaDataPresenter  implements MatPresenter {
 		public HasValue<Boolean> getNotEndorsebyNQF();
 		
 		/**
+		 * Gets the yesPatientBasedMeasure 
+		 */
+		public HasValue<Boolean> getYesPatientBased();
+		
+		/**
+		 * Gets the noPatientBasedMeasure
+		 */
+		public HasValue<Boolean> getNoPatientBased(); 
+		
+		
+		
+		/**
 		 * Gets the measure status.
 		 * 
 		 * @return the measure status
@@ -1557,7 +1569,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	
 	/**
 	 * Back to detail.
-	 */
+	 */  
 	public void backToDetail() {
 		previousContinueButtons.setVisible(true);
 		panel.clear();
@@ -1570,6 +1582,13 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	private void prepopulateFields() {
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
+		
+		metaDataDisplay.getYesPatientBased().setValue(currentMeasureDetail.getIsPatientBasedMeasure());
+
+		metaDataDisplay.getNoPatientBased().setValue(!currentMeasureDetail.getIsPatientBasedMeasure());
+
+		
+		
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.geteMeasureIdentifier().setTitle(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.getSetName().setValue(currentMeasureDetail.getGroupName());
@@ -1725,6 +1744,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the disp success msg
 	 */
 	public void saveMetaDataInformation(final boolean dispSuccessMsg) {
+		System.out.println(currentMeasureDetail.getIsPatientBasedMeasure());
 		metaDataDisplay.getSaveErrorMsg().clear();
 		metaDataDisplay.getErrorMessageDisplay().clear();
 		metaDataDisplay.getSuccessMessageDisplay().clear();
@@ -1853,6 +1873,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Update model details from view.
 	 */
 	private void updateModelDetailsFromView() {
+		System.out.println(currentMeasureDetail.getIsPatientBasedMeasure());
 		updateModelDetailsFromView(currentMeasureDetail, metaDataDisplay);
 	}
 	
@@ -1866,6 +1887,14 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay) {
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
+		
+		// check for patient based measure
+		if(metaDataDisplay.getYesPatientBased().getValue() == true) {
+			currentMeasureDetail.setIsPatientBasedMeasure(true);
+		} else {
+			currentMeasureDetail.setIsPatientBasedMeasure(false);
+		}
+		
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());
 		currentMeasureDetail.setClinicalRecomms(metaDataDisplay.getClinicalRecommendation().getValue());
 		currentMeasureDetail.setDefinitions(metaDataDisplay.getDefinitions().getValue());

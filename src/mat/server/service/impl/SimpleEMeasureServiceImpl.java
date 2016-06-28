@@ -315,7 +315,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;
 		
-		// if the cql file name is blank(before 4.5 measures, then we'll give the file name as
+		// if the cql file name is blank(before 4.5 measures), then we'll give the file name as
 		// the measure name. 
 		if(cqlFileName == null) {
 			result.setCqlLibraryName(result.measureName);

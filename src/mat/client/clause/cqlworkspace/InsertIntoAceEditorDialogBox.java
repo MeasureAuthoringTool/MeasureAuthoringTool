@@ -212,12 +212,7 @@ public class InsertIntoAceEditorDialogBox {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
 									//convertToCamelCase(attributeNameToBeInserted);
-									if(columnIndex == 0){
-										editor.insertAtCursor(convertToCamelCase(attributeNameToBeInserted));
-									}
-									else{
-										editor.insertAtCursor(" " + convertToCamelCase(attributeNameToBeInserted));
-									}
+									editor.insertAtCursor(convertToCamelCase(attributeNameToBeInserted));
 									editor.focus();
 									dialogModal.hide();
 								}
@@ -245,15 +240,10 @@ public class InsertIntoAceEditorDialogBox {
 										String[] str = itemNameToBeInserted.split("\\.");
 										StringBuilder sb = new StringBuilder();
 										sb = sb.append("[\"" + str[1] + "\"");
-										sb = sb.append(":\"").append(str[0] + "\"]");
+										sb = sb.append(": \"").append(str[0] + "\"]");
 										itemNameToBeInserted = sb.toString();
 									}
-									if(columnIndex == 0){
-										editor.insertAtCursor(itemNameToBeInserted);
-									}
-									else{
-										editor.insertAtCursor(" " + itemNameToBeInserted);
-									}
+									editor.insertAtCursor(itemNameToBeInserted);
 									editor.focus();
 									dialogModal.hide();
 								}

@@ -267,7 +267,7 @@ public class InsertTimingExpressionIntoAceEditor {
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					anchorButton.setFocus(true);
 				} else {
-					editor.insertAtCursor(" " + mainButton.getText());
+					editor.insertAtCursor(mainButton.getText());
 					editor.focus();
 					dialogModal.hide();
 				}

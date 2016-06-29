@@ -603,6 +603,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		patientBasedLabel.setStyleName("bold");
 		topLeftSidePanel.add(patientBasedLabel);
 		topLeftSidePanel.add(new SpacerWidget());
+		yesPatientBased.setTitle("Yes Patient Based");
+		noPatientBased.setTitle("No Patient Based");
 		topLeftSidePanel.add(wrapRadioButton(yesPatientBased));
 		topLeftSidePanel.add(wrapRadioButton(noPatientBased));
 		topLeftSidePanel.add(new SpacerWidget());

@@ -527,10 +527,6 @@ public class ExportSimpleXML {
 					NodeList popSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
 							sequence+"']/clause[@type='"+popTypeString+"']",
 							originalDoc.getDocumentElement(), XPathConstants.NODESET);
-					/*NodeList stratPopSeqList = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+
-							sequence+"']/packageClause[@type='stratum']",
-									originalDoc.getDocumentElement(), XPathConstants.NODESET);*/
-					
 					
 					if(popSeqList.getLength()>1){
 						
@@ -546,46 +542,6 @@ public class ExportSimpleXML {
 							currsequence = ""+count++;
 						}
 					} 
-					
-					/*if(popTypeString.equalsIgnoreCase("initialPopulation") && 
-							checkifScoringRatio(originalDoc)){
-						
-					} else {
-						if(!currsequence.isEmpty()){
-							
-						}
-					}*/
-					
-					
-					
-//					if(popTypeString.equalsIgnoreCase("initialPopulation") && 
-//							checkifScoringRatio(originalDoc)){
-//						
-//						if(prevseq.equals(currsequence) && initialPopSeqList.getLength()>1){
-//							if(currsequence.isEmpty()){
-//								currsequence = ""+count++;
-//							} else {
-//								currsequence = currsequence + "_"+ count++;
-//							}
-//						}
-//						
-//					} else if(popTypeString.equalsIgnoreCase("stratum")) {
-//						
-//						if(prevseq.equals(currsequence) && stratPopSeqList.getLength()>1){
-//							if(currsequence.isEmpty()){
-//								currsequence = ""+count++;
-//							} else {
-//								currsequence = currsequence + "_"+ count++;
-//							}
-//						} 
-//					} else {
-//						count = 1;
-//						if(currsequence.isEmpty()){
-//							currsequence = ""+count++;
-//						} else {
-//							currsequence = currsequence + "_"+ count++;
-//						}
-//					}
 					
 					prevseq = parentNode.getAttributes().getNamedItem("sequence").getNodeValue();
 					prevPopString = popTypeString;
@@ -722,7 +678,7 @@ public class ExportSimpleXML {
 				popString = "Measure Population Exclusion";
 			} else if(str.equalsIgnoreCase("measureObservation")){
 				popString = "Measure Observation";
-			} else if(str.equalsIgnoreCase("startum")){
+			} else if(str.equalsIgnoreCase("stratum")){
 				popString = "Stratification";
 			}
 			return popString;
@@ -1411,7 +1367,8 @@ public class ExportSimpleXML {
 		//		for(int i = 0; i<logicalNode.getLength();i++){
 		for(int i = logicalNode.getLength()-1; i>-1; i--){
 			Node innerNode = logicalNode.item(i);
-			if(newClauseNode.getAttributes().getNamedItem("displayName").
+			newClauseNode.removeChild(innerNode);
+			/*if(newClauseNode.getAttributes().getNamedItem("displayName").
 					getNodeValue().contains("stratum")){
 				newClauseNode.removeChild(innerNode);
 			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
@@ -1423,7 +1380,7 @@ public class ExportSimpleXML {
 					Node child = innerNodeChildren.item(j);
 					innerNode.removeChild(child);
 				}
-			}
+			}*/
 		}
 		groupNode.appendChild(newClauseNode);
 	}

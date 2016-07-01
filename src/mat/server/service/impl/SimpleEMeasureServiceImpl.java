@@ -330,9 +330,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Override
 	public final ExportResult getELMFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
-		String measureXML = measureXml.getMeasureXMLAsString();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML, measureId),"").toString();
+//		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
+//		String measureXML = measureXml.getMeasureXMLAsString();
+		
+		String measureSimpleXML = measureExport.getSimpleXML(); 
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureSimpleXML, measureId),"").toString();
 		ExportResult result = new ExportResult();
 		
 		String elmString = ""; 

@@ -1228,9 +1228,12 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		if (obj == null) {
 			return false;
 		}
+				
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
+		
+	
 		ManageMeasureDetailModel other = (ManageMeasureDetailModel) obj;
 		if (toCompareAuthor == null) {
 			if (other.toCompareAuthor != null) {
@@ -1238,6 +1241,9 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 			}
 		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor)) {
 			return false;
+		}
+		if(isPatientBasedMeasure != other.isPatientBasedMeasure) {
+			return false; 
 		}
 		if (trimToNull(clinicalRecomms) == null) {
 			if (trimToNull(other.clinicalRecomms) != null) {
@@ -1882,7 +1888,8 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 				+ ", isDeleted=" + isDeleted + ", measureOwnerId="
 				+ measureOwnerId + ", measurePopulationExclusions="
 				+ measurePopulationExclusions + ", isEditable=" + isEditable
-				+ "]";
+				+ ", isPatientBasedMeasure= "+ isPatientBasedMeasure
+				+"]";
 	}
 	
 	/**

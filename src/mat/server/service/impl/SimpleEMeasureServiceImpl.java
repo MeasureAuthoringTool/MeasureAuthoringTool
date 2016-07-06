@@ -626,7 +626,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	    
 	    
 	    String measureXML = ""; 
-		if(measure.getReleaseVersion().equals("v4.3")) {
+		if(measure.getReleaseVersion().equals("v4.3") || measure.getReleaseVersion().equals("v4")) {
 			 measureXML = getNewEMeasureXML(measureExport);
 		} else if(measure.getReleaseVersion().equals("v5.0")) {
 			measureXML = getCQLBasedEMeasureXML(measureExport);  

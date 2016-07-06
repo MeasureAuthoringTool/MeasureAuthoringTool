@@ -358,15 +358,7 @@ public class ExportServlet extends HttpServlet {
 			IOException {
 		ExportResult export;
 		export = getService().getEMeasureZIP(id,exportDate);
-		/*if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[0]));
-		} else if(measure.getExportedDate().equals(measureLibraryService
-				.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-				|| measure.getExportedDate().after(measureLibraryService
-						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[1]));
-		}*/
-		
+				
 		String currentReleaseVersion = measure.getReleaseVersion();
 		if(currentReleaseVersion.contains(".")){
 			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
@@ -434,7 +426,7 @@ public class ExportServlet extends HttpServlet {
 			}
 		}else{
 			export = exportEMeasureForNewMeasures(resp, id, type, export, fnu,
-					currentReleaseVersion);
+					measure.getReleaseVersion());
 		}
 		
 		return export;

@@ -131,6 +131,13 @@ public class ExportSimpleXML {
 			/*if(validateMeasure(measureXMLDocument, message)){*/
 			measure_Id = measureXMLObject.getMeasure_id();
 			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id, cqlFileObject);
+			
+			
+			int insertAt = exportedXML.indexOf("<title>"); 
+			exportedXML = exportedXML.substring(0,  insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>" + exportedXML.substring(insertAt, exportedXML.length());
+			
+			
+			
 			//}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();

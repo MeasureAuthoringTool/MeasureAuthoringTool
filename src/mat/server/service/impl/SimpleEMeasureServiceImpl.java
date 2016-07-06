@@ -31,6 +31,7 @@ import mat.dao.clause.MeasureXMLDAO;
 import mat.model.ListObject;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
 import mat.server.CQLUtilityClass;
@@ -38,6 +39,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.simplexml.hqmf.CQLbasedHQMFGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -57,6 +59,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 
 // TODO: Auto-generated Javadoc
 /** SimpleEMeasureServiceImpl.java **/
@@ -343,7 +346,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		// if the cqlFile String is blank, don't even parse it.
 		if(!cqlFileString.isEmpty()) {
-			System.out.println("CQL String was Empty");
 			elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, false);	
 			LOGGER.info(elmString);
 			// get cql library name from the elm file. 
@@ -370,7 +372,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	@Override
 	public final ExportResult getEMeasureXML(final String measureId) throws Exception {
-
+		
 		MeasureExport measureExport = getMeasureExport(measureId);
 		return getEMeasureXML(measureId, measureExport);
 	}
@@ -591,8 +593,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
 				//String emeasureXML = getEMeasureXML(me);
-				//String emeasureXML = "";
-				String emeasureXML = getNewEMeasureXML(me);
+				ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
+				String emeasureXML = emeasureExportResult.export; 
 		        ExportResult exportResult = getCQLLibraryFile(measureId);
 		        ExportResult elmExportResult = getELMFile(measureId); 
 		        String cqlFileStr = exportResult.export;
@@ -618,19 +620,33 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	}
 	
-	public ExportResult getNewEMeasureXML(String measureId){
+	public ExportResult getNewEMeasureXML(String measureId){		
 		MeasureExport measureExport = getMeasureExport(measureId);
-		String newEmeasureXML = getNewEMeasureXML(measureExport);
+	    Measure measure = measureDAO.find(measureId);
+	    
+	    
+	    String measureXML = ""; 
+		if(measure.getReleaseVersion().equals("v4.3")) {
+			 measureXML = getNewEMeasureXML(measureExport);
+		} else if(measure.getReleaseVersion().equals("v5.0")) {
+			measureXML = getCQLBasedEMeasureXML(measureExport);  
+		}
+		
+		
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		result.export = newEmeasureXML;
+		result.export = measureXML;
 		return result;
 	}
 	
-	private String getNewEMeasureXML(MeasureExport me){
-		
+	private String getNewEMeasureXML(MeasureExport me){	
 		String eMeasurexml = new HQMFGenerator().generate(me);
 		return eMeasurexml;
+	}
+	
+	private String getCQLBasedEMeasureXML(MeasureExport me) {
+		String eMeasurexml = new CQLbasedHQMFGenerator().generate(me); 
+		return eMeasurexml; 
 	}
 
 	/**
@@ -840,8 +856,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
-		String emeasureXMLStr = getNewEMeasureXML(me);
-		//String emeasureXMLStr = "";
+		ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
+		String emeasureXMLStr = emeasureExportResult.export; 
 		String emeasureName = me.getMeasure().getaBBRName();
 		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
 		ExportResult cqlEportResult = getCQLLibraryFile(measureId);

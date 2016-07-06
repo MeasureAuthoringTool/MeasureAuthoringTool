@@ -624,12 +624,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		MeasureExport measureExport = getMeasureExport(measureId);
 	    Measure measure = measureDAO.find(measureId);
 	    
-	    
 	    String measureXML = ""; 
-		if(measure.getReleaseVersion().equals("v4.3") || measure.getReleaseVersion().equals("v4")) {
-			 measureXML = getNewEMeasureXML(measureExport);
-		} else if(measure.getReleaseVersion().equals("v5.0")) {
+
+	    if(measure.getReleaseVersion().equals("v5.0")) {
 			measureXML = getCQLBasedEMeasureXML(measureExport);  
+		} else {
+			 measureXML = getNewEMeasureXML(measureExport);
 		}
 		
 		
@@ -639,11 +639,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 	
+	/**
+	 * Helper function which will generate an HQMF document for v4.x measures. 
+	 * @param me
+	 * @return eMeasurexml the eMeasurexml for 4.x measures. 
+	 */
 	private String getNewEMeasureXML(MeasureExport me){	
 		String eMeasurexml = new HQMFGenerator().generate(me);
 		return eMeasurexml;
 	}
 	
+	/**
+	 * Helper function which will generate an HQMF document for 5.x measures (CQL based)
+	 * @param me
+	 * @return eMeasurexml the eMeasurexml for 5.x measures
+	 */
 	private String getCQLBasedEMeasureXML(MeasureExport me) {
 		String eMeasurexml = new CQLbasedHQMFGenerator().generate(me); 
 		return eMeasurexml; 

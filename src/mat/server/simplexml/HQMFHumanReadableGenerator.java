@@ -392,8 +392,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 					.findNode(measureXMLProcessor.getOriginalDoc(),
 							"/measure/subTreeLookUp/subTree[@uuid='"
 									+ subTreeId + "']");
-			// Node subTreeNodeClone = subTreeNode.cloneNode(true);
-			
+					
 			// find all <subTreeRef> tags in 'subTreeNode'
 			NodeList subTreeRefNodeList = measureXMLProcessor.findNodeList(
 					measureXMLProcessor.getOriginalDoc(),
@@ -401,20 +400,15 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 					+ "']//subTreeRef");
 			for (int i = 0; i < subTreeRefNodeList.getLength(); i++) {
 				Node childSubTreeRefNode = subTreeRefNodeList.item(i);
-				// Node childSubTreeRefNodeClone =
-				// childSubTreeRefNode.cloneNode(true);
 				if (!resolveChildSubTreeNode(measureXMLProcessor,
 						childSubTreeRefNode, childSubTreeRefList)) {
 					return false;
 				}
-				// replaceSubTreeNode(measureXMLProcessor, childSubTreeRefNode,
-				// null, subTreeNode);
+		
 			}
 			replaceSubTreeNode(measureXMLProcessor, subTreeRefNode, null,
 					subTreeNode);
 		} else {
-			//System.out.println("Found a chain of Clauses. Abort Human readable generation.");
-			//System.out.println(childSubTreeRefList);
 			return false;
 		}
 		childSubTreeRefList.remove(subTreeId);

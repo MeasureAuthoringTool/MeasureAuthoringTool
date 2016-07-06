@@ -1,9 +1,8 @@
 package mat.server.simplexml;
 
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.server.simplexml.cql.MATCssCQLUtil;
 import mat.server.util.XmlProcessor;
 
 import org.jsoup.nodes.Attribute;
@@ -68,6 +67,32 @@ public class HeaderHumanReadableGenerator {
 				"title"));
 		Element bodyElement = htmlDocument.body();
 		/*bodyElement.appendElement("h1").attr("id", "header").text("Measure Human Readable");*/
+		Element table = bodyElement.appendElement("table");
+		table.attr("class", "header_table");
+		Element tBody = table.appendElement("tbody");
+		createDocumentGeneral(measureXMLProcessor, tBody);
+		createEmeasureBrief(measureXMLProcessor, tBody);
+		createSubjectOf(measureXMLProcessor, tBody);
+		
+		return htmlDocument;
+	}
+	
+	/**
+	 * Creates the html document with the human readable header in it
+	 * 
+	 * @param measureXML
+	 *            String containing the measures xml
+	 * @return The created html document
+	 * @throws XPathExpressionException
+	 */
+	public static org.jsoup.nodes.Document generateHeaderHTMLForCQLMeasure(
+			String measureXML) throws XPathExpressionException {
+		org.jsoup.nodes.Document htmlDocument = null;
+		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
+		
+		htmlDocument = createBaseHTMLDocumentCQL(getInfo(measureXMLProcessor,
+				"title"));
+		Element bodyElement = htmlDocument.body();
 		Element table = bodyElement.appendElement("table");
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
@@ -774,6 +799,32 @@ public class HeaderHumanReadableGenerator {
 		htmlDocument.title(title);
 		appendStyleNode(head);
 		return htmlDocument;
+	}
+	
+	private static org.jsoup.nodes.Document createBaseHTMLDocumentCQL(String title) {
+		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
+
+		// Must be added first for proper formating and styling
+		DocumentType doc = new DocumentType("html",
+				"-//W3C//DTD HTML 4.01 Transitional//EN",
+				"http://www.w3.org/TR/html4/loose.dtd", "");
+		htmlDocument.appendChild(doc);
+
+		Element html = htmlDocument.appendElement("html");
+		// POC - Added language attribute in html tag as asked by Matt.
+		html.attributes().put(new Attribute("lang", "en"));
+		html.appendElement("head");
+		html.appendElement("body");
+
+		Element head = htmlDocument.head();
+		htmlDocument.title(title);
+		appendCQLStyleNode(head);
+		return htmlDocument;
+	}
+	
+	private static void appendCQLStyleNode(Element head) {
+		String styleTagString = MATCssCQLUtil.getCSS();
+		head.append(styleTagString);
 	}
 	
 	/**

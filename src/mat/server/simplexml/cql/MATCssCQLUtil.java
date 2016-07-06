@@ -74,7 +74,7 @@ public class MATCssCQLUtil {
 			"}\r\n" + 
 			"\r\n" + 
 			".list-header {\r\n" + 
-			"    font-size: 14px;\r\n" + 
+			"    font-size: 12px;\r\n" + 
 			"    color: rgb(0, 0, 238);\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
@@ -86,11 +86,11 @@ public class MATCssCQLUtil {
 			"    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;\r\n" + 
 			"    color:black;\r\n" + 
 			"    background-color:rgb(250,250,250);\r\n" + 
-			"    margin-top: 1em;\r\n" + 
-			"    margin-bottom: 1em;\r\n" + 
+			//"    margin-top: 1em;\r\n" + 
+			//"    margin-bottom: 1em;\r\n" + 
 			"    padding: 10px;\r\n" + 
-			"    line-height: 1.5em;\r\n" + 
-			"    font-size: 14px;\r\n" + 
+			//"    line-height: 1.5em;\r\n" + 
+			"    font-size: 12px;\r\n" + 
 			"    overflow: auto;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 

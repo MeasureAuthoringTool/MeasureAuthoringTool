@@ -7,11 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
@@ -26,11 +28,10 @@ import mat.server.simplexml.MATCssUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.jsoup.nodes.Element;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -432,16 +433,38 @@ public class ExportServlet extends HttpServlet {
 				//						}
 			}
 		}else{
-			if ("open".equals(type)) {
-				export = getService().getNewEMeasureHTML(id);
-				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
-			}else if (SAVE.equals(type)) {
-				export = getService().getNewEMeasureXML(id);
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
-			}
+			export = exportEMeasureForNewMeasures(resp, id, type, export, fnu,
+					currentReleaseVersion);
 		}
 		
+		return export;
+	}
+
+
+	/**
+	 * Export Human Readable (HTML) or HQMF XML for measures > v3.0
+	 * 
+	 * @param resp
+	 * @param id
+	 * @param type
+	 * @param export
+	 * @param fnu
+	 * @param currentReleaseVersion
+	 * @return
+	 * @throws Exception
+	 */
+	public ExportResult exportEMeasureForNewMeasures(HttpServletResponse resp,
+			String id, String type, ExportResult export, FileNameUtility fnu,
+			String currentReleaseVersion) throws Exception {
+		
+		if ("open".equals(type)) {
+			export = getService().getNewEMeasureHTML(id, currentReleaseVersion);
+			resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+		}else if (SAVE.equals(type)) {
+			export = getService().getNewEMeasureXML(id);
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
+		}
 		return export;
 	}
 	

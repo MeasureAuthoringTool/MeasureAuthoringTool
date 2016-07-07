@@ -152,9 +152,9 @@ public class CQLHumanReadableHTMLCreator {
 		
 		// TODO:code to decide if we need to add 'Measure observations'
 		
-		Element dataVariables = tocULElement.appendElement(HTML_LI);
-		dataVariables
-		.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
+//		Element dataVariables = tocULElement.appendElement(HTML_LI);
+//		dataVariables
+//		.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI

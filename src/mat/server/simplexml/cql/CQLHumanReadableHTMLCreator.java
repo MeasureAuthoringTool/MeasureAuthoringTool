@@ -292,10 +292,14 @@ public class CQLHumanReadableHTMLCreator {
 				}
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode, simpleXMLProcessor);
-				childBoldNameElement.appendText(childPopulationName
-						+ (popassoc.length() > 0 ? popassoc : "")
-						+ (itemCountText.length() > 0 ? itemCountText : "")
-						+ " =");
+				
+				if(!childPopulationName.startsWith("Initial Population")){
+					childBoldNameElement.appendText(childPopulationName
+							+ (popassoc.length() > 0 ? popassoc : "")
+							+ (itemCountText.length() > 0 ? itemCountText : "")
+							+ " =");
+				}
+				
 				if(childPopulationName.startsWith("Measure Observation")){
 					childPopulationListElement = childPopulationListElement.appendElement(HTML_UL);
 				}
@@ -379,8 +383,11 @@ public class CQLHumanReadableHTMLCreator {
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();
 			String parentName = "";
+			String parentDisplayName = "";
 			if (clauseNode.getAttributes().getNamedItem("type") != null) {
 				parentName = clauseNode.getAttributes().getNamedItem("type")
+						.getNodeValue();
+				parentDisplayName = clauseNode.getAttributes().getNamedItem("displayName")
 						.getNodeValue();
 			}
 			if (childNodes.getLength() == 0) {
@@ -411,7 +418,7 @@ public class CQLHumanReadableHTMLCreator {
 				}
 			}
 			for (int i = 0; i < childNodes.getLength(); i++) {
-				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, childNodes.item(i), parentName);
+				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, childNodes.item(i), parentName, parentDisplayName);
 			}
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -862,13 +869,13 @@ public class CQLHumanReadableHTMLCreator {
 		Element bodyElement = htmlDocument.body();
 
 		generatePopulationCriteria(bodyElement, cqlFileObject, cqlNode,
-				populationName);
+				populationName, populationName);
 
 		return htmlDocument.html();
 	}
 
 	private static void generatePopulationCriteria(Element bodyElement,
-			CQLFileObject cqlFileObject, Node cqlNode, String populationName) {
+			CQLFileObject cqlFileObject, Node cqlNode, String populationName, String populationtDisplayName) {
 
 		/*
 		 * bodyElement.append(
@@ -894,12 +901,13 @@ public class CQLHumanReadableHTMLCreator {
 
 		if ("cqldefinition".equals(cqlNodeType)) {
 			cqlName = "\"" + cqlName + "\"";
+
 			generateHTMLForPopulation(mainULElement, cqlFileObject.getDefinitionsMap().get(cqlName),
-					populationName, cqlName);
+					populationName, populationtDisplayName, cqlName);
 		} else if ("cqlfunction".equals(cqlNodeType)){
 			cqlName = "\"" + cqlName + "\"";
 			generateHTMLForPopulation(mainULElement, cqlFileObject.getFunctionsMap().get(cqlName),
-					populationName, cqlName);
+					populationName, populationtDisplayName, cqlName);
 		} else if("cqlaggfunction".equals(cqlNodeType)){
 			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
 			cqlAggregateFunction.setIdentifier(cqlName + " of:");
@@ -911,13 +919,13 @@ public class CQLHumanReadableHTMLCreator {
 			
 			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
 			
-			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, cqlName);
+			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, populationtDisplayName, cqlName);
 		}
 
 	}
 
 	private static void generateHTMLForPopulation(Element mainElement,
-			CQLBaseStatementInterface cqlBaseStatementObject, String populationName,
+			CQLBaseStatementInterface cqlBaseStatementObject, String populationName, String populationDisplayName, 
 			String mainDefinitionName) {
 
 		// create a base LI element
@@ -930,10 +938,10 @@ public class CQLHumanReadableHTMLCreator {
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationName)) {
+		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
-			definitionsOrFunctionsAlreadyDisplayed.add(populationName);
+			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
 		}
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
@@ -941,7 +949,7 @@ public class CQLHumanReadableHTMLCreator {
 		definitionLabelElement.attr("class", "list-header");
 
 		Element strongElement = definitionLabelElement.appendElement("strong");
-		strongElement.appendText(populationName);
+		strongElement.appendText(populationDisplayName);
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println(mainDefinitionName);

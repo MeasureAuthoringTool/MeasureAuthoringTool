@@ -129,8 +129,8 @@ public class CQLHumanReadableHTMLCreator {
 //		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor);
-//		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
-//				humanReadableHTMLDocument);
+		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
+				humanReadableHTMLDocument);
 	}
 	
 	/**
@@ -150,17 +150,9 @@ public class CQLHumanReadableHTMLCreator {
 		populationCriteriaLI
 		.append("<a href=\"#d1e405\">Population Criteria</a>");
 		
-		// TODO:code to decide if we need to add 'Measure observations'
-		
-//		Element dataVariables = tocULElement.appendElement(HTML_LI);
-//		dataVariables
-//		.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
-		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
 		.append("<a href=\"#d1e647\">Data Criteria (QDM Data Elements)</a>");
-		
-		// TODO:code to decide if we need to add 'Reporting Stratification'
 		
 		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
 		supplementalCriteriaLI

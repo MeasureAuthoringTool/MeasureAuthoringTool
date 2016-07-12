@@ -264,15 +264,8 @@ public class CQLHumanReadableHTMLCreator {
 			String populationName = getPopulationName(populationType, true);
 			
 			boldNameElement.appendText(populationName + " =");
-			Element childPopulationULElement = populationListElement
-					.appendElement(HTML_UL);
-			//System.out.println("clauseNodes.size():"+ clauseNodes.size());
 			for (int c = 0; c < clauseNodes.size(); c++) {
 				Node clauseNode = clauseNodes.get(c);
-				Element childPopulationListElement = childPopulationULElement
-						.appendElement(HTML_LI);
-				Element childBoldNameElement = childPopulationListElement
-						.appendElement("b");
 				String childPopulationName = getPopulationName(populationType);
 			
 				childPopulationName += " " + (c + 1);
@@ -286,17 +279,17 @@ public class CQLHumanReadableHTMLCreator {
 				String popassoc = getPopAssoc(clauseNode, simpleXMLProcessor);
 				
 				if(!childPopulationName.startsWith("Initial Population")){
-					childBoldNameElement.appendText(childPopulationName
+					populationListElement.appendText(childPopulationName
 							+ (popassoc.length() > 0 ? popassoc : "")
 							+ (itemCountText.length() > 0 ? itemCountText : "")
 							+ " =");
 				}
 				
 				if(childPopulationName.startsWith("Measure Observation")){
-					childPopulationListElement = childPopulationListElement.appendElement(HTML_UL);
+					populationListElement = populationListElement.appendElement(HTML_UL);
 				}
 				parseAndBuildHTML(simpleXMLProcessor,
-						childPopulationListElement, clauseNode, c + 1, cqlFileObject);
+						populationListElement, clauseNode, c + 1, cqlFileObject, childPopulationName);
 				
 			}
 		} else if (clauseNodes.size() == 1) {
@@ -317,7 +310,7 @@ public class CQLHumanReadableHTMLCreator {
 				populationListElement = populationListElement.appendElement(HTML_UL);
 			}
 			parseAndBuildHTML(simpleXMLProcessor, populationListElement,
-					clauseNodes.get(0), 1, cqlFileObject);
+					clauseNodes.get(0), 1, cqlFileObject, populationName);
 			
 		}
 	}
@@ -367,7 +360,7 @@ public class CQLHumanReadableHTMLCreator {
 	private static void parseAndBuildHTML(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement, Node clauseNode,
-			int currentGroupNumber, CQLFileObject cqlFileObject) {
+			int currentGroupNumber, CQLFileObject cqlFileObject, String PopulationDisplayName) {
 		
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
@@ -375,11 +368,8 @@ public class CQLHumanReadableHTMLCreator {
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();
 			String parentName = "";
-			String parentDisplayName = "";
 			if (clauseNode.getAttributes().getNamedItem("type") != null) {
 				parentName = clauseNode.getAttributes().getNamedItem("type")
-						.getNodeValue();
-				parentDisplayName = clauseNode.getAttributes().getNamedItem("displayName")
 						.getNodeValue();
 			}
 			if (childNodes.getLength() == 0) {
@@ -410,7 +400,7 @@ public class CQLHumanReadableHTMLCreator {
 				}
 			}
 			for (int i = 0; i < childNodes.getLength(); i++) {
-				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, childNodes.item(i), parentName, parentDisplayName);
+				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, childNodes.item(i), parentName, PopulationDisplayName);
 			}
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -867,7 +857,7 @@ public class CQLHumanReadableHTMLCreator {
 	}
 
 	private static void generatePopulationCriteria(Element bodyElement,
-			CQLFileObject cqlFileObject, Node cqlNode, String populationName, String populationtDisplayName) {
+			CQLFileObject cqlFileObject, Node cqlNode, String populationName, String populationDisplayName) {
 
 		/*
 		 * bodyElement.append(
@@ -895,11 +885,11 @@ public class CQLHumanReadableHTMLCreator {
 			cqlName = "\"" + cqlName + "\"";
 
 			generateHTMLForPopulation(mainULElement, cqlFileObject.getDefinitionsMap().get(cqlName),
-					populationName, populationtDisplayName, cqlName);
+					populationName, populationDisplayName, cqlName);
 		} else if ("cqlfunction".equals(cqlNodeType)){
 			cqlName = "\"" + cqlName + "\"";
 			generateHTMLForPopulation(mainULElement, cqlFileObject.getFunctionsMap().get(cqlName),
-					populationName, populationtDisplayName, cqlName);
+					populationName, populationDisplayName, cqlName);
 		} else if("cqlaggfunction".equals(cqlNodeType)){
 			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
 			cqlAggregateFunction.setIdentifier(cqlName + " of:");
@@ -911,7 +901,7 @@ public class CQLHumanReadableHTMLCreator {
 			
 			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
 			
-			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, populationtDisplayName, cqlName);
+			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, populationDisplayName, cqlName);
 		}
 
 	}
@@ -919,7 +909,6 @@ public class CQLHumanReadableHTMLCreator {
 	private static void generateHTMLForPopulation(Element mainElement,
 			CQLBaseStatementInterface cqlBaseStatementObject, String populationName, String populationDisplayName, 
 			String mainDefinitionName) {
-
 		// create a base LI element
 		Element mainliElement = mainElement.appendElement("li");
 		mainliElement.attr("class", "list-unstyled");

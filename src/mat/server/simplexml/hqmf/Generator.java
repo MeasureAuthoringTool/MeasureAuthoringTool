@@ -197,6 +197,8 @@ public interface Generator extends MatConstants {
 	/** The Constant logger. */
 	public final Log LOG = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
 	
+	public final Log LOGGER = LogFactory.getLog(CQLBasedHQMFDataCriteriaGenerator.class);
+	
 	/** The name space. */
 	public final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
 	

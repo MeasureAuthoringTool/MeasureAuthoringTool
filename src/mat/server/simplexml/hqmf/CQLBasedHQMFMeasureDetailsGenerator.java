@@ -20,7 +20,7 @@ import mat.shared.UUIDUtilClient;
  * @author jmeyer
  *
  */
-public class CQLbasedHQMFMeasureDetailsGenerator implements Generator  {
+public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 	
 	/** The Constant conversionFileForCQLbasedHQMF_Header */
 	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/cql_measureDetails.xsl"; 

@@ -38,7 +38,7 @@ import mat.server.CQLUtilityClass;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HumanReadableGenerator;
-import mat.server.simplexml.hqmf.CQLbasedHQMFGenerator;
+import mat.server.simplexml.hqmf.CQLBasedHQMFGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -656,7 +656,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @return eMeasurexml the eMeasurexml for 5.x measures
 	 */
 	private String getCQLBasedEMeasureXML(MeasureExport me) {
-		String eMeasurexml = new CQLbasedHQMFGenerator().generate(me); 
+		String eMeasurexml = new CQLBasedHQMFGenerator().generate(me); 
 		return eMeasurexml; 
 	}
 

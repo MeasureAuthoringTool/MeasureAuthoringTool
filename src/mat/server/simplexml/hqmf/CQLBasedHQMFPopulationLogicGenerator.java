@@ -218,7 +218,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 			/*Element preConditionElem = doc.createElement("precondition");
 		preConditionElem.setAttribute(TYPE_CODE, "PRCN");*/
 			if (item.getChildNodes().item(0) != null) {
-				generatePopulationLogic(stratCriteriaElement, item, me);
+				generatePopulationLogic(stratCriteriaElement, item.getChildNodes().item(0), me);
 			}
 		}
 		/*stratCriteriaElement.appendChild(preConditionElem);*/

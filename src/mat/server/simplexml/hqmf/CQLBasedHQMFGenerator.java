@@ -26,8 +26,6 @@ import mat.server.util.XmlProcessor;
  */
 public class CQLBasedHQMFGenerator implements Generator {
 	
-	
-	private String narrativeListNodeValue;
 
 	/**
 	 * Generate hqmf for CQL Based measures (version 5.0 and greater)
@@ -274,7 +272,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 	 * @param newParam TODO
 	 * @return the narrative list node
 	 */
-	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor, XmlProcessor humanReadableProcessor) {		
+	/*private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor, XmlProcessor humanReadableProcessor) {		
 		Node narrativeListNode = null;
 		String nodeName = humanReadableNode.getNodeName();
 		
@@ -317,9 +315,24 @@ public class CQLBasedHQMFGenerator implements Generator {
 			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("caption");
 			narrativeListNode.setTextContent(humanReadableNode.getTextContent());
 		} else if("div".equals(nodeName)){
-			   
-			    narrativeListNode = xmlProcessor.getOriginalDoc().createElement("list");
-			    Node narrativeItemNode = xmlProcessor.getOriginalDoc().createElement("item");
+			
+			
+			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("content");
+			((Element)narrativeListNode).setAttribute("styleCode", "Bold");
+			//narrativeListNode.setTextContent(humanReadableNode.getTextContent());
+			String searchText = "//ul/li/div//li/label/strong";
+			try {
+				Node popNode =  humanReadableProcessor.findNode(humanReadableProcessor.getOriginalDoc(), searchText);
+				if(popNode != null) {
+					narrativeListNode.setTextContent(popNode.getTextContent());
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			narrativeListNode = xmlProcessor.getOriginalDoc().createElement("list");
+			   Node narrativeItemNode = xmlProcessor.getOriginalDoc().createElement("item");
 				String searchText = "//div//b[text()='"+narrativeListNodeValue+"']/following-sibling::div//div/label/strong";
 				try { 
 					Node cqlLibraryNode =  xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/QualityMeasureDocument/relatedDocument//text/reference/@value");
@@ -332,6 +345,42 @@ public class CQLBasedHQMFGenerator implements Generator {
 				} catch (XPathExpressionException e) {
 					e.printStackTrace();
 				}
+		}
+		
+		return narrativeListNode;
+	}*/
+	
+	
+	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor, XmlProcessor humanReadableProcessor){
+		Node narrativeListNode = xmlProcessor.getOriginalDoc().createElement("list");
+		
+		String searchText = "//ul/li/div//li/label/strong";
+		
+		try {
+			NodeList popNodeList =  humanReadableProcessor.findNodeList(humanReadableProcessor.getOriginalDoc(), searchText);
+			Node cqlLibraryNode =  xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/QualityMeasureDocument/relatedDocument//text/reference/@value");
+			for(int i=0;i<popNodeList.getLength();i++){
+				Node popNode = popNodeList.item(i);
+				Node narrativeItemNode = xmlProcessor.getOriginalDoc().createElement("item");
+				Node narrativeContentNode = xmlProcessor.getOriginalDoc().createElement("content");
+				((Element)narrativeContentNode).setAttribute("styleCode", "Bold");
+				narrativeContentNode.setTextContent(popNode.getTextContent());
+				narrativeItemNode.appendChild(narrativeContentNode);
+				String searchChildText = "//ul/li/div//li/label/strong[text()='"+popNode.getTextContent()
+						                  +"']/parent::label/following-sibling::ul/li/div//label/strong";
+				Node popChildNode =  humanReadableProcessor.findNode(humanReadableProcessor.getOriginalDoc(), searchChildText);
+				if(popChildNode != null && cqlLibraryNode != null){
+					String[] cqlLibraryNodeName = cqlLibraryNode.getNodeValue().split("_CQL");
+					Node narrativeSubListNode = xmlProcessor.getOriginalDoc().createElement("list");
+					Node narrativeSubItemNode = xmlProcessor.getOriginalDoc().createElement("item");
+					narrativeSubListNode.appendChild(narrativeSubItemNode);
+					narrativeSubItemNode.setTextContent(cqlLibraryNodeName[0] +"."+popChildNode.getTextContent());
+					narrativeItemNode.appendChild(narrativeSubListNode);
+					narrativeListNode.appendChild(narrativeItemNode);
+				}				
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
 		}
 		
 		return narrativeListNode;

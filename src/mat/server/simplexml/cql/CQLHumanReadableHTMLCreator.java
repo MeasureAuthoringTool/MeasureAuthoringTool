@@ -1046,18 +1046,14 @@ public class CQLHumanReadableHTMLCreator {
 	private static void generateHTMLToDsiplayNone(Element mainElement){
 		Element ulElement = mainElement.appendElement("ul");
 		ulElement.attr("class", "code");
-		
 		Element liElement = ulElement.appendElement("li");
 		Element divElement = liElement.appendElement("div");
-		Element checkBoxElement = divElement.appendElement("input");
-		checkBoxElement.attr("type", "checkbox");
-		String id = "test- None_"
-				+ (int) (Math.random() * 1000);
-		checkBoxElement.attr("id", id);
-		
-		Element spanElement = getSpanElementWithClass(divElement,
-				"cql-class");
-		spanElement.appendText("None");
+		String id = "test-None_" + (int) (Math.random() * 1000);
+		Element noneLabelElement = divElement.appendElement("label");
+		noneLabelElement.attr("for", id);
+		Element strongElement = noneLabelElement.appendElement("strong");
+		strongElement.attr("class","cql-class");
+		strongElement.appendText("None");
 	}
 	
 	

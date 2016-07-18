@@ -383,16 +383,12 @@ public class MATCQLListener extends cqlBaseListener {
 			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList, functionsList);			
 		}
 
-		//find definitions referring to other definitions/functions
-		for(CQLDefinitionModelObject cqlDefinitionModelObject:definitionsList){			
-			findDefinitionsReferences(cqlDefinitionModelObject,definitionsList, functionsList);			
-		}
-
-		//find definitions referring to other definitions/functions
+		//find Valuesets referring to other definitions/functions
 		for(CQLValueSetModelObject cqlValueSetModelObject:valueSetsList){			
 			findValueSetReferences(cqlValueSetModelObject,definitionsList, functionsList);			
 		}		
-
+		
+		//find Parameters referring to other definitions/functions
 		for(CQLParameterModelObject cqlParameterModelObject:parametersList){			
 			findParameterReferences(cqlParameterModelObject,definitionsList, functionsList);			
 		}	

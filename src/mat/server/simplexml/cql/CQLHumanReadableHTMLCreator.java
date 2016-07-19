@@ -141,6 +141,7 @@ public class CQLHumanReadableHTMLCreator {
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor, cqlFileObject);
+		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 //		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
@@ -196,8 +197,7 @@ public class CQLHumanReadableHTMLCreator {
 					throws XPathExpressionException {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
-		bodyElement
-		.append("<h3><a name=\"d1e405\" href=\"#toc\">Population Criteria</a></h3>");
+		bodyElement.append("<h3><a name=\"d1e405\" href=\"#toc\">Population Criteria</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
@@ -222,6 +222,45 @@ public class CQLHumanReadableHTMLCreator {
 			NodeList clauseNodeList = groupMap.get(key).getChildNodes();
 			generatePopulationNodes(clauseNodeList, mainListElement,
 					groupNodeList.getLength(),key, simpleXMLProcessor, cqlFileObject);
+		}
+	}
+	
+	/**
+	 * Generate the qdm elements in the Human Readable
+	 * 
+	 * @param humanReadableHTMLDocument the human readable html document
+	 * @param simpleXMLProcessor the simple xml processor
+	 */
+	private static void generateQDMDataElements(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
+		
+		Element qdmElementUL = bodyElement.appendElement(HTML_UL);
+		
+		try {
+			
+			NodeList qdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+														"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='false']");
+			if(qdmElementList.getLength() < 1) {
+				String output = "None"; 
+				Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
+				qdmElementLI.append(output);
+			}
+			
+			else {
+				for(int i = 0; i < qdmElementList.getLength(); i++) {
+					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					String name = qdmElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
+					String oid = qdmElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
+					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 
+					
+					String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
+					Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
+					qdmElementLI.append(output);	
+				}
+			} 
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -1022,6 +1061,7 @@ public class CQLHumanReadableHTMLCreator {
 		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
+			System.out.println("Population Display Name: " + populationDisplayName);
 			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
 		}
 
@@ -1033,7 +1073,7 @@ public class CQLHumanReadableHTMLCreator {
 		strongElement.appendText(populationDisplayName);
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
-		System.out.println(mainDefinitionName);
+		System.out.println("Main Defintion Name: " + mainDefinitionName);
 		generateHTMLForDefinitionOrFunction(cqlBaseStatementObject, mainliElement, true);
 	}
 
@@ -1112,8 +1152,10 @@ public class CQLHumanReadableHTMLCreator {
 		checkBoxElement.attr("id", id);
 
 		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
+			System.out.println("State Identfier Checked: " + statementIdentifier);
 			checkBoxElement.attr("checked", "");
 		} else {
+			System.out.println("Statement Identfier Not Checked: " + statementIdentifier);
 			definitionsOrFunctionsAlreadyDisplayed.add(statementIdentifier);
 		}
 

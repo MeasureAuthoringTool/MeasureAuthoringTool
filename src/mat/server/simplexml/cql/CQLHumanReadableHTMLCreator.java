@@ -1,9 +1,12 @@
 package mat.server.simplexml.cql;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -24,6 +27,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -144,7 +148,7 @@ public class CQLHumanReadableHTMLCreator {
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 //		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
-//		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
@@ -471,6 +475,87 @@ public class CQLHumanReadableHTMLCreator {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Generate supplemental data.
+	 *
+	 * @param humanReadableHTMLDocument the human readable html document
+	 * @param simpleXMLProcessor the simple xml processor
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void generateSupplementalData(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
+					throws XPathExpressionException {
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement
+		.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
+		
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		
+		NodeList supplementalDefnNodes = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+				"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
+		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
+		if(supplementalDefnNodes != null){
+			Map<String, String> dataType = new HashMap<String, String>();
+			for(int i=0;i<supplementalDefnNodes.getLength();i++){
+			    NodeList logicElement = simpleXMLProcessor.findNodeList(
+						simpleXMLProcessor.getOriginalDoc(),
+						"/measure/cqlLookUp/definitions/definition/logic");
+			    if(logicElement != null){
+					for (int j = 0; j < logicElement.getLength(); j++) {
+						Node nodeLogic = logicElement.item(j);
+						if(nodeLogic.hasChildNodes()){
+							NodeList defLogicMap = nodeLogic.getChildNodes();
+							if(defLogicMap.getLength() > 0){
+								String defLogic = defLogicMap.item(0).getNodeValue();
+								//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
+								String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
+								String[] pairs = result.split(":");
+								dataType.put(pairs[0].trim(), pairs[1].trim());
+							}
+						}
+					}
+				}
+			    for(Entry<String, String> entry : dataType.entrySet()){
+			    	Node qdm = simpleXMLProcessor.findNode(
+							simpleXMLProcessor.getOriginalDoc(),
+							"/measure/cqlLookUp/valuesets/valueset[@datatype='" + entry.getKey() + "']");
+					NamedNodeMap qdmMap = qdm.getAttributes();
+					qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()
+							+ ": " + qdmMap.getNamedItem("name").getNodeValue(),
+							qdm); 
+			    }
+			    
+			}
+			List<String> qdmNameList = new ArrayList<String>(qdmNodeMap.keySet());
+			Collections.sort(qdmNameList, new Comparator<String>() {
+				@Override
+				public int compare(String o1, String o2) {
+					return o1.compareToIgnoreCase(o2);
+				}
+			});
+			
+			for (String s : qdmNameList) {
+				Node qdm = qdmNodeMap.get(s);
+				NamedNodeMap qdmMap = qdm.getAttributes();
+				Element listItem = mainListElement.appendElement(HTML_LI);
+				
+				listItem.appendText("\""
+						+ qdmMap.getNamedItem("datatype").getNodeValue() + ": "
+						+ qdmMap.getNamedItem("name").getNodeValue()
+						+ "\" using \""
+						+ qdmMap.getNamedItem("name").getNodeValue() + " "
+						+ qdmMap.getNamedItem("taxonomy").getNodeValue()
+						+ " Value Set ("
+						+ qdmMap.getNamedItem("oid").getNodeValue() + ")\"");
+			}
+		}
+		else {
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
+	}
+	
 	
 	/**
 	 * Parses the child.
@@ -1061,7 +1146,6 @@ public class CQLHumanReadableHTMLCreator {
 		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
-			System.out.println("Population Display Name: " + populationDisplayName);
 			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
 		}
 
@@ -1152,10 +1236,8 @@ public class CQLHumanReadableHTMLCreator {
 		checkBoxElement.attr("id", id);
 
 		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
-			System.out.println("State Identfier Checked: " + statementIdentifier);
 			checkBoxElement.attr("checked", "");
 		} else {
-			System.out.println("Statement Identfier Not Checked: " + statementIdentifier);
 			definitionsOrFunctionsAlreadyDisplayed.add(statementIdentifier);
 		}
 

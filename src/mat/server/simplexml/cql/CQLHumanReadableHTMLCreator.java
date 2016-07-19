@@ -494,39 +494,48 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
 		NodeList supplementalDefnNodes = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
+				"/measure/cqlLookUp/definitions/definition");
 		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
 		if(supplementalDefnNodes != null){
 			Map<String, String> dataType = new HashMap<String, String>();
 			for(int i=0;i<supplementalDefnNodes.getLength();i++){
-			    NodeList logicElement = simpleXMLProcessor.findNodeList(
+				Node node = supplementalDefnNodes.item(i);
+				NamedNodeMap map = node.getAttributes();
+				String id = map.getNamedItem("id").getNodeValue();
+				Node sde = simpleXMLProcessor.findNode(
 						simpleXMLProcessor.getOriginalDoc(),
-						"/measure/cqlLookUp/definitions/definition/logic");
-			    if(logicElement != null){
-					for (int j = 0; j < logicElement.getLength(); j++) {
-						Node nodeLogic = logicElement.item(j);
-						if(nodeLogic.hasChildNodes()){
-							NodeList defLogicMap = nodeLogic.getChildNodes();
-							if(defLogicMap.getLength() > 0){
-								String defLogic = defLogicMap.item(0).getNodeValue();
-								//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
-								String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
-								String[] pairs = result.split(":");
-								dataType.put(pairs[0].trim(), pairs[1].trim());
+						"/measure/supplementalDataElements/cqldefinition[@uuid='" + id + "']");
+				if(sde != null ){
+				    NodeList logicElement = simpleXMLProcessor.findNodeList(
+							simpleXMLProcessor.getOriginalDoc(),
+							"/measure/cqlLookUp/definitions/definition[@id='" + id + "']/logic");
+				    if(logicElement != null){
+						for (int j = 0; j < logicElement.getLength(); j++) {
+							Node nodeLogic = logicElement.item(j);
+							if(nodeLogic.hasChildNodes()){
+								
+								NodeList defLogicMap = nodeLogic.getChildNodes();
+								if(defLogicMap.getLength() > 0){
+									String defLogic = defLogicMap.item(0).getNodeValue();
+									//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
+									String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
+									String[] pairs = result.split(":");
+									dataType.put(pairs[0].trim(), pairs[1].trim());
+								}
 							}
 						}
 					}
+				    for(Entry<String, String> entry : dataType.entrySet()){
+				    	Node qdm = simpleXMLProcessor.findNode(
+								simpleXMLProcessor.getOriginalDoc(),
+								"/measure/cqlLookUp/valuesets/valueset[@datatype='" + entry.getKey() + "']");
+						NamedNodeMap qdmMap = qdm.getAttributes();
+						qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()
+								+ ": " + qdmMap.getNamedItem("name").getNodeValue(),
+								qdm); 
+				    }
 				}
-			    for(Entry<String, String> entry : dataType.entrySet()){
-			    	Node qdm = simpleXMLProcessor.findNode(
-							simpleXMLProcessor.getOriginalDoc(),
-							"/measure/cqlLookUp/valuesets/valueset[@datatype='" + entry.getKey() + "']");
-					NamedNodeMap qdmMap = qdm.getAttributes();
-					qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()
-							+ ": " + qdmMap.getNamedItem("name").getNodeValue(),
-							qdm); 
-			    }
-			    
+
 			}
 			List<String> qdmNameList = new ArrayList<String>(qdmNodeMap.keySet());
 			Collections.sort(qdmNameList, new Comparator<String>() {

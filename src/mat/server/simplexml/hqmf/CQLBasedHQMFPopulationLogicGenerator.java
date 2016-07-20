@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -18,6 +20,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -160,7 +164,9 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 			}
 			//for creating SupplementalDataElements Criteria Section
 			//createSupplementalDataElmStratifier(me,populationCriteriaComponentElement.getFirstChild());
+			createRiskAdjustmentStratifier(me, populationCriteriaComponentElement.getFirstChild());
 		}
+		
 		
 	}
 	
@@ -638,6 +644,105 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		return false;
 	}
 	
+	/**
+	 * Create the risk adjustment components. This will create a create a component tag underneath 
+	 * population critiera section for risk adjustment variables. 
+	 * @param me the measure export
+	 * @param parentNode the parent node 
+	 * @throws XPathExpressionException
+	 */
+	private void createRiskAdjustmentStratifier(MeasureExport me, Node parentNode) throws XPathExpressionException {
+	
+		String xPathForRiskAdjustmentVariables = "/measure/riskAdjustmentVariables/cqldefinition"; 
+		XmlProcessor simpleXmlProcessor = me.getSimpleXMLProcessor(); 
+		NodeList riskAdjustmentVariables = simpleXmlProcessor.findNodeList(simpleXmlProcessor.getOriginalDoc(), 
+																			xPathForRiskAdjustmentVariables);		
+		String xPathForLibraryName = "/measure/cqlLookUp/library"; 
+		Node libraryNode = simpleXmlProcessor.findNode(simpleXmlProcessor.getOriginalDoc(), xPathForLibraryName);
+		String libraryName = libraryNode.getTextContent();
+		
+		String xPathForCQLUUID = "/measure/measureDetails/cqlUUID"; 
+		Node cqluuidNode = simpleXmlProcessor.findNode(simpleXmlProcessor.getOriginalDoc(), xPathForCQLUUID); 
+		String cqlUUID = cqluuidNode.getTextContent(); 
+		
+		for (int i = 0; i < riskAdjustmentVariables.getLength(); i++) {
+			Node current = riskAdjustmentVariables.item(i); 
+			String riskAdjustmentUUID = current.getAttributes().getNamedItem("uuid").getNodeValue(); 
+			String riskAdjustmentDefName = current.getAttributes().getNamedItem("displayName").getNodeValue(); 
+						
+			Element component = createRiskAdjustmentComponentNode(me, riskAdjustmentUUID, cqlUUID, libraryName, riskAdjustmentDefName);
+			parentNode.appendChild(component);
+		}
+	}
+	
+	/**
+	 * Creates the component for a risk adjustment variable in the hqmf document
+	 * @param me the measure export
+	 * @param riskAdjustmentUUID the risk adjustment variable uuid
+	 * @param cqlUUID the cql file uuid 
+	 * @param libraryName the cql library name
+	 * @param riskAdjustmentDefName the risk adjustment definition name
+	 * @return the component element
+	 */
+	private Element createRiskAdjustmentComponentNode(MeasureExport me, String riskAdjustmentUUID, String cqlUUID, String libraryName, String riskAdjustmentDefName) {
+		XmlProcessor processor = me.getHQMFXmlProcessor(); 
+		
+		Element component = processor.getOriginalDoc().createElement("component"); 
+		component.setAttribute("typeCode", "COMP");
+		
+		Element stratifierCriteria = processor.getOriginalDoc().createElement("stratifierCriteria"); 
+		
+		Element id = processor.getOriginalDoc().createElement("id");
+		id.setAttribute("extension", "Stratifiers");
+		id.setAttribute("root", riskAdjustmentUUID);
+		stratifierCriteria.appendChild(id); 
+		
+		Element code = processor.getOriginalDoc().createElement("code"); 
+		code.setAttribute("code", "STRAT");
+		code.setAttribute("codeSystem", "2.16.840.1.113883.5.4");
+		code.setAttribute("codeSystemName", "Act Code");
+		stratifierCriteria.appendChild(code);
+		
+		Element precondition = processor.getOriginalDoc().createElement("precondition"); 
+		precondition.setAttribute("typeCode", "PRCN");
+		stratifierCriteria.appendChild(precondition); 
+		
+		Element criteriaReference = processor.getOriginalDoc().createElement("criteriaReference"); 
+		criteriaReference.setAttribute("moodCode", "EVN");
+		criteriaReference.setAttribute("classCode", "OBS");
+		stratifierCriteria.appendChild(criteriaReference);
+		
+		Element criteriaReferenceId = processor.getOriginalDoc().createElement("id");
+		criteriaReferenceId.setAttribute("root", cqlUUID);
+		String extensionString = String.format("%s.\"%s\"", libraryName, riskAdjustmentDefName);
+		criteriaReferenceId.setAttribute("extension", extensionString);
+		criteriaReference.appendChild(criteriaReferenceId);
+		component.appendChild(stratifierCriteria); 
+		
+		Element innerComponent = processor.getOriginalDoc().createElement("component");
+		innerComponent.setAttribute("typeCode", "COMP");
+		component.appendChild(innerComponent);
+		
+		Element measureAttribute = processor.getOriginalDoc().createElement("measureAttribute");
+		innerComponent.appendChild(measureAttribute); 
+		
+		Element measureAttributeCode = processor.getOriginalDoc().createElement("code");
+		measureAttributeCode.setAttribute("code", "MSRADJ");
+		measureAttributeCode.setAttribute("codeSystem", "2.16.840.1.113883.5.4");
+		measureAttributeCode.setAttribute("codeSystemName", "Act Code");
+		measureAttribute.appendChild(measureAttributeCode);
+		
+		Element measureAttributeValue = processor.getOriginalDoc().createElement("value");
+		measureAttributeValue.setAttribute("mediaType", "text/plain");
+		measureAttributeValue.setAttribute("value", "Risk Adjustment");
+		measureAttributeValue.setAttribute("xsi:type", "ED");
+		measureAttribute.appendChild(measureAttributeValue);
+		
+		
+	
+		return component;
+		
+	}
 	/**
 	 * Creates Logic for Each Supplemental Data Element Nodes.
 	 *

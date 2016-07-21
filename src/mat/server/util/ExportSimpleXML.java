@@ -59,7 +59,7 @@ public class ExportSimpleXML {
 	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
 	
 	/** The Constant xPath. */
-	private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
 	/** The Constant MEASUREMENT_PERIOD_OID. */
 	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
@@ -293,8 +293,20 @@ public class ExportSimpleXML {
 			List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 			//using the above list we need to traverse the originalDoc and remove the unused Clauses
 			removeUnwantedClauses(usedClauseIds, originalDoc);
-			List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc, cqlFileObject);
-			removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
+//			List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc, cqlFileObject);
+//			removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
+			
+			System.out.println("Getting Used CQL Definitions");
+			CQLUtil.CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getUsedCQLArtifacts(originalDoc, cqlFileObject);
+			
+			System.out.println("Used CQL Definitions: " + usedCQLArtifactHolder.getCqlDefinitionUUIDSet());
+			System.out.println("Used CQL Functions: " + usedCQLArtifactHolder.getCqlFunctionUUIDSet());
+			
+			CQLUtil.removeUnusedCQLDefinitions(originalDoc, usedCQLArtifactHolder.getCqlDefinitionUUIDSet()); 
+			CQLUtil.removeUnusedCQLFunctions(originalDoc, usedCQLArtifactHolder.getCqlFunctionUUIDSet());
+			
+
+			
 			removeNode("/measure/subTreeLookUp",originalDoc);
 			removeNode("/measure/elementLookUp",originalDoc);
 			expandAndHandleGrouping(originalDoc);

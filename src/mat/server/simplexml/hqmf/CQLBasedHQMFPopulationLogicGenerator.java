@@ -163,7 +163,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 				}
 			}
 			//for creating SupplementalDataElements Criteria Section
-			//createSupplementalDataElmStratifier(me,populationCriteriaComponentElement.getFirstChild());
+			createSupplementalDataElmStratifier(me,populationCriteriaComponentElement.getFirstChild());
 			createRiskAdjustmentStratifier(me, populationCriteriaComponentElement.getFirstChild());
 		}
 		
@@ -751,7 +751,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createSupplementalDataElmStratifier(MeasureExport me, Node parentNode) throws XPathExpressionException {
-		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
+		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/cqldefinition/@uuid";
 		NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathForOtherSupplementalQDMs);
 		if ((supplementalDataElements == null)
@@ -765,10 +765,10 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		
 		String uuidXPathString = "";
 		for (String uuidString: supplementalElemenRefIds) {
-			uuidXPathString += "@uuid = '" + uuidString + "' or";
+			uuidXPathString += "@id = '" + uuidString + "' or ";
 		}
-		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
-		String xpathforOtherSupplementalDataElements = "/measure/elementLookUp/qdm[" + uuidXPathString + "]";
+		uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or "));
+		String xpathforOtherSupplementalDataElements = "/measure/cqlLookUp/definitions/definition[" + uuidXPathString + "]";
 		NodeList supplementalQDMNodeList = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathforOtherSupplementalDataElements);
 		if (supplementalQDMNodeList.getLength() < 1) {
@@ -780,8 +780,28 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 			Node stratCriteriaElem = componentElement.getFirstChild();
 			Node qdmNode = supplementalQDMNodeList.item(i);
 			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-			String qdmDatatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			String qdmUUID = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String qdmUUID = qdmNode.getAttributes().getNamedItem("id").getNodeValue();
+			String qdmDatatype = null;
+			//Split Logic node to get datatype
+			NodeList logicElement = me.getSimpleXMLProcessor().findNodeList(
+					me.getSimpleXMLProcessor().getOriginalDoc(),
+					"/measure/cqlLookUp/definitions/definition[@id='" + qdmUUID + "']/logic");
+		    if(logicElement != null){
+					Node nodeLogic = logicElement.item(0);
+					if(nodeLogic.hasChildNodes()){
+						
+						NodeList defLogicMap = nodeLogic.getChildNodes();
+						if(defLogicMap.getLength() > 0){
+							String defLogic = defLogicMap.item(0).getNodeValue();
+							//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
+							String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
+							String[] pairs = result.split(":");
+							qdmDatatype = pairs[0].trim();
+						}
+					}
+		    }
+			
+			
 			String qdmExtension = qdmName.replaceAll("\\s", "") + "_" + qdmDatatype.replaceAll("\\s", "");
 			createPreConditionTag(me.getHQMFXmlProcessor(), stratCriteriaElem, qdmUUID, qdmExtension);
 			createMeasureAttributeComponent(me, stratCriteriaElem);

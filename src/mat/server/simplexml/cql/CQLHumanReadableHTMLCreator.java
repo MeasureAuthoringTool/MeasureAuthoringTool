@@ -149,11 +149,43 @@ public class CQLHumanReadableHTMLCreator {
 //		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
-//		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlFileObject);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
 	}
 	
+	private static void generateRiskAdjustmentVariables(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject)
+					throws XPathExpressionException {
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement
+		.append("<h3><a name=\"d1e879\" href=\"#toc\">Risk Adjustment Variables</a></h3>");
+		
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		
+		NodeList elements = simpleXMLProcessor.findNodeList(
+				simpleXMLProcessor.getOriginalDoc(),
+				"/measure/riskAdjustmentVariables/cqldefinition");
+		
+		if (elements.getLength() > 0) {
+			for(int i=0;i<elements.getLength();i++){
+				Node childNode = elements.item(i);
+				String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				String xpathforSubTree = "/measure/cqlLookUp//definition[@id='"+ uuid +"']";
+				Node defineNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
+						xpathforSubTree);
+				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
+				defineNodeName = "\"" + defineNodeName + "\"";
+				generatePopulationCriteria(mainListElement, cqlFileObject, childNode, defineNodeName, defineNodeName);
+				
+			}
+		} else {
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
+	}
+	
+
 	/**
 	 * Generate table of contents.
 	 *
@@ -340,12 +372,12 @@ public class CQLHumanReadableHTMLCreator {
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode, simpleXMLProcessor);
 				
-				if(!childPopulationName.startsWith("Initial Population")){
+				/*if(!childPopulationName.startsWith("Initial Population")){
 					populationListElement.appendText(childPopulationName
 							+ (popassoc.length() > 0 ? popassoc : "")
 							+ (itemCountText.length() > 0 ? itemCountText : "")
 							+ " =");
-				}
+				}*/
 				
 				/*if(childPopulationName.startsWith("Measure Observation")){
 					populationListElement = populationListElement.appendElement(HTML_UL);

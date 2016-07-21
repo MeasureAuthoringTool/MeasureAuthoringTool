@@ -1,6 +1,5 @@
 package mat.server.util;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,15 +8,15 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class CQLUtil {
 	
@@ -30,8 +29,8 @@ public class CQLUtil {
 		CQLUtil cqlUtil = new CQLUtil();
 		CQLArtifactHolder usedCQLArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
-		usedCQLArtifactHolder.setCqlDefinitionUUIDSet(cqlArtifactHolder.getCqlDefinitionUUIDSet());
-		usedCQLArtifactHolder.setCqlFunctionUUIDSet(cqlArtifactHolder.getCqlFunctionUUIDSet());
+		usedCQLArtifactHolder.getCqlDefinitionUUIDSet().addAll(cqlArtifactHolder.getCqlDefinitionUUIDSet());
+		usedCQLArtifactHolder.getCqlFunctionUUIDSet().addAll(cqlArtifactHolder.getCqlFunctionUUIDSet());
 		
 		for(String cqlDefnUUID: cqlArtifactHolder.getCqlDefinitionUUIDSet()){
 			String xPathCQLDef = "/measure/cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";

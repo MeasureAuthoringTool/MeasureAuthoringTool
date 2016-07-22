@@ -710,18 +710,17 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Element criteriaReference = processor.getOriginalDoc().createElement("criteriaReference"); 
 		criteriaReference.setAttribute("moodCode", "EVN");
 		criteriaReference.setAttribute("classCode", "OBS");
-		stratifierCriteria.appendChild(criteriaReference);
+		precondition.appendChild(criteriaReference);
 		
 		Element criteriaReferenceId = processor.getOriginalDoc().createElement("id");
 		criteriaReferenceId.setAttribute("root", cqlUUID);
 		String extensionString = String.format("%s.\"%s\"", libraryName, riskAdjustmentDefName);
 		criteriaReferenceId.setAttribute("extension", extensionString);
 		criteriaReference.appendChild(criteriaReferenceId);
-		component.appendChild(stratifierCriteria); 
 		
 		Element innerComponent = processor.getOriginalDoc().createElement("component");
 		innerComponent.setAttribute("typeCode", "COMP");
-		component.appendChild(innerComponent);
+		stratifierCriteria.appendChild(innerComponent);
 		
 		Element measureAttribute = processor.getOriginalDoc().createElement("measureAttribute");
 		innerComponent.appendChild(measureAttribute); 
@@ -737,6 +736,9 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		measureAttributeValue.setAttribute("value", "Risk Adjustment");
 		measureAttributeValue.setAttribute("xsi:type", "ED");
 		measureAttribute.appendChild(measureAttributeValue);
+		
+		component.appendChild(stratifierCriteria); 
+
 		
 		
 	

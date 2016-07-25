@@ -795,10 +795,8 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 						NodeList defLogicMap = nodeLogic.getChildNodes();
 						if(defLogicMap.getLength() > 0){
 							String defLogic = defLogicMap.item(0).getNodeValue();
-							//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
-							String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
-							String[] pairs = result.split(":");
-							qdmDatatype = pairs[0].trim();
+							String[] pairs = defLogic.split("\"");
+							qdmDatatype = pairs[1].trim();
 						}
 					}
 		    }
@@ -825,24 +823,14 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 	private void createPreConditionTag(XmlProcessor hqmfXmlProcessor,
 			Node parentElem, String id, String extension)
 					throws XPathExpressionException {
-		Node idNodeQDM = hqmfXmlProcessor.findNode(
-				hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='" + id
-				+ "'][@extension=\"" + extension + "\"]");
-		if (idNodeQDM != null) {
-			Node parent = idNodeQDM.getParentNode();
-			if (parent != null) {
-				NamedNodeMap attribMap = parent.getAttributes();
-				String classCode = attribMap.getNamedItem(CLASS_CODE)
-						.getNodeValue();
-				String moodCode = attribMap.getNamedItem(MOOD_CODE)
-						.getNodeValue();
+		
 				Element preConditionElem = hqmfXmlProcessor.getOriginalDoc()
 						.createElement("precondition");
 				preConditionElem.setAttribute(TYPE_CODE, "PRCN");
 				Element criteriaRefElem = hqmfXmlProcessor.getOriginalDoc()
 						.createElement("criteriaReference");
-				criteriaRefElem.setAttribute(CLASS_CODE, classCode);
-				criteriaRefElem.setAttribute(MOOD_CODE, moodCode);
+				criteriaRefElem.setAttribute(CLASS_CODE, "OBS");
+				criteriaRefElem.setAttribute(MOOD_CODE, "EVN");
 				Element criteriaRefIDElem = hqmfXmlProcessor.getOriginalDoc()
 						.createElement("id");
 				criteriaRefIDElem.setAttribute("root", id);
@@ -850,8 +838,6 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 				criteriaRefElem.appendChild(criteriaRefIDElem);
 				preConditionElem.appendChild(criteriaRefElem);
 				parentElem.appendChild(preConditionElem);
-			}
-		}
 	}
 	
 }

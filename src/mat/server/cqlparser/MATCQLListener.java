@@ -361,12 +361,27 @@ public class MATCQLListener extends cqlBaseListener {
 				
 				if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
 					baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+					setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 				}
 			}else{
 				findStatementChildren(childTree,childTokens, baseStatementInterface);
 			}
 		}
 
+	}
+
+	private void setReferredByInValueSet(
+			CQLBaseStatementInterface baseStatementInterface,
+			CQLValueSetModelObject cqlValueSetModelObject) {
+		
+		if(baseStatementInterface instanceof CQLDefinitionModelObject){
+			cqlValueSetModelObject.getReferredByDefinitions().add((CQLDefinitionModelObject)baseStatementInterface);
+		}else if(baseStatementInterface instanceof CQLFunctionModelObject){
+			cqlValueSetModelObject.getReferredByFunctions().add((CQLFunctionModelObject)baseStatementInterface);
+		}else if(baseStatementInterface instanceof CQLParameterModelObject){
+			cqlValueSetModelObject.getReferredByParameters().add((CQLParameterModelObject)baseStatementInterface);
+		}
+		
 	}
 
 	@Override

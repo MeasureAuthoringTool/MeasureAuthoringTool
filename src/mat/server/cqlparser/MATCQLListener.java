@@ -3,6 +3,7 @@ package mat.server.cqlparser;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -84,12 +85,14 @@ public class MATCQLListener extends cqlBaseListener {
 	private void extractValueSetDetails(cqlParser.ValuesetDefinitionContext ctx){
 		System.out.println("Found ValueSet definition...");
 		System.out.println(ctx.identifier().getText());
-		List<String> childTokens = findValueSetChildren(ctx);
+		
 		//System.out.println("Depth:"+ctx.expressionDefinition().expression().children.get(0).getClass().getSimpleName());
 
 		CQLValueSetModelObject cqlValueSetModelObject = new CQLValueSetModelObject();
 		cqlValueSetModelObject.setIdentifier(ctx.identifier().getText());
-
+		
+		List<String> childTokens = findValueSetChildren(ctx, cqlValueSetModelObject);
+		
 		if(ctx.accessModifier() != null){
 			cqlValueSetModelObject.setAccessModifier(ctx.accessModifier().getText());
 		}
@@ -101,12 +104,13 @@ public class MATCQLListener extends cqlBaseListener {
 	private void extractParameterDetails(cqlParser.ParameterDefinitionContext ctx){
 		System.out.println("Found Parameter definition...");
 		System.out.println(ctx.identifier().getText());
-		List<String> childTokens = findParameterChildren(ctx);
+		
 		//System.out.println("Depth:"+ctx.expressionDefinition().expression().children.get(0).getClass().getSimpleName());
 
 		CQLParameterModelObject cqlParameterModelObject = new CQLParameterModelObject();
 		cqlParameterModelObject.setIdentifier(ctx.identifier().getText());
-
+		List<String> childTokens = findParameterChildren(ctx, cqlParameterModelObject);
+		
 		if(ctx.accessModifier() != null){
 			cqlParameterModelObject.setAccessModifier(ctx.accessModifier().getText());
 		}
@@ -119,9 +123,10 @@ public class MATCQLListener extends cqlBaseListener {
 		System.out.println("Found Function definition...");
 		System.out.println(ctx.functionDefinition().identifier().getText());
 
-		List<String> childTokens = findFunctionChildren(ctx);
+		
 
 		CQLFunctionModelObject cqlFunctionModelObject = new CQLFunctionModelObject();
+		List<String> childTokens = findFunctionChildren(ctx, cqlFunctionModelObject);
 		cqlFunctionModelObject.setIdentifier(ctx.functionDefinition().identifier().getText());
 
 		if(ctx.functionDefinition().accessModifier() != null){
@@ -152,7 +157,7 @@ public class MATCQLListener extends cqlBaseListener {
 	private void extractCQLDefinitionDetails(cqlParser.StatementContext ctx) {
 		//System.out.println("Found definition...");
 		//System.out.println(ctx.expressionDefinition().identifier().getText());
-		List<String> childTokens = findDefinitionChildren(ctx);
+		
 		//System.out.println("Depth:"+ctx.expressionDefinition().expression().children.get(0).getClass().getSimpleName());
 
 		CQLDefinitionModelObject cqlDefinitionModelObject = new CQLDefinitionModelObject();
@@ -164,8 +169,10 @@ public class MATCQLListener extends cqlBaseListener {
 		if(ctx.expressionDefinition().accessModifier() != null){
 			cqlDefinitionModelObject.setAccessModifier(ctx.expressionDefinition().accessModifier().getText());
 		}
+		List<String> childTokens = findDefinitionChildren(ctx, cqlDefinitionModelObject);
 		cqlDefinitionModelObject.setChildTokens(childTokens);
 		this.cqlFileObject.getDefinitionsMap().put(cqlDefinitionModelObject.getIdentifier(), cqlDefinitionModelObject);
+		System.out.println(cqlDefinitionModelObject.getIdentifier() + ":Referred to value sets:"+cqlDefinitionModelObject.getReferredToValueSets());
 	}
 
 	/**
@@ -278,10 +285,10 @@ public class MATCQLListener extends cqlBaseListener {
 		return false;
 	}
 
-	private List<String> findFunctionChildren(cqlParser.StatementContext ctx) {
+	private List<String> findFunctionChildren(cqlParser.StatementContext ctx, CQLBaseStatementInterface cqlBaseStatement) {
 		FunctionDefinitionContext functionDefinitionContext = ctx.functionDefinition();
 		List<ParseTree> parseTreeList = functionDefinitionContext.children;
-		return findDefinitionChildren(parseTreeList);
+		return findStatementChildren(parseTreeList, cqlBaseStatement);
 	}
 
 	/**
@@ -289,34 +296,34 @@ public class MATCQLListener extends cqlBaseListener {
 	 * @param ctx
 	 * @return
 	 */
-	private List<String> findDefinitionChildren(cqlParser.StatementContext ctx) {
+	private List<String> findDefinitionChildren(cqlParser.StatementContext ctx, CQLBaseStatementInterface cqlBaseStatement) {
 		ExpressionDefinitionContext expressionDefinitionContext = ctx.expressionDefinition();
 		List<ParseTree> parseTreeList = expressionDefinitionContext.children;
-		return findDefinitionChildren(parseTreeList);
+		return findStatementChildren(parseTreeList, cqlBaseStatement);
 	}
 
 
-	private List<String> findValueSetChildren(cqlParser.ValuesetDefinitionContext ctx) {
+	private List<String> findValueSetChildren(cqlParser.ValuesetDefinitionContext ctx, CQLBaseStatementInterface cqlBaseStatement) {
 		//ExpressionDefinitionContext expressionDefinitionContext = ctx.children;
 		List<ParseTree> parseTreeList = ctx.children;
-		return findDefinitionChildren(parseTreeList);
+		return findStatementChildren(parseTreeList, cqlBaseStatement);
 	}
 
-	private List<String> findParameterChildren(cqlParser.ParameterDefinitionContext ctx) {
+	private List<String> findParameterChildren(cqlParser.ParameterDefinitionContext ctx, CQLBaseStatementInterface cqlBaseStatement) {
 		//ExpressionDefinitionContext expressionDefinitionContext = ctx.children;
 		List<ParseTree> parseTreeList = ctx.children;
-		return findDefinitionChildren(parseTreeList);
+		return findStatementChildren(parseTreeList, cqlBaseStatement);
 	}
 
 
-	public List<String> findDefinitionChildren(List<ParseTree> parseTreeList) {
+	public List<String> findStatementChildren(List<ParseTree> parseTreeList, CQLBaseStatementInterface cqlBaseStatement) {
 		List<String> childTokens = new ArrayList<String>();
 
 		for(ParseTree tree:parseTreeList){
 			if(tree.getChildCount() == 0){
 				childTokens.add(tree.getText());
 			}else{
-				findDefinitionChildren(tree,childTokens);
+				findStatementChildren(tree,childTokens, cqlBaseStatement);
 			}
 		}
 
@@ -341,15 +348,22 @@ public class MATCQLListener extends cqlBaseListener {
 		return childTokens;
 	}
 
-	private void findDefinitionChildren(ParseTree tree, List<String> childTokens) {
+	private void findStatementChildren(ParseTree tree, List<String> childTokens, CQLBaseStatementInterface baseStatementInterface) {
 		int childCount = tree.getChildCount();
 
 		for(int i=0;i<childCount;i++){
 			ParseTree childTree = tree.getChild(i);
 			if(childTree.getChildCount() == 0){
 				childTokens.add(childTree.getText());
+			}else if(childTree instanceof RetrieveContext){
+				RetrieveContext retrieveContext = (RetrieveContext)childTree;
+				String valueSetIdentifier = retrieveContext.valueset().qualifiedIdentifier().identifier().getText();
+				
+				if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
+					baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+				}
 			}else{
-				findDefinitionChildren(childTree,childTokens);
+				findStatementChildren(childTree,childTokens, baseStatementInterface);
 			}
 		}
 

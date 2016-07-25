@@ -134,4 +134,9 @@ public class CQLValueSetModelObject extends CQLBaseModelDefinitionObject impleme
 		this.referredByParameters = referredByParameters;
 	}
 	
+	@Override
+	public String toString() {
+		return getIdentifier();
+	}
+	
 }

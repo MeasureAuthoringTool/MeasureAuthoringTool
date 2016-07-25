@@ -524,38 +524,29 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		
+		String XPATH_SUPPLEMENTAL_DATA_ELEMENTS = "/measure/supplementalDataElements/cqldefinition/@uuid";
 		NodeList supplementalDefnNodes = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/cqlLookUp/definitions/definition");
+				XPATH_SUPPLEMENTAL_DATA_ELEMENTS);
 		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
-		if(supplementalDefnNodes != null){
+		if(supplementalDefnNodes != null && supplementalDefnNodes.getLength()>0){
 			Map<String, String> dataType = new HashMap<String, String>();
 			for(int i=0;i<supplementalDefnNodes.getLength();i++){
 				Node node = supplementalDefnNodes.item(i);
-				NamedNodeMap map = node.getAttributes();
-				String id = map.getNamedItem("id").getNodeValue();
-				Node sde = simpleXMLProcessor.findNode(
-						simpleXMLProcessor.getOriginalDoc(),
-						"/measure/supplementalDataElements/cqldefinition[@uuid='" + id + "']");
-				if(sde != null ){
-				    NodeList logicElement = simpleXMLProcessor.findNodeList(
+				if(node != null ){
+					String id = node.getNodeValue();
+				    Node logicElement = simpleXMLProcessor.findNode(
 							simpleXMLProcessor.getOriginalDoc(),
 							"/measure/cqlLookUp/definitions/definition[@id='" + id + "']/logic");
 				    if(logicElement != null){
-						for (int j = 0; j < logicElement.getLength(); j++) {
-							Node nodeLogic = logicElement.item(j);
-							if(nodeLogic.hasChildNodes()){
+							if(logicElement.hasChildNodes()){
 								
-								NodeList defLogicMap = nodeLogic.getChildNodes();
+								NodeList defLogicMap = logicElement.getChildNodes();
 								if(defLogicMap.getLength() > 0){
 									String defLogic = defLogicMap.item(0).getNodeValue();
-									//The replaceAll method cannot match the String literal [] which does not exist within the String alone so try replacing these items separately.
-									String result = defLogic.replaceAll("\"","").replaceAll("\\[", "").replaceAll("\\]","");
-									String[] pairs = result.split(":");
-									dataType.put(pairs[0].trim(), pairs[1].trim());
+									String[] pairs = defLogic.split("\"");
+									dataType.put(pairs[1].trim(), pairs[3].trim());
 								}
 							}
-						}
 					}
 				    for(Entry<String, String> entry : dataType.entrySet()){
 				    	Node qdm = simpleXMLProcessor.findNode(

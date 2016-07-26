@@ -667,10 +667,9 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		
 		for (int i = 0; i < riskAdjustmentVariables.getLength(); i++) {
 			Node current = riskAdjustmentVariables.item(i); 
-			String riskAdjustmentUUID = current.getAttributes().getNamedItem("uuid").getNodeValue(); 
 			String riskAdjustmentDefName = current.getAttributes().getNamedItem("displayName").getNodeValue(); 
 						
-			Element component = createRiskAdjustmentComponentNode(me, riskAdjustmentUUID, cqlUUID, libraryName, riskAdjustmentDefName);
+			Element component = createRiskAdjustmentComponentNode(me, cqlUUID, libraryName, riskAdjustmentDefName, "MSRADJ");
 			parentNode.appendChild(component);
 		}
 	}
@@ -684,7 +683,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 	 * @param riskAdjustmentDefName the risk adjustment definition name
 	 * @return the component element
 	 */
-	private Element createRiskAdjustmentComponentNode(MeasureExport me, String riskAdjustmentUUID, String cqlUUID, String libraryName, String riskAdjustmentDefName) {
+	private Element createRiskAdjustmentComponentNode(MeasureExport me, String cqlUUID, String libraryName, String riskAdjustmentDefName, String type) {
 		XmlProcessor processor = me.getHQMFXmlProcessor(); 
 		
 		Element component = processor.getOriginalDoc().createElement("component"); 
@@ -694,7 +693,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		
 		Element id = processor.getOriginalDoc().createElement("id");
 		id.setAttribute("extension", "Stratifiers");
-		id.setAttribute("root", riskAdjustmentUUID);
+		id.setAttribute("root", UUIDUtilClient.uuid());
 		stratifierCriteria.appendChild(id); 
 		
 		Element code = processor.getOriginalDoc().createElement("code"); 
@@ -726,14 +725,20 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		innerComponent.appendChild(measureAttribute); 
 		
 		Element measureAttributeCode = processor.getOriginalDoc().createElement("code");
-		measureAttributeCode.setAttribute("code", "MSRADJ");
+		measureAttributeCode.setAttribute("code", type);
 		measureAttributeCode.setAttribute("codeSystem", "2.16.840.1.113883.5.4");
 		measureAttributeCode.setAttribute("codeSystemName", "Act Code");
 		measureAttribute.appendChild(measureAttributeCode);
 		
+		String value="";
+		if(type.equalsIgnoreCase("MSRADJ")){
+			value = "Risk Adjustment";
+		} else {
+			value = "Supplemental Data Elements";
+		}
 		Element measureAttributeValue = processor.getOriginalDoc().createElement("value");
 		measureAttributeValue.setAttribute("mediaType", "text/plain");
-		measureAttributeValue.setAttribute("value", "Risk Adjustment");
+		measureAttributeValue.setAttribute("value", value);
 		measureAttributeValue.setAttribute("xsi:type", "ED");
 		measureAttribute.appendChild(measureAttributeValue);
 		
@@ -756,6 +761,15 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/cqldefinition/@uuid";
 		NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 				xpathForOtherSupplementalQDMs);
+		String xPathForLibraryName = "/measure/cqlLookUp/library"; 
+		Node libraryNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xPathForLibraryName);
+		String libraryName = libraryNode.getTextContent();
+		
+		String xPathForCQLUUID = "/measure/measureDetails/cqlUUID"; 
+		Node cqluuidNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(), xPathForCQLUUID); 
+		String cqlUUID = cqluuidNode.getTextContent(); 
+		
+		
 		if ((supplementalDataElements == null)
 				|| (supplementalDataElements.getLength() < 1)) {
 			return;
@@ -778,34 +792,11 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		}
 		
 		for (int i = 0; i < supplementalQDMNodeList.getLength(); i++) {
-			Element componentElement = createSupplementalDataElmComponentNode(me);
-			Node stratCriteriaElem = componentElement.getFirstChild();
 			Node qdmNode = supplementalQDMNodeList.item(i);
 			String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-			String qdmUUID = qdmNode.getAttributes().getNamedItem("id").getNodeValue();
-			String qdmDatatype = null;
-			//Split Logic node to get datatype
-			NodeList logicElement = me.getSimpleXMLProcessor().findNodeList(
-					me.getSimpleXMLProcessor().getOriginalDoc(),
-					"/measure/cqlLookUp/definitions/definition[@id='" + qdmUUID + "']/logic");
-		    if(logicElement != null){
-					Node nodeLogic = logicElement.item(0);
-					if(nodeLogic.hasChildNodes()){
-						
-						NodeList defLogicMap = nodeLogic.getChildNodes();
-						if(defLogicMap.getLength() > 0){
-							String defLogic = defLogicMap.item(0).getNodeValue();
-							String[] pairs = defLogic.split("\"");
-							qdmDatatype = pairs[1].trim();
-						}
-					}
-		    }
 			
-			
-			String qdmExtension = qdmName.replaceAll("\\s", "") + "_" + qdmDatatype.replaceAll("\\s", "");
-			createPreConditionTag(me.getHQMFXmlProcessor(), stratCriteriaElem, qdmUUID, qdmExtension);
-			createMeasureAttributeComponent(me, stratCriteriaElem);
-			componentElement.appendChild(stratCriteriaElem);
+			//createRiskAdjustmentComponentNode is good enough for this too.
+		    Element componentElement = createRiskAdjustmentComponentNode(me, cqlUUID, libraryName, qdmName, "SDE");
 			parentNode.appendChild(componentElement);
 		}
 		

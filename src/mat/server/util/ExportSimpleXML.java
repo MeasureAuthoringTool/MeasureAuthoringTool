@@ -301,9 +301,13 @@ public class ExportSimpleXML {
 			
 			System.out.println("Used CQL Definitions: " + usedCQLArtifactHolder.getCqlDefinitionUUIDSet());
 			System.out.println("Used CQL Functions: " + usedCQLArtifactHolder.getCqlFunctionUUIDSet());
+			System.out.println("Used CQL Valuesets: " + usedCQLArtifactHolder.getCqlValuesetIdentifierSet());
+			System.out.println("Used CQL Parameters: " + usedCQLArtifactHolder.getCqlParameterIdentifierSet());
 			
 			CQLUtil.removeUnusedCQLDefinitions(originalDoc, usedCQLArtifactHolder.getCqlDefinitionUUIDSet()); 
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, usedCQLArtifactHolder.getCqlFunctionUUIDSet());
+			CQLUtil.removeUnusedValuesets(originalDoc, usedCQLArtifactHolder.getCqlValuesetIdentifierSet());
+			CQLUtil.removeUnusedParameters(originalDoc, usedCQLArtifactHolder.getCqlParameterIdentifierSet());
 			
 
 			

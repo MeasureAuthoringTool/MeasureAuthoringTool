@@ -12,6 +12,7 @@ import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
+import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
 
 import org.w3c.dom.Document;
@@ -70,9 +71,20 @@ public class CQLUtil {
 			CQLBaseStatementInterface cqlBaseStatementInterface, CQLArtifactHolder usedCQLArtifactHolder) 
 					throws XPathExpressionException {
 		
-		 List<CQLDefinitionModelObject> cqlDefinitionModelObjectList = cqlBaseStatementInterface
-				 															.getReferredToDefinitions();
+		 // get valuesets used by current artifact
+		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlBaseStatementInterface.getReferredToValueSets();
+		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+			 usedCQLArtifactHolder.addValuesetIdentifier(cqlValueSetModelObject.getIdentifier().replace("\"", ""));
+		 }
 		 
+		 // get parameters used by current artifact
+		 List<CQLParameterModelObject> cqlParameterModelObjects = cqlBaseStatementInterface.getReferredToParameters(); 
+		 for(CQLParameterModelObject cqlParameterModelObject : cqlParameterModelObjects) {
+			 usedCQLArtifactHolder.addParameterIdentifier(cqlParameterModelObject.getIdentifier());
+		 }
+		
+		 // get all definitions which current artifact refer to, recursively find all artifacts which could be nested. 
+		 List<CQLDefinitionModelObject> cqlDefinitionModelObjectList = cqlBaseStatementInterface.getReferredToDefinitions();
 		 for(CQLDefinitionModelObject cqlDefinitionModelObject: cqlDefinitionModelObjectList){
 			 usedCQLArtifactHolder.addDefinitionUUID(CQLUtil.getCQLDefinitionUUID(originalDoc, cqlDefinitionModelObject, true));
 			 
@@ -81,18 +93,13 @@ public class CQLUtil {
 			 
 		 }
 		 
-		 List<CQLFunctionModelObject> cqlFunctionModelObjectList = cqlBaseStatementInterface
-				 														.getReferredToFunctions();
+		 // get all functions which current artifact refer to, recursively find all artifacts which could be nested. 
+		 List<CQLFunctionModelObject> cqlFunctionModelObjectList = cqlBaseStatementInterface.getReferredToFunctions();
 		 for(CQLFunctionModelObject cqlFunctionModelObject:cqlFunctionModelObjectList){
 			 usedCQLArtifactHolder.addFunctionUUID(CQLUtil.getCQLDefinitionUUID(originalDoc, cqlFunctionModelObject, false));
 			 
 			 collectUsedCQLArtifacts(originalDoc, cqlFileObject, cqlFunctionModelObject, 
 					 usedCQLArtifactHolder);
-		 }
-		 
-		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlBaseStatementInterface.getReferredToValueSets();
-		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
-			 System.out.println(cqlValueSetModelObject.getIdentifier());
 		 }
 	}
 	
@@ -121,9 +128,8 @@ public class CQLUtil {
 		 
 		 String xPathForDefinitions = "/measure/cqlLookUp/"+cqlArtifactName+"[@name='"+defnName+"']/@id";
 		 System.out.println(xPathForDefinitions);
-		 Node cqlDefinitionUUID = (Node) xPath.evaluate(xPathForDefinitions, 
-					originalDoc.getDocumentElement(), XPathConstants.NODE);
-		return cqlDefinitionUUID.getNodeValue();
+		 Node cqlDefinitionUUID = (Node) xPath.evaluate(xPathForDefinitions, originalDoc.getDocumentElement(), XPathConstants.NODE);
+		 return cqlDefinitionUUID.getNodeValue();
 	}
 
 	/**
@@ -162,6 +168,15 @@ public class CQLUtil {
 		return cqlArtifactHolder;
 	}
 	
+	/**
+	 * Removes all unused cql definitions from the simple xml file. Iterates through the usedcqldefinitions set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param usedCQLDefinitions
+	 * 	the usedcqldefinitions
+	 * @throws XPathExpressionException
+	 */
 	public static void removeUnusedCQLDefinitions(Document originalDoc, Set<String> usedCQLDefinitions) throws XPathExpressionException {
 		
 		String idXPathString = ""; 
@@ -183,13 +198,22 @@ public class CQLUtil {
 		
 	}
 	
+	/**
+	 * Removes all unused cql functions from the simple xml file. Iterates through the usedcqlfunctions set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param usedCQLFunctions
+	 * 	the usedcqlfunctions
+	 * @throws XPathExpressionException
+	 */
 	public static void removeUnusedCQLFunctions(Document originalDoc, Set<String> usedCQLFunctions) throws XPathExpressionException {
 		String idXPathString = ""; 
 		for(String id: usedCQLFunctions) {
 			idXPathString += "[@id !='" + id + "']";
 		}
 		
-		String xPathForUnusedFunctions = "measure/cqlLookUp//function" + idXPathString; 
+		String xPathForUnusedFunctions = "/measure/cqlLookUp//function" + idXPathString; 
 		System.out.println(xPathForUnusedFunctions);
 		
 		NodeList unusedCqlFuncNodeList = (NodeList) xPath.evaluate(xPathForUnusedFunctions, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -201,22 +225,90 @@ public class CQLUtil {
 		}
 	}
 	
+	/**
+	 * Removes all unused cql valuesets from the simple xml file. Iterates through the usedcqlvaluesets set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param cqlValuesetIdentifierSet
+	 * 	the usevaluesets
+	 * @throws XPathExpressionException
+	 */
+	public static void removeUnusedValuesets(Document originalDoc, Set<String> cqlValuesetIdentifierSet) throws XPathExpressionException {
+		String nameXPathString = ""; 
+		for(String name : cqlValuesetIdentifierSet) {
+			nameXPathString += "[@name !='" + name + "']";
+		}
+		
+		String xPathForUnusedValuesets= "/measure/cqlLookUp//valueset" + nameXPathString; 
+		System.out.println(xPathForUnusedValuesets);
+		
+		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
+			Node current = unusedCqlValuesetNodeList.item(i); 
+			
+			Node parent = current.getParentNode(); 
+			parent.removeChild(current);
+		}
+	}
+	
+	/**
+	 * Removes all unused cql parameters from the simple xml file. Iterates through the usedcqlparameters set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param cqlParameterIdentifierSet
+	 * 	the used parameters
+	 * @throws XPathExpressionException
+	 */
+	public static void removeUnusedParameters(Document originalDoc, Set<String> cqlParameterIdentifierSet) throws XPathExpressionException {
+		String nameXPathString = ""; 
+		for(String name : cqlParameterIdentifierSet) {
+			nameXPathString += "[@name !='" + name + "']";
+		}
+		
+		String xPathForUnusedParameters = "/measure/cqlLookUp//parameter" + nameXPathString; 
+		System.out.println(xPathForUnusedParameters);
+		
+		NodeList unusedCqlParameterNodeList = (NodeList) xPath.evaluate(xPathForUnusedParameters, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
+		for (int i = 0; i < unusedCqlParameterNodeList.getLength(); i++) {
+			Node current = unusedCqlParameterNodeList.item(i); 
+			
+			Node parent = current.getParentNode(); 
+			parent.removeChild(current);
+		}
+	}
+	
 	public class CQLArtifactHolder{
 		
 		private Set<String> cqlDefinitionUUIDSet = new HashSet<String>();
 		private Set<String> cqlFunctionUUIDSet = new HashSet<String>();
+		private Set<String> cqlValuesetIdentifierSet = new HashSet<String>(); 
+		private Set<String> cqlParameterIdentifierSet = new HashSet<String>(); 
 		
 		public Set<String> getCqlDefinitionUUIDSet() {
 			return cqlDefinitionUUIDSet;
 		}
-		public void addDefinitionUUID(String uuid){
-			cqlDefinitionUUIDSet.add(uuid);
-		}
 		public Set<String> getCqlFunctionUUIDSet() {
 			return cqlFunctionUUIDSet;
 		}
+		public Set<String> getCqlValuesetIdentifierSet() {
+			return cqlValuesetIdentifierSet; 
+		}
+		public Set<String> getCqlParameterIdentifierSet() {
+			return cqlParameterIdentifierSet; 
+		}
+		public void addDefinitionUUID(String uuid){
+			cqlDefinitionUUIDSet.add(uuid);
+		}
 		public void addFunctionUUID(String uuid){
 			cqlFunctionUUIDSet.add(uuid);
+		}
+		public void addValuesetIdentifier(String identifier) {
+			cqlValuesetIdentifierSet.add(identifier);
+		}
+		public void addParameterIdentifier(String identifier) {
+			cqlParameterIdentifierSet.add(identifier);
 		}
 		public void setCqlDefinitionUUIDSet(Set<String> cqlDefinitionUUIDSet) {
 			this.cqlDefinitionUUIDSet = cqlDefinitionUUIDSet;
@@ -224,7 +316,12 @@ public class CQLUtil {
 		public void setCqlFunctionUUIDSet(Set<String> cqlFunctionUUIDSet) {
 			this.cqlFunctionUUIDSet = cqlFunctionUUIDSet;
 		}
-	}
-	
+		public void setCqlValuesetIdentifierSet(Set<String> cqlValuesetIdentifierSet) {
+			this.cqlValuesetIdentifierSet = cqlValuesetIdentifierSet; 
+		}
+		public void setCqlParameterIdentifierSet(Set<String> cqlParameterIdentifierSet) {
+			this.cqlParameterIdentifierSet = cqlParameterIdentifierSet; 
+		}
+	}	
 }
 

@@ -363,6 +363,7 @@ public class MATCQLListener extends cqlBaseListener {
 					baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 					setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 				}
+				findStatementChildren(childTree,childTokens, baseStatementInterface);
 			}else{
 				findStatementChildren(childTree,childTokens, baseStatementInterface);
 			}
@@ -468,25 +469,25 @@ public class MATCQLListener extends cqlBaseListener {
 
 
 	/*private void findValueSetReferences(CQLValueSetModelObject cqlValueSetModelObject,
-			List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
+	List<CQLDefinitionModelObject> definitionsList, List<CQLFunctionModelObject> functionsList) {
 
-		String cqlValueSetName = cqlValueSetModelObject.getIdentifier();
+String cqlValueSetName = cqlValueSetModelObject.getIdentifier();
 
-		for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
-			if(cqlFunctionModelObject.getChildTokens().contains(cqlValueSetName)){
-				cqlValueSetModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
-				cqlFunctionModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
-			}
-		}
+for(CQLFunctionModelObject cqlFunctionModelObject:functionsList){
+	if(cqlFunctionModelObject.getChildTokens().contains(cqlValueSetName)){
+		cqlValueSetModelObject.getReferredToFunctions().add(cqlFunctionModelObject);
+		cqlFunctionModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
+	}
+}
 
-		for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
-			if(cqlDefnModelObject.getChildTokens().contains(cqlValueSetName)){
-				cqlValueSetModelObject.getReferredToDefinitions().add(cqlDefnModelObject);
-				cqlDefnModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
-			}
-		}
+for(CQLDefinitionModelObject cqlDefnModelObject:definitionsList){
+	if(cqlDefnModelObject.getChildTokens().contains(cqlValueSetName)){
+		cqlValueSetModelObject.getReferredToDefinitions().add(cqlDefnModelObject);
+		cqlDefnModelObject.getReferredByValueSets().add(cqlValueSetModelObject);
+	}
+}
 
-	}*/
+}*/
 
 
 	private void findParameterReferences(CQLParameterModelObject cqlParameterModelObject,

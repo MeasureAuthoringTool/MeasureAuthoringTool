@@ -258,7 +258,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Element codeElem = doc.createElement(CODE);
 		codeElem.setAttribute(CODE, criteriaTagCodeName);
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
-		codeElem.setAttribute(CODE_SYSTEM_NAME, "HL7 Observation Value");
+		codeElem.setAttribute(CODE_SYSTEM_NAME, "Act Code");
 		Element displayNameElement = doc.createElement(DISPLAY_NAME);
 		displayNameElement.setAttribute(VALUE, item.getAttributes().getNamedItem(TYPE).getNodeValue());
 		codeElem.appendChild(displayNameElement);
@@ -288,7 +288,8 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Document mainDocument = populationCritieriaElem.getOwnerDocument();
 		Element preConditionElem = mainDocument.createElement("precondition");
 		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
-		if (scoringType.equalsIgnoreCase("Proportion") && nodeType.equalsIgnoreCase("denominator")) {
+		//not required for CQL Based HQMF Measure as per stan
+		/*if (scoringType.equalsIgnoreCase("Proportion") && nodeType.equalsIgnoreCase("denominator")) {
 			Element criteriaRef = mainDocument.createElement("criteriaReference");
 			criteriaRef.setAttribute(CLASS_CODE, "OBS");
 			criteriaRef.setAttribute(MOOD_CODE, "EVN");
@@ -311,21 +312,25 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 			criteriaRef.appendChild(idElement);
 			preConditionElem.appendChild(criteriaRef);
 			populationCritieriaElem.appendChild(preConditionElem);
-		} else if (scoringType.equalsIgnoreCase("Ratio") && (nodeType.equalsIgnoreCase("denominator")
+		}
+		
+*/		
+		if (scoringType.equalsIgnoreCase("Ratio") && (nodeType.equalsIgnoreCase("denominator")
 				|| nodeType.equalsIgnoreCase("numerator"))) {
-			String associatedIPUUID = initialPopulation.getAttributes().getNamedItem(UUID).getNodeValue();
+			//String associatedIPUUID = initialPopulation.getAttributes().getNamedItem(UUID).getNodeValue();
 			if (item.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
-				associatedIPUUID = item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+				String associatedIPUUID = item.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+				Element criteriaRef = mainDocument.createElement("criteriaReference");
+				criteriaRef.setAttribute(CLASS_CODE, "OBS");
+				criteriaRef.setAttribute(MOOD_CODE, "EVN");
+				Element idElement = mainDocument.createElement(ID);
+				idElement.setAttribute(ROOT, associatedIPUUID);
+				idElement.setAttribute("extension", StringUtils.deleteWhitespace("initialPopulation"));
+				criteriaRef.appendChild(idElement);
+				preConditionElem.appendChild(criteriaRef);
+				populationCritieriaElem.appendChild(preConditionElem);
 			}
-			Element criteriaRef = mainDocument.createElement("criteriaReference");
-			criteriaRef.setAttribute(CLASS_CODE, "OBS");
-			criteriaRef.setAttribute(MOOD_CODE, "EVN");
-			Element idElement = mainDocument.createElement(ID);
-			idElement.setAttribute(ROOT, associatedIPUUID);
-			idElement.setAttribute("extension", StringUtils.deleteWhitespace("initialPopulation"));
-			criteriaRef.appendChild(idElement);
-			preConditionElem.appendChild(criteriaRef);
-			populationCritieriaElem.appendChild(preConditionElem);
+			
 		}
 		
 	}

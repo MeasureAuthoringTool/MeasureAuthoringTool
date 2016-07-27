@@ -157,6 +157,7 @@ public class CQLHumanReadableHTMLCreator {
 	private static void generateRiskAdjustmentVariables(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject)
 					throws XPathExpressionException {
+		definitionsOrFunctionsAlreadyDisplayed.clear();
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
 		.append("<h3><a name=\"d1e879\" href=\"#toc\">Risk Adjustment Variables</a></h3>");
@@ -1132,11 +1133,11 @@ public class CQLHumanReadableHTMLCreator {
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
+		/*if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
 			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
-		}
+		}*/
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);
@@ -1175,11 +1176,11 @@ public class CQLHumanReadableHTMLCreator {
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
+		/*if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
 			checkBoxElement.attr("checked", "");
 		} else {
 			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
-		}
+		}*/
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);

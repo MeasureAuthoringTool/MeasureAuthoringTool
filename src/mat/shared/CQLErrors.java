@@ -25,4 +25,10 @@ public class CQLErrors implements IsSerializable {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.errorInLine + ";" + this.errorAtOffeset + ":" + this.errorMessage;
+	}
 }

@@ -264,6 +264,7 @@ public class CQLUtil {
 	public static void removeUnusedParameters(Document originalDoc, Set<String> cqlParameterIdentifierSet) throws XPathExpressionException {
 		String nameXPathString = ""; 
 		for(String name : cqlParameterIdentifierSet) {
+			name = name.replaceAll("\"", "");
 			nameXPathString += "[@name !='" + name + "']";
 		}
 		

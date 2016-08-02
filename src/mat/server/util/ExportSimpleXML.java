@@ -21,6 +21,18 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
@@ -33,18 +45,6 @@ import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -295,8 +295,34 @@ public class ExportSimpleXML {
 			removeUnwantedClauses(usedClauseIds, originalDoc);
 //			List<String> usedCQLArtifacts = checkForUsedCQLArtifacts(originalDoc, cqlFileObject);
 //			removeUnwantedCQLArtifacts(usedCQLArtifacts, originalDoc);
+
 			
-			System.out.println("Getting Used CQL Definitions");
+			removeNode("/measure/subTreeLookUp",originalDoc);
+			removeNode("/measure/elementLookUp",originalDoc);
+			expandAndHandleGrouping(originalDoc);
+			
+			// remove unused cql artifacts
+			removeUnusedCQLArtifacts(originalDoc, cqlFileObject);
+			
+			//addUUIDToFunctions(originalDoc);
+			//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
+			modifyHeaderStart_Stop_Dates(originalDoc);
+			modifyMeasureGroupingSequence(originalDoc);
+			//Remove Empty Comments nodes from population Logic.
+			removeEmptyCommentsFromPopulationLogic(originalDoc);
+			//addLocalVariableNameToQDMs(originalDoc);
+			//createUsedCQLArtifactsWithPopulationNames(originalDoc);
+			return transform(originalDoc);
+		}
+		
+		/**
+		 * Removes all unused cql artifacts
+		 * @param originalDoc
+		 * @param cqlFileObject
+		 * @throws XPathExpressionException
+		 */
+		private static void removeUnusedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject) throws XPathExpressionException {
+			System.out.println("Getting Used CQL Artifacts");
 			CQLUtil.CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getUsedCQLArtifacts(originalDoc, cqlFileObject);
 			
 			System.out.println("Used CQL Definitions: " + usedCQLArtifactHolder.getCqlDefinitionUUIDSet());
@@ -308,21 +334,6 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, usedCQLArtifactHolder.getCqlFunctionUUIDSet());
 			CQLUtil.removeUnusedValuesets(originalDoc, usedCQLArtifactHolder.getCqlValuesetIdentifierSet());
 			CQLUtil.removeUnusedParameters(originalDoc, usedCQLArtifactHolder.getCqlParameterIdentifierSet());
-			
-
-			
-			removeNode("/measure/subTreeLookUp",originalDoc);
-			removeNode("/measure/elementLookUp",originalDoc);
-			expandAndHandleGrouping(originalDoc);
-			//addUUIDToFunctions(originalDoc);
-			//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
-			modifyHeaderStart_Stop_Dates(originalDoc);
-			modifyMeasureGroupingSequence(originalDoc);
-			//Remove Empty Comments nodes from population Logic.
-			removeEmptyCommentsFromPopulationLogic(originalDoc);
-			//addLocalVariableNameToQDMs(originalDoc);
-			//createUsedCQLArtifactsWithPopulationNames(originalDoc);
-			return transform(originalDoc);
 		}
 		
 		private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){

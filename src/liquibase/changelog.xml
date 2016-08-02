@@ -187,4 +187,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-84_USMAT-6610.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-82_USMAT-6655.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-91_UPDATE_Units_USMAT-6992.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-98_USMAT-7389-7401-7397-7409_RetireDatatypes.xml"/>
 	</databaseChangeLog>

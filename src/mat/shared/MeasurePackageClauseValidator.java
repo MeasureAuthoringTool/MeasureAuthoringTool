@@ -118,6 +118,16 @@ public class MeasurePackageClauseValidator {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
 			}
+			//Check Association for Measure Observation.
+			for (MeasurePackageClauseDetail detail : detailList) {
+				if((ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID).equals(detail.getType())){
+					if ((detail.getAssociatedPopulationUUID() == null)) {
+						messages.add(MatContext.get().getMessageDelegate()
+								.getRatioMeasureObsAssociationRequired());
+						break;
+					}
+				}
+			}
 			// In case of two IP's, Denominator and Numerator must contain associations.
 			int iPCount = (countDetailsWithType(detailList,
 					ConstantMessages.POPULATION_CONTEXT_ID));
@@ -270,6 +280,12 @@ public class MeasurePackageClauseValidator {
 		}
 		return messages;
 	}
+	
+	public boolean hasAssociation(List<MeasurePackageClauseDetail> detailList){
+		return false;
+		
+	}
+	
 	/**
 	 * countDetailsWithType.
 	 * @param detailList - List of MeasurePackageClauseDetail.

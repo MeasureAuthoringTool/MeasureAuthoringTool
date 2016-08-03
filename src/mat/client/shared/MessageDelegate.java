@@ -149,6 +149,8 @@ public class MessageDelegate {
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, "
 			+ " Numerator and Denominator must contain one association.";
 	
+	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "When using a Measure Observation in a Ratio Measure, an association must be made to the Numerator or the Denominator.";
+	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
 	
@@ -2181,6 +2183,15 @@ public class MessageDelegate {
 	 */
 	public String getRatioNumDenoAssociationRequired() {
 		return RATIO_NUM_DENO_ASSOCIATION_REQUIRED;
+	}
+	
+	/**
+	 * Gets the ratio measure observation association required.
+	 *
+	 * @return the ratioMeasureObsAssociationRequired
+	 */
+	public String getRatioMeasureObsAssociationRequired() {
+		return RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED;
 	}
 	
 	/**

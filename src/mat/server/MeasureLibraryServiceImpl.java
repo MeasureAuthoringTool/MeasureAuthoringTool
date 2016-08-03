@@ -1426,7 +1426,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		//add expansion Profile if existing
 		String expProfilestr = getDefaultExpansionIdentifier(measureId);
-		if(!expProfilestr.isEmpty()){
+		if(expProfilestr != null){
 			details.setVsacExpIdentifier(expProfilestr);
 		}
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();

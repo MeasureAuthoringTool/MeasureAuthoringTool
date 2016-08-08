@@ -133,6 +133,8 @@ public class MeasurePackageClauseCellListWidget {
 	/** Grouping Selection Model.	 */
 	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
 			new SingleSelectionModel<MeasurePackageClauseDetail>();
+	/** List of Measure Observations in Array.*/
+	private String[] meaObsList = new String[2];
 	/** List Data Provider for Right(Package Clauses) cell List.*/
 	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
 	/** List Data Provider for Left(Clause) cell List. */
@@ -341,24 +343,56 @@ public class MeasurePackageClauseCellListWidget {
 				}
 			}
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
-			for (MeasurePackageClauseDetail detail : associatedPopulationList) {
-				if ((existingUuid != null)
-						&& existingUuid.equals(detail.getId())) {
-					if (detail.isAssociatedPopulation()) {
-						groupingClausesMap.get(rightCellListSelectionModel.
-								getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-					} else {
-						groupingClausesMap.get(rightCellListSelectionModel.
-								getSelectedObject().getName()).
-								setAssociatedPopulationUUID(null);
+			String scoring = MatContext.get().getCurrentMeasureScoringType();
+			if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
+				if(selectedClauseCell.getName().equalsIgnoreCase(meaObsList[0])){
+					otherClauseType = meaObsList[1];
+					interimArrayList = associatedPopulationList;
+				}
+				else{
+					otherClauseType = meaObsList[0];
+					interimArrayList = associatedPopulationList;
+				}
+				if (interimArrayList != null) {
+					for (MeasurePackageClauseDetail detail : interimArrayList) {
+						if (detail.isAssociatedPopulation()) {
+							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+							setAssociatedPopulationUUID(detail.getId());
+						} else {
+							otherClauseCell = detail;
+						}
 					}
-				} else {
-					if (detail.isAssociatedPopulation()) {
-						groupingClausesMap.get(rightCellListSelectionModel.
-								getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-						break;
+					if (otherClauseCell != null) {
+						for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+							if (entry.getValue().getName().equalsIgnoreCase(otherClauseType)) {
+								MeasurePackageClauseDetail updateDetails = entry.getValue();
+								groupingClausesMap.get(updateDetails.getName()).
+								setAssociatedPopulationUUID(otherClauseCell.getId());
+								break;
+							}
+						}
+					}
+				}
+			}else {
+				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
+					if ((existingUuid != null)
+							&& existingUuid.equals(detail.getId())) {
+						if (detail.isAssociatedPopulation()) {
+							groupingClausesMap.get(rightCellListSelectionModel.
+									getSelectedObject().getName()).
+							setAssociatedPopulationUUID(detail.getId());
+						} else {
+							groupingClausesMap.get(rightCellListSelectionModel.
+									getSelectedObject().getName()).
+							setAssociatedPopulationUUID(null);
+						}
+					} else {
+						if (detail.isAssociatedPopulation()) {
+							groupingClausesMap.get(rightCellListSelectionModel.
+									getSelectedObject().getName()).
+							setAssociatedPopulationUUID(detail.getId());
+							break;
+						}
 					}
 				}
 			}
@@ -777,6 +811,41 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Check for number of measure observations.
+	 *
+	 * @param validateGroupingList the validate grouping list
+	 * @param messages the messages
+	 * @param scoring 
+	 */
+	public void CheckForNumberOfMeasureObs(
+			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
+			List<String> messages, String scoring) {
+		int count = 0;
+		for (MeasurePackageClauseDetail clause : validateGroupingList) {
+			if (clause.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
+				count++;
+			}
+		}
+		
+		if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
+			if ((count > 2) && (messages.size() == 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getMEASURE_OBS_VALIDATION_FOR_GROUPING());
+
+			}else{
+				int i =0;
+				for (MeasurePackageClauseDetail entry : validateGroupingList) {
+					if (entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
+						meaObsList[i] = entry.getName();
+						i++;
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/**
 	 * Method to count number of Clause types.
 	 * 
 	 * @param clauseList
@@ -803,7 +872,7 @@ public class MeasurePackageClauseCellListWidget {
 					if (!denoAssociatedPopulationList.contains(detail)) {
 						denoAssociatedPopulationList.add(detail);
 					}
-				} else {
+				} else if (selectedClauseNode.getType().equalsIgnoreCase(NUMERATOR)){
 					if (!numAssociatedPopulationList.contains(detail)) {
 						numAssociatedPopulationList.add(detail);
 					}
@@ -949,11 +1018,13 @@ public class MeasurePackageClauseCellListWidget {
 							disclosurePanelAssociations.setOpen(false);
 						}
 					} else if ((value.getType().equalsIgnoreCase(MEASURE_OBSERVATION))) {
-						addPopulationForMeasureObservation(groupingPopulationList);
-						getClearButtonPanel();
-						buildAddAssociationWidget(associatedPopulationList);
-						disclosurePanelAssociations.setVisible(true);
-						disclosurePanelAssociations.setOpen(false);
+						if(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1){
+							addPopulationForMeasureObservation(groupingPopulationList);
+							buildAddAssociationWidget(associatedPopulationList);
+							disclosurePanelAssociations.setVisible(true);
+							disclosurePanelAssociations.setOpen(false);
+						}
+						
 					} else {
 						disclosurePanelAssociations.setVisible(false);
 						disclosurePanelAssociations.setOpen(false);
@@ -1079,6 +1150,13 @@ public class MeasurePackageClauseCellListWidget {
 				.equalsIgnoreCase(STRATIFICATION))
 				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
 			CheckForNumberOfStratification(validatGroupingList, messages);
+		}
+		String scoring = MatContext.get().getCurrentMeasureScoringType();
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel
+				.getSelectedObject().getType()
+				.equalsIgnoreCase(MEASURE_OBSERVATION))
+				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
+			CheckForNumberOfMeasureObs(validatGroupingList, messages , scoring);
 		}
 		if (messages.size() > 0) {
 			errorMessages.setMessages(messages);

@@ -579,6 +579,9 @@ public class MessageDelegate {
 	/** The stratification validation for grouping. */
 	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = " Measure Grouping cannot contain more than one Stratification.";
 	
+	/** The measure observation validation for grouping. */
+	private final String MEASURE_OBS_VALIDATION_FOR_GROUPING = " Ratio Measure Grouping cannot contain more than two Measure Observations.";
+	
 	
 	/** The rationale required. */
 	private final String RATIONALE_REQUIRED = "Rationale is required.";
@@ -2285,6 +2288,15 @@ public class MessageDelegate {
 	 */
 	public String getSTRATIFICATION_VALIDATION_FOR_GROUPING() {
 		return STRATIFICATION_VALIDATION_FOR_GROUPING;
+	}
+	
+	/**
+	 * Gets the measure observation validation for grouping.
+	 *
+	 * @return the measure observation validation for grouping
+	 */
+	public String getMEASURE_OBS_VALIDATION_FOR_GROUPING() {
+		return MEASURE_OBS_VALIDATION_FOR_GROUPING;
 	}
 	
 	/**

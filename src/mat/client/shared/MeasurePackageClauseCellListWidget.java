@@ -134,7 +134,7 @@ public class MeasurePackageClauseCellListWidget {
 	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
 			new SingleSelectionModel<MeasurePackageClauseDetail>();
 	/** List of Measure Observations in Array.*/
-	private String[] meaObsList = new String[2];
+	private List<String> meaObsList = new ArrayList();
 	/** List Data Provider for Right(Package Clauses) cell List.*/
 	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
 	/** List Data Provider for Left(Clause) cell List. */
@@ -345,12 +345,24 @@ public class MeasurePackageClauseCellListWidget {
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
 			if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
-				if(selectedClauseCell.getName().equalsIgnoreCase(meaObsList[0])){
-					otherClauseType = meaObsList[1];
+				int i = 0;
+				//As there are no more than two entries in meaObsList for Ratio do not need to bother about rest.
+				String measureObservation1 = ""; 
+				String measureObservation2 = ""; 
+				for(String entry : meaObsList){
+					if(measureObservation1.isEmpty() || measureObservation1.equalsIgnoreCase("")){
+						measureObservation1 = entry;
+					}
+					else if(measureObservation1.length() > 0){
+						measureObservation2 = entry;
+					}
+				}
+				if(selectedClauseCell.getName().equalsIgnoreCase(measureObservation1)){
+					otherClauseType = measureObservation2;
 					interimArrayList = associatedPopulationList;
 				}
 				else{
-					otherClauseType = meaObsList[0];
+					otherClauseType = measureObservation2;
 					interimArrayList = associatedPopulationList;
 				}
 				if (interimArrayList != null) {
@@ -833,11 +845,9 @@ public class MeasurePackageClauseCellListWidget {
 						.getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 
 			}else{
-				int i =0;
 				for (MeasurePackageClauseDetail entry : validateGroupingList) {
 					if (entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
-						meaObsList[i] = entry.getName();
-						i++;
+						meaObsList.add(entry.getName());
 					}
 				}
 			}

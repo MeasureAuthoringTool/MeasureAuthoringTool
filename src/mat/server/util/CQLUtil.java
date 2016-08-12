@@ -80,7 +80,7 @@ public class CQLUtil {
 		 // get parameters used by current artifact
 		 List<CQLParameterModelObject> cqlParameterModelObjects = cqlBaseStatementInterface.getReferredToParameters(); 
 		 for(CQLParameterModelObject cqlParameterModelObject : cqlParameterModelObjects) {
-			 usedCQLArtifactHolder.addParameterIdentifier(cqlParameterModelObject.getIdentifier());
+			 usedCQLArtifactHolder.addParameterIdentifier(cqlParameterModelObject.getIdentifier().replace("\"", ""));
 		 }
 		
 		 // get all definitions which current artifact refer to, recursively find all artifacts which could be nested. 
@@ -264,7 +264,6 @@ public class CQLUtil {
 	public static void removeUnusedParameters(Document originalDoc, Set<String> cqlParameterIdentifierSet) throws XPathExpressionException {
 		String nameXPathString = ""; 
 		for(String name : cqlParameterIdentifierSet) {
-			name = name.replaceAll("\"", "");
 			nameXPathString += "[@name !='" + name + "']";
 		}
 		

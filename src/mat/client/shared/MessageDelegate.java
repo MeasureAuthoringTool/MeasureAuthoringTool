@@ -149,7 +149,7 @@ public class MessageDelegate {
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, "
 			+ " Numerator and Denominator must contain one association.";
 	
-	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "When using a Measure Observation in a Ratio Measure, an association must be made to the Numerator or the Denominator.";
+	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "'For Ratio measures, in the case of more than one Measure Observation, numerator and denominator must contain 1 association.";
 	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
@@ -580,7 +580,7 @@ public class MessageDelegate {
 	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = " Measure Grouping cannot contain more than one Stratification.";
 	
 	/** The measure observation validation for grouping. */
-	private final String MEASURE_OBS_VALIDATION_FOR_GROUPING = " Ratio Measure Grouping cannot contain more than two Measure Observations.";
+	private final String MEASURE_OBS_VALIDATION_FOR_GROUPING = " A ratio measure may not contain more than 2 measure observations in a Measure grouping.";
 	
 	
 	/** The rationale required. */

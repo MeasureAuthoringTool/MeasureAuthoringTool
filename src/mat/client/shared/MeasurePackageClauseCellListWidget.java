@@ -845,6 +845,7 @@ public class MeasurePackageClauseCellListWidget {
 						.getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 
 			}else{
+				meaObsList.clear();
 				for (MeasurePackageClauseDetail entry : validateGroupingList) {
 					if (entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 						meaObsList.add(entry.getName());

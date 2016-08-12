@@ -362,7 +362,7 @@ public class MeasurePackageClauseCellListWidget {
 					interimArrayList = associatedPopulationList;
 				}
 				else{
-					otherClauseType = measureObservation2;
+					otherClauseType = measureObservation1;
 					interimArrayList = associatedPopulationList;
 				}
 				if (interimArrayList != null) {

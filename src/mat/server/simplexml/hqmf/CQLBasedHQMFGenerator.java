@@ -8,15 +8,14 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.MeasureExport;
+import mat.server.simplexml.cql.CQLHumanReadableGenerator;
+import mat.server.util.XmlProcessor;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
-
-import mat.model.clause.MeasureExport;
-import mat.server.simplexml.HQMFHumanReadableGenerator;
-import mat.server.simplexml.cql.CQLHumanReadableGenerator;
-import mat.server.util.XmlProcessor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,7 +52,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 			XmlProcessor hqmfProcessor = new XmlProcessor(hqmfXML);
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
-			generateNarrative(me);
+			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
 			
 			// TODO Export more Stuff

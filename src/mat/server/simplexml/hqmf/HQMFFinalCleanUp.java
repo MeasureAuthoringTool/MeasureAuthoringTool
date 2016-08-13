@@ -1,9 +1,11 @@
 package mat.server.simplexml.hqmf;
 
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,8 +49,13 @@ public class HQMFFinalCleanUp {
 		
 		cleanExtensions(me);
 		cleanLocalVariableNames(me);
-		deleteUnusedEntry(me);
+		//deleteUnusedEntry(me);
 		
+	}
+	
+	public static void cleanAndDeleteUnused(MeasureExport me) {
+		clean(me);
+		deleteUnusedEntry(me);		
 	}
 	
 	
@@ -188,4 +195,5 @@ public class HQMFFinalCleanUp {
 		
 		reverseEntryCheck(delDupEntryResults);
 	}
+
 }

@@ -363,7 +363,7 @@ public class HQMFGenerator implements Generator {
 	 * @return the string
 	 */
 	private String finalCleanUp(MeasureExport me) {
-		HQMFFinalCleanUp.clean(me);
+		HQMFFinalCleanUp.cleanAndDeleteUnused(me);		
 		return removeXmlTagNamespace(me.getHQMFXmlProcessor().transform(me.getHQMFXmlProcessor().getOriginalDoc(), true));
 	}
 	

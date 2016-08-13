@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
+
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +50,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		String dataCriteria = "";
 		//getExtensionValueBasedOnVersion(me);
 		dataCriteria = getHQMFXmlString(me);
-		/*dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);*/
+		//dataCriteria = removeXmlTagNamespaceAndPreamble(dataCriteria);
 		return dataCriteria;
 	}
 	/**
@@ -80,10 +83,10 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
 		me.setSimpleXMLProcessor(simpleXmlprocessor);
 		
-		//prepHQMF(me);
+		prepHQMF(me);
 		
-		//createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
-		//addDataCriteriaComment(dataCriteriaXMLProcessor);
+		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
+		addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
 	}
 	
@@ -763,9 +766,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		nameSpaceAttr.setNodeValue(nameSpace);
 		componentElem.setAttributeNodeNS(nameSpaceAttr);
 		//xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1"
-		Attr qdmNameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:qdm");
-		qdmNameSpaceAttr.setNodeValue("urn:hhs-qdm:hqmf-r2-extensions:v1");
-		componentElem.setAttributeNodeNS(qdmNameSpaceAttr);
+//		Attr qdmNameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:qdm");
+//		qdmNameSpaceAttr.setNodeValue("urn:hhs-qdm:hqmf-r2-extensions:v1");
+//		componentElem.setAttributeNodeNS(qdmNameSpaceAttr);
 		// creating Entry Tag
 		Element entryElem = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement("entry");

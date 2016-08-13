@@ -21,12 +21,12 @@ public class CQLBasedHQMFDataCriteriaGenerator implements Generator {
 		CQLBasedHQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new CQLBasedHQMFDataCriteriaElementGenerator();
 		hqmfDataCriteriaElementGenerator.generate(me);
 		
-		//HQMFClauseLogicGenerator hqmfClauseLogicGenerator = new HQMFClauseLogicGenerator();
-		//hqmfClauseLogicGenerator.generate(me);
-		CQLBasedHQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
-		hqmfPopulationLogicGenerator.generate(me);
+		//CQLBasedHQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
+		//hqmfPopulationLogicGenerator.generate(me);
+		
 		//HQMFMeasureObservationLogicGenerator hqmfMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
 		//hqmfMeasureObservationLogicGenerator.generate(me);
+		
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removePreambleAndRootTags(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}

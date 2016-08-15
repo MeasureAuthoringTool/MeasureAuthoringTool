@@ -21,8 +21,8 @@ public class CQLBasedHQMFDataCriteriaGenerator implements Generator {
 		CQLBasedHQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new CQLBasedHQMFDataCriteriaElementGenerator();
 		hqmfDataCriteriaElementGenerator.generate(me);
 		
-		//CQLBasedHQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
-		//hqmfPopulationLogicGenerator.generate(me);
+		CQLBasedHQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
+		hqmfPopulationLogicGenerator.generate(me);
 		
 		//HQMFMeasureObservationLogicGenerator hqmfMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
 		//hqmfMeasureObservationLogicGenerator.generate(me);

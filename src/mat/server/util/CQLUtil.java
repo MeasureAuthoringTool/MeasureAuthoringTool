@@ -143,7 +143,7 @@ public class CQLUtil {
 		CQLUtil.CQLArtifactHolder cqlArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
 		String xPathForDefinitions = "/measure//cqldefinition/@uuid";
-		String xPathForFunctions = "/measure/measureObservations//cqlfunction/@uuid";
+		String xPathForFunctions = "/measure//cqlfunction/@uuid";
 		try {
 			NodeList cqlDefinitions = (NodeList) xPath.evaluate(xPathForDefinitions, 
 												originalDoc.getDocumentElement(), XPathConstants.NODESET);

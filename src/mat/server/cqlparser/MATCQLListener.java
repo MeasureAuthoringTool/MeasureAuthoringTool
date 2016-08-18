@@ -357,12 +357,16 @@ public class MATCQLListener extends cqlBaseListener {
 				childTokens.add(childTree.getText());
 			}else if(childTree instanceof RetrieveContext){
 				RetrieveContext retrieveContext = (RetrieveContext)childTree;
-				String valueSetIdentifier = retrieveContext.valueset().qualifiedIdentifier().identifier().getText();
 				
-				if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
-					baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
-					setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+				if(retrieveContext.valueset() != null){
+					String valueSetIdentifier = retrieveContext.valueset().qualifiedIdentifier().identifier().getText();
+					
+					if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
+						baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+						setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+					}
 				}
+				
 				findStatementChildren(childTree,childTokens, baseStatementInterface);
 			}else{
 				findStatementChildren(childTree,childTokens, baseStatementInterface);

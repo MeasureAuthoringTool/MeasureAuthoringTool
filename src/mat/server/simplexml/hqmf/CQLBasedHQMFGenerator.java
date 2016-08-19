@@ -52,7 +52,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 			XmlProcessor hqmfProcessor = new XmlProcessor(hqmfXML);
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
-			generateNarrative(me);
+			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
 			
 			// TODO Export more Stuff

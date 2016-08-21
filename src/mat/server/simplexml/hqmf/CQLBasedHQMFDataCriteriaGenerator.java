@@ -18,14 +18,14 @@ public class CQLBasedHQMFDataCriteriaGenerator implements Generator {
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		
-		CQLBasedHQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new CQLBasedHQMFDataCriteriaElementGenerator();
-		hqmfDataCriteriaElementGenerator.generate(me);
+		CQLBasedHQMFDataCriteriaElementGenerator cqlBasedHQMFDataCriteriaElementGenerator = new CQLBasedHQMFDataCriteriaElementGenerator();
+		cqlBasedHQMFDataCriteriaElementGenerator.generate(me);
 		
-		CQLBasedHQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
-		hqmfPopulationLogicGenerator.generate(me);
+		CQLBasedHQMFPopulationLogicGenerator cqlBasedHQMFPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
+		cqlBasedHQMFPopulationLogicGenerator.generate(me);
 		
-		//HQMFMeasureObservationLogicGenerator hqmfMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
-		//hqmfMeasureObservationLogicGenerator.generate(me);
+		CQLBasedHQMFMeasureObservationLogicGenerator cqlBasedHQMFMeasureObservationLogicGenerator = new CQLBasedHQMFMeasureObservationLogicGenerator();
+		cqlBasedHQMFMeasureObservationLogicGenerator.generate(me);
 		
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removePreambleAndRootTags(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));

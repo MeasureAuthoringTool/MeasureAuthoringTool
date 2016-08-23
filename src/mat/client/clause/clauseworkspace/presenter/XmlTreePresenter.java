@@ -147,6 +147,7 @@ public class XmlTreePresenter {
 			
 			PopulationWorkSpaceContextMenu populationWorkspaceContextMenu = new PopulationWorkSpaceContextMenu(xmlTreeView, popupPanel);
 			xmlTreeView.setClauseWorkspaceContextMenu(populationWorkspaceContextMenu);
+			xmlTreeView.setpopulationWorkspaceContextMenu(populationWorkspaceContextMenu);
 			CellTree.Resources resource = GWT.create(TreeResources.class);
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 			// Creation
@@ -215,7 +216,10 @@ public class XmlTreePresenter {
 		invokeValidateHandler();
 		invokeClearHandler();
 		addClauseHandler();
-		
+		xmlTreeDisplay.getSaveBtnClauseWorkSpace().setEnabled(false);
+		xmlTreeDisplay.getValidateBtnClauseWorkSpace().setEnabled(false);
+		xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+		xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 	}
 	/**
 	 * Adds the clause handler.
@@ -292,13 +296,16 @@ public class XmlTreePresenter {
 								
 								@Override
 								public void onSuccess(Boolean result) {
+									//Disable it always as per 5.0 as clause workspace is read only
 									xmlTreeDisplay
 									.getDeleteClauseButton()
-									.setEnabled(!result);
+									.setEnabled(false);
 								}
 							});
 							
 						}
+						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+						xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 					}
 					
 				});
@@ -366,6 +373,8 @@ public class XmlTreePresenter {
 						}
 					}
 				}
+				xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+				xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 			}
 		});
 	}
@@ -979,7 +988,8 @@ public class XmlTreePresenter {
 				}
 				@Override
 				public void onSuccess(Boolean result) {
-					xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(!result);
+					//Disable it always as per 5.0 as clause workspace is read only
+					xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 				}
 			});
 		} else {

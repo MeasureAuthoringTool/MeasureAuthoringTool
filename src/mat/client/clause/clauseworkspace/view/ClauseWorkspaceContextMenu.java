@@ -296,21 +296,22 @@ public class ClauseWorkspaceContextMenu {
 	 *            the PopupPanel
 	 */
 	public void displayMenuItems( final PopupPanel popupPanel) {
-		popupMenuBar.clearItems();
+		//Commenting below lines as we no longer require clauseworkspace functionality from version 5.0;
+		/*popupMenuBar.clearItems();
 		popupMenuBar.setFocusOnHoverEnabled(true);
 		popupMenuBar.focus();
 		popupPanel.clear();
 		copyMenu.setEnabled(false);
-		/*
+		
 		 * POC Global Copy Paste.
 		 * copyToClipBoardMenu.setEnabled(false);
-		 * */
+		 * 
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
-		/*
+		
 		 * POC Global Copy Paste.
 		 * pasteFromClipboardMenu.setEnabled(false);
-		 * */
+		 * 
 		cutMenu.setEnabled(false);
 		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
@@ -341,7 +342,7 @@ public class ClauseWorkspaceContextMenu {
 				break;
 			default:
 				break;
-		}
+		}*/
 	}
 	
 	/**

@@ -142,14 +142,13 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
 		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
-		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
+		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.setHeight("98%");
-		
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab, measureComposerTabLayout);
 		MatContext.get().enableRegistry.put(measureComposerTab, this);

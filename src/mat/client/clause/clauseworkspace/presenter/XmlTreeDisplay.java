@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
+import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
@@ -453,4 +454,6 @@ public interface XmlTreeDisplay {
 	boolean isValidHumanReadable();
 	
 	List<String> validatePopulationCellTreeNodes(CellTreeNode cellNode);
+
+	void setpopulationWorkspaceContextMenu(PopulationWorkSpaceContextMenu populationWorkspaceContextMenu);
 }

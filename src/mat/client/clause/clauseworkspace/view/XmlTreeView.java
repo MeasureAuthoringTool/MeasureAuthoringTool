@@ -268,6 +268,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;
 	
+	/** The population workspace context menu. */
+	private PopulationWorkSpaceContextMenu populationWorkspaceContextMenu;
+	
 	/** The is dirty. */
 	private boolean isDirty = false;
 	/** The is clause open. */
@@ -1571,6 +1574,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		this.clauseWorkspaceContextMenu = clauseWorkspaceContextMenu;
 		popupPanel = clauseWorkspaceContextMenu.popupPanel;
 	}
+	
+	/**
+	 * Sets the population workspace context menu.
+	 * @param populationWorkspaceContextMenu
+	 *            the populationWorkspaceContextMenu to set
+	 */
+	@Override
+	public void setpopulationWorkspaceContextMenu(
+			PopulationWorkSpaceContextMenu populationWorkspaceContextMenu) {
+		this.populationWorkspaceContextMenu = populationWorkspaceContextMenu;
+		popupPanel = clauseWorkspaceContextMenu.popupPanel;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.google.gwt.event.dom.client.KeyDownHandler#onKeyDown(com.google.gwt.event.dom.client.KeyDownEvent)
 	 */

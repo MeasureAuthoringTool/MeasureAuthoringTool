@@ -498,7 +498,11 @@ public class CQLHumanReadableHTMLCreator {
 				}
 			}*/
 			//for (int i = 0; i < childNodes.getLength(); i++) {
-				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, clauseNode, parentName, PopulationDisplayName);
+				Node cqlNode = clauseNode;
+				if(clauseNode.hasChildNodes()){
+					cqlNode = clauseNode.getFirstChild();
+				}
+				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, cqlNode, parentName, PopulationDisplayName);
 			//}
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block

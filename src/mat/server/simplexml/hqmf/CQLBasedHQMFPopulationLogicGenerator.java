@@ -205,12 +205,12 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		initialPopCriteriaElement.appendChild(codeElem);
 		/*Element preConditionElem = doc.createElement("precondition");
 		preConditionElem.setAttribute(TYPE_CODE, "PRCN");*/
-		checkScoringTypeToAssociateIP(initialPopCriteriaElement, item);
 		if (item.getChildNodes() != null) {
 			for(int i=0;i<item.getChildNodes().getLength();i++){
 				generatePopulationLogic(initialPopCriteriaElement, item.getChildNodes().item(i), me);
 			}
 		}
+		checkScoringTypeToAssociateIP(initialPopCriteriaElement, item);
 		/*initialPopCriteriaElement.appendChild(preConditionElem);*/
 		componentElement.appendChild(initialPopCriteriaElement);
 		populationCriteriaElement.appendChild(componentElement);
@@ -226,8 +226,8 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 	private void checkScoringTypeToAssociateIP(Element populationCritieriaElem, Node item) {
 		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
 		Document mainDocument = populationCritieriaElem.getOwnerDocument();
-		Element preConditionElem = mainDocument.createElement("precondition");
-		preConditionElem.setAttribute(TYPE_CODE, "PRCN");
+		Element preConditionElem = mainDocument.createElement("subject");
+		preConditionElem.setAttribute(TYPE_CODE, "SUBJ");
 	
 		if (scoringType.equalsIgnoreCase("Ratio") && (nodeType.equalsIgnoreCase("denominator")
 				|| nodeType.equalsIgnoreCase("numerator"))) {

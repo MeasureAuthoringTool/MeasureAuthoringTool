@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  */
 public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFClauseLogicGenerator {
 	private static final int DATETIMEDIFF_CHILD_COUNT = 2;
-	private static final String ASSOCIATED_POP_UUID = "associatedPopulationUUID";
+	
 	/** The clause logic map. */
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
 	/** The measure grouping map. */
@@ -118,10 +118,15 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 				String popType = groupingChildListItem.getAttributes().getNamedItem(TYPE).getNodeValue();
 				switch(popType) {
 					case "measureObservation" :
-						Node measureObSectionComponentElement
-						= createMeasureObservationSection(me.getHQMFXmlProcessor());
-						generateMeasureObDefinition(groupingChildListItem
-								, measureObSectionComponentElement , me);
+						//if(groupingChildListItem.hasChildNodes()){
+							
+							Node measureObSectionComponentElement
+							= createMeasureObservationSection(me.getHQMFXmlProcessor());
+							
+							generateMeasureObDefinition(groupingChildListItem
+									, measureObSectionComponentElement , me);
+							
+						//}
 						break;
 					case "denominator" :
 						denominator = groupingChildListItem;
@@ -180,6 +185,8 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 			return;
 		}
 		
+		String extensionAttribute = "";
+		
 		Document doc = measureObDefinitionElement.getOwnerDocument();
 		
 		Element valueElement = doc.createElement(VALUE);
@@ -191,6 +198,9 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		
 		if("cqlfunction".equals(firstChildNodeName)) {
 			
+			String functionName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+			extensionAttribute += functionName;
+			
 			Element expressionElement = createExpressionTag(msrObsClauseNode, doc, firstChildNode);
 			valueElement.appendChild(expressionElement);
 			measureObDefinitionElement.appendChild(valueElement);
@@ -198,8 +208,16 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		}else if("cqlaggfunction".equals(firstChildNodeName)) {
 			
 			String aggFunctionName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+			String aggFunctionHQMFName = getAggMethodCode(aggFunctionName);
+			
+			extensionAttribute += aggFunctionHQMFName + " Of ";
+			
 			Node aggNodeChild = firstChildNode.getFirstChild();
 			if("cqlfunction".equals(aggNodeChild.getNodeName())){
+				
+				String functionName = aggNodeChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+				extensionAttribute += functionName; 
+				
 				Element expressionElement = createExpressionTag(msrObsClauseNode, doc, aggNodeChild);
 				valueElement.appendChild(expressionElement);
 				measureObDefinitionElement.appendChild(valueElement);
@@ -207,11 +225,19 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 			
 			Element methodCodeElement = doc.createElement("methodCode");
 			Element itemElement = doc.createElement(ITEM);
-			itemElement.setAttribute(CODE, getAggMethodCode(aggFunctionName));
+			itemElement.setAttribute(CODE, aggFunctionHQMFName);
 			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.84");
 			
 			methodCodeElement.appendChild(itemElement);
 			measureObDefinitionElement.appendChild(methodCodeElement);
+		}
+		
+		if(extensionAttribute.length() > 0){
+			NodeList idList = measureObDefinitionElement.getElementsByTagName(ID);
+			if(idList.getLength() > 0){
+				Node id = idList.item(0);
+				id.getAttributes().getNamedItem(EXTENSION).setNodeValue(extensionAttribute);
+			}
 		}
 		
 		//check for associated population id and add related HQMF nodes.
@@ -221,11 +247,11 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	private void handleMsrObsAssociations(Node msrObsClauseNode,
 			Element measureObDefinitionElement) {
 		
-		if(msrObsClauseNode.getAttributes().getNamedItem("associatedPopulationUUID") == null){
+		if(msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID) == null){
 			return;
 		}
 		
-		String associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+		String associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID).getNodeValue();
 		
 		//get clause for associatedPopuUUID
 		String associatedClauseXPath = "//measureGrouping/group/clause[@uuid = '"+ associatedPopuUUID +"']";
@@ -284,7 +310,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	public Element createExpressionTag(Node item, Document doc, Node cqlFunctionNode) {
 		
 		Element expressionElement = doc.createElement("expression");
-		String cqlFunctionNameValue = cqlFunctionNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		String cqlFunctionNameValue = cqlFunctionNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 				
 		String cqlLibraryNameXPath = "//cqlLookUp/library";
 		
@@ -299,7 +325,6 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 			expressionElement.setAttribute(VALUE, expressionValueAttribute);
 						
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -317,19 +342,26 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 			case "Median":
 			case "Mode":	
 				hqmfCodeForAggFunction = aggregateFunctionName.toUpperCase();
+				break;
 			
 			case "Sample Standard Deviation":
 				hqmfCodeForAggFunction = "STDEV.S";
+				break;
 			case "Sample Variance":
 				hqmfCodeForAggFunction = "VARIANCE.S";
+				break;
 			case "Population Standard Deviation":
 				hqmfCodeForAggFunction = "STDEV.P";
+				break;
 			case "Population Variance":
 				hqmfCodeForAggFunction = "VARIANCE.P";
+				break;
 			case "Minimum":
 				hqmfCodeForAggFunction = "MIN";
+				break;
 			case "Maximum":
-				hqmfCodeForAggFunction = "MAX";	
+				hqmfCodeForAggFunction = "MAX";
+				break;
 			default:
 				break;
 		}
@@ -337,98 +369,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		return hqmfCodeForAggFunction;
 	}
 
-	/**
-	 * Generate item count for mrs obs.
-	 *
-	 * @param me the me
-	 * @param item the item
-	 * @param measureObDefinitionElement the measure ob definition element
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private void generateItemCountForMrsObs(MeasureExport me, Node item,
-			Element measureObDefinitionElement) throws XPathExpressionException {
-		if (item.getChildNodes() != null) {
-			for (int i = 0; i < item.getChildNodes().getLength(); i++) {
-				Node childNode = item.getChildNodes().item(i);
-				String nodeType = childNode.getNodeName();
-				switch (nodeType) {
-					case "itemCount":
-						generateItemCountForMrsObs(me, childNode, measureObDefinitionElement);
-						break;
-					case "elementRef":
-						generateItemCountElementRef(me, measureObDefinitionElement,
-								childNode, me.getHQMFXmlProcessor());
-					default:
-						break;
-				}
-			}
-		}
-		
-	}
-	/**
-	 * Check for scoring type for association.
-	 *
-	 * @param item the item
-	 * @param measureObDefinitionElement the measure ob definition element
-	 */
-	private void checkForScoringTypeForAssociation(Node item,
-			Element measureObDefinitionElement) {
-		String nodeType = item.getAttributes().getNamedItem(TYPE).getNodeValue();
-		String associatedType = "";
-		if (nodeType.equalsIgnoreCase("measureObservation")
-				&& (scoringType.equalsIgnoreCase("Ratio")
-						|| scoringType.equalsIgnoreCase("Continuous Variable"))) {
-			if (item.getAttributes().getNamedItem(ASSOCIATED_POP_UUID) != null) {
-				Document mainDocument = measureObDefinitionElement.getOwnerDocument();
-				Element componentOfElement = mainDocument.createElement("componentOf");
-				componentOfElement.setAttribute(TYPE_CODE, "COMP");
-				item.getAttributes().getNamedItem(ASSOCIATED_POP_UUID).getNodeValue();
-				Element criteriaRef = mainDocument.createElement("criteriaReference");
-				criteriaRef.setAttribute(CLASS_CODE, "OBS");
-				criteriaRef.setAttribute(MOOD_CODE, "EVN");
-				Element idElement = mainDocument.createElement(ID);
-				idElement.setAttribute(ROOT, item.getAttributes()
-						.getNamedItem(ASSOCIATED_POP_UUID).getNodeValue());
-				if (item.getAttributes().getNamedItem(ASSOCIATED_POP_UUID).getNodeValue()
-						.equals(denominator.getAttributes().getNamedItem("uuid")
-								.getNodeValue())) {
-					associatedType = denominator.getAttributes().getNamedItem(TYPE).getNodeValue();
-				} else if (item.getAttributes().getNamedItem(ASSOCIATED_POP_UUID)
-						.getNodeValue().equals(numerator.getAttributes().getNamedItem("uuid")
-								.getNodeValue())) {
-					associatedType = numerator.getAttributes().getNamedItem(TYPE).getNodeValue();
-				}
-				idElement.setAttribute(EXTENSION, StringUtils.deleteWhitespace(associatedType));
-				Comment comment = mainDocument.createComment("Measure Observation Associated with "
-						+ associatedType);
-				criteriaRef.appendChild(idElement);
-				componentOfElement.appendChild(criteriaRef);
-				measureObDefinitionElement.appendChild(comment);
-				measureObDefinitionElement.appendChild(componentOfElement);
-			}
-		}
-	}
-	/**
-	 * @param item - Node
-	 * @param measureObDefinitionElement - Element
-	 * @throws XPathExpressionException -Exception.
-	 */
-	private void generateLogicForMeasureObservation(Node item, Element measureObDefinitionElement)
-			throws XPathExpressionException {
-		if ((item != null) && (item.getChildNodes() != null)) {
-			NodeList childNodes = item.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node childNode = childNodes.item(i);
-				if ("subTreeRef".equals(childNode.getNodeName())) {
-					String subTreeUUID = childNode.getAttributes().getNamedItem("id").getNodeValue();
-					Node clauseNodes = clauseLogicMap.get(subTreeUUID);
-					if (clauseNodes != null) {
-						generateClauseLogic(clauseNodes , measureObDefinitionElement);
-					}
-				}
-			}
-		}
-	}
+	
 	/**
 	 * Method to find Node's Parent - Subtree Name.
 	 * @param node - Node
@@ -451,25 +392,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		}
 		return StringUtils.deleteWhitespace(displayName);
 	}
-	/**
-	 * Method to generate Clause Logic used inside MeasureObservation.
-	 * @param clauseNodes -Node
-	 * @param measureObDefinitionElement -Element
-	 * @throws XPathExpressionException -Exception.
-	 */
-	private void generateClauseLogic(Node clauseNodes, Element measureObDefinitionElement) throws XPathExpressionException {
-		String clauseNodeName = clauseNodes.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-		List<Node> elementRefList = new ArrayList<Node>();
-		clauseLogicHasElementRef = false;
-		if (FUNCTIONAL_OPS_AGGREGATE.containsKey(clauseNodeName)) {
-			if (clauseNodeName.equalsIgnoreCase(DATETIMEDIFF)) {
-				generateMOClauseLogicForDateTimeDiff(clauseNodes, elementRefList, measureObDefinitionElement);
-			} else {
-				generateMOClauseLogic(clauseNodes,  elementRefList, measureObDefinitionElement, true, null,false);
-			}
-			generateMethodCode(measureObDefinitionElement, clauseNodeName);
-		}
-	}
+	
 	/**
 	 * Method to Evaluate Clause logic Node types and generate Clause Logic in Data Criteria section
 	 * if applicable and generates value expression/precondition.
@@ -916,34 +839,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 			measureObDefinitionElement.appendChild(preConditionElement);
 		}
 	}
-	/**
-	 * Generate MethoCode Tag.
-	 * @param measureObDefinitionElement - DOM Element
-	 * @param clauseNodeName - Clause Node Name.
-	 */
-	private void generateMethodCode(Element measureObDefinitionElement, String clauseNodeName) {
-		if (FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName) != null) {
-			NodeList childNodeList = measureObDefinitionElement.getChildNodes();
-			Node preConditionNode = null;
-			for (int i = 0; i < childNodeList.getLength(); i++) {
-				Node childNode = childNodeList.item(i);
-				if (childNode.getNodeName().equalsIgnoreCase("precondition")) {
-					preConditionNode = childNode;
-					break;
-				}
-			}
-			Element methodCodeElement = measureObDefinitionElement.getOwnerDocument().createElement("methodCode");
-			Element itemElement = measureObDefinitionElement.getOwnerDocument().createElement("item");
-			itemElement.setAttribute(CODE, FUNCTIONAL_OPS_AGGREGATE.get(clauseNodeName));
-			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.84");
-			methodCodeElement.appendChild(itemElement);
-			if (preConditionNode == null) {
-				measureObDefinitionElement.appendChild(methodCodeElement);
-			} else {
-				measureObDefinitionElement.insertBefore(methodCodeElement, preConditionNode);
-			}
-		}
-	}
+	
 	/**
 	 * Method to Generate Value/Expression tags.This method also returns precondition Expression value.
 	 * @param elementRefList -List

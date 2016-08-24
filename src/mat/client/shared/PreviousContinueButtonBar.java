@@ -84,7 +84,13 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.add(continueButton);
 		} else if (state == 5) {
 			state = 5;
-			setPageNames("Measure Packager", "UNDEFINED");
+			setPageNames("Measure Packager", "Clause Workspace");
+			buttonPanel.remove(previousButton);
+			buttonPanel.remove(continueButton);
+			buttonPanel.add(previousButton);
+		} else if (state == 6) {
+			state = 6;
+			setPageNames("Measure Notes", "UNDEFINED");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);

@@ -143,23 +143,28 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	}
 	/**
 	 * Method to generate default criteriaTag for all population types included in measure grouping.
-	 * @param item - Node
+	 * @param measureObsClauseNode - Node
 	 * @param measureObservationSecElement - Element
 	 * @param me - MeasureExport
 	 * @param key
 	 * @throws XPathExpressionException - Exception
 	 */
-	private void generateMeasureObDefinition(Node item, Node measureObservationSecElement
+	private void generateMeasureObDefinition(Node measureObsClauseNode, Node measureObservationSecElement
 			, MeasureExport me ) throws XPathExpressionException {
+		
+		if(!measureObsClauseNode.hasChildNodes()){
+			return;
+		}
+		
 		Document doc = measureObservationSecElement.getOwnerDocument();
 		Comment comment = doc.createComment("Definition for "
-				+ item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+				+ measureObsClauseNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
 		Element definitionElement = doc.createElement("definition");
 		Element measureObDefinitionElement = doc.createElement("measureObservationDefinition");
 		measureObDefinitionElement.setAttribute(CLASS_CODE, "OBS");
 		measureObDefinitionElement.setAttribute(MOOD_CODE, "DEF");
 		Element idElem = doc.createElement(ID);
-		idElem.setAttribute(ROOT, item.getAttributes().getNamedItem("uuid").getNodeValue());
+		idElem.setAttribute(ROOT, measureObsClauseNode.getAttributes().getNamedItem("uuid").getNodeValue());
 		idElem.setAttribute(EXTENSION, "MeasureObservation");
 		measureObDefinitionElement.appendChild(idElem);
 		
@@ -167,7 +172,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		codeElem.setAttribute(CODE, "AGGREGATE");
 		codeElem.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.4");
 		measureObDefinitionElement.appendChild(codeElem);
-		generateCQLLogicForMeasureObservation(item, measureObDefinitionElement);
+		generateCQLLogicForMeasureObservation(measureObsClauseNode, measureObDefinitionElement);
 		//generateLogicForMeasureObservation(item, measureObDefinitionElement);
 		//checkForScoringTypeForAssociation(item, measureObDefinitionElement);
 		//for Item Count
@@ -259,7 +264,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		try {
 			Node associatedPopNode = me.getSimpleXMLProcessor().findNode(msrObsClauseNode.getOwnerDocument(), associatedClauseXPath);
 			
-			if(associatedPopNode != null){
+			if(associatedPopNode != null && associatedPopNode.hasChildNodes()){
 				Node firstChild = associatedPopNode.getFirstChild();
 				if("cqldefinition".equals(firstChild.getNodeName())){
 					
@@ -300,6 +305,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		}
 		
 	}
+	
 	/**
 	 * Create <expression> tag for Measure Observation.
 	 * @param item

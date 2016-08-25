@@ -252,12 +252,8 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	private void handleMsrObsAssociations(Node msrObsClauseNode,
 			Element measureObDefinitionElement) {
 		
-		if(msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID) == null){
-			return;
-		}
-		
-		String associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID).getNodeValue();
-		
+		String associatedPopuUUID = getAssociatedPopId(msrObsClauseNode);
+				
 		//get clause for associatedPopuUUID
 		String associatedClauseXPath = "//measureGrouping/group/clause[@uuid = '"+ associatedPopuUUID +"']";
 		
@@ -305,7 +301,35 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 		}
 		
 	}
+	public String getAssociatedPopId(Node msrObsClauseNode) {
+		String associatedPopuUUID = "";
+		
+		if(scoringType.equalsIgnoreCase("Continuous Variable")){
+			associatedPopuUUID = findMeasurePopulationUUID(msrObsClauseNode.getParentNode());
+		}else{			
+			if(msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID) != null){
+				associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID).getNodeValue();
+			}
+		}
+		
+		return associatedPopuUUID;
+	}
 	
+	private String findMeasurePopulationUUID(Node parentNode) {
+		
+		String uuid = "";
+		
+		NodeList nodeList = parentNode.getChildNodes();
+		for(int i=0;i < nodeList.getLength();i++){
+			Node node = nodeList.item(i);
+			if(MEASURE_POPULATION.equals(node.getAttributes().getNamedItem(TYPE).getNodeValue())){
+				uuid = node.getAttributes().getNamedItem(UUID).getNodeValue();
+				break;
+			}
+		}
+		
+		return uuid;
+	}
 	/**
 	 * Create <expression> tag for Measure Observation.
 	 * @param item

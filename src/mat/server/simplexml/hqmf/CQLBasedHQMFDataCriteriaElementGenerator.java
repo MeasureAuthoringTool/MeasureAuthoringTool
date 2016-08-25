@@ -141,9 +141,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		//XPath String for only QDM's.
-		String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
-		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
-		String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
+		//String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
+		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@suppDataElement = 'false']";
+		//String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
 		String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		String xpathForMeasureGroupingItemCount = "/measure//itemCount/elementRef/@id";
@@ -151,16 +151,16 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		
 		try {
 			
-			NodeList occurQdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForOccurQDMNoAttribs);
-			generateOccurrenceQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, occurQdmNoAttributeNodeList);
+//			NodeList occurQdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForOccurQDMNoAttribs);
+//			generateOccurrenceQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, occurQdmNoAttributeNodeList);
 			
 			NodeList qdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMNoAttribs);
-			generateQDMEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
+			generateCQLQDMNodeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmNoAttributeNodeList);
-			
-			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
-			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
-					qdmAttributeNodeList);
+						
+//			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
+//			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
+//					qdmAttributeNodeList);
 			//generating QDM Entries for default Supplemental Data Elements
 			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
 			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
@@ -404,6 +404,20 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		for (int i = 0; i < qdmNoAttributeNodeList.getLength(); i++) {
 			Node qdmNode = qdmNoAttributeNodeList.item(i);
 			generateQDMEntry(dataCriteriaXMLProcessor, simpleXmlprocessor, qdmNode);
+		}
+	}
+	
+	private void generateCQLQDMNodeEntries(XmlProcessor dataCriteriaXMLProcessor,
+			XmlProcessor simpleXmlprocessor, NodeList qdmNoAttributeNodeList)
+					throws XPathExpressionException {
+		
+		if (qdmNoAttributeNodeList == null) {
+			return;
+		}
+		
+		for (int i = 0; i < qdmNoAttributeNodeList.getLength(); i++) {
+			Node qdmNode = qdmNoAttributeNodeList.item(i);
+			createXmlForDataCriteria(qdmNode, dataCriteriaXMLProcessor, simpleXmlprocessor, null);
 		}
 	}
 	

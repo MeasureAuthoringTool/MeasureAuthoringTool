@@ -6,12 +6,12 @@ import java.util.Calendar;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.w3c.dom.Node;
-
 import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
+
+import org.w3c.dom.Node;
 
 /**
  * The Class CQLbasedHQMFMeasureDetailsGenerator
@@ -27,7 +27,6 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 
 	@Override
 	public String generate(MeasureExport me) {
-		System.out.println("Exporting CQL based HQMF meta");
 		String simpleXML = me.getSimpleXML(); 
 		String releaseVersion = me.getMeasure().getReleaseVersion(); 
 		
@@ -60,7 +59,6 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 		 int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
 		 if(measureDetailsTagIndex > -1){
 			 simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""+releaseVersion + "\"/>" + simpleXML.substring(measureDetailsTagIndex);
-			 System.out.println("SIMPLE XML: " + simpleXML);
 		 }
 	    
 		 return simpleXML;

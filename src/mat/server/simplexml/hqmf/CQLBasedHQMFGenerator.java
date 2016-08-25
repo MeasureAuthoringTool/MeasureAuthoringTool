@@ -34,8 +34,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 	 */
 	@Override
 	public String generate(MeasureExport me) {
-		System.out.println("Exporting CQL based HQMF");
-
+		
 		String hqmfXML = "";
 		try {
 

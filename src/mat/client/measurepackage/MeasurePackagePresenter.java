@@ -67,12 +67,33 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
 	
+	/** The db cql supp data elements. */
+	private List<CQLDefinition> dbCQLSuppDataElements = new ArrayList<CQLDefinition>();
+	
 	/** The db risk adj vars. */
 	private List<RiskAdjustmentDTO> dbRiskAdjVars = new ArrayList<RiskAdjustmentDTO>();
 	
 	/** The is measure package success. */
 	private boolean isMeasurePackageExportSuccess = false;
 	
+	/**
+	 * Gets the db cql supp data elements.
+	 * 
+	 * @return the dbCQLSuppDataElements
+	 */
+	public List<CQLDefinition> getDbCQLSuppDataElements() {
+		return dbCQLSuppDataElements;
+	}
+
+	/**
+	 * Sets the db cql supp data elements.
+	 *
+	 * @param dbCQLSuppDataElements the dbCQLSuppDataElements to set
+	 */
+	public void setDbCQLSuppDataElements(List<CQLDefinition> dbCQLSuppDataElements) {
+		this.dbCQLSuppDataElements = dbCQLSuppDataElements;
+	}
+
 	/**
 	 * Gets the db supp data elements.
 	 *
@@ -841,6 +862,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setQdmElements(view.getQDMElements());
 		currentDetail.setCqlQdmElements(view.getCQLQDMElements());
 		currentDetail.setToCompareSuppDataElements(dbSuppDataElements);
+		currentDetail.setToCompareCqlSuppDataElements(dbCQLSuppDataElements);
 	}
 	
 	/**
@@ -1003,6 +1025,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v5.0")){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
+			//Set supple data to empty if CQL measure
+			view.setQDMElementsInSuppElements(Collections.<QualityDataSetDTO>emptyList());
+			view.setQDMElements(Collections.<QualityDataSetDTO>emptyList());
 			view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());
 			view.setCQLQDMElements(packageOverview.getCqlQdmElements());
 		}
@@ -1011,6 +1036,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			view.setRiskAdjustLabel(false);
 			view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 			view.setQDMElements(packageOverview.getQdmElements());
+			//Set CQL Suppl data to empty
+			view.setCQLElementsInSuppElements(Collections.<CQLDefinition>emptyList());
+			view.setCQLQDMElements(Collections.<CQLDefinition>emptyList());
 		}
 		//view.setQDMElements(packageOverview.getQdmElements());
 		view.setSubTreeInRiskAdjVarList(packageOverview.getRiskAdjList());
@@ -1019,6 +1047,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		dbPackageClauses.addAll(currentDetail.getPackageClauses());
 		dbSuppDataElements.clear();
 		dbSuppDataElements.addAll(packageOverview.getSuppDataElements());
+		dbCQLSuppDataElements.clear();
+		dbCQLSuppDataElements.addAll(packageOverview.getCqlSuppDataElements());
 		dbRiskAdjVars.clear();
 		dbRiskAdjVars.addAll(packageOverview.getRiskAdjList());
 		

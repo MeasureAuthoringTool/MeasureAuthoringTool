@@ -46,6 +46,10 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	
 	/** The to compare supp data elements. */
 	private List<QualityDataSetDTO> toCompareSuppDataElements;
+	
+	/** The to compare CQL supp data elements. */
+	private List<CQLDefinition> toCompareCqlSuppDataElements;
+	
 	//riskAdj
 	/** The risk adj clauses. */
 	private List<RiskAdjustmentDTO> riskAdjClauses = new ArrayList<RiskAdjustmentDTO>();
@@ -289,6 +293,14 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 			return false;
 		}
 		
+		if (toCompareCqlSuppDataElements == null) {
+			if (other.toCompareCqlSuppDataElements != null) {
+				return false;
+			}
+		} else if (!isEqual(toCompareCqlSuppDataElements, other.toCompareCqlSuppDataElements)) {
+			return false;
+		}
+		
 		if (toCompareRiskAdjVars == null) {
 			if (other.toCompareRiskAdjVars != null)
 				return false;
@@ -361,6 +373,26 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	public void setToCompareSuppDataElements(
 			List<QualityDataSetDTO> toCompareSuppDataElements) {
 		this.toCompareSuppDataElements = toCompareSuppDataElements;
+	}
+	
+	
+	
+	/**
+	 * Gets the to compare CQL supp data elements.
+	 * 
+	 * @return the toCompareCqlSuppDataElements
+	 */
+	public List<CQLDefinition> getToCompareCqlSuppDataElements() {
+		return toCompareCqlSuppDataElements;
+	}
+
+	/**
+	 * Sets the to compare CQL supp data elements.
+	 *
+	 * @param list the toCompareCqlSuppDataElements to set
+	 */
+	public void setToCompareCqlSuppDataElements(List<CQLDefinition> list) {
+		this.toCompareCqlSuppDataElements = list;
 	}
 
 	/**

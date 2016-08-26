@@ -642,6 +642,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		dbData.setToComparePackageClauses(measurePackagePresenter.getDbPackageClauses());
 		pageData.setToCompareSuppDataElements(pageData.getSuppDataElements());
 		dbData.setToCompareSuppDataElements(measurePackagePresenter.getDbSuppDataElements());
+		pageData.setToCompareCqlSuppDataElements(pageData.getCqlSuppDataElements());
+		dbData.setToCompareCqlSuppDataElements(measurePackagePresenter.getDbCQLSuppDataElements());
 		pageData.setToCompareRiskAdjVars(pageData.getRiskAdjVars());
 		dbData.setToCompareRiskAdjVars(measurePackagePresenter.getDbRiskAdjVars());
 		return pageData.equals(dbData);

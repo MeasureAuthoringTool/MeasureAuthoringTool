@@ -834,6 +834,8 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 				}
 			}
+			overview.setCqlQdmElements(Collections.<CQLDefinition>emptyList());
+			overview.setCqlSuppDataElements(Collections.<CQLDefinition>emptyList());
 			overview.setQdmElements(qdmList);
 			overview.setSuppDataElements(supplementalDataList);
 			//map.put("QDM", qdmList);
@@ -951,7 +953,8 @@ public class PackagerServiceImpl implements PackagerService {
 				ee.printStackTrace();
 			}
 			System.out.println("definitionList:"+definitionList);
-			
+			overview.setQdmElements(Collections.<QualityDataSetDTO>emptyList());
+			overview.setSuppDataElements(Collections.<QualityDataSetDTO>emptyList());
 			overview.setCqlQdmElements(definitionList);
 			overview.setCqlSuppDataElements(supplementalDataList);
 		}catch (XPathExpressionException e) {

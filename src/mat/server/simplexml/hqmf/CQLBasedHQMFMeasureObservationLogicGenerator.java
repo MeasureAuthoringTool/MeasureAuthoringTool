@@ -285,8 +285,8 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 					Element component = doc.createElement("component");
 					Element criteriaReference = doc.createElement("criteriaReference");
 					Element id = doc.createElement(ID);
-					id.setAttribute("uuid", cqlUUIDString);
-					id.setAttribute("extension", extensionAttribute);
+					id.setAttribute(ROOT, cqlUUIDString);
+					id.setAttribute(EXTENSION, extensionAttribute);
 										
 					measureObDefinitionElement.appendChild(component);
 					component.appendChild(criteriaReference);

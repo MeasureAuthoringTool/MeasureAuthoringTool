@@ -216,7 +216,6 @@ MeasureService {
 	 */
 	@Override
 	public SaveMeasureResult save(ManageMeasureDetailModel model) {
-		System.out.println(model.getIsPatientBasedMeasure());
 		return this.getMeasureLibraryService().save(model);
 	}
 	

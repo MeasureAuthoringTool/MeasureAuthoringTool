@@ -187,19 +187,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the not endorseby nqf
 		 */
-		public HasValue<Boolean> getNotEndorsebyNQF();
-		
-		/**
-		 * Gets the yesPatientBasedMeasure 
-		 */
-		public HasValue<Boolean> getYesPatientBased();
-		
-		/**
-		 * Gets the noPatientBasedMeasure
-		 */
-		public HasValue<Boolean> getNoPatientBased(); 
-		
-		
+		public HasValue<Boolean> getNotEndorsebyNQF();		
 		
 		/**
 		 * Gets the measure status.
@@ -1583,11 +1571,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	private void prepopulateFields() {
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		
-		metaDataDisplay.getYesPatientBased().setValue(currentMeasureDetail.getIsPatientBasedMeasure());
-
-		metaDataDisplay.getNoPatientBased().setValue(!currentMeasureDetail.getIsPatientBasedMeasure());
-
-		
 		
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
 		metaDataDisplay.geteMeasureIdentifier().setTitle(currentMeasureDetail.getMeasureSetId());
@@ -1744,7 +1727,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the disp success msg
 	 */
 	public void saveMetaDataInformation(final boolean dispSuccessMsg) {
-		System.out.println(currentMeasureDetail.getIsPatientBasedMeasure());
 		metaDataDisplay.getSaveErrorMsg().clear();
 		metaDataDisplay.getErrorMessageDisplay().clear();
 		metaDataDisplay.getSuccessMessageDisplay().clear();
@@ -1873,7 +1855,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Update model details from view.
 	 */
 	private void updateModelDetailsFromView() {
-		System.out.println(currentMeasureDetail.getIsPatientBasedMeasure());
 		updateModelDetailsFromView(currentMeasureDetail, metaDataDisplay);
 	}
 	
@@ -1887,11 +1868,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay) {
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
-		
-		// check for patient based measure
-		
-		currentMeasureDetail.setIsPatientBasedMeasure(metaDataDisplay.getYesPatientBased().getValue());
-				
+								
 		currentMeasureDetail.setFinalizedDate(metaDataDisplay.getFinalizedDate().getText());
 		currentMeasureDetail.setClinicalRecomms(metaDataDisplay.getClinicalRecommendation().getValue());
 		currentMeasureDetail.setDefinitions(metaDataDisplay.getDefinitions().getValue());

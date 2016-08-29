@@ -69,9 +69,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	/** The nqf id. */
 	private String nqfId;
 	
-	/** Is patient based measure */
-	private Boolean isPatientBasedMeasure = true; 
-	
 	/** The description. */
 	private String description;
 	
@@ -773,14 +770,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	public String getNqfId() {
 		return nqfId;
 	}
-	
-	public Boolean getIsPatientBasedMeasure() {
-		return isPatientBasedMeasure;
-	}
-
-	public void setIsPatientBasedMeasure(Boolean isPatientBasedMeasure) {
-		this.isPatientBasedMeasure = isPatientBasedMeasure;
-	}
 
 	/**
 	 * Sets the nqf id.
@@ -1242,9 +1231,7 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor)) {
 			return false;
 		}
-		if(isPatientBasedMeasure != other.isPatientBasedMeasure) {
-			return false; 
-		}
+
 		if (trimToNull(clinicalRecomms) == null) {
 			if (trimToNull(other.clinicalRecomms) != null) {
 				return false;
@@ -1888,7 +1875,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 				+ ", isDeleted=" + isDeleted + ", measureOwnerId="
 				+ measureOwnerId + ", measurePopulationExclusions="
 				+ measurePopulationExclusions + ", isEditable=" + isEditable
-				+ ", isPatientBasedMeasure= "+ isPatientBasedMeasure
 				+"]";
 	}
 	

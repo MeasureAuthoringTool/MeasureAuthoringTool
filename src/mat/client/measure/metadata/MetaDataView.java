@@ -223,13 +223,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The NQFID input. */
 	protected TextBox NQFIDInput = new TextBox();
-	
-	/** The yes radio button for patient based group. */
-	protected RadioButton yesPatientBased = new RadioButton("PatientBased", "Yes"); 
-	
-	/** The yes radio button for patient based group. */
-	protected RadioButton noPatientBased = new RadioButton("PatientBased", "No");
-	
+		
 	/** The set name input. */
 	protected TextAreaWithMaxLength setNameInput = new TextAreaWithMaxLength();
 	
@@ -597,19 +591,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		NQFIDInput.getElement().setId("NQFIDInput_TextBox");
 		//NQFIDInput.addKeyDownHandler(keyDownHandler);
 		topLeftSidePanel.add(new SpacerWidget());
-		
-		// MAT 7465 : Add a new field for patient based measures to the measure detail tab
-		Label patientBasedLabel = new Label("Patient Based Measure");
-		patientBasedLabel.setStyleName("bold");
-		topLeftSidePanel.add(patientBasedLabel);
-		topLeftSidePanel.add(new SpacerWidget());
-		yesPatientBased.setTitle("Yes Patient Based");
-		noPatientBased.setTitle("No Patient Based");
-		topLeftSidePanel.add(wrapRadioButton(yesPatientBased));
-		topLeftSidePanel.add(wrapRadioButton(noPatientBased));
-		topLeftSidePanel.add(new SpacerWidget());
-
-		
+			
 		VerticalPanel measurementPeriodPanel = new VerticalPanel();
 		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");
 		measurementPeriodPanel.setStyleName("valueSetSearchPanel");
@@ -2049,16 +2031,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public HasValue<Boolean> getEndorsebyNQF() {
 		return Yes;
-	}
-	
-	@Override
-	public HasValue<Boolean> getYesPatientBased() {
-		return yesPatientBased; 
-	}
-	
-	@Override
-	public HasValue<Boolean> getNoPatientBased() {
-		return noPatientBased; 
 	}
 	
 	

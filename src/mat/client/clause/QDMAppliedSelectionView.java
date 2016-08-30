@@ -516,11 +516,7 @@ HasSelectionHandlers<Boolean> {
 		dataTypeListBox.getElement().setId("DataType_ListBox");
 		dataTypeListBox.getElement().setTitle("DataType Selection List");
 		
-		//specificOcurChkBox = new CustomCheckBox("Specific Occurrence", true);
-		specificOcurChkBox = new CheckBox("Specific Occurrence");
-		specificOcurChkBox.setTitle("Specific Occurrence");
-		specificOcurChkBox.getElement().setId("SpecificOccurrence_ChkBox");
-		
+				
 		saveCancelButtonBar.getSaveButton().setText("Apply");
 		searchWidget.getSearchInput().setWidth("270px");
 		searchWidget.getSearchInput().setHeight("20px");
@@ -535,7 +531,6 @@ HasSelectionHandlers<Boolean> {
 		queryGrid.setWidget(3, 0, qdmExpIdentifierListBox);
 		queryGrid.setWidget(3, 1, versionListBox);
 		queryGrid.setWidget(4, 0, saveCancelButtonBar);
-		queryGrid.setWidget(4, 1, specificOcurChkBox);
 		queryGrid.setStyleName("secondLabel");
 		searchPanel.add(searchWidget);
 		searchPanel.add(new SpacerWidget());
@@ -1112,7 +1107,6 @@ HasSelectionHandlers<Boolean> {
 		if(checkForEnable()){
 			qdmExpIdentifierListBox.setEnabled(false);
 			versionListBox.setEnabled(false);
-			specificOcurChkBox.setEnabled(false);
 			dataTypeListBox.setEnabled(false);
 			searchWidget.getSearchInput().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");

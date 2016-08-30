@@ -708,17 +708,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
 					searchDisplay.getVersionListBox().setEnabled(true);
 					searchDisplay.getDataTypesListBox().setEnabled(true);
-					searchDisplay.getSpecificOccChkBox().setEnabled(true);
-					searchDisplay.getSpecificOccChkBox().setValue(false);
 					
 					searchDisplay.getSaveButton().setEnabled(true);
 					
-					if(searchDisplay.getDataTypeText(
-							searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")) {
-						searchDisplay.getSpecificOccChkBox().setEnabled(false);
-					} else {
-						searchDisplay.getSpecificOccChkBox().setEnabled(true);
-					}
 					if(isExpansionIdentifier){
 						searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 						searchDisplay.getVersionListBox().setEnabled(false);
@@ -920,8 +912,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				 * */
 				if(searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")){
-					searchDisplay.getSpecificOccChkBox().setEnabled(false);
-					searchDisplay.getSpecificOccChkBox().setValue(false);
+					/*searchDisplay.getSpecificOccChkBox().setEnabled(false);
+					searchDisplay.getSpecificOccChkBox().setValue(false);*/
 				}
 				
 			}
@@ -1030,10 +1022,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				searchDisplay.getQDMExpIdentifierListBox().clear();
 				searchDisplay.getVersionListBox().clear();
 				searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-				searchDisplay.getSpecificOccChkBox().setValue(false);
 				searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 				searchDisplay.getVersionListBox().setEnabled(false);
-				searchDisplay.getSpecificOccChkBox().setEnabled(false);
 				searchDisplay.getDataTypesListBox().setEnabled(false);
 				searchDisplay.getSaveButton().setEnabled(false);
 				
@@ -1121,17 +1111,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				if(searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getSaveButton().setEnabled(false);
-				} else if(searchDisplay.getDataTypeText(
-						searchDisplay.getDataTypesListBox()).equalsIgnoreCase("attribute")){
-					searchDisplay.getSpecificOccChkBox().setEnabled(false);
-					searchDisplay.getSpecificOccChkBox().setValue(false);
-					searchDisplay.getSaveButton().setEnabled(true);
 				} else {
 					searchDisplay.getSaveButton().setEnabled(true);
-					searchDisplay.getSpecificOccChkBox().setValue(false);
-					if(!isUserDefined){
-						searchDisplay.getSpecificOccChkBox().setEnabled(true);
-					}
 				}
 			}
 		});
@@ -1385,7 +1366,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().getValue());
 			searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
-			searchDisplay.getSpecificOccChkBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
 			searchDisplay.getSaveButton().setEnabled(true);
@@ -1414,8 +1394,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		} else if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUserDefined = true;
-			searchDisplay.getSpecificOccChkBox().setEnabled(false);
-			searchDisplay.getSpecificOccChkBox().setValue(false);
 			searchDisplay.getQDMExpIdentifierListBox().clear();
 			searchDisplay.getVersionListBox().clear();
 			searchDisplay.getUserDefinedInput().setEnabled(true);
@@ -1447,8 +1425,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void addQDSWithOutValueSet() {
 		
-		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, false,
-				MatContext.get().getCurrentMeasureId());
+		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.scrubForMarkUp();
 		
 		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)
@@ -1538,12 +1515,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 		}
 		
-		isSpecificOccurrence = searchDisplay.getSpecificOccChkBox().getValue();
 		String measureID = MatContext.get().getCurrentMeasureId();
 		if (!dataType.isEmpty() && !dataType.equals("")) {
 			
-			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
-					measureID);
+			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, measureID);
 			matValueSetTransferObject.scrubForMarkUp();
 			final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
 			MatContext.get().getCodeListService().saveQDStoMeasure(
@@ -1563,7 +1538,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							if (result.getXmlString() != null && result.getnewXmlString() != null) {
 								saveMeasureXML(result.getXmlString(), result.getnewXmlString());
 							}
-							searchDisplay.getSpecificOccChkBox().getValue();
 							if (result.isSuccess()) {
 								if ((result.getOccurrenceMessage() != null)
 										&& !result
@@ -1619,8 +1593,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param measureID the measure id
 	 * @return the mat value set transfer object
 	 */
-	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, final boolean isSpecificOccurrence,
-			String measureID) {
+	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, String measureID) {
 		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
 		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
 				searchDisplay.getQDMExpIdentifierListBox());
@@ -1628,7 +1601,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		matValueSetTransferObject.setMeasureId(measureID);
 		matValueSetTransferObject.setDatatype(dataType);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
-		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
 		if((version != null) || (expansionProfile != null) ){
 			if (!expansionProfile.equalsIgnoreCase(MatContext.PLEASE_SELECT)
 					&& !expansionProfile.equalsIgnoreCase("")) {
@@ -1819,10 +1791,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getVersionListBox().clear();
 		searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-		searchDisplay.getSpecificOccChkBox().setValue(false);
 		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 		searchDisplay.getVersionListBox().setEnabled(false);
-		searchDisplay.getSpecificOccChkBox().setEnabled(false);
 		searchDisplay.getDataTypesListBox().setEnabled(false);
 	}
 	
@@ -1908,7 +1878,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 			expansionId = searchDisplay.getExpansionIdentifierValue(searchDisplay.getQDMExpIdentifierListBox());
 			version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-			isSpecificOccurrence = searchDisplay.getSpecificOccChkBox().getValue();
 			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
 					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 				
@@ -2031,9 +2000,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setValue("");
-		CheckBox chkBox = searchDisplay.getSpecificOccChkBox();
-		chkBox.setEnabled(false);
-		chkBox.setValue(false);
 		searchDisplay.getSaveButton().setEnabled(false);
 	}
 	
@@ -2090,8 +2056,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
 		//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
 		//searchDisplay.getToggleSwitch().setEnabled(editable);
-		CheckBox specificChkBox = searchDisplay.getSpecificOccChkBox();
-		specificChkBox.setEnabled(editable);
 		searchDisplay.buildPasteBottomPanel(editable);
 		searchDisplay.buildPasteTopPanel(editable);
 		
@@ -2227,7 +2191,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getVersionListBox().setEnabled(false);
 		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
-		searchDisplay.getSpecificOccChkBox().setEnabled(false);
 		searchDisplay.getSaveButton().setEnabled(true);
 		searchDisplay.getOIDInput().setEnabled(true);
 		searchDisplay.getOIDInput().setValue("");
@@ -2251,9 +2214,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setValue(result.getOid());
 		searchDisplay.getOIDInput().setTitle(result.getOid());
 		searchDisplay.getSaveButton().setEnabled(false);
-		searchDisplay.getSpecificOccChkBox().setEnabled(true);
 		searchDisplay.getDataTypesListBox().setEnabled(false);
-		searchDisplay.getSpecificOccChkBox().setValue(result.isSpecificOccurrence());
 		searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		searchDisplay.getVersionListBox().clear();
 		searchDisplay.getQDMExpIdentifierListBox().clear();

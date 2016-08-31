@@ -436,6 +436,11 @@ public class CQLHumanReadableHTMLCreator {
 						"//clause[@uuid=\"" + nodeAssoc.getNodeValue() + "\"]");
 				if (newAssoc != null) {
 					String name = newAssoc.getAttributes().getNamedItem("displayName").getNodeValue();
+					String type = newAssoc.getAttributes().getNamedItem("type").getNodeValue();
+					int popCpount = countSimilarPopulationsInGroup(type, newAssoc.getParentNode());
+					if(popCpount == 1){
+						name = getPopulationName(type);
+					}
 					stringAssoc = "    (Association: " + name + ")";
 				}
 			}
@@ -447,6 +452,23 @@ public class CQLHumanReadableHTMLCreator {
 		return stringAssoc;
 	}
 	
+	private static int countSimilarPopulationsInGroup(String type,
+			Node node) {
+		
+		int count = 0;
+		NodeList childClauses = node.getChildNodes();
+		if(childClauses != null){
+			for(int i=0;i<childClauses.getLength();i++){
+				Node clauseNode = childClauses.item(i);
+				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				if(popType.equals(type)){
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
 	/**
 	 * Parses the and build html.
 	 *

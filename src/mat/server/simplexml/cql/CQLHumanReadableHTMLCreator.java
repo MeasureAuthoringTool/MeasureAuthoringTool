@@ -373,12 +373,14 @@ public class CQLHumanReadableHTMLCreator {
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode, simpleXMLProcessor);
 				
-				/*if(!childPopulationName.startsWith("Initial Population")){
-					populationListElement.appendText(childPopulationName
-							+ (popassoc.length() > 0 ? popassoc : "")
-							+ (itemCountText.length() > 0 ? itemCountText : "")
-							+ " =");
-				}*/
+//				if(!childPopulationName.startsWith("Initial Population")){
+//					populationListElement.appendText(childPopulationName
+//							+ (popassoc.length() > 0 ? popassoc : "")
+//							+ (itemCountText.length() > 0 ? itemCountText : ""));
+//							//+ " =");
+//				}
+				
+				childPopulationName += (popassoc.length() > 0 ? popassoc : "") + (itemCountText.length() > 0 ? itemCountText : "");
 				
 				/*if(childPopulationName.startsWith("Measure Observation")){
 					populationListElement = populationListElement.appendElement(HTML_UL);
@@ -399,7 +401,11 @@ public class CQLHumanReadableHTMLCreator {
 				initialPopulationHash.put(clauseNodes.get(0).getAttributes()
 						.getNamedItem("uuid").getNodeValue(), "-1");
 			}
+			
 			String itemCountText = getItemCountText(clauseNodes.get(0));
+			String popassoc = getPopAssoc(clauseNodes.get(0), simpleXMLProcessor);
+			populationName += (popassoc.length() > 0 ? popassoc : "") + (itemCountText.length() > 0 ? itemCountText : "");
+			
 			/*boldNameElement.appendText(populationName
 					+ (itemCountText.length() > 0 ? itemCountText : "") + " =");*/
 			/*if(populationName.startsWith("Measure Observation")){
@@ -421,23 +427,19 @@ public class CQLHumanReadableHTMLCreator {
 	private static String getPopAssoc(Node node, XmlProcessor processor) {
 		String stringAssoc = "";
 		try {
-			if ("measureObservation".equalsIgnoreCase(node.getAttributes()
-					.getNamedItem("type").getNodeValue())) {
-				Node nodeAssoc = node.getAttributes().getNamedItem(
-						"associatedPopulationUUID");
-				if (nodeAssoc != null) {
-					
-					Node newAssoc = processor.findNode(
-							processor.getOriginalDoc(), "//clause[@uuid=\""
-									+ nodeAssoc.getNodeValue() + "\"]");
-					if (newAssoc != null) {
-						String name = getPopulationName(newAssoc
-								.getAttributes().getNamedItem("type")
-								.getNodeValue());
-						stringAssoc = "    (Association: " + name + ")";
-					}
+
+			Node nodeAssoc = node.getAttributes().getNamedItem(
+					"associatedPopulationUUID");
+			if (nodeAssoc != null) {
+
+				Node newAssoc = processor.findNode(processor.getOriginalDoc(),
+						"//clause[@uuid=\"" + nodeAssoc.getNodeValue() + "\"]");
+				if (newAssoc != null) {
+					String name = newAssoc.getAttributes().getNamedItem("displayName").getNodeValue();
+					stringAssoc = "    (Association: " + name + ")";
 				}
 			}
+
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -5,11 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import mat.client.CustomPager;
-import mat.client.admin.ManageOrganizationPresenter.SearchDisplay;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -26,6 +23,7 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -45,17 +43,14 @@ import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -64,20 +59,15 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -91,6 +81,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -799,6 +790,21 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		libraryNameValue.setText(MatContext.get().getCurrentMeasureName().replaceAll(" ", ""));
 		libraryNameValue.setReadOnly(true);
 		
+		Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
+		TextArea libraryVersionValue = new TextArea();
+		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
+		libraryVersionLabel.setWidth("150px");
+		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
+		
+		String measureVersion = MatContext.get().getCurrentMeasureVersion();
+		measureVersion = measureVersion.replaceAll("Draft ", "");
+		if(measureVersion.startsWith("v")){
+			measureVersion = measureVersion.substring(1);
+		}
+		
+		libraryVersionValue.setText(measureVersion);
+		libraryVersionValue.setReadOnly(true);
+		
 		Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
 		TextArea usingModelValue = new TextArea();
 		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
@@ -815,6 +821,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(libraryNameValue);
 		generalInfoTopPanel.add(new SpacerWidget());
+		
+		generalInfoTopPanel.add(libraryVersionLabel);
+		generalInfoTopPanel.add(new SpacerWidget());
+		generalInfoTopPanel.add(libraryVersionValue);
+		generalInfoTopPanel.add(new SpacerWidget());
+		
 		generalInfoTopPanel.add(usingModeLabel);
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(usingModelValue);

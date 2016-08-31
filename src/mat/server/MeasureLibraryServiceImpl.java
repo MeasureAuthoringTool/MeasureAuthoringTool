@@ -3469,7 +3469,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setValid(true);
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		List<String> message = new ArrayList<String>();
-		message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_POPULATION_WORK_SPACE());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			
@@ -3521,36 +3520,33 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								!childNode.getNodeName().equalsIgnoreCase("cqlaggfunction") && 
 								!childNode.getNodeName().equalsIgnoreCase("cqlfunction")) {
 							result.setValid(false);
+							message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_CQL_WORK_SPACE());
 							result.setValidationMessages(message);
-						} else { //if the Measure is a CQL Measure.
-							
-							isInvalid = parseCQLFile(measureXmlModel.getXml(),
-									measureXmlModel.getMeasureId());
-							if(isInvalid) {
-								result.setValid(false);
-								result.setValidationMessages(message);
-							}
+							break;
+						}
+					} else {
+						result.setValid(false);
+						message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_MEASURE_PACKAGER());
+						result.setValidationMessages(message);
+						break;
+					}
+				}
+				//Parse CQL Data
+				if(result.isValid()) {
+					isInvalid = parseCQLFile(measureXmlModel.getXml(),
+					measureXmlModel.getMeasureId());
+					if(isInvalid) {
+						result.setValid(false);
+						message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_CQL_WORK_SPACE());
+						result.setValidationMessages(message);
 						}
 					}
-					
-				}
 			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		
-//		result.setValid(false);
-//		result.setValidationMessages(message);
 		return result;
-	}
-	
-	
-	private boolean validateCQLMeasure(String measureXML, String measureId){
-		boolean isInvalid = false;
-		isInvalid = parseCQLFile(measureXML, measureXML);
-		return isInvalid;
 	}
 	
 	private boolean parseCQLFile(String measureXML, String measureId){

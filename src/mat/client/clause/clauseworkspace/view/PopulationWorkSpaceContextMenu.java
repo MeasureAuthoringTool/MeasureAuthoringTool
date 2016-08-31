@@ -67,7 +67,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						});
 					} else {
 						xmlTreeDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-								.getMessageDelegate().getINVALID_LOGIC_POPULATION_WORK_SPACE());
+								.getMessageDelegate().getINVALID_LOGIC_CQL_WORK_SPACE());
 					}
 				}
 			}

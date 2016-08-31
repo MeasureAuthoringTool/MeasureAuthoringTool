@@ -2131,7 +2131,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				repeatNumberElement.setAttribute("xsi:type", "ANY");
 			}
 			repeatNumberElement.setAttribute(FLAVOR_ID, "ANY.NONNULL");
-			checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 		}  else if (EQUAL_TO.equals(attrMode) || attrMode.startsWith(LESS_THAN) || attrMode.startsWith(GREATER_THAN)) {
 			if(elementNameToCreate.equalsIgnoreCase(VALUE)){
 				repeatNumberElement.setAttribute("xsi:type", "IVL_PQ");
@@ -2149,7 +2148,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				repeatNumberElement.appendChild(lowElem);
 				repeatNumberElement.appendChild(highElem);
-				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			} else if(attrMode.startsWith(GREATER_THAN)) {
 				if (attrMode.equals(GREATER_THAN)) {
 					repeatNumberElement.setAttribute("lowClosed", "false");
@@ -2164,7 +2162,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				}
 				
 				repeatNumberElement.appendChild(highElem);
-				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			}else if(attrMode.startsWith(LESS_THAN)){
 				if(attrMode.equals(LESS_THAN)){
 					repeatNumberElement.setAttribute("highClosed", "false");
@@ -2178,8 +2175,18 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					highElem.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 				repeatNumberElement.appendChild(highElem);
+			}
+		}
+		
+		if ((dataCriteriaElem.getElementsByTagName("statusCode").item(0)!=null)) {
+			Node outBoundElement =  dataCriteriaElem.getElementsByTagName("statusCode").item(0);
+			if(outBoundElement != null){
+				outBoundElement.getParentNode().insertBefore(repeatNumberElement, outBoundElement);
+			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 			}
+		} else {
+			checkIfOutBoundOcc(dataCriteriaElem, repeatNumberElement);
 		}
 	}
 	

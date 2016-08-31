@@ -797,7 +797,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		
 		String measureVersion = MatContext.get().getCurrentMeasureVersion();
-		measureVersion = measureVersion.replaceAll("Draft ", "");
+		measureVersion = measureVersion.replaceAll("Draft ", "").trim();
 		if(measureVersion.startsWith("v")){
 			measureVersion = measureVersion.substring(1);
 		}
@@ -812,6 +812,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		usingModelValue.setText("QDM");
 		usingModelValue.setReadOnly(true);
+		
+		Label modelVersionLabel = new Label(LabelType.INFO, "Version");
+		TextArea modelVersionValue = new TextArea();
+		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
+		modelVersionLabel.setWidth("150px");
+		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
+		modelVersionValue.setText("5.0");
+		modelVersionValue.setReadOnly(true);
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		// messagePanel.add(successMessageAlert);
@@ -830,6 +838,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInfoTopPanel.add(usingModeLabel);
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(usingModelValue);
+		generalInfoTopPanel.add(new SpacerWidget());
+		
+		generalInfoTopPanel.add(modelVersionLabel);
+		generalInfoTopPanel.add(new SpacerWidget());
+		generalInfoTopPanel.add(modelVersionValue);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
 		VerticalPanel vp = new VerticalPanel();

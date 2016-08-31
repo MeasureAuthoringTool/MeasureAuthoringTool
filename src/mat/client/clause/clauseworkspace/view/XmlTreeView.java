@@ -181,7 +181,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The validate btn populationWorkspace. */
 	//Commented Validate Button from Population Work Space as part of Mat-3162
-	private Button validateBtnPopulationWorkspace = new SecondaryButton("Validate");//Uncomented
+	// back to commented as part of mat-7847
+//	private Button validateBtnPopulationWorkspace = new SecondaryButton("Validate");//Uncomented
 	
 	/** The save btn. */
 	private Button saveBtnClauseWorkSpace = new PrimaryButton("Save", "primaryButton");
@@ -388,9 +389,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		successMessageDisplay.getElement().setId("successMessageDisplay_SuccessMessageDisplay");
 		savePanel.add(saveBtn);
 		//Commented Validate Button from Population Work Space as part of Mat-3162
-		validateBtnPopulationWorkspace.setTitle("Validate");//uncommented
-		validateBtnPopulationWorkspace.getElement().setId("validateBtnPopulationWorkspace_Button");
-		savePanel.add(validateBtnPopulationWorkspace);// uncommented
+		// back to commeneted as part of mat-7847
+//		validateBtnPopulationWorkspace.setTitle("Validate");//uncommented
+//		validateBtnPopulationWorkspace.getElement().setId("validateBtnPopulationWorkspace_Button");
+//		savePanel.add(validateBtnPopulationWorkspace);// uncommented
 		vp.add(warningMessageDisplay);//uncommented
 		warningMessageDisplay.getElement().setId("warningMessageDisplay_WarningMessageDisplay");
 		vp.add(savePanel);
@@ -1374,7 +1376,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void setEnabled(boolean enabled) {
 		saveBtn.setEnabled(enabled);
 		saveBtnClauseWorkSpace.setEnabled(enabled);
-		validateBtnPopulationWorkspace.setEnabled(enabled);
+		// commented as part of mat-7387
+//		validateBtnPopulationWorkspace.setEnabled(enabled);
 		validateBtnClauseWorkSpace.setEnabled(enabled);
 		deleteClauseButton.setEnabled(enabled);
 		isEditable = enabled;
@@ -3058,12 +3061,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getValidateBtnPopulationWorkspace()
-	 */
-	@Override
-	public Button getValidateBtnPopulationWorkspace() {
-		
-		return validateBtnPopulationWorkspace;
-	}
+//	 */
+//	@Override
+//	public Button getValidateBtnPopulationWorkspace() {
+//		
+//		return validateBtnPopulationWorkspace;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setClauseEnabled(boolean)

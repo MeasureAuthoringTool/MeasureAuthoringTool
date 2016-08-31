@@ -171,7 +171,7 @@ public class XmlTreePresenter {
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
 			//invokeValidateHandler();
-			invokeValidateHandlerPopulationWorkspace();//added to handle the validate button
+//			invokeValidateHandlerPopulationWorkspace();//added to handle the validate button
 		} else {
 			Mat.hideLoadingMessage();
 		}
@@ -738,59 +738,60 @@ public class XmlTreePresenter {
 			
 		}
 	}
-	/**
-	 * Invoke validate handler on population workspace.
-	 */
-	final void invokeValidateHandlerPopulationWorkspace() {
-		xmlTreeDisplay.getValidateBtnPopulationWorkspace().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if (xmlTreeDisplay.getXmlTree() != null) {
-					xmlTreeDisplay.clearMessages();
-					List<String> result = xmlTreeDisplay
-							.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
-									.getRootTreeNode());
-					if (result.size()==0) {
-						xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().
-								getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
-						
-					} else {
-						List<String> messageList = new ArrayList<String>();
-						for(String inValidNode: result){
-							if(inValidNode.equalsIgnoreCase("inValidAtLogicalOperatorNode")){
-								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR());
-							}
-							if(inValidNode.equalsIgnoreCase("inValidAtMeasureObservationLogicalNode")){
-								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR());
-							}
-							if(inValidNode.equalsIgnoreCase("inValidAtOtherNode")){
-								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
-							}
-							if(inValidNode.equalsIgnoreCase("inValidAtPopulationAndStratificationNode")){
-								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE());
-							}
-							if(inValidNode.equalsIgnoreCase("invalidClauseLogic")){
-								messageList.add("Invalid clause logic. Please validate clause logic on Clause Workspace.");
-							}
-							if(inValidNode.equalsIgnoreCase("nestedClauseLogic")){
-								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());
-							}
-							if(inValidNode.equalsIgnoreCase("isFunctionInvalidInMO")){
-								messageList.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS());
-							}
-						}
-						if(messageList.size()>=1){
-							if(!messageList.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT())){
-								messageList.add(0, MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT());
-							}
-							xmlTreeDisplay.getWarningMessageDisplay().setMessages(messageList);
-						}
-					}
-				}
-			}
-		});
-	}
+	
+//	/**
+//	 * Invoke validate handler on population workspace.
+//	 */
+//	final void invokeValidateHandlerPopulationWorkspace() {
+//		xmlTreeDisplay.getValidateBtnPopulationWorkspace().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(final ClickEvent event) {
+//				if (xmlTreeDisplay.getXmlTree() != null) {
+//					xmlTreeDisplay.clearMessages();
+//					List<String> result = xmlTreeDisplay
+//							.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
+//									.getRootTreeNode());
+//					if (result.size()==0) {
+//						xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
+//								MatContext.get().getMessageDelegate().
+//								getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
+//						
+//					} else {
+//						List<String> messageList = new ArrayList<String>();
+//						for(String inValidNode: result){
+//							if(inValidNode.equalsIgnoreCase("inValidAtLogicalOperatorNode")){
+//								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_LOGICAL_OPERATOR());
+//							}
+//							if(inValidNode.equalsIgnoreCase("inValidAtMeasureObservationLogicalNode")){
+//								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR());
+//							}
+//							if(inValidNode.equalsIgnoreCase("inValidAtOtherNode")){
+//								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
+//							}
+//							if(inValidNode.equalsIgnoreCase("inValidAtPopulationAndStratificationNode")){
+//								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE());
+//							}
+//							if(inValidNode.equalsIgnoreCase("invalidClauseLogic")){
+//								messageList.add("Invalid clause logic. Please validate clause logic on Clause Workspace.");
+//							}
+//							if(inValidNode.equalsIgnoreCase("nestedClauseLogic")){
+//								messageList.add(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_INVALID_NESTED_DEPTH_CLAUSE());
+//							}
+//							if(inValidNode.equalsIgnoreCase("isFunctionInvalidInMO")){
+//								messageList.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS());
+//							}
+//						}
+//						if(messageList.size()>=1){
+//							if(!messageList.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT())){
+//								messageList.add(0, MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT());
+//							}
+//							xmlTreeDisplay.getWarningMessageDisplay().setMessages(messageList);
+//						}
+//					}
+//				}
+//			}
+//		});
+//	}
 	
 	
 	/**

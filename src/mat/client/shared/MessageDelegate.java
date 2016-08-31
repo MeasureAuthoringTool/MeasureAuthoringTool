@@ -150,6 +150,8 @@ public class MessageDelegate {
 			+ " Numerator and Denominator must contain one association.";
 	
 	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
+
+	private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
 	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
@@ -2428,6 +2430,15 @@ public class MessageDelegate {
 	 */
 	public String getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS() {
 		return WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS;
+	}
+	
+	/**
+	 * Gets the error saving in  qdm elements.
+	 *
+	 * @return the error saving in qdm elements
+	 */
+	public String getERROR_IN_SAVING_QDM_ELEMENTS() {
+		return ERROR_IN_SAVING_QDM_ELEMENTS;
 	}
 	
 	/**

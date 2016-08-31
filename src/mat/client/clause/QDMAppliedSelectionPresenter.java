@@ -1061,9 +1061,21 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					MatContext.get().clearDVIMessages();
 					resetQDSMsgPanel();
 					if(isModified && (modifyValueSetDTO != null)){
-						modifyQDM(isUserDefined);
+						if(!isInExistingQDMList()){
+							modifyQDM(isUserDefined);
+						}
+						else{
+							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+									.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+						}
 					} else {
-						addSelectedCodeListtoMeasure(isUserDefined);
+						if(!isInExistingQDMList()){
+							addSelectedCodeListtoMeasure(isUserDefined);
+						}
+						else{
+							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+									.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+						}
 					}
 
 				}
@@ -1150,7 +1162,25 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 	}
 	
-	
+	/*
+	 * checks if existing QDMList already has the name you are about to save.
+	 */
+	protected boolean isInExistingQDMList() {
+		if (appliedQDMList.size() > 0) {
+			Iterator<QualityDataSetDTO> iterator = appliedQDMList
+					.iterator();
+			while (iterator.hasNext()) {
+				QualityDataSetDTO dataSetDTO = iterator
+						.next();
+				if(dataSetDTO.getCodeListName().equalsIgnoreCase(currentMatValueSet.getDisplayName())){
+					return true;
+				}
+						
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * click Handlers for ExpansioN Identifier Panel in new QDM Elements Tab.
 	 */

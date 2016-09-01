@@ -3469,6 +3469,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setValid(true);
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		List<String> message = new ArrayList<String>();
+		message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_MEASURE_PACKAGER());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			
@@ -3520,13 +3521,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								!childNode.getNodeName().equalsIgnoreCase("cqlaggfunction") && 
 								!childNode.getNodeName().equalsIgnoreCase("cqlfunction")) {
 							result.setValid(false);
-							message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_CQL_WORK_SPACE());
 							result.setValidationMessages(message);
 							break;
 						}
 					} else {
 						result.setValid(false);
-						message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_MEASURE_PACKAGER());
 						result.setValidationMessages(message);
 						break;
 					}
@@ -3537,7 +3536,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					measureXmlModel.getMeasureId());
 					if(isInvalid) {
 						result.setValid(false);
-						message.add(MatContext.get().getMessageDelegate().getINVALID_LOGIC_CQL_WORK_SPACE());
 						result.setValidationMessages(message);
 						}
 					}

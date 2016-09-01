@@ -67,14 +67,18 @@ public class CQLUtilityClass {
 		
 		//Valuesets
 		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
+		List<String> valueSetAlreadyUsed = new ArrayList<String>();
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
-				cqlStr = cqlStr.append("valueset "
-						+'"'+ valueset.getCodeListName() +'"'+ ": "
-						+"'"+ valueset.getOid()+"'"
-						);
+				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
+					cqlStr = cqlStr.append("valueset "
+							+'"'+ valueset.getCodeListName() +'"'+ ": "
+							+"'"+ valueset.getOid()+"'"
+							);
 
-				cqlStr = cqlStr.append("\n\n");
+					cqlStr = cqlStr.append("\n\n");
+					valueSetAlreadyUsed.add(valueset.getCodeListName());
+				}
 			}
 		}
 

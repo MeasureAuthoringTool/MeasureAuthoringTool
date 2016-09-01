@@ -714,7 +714,7 @@ public class MessageDelegate {
 	
 	private final String ONLY_ONE_CHILD_REQUIRED = " Functions must contain only one child node.";
 	
-	private final String INVALID_LOGIC_MEASURE_PACKAGER = "All elements within a Measure Grouping must contain logic.";
+	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
 	
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;

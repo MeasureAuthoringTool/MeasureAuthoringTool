@@ -208,8 +208,9 @@ public class XmlTreePresenter {
 		}
 		setRootNode(cellTree.getRootTreeNode().toString());
 		xmlTreeDisplay = xmlTreeView;
-		xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+		xmlTreeDisplay.setEnabled(false);
+		/*xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());*/
 		panel.clear();
 		panel.add(xmlTreeDisplay.asWidget());
 		invokeSaveHandler();
@@ -554,7 +555,7 @@ public class XmlTreePresenter {
 							String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 
 							final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
-							service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
+							/*service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
 									new AsyncCallback<SortedClauseMapResult>() {
 								@Override
 								public void onFailure(final Throwable caught) {
@@ -573,7 +574,7 @@ public class XmlTreePresenter {
 									System.out.println("originalXML is:"
 											+ getOriginalXML());
 								}
-							});
+							});*/
 						} else {
 							xmlTreeDisplay.getErrorMessageDisplay().setMessage(
 									"Unable to save clause as no subTree found under it.");
@@ -607,7 +608,7 @@ public class XmlTreePresenter {
 						}
 					}
 
-					service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<HashMap<String,String>>() {
+					/*service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<HashMap<String,String>>() {
 						@Override
 						public void onSuccess(HashMap<String,String> result) {
 							if (!result.entrySet().isEmpty()) {
@@ -635,7 +636,7 @@ public class XmlTreePresenter {
 						public void onFailure(Throwable caught) {
 						}
 					});
-					enableDisableQDMVariableCheckBox(currentSelectedClause);
+					enableDisableQDMVariableCheckBox(currentSelectedClause);*/
 				}
 			}
 		});

@@ -1316,7 +1316,8 @@ HasSelectionHandlers<Boolean> {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to Delete QDM";
 				String cssClass;
-				
+				//Disabling the delete button from 5.0 onwards
+				object.setUsed(true);
 				if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";
 					sb.appendHtmlConstant("<button type=\"button\" title='"

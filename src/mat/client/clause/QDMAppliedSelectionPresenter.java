@@ -950,7 +950,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									iterator.remove();
 								}
 							}
-							deleteAndSaveMeasureXML(appliedQDMList, index);
+							//Disabling the delete functionality from 5.0 onwards
+							//deleteAndSaveMeasureXML(appliedQDMList, index);
 						}
 						
 					}

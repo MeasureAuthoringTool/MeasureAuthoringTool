@@ -1062,21 +1062,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					MatContext.get().clearDVIMessages();
 					resetQDSMsgPanel();
 					if(isModified && (modifyValueSetDTO != null)){
-						if(!isInExistingQDMList()){
 							modifyQDM(isUserDefined);
-						}
-						else{
-							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-									.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
-						}
+						
 					} else {
-						if(!isInExistingQDMList()){
 							addSelectedCodeListtoMeasure(isUserDefined);
-						}
-						else{
-							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-									.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
-						}
 					}
 
 				}
@@ -1163,26 +1152,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		});
 	}
 	
-	/*
-	 * checks if existing QDMList already has the name you are about to save.
-	 */
-	protected boolean isInExistingQDMList() {
-		if (appliedQDMList.size() > 0) {
-			Iterator<QualityDataSetDTO> iterator = appliedQDMList
-					.iterator();
-			while (iterator.hasNext()) {
-				QualityDataSetDTO dataSetDTO = iterator
-						.next();
-				if(!isUserDefined && currentMatValueSet != null){
-					if(dataSetDTO.getCodeListName().equalsIgnoreCase(currentMatValueSet.getDisplayName())){
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
+	
 	/**
 	 * click Handlers for ExpansioN Identifier Panel in new QDM Elements Tab.
 	 */
@@ -1456,10 +1426,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * Adds the qds with out value set.
 	 */
 	private void addQDSWithOutValueSet() {
-		
+
 		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, MatContext.get().getCurrentMeasureId());
 		matValueSetTransferObject.scrubForMarkUp();
-		
+
 		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
@@ -1469,69 +1439,106 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 				matValueSetTransferObject.setDatatype(dataType);
 				final String userDefinedInput = matValueSetTransferObject.getUserDefinedText();
-				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
-						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-							@Override
-							public void onFailure(final Throwable caught) {
-								Window.alert(MatContext.get()
-										.getMessageDelegate()
-										.getGenericErrorMessage());
-							}
-							
-							@SuppressWarnings("static-access")
-							@Override
-							public void onSuccess(
-									final SaveUpdateCodeListResult result) {
-								if(result.isSuccess()) {
-									if (result.getXmlString() != null && result.getnewXmlString() != null) {
-										saveMeasureXML(result.getXmlString(), result.getnewXmlString());
-										String message = MatContext
-												.get()
-												.getMessageDelegate()
-												.getQDMSuccessMessage(
-														userDefinedInput,
-														searchDisplay
-														.getDataTypeText(searchDisplay
-																.getDataTypesListBox()));
-										searchDisplay
-										.getSuccessMessageDisplay()
-										.setMessage(message);
-										searchDisplay.getUserDefinedInput()
-										.setText("");
-										searchDisplay.getDataTypesListBox()
-										.setSelectedIndex(0);
-										
-									}
-								} else {
-									if (result.getFailureReason() == result.ALREADY_EXISTS) {
-										searchDisplay
-										.getErrorMessageDisplay()
-										.setMessage(
-												MatContext
-												.get()
-												.getMessageDelegate()
-												.getDuplicateAppliedQDMMsg());
-									} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
-										searchDisplay
-										.getErrorMessageDisplay()
-										.setMessage("Invalid input data.");
+				//Check if QDM name already exists in the list.
+				if(!CheckNameInQDMList(userDefinedInput,isModified)){
+					MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
+							matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
+								@Override
+								public void onFailure(final Throwable caught) {
+									Window.alert(MatContext.get()
+											.getMessageDelegate()
+											.getGenericErrorMessage());
+								}
+
+								@SuppressWarnings("static-access")
+								@Override
+								public void onSuccess(
+										final SaveUpdateCodeListResult result) {
+									if(result.isSuccess()) {
+										if (result.getXmlString() != null && result.getnewXmlString() != null) {
+											saveMeasureXML(result.getXmlString(), result.getnewXmlString());
+											String message = MatContext
+													.get()
+													.getMessageDelegate()
+													.getQDMSuccessMessage(
+															userDefinedInput,
+															searchDisplay
+															.getDataTypeText(searchDisplay
+																	.getDataTypesListBox()));
+											searchDisplay
+											.getSuccessMessageDisplay()
+											.setMessage(message);
+											searchDisplay.getUserDefinedInput()
+											.setText("");
+											searchDisplay.getDataTypesListBox()
+											.setSelectedIndex(0);
+
+										}
+									} else {
+										if (result.getFailureReason() == result.ALREADY_EXISTS) {
+											searchDisplay
+											.getErrorMessageDisplay()
+											.setMessage(
+													MatContext
+													.get()
+													.getMessageDelegate()
+													.getDuplicateAppliedQDMMsg());
+										} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
+											searchDisplay
+											.getErrorMessageDisplay()
+											.setMessage("Invalid input data.");
+										}
 									}
 								}
-							}
-						});
+							});
+
+				}
+				else{
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+				}
 			} else {
 				searchDisplay.getErrorMessageDisplay().setMessages(messList);
 			}
-			
+
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate()
 					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
-		
+
 	}
 	
-	
+	/*
+	 * checks if existing QDMList already has the name you are about to save.
+	 */
+	private boolean CheckNameInQDMList(String userDefinedInput, boolean isQDMModified) {
+		if (appliedQDMList.size() > 0) {
+			Iterator<QualityDataSetDTO> iterator = appliedQDMList
+					.iterator();
+			while (iterator.hasNext()) {
+				QualityDataSetDTO dataSetDTO = iterator
+						.next();
+				if(isQDMModified){
+					if(modifyValueSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
+						return true;
+					}
+					else{
+						if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
+							return true;
+						}
+					}
+				}
+				else{
+					if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Adds the qds with value set.
 	 */
@@ -1540,74 +1547,81 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		final String dataTypeText;
 		final boolean isSpecificOccurrence;
 		dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-		
+
 		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")) {
 			dataTypeText = dataType;
 		} else {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 		}
-		
+
 		String measureID = MatContext.get().getCurrentMeasureId();
 		if (!dataType.isEmpty() && !dataType.equals("")) {
-			
+
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, measureID);
 			matValueSetTransferObject.scrubForMarkUp();
 			final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
-			MatContext.get().getCodeListService().saveQDStoMeasure(
-					matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							if (appliedQDMList.size() > 0) {
-								appliedQDMList
-								.removeAll(appliedQDMList);
+			//Check if QDM name already exists in the list.
+			if(!CheckNameInQDMList(codeListName,isModified)){
+				MatContext.get().getCodeListService().saveQDStoMeasure(
+						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								if (appliedQDMList.size() > 0) {
+									appliedQDMList
+									.removeAll(appliedQDMList);
+								}
 							}
-						}
-						
-						@Override
-						public void onSuccess(SaveUpdateCodeListResult result) {
-							String message = "";
-							if (result.getXmlString() != null && result.getnewXmlString() != null) {
-								saveMeasureXML(result.getXmlString(), result.getnewXmlString());
-							}
-							if (result.isSuccess()) {
-								if ((result.getOccurrenceMessage() != null)
-										&& !result
-										.getOccurrenceMessage()
-										.equals("")) {
-									message = MatContext
-											.get()
-											.getMessageDelegate()
-											.getQDMOcurrenceSuccessMessage(
-													codeListName,
-													dataTypeText,
-													result.getOccurrenceMessage());
+
+							@Override
+							public void onSuccess(SaveUpdateCodeListResult result) {
+								String message = "";
+								if (result.getXmlString() != null && result.getnewXmlString() != null) {
+									saveMeasureXML(result.getXmlString(), result.getnewXmlString());
+								}
+								if (result.isSuccess()) {
+									if ((result.getOccurrenceMessage() != null)
+											&& !result
+											.getOccurrenceMessage()
+											.equals("")) {
+										message = MatContext
+												.get()
+												.getMessageDelegate()
+												.getQDMOcurrenceSuccessMessage(
+														codeListName,
+														dataTypeText,
+														result.getOccurrenceMessage());
+									} else {
+										message = MatContext
+												.get()
+												.getMessageDelegate()
+												.getQDMSuccessMessage(
+														codeListName,
+														dataTypeText);
+									}
+									MatContext.get()
+									.getEventBus().fireEvent(
+											new QDSElementCreatedEvent(
+													codeListName));
+									resetQDMSearchPanel();
+									searchDisplay
+									.getSuccessMessageDisplay()
+									.setMessage(message);
 								} else {
-									message = MatContext
-											.get()
-											.getMessageDelegate()
-											.getQDMSuccessMessage(
-													codeListName,
-													dataTypeText);
+									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+										searchDisplay.getErrorMessageDisplay().setMessage(
+												MatContext.get().getMessageDelegate()
+												.getDuplicateAppliedQDMMsg());
+									}
 								}
-								MatContext.get()
-								.getEventBus().fireEvent(
-										new QDSElementCreatedEvent(
-												codeListName));
-								resetQDMSearchPanel();
-								searchDisplay
-								.getSuccessMessageDisplay()
-								.setMessage(message);
-							} else {
-								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-									searchDisplay.getErrorMessageDisplay().setMessage(
-											MatContext.get().getMessageDelegate()
-											.getDuplicateAppliedQDMMsg());
-								}
+
 							}
-							
-						}
-					});
+						});
+			}
+			else{
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+						.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+			}
 		} else {
 			searchDisplay
 			.getErrorMessageDisplay()
@@ -1684,37 +1698,44 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).
 				equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			MatValueSetTransferObject object = new MatValueSetTransferObject();
-			object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
-			object.scrubForMarkUp();
-			QDMInputValidator qdmInputValidator = new QDMInputValidator();
-			List<String> meStrings = qdmInputValidator.validate(object);
-			if (meStrings.size() == 0) {
-				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
-				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
-				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-				String dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
-				if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-						|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
-					if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
-						updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
-					} else {
-						if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
-							searchDisplay.getErrorMessageDisplay().setMessage(
-									MatContext.get().
-									getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION());
+			if(!CheckNameInQDMList(searchDisplay.getUserDefinedInput().getText(),isModified)){
+				MatValueSetTransferObject object = new MatValueSetTransferObject();
+				object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
+				object.scrubForMarkUp();
+				QDMInputValidator qdmInputValidator = new QDMInputValidator();
+				List<String> meStrings = qdmInputValidator.validate(object);
+				if (meStrings.size() == 0) {
+					CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
+					modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
+					String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
+					String dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+					if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+							|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+						if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
+							updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
 						} else {
-							searchDisplay.getErrorMessageDisplay().setMessage(
-									MatContext.get().
-									getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
+							if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
+								searchDisplay.getErrorMessageDisplay().setMessage(
+										MatContext.get().
+										getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION());
+							} else {
+								searchDisplay.getErrorMessageDisplay().setMessage(
+										MatContext.get().
+										getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
+							}
 						}
+					} else {
+						updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
 					}
 				} else {
-					updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
+					searchDisplay.getErrorMessageDisplay().setMessages(meStrings);
 				}
-			} else {
-				searchDisplay.getErrorMessageDisplay().setMessages(meStrings);
 			}
+			else{
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+						.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+			}	
+
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
@@ -1910,56 +1931,62 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 			expansionId = searchDisplay.getExpansionIdentifierValue(searchDisplay.getQDMExpIdentifierListBox());
 			version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
-				
-				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
-					if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
-							&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
-						searchDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+			if(!CheckNameInQDMList(modifyWithDTO.getDisplayName(),isModified)){
+				if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+						|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+					
+					if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
+						if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
+								&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
+							searchDisplay.getSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+						} else {
+							updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+						}
 					} else {
-						updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
-					}
-				} else {
-					if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
-						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().
-								getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION()
-								);
-					} else {
-						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().
-								getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
-					}
-				}
-				
-			} else {
-				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())
-						&& modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
-						&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)){
-					if (!expansionId.isEmpty() && expansionId.equalsIgnoreCase(
-							modifyValueSetDTO.getExpansionIdentifier())) {
-						resetQDMSearchPanel();
-						searchDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-					} else if(!version.isEmpty() && version.equalsIgnoreCase(
-							modifyValueSetDTO.getVersion())){
-						resetQDMSearchPanel();
-						searchDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-					} else if((modifyValueSetDTO.getVersion().equals("1.0") ||
-							modifyValueSetDTO.getVersion().equals("1"))
-							&& expansionId.isEmpty() && version.isEmpty()
-							&& (modifyValueSetDTO.getExpansionIdentifier() == null)){
-						resetQDMSearchPanel();
-						searchDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-					} else {
-						updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+						if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
+							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().
+									getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION()
+									);
+						} else {
+							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().
+									getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
+						}
 					}
 					
 				} else {
-					updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
-				}
+					if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())
+							&& modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
+							&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)){
+						if (!expansionId.isEmpty() && expansionId.equalsIgnoreCase(
+								modifyValueSetDTO.getExpansionIdentifier())) {
+							resetQDMSearchPanel();
+							searchDisplay.getSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+						} else if(!version.isEmpty() && version.equalsIgnoreCase(
+								modifyValueSetDTO.getVersion())){
+							resetQDMSearchPanel();
+							searchDisplay.getSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+						} else if((modifyValueSetDTO.getVersion().equals("1.0") ||
+								modifyValueSetDTO.getVersion().equals("1"))
+								&& expansionId.isEmpty() && version.isEmpty()
+								&& (modifyValueSetDTO.getExpansionIdentifier() == null)){
+							resetQDMSearchPanel();
+							searchDisplay.getSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+						} else {
+							updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+						}
+						
+					} else {
+						updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
+					}
+				}	
+			}
+			else{
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+						.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
 			}
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().

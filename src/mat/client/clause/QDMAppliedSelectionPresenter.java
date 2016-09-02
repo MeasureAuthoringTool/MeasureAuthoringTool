@@ -1173,10 +1173,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			while (iterator.hasNext()) {
 				QualityDataSetDTO dataSetDTO = iterator
 						.next();
-				if(dataSetDTO.getCodeListName().equalsIgnoreCase(currentMatValueSet.getDisplayName())){
-					return true;
+				if(!isUserDefined && currentMatValueSet != null){
+					if(dataSetDTO.getCodeListName().equalsIgnoreCase(currentMatValueSet.getDisplayName())){
+						return true;
+					}
 				}
-						
 			}
 		}
 		return false;

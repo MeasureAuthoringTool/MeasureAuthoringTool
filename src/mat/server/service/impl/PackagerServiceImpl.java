@@ -13,6 +13,20 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -28,29 +42,11 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
-import mat.model.cql.parser.CQLDefinitionModelObject;
-import mat.model.cql.parser.CQLFileObject;
-import mat.server.CQLUtilityClass;
-import mat.server.cqlparser.MATCQLParser;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 // TODO: Auto-generated Javadoc
 /**

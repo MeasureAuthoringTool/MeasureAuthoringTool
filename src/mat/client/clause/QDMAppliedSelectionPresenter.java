@@ -1522,13 +1522,19 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						.next();
 				if(isQDMModified){
 					if(modifyValueSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-						if(modifyValueSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+						if(!modifyValueSetDTO.getOid().equalsIgnoreCase(oidCode)){
+							return true;
+						}
+						else if(modifyValueSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
 							return true;
 						}
 					}
 					else{
 						if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-							if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+							if(!dataSetDTO.getOid().equalsIgnoreCase(oidCode)){
+								return true;
+							}
+							else if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
 								return true;
 							}
 						}
@@ -1536,7 +1542,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				else{
 					if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-						if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+						if(!dataSetDTO.getOid().equalsIgnoreCase(oidCode)){
+							return true;
+						}
+						else if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
 							return true;
 						}
 					}

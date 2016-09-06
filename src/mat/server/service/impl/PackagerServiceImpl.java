@@ -100,7 +100,7 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
-	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition";
+	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition[@supplDataElement='true']";
 	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqldefinition";	
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
@@ -874,12 +874,12 @@ public class PackagerServiceImpl implements PackagerService {
 				
 				cqlDef.setContext(newNode.getAttributes().getNamedItem("context")
 				        .getNodeValue());
-				if(newNode.getAttributes().getNamedItem("supplDataElement")
-						.getNodeValue().toString().equalsIgnoreCase("true")){
+				//if(newNode.getAttributes().getNamedItem("supplDataElement")
+					//	.getNodeValue().toString().equalsIgnoreCase("true")){
 					cqlDef.setSupplDataElement(true);
-				} else {
+				/*} else {
 					cqlDef.setSupplDataElement(false);
-				}
+				}*/
 				
 				masterList.add(cqlDef);
 			}
@@ -948,7 +948,7 @@ public class PackagerServiceImpl implements PackagerService {
 			System.out.println("supplementalDataList:"+supplementalDataList);
 			
 			try{
-				checkForPossibleSupplementalCQLDefinitions(processor, definitionList);
+				//checkForPossibleSupplementalCQLDefinitions(processor, definitionList);
 			}catch(Exception ee){
 				ee.printStackTrace();
 			}
@@ -962,8 +962,9 @@ public class PackagerServiceImpl implements PackagerService {
 		}
 	}
 	
-	
-	private void checkForPossibleSupplementalCQLDefinitions(
+	//This code has been commented out as a part of MAT-7839 User Story which is
+	//not included in MAT 5.0 release
+	/*private void checkForPossibleSupplementalCQLDefinitions(
 			XmlProcessor processor, List<CQLDefinition> definitionList) {
 		
 		String measureXML = processor.transform(processor.getOriginalDoc());
@@ -986,7 +987,7 @@ public class PackagerServiceImpl implements PackagerService {
 		
 		definitionList.retainAll(possibleSuppDefinitionList);
 		
-	}
+	}*/
 
 
 	/**

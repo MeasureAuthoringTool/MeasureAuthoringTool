@@ -163,8 +163,8 @@ public class MATCQLListener extends cqlBaseListener {
 		CQLDefinitionModelObject cqlDefinitionModelObject = new CQLDefinitionModelObject();
 		cqlDefinitionModelObject.setIdentifier(ctx.expressionDefinition().identifier().getText());
 
-		boolean possibleSupplementalDef = checkForSupplimentalDefinitions(ctx);
-		cqlDefinitionModelObject.setPossibleSupplementalDef(possibleSupplementalDef);
+		//boolean possibleSupplementalDef = checkForSupplimentalDefinitions(ctx);
+		//cqlDefinitionModelObject.setPossibleSupplementalDef(possibleSupplementalDef);
 
 		if(ctx.expressionDefinition().accessModifier() != null){
 			cqlDefinitionModelObject.setAccessModifier(ctx.expressionDefinition().accessModifier().getText());
@@ -180,7 +180,9 @@ public class MATCQLListener extends cqlBaseListener {
 	 * supplemental definition.
 	 * @param ctx
 	 */
-	private boolean checkForSupplimentalDefinitions(cqlParser.StatementContext ctx) {
+	//This code has been commented out as a part of MAT-7839 User Story which is
+	//not included in MAT 5.0 release
+	/*private boolean checkForSupplimentalDefinitions(cqlParser.StatementContext ctx) {
 		try 
 		{
 			if(ctx.expressionDefinition().expression().children.size() == 1)
@@ -225,7 +227,7 @@ public class MATCQLListener extends cqlBaseListener {
 
 					//Check the WhereClauseContext
 
-					/*if (whereClauseContext.expression().getClass().getSimpleName().equals("BooleanExpressionContext"))
+					if (whereClauseContext.expression().getClass().getSimpleName().equals("BooleanExpressionContext"))
 				{
 					BooleanExpressionContext booleanExpressionContext = (BooleanExpressionContext)whereClauseContext.expression();
 					//System.out.println("where clause expression:"+booleanExpressionContext.getText());
@@ -260,7 +262,7 @@ public class MATCQLListener extends cqlBaseListener {
 						}
 					}
 
-				}*/
+				}
 
 
 					//if(sourceClauseCheck && whereClauseCheck){
@@ -283,7 +285,7 @@ public class MATCQLListener extends cqlBaseListener {
 		}
 
 		return false;
-	}
+	}*/
 
 	private List<String> findFunctionChildren(cqlParser.StatementContext ctx, CQLBaseStatementInterface cqlBaseStatement) {
 		FunctionDefinitionContext functionDefinitionContext = ctx.functionDefinition();

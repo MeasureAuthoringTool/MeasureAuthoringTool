@@ -1528,6 +1528,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getSuccessMessageAlert().setVisible(true);
 									
 									searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
+									searchDisplay.getFunctionBodyAceEditor().setText(result.getFunction().getFunctionLogic());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 									searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
@@ -1587,6 +1588,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.clearAndAddFunctionsNamesToListBox();
 								searchDisplay.updateFunctionMap();
 								searchDisplay.getFuncNameTxtArea().setText(result.getFunction().getFunctionName());
+								searchDisplay.getFunctionBodyAceEditor().setText(result.getFunction().getFunctionLogic());
 								searchDisplay.setCurrentSelectedFunctionObjId(result.getFunction().getId());
 								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
@@ -1679,8 +1681,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.clearAndAddParameterNamesToListBox();
 									searchDisplay.updateParamMap();
 									searchDisplay.getErrorMessageAlert().clearAlert();
-									searchDisplay.getParameterNameTxtArea()
-									.setText(result.getParameter().getParameterName());
+									searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
+									searchDisplay.getParameterAceEditor().setText(result.getParameter().getParameterLogic());
 									searchDisplay.setIsPageDirty(false);
 									searchDisplay.getParameterAceEditor().clearAnnotations();
 									searchDisplay.getParameterAceEditor().removeAllMarkers();
@@ -1730,8 +1732,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
 								searchDisplay.clearAndAddParameterNamesToListBox();
 								searchDisplay.updateParamMap();
-								searchDisplay.getParameterNameTxtArea()
-								.setText(result.getParameter().getParameterName());
+								searchDisplay.getParameterNameTxtArea().setText(result.getParameter().getParameterName());
+								searchDisplay.getParameterAceEditor().setText(result.getParameter().getParameterLogic());
 								searchDisplay.setCurrentSelectedParamerterObjId(result.getParameter().getId());
 								searchDisplay.getErrorMessageAlert().clearAlert();
 								searchDisplay.setIsPageDirty(false);
@@ -1828,6 +1830,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getErrorMessageAlert().clearAlert();
 											searchDisplay.getDefineNameTxtArea()
 											.setText(result.getDefinition().getDefinitionName());
+											searchDisplay.getDefineAceEditor().setText(result.getDefinition().getDefinitionLogic());
 											searchDisplay.setIsPageDirty(false);
 											searchDisplay.getDefineAceEditor().clearAnnotations();
 											searchDisplay.getDefineAceEditor().removeAllMarkers();
@@ -1883,8 +1886,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.updateDefineMap();
 								searchDisplay.setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
 								searchDisplay.getErrorMessageAlert().clearAlert();
-								searchDisplay.getDefineNameTxtArea()
-								.setText(result.getDefinition().getDefinitionName());
+								searchDisplay.getDefineNameTxtArea().setText(result.getDefinition().getDefinitionName());
+								searchDisplay.getDefineAceEditor().setText(result.getDefinition().getDefinitionLogic());
 								searchDisplay.setIsPageDirty(false);
 								searchDisplay.getDefineAceEditor().clearAnnotations();
 								searchDisplay.getDefineAceEditor().removeAllMarkers();
@@ -2465,24 +2468,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		boolean isInvalid = false;
 		if(!result.getCqlErrors().isEmpty()){
 			final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+			System.out.println("In Presenter Errors");
 			
 			for(CQLErrors error : result.getCqlErrors()){
-				if(error.getErrorInLine() >= result.getCqlModel().getLines()){
-					String errorMessage = new String();
-					errorMessage = errorMessage.concat("Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset());
-					HTML html = new HTML("<h6>" + errorMessage + "</h6>");
-					int line = error.getErrorInLine();
-					line = line - result.getCqlModel().getLines() + 1;
-					int column = error.getErrorAtOffeset();
-					System.out.println("line: " + line + "  column: " + column);
-					editor.addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.WARNING);
-					//searchDisplay.getDefineAceEditor().setAnnotations();
-					// try SCREEN_LINE, FULL_LINE, TEXT          underline_squiggly
-					//int id = searchDisplay.getDefineAceEditor().addMarker(AceRange.create(line - 1, 1, line-1, 15), "underline_squiggly", AceMarkerType.FULL_LINE, false);
-					int id = editor.addMarker(AceRange.create(line-1, column, line-1, column + 50), "underline", AceMarkerType.FULL_LINE, false);
-					if(!isInvalid){
-						isInvalid = true;
-					}
+				
+//				String errorMessage = "Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset();
+//				HTML html = new HTML("<h6>" + errorMessage + "</h6>"); 
+
+				int startLine = error.getStartErrorInLine(); 
+				int startColumn = error.getStartErrorAtOffset(); 
+				int endLine = error.getEndErrorInLine(); 
+				int endColumn = error.getEndErrorAtOffset(); 
+				
+				
+				editor.addAnnotation(startLine - 1, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				int id = editor.addMarker(AceRange.create(startLine - 1, startColumn, endLine - 1, endColumn), "underline", AceMarkerType.FULL_LINE, false);
+				if(!isInvalid) {
+					isInvalid = true;
 				}
 			}
 		}

@@ -29,6 +29,12 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private CQLFunctions function;
 	
+	/** The start line of the result */
+	private int startLine; 
+	
+	/** The end line of the result */
+	private int endLine; 
+	
 	public static final int NAME_NOT_UNIQUE = 1;
 	public static final int NODE_NOT_FOUND = 2;
 	public static final int NO_SPECIAL_CHAR = 3;
@@ -93,4 +99,21 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public void setFunction(CQLFunctions function) {
 		this.function = function;
 	}
+	
+	public void setStartLine(int startLine) {
+		this.startLine = startLine; 
+	}
+	
+	public int getStartLine() {
+		return this.startLine;
+	}
+	
+	public void setEndLine(int endLine) {
+		this.endLine = endLine; 
+	}
+	
+	public int getEndLIne() {
+		return this.endLine; 
+	}
+	
 }

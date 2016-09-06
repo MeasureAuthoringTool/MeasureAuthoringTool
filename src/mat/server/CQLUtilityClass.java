@@ -3,6 +3,7 @@ package mat.server;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -41,6 +42,11 @@ public class CQLUtilityClass {
 	
 	private static StringBuilder toBeInsertedAtEnd;
 	
+	private static int size; 
+	
+	public static int getSize() {
+		return size; 
+	}
 	
 	public static StringBuilder getStrToBeInserted(){
 		return toBeInsertedAtEnd;
@@ -86,18 +92,25 @@ public class CQLUtilityClass {
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();
 		if (paramList != null) {
 			for (CQLParameter parameter : paramList) {
-				if(parameter.getParameterName().equalsIgnoreCase(toBeInserted)){
-					toBeInsertedAtEnd = toBeInsertedAtEnd.append("parameter "
-							+ "\""+parameter.getParameterName()+ "\"" + " "
-							+ parameter.getParameterLogic());
-					//cqlStr = cqlStr.append("\n\n");
-				} else {
-					cqlStr = cqlStr.append("parameter "
-							+ "\""+parameter.getParameterName()+ "\"" + " "
+				System.out.println(parameter.getParameterName());
+					
+				String param = "parameter "
+						+ "\""+parameter.getParameterName()+ "\"";
+				
+				
+				
+					cqlStr = cqlStr.append(param + " "
 							+ parameter.getParameterLogic());
 					cqlStr = cqlStr.append("\n\n");
+					
+					// if the the param we just appended is the current one, then
+					// find the size of the file at that time and subtract two. 
+					// This will give us the end line of the parameter we are trying to insert. 
+					if(param.equalsIgnoreCase(toBeInserted)) {
+						size = countLines(cqlStr.toString()) - 2; // subtract two to get rid of new line characters at end. 
+					}
+					
 				}
-			}
 		}
 
 		// Definitions and Functions by Context
@@ -190,58 +203,28 @@ public class CQLUtilityClass {
 			StringBuilder cqlStr, String toBeInserted) {
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
-			if(definition.getDefinitionName().equalsIgnoreCase(toBeInserted)){
-				toBeInsertedAtEnd = toBeInsertedAtEnd.append("define " + "\""+ definition.getDefinitionName() + "\""
-						+ ": ");
-				toBeInsertedAtEnd = toBeInsertedAtEnd.append(definition.getDefinitionLogic());
-				//toBeInsertedAtEnd = toBeInsertedAtEnd.append("\n\n");
-			} else {
-				cqlStr = cqlStr.append("define " + "\""+ definition.getDefinitionName() + "\""
-						+ ": ");
-				cqlStr = cqlStr.append(definition.getDefinitionLogic());
-				cqlStr = cqlStr.append("\n\n");
-			}
 			
+				String def = "define " + "\""+ definition.getDefinitionName() + "\"";
+			
+				cqlStr = cqlStr.append(def + ": ");
+				cqlStr = cqlStr.append(definition.getDefinitionLogic());
+				cqlStr = cqlStr.append("\n\n");	
+				
+				// if the the def we just appended is the current one, then
+				// find the size of the file at that time and subtract two. 
+				// This will give us the end line of the definition we are trying to insert. 
+				if(def.equalsIgnoreCase(toBeInserted.toString())) {
+					size = countLines(cqlStr.toString())  - 2; // subtract two to get rid of new line characters
+				}
+				
 		}
 		
 		for (CQLFunctions function : functionsList) {
+				String func = "define function "
+						+ "\""+ function.getFunctionName() + "\"";
 			
-			if(function.getFunctionName().equalsIgnoreCase(toBeInserted)){
-				toBeInsertedAtEnd = toBeInsertedAtEnd.append("define function "
-						+ "\""+ function.getFunctionName() + "\"" + "(");
-				if(function.getArgumentList()!=null) {
-				for (CQLFunctionArgument argument : function.getArgumentList()) {
-					StringBuilder argumentType = new StringBuilder();
-					if (argument.getArgumentType().toString()
-							.equalsIgnoreCase("QDM Datatype")) {
-						argumentType = argumentType.append("\"").append(
-								argument.getQdmDataType());
-						if (argument.getAttributeName() != null) {
-							argumentType = argumentType.append(".")
-									.append(argument.getAttributeName());
-						}
-						argumentType = argumentType.append("\"");
-					} else if (argument
-							.getArgumentType()
-							.toString()
-							.equalsIgnoreCase(
-									CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
-						argumentType = argumentType.append(argument.getOtherType());
-					} else {
-						argumentType = argumentType.append(argument
-								.getArgumentType());
-					}
-					toBeInsertedAtEnd = toBeInsertedAtEnd.append("\""+ argument.getArgumentName() + "\" "
-							+ argumentType + ", ");
-				}
-				toBeInsertedAtEnd.deleteCharAt(toBeInsertedAtEnd.length() - 2);
-			}
-				
-				toBeInsertedAtEnd = toBeInsertedAtEnd.append("): " + function.getFunctionLogic());
-				//toBeInsertedAtEnd = toBeInsertedAtEnd.append("\n\n");
-			} else {
-				cqlStr = cqlStr.append("define function "
-						+ "\""+ function.getFunctionName() + "\"" + "(");
+			
+				cqlStr = cqlStr.append(func + "(");
 				if(function.getArgumentList()!=null) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {
 					StringBuilder argumentType = new StringBuilder();
@@ -272,12 +255,15 @@ public class CQLUtilityClass {
 				
 				cqlStr = cqlStr.append("): " + function.getFunctionLogic());
 				cqlStr = cqlStr.append("\n\n");
+				
+				// if the the func we just appended is the current one, then
+				// find the size of the file at that time and subtract two. 
+				// This will give us the end line of the function we are trying to insert. 
+				if(func.equalsIgnoreCase(toBeInserted)) {
+					size = countLines(cqlStr.toString()) - 2; 
+				}
 			}
- 			
-			
-			
-		}
-		
+ 					
 		return cqlStr;
 	}
 

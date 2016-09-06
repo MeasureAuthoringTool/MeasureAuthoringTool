@@ -1439,8 +1439,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 				matValueSetTransferObject.setDatatype(dataType);
 				final String userDefinedInput = matValueSetTransferObject.getUserDefinedText();
+				final String dataTypeName = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 				//Check if QDM name already exists in the list.
-				if(!CheckNameInQDMList(userDefinedInput,isModified)){
+				if(!CheckNameInQDMList(userDefinedInput,ConstantMessages.USER_DEFINED_QDM_OID,dataTypeName,isModified)){
 					MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
 							matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
 								@Override
@@ -1512,7 +1513,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	/*
 	 * checks if existing QDMList already has the name you are about to save.
 	 */
-	private boolean CheckNameInQDMList(String userDefinedInput, boolean isQDMModified) {
+	private boolean CheckNameInQDMList(String userDefinedInput, String oidCode, String DataTypeName, boolean isQDMModified) {
 		if (appliedQDMList.size() > 0) {
 			Iterator<QualityDataSetDTO> iterator = appliedQDMList
 					.iterator();
@@ -1521,17 +1522,23 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						.next();
 				if(isQDMModified){
 					if(modifyValueSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-						return true;
+						if(modifyValueSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+							return true;
+						}
 					}
 					else{
 						if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-							return true;
+							if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+								return true;
+							}
 						}
 					}
 				}
 				else{
 					if(dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-						return true;
+						if(dataSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
+							return true;
+						}
 					}
 				}
 			}
@@ -1560,8 +1567,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, measureID);
 			matValueSetTransferObject.scrubForMarkUp();
 			final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
+			final String oidCode = matValueSetTransferObject.getMatValueSet().getID();
 			//Check if QDM name already exists in the list.
-			if(!CheckNameInQDMList(codeListName,isModified)){
+			if(!CheckNameInQDMList(codeListName,oidCode,dataTypeText,isModified)){
 				MatContext.get().getCodeListService().saveQDStoMeasure(
 						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
 
@@ -1698,7 +1706,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).
 				equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			if(!CheckNameInQDMList(searchDisplay.getUserDefinedInput().getText(),isModified)){
+			String usrDefinedDataTypeName = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+			if(!CheckNameInQDMList(searchDisplay.getUserDefinedInput().getText(),ConstantMessages.USER_DEFINED_QDM_OID,usrDefinedDataTypeName,isModified)){
 				MatValueSetTransferObject object = new MatValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 				object.scrubForMarkUp();
@@ -1931,7 +1940,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 			expansionId = searchDisplay.getExpansionIdentifierValue(searchDisplay.getQDMExpIdentifierListBox());
 			version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-			if(!CheckNameInQDMList(modifyWithDTO.getDisplayName(),isModified)){
+			if(!CheckNameInQDMList(modifyWithDTO.getDisplayName(),modifyWithDTO.getID(),dataTypeText,isModified)){
 				if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
 						|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 					

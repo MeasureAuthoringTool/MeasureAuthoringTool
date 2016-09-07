@@ -3523,6 +3523,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							result.setValid(false);
 							result.setValidationMessages(message);
 							break;
+						} 
+						//aggregate function should have user define function as a child
+						if(childNode.getNodeName().equalsIgnoreCase("cqlaggfunction")){
+							if(!childNode.hasChildNodes()){
+								result.setValid(false);
+								result.setValidationMessages(message);
+								break;
+							}
 						}
 					} else {
 						result.setValid(false);

@@ -3572,7 +3572,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		StringBuilder cqlString = getCqlService().getCqlString(cqlModel);
 		if(!StringUtils.isBlank(cqlString.toString())){
 			try {
-				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
+				String elmString = CQLtoELM.doTranslation(cqlString.toString(), "XML", false, false, true);
 				if(CqlTranslator.getErrors().size()>0){
 					isInvalid = true;
 				}

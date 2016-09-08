@@ -269,7 +269,7 @@ public class CQLServiceImpl implements CQLService {
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
 							String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
-							parseCQLDefForErrors(result, measureId, name, currentObj.getFunctionName());
+							parseCQLDefForErrors(result, measureId, name, currentObj.getFunctionLogic());
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj,
 									currentObj, functionsList);
 							result.setSuccess(true);

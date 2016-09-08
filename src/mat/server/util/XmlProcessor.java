@@ -1646,8 +1646,15 @@ public class XmlProcessor {
 						"/measure/measureDetails/title/text()",
 						originalDoc.getDocumentElement(), XPathConstants.STRING);
 				
+				String version = (String) xPath.evaluate(
+						"/measure/measureDetails/version/text()",
+						originalDoc.getDocumentElement(), XPathConstants.STRING);
+				
 				Element libraryChildElem = originalDoc.createElement("library");
 				libraryChildElem.setTextContent(libraryName.replaceAll(" ", ""));
+				
+				Element versionChildElem = originalDoc.createElement("version");
+				versionChildElem.setTextContent(version);
 				
 				Element usingChildElem = originalDoc.createElement("usingModel");
 				usingChildElem.setTextContent("QDM");
@@ -1663,6 +1670,7 @@ public class XmlProcessor {
 				
 				
 				cqlNode.appendChild(libraryChildElem);
+				cqlNode.appendChild(versionChildElem);
 				cqlNode.appendChild(usingChildElem);
 				cqlNode.appendChild(contextChildElem);
 				cqlNode.appendChild(valueSetsChildElem);

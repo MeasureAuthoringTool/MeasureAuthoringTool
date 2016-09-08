@@ -60,10 +60,10 @@ public class CQLUtilityClass {
 		if (cqlModel.getLibrary() != null) {
 			cqlStr = cqlStr.append("library "
 					+ cqlModel.getLibrary().getLibraryName());
-			if (cqlModel.getLibrary().getVersionUsed() != null) {
-				cqlStr = cqlStr.append("version "
-						+ cqlModel.getLibrary().getVersionUsed());
-			}
+			cqlStr = cqlStr.append(" version "
+					+ "'" + cqlModel.getLibrary().getVersionUsed());
+			cqlStr = cqlStr.append("'");
+			
 			cqlStr = cqlStr.append("\n\n");
 			
 			cqlStr = cqlStr.append("using QDM");
@@ -126,6 +126,7 @@ public class CQLUtilityClass {
 
 	}
 	
+
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);
 	
@@ -309,6 +310,7 @@ public class CQLUtilityClass {
 		
 		String libraryNameStr = "";
 		String usingModelStr = "";
+		String versionStr = "";
 		CQLLibraryModel libraryModel = new CQLLibraryModel();
 		CQLDataModel usingModel = new CQLDataModel();
 		
@@ -317,6 +319,7 @@ public class CQLUtilityClass {
 					
 			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_VERSION = "/measure/measureDetails/version/text()";
 			
 			try {
 				
@@ -326,6 +329,9 @@ public class CQLUtilityClass {
 				Node nodeCQLUsingModel = measureXMLProcessor.findNode(
 						measureXMLProcessor.getOriginalDoc(),
 						XPATH_EXPRESSION_CQLLOOKUP_USING);
+				Node nodeCQLVersion = measureXMLProcessor.findNode(
+						measureXMLProcessor.getOriginalDoc(),
+						XPATH_EXPRESSION_CQLLOOKUP_VERSION);
 				
 				if (nodeCQLLibrary != null) {
 					libraryNameStr = nodeCQLLibrary.getTextContent();
@@ -335,6 +341,11 @@ public class CQLUtilityClass {
 				if (nodeCQLUsingModel != null) {
 					usingModelStr = nodeCQLUsingModel.getTextContent();
 					usingModel.setName(usingModelStr);
+				}
+				
+				if (nodeCQLVersion != null) {
+					versionStr = nodeCQLVersion.getTextContent();
+					libraryModel.setVersionUsed(versionStr);
 				}
 				
 			} catch (XPathExpressionException e) {

@@ -104,10 +104,10 @@ public class CQLUtilityClass {
 					cqlStr = cqlStr.append("\n\n");
 					
 					// if the the param we just appended is the current one, then
-					// find the size of the file at that time and subtract two. 
+					// find the size of the file at that time. 
 					// This will give us the end line of the parameter we are trying to insert. 
 					if(param.equalsIgnoreCase(toBeInserted)) {
-						size = countLines(cqlStr.toString()) - 2; // subtract two to get rid of new line characters at end. 
+						size = getEndLine(cqlStr.toString());
 					}
 					
 				}
@@ -211,10 +211,10 @@ public class CQLUtilityClass {
 				cqlStr = cqlStr.append("\n\n");	
 				
 				// if the the def we just appended is the current one, then
-				// find the size of the file at that time and subtract two. 
+				// find the size of the file at that time. ;-
 				// This will give us the end line of the definition we are trying to insert. 
 				if(def.equalsIgnoreCase(toBeInserted.toString())) {
-					size = countLines(cqlStr.toString())  - 2; // subtract two to get rid of new line characters
+					size = getEndLine(cqlStr.toString());
 				}
 				
 		}
@@ -257,10 +257,10 @@ public class CQLUtilityClass {
 				cqlStr = cqlStr.append("\n\n");
 				
 				// if the the func we just appended is the current one, then
-				// find the size of the file at that time and subtract two. 
+				// find the size of the file at that time. 
 				// This will give us the end line of the function we are trying to insert. 
 				if(func.equalsIgnoreCase(toBeInserted)) {
-					size = countLines(cqlStr.toString()) - 2; 
+					size = getEndLine(cqlStr.toString());
 				}
 			}
  					
@@ -423,6 +423,20 @@ public class CQLUtilityClass {
 			}
 		return convertedCQLDataSetList;
 		
+	}
+	
+	private static int getEndLine(String cqlString) {
+		System.out.println("Get end line");
+		Scanner scanner = new Scanner(cqlString);
+		
+		int endLine = -1; 
+		while(scanner.hasNextLine()) {
+			endLine++;
+			scanner.nextLine(); 
+		}
+		
+		
+		return endLine; 
 	}
 	
 	public static int countLines(String str) {

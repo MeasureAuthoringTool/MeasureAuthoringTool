@@ -14,9 +14,30 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.service.CQLService;
@@ -40,26 +61,6 @@ import mat.shared.SaveUpdateCQLResult;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -267,7 +268,8 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
-							parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
+							String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
+							parseCQLDefForErrors(result, measureId, name, currentObj.getFunctionName());
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj,
 									currentObj, functionsList);
 							result.setSuccess(true);
@@ -319,7 +321,6 @@ public class CQLServiceImpl implements CQLService {
 						result.setFunction(currentObj);
 						return result;
 					}*/
-					
 					String cqlString = createFunctionsXML(currentObj);
 					
 					try {
@@ -334,7 +335,8 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
-								parseCQLDefForErrors(result, measureId, currentObj.getFunctionName());
+								String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
+								parseCQLDefForErrors(result, measureId, name, currentObj.getFunctionLogic());
 								functionsList.add(currentObj);
 								wrapper.setCqlFunctionsList(functionsList);
 								result.setSuccess(true);
@@ -434,7 +436,8 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
-							parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
+							String name = "parameter" + " \"" + currentObj.getParameterName() + "\""; 
+							parseCQLDefForErrors(result, measureId, name, currentObj.getParameterLogic());
 							wrapper = modfiyCQLParameterList(toBeModifiedObj,
 									currentObj, parameterList);
 							result.setSuccess(true);
@@ -487,7 +490,9 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
-								parseCQLDefForErrors(result, measureId, currentObj.getParameterName());
+								String name = "parameter" + " \"" + currentObj.getParameterName() + "\""; 
+								
+								parseCQLDefForErrors(result, measureId, name, currentObj.getParameterLogic());
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
 								result.setSuccess(true);
@@ -588,7 +593,8 @@ public class CQLServiceImpl implements CQLService {
 							xmlModel.setXml(processor.transform(processor
 									.getOriginalDoc()));
 							getService().saveMeasureXml(xmlModel);
-							parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
+							String name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
+							parseCQLDefForErrors(result, measureId,name, currentObj.getDefinitionLogic());
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj,
 									currentObj, definitionList);
 							result.setSuccess(true);
@@ -608,7 +614,8 @@ public class CQLServiceImpl implements CQLService {
 				}
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
-				parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
+				String name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
+				parseCQLDefForErrors(result, measureId, name, currentObj.getDefinitionLogic());
 				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getDefinitionName());
 				if (isDuplicate) {
@@ -634,7 +641,8 @@ public class CQLServiceImpl implements CQLService {
 										.transform(processor.getOriginalDoc()));
 								xmlModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(xmlModel);
-								parseCQLDefForErrors(result, measureId, currentObj.getDefinitionName());
+								name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
+								parseCQLDefForErrors(result, measureId, name, currentObj.getDefinitionLogic());
 								result.setSuccess(true);
 								result.setDefinition(currentObj);
 								definitionList.add(currentObj);
@@ -1413,18 +1421,33 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
-	public SaveUpdateCQLResult parseCQLDefForErrors(SaveUpdateCQLResult result, String measureId, String toBeInserted) {
+	public SaveUpdateCQLResult parseCQLDefForErrors(SaveUpdateCQLResult result, String measureId, String name, String logic) {
 		
 		List<String> Errors = new ArrayList<String>();
 		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass
-				.getCQLStringFromMeasureXML(measureXML.getXml(),measureId), toBeInserted).toString();
-		
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId), name).toString();
+	
 		result.getCqlModel().setLines(countLines(cqlFileString));
-		if(CQLUtilityClass.getStrToBeInserted() != null 
-				&& !CQLUtilityClass.getStrToBeInserted().toString().isEmpty()){
-			cqlFileString = cqlFileString + CQLUtilityClass.getStrToBeInserted().toString();
-		}
+		
+		
+		
+		
+		
+		
+		String wholeDef = name + " " + logic; 
+		System.out.println("Whole Definition: " + wholeDef);
+
+		int endLine = CQLUtilityClass.getSize(); 
+		int size = countLines(wholeDef); 
+		int startLine = endLine - size + 1;
+		
+		System.out.println("Start Line: " + startLine);
+		System.out.println("End Line: " + endLine);
+		
+		result.setStartLine(startLine);
+		result.setEndLine(endLine);
+		
+	
 		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
 		//int lines = countLines(cqlFileString);
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
@@ -1436,11 +1459,24 @@ public class CQLServiceImpl implements CQLService {
 			
 			for(CqlTranslatorException cte : cqlErrorsList){
 				CQLErrors cqlErrors = new CQLErrors();
-				cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-				cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+				
+				int errorStartLine = cte.getLocator().getStartLine(); 
+				
+				cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine() - startLine);
+				cqlErrors.setStartErrorAtOffset(cte.getLocator().getStartChar());
+				
+				cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine() - startLine);
+				cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+
 				cqlErrors.setErrorMessage(cte.getMessage());
-				errors.add(cqlErrors);
+				
+				if((errorStartLine >= startLine && errorStartLine <= endLine)) {
+					errors.add(cqlErrors);
+
+				}
 			}
+			
+			System.out.println(errors);
 			
 			result.setCqlErrors(errors);
 		} catch (IOException e) {
@@ -1449,7 +1485,26 @@ public class CQLServiceImpl implements CQLService {
 		
 	return result;
 	}
+		
+	private static int getStartLine(String toFind, String cqlString) {
+		System.out.println("TO FIND: " + toFind);
+		Scanner scanner = new Scanner(cqlString);
+		
+		int startLine = 1; 
+		while(scanner.hasNextLine()) {
+			String currentLine = scanner.nextLine();
+			if(currentLine.startsWith(toFind)) {
+				break; 
+			} else {
+				startLine++;
+			}
+		}
+		
+		
+		return startLine; 
+	}
 	
+
 	
 	public static int countLines(String str) {
 	    if(str == null || str.isEmpty())

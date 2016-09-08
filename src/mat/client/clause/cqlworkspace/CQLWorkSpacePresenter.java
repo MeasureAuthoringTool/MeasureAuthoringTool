@@ -2481,8 +2481,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				int endColumn = error.getEndErrorAtOffset(); 
 				
 				
-				editor.addAnnotation(startLine - 1, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
-				int id = editor.addMarker(AceRange.create(startLine - 1, startColumn, endLine - 1, endColumn), "underline", AceMarkerType.FULL_LINE, false);
+				editor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				int id = editor.addMarker(AceRange.create(startLine, startColumn, endLine, endColumn), "underline", AceMarkerType.FULL_LINE, false);
 				if(!isInvalid) {
 					isInvalid = true;
 				}

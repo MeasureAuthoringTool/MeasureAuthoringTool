@@ -117,4 +117,6 @@ public interface CQLService {
 
 	String getSupplementalDefinitions();
 
+	StringBuilder getCqlString(CQLModel cqlModel);
+
 }

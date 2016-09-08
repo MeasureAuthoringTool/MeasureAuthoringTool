@@ -1051,7 +1051,8 @@ public class CQLServiceImpl implements CQLService {
 	 *            - CQLModel
 	 * @return the cql string
 	 */
-	private StringBuilder getCqlString(CQLModel cqlModel) {
+	@Override
+	public StringBuilder getCqlString(CQLModel cqlModel) {
 		
 		return CQLUtilityClass.getCqlString(cqlModel, "");
 	}

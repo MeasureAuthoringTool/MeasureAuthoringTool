@@ -91,6 +91,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.util.ExportSimpleXML;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
@@ -108,6 +109,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -3555,14 +3558,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
+	
 	private boolean parseCQLFile(String measureXML, String measureId){
 		boolean isInvalid = false;
+		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
 		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML,measureId), "").toString();
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
-		if(matcqlParser.getCQLErrorListener().getErrors().size()>0){
-			isInvalid = true;
+		List<String> message= new ArrayList<String>();
+		String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO,organizationDAO, cqlFileObject);
+		CQLModel cqlModel = new CQLModel();
+		cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(exportedXML,measureId);
+		StringBuilder cqlString = getCqlService().getCqlString(cqlModel);
+		if(!StringUtils.isBlank(cqlString.toString())){
+			try {
+				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
+				if(CqlTranslator.getErrors().size()>0){
+					isInvalid = true;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		return isInvalid;
 	}	
 	/* (non-Javadoc)

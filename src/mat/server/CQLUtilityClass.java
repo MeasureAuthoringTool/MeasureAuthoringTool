@@ -67,6 +67,11 @@ public class CQLUtilityClass {
 			cqlStr = cqlStr.append("\n\n");
 			
 			cqlStr = cqlStr.append("using QDM");
+			//Uncomment after CQLToElmParser is ready to accept version beside QDM.
+			/*cqlStr = cqlStr.append(" version ");
+			cqlStr = cqlStr.append("'");
+			cqlStr = cqlStr.append(cqlModel.getUsedModel().getQdmVersion());
+			cqlStr = cqlStr.append("'");*/
 			cqlStr = cqlStr.append("\n\n");
 		}
 
@@ -310,6 +315,7 @@ public class CQLUtilityClass {
 		
 		String libraryNameStr = "";
 		String usingModelStr = "";
+		String usingModelVer = "";
 		String versionStr = "";
 		CQLLibraryModel libraryModel = new CQLLibraryModel();
 		CQLDataModel usingModel = new CQLDataModel();
@@ -319,6 +325,7 @@ public class CQLUtilityClass {
 					
 			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_USING_VERSION = "/measure/cqlLookUp/usingModelVersion/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_VERSION = "/measure/measureDetails/version/text()";
 			
 			try {
@@ -329,6 +336,9 @@ public class CQLUtilityClass {
 				Node nodeCQLUsingModel = measureXMLProcessor.findNode(
 						measureXMLProcessor.getOriginalDoc(),
 						XPATH_EXPRESSION_CQLLOOKUP_USING);
+				Node nodeCQLUsingModelVersion = measureXMLProcessor.findNode(
+						measureXMLProcessor.getOriginalDoc(),
+						XPATH_EXPRESSION_CQLLOOKUP_USING_VERSION);
 				Node nodeCQLVersion = measureXMLProcessor.findNode(
 						measureXMLProcessor.getOriginalDoc(),
 						XPATH_EXPRESSION_CQLLOOKUP_VERSION);
@@ -341,6 +351,11 @@ public class CQLUtilityClass {
 				if (nodeCQLUsingModel != null) {
 					usingModelStr = nodeCQLUsingModel.getTextContent();
 					usingModel.setName(usingModelStr);
+				}
+				
+				if (nodeCQLUsingModelVersion != null) {
+					usingModelVer = nodeCQLUsingModelVersion.getTextContent();
+					usingModel.setQdmVersion(usingModelVer);
 				}
 				
 				if (nodeCQLVersion != null) {

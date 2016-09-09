@@ -2,6 +2,7 @@ package mat.server.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -1659,6 +1661,9 @@ public class XmlProcessor {
 				Element usingChildElem = originalDoc.createElement("usingModel");
 				usingChildElem.setTextContent("QDM");
 				
+				Element usingVerChildElem = originalDoc.createElement("usingModelVersion");
+				usingVerChildElem.setTextContent(getDefaultReleaseVersion());
+				
 				Element contextChildElem = originalDoc.createElement("cqlContext");
 				contextChildElem.setTextContent("Patient");
 				
@@ -1672,6 +1677,7 @@ public class XmlProcessor {
 				cqlNode.appendChild(libraryChildElem);
 				cqlNode.appendChild(versionChildElem);
 				cqlNode.appendChild(usingChildElem);
+				cqlNode.appendChild(usingVerChildElem);
 				cqlNode.appendChild(contextChildElem);
 				cqlNode.appendChild(valueSetsChildElem);
 				cqlNode.appendChild(parametersChildElem);
@@ -1715,5 +1721,45 @@ public class XmlProcessor {
 		return missingDefaultParameterList;
 	}
 
-	
+	/**
+	 * Gets the default release version from Mat.properties file
+	 *
+	 * @return the default releaseVersion
+	 */
+	private String getDefaultReleaseVersion(){
+		String releaseVersion = null;
+		Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			
+			String filename = "Mat.properties";
+			input = XmlProcessor.class.getClassLoader().getResourceAsStream(filename);
+			if(input == null){
+				System.out.println("Could'nt find the file " + filename);
+				return null;
+			}
+			
+			//load a properties file from class path, inside static method
+			prop.load(input);
+			
+			releaseVersion = prop.getProperty("mat.measure.current.release.version");
+			if(releaseVersion.startsWith("v")){
+				releaseVersion = releaseVersion.substring(1);
+			}
+			
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		} finally{
+			if(input!=null){
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+		return releaseVersion;
+	}
 }

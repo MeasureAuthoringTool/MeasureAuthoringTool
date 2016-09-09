@@ -2283,6 +2283,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+					updateCQLVersion(xmlProcessor);
 					if(! scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
 						deleteExistingGroupings(xmlProcessor);
 					}
@@ -2299,7 +2300,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			processor.checkForScoringType();
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
-			checkForDefaultCQLDefinitionsAndAppend(processor);			
+			checkForDefaultCQLDefinitionsAndAppend(processor);
+			updateCQLVersion(processor);
 			
 			//Add QDM elements for Supplemental Definitions for Race, Payer, Sex, Ethnicity
 			measureXmlModel.setXml(processor.transform(processor.getOriginalDoc()));
@@ -2360,6 +2362,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	private void updateCQLVersion(XmlProcessor processor) {
+		String cqlVersionXPath = "/measure/cqlLookUp/version";
+		try {
+			String version = (String) xPath.evaluate(
+					"/measure/measureDetails/version/text()",
+					processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+			Node node = (Node)xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			node.setTextContent(version);
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+		
+	}
+
 	/**
 	 * Deletes the existing groupings when scoring type selection is changed and saved.
 	 *

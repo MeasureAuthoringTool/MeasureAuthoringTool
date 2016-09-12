@@ -1533,10 +1533,12 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				if(isQDMModified){
 					if(modifyValueSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)){
-						if(!modifyValueSetDTO.getOid().equalsIgnoreCase(oidCode)){
-							searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-									.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
-							return true;
+						if(nameCountInQDMList(userDefinedInput) > 1){
+							if(!modifyValueSetDTO.getOid().equalsIgnoreCase(oidCode)){
+								searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+										.getMessageDelegate().getERROR_IN_SAVING_QDM_ELEMENTS());
+								return true;
+							}
 						}
 						else {
 							if(modifyValueSetDTO.getDataType().equalsIgnoreCase(DataTypeName)){
@@ -1591,6 +1593,18 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		}
 		return false;
+	}
+
+	private int nameCountInQDMList(String userDefinedInput) {
+		int count = 0;
+		Iterator<QualityDataSetDTO> qdmIterator = appliedQDMList
+				.iterator();
+		while (qdmIterator.hasNext()) {
+			if(qdmIterator.next().getCodeListName().equals(userDefinedInput)){
+				count++;
+			}
+		}
+		return count;
 	}
 
 	/**

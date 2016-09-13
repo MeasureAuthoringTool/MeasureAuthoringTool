@@ -345,7 +345,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		// if the cqlFile String is blank, don't even parse it.
 		if(!cqlFileString.isEmpty()) {
-			elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, false);	
+
+			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
+			cqlToElm.doTranslation(false, false, false);
+			elmString = cqlToElm.getElmString();
+			
+			
 			LOGGER.info(elmString);
 			// get cql library name from the elm file. 
 			// it is located at /library/identifier/@id

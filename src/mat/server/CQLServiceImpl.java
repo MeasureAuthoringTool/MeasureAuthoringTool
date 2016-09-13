@@ -1452,37 +1452,36 @@ public class CQLServiceImpl implements CQLService {
 		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
 		//int lines = countLines(cqlFileString);
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		try {
-			if(!StringUtils.isBlank(cqlFileString)){
-				String elmString = CQLtoELM.doTranslation(cqlFileString, "XML", false, false, true);
-				cqlErrorsList.addAll(CqlTranslator.getErrors());
+		if(!StringUtils.isBlank(cqlFileString)){
+			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
+			cqlToElm.doTranslation(true, false, false);
+			
+			if(cqlToElm.getErrors() != null) {
+				cqlErrorsList.addAll(cqlToElm.getErrors()); 
 			}
 			
-			for(CqlTranslatorException cte : cqlErrorsList){
-				CQLErrors cqlErrors = new CQLErrors();
-				
-				int errorStartLine = cte.getLocator().getStartLine(); 
-				
-				cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine() - startLine);
-				cqlErrors.setStartErrorAtOffset(cte.getLocator().getStartChar());
-				
-				cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine() - startLine);
-				cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-
-				cqlErrors.setErrorMessage(cte.getMessage());
-				
-				if((errorStartLine >= startLine && errorStartLine <= endLine)) {
-					errors.add(cqlErrors);
-
-				}
-			}
-			
-			System.out.println(errors);
-			
-			result.setCqlErrors(errors);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		
+		for(CqlTranslatorException cte : cqlErrorsList){
+			CQLErrors cqlErrors = new CQLErrors();
+			
+			int errorStartLine = cte.getLocator().getStartLine(); 
+			
+			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine() - startLine);
+			cqlErrors.setStartErrorAtOffset(cte.getLocator().getStartChar());
+			
+			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine() - startLine);
+			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+
+			cqlErrors.setErrorMessage(cte.getMessage());
+			
+			if((errorStartLine >= startLine && errorStartLine <= endLine)) {
+				errors.add(cqlErrors);
+
+			}
+		}
+				
+		result.setCqlErrors(errors);
 		
 	return result;
 	}

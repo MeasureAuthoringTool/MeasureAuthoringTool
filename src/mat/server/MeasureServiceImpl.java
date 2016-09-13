@@ -633,26 +633,29 @@ MeasureService {
 		
 		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		try {
-			if(!StringUtils.isBlank(cqlFileString)){
-				String elmString = CQLtoELM.doTranslation(cqlFileString.trim(), "XML", false, false, true);
-				cqlErrorsList.addAll(CqlTranslator.getErrors());
-			}
+		if(!StringUtils.isBlank(cqlFileString)){
 			
-			for(CqlTranslatorException cte : cqlErrorsList){
-				//Errors.add(cte.getMessage());
-				//result.getCqlErrors().add(cte);
-				CQLErrors cqlErrors = new CQLErrors();
-				cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-				cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-				cqlErrors.setErrorMessage(cte.getMessage());
-				errors.add(cqlErrors);
-			}
+			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
+			cqlToElm.doTranslation(true, false, false);
 			
-			result.setCqlErrors(errors);
-		} catch (IOException e) {
-			e.printStackTrace();
+			String elmString = cqlToElm.getElmString(); 
+			
+			if(cqlToElm.getErrors() != null) {
+				cqlErrorsList.addAll(cqlToElm.getErrors());
+			}
 		}
+		
+		for(CqlTranslatorException cte : cqlErrorsList){
+			//Errors.add(cte.getMessage());
+			//result.getCqlErrors().add(cte);
+			CQLErrors cqlErrors = new CQLErrors();
+			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+			cqlErrors.setErrorMessage(cte.getMessage());
+			errors.add(cqlErrors);
+		}
+		
+		result.setCqlErrors(errors);
 		
 	return result;
 	}

@@ -3587,13 +3587,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(exportedXML,measureId);
 		StringBuilder cqlString = getCqlService().getCqlString(cqlModel);
 		if(!StringUtils.isBlank(cqlString.toString())){
-			try {
-				String elmString = CQLtoELM.doTranslation(cqlString.toString(), "XML", false, false, true);
-				if(CqlTranslator.getErrors().size()>0){
-					isInvalid = true;
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			CQLtoELM cqlToElm = new CQLtoELM(cqlString.toString()); 
+			cqlToElm.doTranslation(true, false, false);
+			
+			String elmSting = cqlToElm.getElmString();
+			if(cqlToElm.getErrors() != null && cqlToElm.getErrors().size() > 0) {
+				isInvalid = true; 
 			}
 		}
 		

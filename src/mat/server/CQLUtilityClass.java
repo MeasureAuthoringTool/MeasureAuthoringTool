@@ -67,11 +67,11 @@ public class CQLUtilityClass {
 			cqlStr = cqlStr.append("\n\n");
 			
 			cqlStr = cqlStr.append("using QDM");
-			//Uncomment after CQLToElmParser is ready to accept version beside QDM.
-			/*cqlStr = cqlStr.append(" version ");
+			
+			cqlStr = cqlStr.append(" version ");
 			cqlStr = cqlStr.append("'");
 			cqlStr = cqlStr.append(cqlModel.getUsedModel().getQdmVersion());
-			cqlStr = cqlStr.append("'");*/
+			cqlStr = cqlStr.append("'");
 			cqlStr = cqlStr.append("\n\n");
 		}
 

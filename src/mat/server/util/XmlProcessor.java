@@ -606,7 +606,7 @@ public class XmlProcessor {
 	 * 
 	 * @return the string
 	 */
-	public String checkForScoringType() {
+	public String checkForScoringType(String releaseVersion) {
 		if (originalDoc == null) {
 			return "";
 		}
@@ -619,7 +619,7 @@ public class XmlProcessor {
 			LOG.info("scoringType:" + scoringType);
 			
 			removeNodesBasedOnScoring(scoringType);
-			createNewNodesBasedOnScoring(scoringType);
+			createNewNodesBasedOnScoring(scoringType,releaseVersion);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -813,10 +813,11 @@ public class XmlProcessor {
 	 * 
 	 * @param scoringType
 	 *            the scoring type
+	 * @param releaseVersion 
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public void createNewNodesBasedOnScoring(String scoringType)
+	public void createNewNodesBasedOnScoring(String scoringType, String releaseVersion)
 			throws XPathExpressionException {
 		List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
@@ -866,7 +867,11 @@ public class XmlProcessor {
 			}
 		}
 		// Create supplementalDataElements node
-		createSupplementalDataElementNode(measureStratificationsNode);
+		releaseVersion = releaseVersion.replaceAll("Draft ", "").trim();
+		if(releaseVersion.startsWith("v")){
+			releaseVersion = releaseVersion.substring(1);
+		}
+		createSupplementalDataElementNode(measureStratificationsNode,releaseVersion);
 		/*
 		 * All the adding and removing can put the children of 'populations' in
 		 * a random order. Arrange the population nodes in correct order.*/
@@ -924,10 +929,11 @@ public class XmlProcessor {
 	 * Creates the Supplemental Data Element Node.
 	 *
 	 * @param measureStratificationsNode stratifications Node for the measure
+	 * @param releaseVersion 
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createSupplementalDataElementNode(
-			Node measureStratificationsNode) throws XPathExpressionException {
+			Node measureStratificationsNode, String releaseVersion) throws XPathExpressionException {
 		Node supplementaDataElementsElement = findNode(originalDoc,
 				XPATH_MEASURE_SD_ELEMENTS);
 		if (supplementaDataElementsElement == null) {
@@ -995,7 +1001,7 @@ public class XmlProcessor {
 			.appendChild(cqlLookUpElement
 					);
 			
-			createCQLLookUpElements();
+			createCQLLookUpElements(releaseVersion);
 		}
 		System.out.println("Original Doc: "+originalDoc.toString());
 	}
@@ -1629,10 +1635,11 @@ public class XmlProcessor {
 	
 	/**
 	 * Creates the cql general info.
+	 * @param releaseVersion 
 	 *
 	 * @return the string
 	 */
-	public String createCQLLookUpElements() {
+	public String createCQLLookUpElements(String releaseVersion) {
 		
 		if (originalDoc == null) {
 			return "";
@@ -1662,7 +1669,7 @@ public class XmlProcessor {
 				usingChildElem.setTextContent("QDM");
 				
 				Element usingVerChildElem = originalDoc.createElement("usingModelVersion");
-				usingVerChildElem.setTextContent(getDefaultReleaseVersion());
+				usingVerChildElem.setTextContent(releaseVersion);
 				
 				Element contextChildElem = originalDoc.createElement("cqlContext");
 				contextChildElem.setTextContent("Patient");
@@ -1719,47 +1726,5 @@ public class XmlProcessor {
 			}
 		}
 		return missingDefaultParameterList;
-	}
-
-	/**
-	 * Gets the default release version from Mat.properties file
-	 *
-	 * @return the default releaseVersion
-	 */
-	private String getDefaultReleaseVersion(){
-		String releaseVersion = null;
-		Properties prop = new Properties();
-		InputStream input = null;
-		try {
-			
-			String filename = "Mat.properties";
-			input = XmlProcessor.class.getClassLoader().getResourceAsStream(filename);
-			if(input == null){
-				System.out.println("Could'nt find the file " + filename);
-				return null;
-			}
-			
-			//load a properties file from class path, inside static method
-			prop.load(input);
-			
-			releaseVersion = prop.getProperty("mat.measure.current.release.version");
-			if(releaseVersion.startsWith("v")){
-				releaseVersion = releaseVersion.substring(1);
-			}
-			
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally{
-			if(input!=null){
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		
-		return releaseVersion;
 	}
 }

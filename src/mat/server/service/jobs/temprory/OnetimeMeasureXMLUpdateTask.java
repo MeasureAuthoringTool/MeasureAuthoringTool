@@ -154,7 +154,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			}
 			XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
 			
-			xmlProcessor.checkForScoringType();
+			xmlProcessor.checkForScoringType(getMeasureLibraryService().getCurrentReleaseVersion());
 			measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			getMeasurePackageService().saveMeasureXml(measureXmlModel);
 		}

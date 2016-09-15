@@ -238,7 +238,7 @@ implements MeasureCloningService {
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
-				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId);
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));
 			}

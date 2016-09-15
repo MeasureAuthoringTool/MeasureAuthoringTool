@@ -2279,7 +2279,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String scoringTypeAfterNewXml = (String) xPath.evaluate(
 							"/measure/measureDetails/scoring/@id",
 							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
-					xmlProcessor.checkForScoringType();
+					xmlProcessor.checkForScoringType(getCurrentReleaseVersion());
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
@@ -2297,7 +2297,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
-			processor.checkForScoringType();
+			processor.checkForScoringType(getCurrentReleaseVersion());
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);

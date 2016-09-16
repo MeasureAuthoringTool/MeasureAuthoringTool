@@ -334,6 +334,11 @@ public class MATCQLListener extends cqlBaseListener {
 		for(int i=0;i<childTokens.size();i++){
 			String token = childTokens.get(i).trim();
 			//System.out.println("token:"+token);
+			if(i==0 && token.equals("parameter")){
+				removeTokens.add(childTokens.get(i));
+				removeTokens.add(childTokens.get(i+1));
+				break;
+			}
 			if(token.equals(":")){
 				removeTokens.add(childTokens.get(i));
 				break;

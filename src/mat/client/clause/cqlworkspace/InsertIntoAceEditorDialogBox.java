@@ -368,8 +368,11 @@ public class InsertIntoAceEditorDialogBox {
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
-									+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
+							if(!searchDisplay.getAppliedQdmList().get(i)
+									.getDataType().equalsIgnoreCase("attribute")){
+								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
+										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
+							}
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
 						listAllItemNames.setEnabled(false);

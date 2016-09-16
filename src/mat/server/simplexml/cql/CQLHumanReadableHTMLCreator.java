@@ -1316,17 +1316,21 @@ public class CQLHumanReadableHTMLCreator {
 		if(!(cqlBaseStatementObject instanceof CQLAggregateFunction)){
 			
 			Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
-			if(cqlBaseStatementObject instanceof CQLFunctionModelObject){
-				spanElem.appendText("define function ");
-			}else if(cqlBaseStatementObject instanceof CQLDefinitionModelObject) {
-				spanElem.appendText("define ");
-			} else {
-				spanElem.appendText("parameter ");
-			}
-	 
 			Element spanElemDefName = getSpanElementWithClass(subDivElement,
 					"cql-class");
-			spanElemDefName.appendText(statementSignature + ":");
+			if(cqlBaseStatementObject instanceof CQLFunctionModelObject){
+				spanElem.appendText("define function ");
+				spanElemDefName.appendText(statementSignature + ":");
+			}else if(cqlBaseStatementObject instanceof CQLDefinitionModelObject) {
+				spanElem.appendText("define ");
+				spanElemDefName.appendText(statementSignature + ":");
+			} else {
+				spanElem.appendText("parameter ");
+				spanElemDefName.appendText(statementSignature);
+			}
+	 
+			
+			
 			
 			List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
 			

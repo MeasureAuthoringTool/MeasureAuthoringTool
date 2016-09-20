@@ -76,6 +76,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	 * @return the HQMF xml string
 	 */
 	private String getHQMFXmlString(MeasureExport me) {
+		getExtensionValueBasedOnVersion(me);
 		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
 		me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
 		
@@ -185,6 +186,8 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				extensionValue = VERSION_4_1_2_ID;
+			}else if(releaseVersion.equalsIgnoreCase("v5.0")) {
+				extensionValue = VERSION_5_0_ID; 
 			} else {
 				extensionValue = VERSION_4_3_ID;
 			}

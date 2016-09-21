@@ -77,6 +77,8 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLCodeSystem;
+import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
@@ -230,7 +232,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName, 
-			MeasureXmlModel codeSystemModal, String codeSystemName) {
+			MeasureXmlModel codeSystemModel, String codeSystemName) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		MeasureXmlModel newXmlModel = getService().getMeasureXmlForMeasure(newMeasureXmlModel.getMeasureId());
 		if (((xmlModel != null && newXmlModel != null) && (StringUtils.isNotBlank(xmlModel.getXml()) && StringUtils.isNotBlank(newXmlModel.getXml())))
@@ -240,10 +242,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = callAppendNode(xmlModel, newMeasureXmlModel.getXml(), newNodeName, newMeasureXmlModel.getParentNode());
 			measureXmlModel.setXml(result);
 			
-			result = callAppendNode(xmlModel, codeSystemModal.getXml(), codeSystemName, codeSystemModal.getParentNode());
-			measureXmlModel.setXml(result);
+			result = callAppendNode(measureXmlModel, codeSystemModel.getXml(), codeSystemName, codeSystemModel.getParentNode());
+			codeSystemModel.setXml(result);
 			
-			getService().saveMeasureXml(measureXmlModel);
+			getService().saveMeasureXml(codeSystemModel);
 		}
 		
 	}
@@ -3099,6 +3101,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				// update cqlLookUp Tag
 				updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
 				updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
+				updateCQLCodeSystems(processor, modifyWithDTO, modifyDTO);
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 				
@@ -3108,6 +3111,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
 				// update cqlLookUp Tag
 				updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
+				updateCQLCodeSystems(processor, modifyWithDTO, modifyDTO);
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 			}
@@ -3116,6 +3120,106 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML End : Measure Id :: " + measureId);
 	}
 	
+	
+	
+	/**
+	 * Update CQL code systems.
+	 *
+	 * @param processor the processor
+	 * @param modifyWithDTO the modify with DTO
+	 * @param modifyDTO the modify DTO
+	 */
+	private void updateCQLCodeSystems(XmlProcessor processor, QualityDataSetDTO modifyWithDTO,
+			QualityDataSetDTO modifyDTO) {
+		String oldOid = modifyDTO.getOid();
+		String newOid = modifyWithDTO.getOid();
+		
+		String XPATH_VALUESET_OLD_OID = "/measure/cqlLookUp//valueset[@oid='"+oldOid+"']";
+		//String XPATH_VALUESET_NEW_OID = "/measure/cqlLookUp//valueset[@oid='"+newOid+"']";
+		String XPATH_CODE_SYSTEM_OLD_OID= "/measure/cqlLookUp//codesystem[@valueSetOID='"+oldOid+"']";
+		String XPATH_CODE_SYSTEM_NEW_OID= "/measure/cqlLookUp//codesystem[@valueSetOID='"+newOid+"']";
+		
+			try {
+				
+			if (!oldOid.equals(newOid)) {
+				NodeList nodesOldValueSets = (NodeList) xPath.evaluate(XPATH_VALUESET_OLD_OID,
+						processor.getOriginalDoc(), XPathConstants.NODESET);
+				if (nodesOldValueSets != null && nodesOldValueSets.getLength() <= 1) {
+					NodeList nodesoldCodeSystems = (NodeList) xPath.evaluate(XPATH_CODE_SYSTEM_OLD_OID,
+							processor.getOriginalDoc(), XPathConstants.NODESET);
+					if (nodesoldCodeSystems != null) {
+						for (int i = 0; i < nodesoldCodeSystems.getLength(); i++) {
+							Node currentNode = nodesoldCodeSystems.item(i);
+							Node parentNode = currentNode.getParentNode();
+							parentNode.removeChild(currentNode);
+						}
+					}
+				}
+			}
+			
+			// remove any Existing codeSystem for newOID
+			NodeList nodesnewCodeSystems = (NodeList) xPath.evaluate(XPATH_CODE_SYSTEM_NEW_OID,
+					processor.getOriginalDoc(), XPathConstants.NODESET);
+			if (nodesnewCodeSystems != null) {
+				for (int i = 0; i < nodesnewCodeSystems.getLength(); i++) {
+					Node currentNode = nodesnewCodeSystems.item(i);
+					Node parentNode = currentNode.getParentNode();
+					parentNode.removeChild(currentNode);
+				}
+			}
+			
+			createCodeSystems(processor, modifyDTO.getCodeSystemList());
+			
+		} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		
+	}
+
+	private String createCodeSystems(XmlProcessor processor, List<CQLCodeSystem> codeSystemList) {
+		CQLCodeSystemWrapper codeSystemWrapper = new CQLCodeSystemWrapper();
+		codeSystemWrapper.setCqlCodeSystemList(codeSystemList);
+		ByteArrayOutputStream stream = createCQLCodesystemXML(codeSystemWrapper);
+		int startIndex = stream.toString().indexOf("<codeSystems>", 0);
+		int lastIndex = stream.toString().indexOf("</codeSystems>", startIndex);
+		String xmlString = stream.toString().substring(startIndex,lastIndex + 14);
+		logger.debug("createCodeSystems Method Call xmlString :: "
+				+ xmlString);
+		return xmlString;
+		
+	}
+	
+	private ByteArrayOutputStream createCQLCodesystemXML(
+			final CQLCodeSystemWrapper wrapper) {
+		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader()
+					.getResourceAsURL("CodeSystemsMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
+					stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(wrapper);
+			logger.debug("Marshalling of QualityDataSetDTO is successful.."
+					+ stream.toString());
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load QualityDataModelMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		return stream;
+	}
+
 	/**
 	 * This method updates MeasureXML - ValueSet nodes under CQLLookUp.
 	 * 

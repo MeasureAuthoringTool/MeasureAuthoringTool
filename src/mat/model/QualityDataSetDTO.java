@@ -1,6 +1,10 @@
 package mat.model;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.model.cql.CQLCodeSystem;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -81,6 +85,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	private String expansionIdentifier;
 	
 	private String vsacExpIdentifier;
+	
+	private List<CQLCodeSystem> codeSystemList;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -485,6 +491,18 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;
+	}
+
+
+
+	public List<CQLCodeSystem> getCodeSystemList() {
+		return codeSystemList;
+	}
+
+
+
+	public void setCodeSystemList(List<CQLCodeSystem> codeSystemList) {
+		this.codeSystemList = codeSystemList;
 	}
 	
 	

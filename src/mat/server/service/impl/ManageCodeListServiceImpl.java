@@ -1721,7 +1721,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet()
 					.getExpansionProfile());
 		}
-	
+		qds.setCodeSystemList(getCodeSystemList(valueSetTransferObject.getMatValueSet()
+				.getConceptList().getConceptList(), qds.getOid()));
 		// if (valueSetTransferObject.isEffectiveDate()) {
 		// qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
 		// }
@@ -1730,8 +1731,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				.getAppliedQDMList();
 		checkForCodeSystemAndDelete(qds.getOid(), valueSetTransferObject.getMeasureId());
 		CQLCodeSystemWrapper codeSystemWrapper = new CQLCodeSystemWrapper();
-		codeSystemWrapper.setCqlCodeSystemList(getCodeSystemList(valueSetTransferObject.getMatValueSet()
-				.getConceptList().getConceptList(), qds.getOid()));
+		codeSystemWrapper.setCqlCodeSystemList(qds.getCodeSystemList());
 		if (valueSetTransferObject.isSpecificOccurrence()) {
 
 			if (isDuplicate(valueSetTransferObject, true, true)) {
@@ -2290,6 +2290,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				qds.setExpansionIdentifier(null);
 			}
+			qds.setCodeSystemList(getCodeSystemList(matValueSetTransferObject.getMatValueSet()
+					.getConceptList().getConceptList(), qds.getOid()));
+			
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet,
 					(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
@@ -2370,6 +2373,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setExpansionIdentifier(null);
 				}
 				qds.setOccurrenceText(null);
+				qds.setCodeSystemList(getCodeSystemList(matValueSetTransferObject.getMatValueSet()
+						.getConceptList().getConceptList(), qds.getOid()));
 				QualityDataModelWrapper wrapper = modifyAppliedElementList(
 						qds,
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
@@ -2411,6 +2416,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		oldQdm.setDataType(qualityDataSetDTO.getDataType());
 		oldQdm.setExpansionIdentifier(qualityDataSetDTO
 				.getExpansionIdentifier());
+		oldQdm.setCodeSystemList(qualityDataSetDTO.getCodeSystemList());
 	}
 
 	/**

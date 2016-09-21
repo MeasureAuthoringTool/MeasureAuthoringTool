@@ -190,5 +190,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-98_USMAT-7389-7401-7397-7409_RetireDatatypes.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7867_Remove_Datatypes_for_qdm5.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7833_Remove_Attributes_for_qdm5.xml" />
-		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7863_Add_Datatypes_for_qdm5.xml" />
+		<!-- <include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7863_Add_Datatypes_for_qdm5.xml" /> -->
    	</databaseChangeLog>

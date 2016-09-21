@@ -246,12 +246,35 @@ public class CQLUtil {
 		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for(int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
 			Node current = unusedCqlValuesetNodeList.item(i); 
-			
+			//before removing the ValueSet Node we have to make sure to remove the codeSystems for that Valueset
+			String oid = current.getAttributes().getNamedItem("oid").getNodeValue();
+			removeUnsedCodeSystems(originalDoc, oid);
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);
 		}
 	}
 	
+	/**
+	 * Removes the unsed code systems.
+	 *
+	 * @param originalDoc the original doc
+	 * @param oid the oid
+	 */
+	private static void removeUnsedCodeSystems(Document originalDoc, String oid) {
+		String xPathForUnusedCodeSystems= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+ oid +"'" ; 
+		try {
+			NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for(int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++){
+				Node current = unusedCqlCodeSystemNodeList.item(i); 
+				Node parent = current.getParentNode(); 
+				parent.removeChild(current);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Removes all unused cql parameters from the simple xml file. Iterates through the usedcqlparameters set, 
 	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 

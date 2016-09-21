@@ -36,20 +36,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface MeasureServiceAsync {
 	
-	/**
-	 * Append and save node.
-	 * 
-	 * @param measureXmlModel
-	 *            the measure xml model
-	 * @param nodeName
-	 *            the node name
-	 * @param measureXmlModel
-	 *            the new measure xml model
-	 * @param nodeName
-	 *            the new node name
-	 */
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
-			String newNodeName, AsyncCallback<Void> callback);
+			String newNodeName, MeasureXmlModel codeSystemModal, String codeSystemName, AsyncCallback<Void> callback);
 	
 	/**
 	 * Clone measure xml.

@@ -13,6 +13,7 @@ public class CQLModel implements IsSerializable{
 	private List<CQLParameter> cqlParameters;
 	private List<CQLDefinition> cqlDefinitions;
 	private List<CQLFunctions> cqlFunctions;
+	private List<CQLCodeSystem> codeSystemList;
 	
 	private int lines;
 	
@@ -75,6 +76,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setLines(int lines) {
 		this.lines = lines;
+	}
+	public List<CQLCodeSystem> getCodeSystemList() {
+		return codeSystemList;
+	}
+	public void setCodeSystemList(List<CQLCodeSystem> codeSystemList) {
+		this.codeSystemList = codeSystemList;
 	}
 	
 }

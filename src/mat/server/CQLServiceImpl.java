@@ -79,6 +79,7 @@ public class CQLServiceImpl implements CQLService {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
 	
+	/** The cql supplemental definition XML string. */
 	private String cqlSupplementalDefinitionXMLString =
 			
 			"<supplementalDefinitions>"
@@ -104,6 +105,33 @@ public class CQLServiceImpl implements CQLService {
             + "</definition>"
             		
             + "</supplementalDefinitions>"		;
+	
+	
+	/** The cql default code system XML string. */
+	private String cqlDefaultCodeSystemXMLString=
+			
+			"<codeSystems>"
+			
+			+ "<codeSystem codeSystem=\"2.16.840.1.113883.6.238\" codeSystemName=\"CDCREC\" "
+			+ "codeSystemVersion=\"1.0\" id=\"777\" "
+			+ "valueSetOID=\"2.16.840.1.114222.4.11.837\"/>"
+	
+	        + "<codeSystem codeSystem=\"2.16.840.1.113883.6.238\" codeSystemName=\"CDCREC\" "
+	        + "codeSystemVersion=\"1.0\" id=\"777\" "
+	        + "valueSetOID=\"2.16.840.1.114222.4.11.836\"/>" 
+	        
+	        + "<codeSystem codeSystem=\"2.16.840.1.113883.5.1\" codeSystemName=\"AdministrativeGender\" "
+			+ "codeSystemVersion=\"HL7V3.0_2014-0\" id=\"777\" "
+			+ "valueSetOID=\"2.16.840.1.113762.1.4.1\"/>" 
+			
+			+ "<codeSystem codeSystem=\"2.16.840.1.113883.3.221.5\" codeSystemName=\"SOP\" "
+			+ "codeSystemVersion=\"5.0\" id=\"777\" "
+			+ "valueSetOID=\"2.16.840.1.114222.4.11.3591\"/>"
+			
+			+ "</codeSystems>"; 
+	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -681,6 +709,13 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
+	/**
+	 * Update risk adjustment variables.
+	 *
+	 * @param processor the processor
+	 * @param toBeModifiedObj the to be modified obj
+	 * @param currentObj the current obj
+	 */
 	private void updateRiskAdjustmentVariables(XmlProcessor processor,
 			CQLDefinition toBeModifiedObj, CQLDefinition currentObj) {
 		
@@ -1059,9 +1094,7 @@ public class CQLServiceImpl implements CQLService {
 	
 	/**
 	 * Check for cql keywords.
-	 * 
-	 * @param name
-	 *            the name
+	 *
 	 * @return true, if successful
 	 */
 	/*private boolean checkForCQLKeywords(String name) {
@@ -1174,11 +1207,10 @@ public class CQLServiceImpl implements CQLService {
 	
 	/**
 	 * Check if keyword for func arguments.
-	 * 
-	 * @param result
-	 *            the result
-	 * @param currentObj
-	 *            the current obj
+	 *
+	 * @param toBeModifiedObj the to be modified obj
+	 * @param currentObj            the current obj
+	 * @param parameterList the parameter list
 	 * @return the save update cql result
 	 */
 	/*private SaveUpdateCQLResult checkIfKeywordForFuncArguments(
@@ -1355,6 +1387,9 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getJSONObjectFromXML()
+	 */
 	@Override
 	public String getJSONObjectFromXML() {
 		String result = null;
@@ -1374,6 +1409,11 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
+	/**
+	 * Convert xml to string.
+	 *
+	 * @return the string
+	 */
 	@SuppressWarnings("resource")
 	private String convertXmlToString() {
 		String fileName = "CQLTimingExpressions.xml";
@@ -1414,6 +1454,9 @@ public class CQLServiceImpl implements CQLService {
 		return (MeasurePackageService) context.getBean("measurePackageService");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getSupplementalDefinitions()
+	 */
 	@Override
 	public String getSupplementalDefinitions() {
 		
@@ -1422,6 +1465,26 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getDefaultCodeSystems()
+	 */
+	@Override
+	public String getDefaultCodeSystems() {
+		
+		return cqlDefaultCodeSystemXMLString;
+		
+	}
+	
+	
+	/**
+	 * Parses the CQL def for errors.
+	 *
+	 * @param result the result
+	 * @param measureId the measure id
+	 * @param name the name
+	 * @param logic the logic
+	 * @return the save update CQL result
+	 */
 	public SaveUpdateCQLResult parseCQLDefForErrors(SaveUpdateCQLResult result, String measureId, String name, String logic) {
 		
 		List<String> Errors = new ArrayList<String>();
@@ -1486,6 +1549,13 @@ public class CQLServiceImpl implements CQLService {
 	return result;
 	}
 		
+	/**
+	 * Gets the start line.
+	 *
+	 * @param toFind the to find
+	 * @param cqlString the cql string
+	 * @return the start line
+	 */
 	private static int getStartLine(String toFind, String cqlString) {
 		System.out.println("TO FIND: " + toFind);
 		Scanner scanner = new Scanner(cqlString);
@@ -1506,6 +1576,12 @@ public class CQLServiceImpl implements CQLService {
 	
 
 	
+	/**
+	 * Count lines.
+	 *
+	 * @param str the str
+	 * @return the int
+	 */
 	public static int countLines(String str) {
 	    if(str == null || str.isEmpty())
 	    {

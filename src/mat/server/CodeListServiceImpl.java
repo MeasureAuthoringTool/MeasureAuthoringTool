@@ -22,6 +22,7 @@ import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.shared.MatContext;
 import mat.dao.DataTypeDAO;
 import mat.model.Code;
 import mat.model.DataType;
@@ -578,6 +579,7 @@ implements mat.client.codelist.service.CodeListService {
 	private void saveAndAppendElementLookup(SaveUpdateCodeListResult result, String measureId) {
 		String nodeName = "qdm";
 		String newNodeName = "valueset";
+		String codeSystemName = "codeSystem";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(measureId);
 		exportModal.setParentNode("/measure/elementLookUp");
@@ -586,11 +588,18 @@ implements mat.client.codelist.service.CodeListService {
 		newExportModal.setMeasureId(measureId);
 		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
 		newExportModal.setToReplaceNode("valueset");
+		MeasureXmlModel codeSystemModal = new MeasureXmlModel();
+		codeSystemModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		codeSystemModal.setParentNode("/measure/cqlLookUp/codeSystems");
+		codeSystemModal.setToReplaceNode("codeSystem");
 		System.out.println("XML " + result.getXmlString());
 		exportModal.setXml(result.getXmlString());
 		newExportModal.setXml(result.getnewXmlString());
 		System.out.println("New XML " + result.getnewXmlString());
+		System.out.println("NEW XML " + result.getCodeSystemXMLString());
+		codeSystemModal.setXml(result.getCodeSystemXMLString());
+		
 		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
-		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName);
+		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName, codeSystemModal, codeSystemName);
 	}
 }

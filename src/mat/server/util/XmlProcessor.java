@@ -1674,6 +1674,7 @@ public class XmlProcessor {
 				Element contextChildElem = originalDoc.createElement("cqlContext");
 				contextChildElem.setTextContent("Patient");
 				
+				Element codeSystemsChildElem = originalDoc.createElement("codeSystems");
 				Element valueSetsChildElem = originalDoc.createElement("valuesets");
 				Element parametersChildElem = originalDoc.createElement("parameters");
 				
@@ -1686,6 +1687,7 @@ public class XmlProcessor {
 				cqlNode.appendChild(usingChildElem);
 				cqlNode.appendChild(usingVerChildElem);
 				cqlNode.appendChild(contextChildElem);
+				cqlNode.appendChild(codeSystemsChildElem);
 				cqlNode.appendChild(valueSetsChildElem);
 				cqlNode.appendChild(parametersChildElem);
 				cqlNode.appendChild(definitionsChildElem);

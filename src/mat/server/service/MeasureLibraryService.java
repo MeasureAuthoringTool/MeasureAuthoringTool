@@ -54,7 +54,7 @@ public interface MeasureLibraryService {
 	 *            the new node name
 	 */
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
-			String newNodeName);
+			String newNodeName, MeasureXmlModel codeSystemModal, String codeSystemName);
 	
 	/**
 	 * Check for timing elements and append.
@@ -692,6 +692,8 @@ public interface MeasureLibraryService {
 	 * @param expProfileToAllQDM the exp profile to all qdm
 	 */
 	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+
+	void checkForCodeSystemAndDelete(String oid, String measureId);
 
 	
 }

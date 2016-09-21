@@ -229,7 +229,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName) {
+	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName, 
+			MeasureXmlModel codeSystemModal, String codeSystemName) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		MeasureXmlModel newXmlModel = getService().getMeasureXmlForMeasure(newMeasureXmlModel.getMeasureId());
 		if (((xmlModel != null && newXmlModel != null) && (StringUtils.isNotBlank(xmlModel.getXml()) && StringUtils.isNotBlank(newXmlModel.getXml())))
@@ -238,6 +239,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			xmlModel.setXml(result);
 			result = callAppendNode(xmlModel, newMeasureXmlModel.getXml(), newNodeName, newMeasureXmlModel.getParentNode());
 			measureXmlModel.setXml(result);
+			
+			result = callAppendNode(xmlModel, codeSystemModal.getXml(), codeSystemName, codeSystemModal.getParentNode());
+			measureXmlModel.setXml(result);
+			
 			getService().saveMeasureXml(measureXmlModel);
 		}
 		
@@ -603,6 +608,45 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	
+	
+	private void checkForDefaultCQLCodeSystemsAndAppend(XmlProcessor processor) {
+		
+		NodeList defaultCQLCodeSystemNodeList = findDefaultCodeSystems(processor);
+		
+		if (defaultCQLCodeSystemNodeList != null && defaultCQLCodeSystemNodeList.getLength() == 4) {
+			logger.info("All Default codesystem elements present in the measure.");
+			return;
+		}
+		
+		String defStr = getCqlService().getDefaultCodeSystems();
+		System.out.println("defStr:"+defStr);
+		try {
+			processor.appendNode(defStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
+			
+			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
+					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName ='CDCREC' "
+					+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP']");
+			
+			if(defaultCodeSystemNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<defaultCodeSystemNodes.getLength();i++){
+					Node codeSystemNode = defaultCodeSystemNodes.item(i);
+				    System.out.println("name:"+codeSystemNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
+				    System.out.println("id:"+codeSystemNode.getAttributes().getNamedItem("id").getNodeValue());
+				    codeSystemNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
+			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Append cql parameters.
 	 *
@@ -645,11 +689,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	
+	
 	/**
 	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and try and NodeList for Definitions with the following names;
 	 * 'SDE Ethnicity','SDE Payer','SDE Race','SDE Sex'.
-	 * @param xmlProcessor
-	 * @return
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @return the node list
 	 */
 	public NodeList findDefaultDefinitions(XmlProcessor xmlProcessor) {
 		NodeList returnNodeList = null;
@@ -659,6 +706,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			try {				
 				String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='SDE Ethnicity' or @name='SDE Payer' or @name='SDE Race' or @name='SDE Sex']";
 				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultDefinitionsXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
+	}
+	
+	
+	/**
+	 * Find default code systems.
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @return the node list
+	 */
+	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName ='CDCREC' "
+						+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
@@ -2283,6 +2353,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+					checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
 					updateCQLVersion(xmlProcessor);
 					if(! scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
 						deleteExistingGroupings(xmlProcessor);
@@ -2301,6 +2372,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);
+			checkForDefaultCQLCodeSystemsAndAppend(processor);
 			updateCQLVersion(processor);
 			
 			//Add QDM elements for Supplemental Definitions for Race, Payer, Sex, Ethnicity
@@ -2361,7 +2433,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	
+
+	/**
+	 * Update CQL version.
+	 *
+	 * @param processor the processor
+	 */
 	private void updateCQLVersion(XmlProcessor processor) {
 		String cqlVersionXPath = "/measure/cqlLookUp/version";
 		try {
@@ -3481,6 +3558,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#validateMeasureXmlAtCreateMeasurePackager(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
+	 */
 	@Override
 	public ValidateMeasureResult validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean isInvalid = false;
@@ -3575,6 +3655,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	/**
+	 * Parses the CQL file.
+	 *
+	 * @param measureXML the measure XML
+	 * @param measureId the measure id
+	 * @return true, if successful
+	 */
 	private boolean parseCQLFile(String measureXML, String measureId){
 		boolean isInvalid = false;
 		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
@@ -3600,6 +3687,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#validateMeasureXmlInpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
+	 */
+	/**
+	 * Validate measure xml atby create measure packager.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @return the validate measure result
 	 */
 	//@Override
 	public ValidateMeasureResult validateMeasureXmlAtbyCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
@@ -5152,9 +5245,41 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return getCqlService().getCQLKeyWords();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getJSONObjectFromXML()
+	 */
 	@Override
 	public String getJSONObjectFromXML(){
 		return getCqlService().getJSONObjectFromXML();
+	}
+
+	@Override
+	public void checkForCodeSystemAndDelete(String oid, String measureId) {
+		
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		
+		String CODE_SYSTEM_XPATH = "/measure/cqlLookUp/codeSystems/codeSystem[@valueSetOID='"+oid+"']";
+		
+		if (model != null) {
+			
+			XmlProcessor processor = new XmlProcessor(model.getXml());
+			
+			try {
+				NodeList codeSystemNodeList = (NodeList) xPath.evaluate(CODE_SYSTEM_XPATH,
+						processor.getOriginalDoc(),	XPathConstants.NODESET);
+				
+				for(int i=codeSystemNodeList.getLength()-1; i>=0; i--){
+					Node childNode = codeSystemNodeList.item(i);
+					Node parentNode = childNode.getParentNode();
+					parentNode.removeChild(childNode);
+				}
+				
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 }

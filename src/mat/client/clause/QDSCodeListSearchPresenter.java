@@ -433,7 +433,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 							public void onSuccess(
 									final SaveUpdateCodeListResult result) {
 								if (result.getXmlString() != null && result.getnewXmlString() != null) {
-									saveMeasureXML(result.getXmlString(), result.getnewXmlString());
+									saveMeasureXML(result.getXmlString(), result.getnewXmlString(), result.getCodeSystemXMLString());
 									String message = MatContext
 											.get()
 											.getMessageDelegate()
@@ -523,7 +523,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				public void onSuccess(final SaveUpdateCodeListResult result) {
 					String message = "";
 					if (result.getXmlString() != null && result.getnewXmlString() != null) {
-						saveMeasureXML(result.getXmlString(), result.getnewXmlString());
+						saveMeasureXML(result.getXmlString(), result.getnewXmlString(), result.getCodeSystemXMLString());
 					}
 					// OnSuccess() un check the specific
 					// occurrence  and de select
@@ -772,9 +772,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * @param qdmXMLString
 	 *            - {@link String}.
 	 */
-	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString) {
+	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString, String codeSystemXMLString) {
 		final String nodeName = "qdm";
 		final String newNodeName = "valueset";
+		final String codeSystemName = "codeSystem";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		exportModal.setParentNode("/measure/elementLookUp");
@@ -783,13 +784,18 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		newExportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
 		newExportModal.setToReplaceNode("valueset");
-		
+		MeasureXmlModel codeSystemModal = new MeasureXmlModel();
+		codeSystemModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		codeSystemModal.setParentNode("/measure/cqlLookUp/codeSystems");
+		codeSystemModal.setToReplaceNode("codeSystem");
 		System.out.println("XML " + qdmXMLString);
 		exportModal.setXml(qdmXMLString);
 		System.out.println("NEW XML " + valuesetXMLString);
 		newExportModal.setXml(valuesetXMLString);
+		System.out.println("NEW XML " + codeSystemXMLString);
+		codeSystemModal.setXml(codeSystemXMLString);
 		
-		service.appendAndSaveNode(exportModal, nodeName, newExportModal, newNodeName,
+		service.appendAndSaveNode(exportModal, nodeName, newExportModal, newNodeName, codeSystemModal, codeSystemName,
 				new AsyncCallback<Void>() {
 			
 			@Override

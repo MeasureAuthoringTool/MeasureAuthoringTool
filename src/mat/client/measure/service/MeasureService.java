@@ -52,7 +52,7 @@ public interface MeasureService extends RemoteService {
 	 *            the new node name
 	 */
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
-			String newNodeName);
+			String newNodeName, MeasureXmlModel codeSystemModal, String codeSystemName);
 	
 	/**
 	 * Clone measure xml.

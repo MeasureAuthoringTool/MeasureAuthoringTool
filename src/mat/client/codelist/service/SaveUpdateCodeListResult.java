@@ -69,6 +69,8 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	
 	/** The all oi ds updated. */
 	boolean allOIDsUpdated;
+	
+	private String codeSystemXMLString;
 
 
 	/**
@@ -340,6 +342,14 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 */
 	public void setAllOIDsUpdated(boolean allOIDsUpdated) {
 		this.allOIDsUpdated = allOIDsUpdated;
+	}
+
+	public String getCodeSystemXMLString() {
+		return codeSystemXMLString;
+	}
+
+	public void setCodeSystemXMLString(String codeSystemXMLString) {
+		this.codeSystemXMLString = codeSystemXMLString;
 	}
 
 	

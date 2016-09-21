@@ -10,6 +10,8 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.cql.CQLCodeSystem;
+import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -75,6 +77,24 @@ public class CQLUtilityClass {
 			cqlStr = cqlStr.append("\n\n");
 		}
 
+		//CodeSystems
+		List<CQLCodeSystem> codeSystemList = cqlModel.getCodeSystemList();
+		List<String> codeSystemAlreadyUsed = new ArrayList<String>();
+		if(codeSystemList != null){
+			for(CQLCodeSystem codeSystem : codeSystemList){
+				String codeSysStr = codeSystem.getCodeSystemName() + ":" 
+			                          + codeSystem.getCodeSystemVersion();
+				String version = codeSystem.getCodeSystemVersion().replaceAll(" ", "%20");
+				if(!codeSystemAlreadyUsed.contains(codeSysStr)){
+					cqlStr = cqlStr.append("codesystem \"" + codeSysStr+'"').append(":")
+							.append("'urn:oid:" + codeSystem.getCodeSystem() +"' ");
+					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"'");
+					cqlStr = cqlStr.append("\n\n");
+					codeSystemAlreadyUsed.add(codeSysStr);
+				}
+				
+			}
+		}
 		
 		//Valuesets
 		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
@@ -282,6 +302,7 @@ public class CQLUtilityClass {
 		
 		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
 			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
+			getCodeSystems(cqlModel, cqlLookUpXMLString);
 			getValueSet(cqlModel, cqlLookUpXMLString);
 			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
 			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
@@ -291,6 +312,26 @@ public class CQLUtilityClass {
 		return cqlModel;
 	}
 	
+	private static void getCodeSystems(CQLModel cqlModel, String cqlLookUpXMLString) {
+		CQLCodeSystemWrapper codeSystemWrapper;
+		try {			 
+
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeSystemsMapping.xml"));
+			Unmarshaller unmarshaller = new Unmarshaller(mapping);
+			unmarshaller.setClass(CQLCodeSystemWrapper.class);
+			unmarshaller.setWhitespacePreserve(true);
+
+			codeSystemWrapper = (CQLCodeSystemWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			if(!codeSystemWrapper.getCqlCodeSystemList().isEmpty()){
+				cqlModel.setCodeSystemList(codeSystemWrapper.getCqlCodeSystemList());
+			}
+		} catch (Exception e) {
+			logger.info("Error while getting valueset :" +e.getMessage());
+		}
+		
+	}
+
 	private static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		QualityDataModelWrapper valuesetWrapper;
 		try {			 

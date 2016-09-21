@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
@@ -18,6 +19,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionIdentifierWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.model.VSACVersionWrapper;
+import mat.model.cql.CQLCodeSystem;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
 import mat.server.util.ResourceLoader;
@@ -552,6 +554,9 @@ public class VSACApiServImpl implements VSACApiService{
 										qualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
 									}
 								}
+								getUniqueCodeSystems(wrapper);
+								qualityDataSetDTO.setCodeSystemList(getCodeSystemList(wrapper.getValueSetList().get(0)
+										.getConceptList().getConceptList(), qualityDataSetDTO.getOid()));
 								updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 								toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
 								//to show icons in CellTable.
@@ -754,6 +759,9 @@ public class VSACApiServImpl implements VSACApiService{
 						qualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
 					}
 				}
+				getUniqueCodeSystems(wrapper);
+				qualityDataSetDTO.setCodeSystemList(getCodeSystemList(wrapper.getValueSetList().get(0)
+						.getConceptList().getConceptList(), qualityDataSetDTO.getOid()));
 				updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 			}
 		}
@@ -882,4 +890,19 @@ public class VSACApiServImpl implements VSACApiService{
 		wrapper.getValueSetList().get(0).getConceptList().getConceptList().clear();
 		wrapper.getValueSetList().get(0).getConceptList().getConceptList().addAll(uniqueConceptList);
 	}
+	
+	private List<CQLCodeSystem> getCodeSystemList(List<MatConcept> conceptList, String oid){
+		List<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
+		for(int i=0; i<conceptList.size(); i++ ){
+			CQLCodeSystem codeSystem = new CQLCodeSystem();
+			codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			codeSystem.setCodeSystem(conceptList.get(i).getCodeSystem());
+			codeSystem.setCodeSystemName(conceptList.get(i).getCodeSystemName());
+			codeSystem.setCodeSystemVersion(conceptList.get(i).getCodeSystemVersion());
+			codeSystem.setValueSetOID(oid);
+			codeSystemList.add(codeSystem);
+		}
+		return codeSystemList;
+	}
+	
 }

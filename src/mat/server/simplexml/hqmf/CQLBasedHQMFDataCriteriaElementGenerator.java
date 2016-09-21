@@ -199,9 +199,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				extensionValue = VERSION_4_1_2_ID;
-			}else if(releaseVersion.equalsIgnoreCase("v5.0")) {
-				extensionValue = VERSION_5_0_ID; 
-			} else {
+			}else {
 				extensionValue = VERSION_4_3_ID;
 			}
 		}

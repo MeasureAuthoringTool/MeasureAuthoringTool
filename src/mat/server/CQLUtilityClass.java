@@ -87,7 +87,7 @@ public class CQLUtilityClass {
 			                          + codeSystem.getCodeSystemVersion();
 				String version = codeSystem.getCodeSystemVersion().replaceAll(" ", "%20");
 				if(!codeSystemAlreadyUsed.contains(codeSysStr)){
-					cqlStr = cqlStr.append("codesystem \"" + codeSysStr+'"').append(":")
+					cqlStr = cqlStr.append("codesystem \"" + codeSysStr+'"').append(": ")
 							.append("'urn:oid:" + codeSystem.getCodeSystem() +"' ");
 					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"'");
 					cqlStr = cqlStr.append("\n\n");
@@ -105,7 +105,7 @@ public class CQLUtilityClass {
 				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
 					String version = valueset.getVersion().replaceAll(" ", "%20");
 					cqlStr = cqlStr.append("valueset "
-							+'"'+ valueset.getCodeListName() +'"'+ ":"
+							+'"'+ valueset.getCodeListName() +'"'+ ": "
 							+"'urn:oid:"+ valueset.getOid()+"' "
 							);
 					List<String> codeSysName = getCodeSysName(valueset.getOid(),cqlModel);

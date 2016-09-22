@@ -261,7 +261,7 @@ public class CQLUtil {
 	 * @param oid the oid
 	 */
 	private static void removeUnsedCodeSystems(Document originalDoc, String oid) {
-		String xPathForUnusedCodeSystems= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+ oid +"'" ; 
+		String xPathForUnusedCodeSystems= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+ oid +"']" ; 
 		try {
 			NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			for(int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++){

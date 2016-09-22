@@ -2416,7 +2416,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		oldQdm.setDataType(qualityDataSetDTO.getDataType());
 		oldQdm.setExpansionIdentifier(qualityDataSetDTO
 				.getExpansionIdentifier());
-		oldQdm.setCodeSystemList(qualityDataSetDTO.getCodeSystemList());
 	}
 
 	/**

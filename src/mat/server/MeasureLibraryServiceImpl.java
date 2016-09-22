@@ -239,13 +239,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				&& ((nodeName != null && newNodeName != null) && (StringUtils.isNotBlank(nodeName) && StringUtils.isNotBlank(newNodeName)))) {
 			String result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName, measureXmlModel.getParentNode());
 			xmlModel.setXml(result);
+			
 			result = callAppendNode(xmlModel, newMeasureXmlModel.getXml(), newNodeName, newMeasureXmlModel.getParentNode());
-			measureXmlModel.setXml(result);
+			xmlModel.setXml(result);
 			
-			result = callAppendNode(measureXmlModel, codeSystemModel.getXml(), codeSystemName, codeSystemModel.getParentNode());
-			codeSystemModel.setXml(result);
+			if(codeSystemModel.getXml()!=null && !codeSystemModel.getXml().isEmpty()){
+				result = callAppendNode(xmlModel, codeSystemModel.getXml(), codeSystemName, codeSystemModel.getParentNode());
+				xmlModel.setXml(result);
+			}
 			
-			getService().saveMeasureXml(codeSystemModel);
+			getService().saveMeasureXml(xmlModel);
 		}
 		
 	}
@@ -3136,8 +3139,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		String XPATH_VALUESET_OLD_OID = "/measure/cqlLookUp//valueset[@oid='"+oldOid+"']";
 		//String XPATH_VALUESET_NEW_OID = "/measure/cqlLookUp//valueset[@oid='"+newOid+"']";
-		String XPATH_CODE_SYSTEM_OLD_OID= "/measure/cqlLookUp//codesystem[@valueSetOID='"+oldOid+"']";
-		String XPATH_CODE_SYSTEM_NEW_OID= "/measure/cqlLookUp//codesystem[@valueSetOID='"+newOid+"']";
+		String XPATH_CODE_SYSTEM_OLD_OID= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+oldOid+"']";
+		String XPATH_CODE_SYSTEM_NEW_OID= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+newOid+"']";
 		
 			try {
 				
@@ -3167,12 +3170,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					parentNode.removeChild(currentNode);
 				}
 			}
+			if(modifyWithDTO.getCodeSystemList() != null){
+				String xmlString = createCodeSystems(processor, modifyWithDTO.getCodeSystemList());
+				processor.appendNode(xmlString, "codeSystem", "/measure/cqlLookUp/codeSystems");
+			}
 			
-			createCodeSystems(processor, modifyDTO.getCodeSystemList());
 			
 		} catch (XPathExpressionException e) {
 				e.printStackTrace();
-			}
+			} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -5377,6 +5389,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					Node parentNode = childNode.getParentNode();
 					parentNode.removeChild(childNode);
 				}
+				
+				model.setXml(processor.transform(processor.getOriginalDoc()));
+				getService().saveMeasureXml(model);
 				
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block

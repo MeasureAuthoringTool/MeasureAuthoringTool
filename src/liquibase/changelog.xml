@@ -192,4 +192,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7833_Remove_Attributes_for_qdm5.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-98_USMAT-7678-7674_AddDatatypes.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7863_Add_Datatypes_for_qdm5.xml" />
+		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7926_Add_Attributes_for_qdm5.xml" />
    	</databaseChangeLog>

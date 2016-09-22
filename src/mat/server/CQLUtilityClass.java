@@ -2,6 +2,7 @@ package mat.server;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -102,11 +103,22 @@ public class CQLUtilityClass {
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
+					String version = valueset.getVersion().replaceAll(" ", "%20");
 					cqlStr = cqlStr.append("valueset "
-							+'"'+ valueset.getCodeListName() +'"'+ ": "
-							+"'"+ valueset.getOid()+"'"
+							+'"'+ valueset.getCodeListName() +'"'+ ":"
+							+"'urn:oid:"+ valueset.getOid()+"' "
 							);
-
+					List<String> codeSysName = getCodeSysName(valueset.getOid(),cqlModel);
+					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
+						cqlStr = cqlStr.append("codesystems {"+'"');
+						Iterator<String> codeSysNameIterator = codeSysName.iterator();
+						while (codeSysNameIterator.hasNext()) {
+							cqlStr = cqlStr.append(codeSysNameIterator.next());
+							if(codeSysNameIterator.hasNext()){
+								cqlStr = cqlStr.append('"'+", "+'"');
+							}
+						}
+						cqlStr = cqlStr.append('"'+"}");
 					cqlStr = cqlStr.append("\n\n");
 					valueSetAlreadyUsed.add(valueset.getCodeListName());
 				}
@@ -151,6 +163,21 @@ public class CQLUtilityClass {
 
 	}
 	
+
+	private static List<String> getCodeSysName(String oid, CQLModel cqlModel) {
+		//CodeSystems
+		List<String> endresult = new ArrayList<String>();
+		List<CQLCodeSystem> codeSystemList = cqlModel.getCodeSystemList();
+		for (CQLCodeSystem existingList : codeSystemList) {
+			if(existingList.getValueSetOID().equalsIgnoreCase(oid)){
+				if(existingList.getCodeSystemName()!=null && existingList.getCodeSystemVersion()!=null){
+					endresult.add(existingList.getCodeSystemName()+":"+existingList.getCodeSystemVersion());
+				}
+			}
+		}
+		return endresult;
+	}
+
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);

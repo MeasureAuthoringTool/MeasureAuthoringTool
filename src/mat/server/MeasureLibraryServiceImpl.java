@@ -2451,7 +2451,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					"/measure/measureDetails/version/text()",
 					processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 			Node node = (Node)xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-			node.setTextContent(version);
+			if(node!=null){
+				node.setTextContent(version);
+			}
+			
 		} catch (XPathExpressionException e) {
 			logger.error(e.getMessage());
 		}

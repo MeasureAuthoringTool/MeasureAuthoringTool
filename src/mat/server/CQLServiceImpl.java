@@ -121,7 +121,7 @@ public class CQLServiceImpl implements CQLService {
 	        + "valueSetOID=\"2.16.840.1.114222.4.11.836\"/>" 
 	        
 	        + "<codeSystem codeSystem=\"2.16.840.1.113883.5.1\" codeSystemName=\"AdministrativeGender\" "
-			+ "codeSystemVersion=\"HL7V3.0_2014-0\" id=\"777\" "
+			+ "codeSystemVersion=\"HL7V3.0_2014-08\" id=\"777\" "
 			+ "valueSetOID=\"2.16.840.1.113762.1.4.1\"/>" 
 			
 			+ "<codeSystem codeSystem=\"2.16.840.1.113883.3.221.5\" codeSystemName=\"SOP\" "

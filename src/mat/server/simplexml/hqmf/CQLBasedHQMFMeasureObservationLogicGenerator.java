@@ -110,23 +110,35 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	 * @throws XPathExpressionException - Exception
 	 */
 	private void generateMeasureObSection(MeasureExport me) throws XPathExpressionException {
+		String isInGrouping = "";
 		for (Integer key : measureGroupingMap.keySet()) {
 			NodeList groupingChildList = measureGroupingMap.get(key);
 			for (int i = 0; i < groupingChildList.getLength(); i++) {
 				Node groupingChildListItem = groupingChildList.item(i);
 				
 				String popType = groupingChildListItem.getAttributes().getNamedItem(TYPE).getNodeValue();
+				if(groupingChildList.item(i).getAttributes().getNamedItem(GROUPING_CHECK) != null){
+					isInGrouping = groupingChildList.item(i).getAttributes().getNamedItem(GROUPING_CHECK).getNodeValue();
+				}
 				switch(popType) {
 					case "measureObservation" :
-						//if(groupingChildListItem.hasChildNodes()){
-							
+						if(isInGrouping != null && !isInGrouping.isEmpty()){
+							if(isInGrouping.equalsIgnoreCase("true")){
+
+								Node measureObSectionComponentElement
+								= createMeasureObservationSection(me.getHQMFXmlProcessor());
+
+								generateMeasureObDefinition(groupingChildListItem
+										, measureObSectionComponentElement , me);
+							}
+						}
+						else{
 							Node measureObSectionComponentElement
 							= createMeasureObservationSection(me.getHQMFXmlProcessor());
-							
+
 							generateMeasureObDefinition(groupingChildListItem
 									, measureObSectionComponentElement , me);
-							
-						//}
+						}
 						break;
 					case "denominator" :
 						denominator = groupingChildListItem;

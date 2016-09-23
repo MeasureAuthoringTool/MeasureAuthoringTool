@@ -1050,6 +1050,10 @@ public class ExportSimpleXML {
 						}
 					}
 					
+					Node groupingattr = originalDoc.createAttribute("isInGrouping");
+					groupingattr.setNodeValue("true");
+					clauseNode.getAttributes().setNamedItem(groupingattr);
+					
 					//deep clone the <clause> tag
 					//Node clonedClauseNode = clauseNode.cloneNode(true);
 					
@@ -1165,6 +1169,7 @@ public class ExportSimpleXML {
 		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
+		newClauseNode.getAttributes().getNamedItem("isInGrouping").setNodeValue("false");
 		
 		NodeList logicalNode = newClauseNode.getChildNodes();
 		
@@ -1173,7 +1178,8 @@ public class ExportSimpleXML {
 			Node innerNode = logicalNode.item(i);
 			newClauseNode.removeChild(innerNode);
 			/*if(newClauseNode.getAttributes().getNamedItem("displayName").
-					getNodeValue().contains("stratum")){
+					getNodeValue().contains("stratum") || newClauseNode.getAttributes().getNamedItem("displayName").
+					getNodeValue().contains("measureObservation")){
 				newClauseNode.removeChild(innerNode);
 			} else if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for removing the empty <itemCount> tags
 				newClauseNode.removeChild(innerNode);

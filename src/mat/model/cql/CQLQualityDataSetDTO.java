@@ -57,6 +57,14 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The version. */
 	private String version;
 	
+	/** The data type has removed. */
+	private boolean dataTypeHasRemoved;
+	
+	/** The expansion profile. */
+	private String expansionIdentifier;
+	
+	private String vsacExpIdentifier;
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -291,7 +299,60 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	}
 	
 	
-	
+	/**
+	 * @return the dataTypeHasRemoved
+	 */
+	public boolean isDataTypeHasRemoved() {
+		return dataTypeHasRemoved;
+	}
+
+
+
+	/**
+	 * @param dataTypeHasRemoved the dataTypeHasRemoved to set
+	 */
+	public void setDataTypeHasRemoved(boolean dataTypeHasRemoved) {
+		this.dataTypeHasRemoved = dataTypeHasRemoved;
+	}
+
+
+
+	/**
+	 * @return the expansionIdentifier
+	 */
+	public String getExpansionIdentifier() {
+		return expansionIdentifier;
+	}
+
+
+
+	/**
+	 * @param expansionIdentifier the expansionIdentifier to set
+	 */
+	public void setExpansionIdentifier(String expansionIdentifier) {
+		this.expansionIdentifier = expansionIdentifier;
+	}
+
+
+
+	/**
+	 * @return the vsacExpIdentifier
+	 */
+	public String getVsacExpIdentifier() {
+		return vsacExpIdentifier;
+	}
+
+
+
+	/**
+	 * @param vsacExpIdentifier the vsacExpIdentifier to set
+	 */
+	public void setVsacExpIdentifier(String vsacExpIdentifier) {
+		this.vsacExpIdentifier = vsacExpIdentifier;
+	}
+
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

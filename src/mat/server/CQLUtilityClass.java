@@ -104,14 +104,25 @@ public class CQLUtilityClass {
 		if (valueSetList != null) {
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
+					String expIdentifier = "";
 					String version = valueset.getVersion().replaceAll(" ", "%20");
+					if(valueset.getExpansionIdentifier() != null){
+						expIdentifier = valueset.getExpansionIdentifier().replaceAll(" ", "%20");
+					}
 					cqlStr = cqlStr.append("valueset "
 							+'"'+ valueset.getCodeListName() +'"'+ ": "
 							+"'urn:oid:"+ valueset.getOid()+"' "
 							);
 					List<String> codeSysName = getCodeSysName(valueset.getOid(),cqlModel);
-					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
-					if(valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+					
+					//Check if QDM has expansionidentifier or not.
+					if(expIdentifier.equalsIgnoreCase("")){
+						cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
+					}
+					else{
+						cqlStr = cqlStr.append("version 'urn:hl7:profile:" + expIdentifier +"' ");
+					}
+					if(!valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 						cqlStr = cqlStr.append("codesystems {"+'"');
 						Iterator<String> codeSysNameIterator = codeSysName.iterator();
 						while (codeSysNameIterator.hasNext()) {
@@ -514,6 +525,9 @@ public class CQLUtilityClass {
 					convertedCQLDataSet.setType(tempDataSet.getType());
 					convertedCQLDataSet.setUuid(tempDataSet.getUuid());
 					convertedCQLDataSet.setVersion(tempDataSet.getVersion());
+					convertedCQLDataSet.setDataTypeHasRemoved(tempDataSet.isDataTypeHasRemoved());
+					convertedCQLDataSet.setExpansionIdentifier(tempDataSet.getExpansionIdentifier());
+					convertedCQLDataSet.setVsacExpIdentifier(tempDataSet.getVsacExpIdentifier());
 					convertedCQLDataSetList.add(convertedCQLDataSet);
 				}
 				

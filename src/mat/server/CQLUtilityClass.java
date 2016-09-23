@@ -26,6 +26,7 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -110,6 +111,7 @@ public class CQLUtilityClass {
 							);
 					List<String> codeSysName = getCodeSysName(valueset.getOid(),cqlModel);
 					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
+					if(valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 						cqlStr = cqlStr.append("codesystems {"+'"');
 						Iterator<String> codeSysNameIterator = codeSysName.iterator();
 						while (codeSysNameIterator.hasNext()) {
@@ -119,6 +121,7 @@ public class CQLUtilityClass {
 							}
 						}
 						cqlStr = cqlStr.append('"'+"}");
+					}
 					cqlStr = cqlStr.append("\n\n");
 					valueSetAlreadyUsed.add(valueset.getCodeListName());
 				}

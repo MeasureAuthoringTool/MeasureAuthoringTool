@@ -117,7 +117,9 @@ public class CQLUtilityClass {
 					
 					//Check if QDM has expansionidentifier or not.
 					if(expIdentifier.equalsIgnoreCase("")){
-						cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
+						if(!version.equalsIgnoreCase("1.0")){
+							cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
+						}
 					}
 					else{
 						cqlStr = cqlStr.append("version 'urn:hl7:profile:" + expIdentifier +"' ");

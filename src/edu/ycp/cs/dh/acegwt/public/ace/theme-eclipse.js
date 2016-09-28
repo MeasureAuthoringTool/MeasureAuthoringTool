@@ -28,8 +28,8 @@ color: black;\
 .ace-eclipse .ace_variable {\
 color: rgb(127, 0, 85);\
 }\
-.ace-eclipse .ace_paren .ace_matFunctionKeyword {\
-color: rgb(147, 0, 85);\
+.ace-eclipse .ace_matFunctionKeyword {\
+color: rgb(127, 0, 85);\
 }\
 .ace-eclipse .ace_constant.ace_buildin {\
 color: rgb(88, 72, 246);\

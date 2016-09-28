@@ -34,7 +34,8 @@ var SqlHighlightRules = function() {
 	    		"AgeInSecondsAt()|AgeInYears()|AgeInYearsAt()|AllTrue()|AnyTrue()|Avg()|CalculateAgeInDays()|CalculateAgeInDaysAt()|CalculateAgeInHours()|" +
 	    		"CalculateAgeInHoursAt()|CalculateAgeInMinutes()|CalculateAgeInMinutesAt()|CalculateAgeInMonths()|CalculateAgeInMonthsAt()|CalculateAgeInSeconds()|" +
 	    		"CalculateAgeInSecondsAt()|CalculateAgeInYears()|CalculateAgeInYearsAt()|Ceiling()|Coalesce()|Count()|DateTime()|Exp()|First()|Floor()|IndexOf()|Last()|" +
-	    		"Length()|Ln()|Log()|Max()|Median()|Min()|Mode()|Now()|PopulationStdDev()|PopulationVariance()|Round()|StdDev()|Sum()|Time()|TimeOfDay()|Today()|Truncate()|Variance()"
+	    		"Length()|Ln()|Log()|Max()|Median()|Min()|Mode()|Now()|PopulationStdDev()|PopulationVariance()|Round()|StdDev()|Sum()|Time()|TimeOfDay()|Today()|" +
+	    		"Truncate()|Variance"
 	    );
 
 	    var builtinConstants = (
@@ -66,12 +67,12 @@ var SqlHighlightRules = function() {
 	        
 	    );
 
-	    var builtinFunctions = (
+	    /*var builtinFunctions = (
 	        'date|time|timezone|starts|ends|occurs|overlaps|Interval|Tuple|List|DateTime'
-	    );
+	    );*/
 
     var keywordMapper = this.createKeywordMapper({
-        "support.function": builtinFunctions,
+        //"support.function": builtinFunctions,
         "keyword": keywords,
         "matTimingKeyword" : matTimingKeywords,
         "matFunctionKeyword" : matFunctionKeywords,

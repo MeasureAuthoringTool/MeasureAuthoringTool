@@ -1520,8 +1520,26 @@ var Autocomplete = function() {
             
             var keyString = this.editor.keyString;
           //  alert("keyString:"+keyString);
-            var timingKeywords = ["after","before","during","ends","includes","included in","meets","overlaps","same","starts","within"];
-            var functionKeywords = ["Age At","Avg", "Count", "Datetimediff", "Fifth","First", "Fourth", "Max","Median","Min","Most Recent","Satisfies All","Satisfies Any","Second","Sum","Third"];
+            var timingKeywords = ["after","after end","after start","before","before end","before start","during","ends","ends after","ends after end","ends after start",
+                                  "ends before","ends before end","ends before start","ends during","ends properly during","ends properly within","ends properly within end",
+                                  "ends properly within start","ends same as","ends same as end","ends same as start","ends same or after","ends same or after end",
+                                  "ends same or after start","ends same or before","ends same or before end","ends same or before start","ends within","ends within end",
+                                  "ends within start","included in","includes","includes end","includes start","meets","meets after","meets before","overlaps","overlaps after",
+                                  "overlaps after","overlaps before","overlaps before","properly during","properly included in","properly includes","properly includes end",
+                                  "properly includes start","properly within","properly within end","properly within start","same as","same as","same as end","same as start",
+                                  "same or after","same or after end","same or after start","same or before","same or before end","same or before start","starts","starts after",
+                                  "starts after end","starts after start","starts before","starts before end","starts before start","starts during","starts properly during",
+                                  "starts properly within","starts properly within end","starts properly within start","starts same as","starts same as end","starts same as start",
+                                  "starts same or after","starts same or after end","starts same or after start","starts same or before","starts same or before end",
+                                  "starts same or before start","starts within","starts within end","starts within start","within"];
+            
+            var functionKeywords = ["Abs","AgeInDays","AgeInDaysAt","AgeInHours","AgeInHoursAt","AgeInMinutes","AgeInMinutesAt","AgeInMonths","AgeInMonthsAt",
+                                    "AgeInSeconds","AgeInSecondsAt","AgeInYears","AgeInYearsAt","AllTrue","AnyTrue","Avg","CalculateAgeInDays","CalculateAgeInDaysAt",
+                                    "CalculateAgeInHours","CalculateAgeInHoursAt","CalculateAgeInMinutes","CalculateAgeInMinutesAt","CalculateAgeInMonths",
+                                    "CalculateAgeInMonthsAt","CalculateAgeInSeconds","CalculateAgeInSecondsAt","CalculateAgeInYears","CalculateAgeInYearsAt","Ceiling",
+                                    "Coalesce","Count","DateTime","Exp","First","Floor","IndexOf","Last","Length","Ln","Log","Max","Median","Min","Mode",
+                                    "Now","PopulationStdDev","PopulationVariance","Round","StdDev","Sum","Time","TimeOfDay","Today","Truncate","Variance"];
+            
        	    var defineKeywords = window.definitioList();
         	var funcsKeywords = window.funcsList();
         	var paramKeywords = window.paramList();
@@ -1538,7 +1556,9 @@ var Autocomplete = function() {
             	for(var i=0;i<funcsKeywords.length;i++){
             		fk.push(funcsKeywords[i]);	
             	}
-            	//alert(fk);
+            	for(var i=0;i<functionKeywords.length;i++){
+            		fk.push(functionKeywords[i]);	
+            	}
             	this.getSpecificKeyWords(fk,matches, "functions");
             } else if(keyString == "u"){
             	//alert("keyString:"+this.editor.keyString);

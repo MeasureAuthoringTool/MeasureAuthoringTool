@@ -464,10 +464,6 @@ public class InsertIntoAceEditorDialogBox {
 			public void onSuccess(List<QDSAttributes> result) {
 				List<String> filterAttrByDataTypeList = new ArrayList<String>();
 				for (QDSAttributes qdsAttributes : result) {
-					if (NEGATION_RATIONALE.equals(qdsAttributes
-									.getName())) {
-						continue;
-					}
 					filterAttrByDataTypeList.add(qdsAttributes.getName());
 				}
 				availableAttributesToInsert.clear();

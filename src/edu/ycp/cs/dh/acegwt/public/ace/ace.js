@@ -10302,17 +10302,19 @@ var Range = require("../range").Range;
 function bindKey(win, mac) {
     return {win: win, mac: mac};
 }
-exports.commands = [{
-    name: "showSettingsMenu",
-    bindKey: bindKey("Ctrl-,", "Command-,"),
-    exec: function(editor) {
-        config.loadModule("ace/ext/settings_menu", function(module) {
-            module.init(editor);
-            editor.showSettingsMenu();
-        });
-    },
-    readOnly: true
-}, {
+exports.commands = [
+//{
+//    name: "showSettingsMenu",
+//    bindKey: bindKey("Ctrl-,", "Command-,"),
+//    exec: function(editor) {
+//        config.loadModule("ace/ext/settings_menu", function(module) {
+//            module.init(editor);
+//            editor.showSettingsMenu();
+//        });
+//    },
+//    readOnly: true
+//},
+{
     name: "goToNextError",
     bindKey: bindKey("Alt-E", "Ctrl-E"),
     exec: function(editor) {

@@ -1554,10 +1554,10 @@ var Autocomplete = function() {
             	matches = [];
             	var fk = [];
             	for(var i=0;i<funcsKeywords.length;i++){
-            		fk.push('"'+funcsKeywords[i]+'"');	
+            		fk.push('"'+funcsKeywords[i]+'"()');	
             	}
             	for(var i=0;i<functionKeywords.length;i++){
-            		fk.push(functionKeywords[i]);	
+            		fk.push(functionKeywords[i]+'()');	
             	}
             	this.getSpecificKeyWords(fk,matches, "functions");
             } else if(keyString == "u"){

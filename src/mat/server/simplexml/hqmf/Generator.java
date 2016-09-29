@@ -257,6 +257,8 @@ public interface Generator extends MatConstants {
 	public static final String DIAGNOSIS = "diagnosis";
 	
 	public static final String PRINCIPAL_DIAGNOSIS = "principal diagnosis";
+	
+	public static final String ACTION_NEGATION_IND = "actionNegationInd";
 	/**
 	 * Generate.
 	 *

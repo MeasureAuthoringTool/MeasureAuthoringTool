@@ -759,6 +759,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				.getNamedItem(NAME).getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes()
 				.getNamedItem(TAXONOMY).getNodeValue();
+		Node actionNegInd = templateNode.getAttributes().getNamedItem("actionNegationInd");
 		String entryCommentText = dataType;
 		// Local variable changes.
 		String qdmLocalVariableName = qdmName + "_" + dataType;
@@ -810,6 +811,10 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		entryElem.appendChild(dataCriteriaElem);
 		dataCriteriaElem.setAttribute(CLASS_CODE, classCodeValue);
 		dataCriteriaElem.setAttribute(MOOD_CODE, moodValue);
+		//adding actionNegationInd for Negative Datatypes
+		if(actionNegInd!=null){
+			dataCriteriaElem.setAttribute(ACTION_NEGATION_IND, actionNegInd.getNodeValue());	
+		}
 		Element templateId = dataCriteriaXMLProcessor
 				.getOriginalDoc().createElement(TEMPLATE_ID);
 		dataCriteriaElem.appendChild(templateId);

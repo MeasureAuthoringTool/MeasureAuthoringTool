@@ -920,13 +920,13 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				valueSetVersion = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
-			valueSetVersion = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			valueSetVersion = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 			addVersionToValueTag = true;
 		}
 		if (addVersionToValueTag) {

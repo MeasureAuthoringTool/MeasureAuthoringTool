@@ -84,7 +84,7 @@ mat.dao.clause.MeasureXMLDAO {
 			qds.setUuid(UUID.randomUUID().toString());
 			qds.setSuppDataElement(false);
             //for Patient Characteristic Expired
-			if(lo.getName().equals(ConstantMessages.EXPIRED)) {
+			if(lo.getName().equals(ConstantMessages.DEAD)) {
 				qds.setDataType(dataTypeDAO
 						.findByDataTypeName(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED)
 						.getDescription());

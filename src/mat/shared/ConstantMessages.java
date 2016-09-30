@@ -467,6 +467,9 @@ public  class ConstantMessages {
 	public static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
 	
 	/** The Constant EXPIRED. */
+	public static final String DEAD = "Dead";
+	
+	/** The Constant EXPIRED. */
 	public static final String EXPIRED = "Expired";
 	
 	/** The Constant BIRTHDATE. */

@@ -141,6 +141,39 @@ public class CQLUtilityClass {
 			}
 		}
 
+		//code
+				List<CQLDefinition> definitionList = cqlModel.getDefinitionList();
+				List<CQLFunctions> functionList = cqlModel.getCqlFunctions();
+				//initialize to false to display only once.
+				boolean birthDateEntry = false;
+				boolean deadEntry = false;
+				if (definitionList != null) {
+					for (int i = 0; i < definitionList.size(); i++) {
+						if (definitionList.get(i).getDefinitionLogic().matches(".*\\b"+ConstantMessages.BIRTHDATE+"\\b.*") && birthDateEntry == false) {
+							cqlStr = cqlStr.append("code "+'"'+"Birthdate"+'"'+": '21112-8' from "+'"'+"LOINC:2.46"+'"'+" display 'Birthdate'");
+							cqlStr = cqlStr.append("\n\n");
+							birthDateEntry = true;
+						} else if (definitionList.get(i).getDefinitionLogic().matches(".*\\b"+ConstantMessages.DEAD+"\\b.*") && deadEntry == false) {
+							cqlStr = cqlStr.append("code "+'"'+"Dead"+'"'+": '419099009' from "+'"'+"SNOMEDCT:2016-03"+'"'+" display 'Dead'");
+							cqlStr = cqlStr.append("\n\n");
+							deadEntry = true;
+						} 
+					}
+				}
+				if (functionList != null) {
+					for (int i = 0; i < functionList.size(); i++) {
+						if (functionList.get(i).getFunctionLogic().matches(".*\\b"+ConstantMessages.BIRTHDATE+"\\b.*") && birthDateEntry == false) {
+							cqlStr = cqlStr.append("code "+'"'+"Birthdate"+'"'+": '21112-8' from "+'"'+"LOINC:2.46"+'"'+" display 'Birth date'");
+							cqlStr = cqlStr.append("\n\n");
+							birthDateEntry = true;
+						} else if (functionList.get(i).getFunctionLogic().matches(".*\\b"+ConstantMessages.DEAD+"\\b.*") && deadEntry == false){
+							cqlStr = cqlStr.append("code "+'"'+"Dead"+'"'+": '419099009' from "+'"'+"SNOMEDCT:2016-03"+'"'+" display 'Dead'");
+							cqlStr = cqlStr.append("\n\n");
+							deadEntry = true;
+						} 
+					}
+				}
+		
 		// parameters
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();
 		if (paramList != null) {
@@ -184,9 +217,9 @@ public class CQLUtilityClass {
 		//CodeSystems
 		List<String> endresult = new ArrayList<String>();
 		List<CQLCodeSystem> codeSystemList = cqlModel.getCodeSystemList();
-		for (CQLCodeSystem existingList : codeSystemList) {
-			if(existingList.getValueSetOID().equalsIgnoreCase(oid)){
-				if(existingList.getCodeSystemName()!=null && existingList.getCodeSystemVersion()!=null){
+		if(oid != null && codeSystemList!=null){
+			for (CQLCodeSystem existingList : codeSystemList) {
+				if(existingList.getValueSetOID()!=null && existingList.getValueSetOID().equalsIgnoreCase(oid)){
 					endresult.add(existingList.getCodeSystemName()+":"+existingList.getCodeSystemVersion());
 				}
 			}

@@ -631,7 +631,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
 					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName ='CDCREC' "
-					+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP']");
+							+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP' or @codeSystemName='Birthdate' or @codeSystemName='Dead']");
 			
 			if(defaultCodeSystemNodes != null){
 				System.out.println("suppl data elems..setting ids");

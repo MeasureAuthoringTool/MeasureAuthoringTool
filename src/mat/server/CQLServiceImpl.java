@@ -128,6 +128,14 @@ public class CQLServiceImpl implements CQLService {
 			+ "codeSystemVersion=\"5.0\" id=\"777\" "
 			+ "valueSetOID=\"2.16.840.1.114222.4.11.3591\"/>"
 			
+		 	+ "<codeSystem codeSystem=\"2.16.840.1.113883.6.1\" codeSystemName=\"LOINC\" "
+			+ "codeSystemVersion=\"2.46\" id=\"777\" "
+		 	+ "/>"
+			
+			+ "<codeSystem codeSystem=\"2.16.840.1.113883.6.96\" codeSystemName=\"SNOMEDCT\" "
+			+ "codeSystemVersion=\"2016-03\" id=\"777\" "
+			+ "/>"
+			
 			+ "</codeSystems>"; 
 	
 	

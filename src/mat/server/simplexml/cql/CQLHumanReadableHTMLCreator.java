@@ -38,20 +38,61 @@ import org.w3c.dom.NodeList;
  */
 public class CQLHumanReadableHTMLCreator {
 	
+	
 	/** The Constant keyWordListArray. */
-	private static final String[] keyWordListArray = {"library","version","using","include","called","public","private",
-		"parameter","default","codesystem","valueset","codesystems","define",
-		"function","with","without","in","from","where","return",
-		"all","distinct","sort","by","asc","desc","is","not","cast","as","between",
-		"difference","contains","and","or","xor","union","intersection","year","month",
-		"day","hour","minute","second","millisecond","when","then","or","or less", 
-		"before","after","or more","more","less","context","using", "QDM","Interval",
-		"DateTime","Patient","Population","such that"};
+	private static final String[] keyWordListArray = 		{"-", "!", "(", ")", "*", ",", ".", "/", ":", "[", "]", "^", "{", "}", "~", "+", "<", "=", ">",
+															 "after", "all", "and", "as", "asc", "ascending", "before", "between", "begins", "begun", 
+															 "between", "Boolean", "by", "called", "case", "cast", "Code", "codesystem", "codesystems", "collapse", 
+															 "Concept", "contains", "context", "convert", "date", "DateTime", "day", "days", "Decimal", "defeault", 
+															 "define", "desc", "descending", "difference", "display", "distinct", "div", "duration", "during", 
+															 "else", "end", "ends", "except", "exists", "false", "flatten", "from", "function", "hour", "hours", 
+															 "if", "in", "include", "included in", "includes", "Integer", "intersect", "Interval", "is", 
+															 "less", "let", "library", "List", "maximum", "meets", "millisecond", "milliseconds", "minimum", 
+															 "minute", "minutes", "mod", "month", "months", "more", "not", "null", "occurs", "of", "or", "or after",
+															 "or before", "or less", "or more", "overlaps", "parameter", "predecessor", "predecessor of", "private", 
+															 "properly", "properly included in", "properly includes", "public", "QDM", "Quantity", "return", "same", 
+															 "second", "seconds", "singleton", "singleton from", "sort", "sort by", "start", "starts", "String", "successor", 
+															 "such", "such that", "Sum", "that", "then", "Time", "time", "timezone", "to", "true", "Tuple", "union", 
+															 "using", "valueset", "version", "week", "weeks", "when", "where", "width", "with", "within", "without", "xor", 
+															 "year", "years"};
 
 	/** The Constant cqlFunctionsListArray. */
-	private static final String[] cqlFunctionsListArray = {"date","time","timezone","starts","ends",
-			"occurs","overlaps","Interval",
-			"Tuple","List","DateTime","AgeInYearsAt"};
+	private static final String[] cqlFunctionsListArray = 	{"Abs", "AgeInDays", "AgeInDaysAt", "AgeInHours", "AgeInHoursAt",
+															"AgeInMinutes", "AgeInMinutesAt", "AgeInMonths", "AgeInMonthsAt", 
+															"AgeInSeconds", "AgeInSecondsAt", "AgeInYears", "AgeInYearsAt",
+															"AllTrue", "AnyTrue", "Avg", "CalculateAgeInDays", "CalculateAgeInDaysAt", 
+															"CalculateAgeInHours", "CalculateAgeInHoursAt", "CalculateAgeInMinutes", "CalculateAgeInMinutesAt", 
+															"CalcualteAgeInMonths", "CalculateAgeInMonthsAt", "CalculateAgeInSeconds", "CalculateAgeInSecondsAt", 
+															"CalculateAgeInYears", "CalculateAgeInYearsAt", "Ceiling", "Coalesce", 
+															"Count", "DateTime", "Exp", "First", "Floor", "IndexOf", "Last", "Length", 
+															"Ln", "Log", "Max", "Median", "Min", "Mode", "Now", "PopulationStdDev", "PopulationVariance", 
+															"Round", "StdDev", "Sum", "Time", "TimeOfDay", "Today", "Truncate", "Variance"};
+	
+	
+	/** complete timing list */
+//	private static final String[] cqlTimingListArray   =	{"after", "after end", "after start", "before", "before end", "before start", "during", "ends", "ends after",
+//															 "ends after end", "ends after start", "ends before", "ends before end", "ends before start", "ends during", 
+//															 "ends properly during", "ends properly within", "ends properly within end", "ends properly within start", 
+//															 "ends same as", "ends same as end", "ends same as start", "ends same or after", "ends same or after end", 
+//															 "ends same or after start", "ends same or before", "ends same or before end", "ends same or before start", 
+//															 "ends within", "ends within end", "ends within start", "included in", "includes", "includes end", "includes start", 
+//															 "meets", "meets after", "meets before", "overlaps", "overlaps after", "overlaps before", "properly during", 
+//															 "properly included in", "properly includes", "properly includes end", "properly includes start", "properly within", 
+//															 "properly within end", "properly within start", "same as", "same as end", "same as satrt", "same or after", 
+//															 "same or after end", "same or after start", "same or before", "same or before end", "same or before start", 
+//															 "starts during", "starts properly during", "starts properly within", "starts properly within end", "starts properly within start",
+//															 "starts same as", "starts same as end", "starts same as start", "starts same or after", "starts same or after end", 
+//															 "starts same or after start", "starts same or before", "starts same or before end", "starts same or before start", "starts within",
+//															 "starts within end", "starts within start", "within"};
+	
+	
+	private static final String[] cqlAttributeListArray = 	{"activeDatetime", "admissionSource", "anatomicalApproachSite", "anatomicalLocationSite", "authorTime", "birthDatetime", 
+															 "cause", "code", "diagnosis", "dischargeDisposition", "dosage", "expiredDatetime", "facilityLocation", "frequency", "id", 
+															 "incisionDatetime", "lengthOfStay", "locationPeriod", "method", "negationRationale", "ordinality", "prevalencePeriod", 
+															 "principalDiagnosis", "radiationDosage", "radiationDuration", "reason", "recorder", "referenceRange", "refills", "relatedTo", 
+															 "relationship", "relevantPeriod", "reporter", "result", "resultDatetime", "route", "severity", "status", "supply", "targetOutcome",
+															 "type"};
+	
 	
 	/** The definitions or functions already displayed. */
 	private static List<String> definitionsOrFunctionsAlreadyDisplayed = new ArrayList<String>();
@@ -1508,13 +1549,14 @@ public class CQLHumanReadableHTMLCreator {
 		String cssClass = "";
 		if (string.trim().startsWith("\"") && string.endsWith("\"")) {
 			cssClass = "cql_string";
-
 		} else if (string.trim().length() == 1) {
 			cssClass = "cql_identifier";
 		} else if (contains(keyWordListArray, string.trim())) {
 			cssClass = "cql_keyword";
 		} else if (contains(cqlFunctionsListArray, string.trim())) {
 			cssClass = "cql_function";
+		} else if(contains(cqlAttributeListArray, string.trim())) {
+			cssClass = "cql_attribute"; 
 		} else if (cqlObjects.contains(string)) {
 			cssClass = "cql-object";
 		}

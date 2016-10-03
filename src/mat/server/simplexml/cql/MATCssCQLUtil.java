@@ -121,6 +121,14 @@ public class MATCssCQLUtil {
 			"    color: rgb(127, 0, 85);\r\n" + 
 			"    font-weight: 700;\r\n" + 
 			"}\r\n" +
+			".cql_function {\r\n" + 
+			"    color: rgb(127, 0, 85);\r\n" + 
+			"    font-weight: 700;\r\n" + 
+			"}\r\n" +
+			".cql_attribute {\r\n" + 
+			"    color: rgb(127, 0, 85);\r\n" + 
+			"    font-weight: 700;\r\n" + 
+			"}\r\n" +
 			".cql_string {\r\n" + 
 			"    color: rgb(42, 0, 255);\r\n" + 
 			"}\r\n" +

@@ -1029,7 +1029,8 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		//Patient Characteristic data type - contains code tag with valueSetId attribute and no title and value set tag.
 		boolean isPatientChar = templateNode.getAttributes().getNamedItem("valueSetId") != null;
 		boolean isAddValueSetInCodeTrue =templateNode.getAttributes().getNamedItem("addValueSetInCode")!=null;
-		boolean isIntervention = ("Intervention, Order".equals(dataType) || "Intervention, Performed".equals(dataType) || "Intervention, Recommended".equals(dataType));
+		boolean isIntervention = ("Intervention, Order".equalsIgnoreCase(dataType) || "Intervention, Performed".equalsIgnoreCase(dataType) || "Intervention, Recommended".equalsIgnoreCase(dataType)
+				|| "Intervention, Not Ordered".equalsIgnoreCase(dataType) || "Intervention, Not Performed".equalsIgnoreCase(dataType) || "Intervention, Not Recommended".equalsIgnoreCase(dataType));
 		if (isAddValueSetInCodeTrue)  {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc()
 					.createElement(CODE);

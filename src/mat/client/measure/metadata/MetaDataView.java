@@ -606,7 +606,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalPanel calenderYearDatePanel = new HorizontalPanel();
 		calenderYearDatePanel.getElement().setId("calenderYear_HorizontalPanel");
 		calenderYear.setSize(SizeType.MINI);
-		calenderYear.setLabelText("Calender Year");
+		calenderYear.setLabelText("Calendar Year");
 		calenderYear.setLabelWidth("120");
 		calenderYear.setOnText("Yes");
 		calenderYear.setOnColor(ColorType.SUCCESS);

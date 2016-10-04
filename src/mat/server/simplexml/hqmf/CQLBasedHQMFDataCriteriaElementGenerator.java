@@ -1085,10 +1085,10 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				.getNodeValue();
 		if ("1.0".equals(version) || "1".equals(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 			}
 		} else {
-			version = "vsac:version:" + qdmNode.getAttributes().getNamedItem("version")
+			version = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version")
 					.getNodeValue();
 		}
 		return version;
@@ -1133,7 +1133,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().
 					getNamedItem("valueSet").setNodeValue(qdmOidValue);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
-					if (valueSetVersion.contains("vsac")) {
+					if (valueSetVersion.contains("urn:hl7")) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
@@ -1429,7 +1429,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 					} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 						
 						String valueSetVersion = valueSetVersionStringValue(attrNode);
-						if (valueSetVersion.contains("vsac")) {
+						if (valueSetVersion.contains("urn:hl7")) {
 							Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 							valuesetVersionAttr.setNodeValue(valueSetVersion);
 							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);
@@ -1591,7 +1591,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
 			
 			String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-			if (valueSetVersion.contains("vsac")) {
+			if (valueSetVersion.contains("urn:hl7")) {
 				translationNode.setAttribute("valueSetVersion", valueSetVersion);
 			} else {
 				if (translationNode.getAttributes().getNamedItem("valueSetVersion") != null) {
@@ -1937,7 +1937,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 						} else if (VALUE_SET.equalsIgnoreCase(attrMode)) {
 							
 							String valueSetVersion = valueSetVersionStringValue(attributeQDMNode);
-							if(valueSetVersion.contains("vsac")){
+							if(valueSetVersion.contains("urn:hl7")){
 								Attr valuesetVersionAttr = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 								valuesetVersionAttr.setNodeValue(valueSetVersion);
 								attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(valuesetVersionAttr);

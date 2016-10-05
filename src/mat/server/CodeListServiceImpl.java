@@ -579,7 +579,6 @@ implements mat.client.codelist.service.CodeListService {
 	private void saveAndAppendElementLookup(SaveUpdateCodeListResult result, String measureId) {
 		String nodeName = "qdm";
 		String newNodeName = "valueset";
-		String codeSystemName = "codeSystem";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(measureId);
 		exportModal.setParentNode("/measure/elementLookUp");
@@ -596,10 +595,9 @@ implements mat.client.codelist.service.CodeListService {
 		exportModal.setXml(result.getXmlString());
 		newExportModal.setXml(result.getnewXmlString());
 		System.out.println("New XML " + result.getnewXmlString());
-		System.out.println("NEW XML " + result.getCodeSystemXMLString());
-		codeSystemModal.setXml(result.getCodeSystemXMLString());
+		
 		
 		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
-		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName, codeSystemModal, codeSystemName);
+		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName);
 	}
 }

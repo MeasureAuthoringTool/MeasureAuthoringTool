@@ -111,23 +111,7 @@ public class CQLServiceImpl implements CQLService {
 	private String cqlDefaultCodeSystemXMLString=
 			
 			"<codeSystems>"
-			
-			+ "<codeSystem codeSystem=\"2.16.840.1.113883.6.238\" codeSystemName=\"CDCREC\" "
-			+ "codeSystemVersion=\"1.0\" id=\"777\" "
-			+ "valueSetOID=\"2.16.840.1.114222.4.11.837\"/>"
-	
-	        + "<codeSystem codeSystem=\"2.16.840.1.113883.6.238\" codeSystemName=\"CDCREC\" "
-	        + "codeSystemVersion=\"1.0\" id=\"777\" "
-	        + "valueSetOID=\"2.16.840.1.114222.4.11.836\"/>" 
-	        
-	        + "<codeSystem codeSystem=\"2.16.840.1.113883.5.1\" codeSystemName=\"AdministrativeGender\" "
-			+ "codeSystemVersion=\"HL7V3.0_2014-08\" id=\"777\" "
-			+ "valueSetOID=\"2.16.840.1.113762.1.4.1\"/>" 
-			
-			+ "<codeSystem codeSystem=\"2.16.840.1.113883.3.221.5\" codeSystemName=\"SOP\" "
-			+ "codeSystemVersion=\"5.0\" id=\"777\" "
-			+ "valueSetOID=\"2.16.840.1.114222.4.11.3591\"/>"
-			
+					
 		 	+ "<codeSystem codeSystem=\"2.16.840.1.113883.6.1\" codeSystemName=\"LOINC\" "
 			+ "codeSystemVersion=\"2.46\" id=\"777\" "
 		 	+ "/>"

@@ -77,8 +77,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
-import mat.model.cql.CQLCodeSystem;
-import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
@@ -231,23 +229,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName, 
-			MeasureXmlModel codeSystemModel, String codeSystemName) {
+	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		MeasureXmlModel newXmlModel = getService().getMeasureXmlForMeasure(newMeasureXmlModel.getMeasureId());
 		if (((xmlModel != null && newXmlModel != null) && (StringUtils.isNotBlank(xmlModel.getXml()) && StringUtils.isNotBlank(newXmlModel.getXml())))
 				&& ((nodeName != null && newNodeName != null) && (StringUtils.isNotBlank(nodeName) && StringUtils.isNotBlank(newNodeName)))) {
 			String result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName, measureXmlModel.getParentNode());
 			xmlModel.setXml(result);
-			
 			result = callAppendNode(xmlModel, newMeasureXmlModel.getXml(), newNodeName, newMeasureXmlModel.getParentNode());
 			xmlModel.setXml(result);
-			
-			if(codeSystemModel.getXml()!=null && !codeSystemModel.getXml().isEmpty()){
-				result = callAppendNode(xmlModel, codeSystemModel.getXml(), codeSystemName, codeSystemModel.getParentNode());
-				xmlModel.setXml(result);
-			}
-			
 			getService().saveMeasureXml(xmlModel);
 		}
 		
@@ -615,23 +605,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	
+	/**
+	 * Check for default CQL code systems and append.
+	 *
+	 * @param processor the processor
+	 */
 	private void checkForDefaultCQLCodeSystemsAndAppend(XmlProcessor processor) {
 		
-		NodeList defaultCQLCodeSystemNodeList = findDefaultCodeSystems(processor);
+		String codeSystemStr = getCqlService().getDefaultCodeSystems();
 		
-		if (defaultCQLCodeSystemNodeList != null && defaultCQLCodeSystemNodeList.getLength() == 4) {
-			logger.info("All Default codesystem elements present in the measure.");
-			return;
-		}
-		
-		String defStr = getCqlService().getDefaultCodeSystems();
-		System.out.println("defStr:"+defStr);
 		try {
-			processor.appendNode(defStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
+			processor.appendNode(codeSystemStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
 			
 			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
-					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName ='CDCREC' "
-							+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP' or @codeSystemName='Birthdate' or @codeSystemName='Dead']");
+					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='Birthdate' or @codeSystemName='Dead']");
 			
 			if(defaultCodeSystemNodes != null){
 				System.out.println("suppl data elems..setting ids");
@@ -647,7 +634,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -694,14 +680,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
-	
-	
 	/**
 	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and try and NodeList for Definitions with the following names;
 	 * 'SDE Ethnicity','SDE Payer','SDE Race','SDE Sex'.
-	 *
-	 * @param xmlProcessor the xml processor
-	 * @return the node list
+	 * @param xmlProcessor
+	 * @return
 	 */
 	public NodeList findDefaultDefinitions(XmlProcessor xmlProcessor) {
 		NodeList returnNodeList = null;
@@ -718,28 +701,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return returnNodeList;
 	}
 	
-	
-	/**
-	 * Find default code systems.
-	 *
-	 * @param xmlProcessor the xml processor
-	 * @return the node list
-	 */
-	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
-		NodeList returnNodeList = null;
-		Document originalDoc = xmlProcessor.getOriginalDoc();
-		
-		if (originalDoc != null) {
-			try {				
-				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName ='CDCREC' "
-						+ "or @codeSystemName='AdministrativeGender' or @codeSystemName='SOP']";
-				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		return returnNodeList;
-	}
 	
 	/**
 	 * Check for default cql parameters and append.
@@ -3107,7 +3068,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				// update cqlLookUp Tag
 				updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
 				updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
-				updateCQLCodeSystems(processor, modifyWithDTO, modifyDTO);
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 				
@@ -3117,7 +3077,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
 				// update cqlLookUp Tag
 				updateCQLLookUp(processor, modifyWithDTO, modifyDTO);
-				updateCQLCodeSystems(processor, modifyWithDTO, modifyDTO);
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 			}
@@ -3126,115 +3085,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML End : Measure Id :: " + measureId);
 	}
 	
-	
-	
-	/**
-	 * Update CQL code systems.
-	 *
-	 * @param processor the processor
-	 * @param modifyWithDTO the modify with DTO
-	 * @param modifyDTO the modify DTO
-	 */
-	private void updateCQLCodeSystems(XmlProcessor processor, QualityDataSetDTO modifyWithDTO,
-			QualityDataSetDTO modifyDTO) {
-		String oldOid = modifyDTO.getOid();
-		String newOid = modifyWithDTO.getOid();
-		
-		String XPATH_VALUESET_OLD_OID = "/measure/cqlLookUp//valueset[@oid='"+oldOid+"']";
-		//String XPATH_VALUESET_NEW_OID = "/measure/cqlLookUp//valueset[@oid='"+newOid+"']";
-		String XPATH_CODE_SYSTEM_OLD_OID= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+oldOid+"']";
-		String XPATH_CODE_SYSTEM_NEW_OID= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+newOid+"']";
-		
-			try {
-				
-			if (!oldOid.equals(newOid)) {
-				NodeList nodesOldValueSets = (NodeList) xPath.evaluate(XPATH_VALUESET_OLD_OID,
-						processor.getOriginalDoc(), XPathConstants.NODESET);
-				if (nodesOldValueSets != null && nodesOldValueSets.getLength() <= 1) {
-					NodeList nodesoldCodeSystems = (NodeList) xPath.evaluate(XPATH_CODE_SYSTEM_OLD_OID,
-							processor.getOriginalDoc(), XPathConstants.NODESET);
-					if (nodesoldCodeSystems != null) {
-						for (int i = 0; i < nodesoldCodeSystems.getLength(); i++) {
-							Node currentNode = nodesoldCodeSystems.item(i);
-							Node parentNode = currentNode.getParentNode();
-							parentNode.removeChild(currentNode);
-						}
-					}
-				}
-			}
-			
-			// remove any Existing codeSystem for newOID
-			NodeList nodesnewCodeSystems = (NodeList) xPath.evaluate(XPATH_CODE_SYSTEM_NEW_OID,
-					processor.getOriginalDoc(), XPathConstants.NODESET);
-			if (nodesnewCodeSystems != null) {
-				for (int i = 0; i < nodesnewCodeSystems.getLength(); i++) {
-					Node currentNode = nodesnewCodeSystems.item(i);
-					Node parentNode = currentNode.getParentNode();
-					parentNode.removeChild(currentNode);
-				}
-			}
-			if(modifyWithDTO.getCodeSystemList() != null){
-				String xmlString = createCodeSystems(processor, modifyWithDTO.getCodeSystemList());
-				processor.appendNode(xmlString, "codeSystem", "/measure/cqlLookUp/codeSystems");
-			}
-			
-			
-		} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	private String createCodeSystems(XmlProcessor processor, List<CQLCodeSystem> codeSystemList) {
-		CQLCodeSystemWrapper codeSystemWrapper = new CQLCodeSystemWrapper();
-		codeSystemWrapper.setCqlCodeSystemList(codeSystemList);
-		ByteArrayOutputStream stream = createCQLCodesystemXML(codeSystemWrapper);
-		int startIndex = stream.toString().indexOf("<codeSystems>", 0);
-		int lastIndex = stream.toString().indexOf("</codeSystems>", startIndex);
-		String xmlString = stream.toString().substring(startIndex,lastIndex + 14);
-		logger.debug("createCodeSystems Method Call xmlString :: "
-				+ xmlString);
-		return xmlString;
-		
-	}
-	
-	private ByteArrayOutputStream createCQLCodesystemXML(
-			final CQLCodeSystemWrapper wrapper) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("CodeSystemsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
-					stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.."
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
-		return stream;
-	}
-
 	/**
 	 * This method updates MeasureXML - ValueSet nodes under CQLLookUp.
 	 * 
@@ -5370,38 +5220,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public String getJSONObjectFromXML(){
 		return getCqlService().getJSONObjectFromXML();
-	}
-
-	@Override
-	public void checkForCodeSystemAndDelete(String oid, String measureId) {
-		
-		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		
-		String CODE_SYSTEM_XPATH = "/measure/cqlLookUp/codeSystems/codeSystem[@valueSetOID='"+oid+"']";
-		
-		if (model != null) {
-			
-			XmlProcessor processor = new XmlProcessor(model.getXml());
-			
-			try {
-				NodeList codeSystemNodeList = (NodeList) xPath.evaluate(CODE_SYSTEM_XPATH,
-						processor.getOriginalDoc(),	XPathConstants.NODESET);
-				
-				for(int i=codeSystemNodeList.getLength()-1; i>=0; i--){
-					Node childNode = codeSystemNodeList.item(i);
-					Node parentNode = childNode.getParentNode();
-					parentNode.removeChild(childNode);
-				}
-				
-				model.setXml(processor.transform(processor.getOriginalDoc()));
-				getService().saveMeasureXml(model);
-				
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
 	}
 	
 }

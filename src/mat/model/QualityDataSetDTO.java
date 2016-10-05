@@ -86,7 +86,6 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	private String vsacExpIdentifier;
 	
-	private List<CQLCodeSystem> codeSystemList;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -493,18 +492,6 @@ public class QualityDataSetDTO implements IsSerializable {
 		this.vsacExpIdentifier = vsacExpIdentifier;
 	}
 
-
-
-	public List<CQLCodeSystem> getCodeSystemList() {
-		return codeSystemList;
-	}
-
-
-
-	public void setCodeSystemList(List<CQLCodeSystem> codeSystemList) {
-		this.codeSystemList = codeSystemList;
-	}
-	
 	
 	
 }

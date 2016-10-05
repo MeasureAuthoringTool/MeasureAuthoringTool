@@ -52,15 +52,12 @@ import mat.model.GroupedCodeList;
 import mat.model.GroupedCodeListDTO;
 import mat.model.ListObject;
 import mat.model.ListObjectLT;
-import mat.model.MatConcept;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.MeasureSteward;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.User;
-import mat.model.cql.CQLCodeSystem;
-import mat.model.cql.CQLCodeSystemWrapper;
 import mat.server.LoggedInUserUtil;
 import mat.server.exception.ExcelParsingException;
 import mat.server.service.CodeListNotUniqueException;
@@ -208,12 +205,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return xmlString;
 	}
 	
-	/**
-	 * Adds the new applied QDM in measure XML.
-	 *
-	 * @param qualityDataSetDTOWrapper the quality data set DTO wrapper
-	 * @return the string
-	 */
 	private String addNewAppliedQDMInMeasureXML(
 			final QualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
@@ -570,44 +561,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return stream;
 	}
 	
-	
-	/**
-	 * Creates the CQL codesystem XML.
-	 *
-	 * @param wrapper the wrapper
-	 * @return the byte array output stream
-	 */
-	private ByteArrayOutputStream createCQLCodesystemXML(
-			final CQLCodeSystemWrapper wrapper) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("CodeSystemsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
-					stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.."
-					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
-		return stream;
-	}
-	
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
 	 * 
@@ -645,9 +598,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
 		return stream;
 	}
-	
-	
-	
 
 	/*
 	 * (non-Javadoc)
@@ -1721,17 +1671,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet()
 					.getExpansionProfile());
 		}
-		qds.setCodeSystemList(getCodeSystemList(valueSetTransferObject.getMatValueSet()
-				.getConceptList().getConceptList(), qds.getOid()));
+
 		// if (valueSetTransferObject.isEffectiveDate()) {
 		// qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
 		// }
 
 		ArrayList<QualityDataSetDTO> qualityDataSetDTOs = (ArrayList<QualityDataSetDTO>) valueSetTransferObject
 				.getAppliedQDMList();
-		checkForCodeSystemAndDelete(qds.getOid(), valueSetTransferObject.getMeasureId());
-		CQLCodeSystemWrapper codeSystemWrapper = new CQLCodeSystemWrapper();
-		codeSystemWrapper.setCqlCodeSystemList(qds.getCodeSystemList());
+
 		if (valueSetTransferObject.isSpecificOccurrence()) {
 
 			if (isDuplicate(valueSetTransferObject, true, true)) {
@@ -1741,7 +1688,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet, qualityDataSetDTOs);
-			
 			if (occurrenceCount < ASCII_END) { // Alphabet ASCII Integer Values.
 				char occTxt = (char) occurrenceCount;
 				qds.setOccurrenceText("Occurrence" + " " + occTxt);
@@ -1750,12 +1696,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qualityDataSetDTOs.add(qds);
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
-				String newCodeSystemString = addNewCodeSystemInMeasureXML(codeSystemWrapper);
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
 				result.setnewXmlString(newqdmXMLString);
-				result.setCodeSystemXMLString(newCodeSystemString);
 			}
 		} else { // Treat as regular QDM
 			if (!isDuplicate(valueSetTransferObject, true, false)) {
@@ -1763,41 +1707,17 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				String newqdmXMLString = addNewAppliedQDMInMeasureXML(wrapper);
-				String newCodeSystemString = addNewCodeSystemInMeasureXML(codeSystemWrapper);  
 				result.setSuccess(true);
 				qualityDataSetDTOs.add(qds);
 				result.setAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
 				result.setXmlString(qdmXMLString);
 				result.setnewXmlString(newqdmXMLString);
-				result.setCodeSystemXMLString(newCodeSystemString);
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 			}
 		}
 		return result;
-	}
-
-	private void checkForCodeSystemAndDelete(String oid, String measureId) {
-		getMeasureService().checkForCodeSystemAndDelete(oid, measureId);
-		
-	}
-
-	/**
-	 * Adds the new code system in measure XML.
-	 *
-	 * @param codeSystemWrapper the code system wrapper
-	 * @return the string
-	 */
-	private String addNewCodeSystemInMeasureXML(CQLCodeSystemWrapper codeSystemWrapper) {
-		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
-		ByteArrayOutputStream stream = createCQLCodesystemXML(codeSystemWrapper);
-		int startIndex = stream.toString().indexOf("<codeSystems>", 0);
-		int lastIndex = stream.toString().indexOf("</codeSystems>", startIndex);
-		String xmlString = stream.toString().substring(startIndex,lastIndex + 14);
-		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: "
-				+ xmlString);
-		return xmlString;
 	}
 
 	/*
@@ -2290,9 +2210,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				qds.setExpansionIdentifier(null);
 			}
-			qds.setCodeSystemList(getCodeSystemList(matValueSetTransferObject.getMatValueSet()
-					.getConceptList().getConceptList(), qds.getOid()));
-			
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet,
 					(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
@@ -2373,8 +2290,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setExpansionIdentifier(null);
 				}
 				qds.setOccurrenceText(null);
-				qds.setCodeSystemList(getCodeSystemList(matValueSetTransferObject.getMatValueSet()
-						.getConceptList().getConceptList(), qds.getOid()));
 				QualityDataModelWrapper wrapper = modifyAppliedElementList(
 						qds,
 						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject
@@ -2524,30 +2439,5 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return (findAllOid && isAllOidsMod);
 	}
-	
-	
-	/**
-	 * Gets the code system list.
-	 *
-	 * @param conceptList the concept list
-	 * @param oid the oid
-	 * @return the code system list
-	 */
-	private List<CQLCodeSystem> getCodeSystemList(List<MatConcept> conceptList, String oid){
-		List<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
-		for(int i=0; i<conceptList.size(); i++ ){
-			CQLCodeSystem codeSystem = new CQLCodeSystem();
-			codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-			codeSystem.setCodeSystem(conceptList.get(i).getCodeSystem());
-			codeSystem.setCodeSystemName(conceptList.get(i).getCodeSystemName());
-			codeSystem.setCodeSystemVersion(conceptList.get(i).getCodeSystemVersion());
-			codeSystem.setValueSetOID(oid);
-			codeSystemList.add(codeSystem);
-		}
-		return codeSystemList;
-	}
-	
-	
-	
 
 }

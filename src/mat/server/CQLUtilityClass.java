@@ -124,7 +124,7 @@ public class CQLUtilityClass {
 					else{
 						cqlStr = cqlStr.append("version 'urn:hl7:profile:" + expIdentifier +"' ");
 					}
-					if(!valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+					/*if(!valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 						cqlStr = cqlStr.append("codesystems {"+'"');
 						Iterator<String> codeSysNameIterator = codeSysName.iterator();
 						while (codeSysNameIterator.hasNext()) {
@@ -134,7 +134,7 @@ public class CQLUtilityClass {
 							}
 						}
 						cqlStr = cqlStr.append('"'+"}");
-					}
+					}*/
 					cqlStr = cqlStr.append("\n\n");
 					valueSetAlreadyUsed.add(valueset.getCodeListName());
 				}

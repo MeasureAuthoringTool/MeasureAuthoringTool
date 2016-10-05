@@ -928,13 +928,13 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				valueSetVersion = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				valueSetVersion = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
 				addVersionToValueTag = true;
 			} else {
 				addVersionToValueTag = false;
 			}
 		} else {
-			valueSetVersion = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+			valueSetVersion = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll(" ", "%20");
 			addVersionToValueTag = true;
 		}
 		if (addVersionToValueTag) {
@@ -1086,11 +1086,11 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				.getNodeValue();
 		if ("1.0".equals(version) || "1".equals(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
+				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
 			}
 		} else {
 			version = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version")
-					.getNodeValue();
+					.getNodeValue().replaceAll(" ", "%20");
 		}
 		return version;
 	}

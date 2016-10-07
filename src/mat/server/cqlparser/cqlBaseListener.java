@@ -161,6 +161,42 @@ public class cqlBaseListener implements cqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCodeDefinition(cqlParser.CodeDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodeDefinition(cqlParser.CodeDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConceptDefinition(cqlParser.ConceptDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConceptDefinition(cqlParser.ConceptDefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCodeIdentifier(cqlParser.CodeIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodeIdentifier(cqlParser.CodeIdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCodesystemId(cqlParser.CodesystemIdContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -192,6 +228,18 @@ public class cqlBaseListener implements cqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVersionSpecifier(cqlParser.VersionSpecifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCodeId(cqlParser.CodeIdContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodeId(cqlParser.CodeIdContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -521,25 +569,25 @@ public class cqlBaseListener implements cqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDefineClause(cqlParser.DefineClauseContext ctx) { }
+	@Override public void enterLetClause(cqlParser.LetClauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDefineClause(cqlParser.DefineClauseContext ctx) { }
+	@Override public void exitLetClause(cqlParser.LetClauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDefineClauseItem(cqlParser.DefineClauseItemContext ctx) { }
+	@Override public void enterLetClauseItem(cqlParser.LetClauseItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDefineClauseItem(cqlParser.DefineClauseItemContext ctx) { }
+	@Override public void exitLetClauseItem(cqlParser.LetClauseItemContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

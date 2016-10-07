@@ -2,6 +2,7 @@ package mat.server.cqlparser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
@@ -9,16 +10,14 @@ import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
-import mat.server.cqlparser.cqlParser.AliasedQuerySourceContext;
 import mat.server.cqlparser.cqlParser.ExpressionDefinitionContext;
 import mat.server.cqlparser.cqlParser.FunctionDefinitionContext;
 import mat.server.cqlparser.cqlParser.LogicContext;
 import mat.server.cqlparser.cqlParser.OperandDefinitionContext;
 import mat.server.cqlparser.cqlParser.QueryContext;
-import mat.server.cqlparser.cqlParser.QuerySourceContext;
 import mat.server.cqlparser.cqlParser.RetrieveContext;
-import mat.server.cqlparser.cqlParser.SingleSourceClauseContext;
-import mat.server.cqlparser.cqlParser.SourceClauseContext;
+import mat.server.cqlparser.cqlParser.StatementContext;
+import mat.server.cqlparser.cqlParser.WhereClauseContext;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 //import mat.cql.humanreadable.GenerateCQLHumanReadable;
@@ -165,6 +164,8 @@ public class MATCQLListener extends cqlBaseListener {
 
 		//boolean possibleSupplementalDef = checkForSupplimentalDefinitions(ctx);
 		//cqlDefinitionModelObject.setPossibleSupplementalDef(possibleSupplementalDef);
+		System.out.println("Check attributes:"+cqlDefinitionModelObject.getIdentifier());
+		checkForValuesetAttributes(ctx, cqlDefinitionModelObject);
 
 		if(ctx.expressionDefinition().accessModifier() != null){
 			cqlDefinitionModelObject.setAccessModifier(ctx.expressionDefinition().accessModifier().getText());
@@ -173,6 +174,58 @@ public class MATCQLListener extends cqlBaseListener {
 		cqlDefinitionModelObject.setChildTokens(childTokens);
 		this.cqlFileObject.getDefinitionsMap().put(cqlDefinitionModelObject.getIdentifier(), cqlDefinitionModelObject);
 		System.out.println(cqlDefinitionModelObject.getIdentifier() + ":Referred to value sets:"+cqlDefinitionModelObject.getReferredToValueSets());
+	}
+
+	private void checkForValuesetAttributes(StatementContext ctx,
+			CQLDefinitionModelObject cqlDefinitionModelObject) {
+		
+		ExpressionDefinitionContext expressionDefinitionContext = ctx.expressionDefinition();
+		List<WhereClauseContext>  whereClauseContextList = collectWhereClauses(expressionDefinitionContext);
+		CQLDefinitionModelObject dummyModelObject = new CQLDefinitionModelObject();
+		
+		Set<String> valueSetNames = this.cqlFileObject.getValueSetsMap().keySet();
+		System.out.println("ValueSetNames:"+valueSetNames);
+		
+		for(WhereClauseContext whereClauseContext : whereClauseContextList){
+			System.out.println(whereClauseContext.expression().getText());
+			List<String> childTokens = new ArrayList<String>(); 
+			findWhereClauseIdentifiers(whereClauseContext.expression().children, childTokens, dummyModelObject);
+			System.out.println("childtokens:"+childTokens);
+			
+			for(String valueSetName:valueSetNames){
+				if(childTokens.contains(valueSetName)){
+					CQLValueSetModelObject cqlValueSetModelObject = this.getCqlFileObject().getValueSetsMap().get(valueSetName);
+					cqlDefinitionModelObject.getReferredToValueSets().add(cqlValueSetModelObject);
+					setReferredByInValueSet(cqlDefinitionModelObject, cqlValueSetModelObject);
+				}
+			}
+		}
+	}
+
+	private void findWhereClauseIdentifiers(List<ParseTree> children,
+			List<String> childTokens, CQLDefinitionModelObject dummyModelObject) {
+		
+		for(ParseTree tree:children){
+			findStatementChildren(tree, childTokens, dummyModelObject);
+		}
+		
+	}
+
+	private List<WhereClauseContext> collectWhereClauses(
+			ExpressionDefinitionContext expressionDefinitionContext) {
+		
+		List<WhereClauseContext> whereClauseContextList = new ArrayList<WhereClauseContext>();
+		
+		List<ParseTree> parseTreeList = expressionDefinitionContext.expression().children;
+		for(ParseTree parseTree:parseTreeList){
+			if(parseTree.getClass().getSimpleName().equals("QueryContext")){
+				QueryContext queryContext = (QueryContext)parseTree;
+				if(queryContext.whereClause() != null){
+					whereClauseContextList.add(queryContext.whereClause());
+				}
+			}
+		}
+		return whereClauseContextList;
 	}
 
 	/**
@@ -333,8 +386,8 @@ public class MATCQLListener extends cqlBaseListener {
 
 		for(int i=0;i<childTokens.size();i++){
 			String token = childTokens.get(i).trim();
-			//System.out.println("token:"+token);
-			if(i==0 && token.equals("parameter")){
+			System.out.println("token:"+token);
+			if(i == 0 && token.equals("parameter")){
 				removeTokens.add(childTokens.get(i));
 				removeTokens.add(childTokens.get(i+1));
 				break;
@@ -346,12 +399,12 @@ public class MATCQLListener extends cqlBaseListener {
 				removeTokens.add(childTokens.get(i));
 			}
 		}
-		//System.out.println(removeTokens);
+		System.out.println(removeTokens);
 		for(int j=0;j<removeTokens.size();j++){
 			childTokens.remove(removeTokens.get(j));
 		}
 
-		//System.out.println("Tokens:"+childTokens);
+		System.out.println("Tokens:"+childTokens);
 		return childTokens;
 	}
 

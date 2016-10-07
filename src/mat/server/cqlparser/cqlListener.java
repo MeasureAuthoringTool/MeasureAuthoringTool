@@ -129,6 +129,36 @@ public interface cqlListener extends ParseTreeListener {
 	 */
 	void exitLibraryIdentifier(cqlParser.LibraryIdentifierContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link cqlParser#codeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeDefinition(cqlParser.CodeDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link cqlParser#codeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeDefinition(cqlParser.CodeDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link cqlParser#conceptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterConceptDefinition(cqlParser.ConceptDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link cqlParser#conceptDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitConceptDefinition(cqlParser.ConceptDefinitionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link cqlParser#codeIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeIdentifier(cqlParser.CodeIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link cqlParser#codeIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeIdentifier(cqlParser.CodeIdentifierContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link cqlParser#codesystemId}.
 	 * @param ctx the parse tree
 	 */
@@ -158,6 +188,16 @@ public interface cqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVersionSpecifier(cqlParser.VersionSpecifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link cqlParser#codeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodeId(cqlParser.CodeIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link cqlParser#codeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodeId(cqlParser.CodeIdContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link cqlParser#typeSpecifier}.
 	 * @param ctx the parse tree
@@ -429,25 +469,25 @@ public interface cqlListener extends ParseTreeListener {
 	 */
 	void exitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link cqlParser#defineClause}.
+	 * Enter a parse tree produced by {@link cqlParser#letClause}.
 	 * @param ctx the parse tree
 	 */
-	void enterDefineClause(cqlParser.DefineClauseContext ctx);
+	void enterLetClause(cqlParser.LetClauseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link cqlParser#defineClause}.
+	 * Exit a parse tree produced by {@link cqlParser#letClause}.
 	 * @param ctx the parse tree
 	 */
-	void exitDefineClause(cqlParser.DefineClauseContext ctx);
+	void exitLetClause(cqlParser.LetClauseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link cqlParser#defineClauseItem}.
+	 * Enter a parse tree produced by {@link cqlParser#letClauseItem}.
 	 * @param ctx the parse tree
 	 */
-	void enterDefineClauseItem(cqlParser.DefineClauseItemContext ctx);
+	void enterLetClauseItem(cqlParser.LetClauseItemContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link cqlParser#defineClauseItem}.
+	 * Exit a parse tree produced by {@link cqlParser#letClauseItem}.
 	 * @param ctx the parse tree
 	 */
-	void exitDefineClauseItem(cqlParser.DefineClauseItemContext ctx);
+	void exitLetClauseItem(cqlParser.LetClauseItemContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link cqlParser#whereClause}.
 	 * @param ctx the parse tree

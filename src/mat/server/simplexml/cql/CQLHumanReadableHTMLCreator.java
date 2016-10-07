@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.model.cql.CQLParameter;
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
@@ -1728,8 +1727,7 @@ public class CQLHumanReadableHTMLCreator {
 		 */
 		@Override
 		public List<CQLParameterModelObject> getReferredToParameters() {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<CQLParameterModelObject>();
 		}
 
 		/* (non-Javadoc)
@@ -1737,8 +1735,7 @@ public class CQLHumanReadableHTMLCreator {
 		 */
 		@Override
 		public List<CQLParameterModelObject> getReferredByParameters() {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<CQLParameterModelObject>();
 		}
 
 		/* (non-Javadoc)
@@ -1746,8 +1743,7 @@ public class CQLHumanReadableHTMLCreator {
 		 */
 		@Override
 		public List<CQLValueSetModelObject> getReferredToValueSets() {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<CQLValueSetModelObject>();
 		}
 
 		/* (non-Javadoc)
@@ -1755,8 +1751,7 @@ public class CQLHumanReadableHTMLCreator {
 		 */
 		@Override
 		public List<CQLValueSetModelObject> getReferredByValueSets() {
-			// TODO Auto-generated method stub
-			return null;
+			return new ArrayList<CQLValueSetModelObject>();
 		}
 		
 	}

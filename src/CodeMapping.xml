@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.cql.CQLCodeWrapper">
+		<map-to xml="cqlLookUp" />
+		
+		<field name="qualityDataDTOList" type="mat.model.cql.CQLCode"
+			get-method="getCqlCodeList" set-method="setCqlCodeList"
+			collection="arraylist">
+			<bind-xml name="code" location="codes">
+				<class name="mat.model.cql.CQLCode">
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+					<field name="codeName" type="java.lang.String">
+						<bind-xml name="codeName" node="attribute" />
+					</field>
+					<field name="codeSystemName" type="java.lang.String">
+						<bind-xml name="codeSystemName" node="attribute" />
+					</field>
+					<field name="codeSystemVersion" type="java.lang.String">
+						<bind-xml name="codeSystemVersion" node="attribute" />
+					</field>
+					<field name="codeOID" type="java.lang.String">
+						<bind-xml name="codeOID" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+</mapping>

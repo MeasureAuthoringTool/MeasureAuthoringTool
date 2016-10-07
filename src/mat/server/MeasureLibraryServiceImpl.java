@@ -639,6 +639,40 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
+	 * Check for default CQL codes and append.
+	 *
+	 * @param processor the processor
+	 */
+	private void checkForDefaultCQLCodesAndAppend(XmlProcessor processor) {
+		
+		String codeStr = getCqlService().getDefaultCodes();
+		
+		try {
+			processor.appendNode(codeStr, "code", "/measure/cqlLookUp/codes");
+			
+			NodeList defaultCodeNodes = processor.findNodeList(processor.getOriginalDoc(), 
+					"/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']");
+			
+			if(defaultCodeNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<defaultCodeNodes.getLength();i++){
+					Node codeNode = defaultCodeNodes.item(i);
+					System.out.println("codename:"+codeNode.getAttributes().getNamedItem("codeName").getNodeValue());
+				    System.out.println("codesystemname:"+codeNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
+				    System.out.println("id:"+codeNode.getAttributes().getNamedItem("id").getNodeValue());
+				    codeNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
+			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Append cql parameters.
 	 *
 	 * @param xmlProcessor the xml processor
@@ -2320,6 +2354,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 					checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
+					checkForDefaultCQLCodesAndAppend(xmlProcessor);
 					updateCQLVersion(xmlProcessor);
 					if(! scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
 						deleteExistingGroupings(xmlProcessor);
@@ -2339,6 +2374,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);
 			checkForDefaultCQLCodeSystemsAndAppend(processor);
+			checkForDefaultCQLCodesAndAppend(processor);
 			updateCQLVersion(processor);
 			
 			//Add QDM elements for Supplemental Definitions for Race, Payer, Sex, Ethnicity

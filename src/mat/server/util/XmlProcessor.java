@@ -1676,6 +1676,7 @@ public class XmlProcessor {
 				
 				Element codeSystemsChildElem = originalDoc.createElement("codeSystems");
 				Element valueSetsChildElem = originalDoc.createElement("valuesets");
+				Element codeChildElem = originalDoc.createElement("codes");
 				Element parametersChildElem = originalDoc.createElement("parameters");
 				
 				Element definitionsChildElem = originalDoc.createElement("definitions");
@@ -1689,6 +1690,7 @@ public class XmlProcessor {
 				cqlNode.appendChild(contextChildElem);
 				cqlNode.appendChild(codeSystemsChildElem);
 				cqlNode.appendChild(valueSetsChildElem);
+				cqlNode.appendChild(codeChildElem);
 				cqlNode.appendChild(parametersChildElem);
 				cqlNode.appendChild(definitionsChildElem);
 				cqlNode.appendChild(functionsChildElem);

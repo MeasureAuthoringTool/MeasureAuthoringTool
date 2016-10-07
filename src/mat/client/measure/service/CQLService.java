@@ -120,5 +120,7 @@ public interface CQLService {
 	StringBuilder getCqlString(CQLModel cqlModel);
 
 	String getDefaultCodeSystems();
+	
+	String getDefaultCodes();
 
 }

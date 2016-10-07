@@ -122,6 +122,23 @@ public class CQLServiceImpl implements CQLService {
 			
 			+ "</codeSystems>"; 
 	
+	/** The cql default code system XML string. */
+	private String cqlDefaultCodesXMLString=
+			
+			"<codes>"
+					
+		 	+ "<code codeName=\"Birthdate\" codeOID=\"21112-8\" codeSystemName=\"LOINC\" "
+		 	+ "displayName=\"Birth date\" "
+			+ "codeSystemVersion=\"2.46\" id=\"777\" "
+		 	+ "/>"
+			
+			+ "<code codeName=\"Dead\" codeOID=\"419099009\" codeSystemName=\"SNOMEDCT\" "
+			+ "displayName=\"Dead\" "
+			+ "codeSystemVersion=\"2016-03\" id=\"777\" "
+			+ "/>"
+			
+			+ "</codes>"; 
+	
 	
 	
 	/*
@@ -1585,6 +1602,11 @@ public class CQLServiceImpl implements CQLService {
 	        lines = lines + 1;
 	    }
 	    return lines;
+	}
+
+	@Override
+	public String getDefaultCodes() {
+		return cqlDefaultCodesXMLString;
 	}
 	
 	

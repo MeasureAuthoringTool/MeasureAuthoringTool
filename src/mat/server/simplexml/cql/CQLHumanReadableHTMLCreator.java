@@ -328,6 +328,9 @@ public class CQLHumanReadableHTMLCreator {
 			else {
 				for(int i = 0; i < qdmElementList.getLength(); i++) {
 					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					if("attribute".equals(dataTypeName)){
+						dataTypeName = "Attribute";
+					}
 					String name = qdmElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
 					String oid = qdmElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
 					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 

@@ -9,11 +9,11 @@ public class CQLModel implements IsSerializable{
 	private List<CQLLibraryModel> includeLibraryList;
 	private String context;
 	private List<CQLQualityDataSetDTO> valueSetList;
-	private List<CQLQualityDataSetDTO> codeList;
 	private List<CQLParameter> cqlParameters;
 	private List<CQLDefinition> cqlDefinitions;
 	private List<CQLFunctions> cqlFunctions;
 	private List<CQLCodeSystem> codeSystemList;
+	private List<CQLCode> codeList;
 	
 	private int lines;
 	
@@ -47,12 +47,6 @@ public class CQLModel implements IsSerializable{
 	public void setLibrary(CQLLibraryModel library) {
 		this.library = library;
 	}
-	public List<CQLQualityDataSetDTO> getCodeList() {
-		return codeList;
-	}
-	public void setCodeList(List<CQLQualityDataSetDTO> codeList) {
-		this.codeList = codeList;
-	}
 	public List<CQLParameter> getCqlParameters() {
 		return cqlParameters;
 	}
@@ -82,6 +76,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setCodeSystemList(List<CQLCodeSystem> codeSystemList) {
 		this.codeSystemList = codeSystemList;
+	}
+	public List<CQLCode> getCodeList() {
+		return codeList;
+	}
+	public void setCodeList(List<CQLCode> codeList) {
+		this.codeList = codeList;
 	}
 	
 }

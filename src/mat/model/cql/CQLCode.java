@@ -22,6 +22,9 @@ public class CQLCode implements IsSerializable {
 	
 	/** The OID. */
 	private String codeOID;
+	
+	/** The Display Name. */
+	private String displayName;
 
 	
 	/**
@@ -104,4 +107,18 @@ public class CQLCode implements IsSerializable {
 		this.codeOID = codeOID;
 	}
 
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	
 }

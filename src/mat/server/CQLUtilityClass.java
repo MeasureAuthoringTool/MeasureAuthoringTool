@@ -11,8 +11,10 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -141,36 +143,23 @@ public class CQLUtilityClass {
 			}
 		}
 
-		//code
-				List<CQLDefinition> definitionList = cqlModel.getDefinitionList();
-				List<CQLFunctions> functionList = cqlModel.getCqlFunctions();
-				//initialize to false to display only once.
-				boolean birthDateEntry = false;
-				boolean deadEntry = false;
-				if (definitionList != null) {
-					for (int i = 0; i < definitionList.size(); i++) {
-						if (definitionList.get(i).getDefinitionLogic().matches(".*\\b"+ConstantMessages.BIRTHDATE+"\\b.*") && birthDateEntry == false) {
-							cqlStr = cqlStr.append("code "+'"'+"Birthdate"+'"'+": '21112-8' from "+'"'+"LOINC:2.46"+'"'+" display 'Birthdate'");
+		//Codes
+				List<CQLCode> codeList = cqlModel.getCodeList();
+				List<String> codesAlreadyUsed = new ArrayList<String>();
+				if(codeSystemList != null){
+					for(CQLCode codes : codeList){
+						String codesStr = '"'+codes.getCodeName()+'"'+ ":" 
+					                          +"'" +codes.getCodeOID()+"'";
+						String codeSysStr = codes.getCodeSystemName() + ":" 
+		                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+						if(!codesAlreadyUsed.contains(codesStr)){
+							cqlStr = cqlStr.append("code " + codesStr).append(" ")
+									.append("from " + codeSysStr +" ");
+							cqlStr = cqlStr.append("display " +"'" +codes.getDisplayName()+"'");
 							cqlStr = cqlStr.append("\n\n");
-							birthDateEntry = true;
-						} else if (definitionList.get(i).getDefinitionLogic().matches(".*\\b"+ConstantMessages.DEAD+"\\b.*") && deadEntry == false) {
-							cqlStr = cqlStr.append("code "+'"'+"Dead"+'"'+": '419099009' from "+'"'+"SNOMEDCT:2016-03"+'"'+" display 'Dead'");
-							cqlStr = cqlStr.append("\n\n");
-							deadEntry = true;
-						} 
-					}
-				}
-				if (functionList != null) {
-					for (int i = 0; i < functionList.size(); i++) {
-						if (functionList.get(i).getFunctionLogic().matches(".*\\b"+ConstantMessages.BIRTHDATE+"\\b.*") && birthDateEntry == false) {
-							cqlStr = cqlStr.append("code "+'"'+"Birthdate"+'"'+": '21112-8' from "+'"'+"LOINC:2.46"+'"'+" display 'Birth date'");
-							cqlStr = cqlStr.append("\n\n");
-							birthDateEntry = true;
-						} else if (functionList.get(i).getFunctionLogic().matches(".*\\b"+ConstantMessages.DEAD+"\\b.*") && deadEntry == false){
-							cqlStr = cqlStr.append("code "+'"'+"Dead"+'"'+": '419099009' from "+'"'+"SNOMEDCT:2016-03"+'"'+" display 'Dead'");
-							cqlStr = cqlStr.append("\n\n");
-							deadEntry = true;
-						} 
+							codesAlreadyUsed.add(codesStr);
+						}
+						
 					}
 				}
 		
@@ -380,6 +369,7 @@ public class CQLUtilityClass {
 			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
 			getCodeSystems(cqlModel, cqlLookUpXMLString);
 			getValueSet(cqlModel, cqlLookUpXMLString);
+			getCodes(cqlModel, cqlLookUpXMLString);
 			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
 			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
 			getCQLFunctionsInfo(cqlModel, cqlLookUpXMLString);
@@ -403,7 +393,27 @@ public class CQLUtilityClass {
 				cqlModel.setCodeSystemList(codeSystemWrapper.getCqlCodeSystemList());
 			}
 		} catch (Exception e) {
-			logger.info("Error while getting valueset :" +e.getMessage());
+			logger.info("Error while getting codesystems :" +e.getMessage());
+		}
+		
+	}
+	
+	private static void getCodes(CQLModel cqlModel, String cqlLookUpXMLString) {
+		CQLCodeWrapper codeWrapper;
+		try {			 
+
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeMapping.xml"));
+			Unmarshaller unmarshaller = new Unmarshaller(mapping);
+			unmarshaller.setClass(CQLCodeWrapper.class);
+			unmarshaller.setWhitespacePreserve(true);
+
+			codeWrapper = (CQLCodeWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			if(!codeWrapper.getCqlCodeList().isEmpty()){
+				cqlModel.setCodeList(codeWrapper.getCqlCodeList());
+			}
+		} catch (Exception e) {
+			logger.info("Error while getting codes :" +e.getMessage());
 		}
 		
 	}

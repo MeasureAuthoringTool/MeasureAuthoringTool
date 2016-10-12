@@ -910,7 +910,7 @@ left:50px;
     position:relative;
 }
 .topBannerImage {
-	padding: 4px 4px 4px 4px;
+	padding: 8px 8px 0px 8px;
     vertical-align: middle;
 }
 
@@ -1274,6 +1274,14 @@ padding: 2px;
 	position: relative;
 	padding-top: 12px;
 	font-size:small;
+}
+.versionPanel{
+	float: left;
+	position: relative;
+	padding: 2px 0 0 4px;
+	font-size:small;
+	text-align:left;
+	margin-top: -8px;
 }
 .welcomeUserPanel{
 	float: right;

@@ -92,7 +92,7 @@ public class MATCssCQLUtil {
 			"    padding: 10px;\r\n" + 
 			//"    line-height: 1.5em;\r\n" + 
 			"    font-size: 12px;\r\n" + 
-			"    overflow: auto;\r\n" + 
+			//"    overflow: auto;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
 			".p-l-10 {\r\n" + 

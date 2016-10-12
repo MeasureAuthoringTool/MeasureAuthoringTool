@@ -47,6 +47,7 @@ public class CQLFunctionModelObject extends CQLBaseModelDefinitionObject impleme
 	 */
 	private List<CQLParameterModelObject> referredByParameters = new ArrayList<CQLParameterModelObject>();
 	
+	private List<CQLCodeModelObject> referredToCodes = new ArrayList<CQLCodeModelObject>();
 	
 	
 	@Override
@@ -185,6 +186,14 @@ public class CQLFunctionModelObject extends CQLBaseModelDefinitionObject impleme
 
 	public void setReferredByParameters(List<CQLParameterModelObject> referredByParameters) {
 		this.referredByParameters = referredByParameters;
+	}
+
+	public List<CQLCodeModelObject> getReferredToCodes() {
+		return referredToCodes;
+	}
+
+	public void setReferredToCodes(List<CQLCodeModelObject> referredToCodes) {
+		this.referredToCodes = referredToCodes;
 	}
 
 

@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 import mat.model.cql.parser.CQLBaseStatementInterface;
+import mat.model.cql.parser.CQLCodeModelObject;
+import mat.model.cql.parser.CQLCodeSystemModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
+import mat.server.cqlparser.cqlParser.CodeDefinitionContext;
+import mat.server.cqlparser.cqlParser.CodesystemDefinitionContext;
 import mat.server.cqlparser.cqlParser.ExpressionContext;
 import mat.server.cqlparser.cqlParser.ExpressionDefinitionContext;
 import mat.server.cqlparser.cqlParser.FunctionDefinitionContext;
@@ -66,6 +70,41 @@ public class MATCQLListener extends cqlBaseListener {
 		//System.out.println(ctx.valuesetId().getText());
 		//System.out.println("\r\n");
 		extractValueSetDetails(ctx);
+	}
+	
+	@Override
+	public void exitCodesystemDefinition(CodesystemDefinitionContext ctx) {
+		System.out.println("Found codesystem:"+ctx.identifier().getText());
+		System.out.println(ctx.codesystemId().getText());
+		System.out.println(ctx.versionSpecifier().getText());
+		
+		CQLCodeSystemModelObject codeSystemModelObject = new CQLCodeSystemModelObject();
+		codeSystemModelObject.setIdentifier(ctx.identifier().getText());
+		codeSystemModelObject.setCodeSystemId(ctx.codesystemId().getText());
+		codeSystemModelObject.setVersionSpecifier(ctx.versionSpecifier().getText());
+		
+		this.cqlFileObject.getCodeSystemMap().put(ctx.identifier().getText(), codeSystemModelObject);
+	}
+	
+	@Override
+	public void exitCodeDefinition(CodeDefinitionContext ctx) {
+		System.out.println("Found code:"+ctx.identifier().getText());
+		System.out.println(ctx.codeId().getText());
+		System.out.println(ctx.codesystemIdentifier().getText());
+		System.out.println(ctx.displayClause().getText());
+		
+		CQLCodeModelObject cqlCodeModelObject = new CQLCodeModelObject();
+		cqlCodeModelObject.setCodeIdentifier(ctx.identifier().getText());
+		cqlCodeModelObject.setCodeId(ctx.codeId().getText());
+		cqlCodeModelObject.setCodeSystemIdentifier(ctx.codesystemIdentifier().getText());
+		cqlCodeModelObject.setDisplayClause(ctx.displayClause().getText());
+		
+		CQLCodeSystemModelObject codeSystemModelObject = this.cqlFileObject.getCodeSystemMap().get(cqlCodeModelObject.getCodeSystemIdentifier());
+		if(codeSystemModelObject != null){
+			cqlCodeModelObject.setCqlCodeSystemModelObject(codeSystemModelObject);
+		}
+		
+		this.cqlFileObject.getCodesMap().put(cqlCodeModelObject.getCodeIdentifier(), cqlCodeModelObject);
 	}
 
 	public void exitStatement(cqlParser.StatementContext ctx) { 
@@ -436,10 +475,19 @@ public class MATCQLListener extends cqlBaseListener {
 				
 				if(retrieveContext.valueset() != null){
 					String valueSetIdentifier = retrieveContext.valueset().qualifiedIdentifier().identifier().getText();
+					String valueSetDataType = "";
+					if(retrieveContext.namedTypeSpecifier() != null){
+						valueSetDataType = retrieveContext.namedTypeSpecifier().identifier().getText();
+					}					
 					
 					if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
 						baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 						setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+					}else if(this.cqlFileObject.getCodesMap().get(valueSetIdentifier) != null){
+						CQLCodeModelObject cqlCodeModelObject = this.cqlFileObject.getCodesMap().get(valueSetIdentifier);
+						cqlCodeModelObject.setDataTypeUsed(valueSetDataType);
+						baseStatementInterface.getReferredToCodes().add(cqlCodeModelObject);
+						setReferredByInValueSet(baseStatementInterface, cqlCodeModelObject);
 					}
 				}
 				

@@ -194,7 +194,7 @@ public class CQLUtilityClass {
 		/*if(!toBeInsertedAtEnd.toString().isEmpty()){
 			cqlStr = cqlStr.append(toBeInsertedAtEnd.toString());
 		}*/
-		System.out.println("CQL String:"+cqlStr);
+		
 		return cqlStr;
 
 	}
@@ -360,6 +360,7 @@ public class CQLUtilityClass {
 	public static CQLModel getCQLStringFromMeasureXML(String measureXML,String measureId){
 		
 		CQLModel cqlModel = new CQLModel();
+		System.out.println("Measure XML:"+measureXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
 		

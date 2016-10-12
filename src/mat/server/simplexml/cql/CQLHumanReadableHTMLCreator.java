@@ -1,6 +1,7 @@
 package mat.server.simplexml.cql;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.TreeMap;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.cql.parser.CQLBaseStatementInterface;
+import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -186,7 +188,7 @@ public class CQLHumanReadableHTMLCreator {
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor, cqlFileObject);
-		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
+		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor, cqlFileObject); 
 //		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 //		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
@@ -308,8 +310,9 @@ public class CQLHumanReadableHTMLCreator {
 	 * 
 	 * @param humanReadableHTMLDocument the human readable html document
 	 * @param simpleXMLProcessor the simple xml processor
+	 * @param cqlFileObject 
 	 */
-	private static void generateQDMDataElements(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+	private static void generateQDMDataElements(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject) {
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
 		
@@ -317,9 +320,10 @@ public class CQLHumanReadableHTMLCreator {
 		
 		try {
 			
+			Collection<CQLCodeModelObject> cqlCodesList = getAllCodesUsed(cqlFileObject);
 			NodeList qdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
 														"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='false']");
-			if(qdmElementList.getLength() < 1) {
+			if( (qdmElementList.getLength() + cqlCodesList.size()) < 1) {
 				String output = "None"; 
 				Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
 				qdmElementLI.append(output);
@@ -339,12 +343,46 @@ public class CQLHumanReadableHTMLCreator {
 					Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
 					qdmElementLI.append(output);	
 				}
-			} 
+				
+				
+				for(CQLCodeModelObject cqlCodeModelObject:cqlCodesList){
+					String codeSystemOID = cqlCodeModelObject.getCqlCodeSystemModelObject().getCodeSystemId();
+					if(codeSystemOID.startsWith("'urn:oid:")){
+						codeSystemOID = "'" + codeSystemOID.substring("'urn:oid:".length());
+					}
+					Element codeElementLI = qdmElementUL.appendElement(HTML_LI);
+					codeElementLI.append(cqlCodeModelObject.getCodeIdentifier()+" using "+cqlCodeModelObject.getDataTypeUsed() + " Value Set (" +codeSystemOID + ")");
+				}
+				
+				
+			}
+			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private static Collection<CQLCodeModelObject> getAllCodesUsed(CQLFileObject cqlFileObject) {
+		
+		Map<String, CQLCodeModelObject> codeMap = new HashMap<String, CQLCodeModelObject>();
+		
+		for(String cqlName:cqlFileObject.getDefinitionsMap().keySet()){
+			CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get(cqlName);
+			for (CQLCodeModelObject cqlCodeModelObject:cqlDefinitionModelObject.getReferredToCodes()){
+				codeMap.put(cqlCodeModelObject.getCodeIdentifier()+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);
+			}
+		}
+		
+		for(String cqlName:cqlFileObject.getFunctionsMap().keySet()){
+			CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(cqlName);
+			for (CQLCodeModelObject cqlCodeModelObject:cqlFunctionModelObject.getReferredToCodes()){
+				codeMap.put(cqlCodeModelObject.getCodeIdentifier()+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);
+			}
+		}
+		
+		return codeMap.values();
+	}
+
 	/**
 	 * Generate population nodes.
 	 *
@@ -1755,6 +1793,12 @@ public class CQLHumanReadableHTMLCreator {
 		@Override
 		public List<CQLValueSetModelObject> getReferredByValueSets() {
 			return new ArrayList<CQLValueSetModelObject>();
+		}
+
+		@Override
+		public List<CQLCodeModelObject> getReferredToCodes() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

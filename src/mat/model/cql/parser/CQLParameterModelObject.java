@@ -151,5 +151,11 @@ public class CQLParameterModelObject extends CQLBaseModelDefinitionObject implem
 	public void setReferredByParameters(List<CQLParameterModelObject> referredByParameters) {
 		this.referredByParameters = referredByParameters;
 	}
+
+	@Override
+	public List<CQLCodeModelObject> getReferredToCodes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

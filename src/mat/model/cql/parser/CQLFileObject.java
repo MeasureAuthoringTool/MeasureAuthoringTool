@@ -8,6 +8,8 @@ public class CQLFileObject {
 	private Map<String, CQLDefinitionModelObject> definitionsMap = new HashMap<String, CQLDefinitionModelObject>();
 	private Map<String, CQLFunctionModelObject> functionsMap = new HashMap<String, CQLFunctionModelObject>();
 	private Map<String, CQLValueSetModelObject> valueSetsMap = new HashMap<String, CQLValueSetModelObject>();
+	private Map<String, CQLCodeSystemModelObject> codeSystemMap = new HashMap<String, CQLCodeSystemModelObject>();
+	private Map<String, CQLCodeModelObject> codesMap = new HashMap<String, CQLCodeModelObject>();
 	private Map<String, CQLParameterModelObject>  parametersMap = new HashMap<String, CQLParameterModelObject>();
 	
 	
@@ -137,6 +139,30 @@ public class CQLFileObject {
 
 	public void setParametersMap(Map<String, CQLParameterModelObject> parametersMap) {
 		this.parametersMap = parametersMap;
+	}
+
+
+
+	public Map<String, CQLCodeModelObject> getCodesMap() {
+		return codesMap;
+	}
+
+
+
+	public void setCodesMap(Map<String, CQLCodeModelObject> codesMap) {
+		this.codesMap = codesMap;
+	}
+
+
+
+	public Map<String, CQLCodeSystemModelObject> getCodeSystemMap() {
+		return codeSystemMap;
+	}
+
+
+
+	public void setCodeSystemMap(Map<String, CQLCodeSystemModelObject> codeSystemMap) {
+		this.codeSystemMap = codeSystemMap;
 	}
 
 }

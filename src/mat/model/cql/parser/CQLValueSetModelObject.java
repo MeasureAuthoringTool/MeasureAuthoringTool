@@ -138,5 +138,11 @@ public class CQLValueSetModelObject extends CQLBaseModelDefinitionObject impleme
 	public String toString() {
 		return getIdentifier();
 	}
+
+	@Override
+	public List<CQLCodeModelObject> getReferredToCodes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

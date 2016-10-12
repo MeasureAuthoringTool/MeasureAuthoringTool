@@ -17,5 +17,6 @@ public interface CQLBaseStatementInterface {
 	public List<CQLParameterModelObject> getReferredByParameters();
 	public List<CQLValueSetModelObject> getReferredToValueSets();
 	public List<CQLValueSetModelObject> getReferredByValueSets();
+	public List<CQLCodeModelObject> getReferredToCodes();
 
 }

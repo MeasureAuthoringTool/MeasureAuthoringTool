@@ -350,8 +350,14 @@ public class CQLHumanReadableHTMLCreator {
 					if(codeSystemOID.startsWith("'urn:oid:")){
 						codeSystemOID = "'" + codeSystemOID.substring("'urn:oid:".length());
 					}
+					String codeSystem = cqlCodeModelObject.getCodeSystemIdentifier();
+					if(codeSystem.indexOf(":") > -1){
+						codeSystem = codeSystem.replaceFirst(":", " Version ").replace("\"", "");
+					}
 					Element codeElementLI = qdmElementUL.appendElement(HTML_LI);
-					codeElementLI.append(cqlCodeModelObject.getCodeIdentifier()+" using "+cqlCodeModelObject.getDataTypeUsed() + " Value Set (" +codeSystemOID + ")");
+					codeElementLI.append("\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ":" + cqlCodeModelObject.getCodeIdentifier().replace("\"", "") 
+							+"\" using \""+codeSystem 
+							+ " Code (" +cqlCodeModelObject.getCodeId().replace("'", "") + ")\"");
 				}
 				
 				

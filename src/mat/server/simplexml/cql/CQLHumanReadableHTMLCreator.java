@@ -354,13 +354,13 @@ public class CQLHumanReadableHTMLCreator {
 					if(codeSystem.indexOf(":") > -1){
 						codeSystem = codeSystem.replaceFirst(":", " Version ").replace("\"", "");
 					}
+					String codeIdentifier = cqlCodeModelObject.getCodeIdentifier().replace("\"", "");
 					Element codeElementLI = qdmElementUL.appendElement(HTML_LI);
-					codeElementLI.append("\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ":" + cqlCodeModelObject.getCodeIdentifier().replace("\"", "") 
-							+"\" using \""+codeSystem 
+					codeElementLI.append("\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ":" + codeIdentifier
+							+"\" using \"" + codeIdentifier + " " +codeSystem 
 							+ " Code (" +cqlCodeModelObject.getCodeId().replace("'", "") + ")\"");
 				}
-				
-				
+						
 			}
 			
 		} catch (XPathExpressionException e) {

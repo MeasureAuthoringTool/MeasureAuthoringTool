@@ -614,11 +614,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		String codeSystemStr = getCqlService().getDefaultCodeSystems();
 		
+		NodeList defaultCQLCodeSystemsList = findDefaultCodeSystems(processor);
+		
+		if (defaultCQLCodeSystemsList.getLength() > 0) {
+			logger.info("All Default codesystems elements present in the measure.");
+			return;
+		}
+		
 		try {
 			processor.appendNode(codeSystemStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
 			
 			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
-					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='Birthdate' or @codeSystemName='Dead']");
+					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']");
 			
 			if(defaultCodeSystemNodes != null){
 				System.out.println("suppl data elems..setting ids");
@@ -646,6 +653,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void checkForDefaultCQLCodesAndAppend(XmlProcessor processor) {
 		
 		String codeStr = getCqlService().getDefaultCodes();
+		
+		NodeList defaultCQLCodesList = findDefaultCodes(processor);
+		
+		if (defaultCQLCodesList.getLength() > 0) {
+			logger.info("All Default code elements present in the measure.");
+			return;
+		}
 		
 		try {
 			processor.appendNode(codeStr, "code", "/measure/cqlLookUp/codes");
@@ -735,6 +749,45 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return returnNodeList;
 	}
 	
+	/**
+	 * This method will look into XPath "/measure/cqlLookUp/codeSystems/" and try and NodeList for Definitions with the following names;
+	 * @param xmlProcessor
+	 * @return
+	 */
+	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
+	}
+	
+	/**
+	 * This method will look into XPath "/measure/cqlLookUp/codes/" and try and NodeList for Definitions with the following names;
+	 * @param xmlProcessor
+	 * @return
+	 */
+	public NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultCodesXPath = "/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodesXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
+	}
 	
 	/**
 	 * Check for default cql parameters and append.

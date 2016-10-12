@@ -2,7 +2,6 @@ package mat.server;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,7 +27,6 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -154,7 +152,7 @@ public class CQLUtilityClass {
 		                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
 						if(!codesAlreadyUsed.contains(codesStr)){
 							cqlStr = cqlStr.append("code " + codesStr).append(" ")
-									.append("from " + codeSysStr +" ");
+									.append("from " + '"' + codeSysStr + '"' +" ");
 							cqlStr = cqlStr.append("display " +"'" +codes.getDisplayName()+"'");
 							cqlStr = cqlStr.append("\n\n");
 							codesAlreadyUsed.add(codesStr);
@@ -196,7 +194,7 @@ public class CQLUtilityClass {
 		/*if(!toBeInsertedAtEnd.toString().isEmpty()){
 			cqlStr = cqlStr.append(toBeInsertedAtEnd.toString());
 		}*/
-
+		System.out.println("CQL String:"+cqlStr);
 		return cqlStr;
 
 	}

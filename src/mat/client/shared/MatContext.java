@@ -1853,6 +1853,10 @@ public class MatContext implements IsSerializable {
 		this.globalCopyPaste = globalCopyPaste;
 	}
 	
+	public void getCurrentReleaseVersion(AsyncCallback<String> currentReleaseVersionCallback){
+		getSessionService().getCurrentReleaseVersion(currentReleaseVersionCallback);
+	}
+
 	
 	/**
 	 * Gets the cql grammar data type.

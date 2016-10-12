@@ -7,6 +7,7 @@ import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalFlowPanel;
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
 import com.google.gwt.user.client.DOM;
@@ -63,6 +64,10 @@ public abstract class MainLayout {
 	
 	/** The welcome user label. */
 	static HTML welcomeUserLabel;
+	
+	/** The version label. */
+	static HTML versionLabel;
+	
 	/**
 	 * clear the loading panel
 	 * remove css style
@@ -197,6 +202,9 @@ public abstract class MainLayout {
 	/** The welcome user panel. */
 	private HorizontalFlowPanel welcomeUserPanel;
 	
+	/** The version panel. */
+	private FlowPanel versionPanel;
+	
 	/**
 	 * Builds the content panel.
 	 *
@@ -282,7 +290,14 @@ public abstract class MainLayout {
 		HTML desc = new HTML("<h4 style=\"font-size:0;\">Measure Authoring Tool</h4>");// Doing this for 508 when CSS turned off
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
-		topBanner.add(titleImage);
+		versionPanel = new VerticalFlowPanel();
+		versionPanel.getElement().setId("versionPanel_VerticalalFlowPanel");
+		versionPanel.setStyleName("versionPanel");
+		VerticalPanel titleVerticalPanel = new VerticalPanel();
+		titleVerticalPanel.addStyleName("versionPanel");
+		titleVerticalPanel.add(titleImage);
+		titleVerticalPanel.add(versionPanel);
+		topBanner.add(titleVerticalPanel);
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
@@ -447,6 +462,20 @@ public abstract class MainLayout {
 		welcomeUserLabel.setStylePrimaryName("htmlDescription");
 		welcomeUserPanel.add(welcomeUserLabel);
 		return welcomeUserPanel;
+	}
+	
+	/**
+	 * Gets the Version panel.
+	 *
+	 * @return the Flow panel
+	 */
+	public FlowPanel getVersionPanel(String resultMatVersion) {
+		versionLabel = new HTML("<h5>Version "+ resultMatVersion.replaceAll("[a-zA-Z]", "")+"</h5>");
+		versionLabel.getElement().setId("version_HTML");
+		versionLabel.getElement().setAttribute("tabIndex", "0");
+		versionLabel.setStylePrimaryName("versionPanel");
+		versionPanel.add(versionLabel);
+		return versionPanel;
 	}
 	
 }

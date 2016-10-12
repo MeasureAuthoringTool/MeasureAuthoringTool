@@ -25,4 +25,12 @@ public interface SessionManagementServiceAsync {
 	 *            the callback
 	 */
 	void renewSession(AsyncCallback<Void> callback);
+
+	/**
+	 * Get current release version.
+	 * 
+	 * @param callback
+	 *            the callback
+	 */
+	void getCurrentReleaseVersion(AsyncCallback<String> Callback);
 }

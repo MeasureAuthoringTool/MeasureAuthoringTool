@@ -51,4 +51,10 @@ public interface SessionManagementService extends RemoteService{
 	 * Renew session.
 	 */
 	public void renewSession();
+
+	/**
+	 * Get current release version.
+	 * 
+	 */
+	String getCurrentReleaseVersion();
 }

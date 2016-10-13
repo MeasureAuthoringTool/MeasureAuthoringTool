@@ -1784,7 +1784,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		exportDisplay.getOpenButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println(exportDisplay.isELM());
 				openExport();
 			}
 		});

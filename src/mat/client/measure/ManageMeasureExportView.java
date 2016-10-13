@@ -63,14 +63,16 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 */
 	public ManageMeasureExportView(boolean isTopLevelUser) {
 		
-		simpleXMLRadio.setValue(Boolean.TRUE);
 		content.setStylePrimaryName("contentPanel");
 		content.addStyleName("leftAligned");
 		content.add(measureNameLabel);
 		content.add(new Label("Select an export option"));
 		content.add(new SpacerWidget());
 
-		content.add(wrapRadioButton(simpleXMLRadio));
+		if(isTopLevelUser) {
+			content.add(wrapRadioButton(simpleXMLRadio));
+		}
+		
 		content.add(wrapRadioButton(eMeasureRadio));
 		content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
@@ -78,7 +80,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		content.add(wrapRadioButton(eMeasurePackageRadio));
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		
+
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("measureExportButtonContainer");
 		saveButton.setTitle("Save");

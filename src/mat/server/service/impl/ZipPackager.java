@@ -63,7 +63,7 @@ public class ZipPackager {
 			String emeasureXMLPath = "";
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
-			String simpleXMLPath = "";
+//			String simpleXMLPath = "";
 			String cqlFilePath = "";
 			String elmFilePath = "";
 			
@@ -76,7 +76,7 @@ public class ZipPackager {
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + releaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + releaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + releaseVersion,packageDate);
-			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + releaseVersion);
+//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + releaseVersion);
 			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
 			if(cqlLibraryName.isEmpty()) {
 				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
@@ -91,7 +91,7 @@ public class ZipPackager {
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 		    
-		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
+//		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureXSLPath, emeasureXSLBarr, zip);
 		    addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
 		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
@@ -163,7 +163,7 @@ public class ZipPackager {
 			String emeasureXMLPath = "";
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
-			String simpleXMLPath = "";
+//			String simpleXMLPath = "";
 			String cqlFilePath = "";
 			String elmFilePath = "";
           
@@ -176,7 +176,7 @@ public class ZipPackager {
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + releaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName +"_" + releaseVersion,packageDate);
-			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + releaseVersion);
+//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + releaseVersion);
 			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
 			if(cqlLibraryName.isEmpty()) {
 				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
@@ -186,7 +186,7 @@ public class ZipPackager {
 				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
 			}
 			
-			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
+//			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureXSLPath, emeasureXSLBarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
@@ -227,7 +227,7 @@ public class ZipPackager {
 			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
-			String simpleXMLPath = "";
+//			String simpleXMLPath = "";
 			String emeasureXMLPath = "";
 			String cqlFilePath = "";
 			String elmFilePath = "";
@@ -241,7 +241,7 @@ public class ZipPackager {
 			parentPath = fnu.getParentPath(emeasureName +"_" + currentRealeaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" +currentRealeaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_" + currentRealeaseVersion,packageDate);
-			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_" + currentRealeaseVersion);
+//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_" + currentRealeaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
 			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
 			if(cqlLibraryName.isEmpty()) {
@@ -251,7 +251,7 @@ public class ZipPackager {
 				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
 				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
 			}			
-		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
+//		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
@@ -292,7 +292,7 @@ public class ZipPackager {
 			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
-			String simpleXMLPath = "";
+//			String simpleXMLPath = "";
 			String emeasureXMLPath = "";
 			String cqlFilePath = "";
 			String elmFilePath = "";
@@ -304,7 +304,7 @@ public class ZipPackager {
 			parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + "_" + currentReleaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_" + currentReleaseVersion,packageDate);
-			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + currentReleaseVersion);
+//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_" + currentReleaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
 			
 			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
@@ -317,7 +317,7 @@ public class ZipPackager {
 			}
 
 
-			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
+//			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());

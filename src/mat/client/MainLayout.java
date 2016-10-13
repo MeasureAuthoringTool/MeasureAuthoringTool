@@ -470,7 +470,9 @@ public abstract class MainLayout {
 	 * @return the Flow panel
 	 */
 	public FlowPanel getVersionPanel(String resultMatVersion) {
-		versionLabel = new HTML("<h5>Version "+ resultMatVersion.replaceAll("[a-zA-Z]", "")+"</h5>");
+		//Since mat-bootstrap CSS always overrides Mat css settings hardcoded inline style for version. In future need to change this.
+		String versionStyle = "font-family: Arial;font-size:small;font-weight: bold;line-height:1.25;margin-top: 15px;";
+		versionLabel = new HTML("<h4 style="+'"'+versionStyle+'"'+">Version "+ resultMatVersion.replaceAll("[a-zA-Z]", "")+"</h4>");
 		versionLabel.getElement().setId("version_HTML");
 		versionLabel.getElement().setAttribute("tabIndex", "0");
 		versionLabel.setStylePrimaryName("versionPanel");

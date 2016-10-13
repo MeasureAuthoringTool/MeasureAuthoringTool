@@ -346,10 +346,7 @@ public class CQLHumanReadableHTMLCreator {
 				
 				
 				for(CQLCodeModelObject cqlCodeModelObject:cqlCodesList){
-					String codeSystemOID = cqlCodeModelObject.getCqlCodeSystemModelObject().getCodeSystemId();
-					if(codeSystemOID.startsWith("'urn:oid:")){
-						codeSystemOID = "'" + codeSystemOID.substring("'urn:oid:".length());
-					}
+					
 					String codeSystem = cqlCodeModelObject.getCodeSystemIdentifier();
 					if(codeSystem.indexOf(":") > -1){
 						codeSystem = codeSystem.replaceFirst(":", " Version ").replace("\"", "");

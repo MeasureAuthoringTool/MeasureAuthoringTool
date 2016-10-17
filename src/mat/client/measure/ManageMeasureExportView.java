@@ -73,6 +73,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 			content.add(wrapRadioButton(simpleXMLRadio));
 		}
 		
+		eMeasurePackageRadio.setValue(true);
 		content.add(wrapRadioButton(eMeasureRadio));
 		content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));

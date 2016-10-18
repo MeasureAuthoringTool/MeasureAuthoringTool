@@ -364,8 +364,10 @@ public class ExportSimpleXML {
 				String cqlDefnName = "\"" + cqlDefinition.getAttributes().getNamedItem("name").getNodeValue() + "\"";
 				CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get(cqlDefnName);
 				
+				System.out.println("Value sets for Defn:"+cqlDefnName);
 				List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlDefinitionModelObject.getReferredToValueSets();
 				for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+					System.out.println(cqlValueSetModelObject.getIdentifier()+":"+cqlValueSetModelObject.getDataTypeUsed());
 					valueSetDataTypeMap.put(cqlValueSetModelObject.getIdentifier()+":"+cqlValueSetModelObject.getDataTypeUsed(), cqlValueSetModelObject);	
 				}
 				

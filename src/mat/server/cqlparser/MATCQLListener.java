@@ -478,15 +478,18 @@ public class MATCQLListener extends cqlBaseListener {
 					String valueSetDataType = "";
 					if(retrieveContext.namedTypeSpecifier() != null){
 						valueSetDataType = retrieveContext.namedTypeSpecifier().identifier().getText();
-					}					
-					
+					}	
+					System.out.println("--------------------------------------------------------------");
+					System.out.println("Found data type for:"+baseStatementInterface.getIdentifier());
+					System.out.println("data type:"+valueSetDataType+ " for "+ valueSetIdentifier);
+					System.out.println("--------------------------------------------------------------");
 					if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
-						CQLValueSetModelObject cqlValueSetModelObject = this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier);
+						CQLValueSetModelObject cqlValueSetModelObject = new CQLValueSetModelObject(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 						cqlValueSetModelObject.setDataTypeUsed(valueSetDataType);
 						baseStatementInterface.getReferredToValueSets().add(cqlValueSetModelObject);
 						setReferredByInValueSet(baseStatementInterface, cqlValueSetModelObject);
 					}else if(this.cqlFileObject.getCodesMap().get(valueSetIdentifier) != null){
-						CQLCodeModelObject cqlCodeModelObject = this.cqlFileObject.getCodesMap().get(valueSetIdentifier);
+						CQLCodeModelObject cqlCodeModelObject = new CQLCodeModelObject(this.cqlFileObject.getCodesMap().get(valueSetIdentifier));
 						cqlCodeModelObject.setDataTypeUsed(valueSetDataType);
 						baseStatementInterface.getReferredToCodes().add(cqlCodeModelObject);
 						setReferredByInValueSet(baseStatementInterface, cqlCodeModelObject);

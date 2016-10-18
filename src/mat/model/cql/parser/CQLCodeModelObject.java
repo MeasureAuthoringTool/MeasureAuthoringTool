@@ -2,6 +2,18 @@ package mat.model.cql.parser;
 
 public class CQLCodeModelObject extends CQLValueSetModelObject {
 	
+	public CQLCodeModelObject(CQLCodeModelObject cqlCodeModelObject) {
+		super(cqlCodeModelObject);
+		this.codeIdentifier = cqlCodeModelObject.codeIdentifier;
+		this.codeId = cqlCodeModelObject.codeId;
+		this.codeSystemIdentifier = cqlCodeModelObject.codeSystemIdentifier;
+		this.displayClause = cqlCodeModelObject.displayClause;
+		this.cqlCodeSystemModelObject = cqlCodeModelObject.cqlCodeSystemModelObject;
+		this.setDataTypeUsed(cqlCodeModelObject.getDataTypeUsed());
+	}
+	public CQLCodeModelObject() {
+		
+	}
 	private String codeIdentifier;
 	private String codeId;
 	private String codeSystemIdentifier;

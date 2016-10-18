@@ -2,12 +2,9 @@ package mat.server.simplexml.cql;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -638,66 +635,29 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		String XPATH_SUPPLEMENTAL_DATA_ELEMENTS = "/measure/supplementalDataElements/cqldefinition/@uuid";
-		NodeList supplementalDefnNodes = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				XPATH_SUPPLEMENTAL_DATA_ELEMENTS);
-		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
-		if(supplementalDefnNodes != null && supplementalDefnNodes.getLength()>0){
-			Map<String, String> dataType = new HashMap<String, String>();
-			for(int i=0;i<supplementalDefnNodes.getLength();i++){
-				Node node = supplementalDefnNodes.item(i);
-				if(node != null ){
-					String id = node.getNodeValue();
-				    Node logicElement = simpleXMLProcessor.findNode(
-							simpleXMLProcessor.getOriginalDoc(),
-							"/measure/cqlLookUp/definitions/definition[@id='" + id + "']/logic");
-				    if(logicElement != null){
-							if(logicElement.hasChildNodes()){
-								
-								NodeList defLogicMap = logicElement.getChildNodes();
-								if(defLogicMap.getLength() > 0){
-									String defLogic = defLogicMap.item(0).getNodeValue();
-									String[] pairs = defLogic.split("\"");
-									dataType.put(pairs[1].trim(), pairs[3].trim());
-								}
-							}
-					}
-				    for(Entry<String, String> entry : dataType.entrySet()){
-				    	Node qdm = simpleXMLProcessor.findNode(
-								simpleXMLProcessor.getOriginalDoc(),
-								"/measure/cqlLookUp/valuesets/valueset[@datatype='" + entry.getKey() + "']");
-						NamedNodeMap qdmMap = qdm.getAttributes();
-						qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()
-								+ ": " + qdmMap.getNamedItem("name").getNodeValue(),
-								qdm); 
-				    }
-				}
-
-			}
-			List<String> qdmNameList = new ArrayList<String>(qdmNodeMap.keySet());
-			Collections.sort(qdmNameList, new Comparator<String>() {
-				@Override
-				public int compare(String o1, String o2) {
-					return o1.compareToIgnoreCase(o2);
-				}
-			});
+		
+		NodeList supplementalQdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+				"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='true']");
+		
+		if(supplementalQdmElementList != null && supplementalQdmElementList.getLength()>0){
 			
-			for (String s : qdmNameList) {
-				Node qdm = qdmNodeMap.get(s);
-				NamedNodeMap qdmMap = qdm.getAttributes();
+			for(int i = 0; i < supplementalQdmElementList.getLength(); i++) {
+				Node suppNode = supplementalQdmElementList.item(i);
+				NamedNodeMap suppNodeAttribMap = suppNode.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
 				
 				listItem.appendText("\""
-						+ qdmMap.getNamedItem("datatype").getNodeValue() + ": "
-						+ qdmMap.getNamedItem("name").getNodeValue()
+						+ suppNodeAttribMap.getNamedItem("datatype").getNodeValue() + ": "
+						+ suppNodeAttribMap.getNamedItem("name").getNodeValue()
 						+ "\" using \""
-						+ qdmMap.getNamedItem("name").getNodeValue() + " "
-						+ qdmMap.getNamedItem("taxonomy").getNodeValue()
+						+ suppNodeAttribMap.getNamedItem("name").getNodeValue() + " "
+						+ suppNodeAttribMap.getNamedItem("taxonomy").getNodeValue()
 						+ " Value Set ("
-						+ qdmMap.getNamedItem("oid").getNodeValue() + ")\"");
+						+ suppNodeAttribMap.getNamedItem("oid").getNodeValue() + ")\"");
 			}
+			
 		}
-		else {
+		else{
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}

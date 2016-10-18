@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.model.cql.parser.CQLBaseStatementInterface;
+import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -44,8 +45,8 @@ public class CQLUtil {
 			CQLUtil.collectUsedCQLArtifacts(originalDoc, cqlFileObject, cqlDefinitionModelObject, usedCQLArtifactHolder);
 		}
 		
-		for(String cqlDefnUUID: cqlArtifactHolder.getCqlFunctionUUIDSet()){
-			String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlDefnUUID +"']";
+		for(String cqlFuncUUID: cqlArtifactHolder.getCqlFunctionUUIDSet()){
+			String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
 			Node cqlFunction = (Node) xPath.evaluate(xPathCQLDef, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -75,6 +76,12 @@ public class CQLUtil {
 		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlBaseStatementInterface.getReferredToValueSets();
 		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
 			 usedCQLArtifactHolder.addValuesetIdentifier(cqlValueSetModelObject.getIdentifier().replace("\"", ""));
+		 }
+		 
+		 //get codes used by currect artifact
+		 List<CQLCodeModelObject> cqlCodeModelObjects = cqlBaseStatementInterface.getReferredToCodes();
+		 for(CQLCodeModelObject cqlCodeModelObject: cqlCodeModelObjects){
+			 usedCQLArtifactHolder.addCQLCode(cqlCodeModelObject.getCodeIdentifier().replace("\"", ""));
 		 }
 		 
 		 // get parameters used by current artifact
@@ -255,6 +262,35 @@ public class CQLUtil {
 	}
 	
 	/**
+	 * Removes all unused cql codes from the simple xml file. Iterates through the usedcodes set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param cqlCodesIdentifierSet
+	 * 	the usevaluesets
+	 * @throws XPathExpressionException
+	 */
+	public static void removeUnusedCodes(Document originalDoc, Set<String> cqlCodesIdentifierSet) throws XPathExpressionException {
+		String nameXPathString = ""; 
+		for(String codeName : cqlCodesIdentifierSet) {
+			nameXPathString += "[@codeName !='" + codeName + "']";
+		}
+		
+		String xPathForUnusedCodes= "/measure/cqlLookUp//code" + nameXPathString; 
+		System.out.println(xPathForUnusedCodes);
+		
+		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i = 0; i < unusedCqlCodesNodeList.getLength(); i++) {
+			Node current = unusedCqlCodesNodeList.item(i); 
+			//before removing the ValueSet Node we have to make sure to remove the codeSystems for that Valueset
+			//String oid = current.getAttributes().getNamedItem("oid").getNodeValue();
+			//removeUnsedCodeSystems(originalDoc, oid);
+			Node parent = current.getParentNode(); 
+			parent.removeChild(current);
+		}
+	}
+	
+	/**
 	 * Removes the unsed code systems.
 	 *
 	 * @param originalDoc the original doc
@@ -308,6 +344,7 @@ public class CQLUtil {
 		private Set<String> cqlFunctionUUIDSet = new HashSet<String>();
 		private Set<String> cqlValuesetIdentifierSet = new HashSet<String>(); 
 		private Set<String> cqlParameterIdentifierSet = new HashSet<String>(); 
+		private Set<String> cqlCodesSet = new HashSet<String>();
 		
 		public Set<String> getCqlDefinitionUUIDSet() {
 			return cqlDefinitionUUIDSet;
@@ -344,6 +381,15 @@ public class CQLUtil {
 		}
 		public void setCqlParameterIdentifierSet(Set<String> cqlParameterIdentifierSet) {
 			this.cqlParameterIdentifierSet = cqlParameterIdentifierSet; 
+		}
+		public Set<String> getCqlCodesSet() {
+			return cqlCodesSet;
+		}
+		public void setCqlCodesSet(Set<String> cqlCodesSet) {
+			this.cqlCodesSet = cqlCodesSet;
+		}
+		public void addCQLCode(String identifier){
+			this.cqlCodesSet.add(identifier);
 		}
 	}	
 }

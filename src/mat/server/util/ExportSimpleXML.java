@@ -6,7 +6,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -26,6 +28,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -311,6 +314,7 @@ public class ExportSimpleXML {
 			removeEmptyCommentsFromPopulationLogic(originalDoc);
 			//addLocalVariableNameToQDMs(originalDoc);
 			//createUsedCQLArtifactsWithPopulationNames(originalDoc);
+					
 			return transform(originalDoc);
 		}
 		
@@ -332,10 +336,124 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLDefinitions(originalDoc, usedCQLArtifactHolder.getCqlDefinitionUUIDSet()); 
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, usedCQLArtifactHolder.getCqlFunctionUUIDSet());
 			CQLUtil.removeUnusedValuesets(originalDoc, usedCQLArtifactHolder.getCqlValuesetIdentifierSet());
+			CQLUtil.removeUnusedCodes(originalDoc, usedCQLArtifactHolder.getCqlCodesSet());
 			CQLUtil.removeUnusedParameters(originalDoc, usedCQLArtifactHolder.getCqlParameterIdentifierSet());
+			
+			/**
+			 * For CQL, the valuesets need special processing.
+			 * A valueset(OID) can be associated with different datatypes at Definition/Function level.
+			 * For Data Criteria in Human Readable HTML & HQMF XML, we need to reflect the right OID and 
+			 * data-type combination used.
+			 */
+			
+			resolveValueSetsWithDataTypesUsed(originalDoc, usedCQLArtifactHolder, cqlFileObject);
 		}
 		
-		private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){
+		private static void resolveValueSetsWithDataTypesUsed(
+				Document originalDoc, CQLUtil.CQLArtifactHolder cqlArtifactHolder, CQLFileObject cqlFileObject) throws XPathExpressionException {
+			
+			Map<String, CQLValueSetModelObject> valueSetDataTypeMap = new HashMap<String, CQLValueSetModelObject>();
+			Map<String, CQLCodeModelObject> codeDataTypeMap = new HashMap<String, CQLCodeModelObject>();
+			
+			//collect value-sets,data-type combinations for definitions
+			for(String cqlDefnUUID: cqlArtifactHolder.getCqlDefinitionUUIDSet()){
+				String xPathCQLDef = "/measure/cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
+				Node cqlDefinition = (Node) xPath.evaluate(xPathCQLDef, 
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				
+				String cqlDefnName = "\"" + cqlDefinition.getAttributes().getNamedItem("name").getNodeValue() + "\"";
+				CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get(cqlDefnName);
+				
+				List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlDefinitionModelObject.getReferredToValueSets();
+				for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+					valueSetDataTypeMap.put(cqlValueSetModelObject.getIdentifier()+":"+cqlValueSetModelObject.getDataTypeUsed(), cqlValueSetModelObject);	
+				}
+				
+				List<CQLCodeModelObject> cqlCodeModelObjects = cqlDefinitionModelObject.getReferredToCodes();
+				for(CQLCodeModelObject cqlCodeModelObject: cqlCodeModelObjects){
+					codeDataTypeMap.put(cqlCodeModelObject.getIdentifier()+":"+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);	
+				}
+			}
+			
+			//collect value-sets,data-type combinations for functions
+			for(String cqlFuncUUID : cqlArtifactHolder.getCqlFunctionUUIDSet()){
+				String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
+				Node cqlFunction = (Node) xPath.evaluate(xPathCQLDef, 
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				
+				String cqlFuncName = "\"" + cqlFunction.getAttributes().getNamedItem("name").getNodeValue() + "\"";
+				CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(cqlFuncName);
+				
+				List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlFunctionModelObject.getReferredToValueSets();
+				for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+					valueSetDataTypeMap.put(cqlValueSetModelObject.getIdentifier()+":"+cqlValueSetModelObject.getDataTypeUsed(), cqlValueSetModelObject);	
+				}
+				
+				List<CQLCodeModelObject> cqlCodeModelObjects = cqlFunctionModelObject.getReferredToCodes();
+				for(CQLCodeModelObject cqlCodeModelObject: cqlCodeModelObjects){
+					codeDataTypeMap.put(cqlCodeModelObject.getIdentifier()+":"+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);	
+				}
+			}
+			
+			List<Node> newCQLValueSetNodes = new ArrayList<Node>();
+			List<Node> newCQLQDMNodes = new ArrayList<Node>();
+			
+			for(String valueSetDatatype: valueSetDataTypeMap.keySet()){
+				CQLValueSetModelObject cqlValueSetModelObject = valueSetDataTypeMap.get(valueSetDatatype);
+				
+				String xPathForValueset= "/measure/cqlLookUp//valueset[@name ='" + cqlValueSetModelObject.getIdentifier().replace("\"", "") + "']"; 
+				System.out.println(xPathForValueset);
+				
+				Node cqlValuesetNode = (Node) xPath.evaluate(xPathForValueset, originalDoc.getDocumentElement(), XPathConstants.NODE);
+				Node newCQLValueSetNode = cqlValuesetNode.cloneNode(true);
+				newCQLValueSetNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlValueSetModelObject.getDataTypeUsed().replace("\"", ""));
+				newCQLValueSetNodes.add(newCQLValueSetNode);
+				
+				Node newCQLQDMNode = newCQLValueSetNode.cloneNode(true);
+				originalDoc.renameNode(newCQLQDMNode, null, "qdm");
+				newCQLQDMNodes.add(newCQLQDMNode);
+			}			
+			
+			for(String codeDataType: codeDataTypeMap.keySet()){
+				CQLCodeModelObject cqlCodeModelObject = codeDataTypeMap.get(codeDataType);
+				
+				String xPathForCode= "//elementLookUp/qdm[@name ='" + cqlCodeModelObject.getCodeIdentifier().replace("\"", "") + "']";
+				System.out.println(xPathForCode);
+				
+				Node cqlQDMNode = (Node) xPath.evaluate(xPathForCode, originalDoc.getDocumentElement(), XPathConstants.NODE);
+				Node newCQLQDMNode = cqlQDMNode.cloneNode(true);
+				newCQLQDMNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlCodeModelObject.getDataTypeUsed().replace("\"", ""));
+				newCQLQDMNodes.add(newCQLQDMNode);
+			}
+			
+			//remove & replace valueset nodes in cqlLookUp/valuesets
+			String xPathForValuesets= "/measure/cqlLookUp/valuesets";
+			Node cqlValuesetsNode = (Node) xPath.evaluate(xPathForValuesets, originalDoc.getDocumentElement(), XPathConstants.NODE);
+			Node cqlLookUpNode = cqlValuesetsNode.getParentNode();
+			cqlLookUpNode.removeChild(cqlValuesetsNode);
+			
+			Node newValueSetsNode = originalDoc.createElement("valuesets");
+			for(Node newCQLNode: newCQLValueSetNodes){
+				newValueSetsNode.appendChild(newCQLNode);
+			}
+			originalDoc.importNode(newValueSetsNode, true);
+			cqlLookUpNode.appendChild(newValueSetsNode);
+			
+			//remove & replace qdm nodes in elementLookUp
+			String xPathForElementLookup= "/measure/elementLookUp";
+			Node elementLookupNode = (Node) xPath.evaluate(xPathForElementLookup, originalDoc.getDocumentElement(), XPathConstants.NODE);
+			Node measureNode = elementLookupNode.getParentNode();
+			measureNode.removeChild(elementLookupNode);
+			
+			Node newElementLookUpNode = originalDoc.createElement("elementLookUp");
+			for(Node newQDMNode: newCQLQDMNodes){
+				newElementLookUpNode.appendChild(newQDMNode);
+			}
+			originalDoc.importNode(newElementLookUpNode, true);
+			measureNode.appendChild(newElementLookUpNode);
+		}
+
+		/*private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){
 			List<String> masterList = new ArrayList<String>();
 			masterList = getAllCQLDefnArtifacts(originalDoc, cqlFileObject);
 			List<String> funcList = getAllCQLFuncArtifacts(originalDoc, cqlFileObject);
@@ -346,7 +464,7 @@ public class ExportSimpleXML {
 			}
 			
 			return masterList;
-		}
+		}*/
 		
 		private static List<String> getAllCQLDefnArtifacts(Document originalDoc, CQLFileObject cqlObject){
 			List<String> usedAllCQLArtifacts = new ArrayList<String>();

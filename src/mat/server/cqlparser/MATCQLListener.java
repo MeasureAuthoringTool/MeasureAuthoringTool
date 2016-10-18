@@ -481,8 +481,10 @@ public class MATCQLListener extends cqlBaseListener {
 					}					
 					
 					if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
-						baseStatementInterface.getReferredToValueSets().add(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
-						setReferredByInValueSet(baseStatementInterface, this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
+						CQLValueSetModelObject cqlValueSetModelObject = this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier);
+						cqlValueSetModelObject.setDataTypeUsed(valueSetDataType);
+						baseStatementInterface.getReferredToValueSets().add(cqlValueSetModelObject);
+						setReferredByInValueSet(baseStatementInterface, cqlValueSetModelObject);
 					}else if(this.cqlFileObject.getCodesMap().get(valueSetIdentifier) != null){
 						CQLCodeModelObject cqlCodeModelObject = this.cqlFileObject.getCodesMap().get(valueSetIdentifier);
 						cqlCodeModelObject.setDataTypeUsed(valueSetDataType);

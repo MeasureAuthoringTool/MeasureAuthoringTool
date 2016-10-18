@@ -9,6 +9,8 @@ public class CQLValueSetModelObject extends CQLBaseModelDefinitionObject impleme
 	
 	private String valueSetId;
 	
+	private String dataTypeUsed = "";
+	
 	private List<String> childTokens = new ArrayList<String>();
 	
 	private List<CQLDefinitionModelObject> referredToDefinitions = new ArrayList<CQLDefinitionModelObject>();
@@ -143,6 +145,14 @@ public class CQLValueSetModelObject extends CQLBaseModelDefinitionObject impleme
 	public List<CQLCodeModelObject> getReferredToCodes() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String getDataTypeUsed() {
+		return dataTypeUsed;
+	}
+	
+	public void setDataTypeUsed(String dataTypeUsed) {
+		this.dataTypeUsed = dataTypeUsed;
 	}
 	
 }

@@ -1324,6 +1324,13 @@ td,th {
 	box-sizing: border-box
 }
 
+.gwt-PopupPanel {
+  border: 3px solid #C3D9FF;
+  padding: 3px;
+  z-index: 1;
+  background: white;
+}
+
 html {
 	font-size: 10px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0)

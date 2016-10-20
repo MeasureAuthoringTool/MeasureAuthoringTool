@@ -30,6 +30,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class CQLHumanReadableHTMLCreator.
@@ -327,6 +329,9 @@ public class CQLHumanReadableHTMLCreator {
 			}
 			
 			else {
+				ArrayList<String> qdmElementStringList = new ArrayList<String>(); 				
+
+				// make the output string from the qdm node information and add it to the string list.
 				for(int i = 0; i < qdmElementList.getLength(); i++) {
 					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
 					if("attribute".equals(dataTypeName)){
@@ -337,11 +342,10 @@ public class CQLHumanReadableHTMLCreator {
 					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 
 					
 					String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
-					Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
-					qdmElementLI.append(output);	
+					qdmElementStringList.add(output); 
 				}
 				
-				
+				// make the output string from cql code node and add it to the string list
 				for(CQLCodeModelObject cqlCodeModelObject:cqlCodesList){
 					
 					String codeSystem = cqlCodeModelObject.getCodeSystemIdentifier();
@@ -349,12 +353,18 @@ public class CQLHumanReadableHTMLCreator {
 						codeSystem = codeSystem.replaceFirst(":", " Version ").replace("\"", "");
 					}
 					String codeIdentifier = cqlCodeModelObject.getCodeIdentifier().replace("\"", "");
-					Element codeElementLI = qdmElementUL.appendElement(HTML_LI);
-					codeElementLI.append("\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ":" + codeIdentifier
+					String output = "\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ": " + codeIdentifier
 							+"\" using \"" + codeIdentifier + " " +codeSystem 
-							+ " Code (" +cqlCodeModelObject.getCodeId().replace("'", "") + ")\"");
+							+ " Code (" +cqlCodeModelObject.getCodeId().replace("'", "") + ")\"";
+					qdmElementStringList.add(output); 
 				}
-						
+
+				// sort and append the qdm elements
+				Collections.sort(qdmElementStringList);
+				for(int i = 0; i < qdmElementStringList.size(); i++) {
+					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
+					qdmElemtentLI.append(qdmElementStringList.get(i));
+				}
 			}
 			
 		} catch (XPathExpressionException e) {
@@ -638,22 +648,29 @@ public class CQLHumanReadableHTMLCreator {
 		
 		NodeList supplementalQdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
 				"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='true']");
-		
+				
 		if(supplementalQdmElementList != null && supplementalQdmElementList.getLength()>0){
+			ArrayList<String> suppQdmStringList = new ArrayList<String>(); 
 			
+			// make output string from sde node and add it to the string list
 			for(int i = 0; i < supplementalQdmElementList.getLength(); i++) {
 				Node suppNode = supplementalQdmElementList.item(i);
 				NamedNodeMap suppNodeAttribMap = suppNode.getAttributes();
-				Element listItem = mainListElement.appendElement(HTML_LI);
-				
-				listItem.appendText("\""
-						+ suppNodeAttribMap.getNamedItem("datatype").getNodeValue() + ": "
+				String output = "\"" + suppNodeAttribMap.getNamedItem("datatype").getNodeValue() + ": "
 						+ suppNodeAttribMap.getNamedItem("name").getNodeValue()
 						+ "\" using \""
 						+ suppNodeAttribMap.getNamedItem("name").getNodeValue() + " "
 						+ suppNodeAttribMap.getNamedItem("taxonomy").getNodeValue()
 						+ " Value Set ("
-						+ suppNodeAttribMap.getNamedItem("oid").getNodeValue() + ")\"");
+						+ suppNodeAttribMap.getNamedItem("oid").getNodeValue() + ")\"";
+				suppQdmStringList.add(output);			
+			}
+			
+			// sort and append sde string
+			Collections.sort(suppQdmStringList);
+			for(int i = 0; i < suppQdmStringList.size(); i++) {
+				Element listItem = mainListElement.appendElement(HTML_LI);
+				listItem.append(suppQdmStringList.get(i));
 			}
 			
 		}
@@ -661,7 +678,7 @@ public class CQLHumanReadableHTMLCreator {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
-	
+		
 	
 	/**
 	 * Parses the child.

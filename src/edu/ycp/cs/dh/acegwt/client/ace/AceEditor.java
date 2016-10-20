@@ -899,7 +899,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		List<String> defineList = MatContext.get().definitions;
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		for (String string : defineList) {
-			jsArray.push(string);
+			jsArray.push('"'+string+'"');
 		}
 		return jsArray;
 	}
@@ -913,7 +913,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		List<String> paramList = MatContext.get().parameters;
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		for (String string : paramList) {
-			jsArray.push(string);
+			jsArray.push('"'+string+'"');
 		}
 		return jsArray;
 	}

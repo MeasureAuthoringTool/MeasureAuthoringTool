@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -29,6 +31,7 @@ import mat.model.Organization;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.parser.CQLCodeModelObject;
+import mat.model.cql.parser.CQLCodeSystemModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -399,6 +402,7 @@ public class ExportSimpleXML {
 			
 			List<Node> newCQLValueSetNodes = new ArrayList<Node>();
 			List<Node> newCQLQDMNodes = new ArrayList<Node>();
+			Set<CQLCodeSystemModelObject> usedCodeSystems = new HashSet<CQLCodeSystemModelObject>();
 			
 			for(String valueSetDatatype: valueSetDataTypeMap.keySet()){
 				CQLValueSetModelObject cqlValueSetModelObject = valueSetDataTypeMap.get(valueSetDatatype);
@@ -418,10 +422,12 @@ public class ExportSimpleXML {
 			
 			for(String codeDataType: codeDataTypeMap.keySet()){
 				CQLCodeModelObject cqlCodeModelObject = codeDataTypeMap.get(codeDataType);
+				CQLCodeSystemModelObject cqlCodeSystemModelObject = cqlCodeModelObject.getCqlCodeSystemModelObject();
+							
+				usedCodeSystems.add(cqlCodeSystemModelObject);
 				
 				String xPathForCode= "//elementLookUp/qdm[@name ='" + cqlCodeModelObject.getCodeIdentifier().replace("\"", "") + "']";
-				System.out.println(xPathForCode);
-				
+								
 				Node cqlQDMNode = (Node) xPath.evaluate(xPathForCode, originalDoc.getDocumentElement(), XPathConstants.NODE);
 				Node newCQLQDMNode = cqlQDMNode.cloneNode(true);
 				newCQLQDMNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlCodeModelObject.getDataTypeUsed().replace("\"", ""));
@@ -453,6 +459,9 @@ public class ExportSimpleXML {
 			}
 			originalDoc.importNode(newElementLookUpNode, true);
 			measureNode.appendChild(newElementLookUpNode);
+			
+			//finally remove all the unused "codeSystems"
+			removeUnusedCodeSystems(usedCodeSystems, originalDoc);
 		}
 
 		/*private static List<String> checkForUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject){
@@ -468,6 +477,31 @@ public class ExportSimpleXML {
 			return masterList;
 		}*/
 		
+		private static void removeUnusedCodeSystems(
+				Set<CQLCodeSystemModelObject> usedCodeSystems, Document originalDoc) throws XPathExpressionException {
+			
+			String nameXPathString = ""; 
+			for(CQLCodeSystemModelObject codeSystem : usedCodeSystems) {
+				String codeSystemIdentifier = codeSystem.getIdentifier().replace("\"", "");
+				if(codeSystemIdentifier.indexOf(":") > -1){
+					String codeSystemName = codeSystemIdentifier.substring(0, codeSystemIdentifier.indexOf(":"));
+					String codeSystemVersion = codeSystemIdentifier.substring(0);
+					nameXPathString += "[@codeSystemName !='" + codeSystemName + "'][@codeSystemVersion !='" + codeSystemVersion +"']";
+				}
+			}
+						
+			String xPathForUnusedCodeSystem= "/measure/cqlLookUp/codeSystems/codeSystem" + nameXPathString; 
+			System.out.println(xPathForUnusedCodeSystem);
+			
+			NodeList unusedCqlCodeSysNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystem, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for(int i = 0; i < unusedCqlCodeSysNodeList.getLength(); i++) {
+				Node current = unusedCqlCodeSysNodeList.item(i); 
+				Node parent = current.getParentNode(); 
+				parent.removeChild(current);
+			}
+			
+		}
+
 		private static List<String> getAllCQLDefnArtifacts(Document originalDoc, CQLFileObject cqlObject){
 			List<String> usedAllCQLArtifacts = new ArrayList<String>();
 			try {

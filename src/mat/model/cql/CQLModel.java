@@ -1,19 +1,21 @@
 package mat.model.cql;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLModel implements IsSerializable{
 	private CQLLibraryModel library;
 	private CQLDataModel usedModel;
-	private List<CQLLibraryModel> includeLibraryList;
+	private List<CQLLibraryModel> includeLibraryList = new ArrayList<CQLLibraryModel>();
 	private String context;
-	private List<CQLQualityDataSetDTO> valueSetList;
-	private List<CQLParameter> cqlParameters;
-	private List<CQLDefinition> cqlDefinitions;
-	private List<CQLFunctions> cqlFunctions;
-	private List<CQLCodeSystem> codeSystemList;
-	private List<CQLCode> codeList;
+	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
+	private List<CQLParameter> cqlParameters = new ArrayList<CQLParameter>();
+	private List<CQLDefinition> cqlDefinitions = new ArrayList<CQLDefinition>();
+	private List<CQLFunctions> cqlFunctions = new ArrayList<CQLFunctions>();
+	private List<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
+	private List<CQLCode> codeList = new ArrayList<CQLCode>();
 	
 	private int lines;
 	

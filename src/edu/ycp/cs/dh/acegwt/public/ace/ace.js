@@ -10664,6 +10664,12 @@ exports.commands = [
     multiSelectAction: "forEach",
     readOnly: true
 }, {
+    name: "showall",
+    bindKey: bindKey("Ctrl-Space", "Ctrl-Space"),
+    exec: function(editor) { editor.jumpToMatching(true); },
+    multiSelectAction: "forEach",
+    readOnly: true
+}, {
     name: "passKeysToBrowser",
     bindKey: bindKey("null", "null"),
     exec: function() {},

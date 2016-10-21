@@ -1544,6 +1544,7 @@ var Autocomplete = function() {
         	var funcsKeywords = window.funcsList();
         	var paramKeywords = window.paramList();
         	var attributesKeywords = window.allAttributeList();
+        	var allWords = window.definitioList()+window.funcsList()+window.paramList()+window.allAttributeList()+timingKeywords;
             
             if(keyString == "t"){
             	//alert("keyString:"+this.editor.keyString);
@@ -1576,9 +1577,12 @@ var Autocomplete = function() {
             	
             	var fk1 = [];
             	for(var i=0;i<funcsKeywords.length;i++){
-            		fk1.push(funcsKeywords[i]);
+            		fk1.push('"'+funcsKeywords[i]+'"()');	
             	}
-            	//alert(fk1);
+            	for(var i=0;i<functionKeywords.length;i++){
+            		fk1.push(functionKeywords[i]+'()');	
+            	}
+            	alert(fk1);
             	this.getSpecificKeyWords(fk1,matches, "functions");
             	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
             	this.getSpecificKeyWords(paramKeywords,matches, "parameters");

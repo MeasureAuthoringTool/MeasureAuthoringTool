@@ -246,6 +246,7 @@ public class MATCQLListener extends cqlBaseListener {
 			for(String valueSetName:valueSetNames){
 				if(childTokens.contains(valueSetName)){
 					CQLValueSetModelObject cqlValueSetModelObject = this.getCqlFileObject().getValueSetsMap().get(valueSetName);
+					cqlValueSetModelObject.setDataTypeUsed("Attribute");
 					cqlModelObject.getReferredToValueSets().add(cqlValueSetModelObject);
 					setReferredByInValueSet(cqlModelObject, cqlValueSetModelObject);
 				}
@@ -479,10 +480,7 @@ public class MATCQLListener extends cqlBaseListener {
 					if(retrieveContext.namedTypeSpecifier() != null){
 						valueSetDataType = retrieveContext.namedTypeSpecifier().identifier().getText();
 					}	
-					System.out.println("--------------------------------------------------------------");
-					System.out.println("Found data type for:"+baseStatementInterface.getIdentifier());
-					System.out.println("data type:"+valueSetDataType+ " for "+ valueSetIdentifier);
-					System.out.println("--------------------------------------------------------------");
+					
 					if(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier) != null){
 						CQLValueSetModelObject cqlValueSetModelObject = new CQLValueSetModelObject(this.cqlFileObject.getValueSetsMap().get(valueSetIdentifier));
 						cqlValueSetModelObject.setDataTypeUsed(valueSetDataType);

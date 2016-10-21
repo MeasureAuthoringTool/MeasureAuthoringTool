@@ -1582,7 +1582,7 @@ var Autocomplete = function() {
             	for(var i=0;i<functionKeywords.length;i++){
             		fk1.push(functionKeywords[i]+'()');	
             	}
-            	alert(fk1);
+            	//alert(fk1);
             	this.getSpecificKeyWords(fk1,matches, "functions");
             	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
             	this.getSpecificKeyWords(paramKeywords,matches, "parameters");

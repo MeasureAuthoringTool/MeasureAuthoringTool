@@ -3349,7 +3349,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		HTML html3 = new HTML("Ctrl-Alt-d  :definitions");
 		HTML html4 = new HTML("Ctrl-Alt-p  :parameters");
 		HTML html5 = new HTML("Ctrl-Alt-a  :attributes");
-		HTML html6 = new HTML("Ctrl-Space :all Keywords");
+		HTML html6 = new HTML("Ctrl-Space :all");
 		dialogContents.add(html1);
 		dialogContents.add(html2);
 		dialogContents.add(html3);

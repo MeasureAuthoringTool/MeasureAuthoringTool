@@ -148,7 +148,7 @@ public class CQLUtilityClass {
 					for(CQLCode codes : codeList){
 						String codesStr = '"'+codes.getCodeName()+'"'+ ": " 
 					                          +"'" +codes.getCodeOID()+"'";
-						String codeSysStr = codes.getCodeSystemName() + ": " 
+						String codeSysStr = codes.getCodeSystemName() + ":" 
 		                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
 						if(!codesAlreadyUsed.contains(codesStr)){
 							cqlStr = cqlStr.append("code " + codesStr).append(" ")

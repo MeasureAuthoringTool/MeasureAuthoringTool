@@ -1345,15 +1345,15 @@ public class ClauseWorkspaceContextMenu {
 	 * Adds the common menus.
 	 */
 	protected void addCommonMenus() {
-		popupMenuBar.addItem(copyMenu);
-		popupMenuBar.addItem(pasteMenu);
+		//popupMenuBar.addItem(copyMenu);
+		//popupMenuBar.addItem(pasteMenu);
 		/*
 		 * POC Global Copy Paste changes.
 		 * popupMenuBar.addItem(copyToClipBoardMenu);
 		popupMenuBar.addItem(pasteFromClipboardMenu);*/
-		popupMenuBar.addItem(cutMenu);
+		//popupMenuBar.addItem(cutMenu);
 		popupMenuBar.addItem(deleteMenu);
-		popupMenuBar.addItem(expandMenu);
+		//popupMenuBar.addItem(expandMenu);
 		popupMenuBar.setVisible(true);
 		popupPanel.add(popupMenuBar);
 	}

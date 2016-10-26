@@ -110,19 +110,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 							, true, addNodeCmd);
 					popupMenuBar.addItem(addMenu);
 					popupMenuBar.addSeparator(separator);
-					if ((xmlTreeDisplay.getCopiedNode() != null)
-							&& (xmlTreeDisplay.getCopiedNode().getParent()
-									.equals(xmlTreeDisplay.getSelectedNode()))) {
-						pasteMenu.setEnabled(true);
-					}
-					/*
-					 * POC Global Copy Paste.
-					 * if ((copiedNode != null)
-							&& (copiedNode.getParent()
-									.equals(xmlTreeDisplay.getSelectedNode()))) {
-						pasteMenu.setEnabled(true);
-						pasteFromClipboardMenu.setEnabled(true);
-					}*/
+										
 				}
 				addCommonMenus();
 				break;
@@ -143,26 +131,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				popupMenuBar.addSeparator(separator);
 				addCommonMenus();
 				addMenu.setEnabled(true);
-				copyMenu.setEnabled(false);
-				deleteMenu.setEnabled(false);
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())) {
-					pasteMenu.setEnabled(true);
-				}
-				/*
-				 * POC Global Copy Paste.
-				 * if ((copiedNode != null)
-						&& copiedNode.getParent().getName().equals(xmlTreeDisplay.getSelectedNode().getName())) {
-					pasteMenu.setEnabled(true);
-					pasteFromClipboardMenu.setEnabled(true);
-				}*/
-				cutMenu.setEnabled(false);
-				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
-					copyMenu.setEnabled(true);
-					/*
-					 * POC Global Copy Paste.
-					 * copyToClipBoardMenu.setEnabled(true);*/
-				}
+				
 				if ((xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)
 						|| xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATIONS))
 						&& (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)) {
@@ -172,11 +141,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			case CellTreeNode.CQL_DEFINITION_NODE:				
 			case CellTreeNode.CQL_FUNCTION_NODE:
 				deleteMenu.setEnabled(true);
-				copyMenu.setEnabled(true);
-				cutMenu.setEnabled(true);
-								
-				popupMenuBar.addItem(copyMenu);
-				popupMenuBar.addItem(cutMenu);
 				popupMenuBar.addItem(deleteMenu);
 				
 				popupMenuBar.setVisible(true);
@@ -196,21 +160,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				}
 							
 				deleteMenu.setEnabled(true);
-				copyMenu.setEnabled(true);
-				cutMenu.setEnabled(true);
-				pasteMenu.setEnabled(false);
-												
-				popupMenuBar.addItem(copyMenu);
-				popupMenuBar.addItem(cutMenu);
 				popupMenuBar.addItem(deleteMenu);
-				popupMenuBar.addItem(pasteMenu);
-				
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (!xmlTreeDisplay.getSelectedNode().hasChildren()) 
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CQL_FUNCTION_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
-				
+								
 				popupMenuBar.setVisible(true);
 				popupPanel.add(popupMenuBar);
 				break;	
@@ -223,12 +174,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					popupMenuBar.addItem(addMenu);
 					
 					createAddCQLDefinitionMenuItem(subMenuBar);
-					
-					if ((xmlTreeDisplay.getCopiedNode() != null)
-							&& (!xmlTreeDisplay.getSelectedNode().hasChildren()) 
-							&& xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CQL_DEFINITION_NODE) {
-						pasteMenu.setEnabled(true);
-					}
+								
 				}else{
 					subMenuBar = new MenuBar(true);
 					subMenuBar.setAutoOpen(true);	
@@ -241,13 +187,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					subMenuBar.addItem(aggFuncMenu);
 					
 					createAddCQLFunctionsMenuItem(subMenuBar);
-					
-					if ((xmlTreeDisplay.getCopiedNode() != null)
-							&& (!xmlTreeDisplay.getSelectedNode().hasChildren()) 
-							&& (xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CQL_FUNCTION_NODE || 
-									xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CQL_AGG_FUNCTION_NODE)) {
-						pasteMenu.setEnabled(true);
-					}
+									
 				}
 				popupMenuBar.setAutoOpen(true);
 				
@@ -255,12 +195,10 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					addMenu.setEnabled(false);
 				}
 				addCommonMenus();
-				copyMenu.setEnabled(true);
-				
+								
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
-				cutMenu.setEnabled(false);
 				//Add "View Human Readable" right click option for all populations: Start
 				popupMenuBar.addItem(viewHumanReadableMenu);
 				viewHumanReadableMenu.setEnabled(true);

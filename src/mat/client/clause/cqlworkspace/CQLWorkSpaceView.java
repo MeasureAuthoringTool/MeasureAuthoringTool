@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +12,7 @@ import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -75,6 +77,7 @@ import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -677,7 +680,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			getParameterNameMap().put(parameter.getId(), parameter.getParameterName());
 			getParameterMap().put(parameter.getId(), parameter);
 		}
-		updateSuggestOracle();
+		updateNewSuggestParamOracle();
 		if(getViewParameterList().size() < 10){
 			getParamBadge().setText("0" + getViewParameterList().size());
 		} else {
@@ -705,7 +708,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			getDefinitionMap().put(define.getId(), define);
 		}
 		
-		updateSuggestDefineOracle();
+		updateNewSuggestDefineOracle();
 		if(getViewDefinitions().size() < 10){
 			getDefineBadge().setText("0" + getViewDefinitions().size());
 		} else {
@@ -735,7 +738,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				}
 			}*/
 		}
-		updateSuggestFuncOracle();
+		updateNewSuggestFuncOracle();
 		if(viewFunctions.size() < 10){
 			functionBadge.setText("0" + viewFunctions.size());
 		} else {
@@ -1000,8 +1003,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelParam");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label paramLibraryLabel = new Label("Parameter Library");
-		searchSuggestTextBox = new SuggestBox();
-		updateSuggestOracle();
+		searchSuggestTextBox = new SuggestBox(getSuggestOracle(parameterNameMap.values()));
+		//updateSuggestOracle();
 		searchSuggestTextBox.setWidth("180px");
 		searchSuggestTextBox.setText("Search");
 		searchSuggestTextBox.getElement().setId("searchTextBox_TextBoxParameterLib");
@@ -1059,8 +1062,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelParam");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label defineLibraryLabel = new Label("Definition Library");
-		searchSuggestDefineTextBox = new SuggestBox();
-		updateSuggestDefineOracle();
+		searchSuggestDefineTextBox = new SuggestBox(getSuggestOracle(defineNameMap.values()));
+		//updateNewSuggestDefineOracle();
 		searchSuggestDefineTextBox.setWidth("180px");
 		searchSuggestDefineTextBox.setText("Search");
 		searchSuggestDefineTextBox.getElement().setId("searchTextBox_TextBoxParameterLib");
@@ -1117,8 +1120,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelFunc");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label functionLibraryLabel = new Label("Function Library");
-		searchSuggestFuncTextBox = new SuggestBox();
-		updateSuggestFuncOracle();
+		searchSuggestFuncTextBox = new SuggestBox(getSuggestOracle(funcNameMap.values()));
+		//updateNewSuggestFuncOracle();
 		searchSuggestFuncTextBox.setWidth("180px");
 		searchSuggestFuncTextBox.setText("Search");
 		searchSuggestFuncTextBox.getElement().setId("searchTextBox_TextBoxFuncLib");
@@ -1155,6 +1158,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 	
+	private SuggestOracle getSuggestOracle(Collection<String> values) {
+		return new CQLSuggestOracle(values);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1436,6 +1443,33 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					.getSuggestOracle();
 			multiWordSuggestOracle.clear();
 			multiWordSuggestOracle.addAll(funcNameMap.values());
+		}
+	}
+	
+	/**
+	 * Update suggest param oracle.
+	 */
+	public void updateNewSuggestParamOracle() {
+		if (searchSuggestDefineTextBox != null) {
+			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(parameterNameMap.values());
+		}
+	}
+	
+	/**
+	 * Update suggest define oracle.
+	 */
+	public void updateNewSuggestDefineOracle() {
+		if (searchSuggestDefineTextBox != null) {
+			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(defineNameMap.values());
+		}
+	}
+	
+	/**
+	 * Update suggest func oracle.
+	 */
+	public void updateNewSuggestFuncOracle() {
+		if (searchSuggestFuncTextBox != null) {
+			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(funcNameMap.values());
 		}
 	}
 	

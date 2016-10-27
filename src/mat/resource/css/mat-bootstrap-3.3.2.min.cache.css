@@ -1330,7 +1330,24 @@ td,th {
   z-index: 1;
   background: white;
 }
-
+.gwt-SuggestBoxPopup {
+  margin-left: 3px;
+  z-index: 4;
+}
+.gwt-SuggestBoxPopup .item {
+  padding: 2px 6px;
+  color: #424242;
+  cursor: default;
+  z-index: 4;
+}
+.gwt-SuggestBoxPopup .item-selected {
+  background: #b7d6f6;
+  z-index: 4;
+}
+.gwt-SuggestBoxPopup .suggestPopupContent {
+  background: white;
+  z-index: 4;
+}
 html {
 	font-size: 10px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0)

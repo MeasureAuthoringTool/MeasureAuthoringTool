@@ -230,6 +230,8 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	private void setupCQLArtifactsNodes(Document document) {
 		PopulationWorkSpaceConstants.cqlDefinitionLookupNode = new LinkedHashMap<String, Node>();
 		PopulationWorkSpaceConstants.cqlFunctionLookupNode = new LinkedHashMap<String, Node>();
+		PopulationWorkSpaceConstants.defNames = new ArrayList<String>();
+		PopulationWorkSpaceConstants.funcNames = new ArrayList<String>();
 		
 		NodeList cqlLookupNodeList = document.getElementsByTagName("cqlLookUp");
 		if ( (null != cqlLookupNodeList) &&  (cqlLookupNodeList.getLength() > 0) ){
@@ -248,6 +250,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							NamedNodeMap namedNodeMap = cqlDefinitionNode.getAttributes();
 							String definitionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
+							PopulationWorkSpaceConstants.defNames.add(definitionName);
 							PopulationWorkSpaceConstants.cqlDefinitionLookupNode.put(definitionName + "~" + uuid, cqlDefinitionNode);
 						}
 							
@@ -260,6 +263,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							NamedNodeMap namedNodeMap = cqlFunctionNode.getAttributes();
 							String functionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
+							PopulationWorkSpaceConstants.funcNames.add(functionName);
 							PopulationWorkSpaceConstants.cqlFunctionLookupNode.put(functionName + "~" + uuid, cqlFunctionNode);
 						}
 				

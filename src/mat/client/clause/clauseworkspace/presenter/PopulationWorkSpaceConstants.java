@@ -1,6 +1,7 @@
 package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,6 +106,10 @@ public class PopulationWorkSpaceConstants {
 	public static LinkedHashMap<String, String> subTreeLookUpName;
 	/** The element look up node. */
 	public static LinkedHashMap<String, Node> subTreeLookUpNode;
+	
+	/** The Definition Names and Function Names. */
+	public static Collection<String> defNames;
+	public static Collection<String> funcNames;
 	
 	/** Map for CQL Definitions for this measure */
 	public static LinkedHashMap<String, Node> cqlDefinitionLookupNode;

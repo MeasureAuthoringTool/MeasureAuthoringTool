@@ -1,12 +1,15 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-
+import mat.client.shared.CQLSuggestOracle;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -26,6 +29,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
@@ -71,7 +75,7 @@ public class CQLArtifactsDialogBox {
 		dialogBox.setWidget(dialogContents);
 		
 		// Create Search box
-		final SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
+		final SuggestBox suggestBox = new SuggestBox(getSuggestOracle(isCQLDefinitions));
 		suggestBox.getElement().setId("cqlsuggestBox_SuggestBox");
 		suggestBox.setWidth("18em");
 		suggestBox.setText("Search");
@@ -141,6 +145,15 @@ public class CQLArtifactsDialogBox {
 		dialogBox.center();
 	}
 	
+	private static SuggestOracle getSuggestOracle(final boolean isCQLDefinitions) {
+		if(isCQLDefinitions){
+			return new CQLSuggestOracle(PopulationWorkSpaceConstants.defNames);
+		}
+		else{
+			return new CQLSuggestOracle(PopulationWorkSpaceConstants.funcNames);
+		}
+	}
+
 	/**
 	 * Adds the list box handler.
 	 * 
@@ -227,14 +240,20 @@ public class CQLArtifactsDialogBox {
 			String currentSelectedCQLUuid, boolean isDefinition) {
 		Set<Entry<String, Node>> cqlNodes = PopulationWorkSpaceConstants
 				.cqlDefinitionLookupNode.entrySet();
-		if(!isDefinition){
-			cqlNodes = PopulationWorkSpaceConstants.cqlFunctionLookupNode.entrySet();
-		}
+		Map<String, String> cqlNodesMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 		for (Entry<String, Node> cqlDefinition : cqlNodes) {
 			String key = cqlDefinition.getKey();
 			int lastIndexOfTilde = key.lastIndexOf("~");
 			String uuid = key.substring(lastIndexOfTilde + 1);
-			listBox.addItem(key.substring(0, lastIndexOfTilde), uuid);
+			cqlNodesMap.put(key.substring(0, lastIndexOfTilde), uuid);
+		}
+		if(!isDefinition){
+			cqlNodes = PopulationWorkSpaceConstants.cqlFunctionLookupNode.entrySet();
+		}
+		for(Map.Entry<String,String> cqlDefinition : cqlNodesMap.entrySet()) {
+			String key = cqlDefinition.getKey();
+			String uuid = cqlDefinition.getValue();
+			listBox.addItem(key, uuid);
 			
 			if (uuid.equals(currentSelectedCQLUuid)) {
 				listBox.setItemSelected(listBox.getItemCount() - 1, true);

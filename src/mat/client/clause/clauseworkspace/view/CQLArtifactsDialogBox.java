@@ -241,24 +241,50 @@ public class CQLArtifactsDialogBox {
 		Set<Entry<String, Node>> cqlNodes = PopulationWorkSpaceConstants
 				.cqlDefinitionLookupNode.entrySet();
 		Map<String, String> cqlNodesMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-		for (Entry<String, Node> cqlDefinition : cqlNodes) {
-			String key = cqlDefinition.getKey();
-			int lastIndexOfTilde = key.lastIndexOf("~");
-			String uuid = key.substring(lastIndexOfTilde + 1);
-			cqlNodesMap.put(key.substring(0, lastIndexOfTilde), uuid);
-		}
+		
+		// Loading a sorted TreeMap for Definitions Or Functions.
 		if(!isDefinition){
 			cqlNodes = PopulationWorkSpaceConstants.cqlFunctionLookupNode.entrySet();
-		}
-		for(Map.Entry<String,String> cqlDefinition : cqlNodesMap.entrySet()) {
-			String key = cqlDefinition.getKey();
-			String uuid = cqlDefinition.getValue();
-			listBox.addItem(key, uuid);
-			
-			if (uuid.equals(currentSelectedCQLUuid)) {
-				listBox.setItemSelected(listBox.getItemCount() - 1, true);
+			for (Entry<String, Node> cqlFunction : cqlNodes) {
+				String key = cqlFunction.getKey();
+				int lastIndexOfTilde = key.lastIndexOf("~");
+				String uuid = key.substring(lastIndexOfTilde + 1);
+				cqlNodesMap.put(key.substring(0, lastIndexOfTilde), uuid);
 			}
 		}
+		else{
+			for (Entry<String, Node> cqlDefinition : cqlNodes) {
+				String key = cqlDefinition.getKey();
+				int lastIndexOfTilde = key.lastIndexOf("~");
+				String uuid = key.substring(lastIndexOfTilde + 1);
+				cqlNodesMap.put(key.substring(0, lastIndexOfTilde), uuid);
+			}
+		}
+		
+		//Adding Definitions or Functions to Listbox.
+		if(!isDefinition){
+			for(Map.Entry<String,String> cqlFunction : cqlNodesMap.entrySet()) {
+				String key = cqlFunction.getKey();
+				String uuid = cqlFunction.getValue();
+				listBox.addItem(key, uuid);
+				
+				if (uuid.equals(currentSelectedCQLUuid)) {
+					listBox.setItemSelected(listBox.getItemCount() - 1, true);
+				}
+			}
+		}
+		else{
+			for(Map.Entry<String,String> cqlDefinition : cqlNodesMap.entrySet()) {
+				String key = cqlDefinition.getKey();
+				String uuid = cqlDefinition.getValue();
+				listBox.addItem(key, uuid);
+				
+				if (uuid.equals(currentSelectedCQLUuid)) {
+					listBox.setItemSelected(listBox.getItemCount() - 1, true);
+				}
+			}
+		}
+		
 		// Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement

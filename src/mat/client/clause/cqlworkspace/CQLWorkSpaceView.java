@@ -2,10 +2,13 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import mat.client.CustomPager;
 import mat.client.shared.CQLButtonToolBar;
@@ -183,13 +186,13 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private SuggestBox searchSuggestTextBox;
 	
 	/**
-	 * HashMap parameterNameMap.
+	 * TreeMap parameterNameMap.
 	 */
-	private HashMap<String, String> parameterNameMap = new HashMap<String, String>();
+	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	/**
-	 * HashMap parameterMap.
+	 * TreeMap parameterMap.
 	 */
-	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
+	private Map<String, CQLParameter> parameterMap = new TreeMap<String, CQLParameter>(String.CASE_INSENSITIVE_ORDER);
 	/**
 	 * Button removeParameterButton.
 	 */
@@ -251,14 +254,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
 	/**
-	 * HashMap defineNameMap.
+	 * TreeMap defineNameMap.
 	 */
-	private HashMap<String, String> defineNameMap = new HashMap<String, String>();
+	private Map<String, String> defineNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	
 	/**
-	 * HashMap funcNameMap.
+	 * TreeMap funcNameMap.
 	 */
-	private HashMap<String, String> funcNameMap = new HashMap<String, String>();
+	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	/**
 	 * HashMap definitionMap.
 	 */
@@ -1306,6 +1309,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void clearAndAddParameterNamesToListBox() {
 		if (parameterNameListBox != null) {
 			parameterNameListBox.clear();
+			viewParameterList = sortParamList(viewParameterList);
 			for (CQLParameter param : viewParameterList) {
 				parameterNameListBox.addItem(param.getParameterName(), param.getId());
 			}
@@ -1320,6 +1324,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
+	private List<CQLParameter> sortParamList(List<CQLParameter> viewParamList) {
+		Collections.sort(viewParamList, new Comparator<CQLParameter>() {
+		      @Override
+		      public int compare(final CQLParameter object1, final CQLParameter object2) {
+		          return object1.getParameterName().compareToIgnoreCase(object2.getParameterName());
+		      }
+		  });
+	return viewParamList;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1486,6 +1500,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void clearAndAddDefinitionNamesToListBox() {
 		if (defineNameListBox != null) {
 			defineNameListBox.clear();
+			viewDefinitions = sortDefinitionNames(viewDefinitions);
 			for (CQLDefinition define : viewDefinitions) {
 				defineNameListBox.addItem(define.getDefinitionName(), define.getId());
 			}
@@ -1500,6 +1515,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
+	private List<CQLDefinition> sortDefinitionNames(List<CQLDefinition> viewDef) {
+		Collections.sort(viewDef, new Comparator<CQLDefinition>() {
+		      @Override
+		      public int compare(final CQLDefinition object1, final CQLDefinition object2) {
+		          return object1.getDefinitionName().compareToIgnoreCase(object2.getDefinitionName());
+		      }
+		  });
+	return viewDef;
+	}
+
 	/**
 	 * Clear and add functions names to list box.
 	 */
@@ -1507,6 +1532,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void clearAndAddFunctionsNamesToListBox() {
 		if (funcNameListBox != null) {
 			funcNameListBox.clear();
+			//sort functions
+			viewFunctions = sortFunctionNames(viewFunctions);
 			for (CQLFunctions func : viewFunctions) {
 				funcNameListBox.addItem(func.getFunctionName(), func.getId());
 			}
@@ -1521,6 +1548,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
+	private List<CQLFunctions> sortFunctionNames(List<CQLFunctions> viewFunc) {
+			  Collections.sort(viewFunc, new Comparator<CQLFunctions>() {
+			      @Override
+			      public int compare(final CQLFunctions object1, final CQLFunctions object2) {
+			          return object1.getFunctionName().compareToIgnoreCase(object2.getFunctionName());
+			      }
+			  });
+		return viewFunc;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2235,7 +2272,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the parameter map
 	 */
 	@Override
-	public HashMap<String, CQLParameter> getParameterMap() {
+	public Map<String, CQLParameter> getParameterMap() {
 		return parameterMap;
 	}
 	
@@ -2251,7 +2288,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the parameter name map
 	 */
 	@Override
-	public HashMap<String, String> getParameterNameMap() {
+	public Map<String, String> getParameterNameMap() {
 		return parameterNameMap;
 	}
 	
@@ -2283,7 +2320,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the define name map
 	 */
 	@Override
-	public HashMap<String, String> getDefineNameMap() {
+	public Map<String, String> getDefineNameMap() {
 		return defineNameMap;
 	}
 	
@@ -2299,7 +2336,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the definition map
 	 */
 	@Override
-	public HashMap<String, CQLDefinition> getDefinitionMap() {
+	public Map<String, CQLDefinition> getDefinitionMap() {
 		return definitionMap;
 	}
 	
@@ -2838,7 +2875,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getFunctionMap()
 	 */
 	@Override
-	public HashMap<String, CQLFunctions> getFunctionMap() {
+	public Map<String, CQLFunctions> getFunctionMap() {
 		return functionMap;
 	}
 	
@@ -3215,7 +3252,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the func name map
 	 */
-	public HashMap<String, String> getFuncNameMap() {
+	public Map<String, String> getFuncNameMap() {
 		return funcNameMap;
 	}
 	

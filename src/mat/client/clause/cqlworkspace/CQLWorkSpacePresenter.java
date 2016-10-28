@@ -202,14 +202,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the parameter map
 		 */
-		HashMap<String, CQLParameter> getParameterMap();
+		Map<String, CQLParameter> getParameterMap();
 		
 		/**
 		 * Gets the parameter name map.
 		 *
 		 * @return the parameter name map
 		 */
-		HashMap<String, String> getParameterNameMap();
+		Map<String, String> getParameterNameMap();
 		
 		
 		/**
@@ -234,14 +234,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the define name map
 		 */
-		HashMap<String, String> getDefineNameMap();
+		Map<String, String> getDefineNameMap();
 		
 		/**
 		 * Gets the definition map.
 		 *
 		 * @return the definition map
 		 */
-		HashMap<String, CQLDefinition> getDefinitionMap();
+		Map<String, CQLDefinition> getDefinitionMap();
 		
 		/**
 		 * Gets the define name list box.
@@ -553,7 +553,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the function map
 		 */
-		HashMap<String, CQLFunctions> getFunctionMap();
+		Map<String, CQLFunctions> getFunctionMap();
 		
 		/**
 		 * Gets the view functions.

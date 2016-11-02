@@ -1348,6 +1348,19 @@ td,th {
   background: white;
   z-index: 4;
 }
+.gwt-CheckBox {
+	margin-right: 3px;
+    padding-top: 5px;
+}
+.horizontalPanel{
+	margin-right: 3px;
+	margin-left: 3px;
+	padding-right: 10px;
+	
+}
+.qdmLabel{
+	margin-right: 14px;	
+}
 html {
 	font-size: 10px;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0)

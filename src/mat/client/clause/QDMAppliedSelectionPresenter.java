@@ -402,7 +402,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 */
 		Widget buildPasteBottomPanel(boolean isEditable);
 		
-		ToggleSwitch getToggleSwitch();
+		CheckBox getDefaultExpIdentifierSel();
 		
 	}
 	
@@ -509,8 +509,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							searchDisplay.getVSACExpansionIdentifierListBox().addItem(result.getVsacExpIdentifier());
 							//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
 							//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
-							searchDisplay.getToggleSwitch().setValue(true);
-							searchDisplay.getToggleSwitch().setEnabled(false);
+							searchDisplay.getDefaultExpIdentifierSel().setValue(true);
+							searchDisplay.getDefaultExpIdentifierSel().setEnabled(false);
 							isExpansionIdentifier = true;
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
 						} else {
@@ -532,13 +532,13 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							}
 							//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
 							//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
-							searchDisplay.getToggleSwitch().setEnabled(true);
-							searchDisplay.getToggleSwitch().setValue(true);
+							searchDisplay.getDefaultExpIdentifierSel().setEnabled(true);
+							searchDisplay.getDefaultExpIdentifierSel().setValue(true);
 							
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
 							isExpansionIdentifier = true;
 						} else {
-							searchDisplay.getToggleSwitch().setEnabled(true);
+							searchDisplay.getDefaultExpIdentifierSel().setEnabled(true);
 							expIdentifierToAllQDM = "";
 							isExpansionIdentifier = false;
 						}
@@ -1179,7 +1179,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					if(!searchDisplay.getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
 						expIdentifierToAllQDM = searchDisplay.getVSACExpansionIdentifierListBox().getValue();
 						updateAllQDMsWithExpProfile(appliedQDMList);
-					} else if(!searchDisplay.getToggleSwitch().getValue()){
+					} else if(!searchDisplay.getDefaultExpIdentifierSel().getValue()){
 						expIdentifierToAllQDM = "";
 						updateAllQDMsWithExpProfile(appliedQDMList);
 					} else {
@@ -1223,7 +1223,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						
 					}
 				});*/
-		searchDisplay.getToggleSwitch().addValueChangeHandler(
+		searchDisplay.getDefaultExpIdentifierSel().addValueChangeHandler(
 				new ValueChangeHandler<Boolean>() {
 					@Override
 					public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -1310,7 +1310,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox) searchDisplay.getDefaultExpIDInput();
 				//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
-				if (searchDisplay.getToggleSwitch().getValue()) {
+				if (searchDisplay.getDefaultExpIdentifierSel().getValue()) {
 					modifiedQDMList.add(qualityDataSetDTO);
 				}
 			}
@@ -1336,7 +1336,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				getAppliedQDMList(true);
 				//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
 				//ToggleSwitch useDefaultExpToggelSwitch = searchDisplay.getToggleSwitch();
-				if (!searchDisplay.getToggleSwitch().getValue()) {
+				if (!searchDisplay.getDefaultExpIdentifierSel().getValue()) {
 					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
 							.getMessageDelegate().getDefaultExpansionIdRemovedMessage());
 					

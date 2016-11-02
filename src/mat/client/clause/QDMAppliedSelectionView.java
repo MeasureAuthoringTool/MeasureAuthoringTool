@@ -62,7 +62,9 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -124,6 +126,7 @@ HasSelectionHandlers<Boolean> {
 	/*private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
 			"Use a default Expansion Identifier ?", 1);*/
 	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
+	private CheckBox defaultExpIdentifierSel = new CheckBox();
 	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
@@ -441,22 +444,24 @@ HasSelectionHandlers<Boolean> {
 		searchPanel.add(new SpacerWidget());
 		Grid queryGrid = new Grid(5, 1);
 		
-		toggleSwitch.setSize(SizeType.MINI);
-		toggleSwitch.setLabelText("Default Expansion Identifier");
-		toggleSwitch.setLabelWidth("180");
+		HorizontalPanel qdmHorizontalPanel = new HorizontalPanel();
+		qdmHorizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		qdmHorizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
+		InlineLabel defaultExpIdentifierLabel = new InlineLabel("Add Default Expansion Identifier");
 		/*toggleSwitch.setOnIcon(IconType.CHECK);
 		toggleSwitch.setOffIcon(IconType.TIMES);
 		 */
-		toggleSwitch.setOnText("Yes");
-		toggleSwitch.setOnColor(ColorType.SUCCESS);
-		toggleSwitch.setOffText("No");
-		toggleSwitch.setOffColor(ColorType.DEFAULT);
-		queryGrid.setWidget(0, 0, toggleSwitch);
+		defaultExpIdentifierLabel.setStyleName("qdmLabel");
+		defaultExpIdentifierSel.setStyleName("gwt-CheckBox");
+		qdmHorizontalPanel.add(defaultExpIdentifierLabel);
+		qdmHorizontalPanel.add(defaultExpIdentifierSel);
+		qdmHorizontalPanel.setStyleName("horizontalPanel");
+		queryGrid.setWidget(0, 0, qdmHorizontalPanel);
 		queryGrid.setWidget(1, 0, new SpacerWidget());
 		queryGrid.setWidget(2, 0, defaultExpIdentifierListBox);
 		queryGrid.setWidget(3, 0, new SpacerWidget());
 		queryGrid.setWidget(4, 0, applyDefaultExpansionIdButton);
-		queryGrid.setStyleName("secondLabel");
+		//queryGrid.setStyleName("secondLabel");
 		searchPanel.add(queryGrid);
 		return searchPanel;
 	}
@@ -852,8 +857,8 @@ HasSelectionHandlers<Boolean> {
 		return null;
 	}
 	@Override
-	public ToggleSwitch getToggleSwitch(){
-		return toggleSwitch;
+	public CheckBox getDefaultExpIdentifierSel(){
+		return defaultExpIdentifierSel;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSpecificOccChkBox()
@@ -1098,8 +1103,8 @@ HasSelectionHandlers<Boolean> {
 	 */
 	@Override
 	public void resetVSACValueSetWidget() {
-		//defaultExpIdentifierSel.setValue(false);
-		toggleSwitch.setValue(false);
+		defaultExpIdentifierSel.setValue(false);
+		//toggleSwitch.setValue(false);
 		defaultExpIdentifierListBox.clear();
 		defaultExpIdentifierListBox.setEnabled(false);
 		defaultExpIdentifierListBox.addItem("--Select--");

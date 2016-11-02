@@ -30,10 +30,6 @@ import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -56,6 +52,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -396,10 +393,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private String stewardValue;
 	
 	/** The calender year. */
-//	private CustomCheckBox calenderYear = new CustomCheckBox("Select Calendar Year", "Calendar Year", 1);
-//	private CheckBox calenderYear = new CheckBox("Calendar Year");
+//	private CustomCheckBox calenderYear = new CustomCheckBox("Calendar Year", "Calendar Year", true);
+	private CheckBox calenderYear = new CheckBox();
 	
-	private ToggleSwitch  calenderYear = new ToggleSwitch();
+	//private ToggleSwitch  calenderYear = new ToggleSwitch();
 	
 	private String measureScoringType ;
 	/**
@@ -605,16 +602,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//measurementPeriodPanel.add(new SpacerWidget());
 		HorizontalPanel calenderYearDatePanel = new HorizontalPanel();
 		calenderYearDatePanel.getElement().setId("calenderYear_HorizontalPanel");
-		calenderYear.setSize(SizeType.MINI);
-		calenderYear.setLabelText("Calendar Year");
-		calenderYear.setLabelWidth("120");
-		calenderYear.setOnText("Yes");
-		calenderYear.setOnColor(ColorType.SUCCESS);
-		calenderYear.setOffText("No");
-		calenderYear.setOffColor(ColorType.DEFAULT);
 		calenderYearDatePanel.add(calenderYear);
+		Label calenderLabel = new Label("Calendar Year");
+		calenderLabel.setStyleName("qdmLabel");
 		Label calenderYearLabel = new Label("(January 1,20XX through December 31,20XX)");
-		calenderYearLabel.setStyleName("secondLabel");
+		calenderYearLabel.setStyleName("qdmLabel");
+		calenderYearDatePanel.add(calenderLabel);
 		calenderYearDatePanel.add(calenderYearLabel);
 		calenderYear.getElement().setId("calenderYear_CustomCheckBox");
 		calenderYear.addValueChangeHandler(calenderYearChangeHandler);
@@ -2786,7 +2779,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getCalenderYear()
 	 */
 	@Override
-	public ToggleSwitch getCalenderYear() {
+	public CheckBox getCalenderYear() {
 		return calenderYear;
 	}
 	

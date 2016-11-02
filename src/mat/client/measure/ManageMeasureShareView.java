@@ -16,10 +16,7 @@ import mat.client.shared.SpacerWidget;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-
+import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -35,7 +32,9 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -61,8 +60,8 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
 	/** The private check. */
-//	private CheckBox privateCheck = new CheckBox("Private Measure");
-	private ToggleSwitch privateCheck = new ToggleSwitch();
+	private CheckBox privateCheck = new CheckBox();
+//	private ToggleSwitch privateCheck = new ToggleSwitch();
 //	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
 //			+ "a Measure Private.", "Private Measure", true);
 //	/** The search view. */
@@ -79,17 +78,15 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.addStyleName("leftAligned");
 		buttonBar.getSaveButton().setText("Save and Continue");
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		horizontalPanel.add(measureNameLabel);
-		
-		privateCheck.setSize(SizeType.MINI);
-		privateCheck.setLabelText("Private Measure");
-		privateCheck.setLabelWidth("120");
-		privateCheck.setOnText("Yes");
-		privateCheck.setOnColor(ColorType.SUCCESS);
-		privateCheck.setOffText("No");
-		privateCheck.setOffColor(ColorType.DEFAULT);
+		InlineLabel privateCheckLabel = new InlineLabel("Private Measure");
+		privateCheck.setStyleName("gwt-CheckBox");
+		privateCheckLabel.setStyleName("qdmLabel");
 		horizontalPanel.add(privateCheck);
+		horizontalPanel.add(privateCheckLabel);
+		horizontalPanel.setStyleName("horizontalPanel");
 		// content.add(measureNameLabel);
 		content.add(horizontalPanel);
 		

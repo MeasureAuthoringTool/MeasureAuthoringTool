@@ -39,8 +39,6 @@ import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -55,6 +53,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
@@ -655,7 +654,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the calender year
 		 */
-		ToggleSwitch getCalenderYear();
+		CheckBox getCalenderYear();
 		
 		/**
 		 * Sets the measurement period buttons visible.

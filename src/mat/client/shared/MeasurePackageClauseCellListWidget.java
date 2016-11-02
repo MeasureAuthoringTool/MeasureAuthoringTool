@@ -709,34 +709,44 @@ public class MeasurePackageClauseCellListWidget {
 					String denomClauseType = null;
 					String numClauseType = null;
 					boolean isAssociated = false;
-					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-						if(detail.getType().equals(DENOMINATOR)){
-							denomClauseType = detail.getName();
-						} else if(detail.getType().equals(NUMERATOR)){
-							numClauseType = detail.getName();
-						}
-						if ((detail.getAssociatedPopulationUUID() != null)
-								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
-										rightCellListSelectionModel.getSelectedObject().getId())) {
-							detail.setAssociatedPopulationUUID(null);
-							groupingClausesMap.put(detail.getName(), detail);
-							isAssociated = true;
-						} else if (detail.getId().equalsIgnoreCase(
-								rightCellListSelectionModel.getSelectedObject().getId())) {
-							detail.setAssociatedPopulationUUID(null);
-							groupingClausesMap.put(detail.getName(), detail);
-							isAssociated = true;
-						}
-						if((denomClauseType != null)  && isAssociated){
-							groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-						}
-						if((numClauseType!=null) && isAssociated){
-							groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-						}
-						if ((otherClauseType != null)
-								&& otherClauseType.equalsIgnoreCase(detail.getType())) {
-							detail.setAssociatedPopulationUUID(null);
-							groupingClausesMap.put(detail.getName(), detail);
+					if(rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("measure observation") || 
+							rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("stratification")) {
+						groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject()); 
+					}
+					
+					else {
+						for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+							
+							// if the detail is the deonimator, set the denom clause type.
+							if(detail.getType().equals(DENOMINATOR)){
+								denomClauseType = detail.getName();
+							} else if(detail.getType().equals(NUMERATOR)){ // if the detail is the numerator, set the numClauseType
+								numClauseType = detail.getName();
+							}
+
+							if ((detail.getAssociatedPopulationUUID() != null)
+									&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
+											rightCellListSelectionModel.getSelectedObject().getId())) { // if the detail is the selected object, set the associations to null
+								detail.setAssociatedPopulationUUID(null);
+								groupingClausesMap.put(detail.getName(), detail);
+								isAssociated = true;
+							} else if (detail.getId().equalsIgnoreCase(
+									rightCellListSelectionModel.getSelectedObject().getId())) {
+								detail.setAssociatedPopulationUUID(null);
+								groupingClausesMap.put(detail.getName(), detail);
+								isAssociated = true;
+							}
+							if((denomClauseType != null)  && isAssociated) {
+								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
+							}
+							if((numClauseType!=null) && isAssociated){
+								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
+							}
+							if ((otherClauseType != null)
+									&& otherClauseType.equalsIgnoreCase(detail.getType())) {
+								detail.setAssociatedPopulationUUID(null);
+								groupingClausesMap.put(detail.getName(), detail);
+							}
 						}
 					}
 					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());

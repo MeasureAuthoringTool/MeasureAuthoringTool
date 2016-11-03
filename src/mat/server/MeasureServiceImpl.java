@@ -44,7 +44,9 @@ import mat.server.cqlparser.CQLErrorListener;
 import mat.server.cqlparser.cqlLexer;
 import mat.server.cqlparser.cqlParser;
 import mat.server.service.MeasureLibraryService;
+import mat.server.util.CQLUtil;
 import mat.shared.CQLErrors;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
@@ -658,6 +660,30 @@ MeasureService {
 		result.setCqlErrors(errors);
 		
 	return result;
+	}
+
+	@Override
+	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList) {
+		return this.getMeasureLibraryService().deleteDefinition(measureId, toBeDeletedObj, currentObj, definitionList);
+	}
+
+	@Override
+	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList) {
+		return this.getMeasureLibraryService().deleteFunctions(measureId, toBeDeletedObj, currentObj, functionsList);
+	}
+
+	@Override
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList) {
+		return this.getMeasureLibraryService().deleteParameter(measureId, toBeDeletedObj, currentObj, parameterList);
+	}
+	
+	@Override
+	public GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId) {
+		return this.getMeasureLibraryService().getUsedCqlArtifacts(measureId);
+		
 	}
 	
 	

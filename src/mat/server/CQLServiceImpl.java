@@ -12,9 +12,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -43,6 +46,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.service.CQLService;
 import mat.dao.clause.CQLDAO;
 import mat.model.clause.CQLData;
+import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
@@ -51,12 +55,20 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.parser.CQLDefinitionModelObject;
+import mat.model.cql.parser.CQLFileObject;
+import mat.model.cql.parser.CQLFunctionModelObject;
+import mat.model.cql.parser.CQLParameterModelObject;
 import mat.server.cqlparser.CQLTemplateXML;
+import mat.server.cqlparser.MATCQLParser;
 import mat.server.service.MeasurePackageService;
+import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLErrors;
 import mat.shared.CQLModelValidator;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
@@ -717,6 +729,184 @@ public class CQLServiceImpl implements CQLService {
 		
 		return result;
 	}
+	 
+	@Override
+	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
+		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
+		System.out.println("DELETE DEFINITION CLICK " + currentObj.getDefinitionName());
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+
+		if(xmlModel != null) {
+			String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "/measure/cqlLookUp//definition[@id='"+ toBeDeletedObj.getId() + "']";
+			System.out.println("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+			try {
+				Node definitionNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+				
+				if(definitionNode != null) {
+					System.out.println("FOUND NODE");
+					
+					// remove from xml
+					Node deletedNode = definitionNode.getParentNode().removeChild(definitionNode);
+					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
+					processor.setOriginalXml(processor
+							.transform(processor.getOriginalDoc()));
+					xmlModel.setXml(processor.getOriginalXml());
+					getService().saveMeasureXml(xmlModel);		
+					
+					
+					// remove from definition list
+					definitionList.remove(toBeDeletedObj);
+					wrapper.setCqlDefinitions(definitionList);
+					result.setSuccess(true);
+					result.setDefinition(toBeDeletedObj);
+				}
+				
+				else {
+					System.out.println("NOT FOUND NODE");
+					result.setSuccess(false);
+					result.setFailureReason(result.NODE_NOT_FOUND);
+				}
+				
+			} catch (XPathExpressionException e) {
+				result.setSuccess(false);
+				e.printStackTrace();
+			}
+			
+		}
+		
+		if (result.isSuccess() && (wrapper.getCqlDefinitions().size() > 0)) {
+			result.getCqlModel().setDefinitionList(
+					sortDefinitionsList(wrapper.getCqlDefinitions()));
+			System.out.println(xmlModel.getXml());
+			System.out.println(result.isSuccess());
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList) {
+		
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
+		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
+		System.out.println("DELETE FUNCTION CLICK " + currentObj.getFunctionName());
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+
+		if(xmlModel != null) {
+			String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "/measure/cqlLookUp//function[@id='"+ toBeDeletedObj.getId() + "']";
+			System.out.println("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+			try {
+				Node functionNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+				
+				if(functionNode != null) {
+					System.out.println("FOUND NODE");
+					
+					// remove from xml
+					Node deletedNode = functionNode.getParentNode().removeChild(functionNode);
+					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
+					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+					xmlModel.setXml(processor.getOriginalXml());
+					getService().saveMeasureXml(xmlModel);		
+					
+					
+					// remove from function list
+					functionsList.remove(toBeDeletedObj);
+					wrapper.setCqlFunctionsList(functionsList);
+					result.setSuccess(true);
+					result.setFunction(toBeDeletedObj);
+				}
+				
+				else {
+					System.out.println("NOT FOUND NODE");
+					result.setSuccess(false);
+					result.setFailureReason(result.NODE_NOT_FOUND);
+				}
+				
+			} catch (XPathExpressionException e) {
+				result.setSuccess(false);
+				e.printStackTrace();
+			}
+			
+		}
+		
+		if (result.isSuccess() && (wrapper.getCqlFunctionsList().size() > 0)) {
+			result.getCqlModel().setCqlFunctions(sortFunctionssList(wrapper.getCqlFunctionsList()));
+			System.out.println(xmlModel.getXml());
+			System.out.println(result.isSuccess());
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
+		CQLParametersWrapper wrapper = new CQLParametersWrapper();
+		System.out.println("DELETE PARAMETER CLICK " + currentObj.getParameterName());
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+
+		if(xmlModel != null) {
+			String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "/measure/cqlLookUp//parameter[@id='"+ toBeDeletedObj.getId() + "']";
+			System.out.println("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+			try {
+				Node parameterNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+				
+				if(parameterNode != null) {
+					System.out.println("FOUND NODE");
+					
+					// remove from xml
+					Node deletedNode = parameterNode.getParentNode().removeChild(parameterNode);
+					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
+					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+					xmlModel.setXml(processor.getOriginalXml());
+					getService().saveMeasureXml(xmlModel);		
+					
+					
+					// remove from parameter list
+					parameterList.remove(toBeDeletedObj); 
+					wrapper.setCqlParameterList(parameterList);
+					result.setSuccess(true);
+					result.setParameter(toBeDeletedObj);
+				}
+				
+				else {
+					System.out.println("NOT FOUND NODE");
+					result.setSuccess(false);
+					result.setFailureReason(result.NODE_NOT_FOUND);
+				}
+				
+			} catch (XPathExpressionException e) {
+				result.setSuccess(false);
+				e.printStackTrace();
+			}
+			
+		}
+		
+		if (result.isSuccess() && (wrapper.getCqlParameterList().size() > 0)) {
+			result.getCqlModel().setCqlParameters(sortParametersList(wrapper.getCqlParameterList()));
+			System.out.println(xmlModel.getXml());
+			System.out.println(result.isSuccess());
+		}
+		
+		return result;
+	}
+	
 	
 	/**
 	 * Update risk adjustment variables.
@@ -1608,6 +1798,75 @@ public class CQLServiceImpl implements CQLService {
 	public String getDefaultCodes() {
 		return cqlDefaultCodesXMLString;
 	}
-	
-	
+
+
+	@Override
+	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId) {
+		GetUsedCQLArtifactsResult result = new GetUsedCQLArtifactsResult(); 
+		
+		System.out.println("GETTING CQL ARTIFACTS");
+		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
+		XmlProcessor processor = new XmlProcessor(measureXML.getXml());
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml() ,measureId), "").toString();
+		System.out.println(cqlFileString);
+		
+		
+		
+		MATCQLParser matcqlParser = new MATCQLParser();
+		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		
+		List<CQLDefinitionModelObject> cqlDefinitionObjects = new ArrayList<CQLDefinitionModelObject>(cqlFileObject.getDefinitionsMap().values());
+		List<CQLFunctionModelObject> cqlFunctionObjects = new ArrayList<CQLFunctionModelObject>(cqlFileObject.getFunctionsMap().values()); 
+		List<CQLParameterModelObject> cqlParameterObjects = new ArrayList<CQLParameterModelObject>(cqlFileObject.getParametersMap().values()); 
+		
+		Set<CQLDefinitionModelObject> usedCQLDefinitionObjects = new HashSet<CQLDefinitionModelObject>();
+		Set<CQLFunctionModelObject> usedCQLFunctionObjects = new HashSet<CQLFunctionModelObject>(); 
+		Set<CQLParameterModelObject> usedCQLParameterObjects = new HashSet<CQLParameterModelObject>(); 
+		
+		for(CQLDefinitionModelObject cqlDefinitionModelObject: cqlDefinitionObjects) {
+			usedCQLDefinitionObjects.addAll(cqlDefinitionModelObject.getReferredToDefinitions()); 
+			usedCQLFunctionObjects.addAll(cqlDefinitionModelObject.getReferredToFunctions()); 
+			usedCQLParameterObjects.addAll(cqlDefinitionModelObject.getReferredToParameters());
+		}
+		
+		for(CQLFunctionModelObject cqlFunctionModelObject : cqlFunctionObjects) {
+			usedCQLDefinitionObjects.addAll(cqlFunctionModelObject.getReferredToDefinitions()); 
+			usedCQLFunctionObjects.addAll(cqlFunctionModelObject.getReferredToFunctions());
+			usedCQLParameterObjects.addAll(cqlFunctionModelObject.getReferredToParameters()); 
+		}	
+		
+		Set<String> usedCQLDefinition = new HashSet<String>(); 
+		Set<String> usedCQLFunction = new HashSet<String>(); 
+		Set<String> usedCQLParameter = new HashSet<String>(0); 
+
+		for(CQLDefinitionModelObject c : usedCQLDefinitionObjects) {
+			usedCQLDefinition.add(c.getIdentifier().replaceAll("\"", ""));
+		}
+		
+		for(CQLFunctionModelObject c : usedCQLFunctionObjects) {
+			usedCQLFunction.add(c.getIdentifier().replaceAll("\"", ""));
+		}
+		
+		for(CQLParameterModelObject c : usedCQLParameterObjects) {
+			usedCQLParameter.add(c.getIdentifier().replaceAll("\"", ""));
+		}
+		
+		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc(), cqlFileObject);
+		usedCQLDefinition.addAll(cqlArtifactHolder.getCqlDefFromPopSet());		
+		usedCQLFunction.addAll(cqlArtifactHolder.getCqlFuncFromPopSet()); 
+		
+		List<String> parameterList = new ArrayList<String>(); 
+		parameterList.addAll(cqlArtifactHolder.getCqlParameterIdentifierSet());
+		System.out.println("DEF LIST: " + usedCQLDefinition);
+		System.out.println("FUNCT LIST: " + usedCQLFunction);
+		System.out.println("PARAM LIST: " + usedCQLParameter); 
+		
+		result.setUsedCQLDefinitions(new ArrayList<String>(usedCQLDefinition));
+		result.setUsedCQLFunctionss(new ArrayList<String>(usedCQLFunction));
+		result.setUsedCQLParameters(new ArrayList<String>(usedCQLParameter));
+		
+		
+		return result; 
+	}
+
 }

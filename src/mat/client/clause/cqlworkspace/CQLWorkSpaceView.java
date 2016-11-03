@@ -16,6 +16,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -28,6 +29,7 @@ import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.GetUsedCQLArtifactsResult;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -73,6 +75,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -349,6 +353,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The context pop toggle switch. */
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
 	
+	DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert(); 
+	
+	private GetUsedCQLArtifactsResult usedCqlArtifacts; 
+	
 	//private AnchorListItem includeLibrary;
 	
 	/**
@@ -557,13 +565,33 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 							System.out.println("In Parameter DoubleClickHandler, doing setText()");
 							//disable parameterName and Logic fields for Default Parameter
 							boolean isReadOnly = getParameterMap().get(selectedParamID).isReadOnly();
+							getParameterButtonBar().getDeleteButton().setTitle("Delete");
 							
 							if(MatContext.get().getMeasureLockService()
 									.checkForEditPermission()){
 								setParameterWidgetReadOnly(!isReadOnly);
 							}
+							
+							// load most recent used cql artifacts
+							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+								}
+
+								@Override
+								public void onSuccess(GetUsedCQLArtifactsResult result) {
+									if(result.getUsedCQLParameters().contains(getParameterMap().get(selectedParamID).getParameterName())) {
+										getParameterButtonBar().getDeleteButton().setEnabled(false);
+										getParameterButtonBar().getDeleteButton().setTitle("This parameter can not be deleted as it currently in use elsewhere in the measure.");
+									} 
+								}
+								
+							});
 						}
-					}
+					} 
+					
 					successMessageAlert.clearAlert();
 					errorMessageAlert.clearAlert();
 				}
@@ -604,11 +632,29 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 							}
 							//disable definitionName and fields for Supplemental data definitions
 							boolean isReadOnly = getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
+							getDefineButtonBar().getDeleteButton().setTitle("Delete");
 							
-							if(MatContext.get().getMeasureLockService()
-									.checkForEditPermission()){
+							if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 								setDefinitionWidgetReadOnly(!isReadOnly);
 							}
+							
+							// load most recent used cql artifacts
+							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+								}
+
+								@Override
+								public void onSuccess(GetUsedCQLArtifactsResult result) {
+									if(result.getUsedCQLDefinitions().contains(getDefinitionMap().get(selectedDefinitionID).getDefinitionName())) {
+										getDefineButtonBar().getDeleteButton().setEnabled(false);
+										getDefineButtonBar().getDeleteButton().setTitle("This definition can not be deleted as it is currently in use elsewhere within the measure.");
+									}
+								}
+								
+							});
 						}
 					}
 					
@@ -648,8 +694,30 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								contextFuncPOPRadioBtn.setValue(true);
 								contextFuncPATRadioBtn.setValue(false);
 							}
+							
+							getFunctionButtonBar().getDeleteButton().setEnabled(true);
+							getFunctionButtonBar().getDeleteButton().setTitle("Delete");
+
+							
+							// load most recent used cql artifacts
+							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+								}
+
+								@Override
+								public void onSuccess(GetUsedCQLArtifactsResult result) {
+									if(result.getUsedCQLFunctionss().contains(getFunctionMap().get(selectedFunctionId).getFunctionName())) {
+										getFunctionButtonBar().getDeleteButton().setEnabled(false);
+										getFunctionButtonBar().getDeleteButton().setTitle("This function can not be deleted as it currently in use elsewhere in the measure.");
+									}
+								}
+								
+							});
 						}
-					}
+					} 
 					if (currentSelectedFunctionObjId != null) {
 						CQLFunctions selectedFunction = getFunctionMap().get(currentSelectedFunctionObjId);
 						if (selectedFunction.getArgumentList() != null) {
@@ -983,6 +1051,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
 		messagePanel.add(globalWarningConfirmationMessageAlert);
+		messagePanel.add(deleteConfirmationMessgeAlert);
 		
 		// rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
@@ -1244,7 +1313,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		vp.add(new SpacerWidget());
 		vp.add(parameterFP);
-		vp.setHeight("675px");
+		vp.setHeight("675px");	
+		
 		addParameterEventHandler();
 		mainFlowPanel.add(vp);
 		
@@ -1388,7 +1458,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		Label defineContextLabel = new Label(LabelType.INFO, "Context");
 		FlowPanel defineConextPanel = new FlowPanel();
-		
+				
 		contextDefinePATRadioBtn.setValue(true);
 		contextDefinePATRadioBtn.setText("Patient");
 		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
@@ -1413,7 +1483,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		definitionVP.setStyleName("topping");
 		definitionFP.add(definitionVP);
 		definitionFP.setStyleName("cqlRightContainer");
-		
+				
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
 		vp.setWidth("700px");
@@ -1634,7 +1704,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		funcConextPanel.add(contextFuncPATRadioBtn);
 		funcConextPanel.add(contextFuncPOPRadioBtn);
 		funcConextPanel.setStyleName("contextToggleSwitch");
-		
+				
 		funcVP.add(new SpacerWidget());
 		funcVP.add(functionNameLabel);
 		funcVP.add(new SpacerWidget());
@@ -3378,6 +3448,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
+		getParameterButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
 	/**
@@ -3397,6 +3468,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
+		getDefineButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
 	
@@ -3573,6 +3645,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getErrorMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
+		getDeleteConfirmationMessageAlert().clearAlert(); 
 		hideAceEditorAutoCompletePopUp();
 		
 	}
@@ -3696,6 +3769,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
+		getDeleteConfirmationMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -3708,6 +3782,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
+		getDeleteConfirmationMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -3720,6 +3795,40 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public Button getFuncTimingExpButton(){
 		return getFunctionButtonBar().getTimingExpButton();
+	}
+	
+	@Override
+	public DeleteConfirmationMessageAlert getDeleteConfirmationMessageAlert() {
+		return this.deleteConfirmationMessgeAlert; 
+	}
+	
+	@Override
+	public void setDeleteConfirmationMessageAlert(DeleteConfirmationMessageAlert deleteConfirmationMessageAlert) {
+		this.deleteConfirmationMessgeAlert = deleteConfirmationMessageAlert; 
+	}
+	
+	@Override
+	public void showDeleteConfirmationMessageAlert() {
+		getErrorMessageAlert().clearAlert();
+		getSuccessMessageAlert().clearAlert();
+		getWarningConfirmationMessageAlert().clearAlert();
+		getDeleteConfirmationMessageAlert().createAlert();
+		getDeleteConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+	}
+	
+	@Override
+	public Button getDeleteConfirmationYesButton() {
+		return this.getDeleteConfirmationMessageAlert().getWarningConfirmationYesButton();
+	}
+	
+	@Override
+	public Button getDeleteConfirmationNoButton() {
+		return this.getDeleteConfirmationMessageAlert().getWarningConfirmationNoButton();
+	}
+	
+	@Override
+	public void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results) {
+		this.usedCqlArtifacts = results; 
 	}
 	
 }

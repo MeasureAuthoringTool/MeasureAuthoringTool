@@ -221,6 +221,8 @@ public class MessageDelegate {
 	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
 			"Duplicate name or use of restricted character(s).";
 	
+	public final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2622,6 +2624,10 @@ public class MessageDelegate {
 
 	public String getINVALID_LOGIC_MEASURE_PACKAGER() {
 		return INVALID_LOGIC_MEASURE_PACKAGER;
+	}
+	
+	public String getDELETE_WARNING_MESSAGE() {
+		return DELETE_WARNING_MESSAGE; 
 	}
 
 

@@ -27,8 +27,12 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -613,6 +617,43 @@ public interface MeasureService extends RemoteService {
 			List<CQLFunctions> functionsList);
 	
 	/**
+	 * Delete definition
+	 * 
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param definitionList the definition list
+	 * @return the save update cql result
+	 */
+	SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj, 
+			List<CQLDefinition> definitionList);
+	
+	/**
+	 * Delete functions
+	 *  
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param functionsList the functions list
+	 * @return the save update cql result
+	 */
+	SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj, 
+			List<CQLFunctions> functionsList); 
+	
+	/**
+	 * Delete parameter
+	 * 
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param parameterList the parameter list
+	 * @return the save update cql result
+	 */
+	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj, 
+			List<CQLParameter> parameterList); 
+	
+	
+	/**
 	 * Gets the CQL data type list.
 	 *
 	 * @return the CQL data type list
@@ -622,6 +663,6 @@ public interface MeasureService extends RemoteService {
 	String getJSONObjectFromXML();
 	
 	SaveUpdateCQLResult parseCQLForErrors(String cqlString);
-
 	
+	GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId);
 }

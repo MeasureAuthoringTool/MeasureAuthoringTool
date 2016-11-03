@@ -151,6 +151,9 @@ public class CQLUtil {
 		
 		String xPathForDefinitions = "/measure//cqldefinition/@uuid";
 		String xPathForFunctions = "/measure//cqlfunction/@uuid";
+		
+		String xPathForDefIdentifiers = "/measure//cqldefinition/@displayName"; 
+		String xPathForFuncIdentifiers = "/measure//cqlfunction/@displayName"; 
 		try {
 			NodeList cqlDefinitions = (NodeList) xPath.evaluate(xPathForDefinitions, 
 												originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -166,6 +169,19 @@ public class CQLUtil {
 				String uuid = cqlFunctions.item(i).getNodeValue(); 
 				cqlArtifactHolder.addFunctionUUID(uuid);
 			}
+			
+			NodeList cqlDefIdentifiers = (NodeList) xPath.evaluate(xPathForDefIdentifiers, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
+			for(int i = 0; i < cqlDefIdentifiers.getLength(); i++) {
+				String identifier = cqlDefIdentifiers.item(i).getNodeValue();
+				cqlArtifactHolder.addDefinitionIdentifier(identifier.replaceAll("\"", ""));
+			}
+			
+			NodeList cqlFuncIdentifiers = (NodeList) xPath.evaluate(xPathForFuncIdentifiers, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
+			for(int i = 0; i < cqlFuncIdentifiers.getLength(); i++) {
+				String identifier = cqlFuncIdentifiers.item(i).getNodeValue();
+				cqlArtifactHolder.addFunctionIdentifier(identifier.replaceAll("\"", ""));
+			}
+			
 			
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -346,6 +362,9 @@ public class CQLUtil {
 		private Set<String> cqlParameterIdentifierSet = new HashSet<String>(); 
 		private Set<String> cqlCodesSet = new HashSet<String>();
 		
+		private Set<String> cqlDefFromPopSet = new HashSet<String>(); 
+		private Set<String> cqlFuncFromPopSet = new HashSet<String>(); 
+		
 		public Set<String> getCqlDefinitionUUIDSet() {
 			return cqlDefinitionUUIDSet;
 		}
@@ -370,6 +389,12 @@ public class CQLUtil {
 		public void addParameterIdentifier(String identifier) {
 			cqlParameterIdentifierSet.add(identifier);
 		}
+		public void addDefinitionIdentifier(String identifier) {
+			cqlDefFromPopSet.add(identifier);
+		}
+		public void addFunctionIdentifier(String identifier) {
+			cqlFuncFromPopSet.add(identifier);
+		}
 		public void setCqlDefinitionUUIDSet(Set<String> cqlDefinitionUUIDSet) {
 			this.cqlDefinitionUUIDSet = cqlDefinitionUUIDSet;
 		}
@@ -390,6 +415,18 @@ public class CQLUtil {
 		}
 		public void addCQLCode(String identifier){
 			this.cqlCodesSet.add(identifier);
+		}
+		public Set<String> getCqlDefFromPopSet() {
+			return cqlDefFromPopSet;
+		}
+		public void setCqlDefFromPopSet(Set<String> cqlDefFromPopSet) {
+			this.cqlDefFromPopSet = cqlDefFromPopSet;
+		}
+		public Set<String> getCqlFuncFromPopSet() {
+			return cqlFuncFromPopSet;
+		}
+		public void setCqlFuncFromPopSet(Set<String> cqlFuncFromPopSet) {
+			this.cqlFuncFromPopSet = cqlFuncFromPopSet;
 		}
 	}	
 }

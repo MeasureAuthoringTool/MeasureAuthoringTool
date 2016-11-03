@@ -91,6 +91,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.util.CQLUtil;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
@@ -100,6 +101,7 @@ import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -5294,6 +5296,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			String currentMeasureId, String context) {
 		return getCqlService().saveAndModifyCQLGeneralInfo(currentMeasureId, context);
 	}
+	 
+	 @Override
+	 public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+			 List<CQLDefinition> definitionList) {
+		 return getCqlService().deleteDefinition(measureId, toBeDeletedObj, currentObj, definitionList);
+	 }
+	 
+	 @Override
+	 public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj, 
+			 List<CQLFunctions> functionsList) {
+		 return getCqlService().deleteFunctions(measureId, toBeDeletedObj, currentObj, functionsList);
+	 }
+	 
+	 @Override
+	 public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj, 
+			 List<CQLParameter> parameterList) {
+		 return getCqlService().deleteParameter(measureId, toBeDeletedObj, currentObj, parameterList);
+	 }
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getCQLDataTypeList()
@@ -5309,6 +5329,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public String getJSONObjectFromXML(){
 		return getCqlService().getJSONObjectFromXML();
+	}
+	
+	@Override
+	public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId) {
+		return getCqlService().getUsedCQlArtifacts(measureId);
 	}
 	
 }

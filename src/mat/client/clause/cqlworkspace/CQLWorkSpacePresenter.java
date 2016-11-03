@@ -13,6 +13,7 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
@@ -28,6 +29,7 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.CQLErrors;
 import mat.shared.CQLModelValidator;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -898,6 +900,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		SuggestBox getSearchSuggestTextBox();
 
 		void setDefinitionWidgetReadOnly(boolean isEditable);
+
+		DeleteConfirmationMessageAlert getDeleteConfirmationMessageAlert();
+
+		void setDeleteConfirmationMessageAlert(DeleteConfirmationMessageAlert deleteConfirmationMessageAlert);
+
+		void showDeleteConfirmationMessageAlert();
+
+		Button getDeleteConfirmationYesButton();
+
+		Button getDeleteConfirmationNoButton();
+
+		void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results);
 		
 	}
 	
@@ -1130,6 +1144,59 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				buildTimingExpressionPopUp();
 			}
 		});
+		
+		searchDisplay.getParameterButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.showDeleteConfirmationMessageAlert();	
+
+			}
+			
+		}); 
+		
+		searchDisplay.getDefineButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.showDeleteConfirmationMessageAlert();	
+			}
+		});
+		
+		searchDisplay.getFunctionButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.showDeleteConfirmationMessageAlert();	
+			}
+			
+		});
+		
+		searchDisplay.getDeleteConfirmationNoButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+			}
+		}); 
+		
+		searchDisplay.getDeleteConfirmationYesButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if(searchDisplay.getDefineNameTxtArea().getText() != null) {
+					deleteDefinition();
+				}
+				
+				if(searchDisplay.getFuncNameTxtArea().getText() != null) {
+					deleteFunction();
+				}
+				
+				if(searchDisplay.getParameterNameTxtArea().getText() != null) {
+					deleteParameter();
+				}
+			}
+		}); 
 		
 		
 		addEventHandlerOnAceEditors();
@@ -1934,8 +2001,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			
 		} else {
-			searchDisplay.getErrorMessageAlert()
-			.createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION());
+			searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION());
 			searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 		}
 		
@@ -1997,6 +2063,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getDefineButtonBar().setEnabled(isEditable);
 		searchDisplay.getContextDefinePATRadioBtn().setEnabled(isEditable);
 		searchDisplay.getContextDefinePOPRadioBtn().setEnabled(isEditable);
+		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
 	
@@ -2013,6 +2080,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getAddNewArgument().setEnabled(isEditable);
 		searchDisplay.getContextFuncPATRadioBtn().setEnabled(isEditable);
 		searchDisplay.getContextFuncPOPRadioBtn().setEnabled(isEditable);
+		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		
 	}
 	
@@ -2179,6 +2247,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		searchDisplay.setParameterWidgetReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
+		
+		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	/**
 	 * Build View for Definition when Definition AnchorList item is clicked.
@@ -2193,6 +2264,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildDefinitionLibraryView();
 		setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
+		
+		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	/**
 	 * Build View for Function when Funtion AnchorList item is clicked.
@@ -2207,6 +2281,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
 		
+		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
+
 	}
 	/**
 	 * Build View for View Cql when View Cql AnchorList item is clicked.
@@ -2514,5 +2591,211 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/*private void removeMarkers(AceEditor aceEditor, int row){
 		
 	}*/
+	
+	protected void deleteDefinition() {
+		searchDisplay.resetMessageDisplay();
+		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
+		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
+		String defineContext = "";
+		if(searchDisplay.getContextDefinePATRadioBtn().getValue()){
+			defineContext = "Patient";
+		} else {
+			defineContext = "Population";
+		}
+		if (!definitionName.isEmpty()) {
+			
+			if(!validator.validateForSpecialChar(definitionName.trim())) {
+				
+				final CQLDefinition define = new CQLDefinition();
+				define.setDefinitionName(definitionName);
+				define.setDefinitionLogic(definitionLogic);
+				define.setContext(defineContext);
+				
+				if(searchDisplay.getCurrentSelectedDefinitionObjId() != null){
+					CQLDefinition toBeModifiedObj = searchDisplay.getDefinitionMap()
+							.get(searchDisplay.getCurrentSelectedDefinitionObjId());
+					
+					MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(), toBeModifiedObj, define,
+							searchDisplay.getViewDefinitions(), new AsyncCallback<SaveUpdateCQLResult>() {
+								
+								@Override
+								public void onFailure(Throwable caught) {
+									searchDisplay.setCurrentSelectedDefinitionObjId(null);
+									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								}
+								
+								@Override
+								public void onSuccess(SaveUpdateCQLResult result) {
+									if (result.isSuccess()) {										
+											searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList()); 
+											MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+											searchDisplay.clearAndAddDefinitionNamesToListBox();
+											searchDisplay.updateDefineMap();
+											searchDisplay.getErrorMessageAlert().clearAlert();
+											searchDisplay.getSuccessMessageAlert().setVisible(true);
+											
+											searchDisplay.getDefineNameTxtArea().setText("");
+											searchDisplay.getDefineAceEditor().setText("");
+											searchDisplay.setIsPageDirty(false);
+											searchDisplay.getDefineAceEditor().clearAnnotations();
+											searchDisplay.getDefineAceEditor().removeAllMarkers();
+											searchDisplay.getDefineAceEditor().redisplay();
+											searchDisplay.getDefineAceEditor().setAnnotations();
+											searchDisplay.getDefineAceEditor().redisplay();
+											searchDisplay.getSuccessMessageAlert().createAlert("Definition deleted successfully");
+									
+									} else if (result.getFailureReason() == 2) {
+										searchDisplay.getSuccessMessageAlert().clearAlert();
+										searchDisplay.getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+										searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+									} 								
+								}
+							});
+				} else {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getErrorMessageAlert().createAlert("Please select a definition to delete.");
+					searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+				}
+			} else {
+				searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+			}
+			
+			
+			
+		} else {
+			searchDisplay.resetMessageDisplay();
+			searchDisplay.getErrorMessageAlert().createAlert("Please select a definition to delete.");
+			searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+		}
+	}
+	
+	/**
+	 * Delete function
+	 */
+	protected void deleteFunction() {
+
+		searchDisplay.resetMessageDisplay();
+		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
+		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
+		String funcContext = "";
+		if(searchDisplay.getContextFuncPATRadioBtn().getValue()){
+			funcContext = "Patient";
+		} else {
+			funcContext = "Population";
+		}
+		if (!functionName.isEmpty()) {
+			CQLFunctions function = new CQLFunctions();
+			function.setFunctionLogic(functionBody);
+			function.setFunctionName(functionName);
+			function.setArgumentList(searchDisplay.getFunctionArgumentList());
+			function.setContext(funcContext);
+			if(searchDisplay.getCurrentSelectedFunctionObjId() != null){
+				CQLFunctions toBeModifiedFuncObj = searchDisplay.getFunctionMap().get(searchDisplay.getCurrentSelectedFunctionObjId());
+				MatContext.get().getMeasureService().deleteFunctions(MatContext.get().getCurrentMeasureId(), toBeModifiedFuncObj, function,
+						searchDisplay.getViewFunctions(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						if (result.isSuccess()) {
+							searchDisplay.setViewFunctions(result.getCqlModel().getCqlFunctions());
+							MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+							searchDisplay.clearAndAddFunctionsNamesToListBox();
+							searchDisplay.updateFunctionMap();
+							searchDisplay.getErrorMessageAlert().clearAlert();
+							searchDisplay.getSuccessMessageAlert().setVisible(true);
+							searchDisplay.getFuncNameTxtArea().setText("");
+							searchDisplay.getFunctionBodyAceEditor().setText("");
+							searchDisplay.setIsPageDirty(false);
+							searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
+							searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
+							searchDisplay.getFunctionBodyAceEditor().redisplay();
+							searchDisplay.getFunctionBodyAceEditor().setAnnotations();
+							searchDisplay.getFunctionBodyAceEditor().redisplay();
+							searchDisplay.getSuccessMessageAlert().createAlert("Function deleted successfully");
+						} else if (result.getFailureReason() == 2) {
+							searchDisplay.getSuccessMessageAlert().clearAlert();
+							searchDisplay.getErrorMessageAlert()
+							.createAlert("Unable to find Node to modify.");
+							searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
+						}  if(result.getFunction()!=null){
+							searchDisplay.createAddArgumentViewForFunctions(
+									result.getFunction().getArgumentList());
+						}
+					}
+				});
+			} else {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getErrorMessageAlert().createAlert("Please select a function to delete.");
+				searchDisplay.getDefineNameTxtArea().setText(functionName.trim());
+			}
+		} else {
+			searchDisplay.resetMessageDisplay();
+			searchDisplay.getErrorMessageAlert().createAlert("Please select a function to delete.");
+			searchDisplay.getDefineNameTxtArea().setText(functionName.trim());
+		}
+	}
+	
+	protected void deleteParameter() {
+
+		searchDisplay.resetMessageDisplay();
+		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
+		String parameterBody = searchDisplay.getParameterAceEditor().getText();
+
+		if (!parameterName.isEmpty()) {
+			CQLParameter parameter = new CQLParameter();
+			parameter.setParameterLogic(parameterBody);
+			parameter.setParameterName(parameterName);
+			if(searchDisplay.getCurrentSelectedParamerterObjId() != null){
+				CQLParameter toBeModifiedParamObj = searchDisplay.getParameterMap().get(searchDisplay.getCurrentSelectedParamerterObjId());
+				MatContext.get().getMeasureService().deleteParameter(MatContext.get().getCurrentMeasureId(), toBeModifiedParamObj, parameter,
+						searchDisplay.getViewParameterList(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						if (result.isSuccess()) {
+							searchDisplay.setViewParameterList((result.getCqlModel().getCqlParameters()));
+							MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
+							searchDisplay.clearAndAddParameterNamesToListBox();
+							searchDisplay.updateParamMap();
+							searchDisplay.getErrorMessageAlert().clearAlert();
+							searchDisplay.getSuccessMessageAlert().setVisible(true);
+							searchDisplay.getParameterNameTxtArea().setText("");
+							searchDisplay.getParameterAceEditor().setText("");
+							searchDisplay.setIsPageDirty(false);
+							searchDisplay.getParameterAceEditor().clearAnnotations();
+							searchDisplay.getParameterAceEditor().removeAllMarkers();
+							searchDisplay.getParameterAceEditor().redisplay();
+							searchDisplay.getParameterAceEditor().setAnnotations();
+							searchDisplay.getParameterAceEditor().redisplay();
+							searchDisplay.getSuccessMessageAlert().createAlert("Parameter deleted successfully");
+						} else if (result.getFailureReason() == 2) {
+							searchDisplay.getSuccessMessageAlert().clearAlert();
+							searchDisplay.getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+							searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+						}  
+					}
+				});
+			} else {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getErrorMessageAlert().createAlert("Please select parameter to delete.");
+				searchDisplay.getDefineNameTxtArea().setText(parameterName.trim());		
+			}
+		} else {
+			searchDisplay.resetMessageDisplay();
+			searchDisplay.getErrorMessageAlert().createAlert("Please select a parameter to delete.");
+			searchDisplay.getDefineNameTxtArea().setText(parameterName.trim());		
+		}
+	}
 	
 }

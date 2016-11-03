@@ -27,6 +27,9 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -672,6 +675,44 @@ public interface MeasureServiceAsync {
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
+	 * Delete definition
+	 * 
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param definitionList the definition list
+	 * @param callback the callback
+	 */
+	void deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj, 
+			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback); 	
+	
+	/**
+	 * Delete functions 
+	 * 
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param functionsList the function list
+	 * @param callback the callback
+	 */
+	void deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj, 
+			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	/**
+	 * Delete parameter
+	 * 
+	 * @param measureId the measure id
+	 * @param toBeDeletedObj the to be deleted obj
+	 * @param currentObj the current obj
+	 * @param parameterList the parameter list
+	 * @param callback the callback
+	 */
+	void deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void getUsedCQLArtifacts(String currentMeasureId, AsyncCallback<GetUsedCQLArtifactsResult> asyncCallback);
+
+	/**
 	 * Gets the CQL data type list.
 	 *
 	 * @param callback the callback
@@ -682,5 +723,6 @@ public interface MeasureServiceAsync {
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
 
 	void parseCQLForErrors(String cqlString, AsyncCallback<SaveUpdateCQLResult> callback);
+
 	
 }

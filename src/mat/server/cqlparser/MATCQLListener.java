@@ -270,12 +270,13 @@ public class MATCQLListener extends cqlBaseListener {
 		
 		if(expressionContext != null){
 			List<ParseTree> parseTreeList = expressionContext.children;
-			
-			for(ParseTree parseTree:parseTreeList){
-				if(parseTree.getClass().getSimpleName().equals("QueryContext")){
-					QueryContext queryContext = (QueryContext)parseTree;
-					if(queryContext.whereClause() != null){
-						whereClauseContextList.add(queryContext.whereClause());
+			if(parseTreeList != null){
+				for(ParseTree parseTree:parseTreeList){
+					if(parseTree != null && parseTree.getClass().getSimpleName().equals("QueryContext")){
+						QueryContext queryContext = (QueryContext)parseTree;
+						if(queryContext.whereClause() != null){
+							whereClauseContextList.add(queryContext.whereClause());
+						}
 					}
 				}
 			}

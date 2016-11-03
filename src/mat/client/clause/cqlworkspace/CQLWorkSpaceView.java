@@ -190,9 +190,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	/**
-	 * TreeMap parameterMap.
+	 * HashMap parameterMap.
 	 */
-	private Map<String, CQLParameter> parameterMap = new TreeMap<String, CQLParameter>(String.CASE_INSENSITIVE_ORDER);
+	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
 	/**
 	 * Button removeParameterButton.
 	 */

@@ -1149,8 +1149,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.showDeleteConfirmationMessageAlert();	
+				// load most recent used cql artifacts
+				MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+					}
+
+					@Override
+					public void onSuccess(GetUsedCQLArtifactsResult result) {
+						String selectedParamName = searchDisplay.getParameterNameTxtArea().getText();
+						if (!result.getUsedCQLParameters().contains(selectedParamName)) {
+							searchDisplay.showDeleteConfirmationMessageAlert();	
+						} 
+					}
+					
+				});
 			}
 			
 		}); 
@@ -1159,15 +1174,47 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.showDeleteConfirmationMessageAlert();	
+				// load most recent used cql artifacts
+				MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+					}
+
+					@Override
+					public void onSuccess(GetUsedCQLArtifactsResult result) {
+						String selectedDefName = searchDisplay.getDefineNameTxtArea().getText();
+						if (!result.getUsedCQLDefinitions().contains(selectedDefName)) {
+							searchDisplay.showDeleteConfirmationMessageAlert();	
+						} 
+					}
+					
+				});
 			}
 		});
 		
 		searchDisplay.getFunctionButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.showDeleteConfirmationMessageAlert();	
+				// load most recent used cql artifacts
+				MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());								
+					}
+
+					@Override
+					public void onSuccess(GetUsedCQLArtifactsResult result) {
+						String selectedFuncName = searchDisplay.getFuncNameTxtArea().getText();
+						if(!result.getUsedCQLFunctionss().contains(selectedFuncName)) {
+							searchDisplay.showDeleteConfirmationMessageAlert();	
+						} 
+					}
+					
+				});
 			}
 			
 		});

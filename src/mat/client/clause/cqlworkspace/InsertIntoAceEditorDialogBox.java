@@ -138,7 +138,8 @@ public class InsertIntoAceEditorDialogBox {
 		selectItemListFormGroup.add(selectItemListFormLabel);
 		selectItemListFormGroup.add(listAllItemNames);
 		
-		final FormGroup availableDataTypesFormGroup = new FormGroup();
+		//MAT 8222 Removing Attributes by Datatype and Attributes fields from Insert Icon and later added to new pop up screen.
+		/*final FormGroup availableDataTypesFormGroup = new FormGroup();
 		FormLabel availableDataTypesFormLabel = new FormLabel();
 		availableDataTypesFormLabel.setText("Attributes by Datatype");
 		availableDataTypesFormLabel.setTitle("Select DataType to Filter");
@@ -152,7 +153,7 @@ public class InsertIntoAceEditorDialogBox {
 		availableAttributesFormLabel.setTitle("Select Attribute to Insert");
 		availableAttributesFormLabel.setFor("availableAttributeToInsert");
 		availableAttributesFormGroup.add(availableAttributesFormLabel);
-		availableAttributesFormGroup.add(availableAttributesToInsert);
+		availableAttributesFormGroup.add(availableAttributesToInsert);*/
 		
 		
 		
@@ -160,8 +161,9 @@ public class InsertIntoAceEditorDialogBox {
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(availableItemTypeFormGroup);
 		formFieldSet.add(selectItemListFormGroup);
-		formFieldSet.add(availableDataTypesFormGroup);
-		formFieldSet.add(availableAttributesFormGroup);
+		//MAT 8222 Removing Attributes by Datatype and Attributes fields from Insert Icon and later added to new pop up screen.
+		/*formFieldSet.add(availableDataTypesFormGroup);
+		formFieldSet.add(availableAttributesFormGroup);*/
 		
 		bodyForm.add(formFieldSet);
 		modalBody.add(bodyForm);
@@ -187,7 +189,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.add(modalFooter);
 		addChangeHandlerIntoLists(searchDisplay, availableItemToInsert, listAllItemNames, availableDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
-				availableItemTypeFormGroup, selectItemListFormGroup, availableDataTypesFormGroup, availableAttributesFormGroup);
+				availableItemTypeFormGroup, selectItemListFormGroup);
 		
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -204,7 +206,7 @@ public class InsertIntoAceEditorDialogBox {
 								String attributeNameToBeInserted = availableAttributesToInsert.getValue(selectedIndex);
 								
 								if (attributeNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
-									availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
+									//availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 									helpBlock.setText("Please select Attribute Name.");
 									messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -219,7 +221,7 @@ public class InsertIntoAceEditorDialogBox {
 								
 								
 							} else {
-								availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
+								//availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 								helpBlock.setText("Please select Attribute Name.");
 								messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -302,15 +304,14 @@ public class InsertIntoAceEditorDialogBox {
 	private static void addChangeHandlerIntoLists(final ViewDisplay searchDisplay,
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames, final ListBoxMVP availableDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
-			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, 
-			final FormGroup availableDataTypesFormGroup, final FormGroup availableAttributesFormGroup) {
+			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup) {
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
 				selectItemListFormGroup.setValidationState(ValidationState.NONE);
-				availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
-				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
+				/*availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
+				availableAttributesFormGroup.setValidationState(ValidationState.NONE);*/
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableItemToInsert.getSelectedIndex();
@@ -430,8 +431,8 @@ public class InsertIntoAceEditorDialogBox {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
-				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
+				//availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
+				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableDatatypes.getSelectedIndex();
@@ -451,8 +452,8 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				
-				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
-				availableAttributesFormGroup.setValidationState(ValidationState.NONE);
+				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
+				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 			}

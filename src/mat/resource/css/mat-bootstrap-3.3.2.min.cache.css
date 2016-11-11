@@ -1359,6 +1359,11 @@ td,th {
 	font-weight: 700;
 	padding-top:5px;
 }
+.attr-grid{
+	border-spacing:10px;
+	border :10px solid transparent;
+	overflow: scroll;
+}
 .horizontalPanel{
 	margin-right: 3px;
 	margin-left: 3px;
@@ -6750,6 +6755,10 @@ button.close {
 
 .carousel-caption .btn {
 	text-shadow: none
+}
+/* z-index of WindowPanel set to 10000 by default so need higher for datepicker popup */
+.dateBoxPopup {
+	 z-index: 999000;
 }
 
 @media screen and (min-width:768px) {

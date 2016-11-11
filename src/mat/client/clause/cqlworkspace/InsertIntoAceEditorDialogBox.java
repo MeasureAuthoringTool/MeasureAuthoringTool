@@ -33,8 +33,13 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.datepicker.client.DateBox;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
@@ -300,9 +305,8 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertAttrToAceEditor_Modal");
-		dialogModal.setWidth("400px");
+		dialogModal.setWidth("50%");
 		ModalBody modalBody = new ModalBody();
-		Form bodyForm = new Form();
 		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();
 		messageFormgroup.add(helpBlock);
@@ -340,6 +344,12 @@ public class InsertIntoAceEditorDialogBox {
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
 
+		// Define date format
+		DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.DATE_FULL);
+		final DateBox dateBox = new DateBox();
+		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
+
+		
 		final TextBox QuantityTextBox = new TextBox();
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
@@ -351,8 +361,6 @@ public class InsertIntoAceEditorDialogBox {
 		UnitslistBox.addItem("Select");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		UnitslistBox.setVisibleItemCount(1);
-
-		FormGroup attrForm = new FormGroup();
 
 		//All the Labels
 		FormLabel AttrDataTypeLabel = new FormLabel();
@@ -371,6 +379,10 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailsLabel.setText("Mode Details");
 		ModeDetailsLabel.setTitle("Mode Details");
 		ModeDetailsLabel.setStyleName("attr-Label");
+		FormLabel DateTimeLabel = new FormLabel();
+		DateTimeLabel.setText("DateTime");
+		DateTimeLabel.setTitle("DateTime");
+		DateTimeLabel.setStyleName("attr-Label");
 		FormLabel QuantityLabel = new FormLabel();
 		QuantityLabel.setText("Quantity");
 		QuantityLabel.setTitle("Quantity");
@@ -380,23 +392,25 @@ public class InsertIntoAceEditorDialogBox {
 		UnitsLabel.setTitle("Units");
 		UnitsLabel.setStyleName("attr-Label");
 
-		attrForm.add(AttrDataTypeLabel);
-		attrForm.add(DtAttriblistBox);
-		attrForm.add(AttributeLabel);
-		attrForm.add(AttriblistBox);
-		attrForm.add(ModeLabel);
-		attrForm.add(ModelistBox);
-		attrForm.add(ModeDetailsLabel);
-		attrForm.add(ModeDetailslistBox);
-		attrForm.add(QuantityLabel);
-		attrForm.add(QuantityTextBox);
-		attrForm.add(UnitsLabel);
-		attrForm.add(UnitslistBox);
-		FieldSet formFieldSet = new FieldSet();
-		formFieldSet.add(messageFormgroup);
-		formFieldSet.add(attrForm);
-		bodyForm.add(formFieldSet);
-		modalBody.add(bodyForm);
+		Grid queryGrid = new Grid(8, 2);
+		queryGrid.setWidget(0, 0, AttrDataTypeLabel);
+		queryGrid.setWidget(1, 0, DtAttriblistBox);
+		queryGrid.setWidget(0, 1, AttributeLabel);
+		queryGrid.setWidget(1, 1, AttriblistBox);
+		queryGrid.setWidget(2, 0, ModeLabel);
+		queryGrid.setWidget(3, 0, ModelistBox);
+		queryGrid.setWidget(2, 1, ModeDetailsLabel);
+		queryGrid.setWidget(3, 1, ModeDetailslistBox);
+		queryGrid.setWidget(4, 0, DateTimeLabel);
+		queryGrid.setWidget(5, 0, dateBox);
+		queryGrid.setWidget(6, 0, QuantityLabel);
+		queryGrid.setWidget(7, 0, QuantityTextBox);
+		queryGrid.setWidget(6, 1, UnitsLabel);
+		queryGrid.setWidget(7, 1, UnitslistBox);
+		
+		queryGrid.setStyleName("attr-grid");
+		
+		modalBody.add(queryGrid);
 
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
@@ -422,6 +436,7 @@ public class InsertIntoAceEditorDialogBox {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				//TODO:This is not a working code but a sample one which needs to be replaced once we implement insert button functionality.
 				int selectedIndex = DtAttriblistBox.getSelectedIndex();
 				if(selectedIndex !=-1){
 					String selectedItem = DtAttriblistBox.getItemText(selectedIndex);

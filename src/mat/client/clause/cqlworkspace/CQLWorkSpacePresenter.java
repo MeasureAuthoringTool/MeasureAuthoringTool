@@ -905,7 +905,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void setDeleteConfirmationMessageAlert(DeleteConfirmationMessageAlert deleteConfirmationMessageAlert);
 
-		void showDeleteConfirmationMessageAlert();
+		void showDeleteConfirmationMessageAlert(String message);
 
 		Button getDeleteConfirmationYesButton();
 
@@ -1161,7 +1161,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedParamName = searchDisplay.getParameterNameTxtArea().getText();
 						if (!result.getUsedCQLParameters().contains(selectedParamName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert();	
+							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Parameter?");	
 						} 
 					}
 					
@@ -1186,7 +1186,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedDefName = searchDisplay.getDefineNameTxtArea().getText();
 						if (!result.getUsedCQLDefinitions().contains(selectedDefName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert();	
+							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Definition?");	
 						} 
 					}
 					
@@ -1210,7 +1210,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedFuncName = searchDisplay.getFuncNameTxtArea().getText();
 						if(!result.getUsedCQLFunctionss().contains(selectedFuncName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert();	
+							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Function?");	
 						} 
 					}
 					
@@ -1537,7 +1537,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getSearchSuggestTextBox().setText("");
 		if(searchDisplay.getParameterNameListBox().getSelectedIndex() >= 0){
 			searchDisplay.getParameterNameListBox().setItemSelected(searchDisplay.getParameterNameListBox().getSelectedIndex(), false);
-		}		
+		}	
+		
+		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 	}
 	
 	/**
@@ -1565,7 +1567,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getContextDefinePATRadioBtn().setEnabled(true);
 		searchDisplay.getContextDefinePOPRadioBtn().setEnabled(true);
 		searchDisplay.getDefineButtonBar().getSaveButton().setEnabled(true);
-		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
+		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getDefineButtonBar().getInsertButton().setEnabled(true);
 		searchDisplay.getDefineButtonBar().getTimingExpButton().setEnabled(true);
 		searchDisplay.getContextDefinePATRadioBtn().setValue(true);
@@ -1595,6 +1597,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		searchDisplay.getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
+		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
 	
 	
@@ -1647,6 +1650,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 									searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 									searchDisplay.getFunctionBodyAceEditor().redisplay();
+									searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
+									
 									if(validateCQLArtifact(result, currentSection)){
 										/*searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
 												MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS()));
@@ -1710,6 +1715,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 								searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 								searchDisplay.getFunctionBodyAceEditor().redisplay();
+								searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS());
@@ -1801,6 +1807,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getParameterAceEditor().clearAnnotations();
 									searchDisplay.getParameterAceEditor().removeAllMarkers();
 									searchDisplay.getParameterAceEditor().redisplay();
+									searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(true);
 									if(validateCQLArtifact(result, currentSection)){
 										searchDisplay.getSuccessMessageAlert().createAlert(
 												MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
@@ -1854,6 +1861,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getParameterAceEditor().clearAnnotations();
 								searchDisplay.getParameterAceEditor().removeAllMarkers();
 								searchDisplay.getParameterAceEditor().redisplay();
+								searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS());
@@ -1949,6 +1957,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getDefineAceEditor().clearAnnotations();
 											searchDisplay.getDefineAceEditor().removeAllMarkers();
 											searchDisplay.getDefineAceEditor().redisplay();
+											searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
 											if(validateCQLArtifact(result, currentSection)){
 												searchDisplay.getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
@@ -2006,6 +2015,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getDefineAceEditor().clearAnnotations();
 								searchDisplay.getDefineAceEditor().removeAllMarkers();
 								searchDisplay.getDefineAceEditor().redisplay();
+								searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS());
@@ -2673,7 +2683,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								
 								@Override
 								public void onSuccess(SaveUpdateCQLResult result) {
-									if (result.isSuccess()) {										
+									if (result.isSuccess()) {			
 											searchDisplay.setViewDefinitions(result.getCqlModel().getDefinitionList()); 
 											MatContext.get().setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
 											searchDisplay.clearAndAddDefinitionNamesToListBox();
@@ -2683,13 +2693,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											searchDisplay.getDefineNameTxtArea().setText("");
 											searchDisplay.getDefineAceEditor().setText("");
+											searchDisplay.setCurrentSelectedDefinitionObjId(null);
 											searchDisplay.setIsPageDirty(false);
 											searchDisplay.getDefineAceEditor().clearAnnotations();
 											searchDisplay.getDefineAceEditor().removeAllMarkers();
 											searchDisplay.getDefineAceEditor().redisplay();
 											searchDisplay.getDefineAceEditor().setAnnotations();
 											searchDisplay.getDefineAceEditor().redisplay();
-											searchDisplay.getSuccessMessageAlert().createAlert("Definition deleted successfully");
+											searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
+											searchDisplay.getSuccessMessageAlert().createAlert("This Definition has been deleted successfully.");
 									
 									} else if (result.getFailureReason() == 2) {
 										searchDisplay.getSuccessMessageAlert().clearAlert();
@@ -2758,33 +2770,34 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.getSuccessMessageAlert().setVisible(true);
 							searchDisplay.getFuncNameTxtArea().setText("");
 							searchDisplay.getFunctionBodyAceEditor().setText("");
+							searchDisplay.setCurrentSelectedFunctionObjId(null);
 							searchDisplay.setIsPageDirty(false);
 							searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
 							searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
 							searchDisplay.getFunctionBodyAceEditor().redisplay();
 							searchDisplay.getFunctionBodyAceEditor().setAnnotations();
 							searchDisplay.getFunctionBodyAceEditor().redisplay();
-							searchDisplay.getSuccessMessageAlert().createAlert("Function deleted successfully");
+							searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
+							searchDisplay.getSuccessMessageAlert().createAlert("This Function has been deleted successfully.");
 						} else if (result.getFailureReason() == 2) {
 							searchDisplay.getSuccessMessageAlert().clearAlert();
 							searchDisplay.getErrorMessageAlert()
 							.createAlert("Unable to find Node to modify.");
 							searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 						}  if(result.getFunction()!=null){
-							searchDisplay.createAddArgumentViewForFunctions(
-									result.getFunction().getArgumentList());
+							searchDisplay.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
 						}
 					}
 				});
 			} else {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getErrorMessageAlert().createAlert("Please select a function to delete.");
-				searchDisplay.getDefineNameTxtArea().setText(functionName.trim());
+				searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 			}
 		} else {
 			searchDisplay.resetMessageDisplay();
 			searchDisplay.getErrorMessageAlert().createAlert("Please select a function to delete.");
-			searchDisplay.getDefineNameTxtArea().setText(functionName.trim());
+			searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 		}
 	}
 	
@@ -2819,13 +2832,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.getSuccessMessageAlert().setVisible(true);
 							searchDisplay.getParameterNameTxtArea().setText("");
 							searchDisplay.getParameterAceEditor().setText("");
+							searchDisplay.setCurrentSelectedParamerterObjId(null);
 							searchDisplay.setIsPageDirty(false);
 							searchDisplay.getParameterAceEditor().clearAnnotations();
 							searchDisplay.getParameterAceEditor().removeAllMarkers();
 							searchDisplay.getParameterAceEditor().redisplay();
 							searchDisplay.getParameterAceEditor().setAnnotations();
 							searchDisplay.getParameterAceEditor().redisplay();
-							searchDisplay.getSuccessMessageAlert().createAlert("Parameter deleted successfully");
+							searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
+							searchDisplay.getSuccessMessageAlert().createAlert("This Parameter has been deleted successfully.");
 						} else if (result.getFailureReason() == 2) {
 							searchDisplay.getSuccessMessageAlert().clearAlert();
 							searchDisplay.getErrorMessageAlert().createAlert("Unable to find Node to modify.");
@@ -2836,12 +2851,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			} else {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getErrorMessageAlert().createAlert("Please select parameter to delete.");
-				searchDisplay.getDefineNameTxtArea().setText(parameterName.trim());		
+				searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());		
 			}
 		} else {
 			searchDisplay.resetMessageDisplay();
 			searchDisplay.getErrorMessageAlert().createAlert("Please select a parameter to delete.");
-			searchDisplay.getDefineNameTxtArea().setText(parameterName.trim());		
+			searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());		
 		}
 	}
 	

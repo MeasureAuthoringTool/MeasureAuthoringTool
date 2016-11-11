@@ -584,7 +584,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								public void onSuccess(GetUsedCQLArtifactsResult result) {
 									if(result.getUsedCQLParameters().contains(getParameterMap().get(selectedParamID).getParameterName())) {
 										getParameterButtonBar().getDeleteButton().setEnabled(false);
-										getParameterButtonBar().getDeleteButton().setTitle("This parameter can not be deleted as it currently in use elsewhere in the measure.");
 									} 
 								}
 								
@@ -601,7 +600,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 	/**
-	 * Adds the define event handkers.
+	 * Adds the define event handlers.
 	 */
 	private void addDefineEventHandlers() {
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
@@ -650,7 +649,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								public void onSuccess(GetUsedCQLArtifactsResult result) {
 									if(result.getUsedCQLDefinitions().contains(getDefinitionMap().get(selectedDefinitionID).getDefinitionName())) {
 										getDefineButtonBar().getDeleteButton().setEnabled(false);
-										getDefineButtonBar().getDeleteButton().setTitle("This definition can not be deleted as it is currently in use elsewhere within the measure.");
+
 									}
 								}
 								
@@ -695,10 +694,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								contextFuncPATRadioBtn.setValue(false);
 							}
 							
-							getFunctionButtonBar().getDeleteButton().setEnabled(true);
-							getFunctionButtonBar().getDeleteButton().setTitle("Delete");
-
-							
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
@@ -711,7 +706,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								public void onSuccess(GetUsedCQLArtifactsResult result) {
 									if(result.getUsedCQLFunctionss().contains(getFunctionMap().get(selectedFunctionId).getFunctionName())) {
 										getFunctionButtonBar().getDeleteButton().setEnabled(false);
-										getFunctionButtonBar().getDeleteButton().setTitle("This function can not be deleted as it currently in use elsewhere in the measure.");
+
 									}
 								}
 								
@@ -3448,7 +3443,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
-		getParameterButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
 	/**
@@ -3468,7 +3462,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
-		getDefineButtonBar().getDeleteButton().setTitle("Delete");
 	}
 	
 	
@@ -3808,11 +3801,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 	@Override
-	public void showDeleteConfirmationMessageAlert() {
+	public void showDeleteConfirmationMessageAlert(String message) {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		getDeleteConfirmationMessageAlert().createAlert();
+		getDeleteConfirmationMessageAlert().createWarningAlert(message);
 		getDeleteConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	

@@ -6,6 +6,7 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 
 
 // TODO: Auto-generated Javadoc
@@ -22,7 +23,7 @@ public class CQLButtonToolBar extends Composite {
 	
 	/** The delete button. */
 	private Button deleteButton = new Button();
-	
+		
 	/** The erase button. */
 	private Button eraseButton = new Button();
 	
@@ -66,9 +67,10 @@ public class CQLButtonToolBar extends Composite {
 		deleteButton.getElement().setId("deleteButton_"+sectionName);
 		deleteButton.setMarginTop(10);
 		deleteButton.setTitle("Delete");
-		deleteButton.setIcon(IconType.TRASH);
-		deleteButton.setIconSize(IconSize.LARGE);
-		deleteButton.setColor("red");
+		
+		// MAT-7737, Use the trash.png image instead of the IconType.TRASH
+		Image trash = new Image("images/trash.png");
+		deleteButton.getElement().appendChild(trash.getElement());
 		deleteButton.setSize("30px", "30px");
 		
 		eraseButton.setType(ButtonType.LINK);

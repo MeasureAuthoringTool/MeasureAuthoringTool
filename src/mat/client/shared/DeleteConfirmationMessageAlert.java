@@ -41,6 +41,16 @@ public class DeleteConfirmationMessageAlert extends MessageAlert implements Warn
 		setFocus();
 		setVisible(true);
 	}
+	
+	public void createWarningAlert(String message) {
+		clear();
+		getElement().setAttribute("id", "WarningConfirmationMessageAlert");
+		super.setMessage(getMsgPanel(IconType.WARNING, message));
+		createButtons(); 
+		setFocus();
+		setVisible(true); 
+	}
+	
 		
 	private void createButtons() {
 		setType(AlertType.WARNING);
@@ -55,8 +65,8 @@ public class DeleteConfirmationMessageAlert extends MessageAlert implements Warn
 		noButton.setType(ButtonType.PRIMARY);
 		noButton.setSize(ButtonSize.EXTRA_SMALL);
 		noButton.setMarginLeft(15);
-		noButton.setTitle("No");
-		noButton.setText("No");
+		noButton.setTitle("Cancel");
+		noButton.setText("Cancel");
 		noButton.setId("Clear_No_Button");
 
 		add(new SpacerWidget());

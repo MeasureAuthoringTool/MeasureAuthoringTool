@@ -1352,6 +1352,13 @@ td,th {
 	margin-right: 3px;
     padding-top: 5px;
 }
+.attr-Label{ 
+  	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: 700;
+	padding-top:5px;
+}
 .horizontalPanel{
 	margin-right: 3px;
 	margin-left: 3px;

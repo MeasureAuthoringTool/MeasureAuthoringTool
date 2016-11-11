@@ -21,6 +21,7 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -33,6 +34,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ListBox;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
@@ -70,6 +72,10 @@ public class InsertIntoAceEditorDialogBox {
 	
 	/** The Constant INSERT_AT_END. */
 	private static final int INSERT_AT_END = -1;
+	
+	/** The Constant attrModal. */
+	private static Modal attrModal;
+	
 	/**
 	 * Public static method to build Pop up for Insert into Ace Editor.
 	 * @param searchDisplay - ViewDisplay.
@@ -187,7 +193,7 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
-		addChangeHandlerIntoLists(searchDisplay, availableItemToInsert, listAllItemNames, availableDatatypes,
+		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames, availableDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
 				availableItemTypeFormGroup, selectItemListFormGroup);
 		
@@ -286,8 +292,155 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.show();
 	}
 	
+	private static void showAttributesDialogBox() {
+		final Modal dialogModal = new Modal();
+		dialogModal.setTitle("Insert Options for Attributes");
+		dialogModal.setClosable(true);
+		dialogModal.setFade(true);
+		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
+		dialogModal.setDataKeyboard(true);
+		dialogModal.setId("InsertAttrToAceEditor_Modal");
+		dialogModal.setWidth("400px");
+		ModalBody modalBody = new ModalBody();
+		Form bodyForm = new Form();
+		final FormGroup messageFormgroup = new FormGroup();
+		final HelpBlock helpBlock = new HelpBlock();
+		messageFormgroup.add(helpBlock);
+		messageFormgroup.getElement().setAttribute("role", "alert");
+
+		final ListBox DtAttriblistBox = new ListBox();
+		DtAttriblistBox.setWidth("18em");
+		DtAttriblistBox.setVisibleItemCount(10);
+		DtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
+		DtAttriblistBox.addItem("Select");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		DtAttriblistBox.setVisibleItemCount(1);
+
+		final ListBox AttriblistBox = new ListBox();
+		AttriblistBox.setWidth("18em");
+		AttriblistBox.setVisibleItemCount(10);
+		AttriblistBox.getElement().setId("Atrr_listBox");
+		AttriblistBox.addItem("Select");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		AttriblistBox.setVisibleItemCount(1);
+
+		final ListBox ModelistBox = new ListBox();
+		ModelistBox.setWidth("18em");
+		ModelistBox.setVisibleItemCount(10);
+		ModelistBox.getElement().setId("Mode_listBox");
+		ModelistBox.addItem("Select");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		ModelistBox.setVisibleItemCount(1);
+
+		final ListBox ModeDetailslistBox = new ListBox();
+		ModeDetailslistBox.setWidth("18em");
+		ModeDetailslistBox.setVisibleItemCount(10);
+		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
+		ModeDetailslistBox.addItem("Select");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		ModeDetailslistBox.setVisibleItemCount(1);
+
+		final TextBox QuantityTextBox = new TextBox();
+		QuantityTextBox.setWidth("18em");
+		QuantityTextBox.getElement().setId("Qantity_TextBox");
+
+		final ListBox UnitslistBox = new ListBox();
+		UnitslistBox.setWidth("18em");
+		UnitslistBox.setVisibleItemCount(10);
+		UnitslistBox.getElement().setId("Units_listBox");
+		UnitslistBox.addItem("Select");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		UnitslistBox.setVisibleItemCount(1);
+
+		FormGroup attrForm = new FormGroup();
+
+		//All the Labels
+		FormLabel AttrDataTypeLabel = new FormLabel();
+		AttrDataTypeLabel.setText("DataTypes By Attributes");
+		AttrDataTypeLabel.setTitle("DataTypes By Attributes");
+		AttrDataTypeLabel.setStyleName("attr-Label");
+		FormLabel AttributeLabel = new FormLabel();
+		AttributeLabel.setText("Attributes");
+		AttributeLabel.setTitle("Attributes");
+		AttributeLabel.setStyleName("attr-Label");
+		FormLabel ModeLabel = new FormLabel();
+		ModeLabel.setText("Mode");
+		ModeLabel.setTitle("Mode");
+		ModeLabel.setStyleName("attr-Label");
+		FormLabel ModeDetailsLabel = new FormLabel();
+		ModeDetailsLabel.setText("Mode Details");
+		ModeDetailsLabel.setTitle("Mode Details");
+		ModeDetailsLabel.setStyleName("attr-Label");
+		FormLabel QuantityLabel = new FormLabel();
+		QuantityLabel.setText("Quantity");
+		QuantityLabel.setTitle("Quantity");
+		QuantityLabel.setStyleName("attr-Label");
+		FormLabel UnitsLabel = new FormLabel();
+		UnitsLabel.setText("Units");
+		UnitsLabel.setTitle("Units");
+		UnitsLabel.setStyleName("attr-Label");
+
+		attrForm.add(AttrDataTypeLabel);
+		attrForm.add(DtAttriblistBox);
+		attrForm.add(AttributeLabel);
+		attrForm.add(AttriblistBox);
+		attrForm.add(ModeLabel);
+		attrForm.add(ModelistBox);
+		attrForm.add(ModeDetailsLabel);
+		attrForm.add(ModeDetailslistBox);
+		attrForm.add(QuantityLabel);
+		attrForm.add(QuantityTextBox);
+		attrForm.add(UnitsLabel);
+		attrForm.add(UnitslistBox);
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(messageFormgroup);
+		formFieldSet.add(attrForm);
+		bodyForm.add(formFieldSet);
+		modalBody.add(bodyForm);
+
+		ModalFooter modalFooter = new ModalFooter();
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		Button addButton = new Button();
+		addButton.setText("Insert");
+		addButton.setTitle("Insert");
+		addButton.setType(ButtonType.PRIMARY);
+		addButton.setSize(ButtonSize.SMALL);
+		addButton.setId("addButton_Button");
+		Button closeButton = new Button();
+		closeButton.setText("Cancel");
+		closeButton.setTitle("Cancel");
+		closeButton.setType(ButtonType.DANGER);
+		closeButton.setSize(ButtonSize.SMALL);
+		closeButton.setDataDismiss(ButtonDismiss.MODAL);
+		closeButton.setId("Cancel_button");
+		buttonToolBar.add(addButton);
+		buttonToolBar.add(closeButton);
+		modalFooter.add(buttonToolBar);
+		dialogModal.add(modalBody);
+		dialogModal.add(modalFooter);
+		addButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				int selectedIndex = DtAttriblistBox.getSelectedIndex();
+				if(selectedIndex !=-1){
+					String selectedItem = DtAttriblistBox.getItemText(selectedIndex);
+					helpBlock.setText("");
+					messageFormgroup.setValidationState(ValidationState.NONE);
+				} else {
+					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+					helpBlock.setText("Please Select Item name to insert into Editor");
+					messageFormgroup.setValidationState(ValidationState.ERROR);
+				}
+				dialogModal.hide();
+			}
+
+		});
+		dialogModal.show();}
+
 	/**
 	 * This method add's addChangeHandler event to 'availableItemToInsert' and 'listAllItemNames' ListBox.
+	 * @param dialogModal 
 	 *
 	 * @param searchDisplay -ViewDisplay.
 	 * @param availableItemToInsert - ListBoxMVP.
@@ -301,7 +454,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableDataTypesFormGroup the available data types form group
 	 * @param availableAttributesFormGroup the available attributes form group
 	 */
-	private static void addChangeHandlerIntoLists(final ViewDisplay searchDisplay,
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ViewDisplay searchDisplay,
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames, final ListBoxMVP availableDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup) {
@@ -389,6 +542,10 @@ public class InsertIntoAceEditorDialogBox {
 							}
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
+						//open new popup/dialogBox
+						dialogModal.clear();
+						dialogModal.hide();
+						showAttributesDialogBox();
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);

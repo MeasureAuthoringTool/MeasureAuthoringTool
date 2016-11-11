@@ -2691,6 +2691,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getErrorMessageAlert().clearAlert();
 											searchDisplay.getSuccessMessageAlert().setVisible(true);
 											
+											searchDisplay.getSearchSuggestDefineTextBox().setText("");
 											searchDisplay.getDefineNameTxtArea().setText("");
 											searchDisplay.getDefineAceEditor().setText("");
 											searchDisplay.setCurrentSelectedDefinitionObjId(null);
@@ -2767,6 +2768,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.clearAndAddFunctionsNamesToListBox();
 							searchDisplay.updateFunctionMap();
 							searchDisplay.getErrorMessageAlert().clearAlert();
+							
+							searchDisplay.getSearchSuggestFuncTextBox().setText("");
 							searchDisplay.getSuccessMessageAlert().setVisible(true);
 							searchDisplay.getFuncNameTxtArea().setText("");
 							searchDisplay.getFunctionBodyAceEditor().setText("");
@@ -2830,6 +2833,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.updateParamMap();
 							searchDisplay.getErrorMessageAlert().clearAlert();
 							searchDisplay.getSuccessMessageAlert().setVisible(true);
+							
+							searchDisplay.getSearchSuggestTextBox().setText("");
 							searchDisplay.getParameterNameTxtArea().setText("");
 							searchDisplay.getParameterAceEditor().setText("");
 							searchDisplay.setCurrentSelectedParamerterObjId(null);

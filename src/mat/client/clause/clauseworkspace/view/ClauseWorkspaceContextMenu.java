@@ -83,6 +83,8 @@ public class ClauseWorkspaceContextMenu {
 	/** The add menu. */
 	MenuItem addMenu;
 	
+	MenuItem addFuncMenu;
+	
 	/** The add menu lhs. */
 	MenuItem addMenuLHS;
 	
@@ -114,6 +116,8 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	/** The delete menu. */
 	MenuItem deleteMenu;
+	
+	MenuItem replaceMenu;
 	
 	/** The cut menu. */
 	MenuItem cutMenu;

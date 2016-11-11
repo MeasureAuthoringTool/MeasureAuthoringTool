@@ -139,28 +139,72 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				}
 				break;
 			case CellTreeNode.CQL_DEFINITION_NODE:				
-			case CellTreeNode.CQL_FUNCTION_NODE:
 				deleteMenu.setEnabled(true);
+				Command replaceCQLDefinitionCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						//To show CQL Definitions on Population Workspace
+						CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, false, true);
+					}
+				};
+				replaceMenu = new MenuItem("Replace", true, replaceCQLDefinitionCmd);
+				replaceMenu.setEnabled(true);
 				popupMenuBar.addItem(deleteMenu);
-				
+				popupMenuBar.addItem(replaceMenu);
 				popupMenuBar.setVisible(true);
 				popupPanel.add(popupMenuBar);
 				
+				break;
+			case CellTreeNode.CQL_FUNCTION_NODE:
+				deleteMenu.setEnabled(true);
+				Command replaceCQLFunctionCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						//To show CQL Definitions on Population Workspace
+						CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, false, false);
+					}
+				};
+				replaceMenu = new MenuItem("Replace", true, replaceCQLFunctionCmd);
+				replaceMenu.setEnabled(true);
+				popupMenuBar.addItem(deleteMenu);
+				popupMenuBar.addItem(replaceMenu);
+				popupMenuBar.setVisible(true);
+				popupPanel.add(popupMenuBar);
 				break;
 			case CellTreeNode.CQL_AGG_FUNCTION_NODE:	
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);				
-				addMenu = new MenuItem("Add", subMenuBar); 
+				/*addMenu = new MenuItem("Add", subMenuBar);*/
+				Command addCQLFunctionCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						//To show CQL Definitions on Population Workspace
+						CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, false);
+					}
+				};
+				addMenu = new MenuItem(" Add Function", true, addCQLFunctionCmd);
+				
 				popupMenuBar.addItem(addMenu);
-				createAddCQLFunctionsMenuItem(subMenuBar);
+				/*createAddCQLFunctionsMenuItem(subMenuBar);*/
+				
+				
 				
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
 				}
-							
+				
+				MenuBar cqlAggFuncMenubar = new MenuBar(true);
+				createEditCQLAggFunctionsMenuItems(cqlAggFuncMenubar);
+				replaceMenu = new MenuItem("Replace", cqlAggFuncMenubar);
+				
 				deleteMenu.setEnabled(true);
+				replaceMenu.setEnabled(true);
 				popupMenuBar.addItem(deleteMenu);
+				popupMenuBar.addItem(replaceMenu);
 								
 				popupMenuBar.setVisible(true);
 				popupPanel.add(popupMenuBar);
@@ -168,25 +212,54 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			case CellTreeNode.CLAUSE_NODE:							
 					
 				if(!xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)) {
-					subMenuBar = new MenuBar(true);
-					subMenuBar.setAutoOpen(true);				
-					addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+					//subMenuBar = new MenuBar(true);
+					//subMenuBar.setAutoOpen(true);				
+					
+					Command addCQLDefinitionCmd = new Command() {
+						@Override
+						public void execute() {
+							popupPanel.hide();
+							//To show CQL Definitions on Population Workspace
+							CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, true);
+						}
+					};
+					addMenu = new MenuItem(" Add Definition", true, addCQLDefinitionCmd); // 1st level menu
+					//subMenuBar.addItem(item);
+					
+					
 					popupMenuBar.addItem(addMenu);
 					
-					createAddCQLDefinitionMenuItem(subMenuBar);
+					//createAddCQLDefinitionMenuItem(subMenuBar);
 								
 				}else{
 					subMenuBar = new MenuBar(true);
 					subMenuBar.setAutoOpen(true);	
-					addMenu = new MenuItem("Add", subMenuBar);
+					//addMenu = new MenuItem("Add", subMenuBar);
+					
+					
+					MenuBar cqlAggFunctionMenubar = new MenuBar(true);
+					createAddCQLAggFunctionsMenuItems(cqlAggFunctionMenubar);
+					addMenu = new MenuItem("Aggregate Functions", cqlAggFunctionMenubar);
+					
+					Command addCQLFuncCmd = new Command() {
+						@Override
+						public void execute() {
+							popupPanel.hide();
+							//To show CQL Definitions on Population Workspace
+							CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, false);
+						}
+					};
+					addFuncMenu = new MenuItem(" Add Function", true, addCQLFuncCmd);
+					addFuncMenu.setEnabled(true);
+					
+					if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+						addFuncMenu.setEnabled(false);
+					}
+					//subMenuBar.addItem(aggFuncMenu);
+					
+					//createAddCQLFunctionsMenuItem(subMenuBar);
 					popupMenuBar.addItem(addMenu);
-					
-					MenuBar cqlAggFuncMenubar = new MenuBar(true);
-					createAddCQLAggFunctionsMenuItems(cqlAggFuncMenubar);
-					MenuItem aggFuncMenu = new MenuItem("Aggregate Functions", cqlAggFuncMenubar);
-					subMenuBar.addItem(aggFuncMenu);
-					
-					createAddCQLFunctionsMenuItem(subMenuBar);
+					popupMenuBar.addItem(addFuncMenu);
 									
 				}
 				popupMenuBar.setAutoOpen(true);
@@ -409,6 +482,35 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					xmlTreeDisplay.setDirty(true);
 					popupPanel.hide();
 					xmlTreeDisplay.addNode(name, name, CellTreeNode.CQL_AGG_FUNCTION_NODE);
+					
+				}
+			};
+			MenuItem menu = new MenuItem(name, true, addCmd);
+			cqlAggFuncMenubar.addItem(menu);
+		}
+	}
+	
+	private void createEditCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
+		List<String> functionNames = new ArrayList<String>();
+		functionNames.add("Count");
+		functionNames.add("Sum");
+		functionNames.add("Average");
+		functionNames.add("Sample Standard Deviation");
+		functionNames.add("Sample Variance");
+		functionNames.add("Population Standard Deviation");
+		functionNames.add("Population Variance");
+		functionNames.add("Minimum");
+		functionNames.add("Maximum");
+		functionNames.add("Median");
+		functionNames.add("Mode");
+		
+		for (final String name : functionNames) {
+			Command addCmd = new Command() {
+				@Override
+				public void execute() {
+					xmlTreeDisplay.setDirty(true);
+					xmlTreeDisplay.editNode(name, name);
+					
 				}
 			};
 			MenuItem menu = new MenuItem(name, true, addCmd);

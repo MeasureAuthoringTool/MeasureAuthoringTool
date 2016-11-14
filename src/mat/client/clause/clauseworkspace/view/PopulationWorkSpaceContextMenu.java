@@ -186,7 +186,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, false);
 					}
 				};
-				addMenu = new MenuItem(" Add Function", true, addCQLFunctionCmd);
+				addMenu = new MenuItem("Add Function", true, addCQLFunctionCmd);
 				
 				popupMenuBar.addItem(addMenu);
 				/*createAddCQLFunctionsMenuItem(subMenuBar);*/
@@ -223,7 +223,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 							CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, true);
 						}
 					};
-					addMenu = new MenuItem(" Add Definition", true, addCQLDefinitionCmd); // 1st level menu
+					addMenu = new MenuItem("Add Definition", true, addCQLDefinitionCmd); // 1st level menu
 					//subMenuBar.addItem(item);
 					
 					
@@ -239,7 +239,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					
 					MenuBar cqlAggFunctionMenubar = new MenuBar(true);
 					createAddCQLAggFunctionsMenuItems(cqlAggFunctionMenubar);
-					addMenu = new MenuItem("Aggregate Functions", cqlAggFunctionMenubar);
+					addMenu = new MenuItem("Add Aggregate Function", cqlAggFunctionMenubar);
 					
 					Command addCQLFuncCmd = new Command() {
 						@Override
@@ -249,7 +249,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 							CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, false);
 						}
 					};
-					addFuncMenu = new MenuItem(" Add Function", true, addCQLFuncCmd);
+					addFuncMenu = new MenuItem("Add Function", true, addCQLFuncCmd);
 					addFuncMenu.setEnabled(true);
 					
 					if(xmlTreeDisplay.getSelectedNode().hasChildren()){

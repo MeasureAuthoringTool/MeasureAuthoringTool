@@ -61,6 +61,9 @@ public class ClauseWorkspaceContextMenu {
 		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
 		SafeHtml menuTable(String name, String shortCut);
 		
+		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td></tr></table>")
+		SafeHtml menuTable(String name);
+		
 		/**
 		 * Menu table with icon.
 		 *
@@ -196,7 +199,7 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.removeNode();
 			}
 		};
-		deleteMenu = new MenuItem(template.menuTable("Delete", "Delete"), deleteCmd);
+		deleteMenu = new MenuItem(template.menuTable("Delete"), deleteCmd);
 		Command cutCmd = new Command() {
 			@Override
 			public void execute() {

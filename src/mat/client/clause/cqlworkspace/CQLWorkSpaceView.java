@@ -694,6 +694,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 								contextFuncPATRadioBtn.setValue(false);
 							}
 							
+							getFunctionButtonBar().getDeleteButton().setEnabled(true);
+							
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
 

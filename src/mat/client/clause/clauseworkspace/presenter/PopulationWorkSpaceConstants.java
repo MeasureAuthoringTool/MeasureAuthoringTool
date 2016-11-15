@@ -203,6 +203,8 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The datatype map. */
 	public static Map<String, List<String>> datatypeMap;
+
+	public static List<String> AggfuncNames = new ArrayList<String>();
 	
 	static {
 		constantsMap.put("populations", "Populations");
@@ -229,6 +231,19 @@ public class PopulationWorkSpaceConstants {
 		topNodeOperatorMap.put("numeratorexclusions", "or");
 		topNodeOperatorMap.put("denominatorexceptions", "or");
 		topNodeOperatorMap.put("measurepopulationexclusions", "or");
+		
+		//Argument Function Names
+		AggfuncNames.add("Count");
+		AggfuncNames.add("Sum");
+		AggfuncNames.add("Average");
+		AggfuncNames.add("Sample Standard Deviation");
+		AggfuncNames.add("Sample Variance");
+		AggfuncNames.add("Population Standard Deviation");
+		AggfuncNames.add("Population Variance");
+		AggfuncNames.add("Minimum");
+		AggfuncNames.add("Maximum");
+		AggfuncNames.add("Median");
+		AggfuncNames.add("Mode");
 	}
 	
 	/**

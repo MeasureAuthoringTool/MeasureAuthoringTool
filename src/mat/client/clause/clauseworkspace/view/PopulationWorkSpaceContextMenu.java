@@ -197,10 +197,19 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					addMenu.setEnabled(false);
 				}
 				
-				MenuBar cqlAggFuncMenubar = new MenuBar(true);
+				/*MenuBar cqlAggFuncMenubar = new MenuBar(true);
 				createEditCQLAggFunctionsMenuItems(cqlAggFuncMenubar);
-				replaceMenu = new MenuItem("Replace", cqlAggFuncMenubar);
+				replaceMenu = new MenuItem("Replace", cqlAggFuncMenubar);*/
 				
+				Command addCQLAggFunctionCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						//To show CQL Definitions on Population Workspace
+						CQLArtifactsDialogBox.showEditCQLAggFuncDialogBox(xmlTreeDisplay, false);
+					}
+				};
+				replaceMenu = new MenuItem("Replace", true, addCQLAggFunctionCmd);
 				deleteMenu.setEnabled(true);
 				replaceMenu.setEnabled(true);
 				popupMenuBar.addItem(deleteMenu);
@@ -237,9 +246,17 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					//addMenu = new MenuItem("Add", subMenuBar);
 					
 					
-					MenuBar cqlAggFunctionMenubar = new MenuBar(true);
-					createAddCQLAggFunctionsMenuItems(cqlAggFunctionMenubar);
-					addMenu = new MenuItem("Add Aggregate Function", cqlAggFunctionMenubar);
+					/*MenuBar cqlAggFunctionMenubar = new MenuBar(true);
+					createAddCQLAggFunctionsMenuItems(cqlAggFunctionMenubar);*/
+					Command addCQLAggregateFuncCmd = new Command() {
+						@Override
+						public void execute() {
+							popupPanel.hide();
+							//To show CQL Definitions on Population Workspace
+							CQLArtifactsDialogBox.showEditCQLAggFuncDialogBox(xmlTreeDisplay, true);
+						}
+					};
+					addMenu = new MenuItem("Add Aggregate Function", true, addCQLAggregateFuncCmd);
 					
 					Command addCQLFuncCmd = new Command() {
 						@Override
@@ -461,7 +478,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 * Add CQL Aggregate functions menu items.
 	 * @param cqlAggFuncMenubar
 	 */
-	private void createAddCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
+	/*private void createAddCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
 		List<String> functionNames = new ArrayList<String>();
 		functionNames.add("Count");
 		functionNames.add("Sum");
@@ -488,9 +505,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			MenuItem menu = new MenuItem(name, true, addCmd);
 			cqlAggFuncMenubar.addItem(menu);
 		}
-	}
+	}*/
 	
-	private void createEditCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
+	/*private void createEditCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
 		List<String> functionNames = new ArrayList<String>();
 		functionNames.add("Count");
 		functionNames.add("Sum");
@@ -516,7 +533,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			MenuItem menu = new MenuItem(name, true, addCmd);
 			cqlAggFuncMenubar.addItem(menu);
 		}
-	}
+	}*/
 	
 	/**
 	 * Add Definition MenuItem.

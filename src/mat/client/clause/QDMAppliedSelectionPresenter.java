@@ -2207,6 +2207,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		//searchDisplay.getToggleSwitch().setEnabled(editable);
 		searchDisplay.buildPasteBottomPanel(editable);
 		searchDisplay.buildPasteTopPanel(editable);
+		searchDisplay.getDefaultExpIdentifierSel().setEnabled(editable);
 		
 	}
 	

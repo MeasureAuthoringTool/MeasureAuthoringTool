@@ -364,32 +364,32 @@ public class InsertIntoAceEditorDialogBox {
 
 		//All the Labels
 		FormLabel AttrDataTypeLabel = new FormLabel();
-		AttrDataTypeLabel.setText("DataTypes By Attributes");
-		AttrDataTypeLabel.setTitle("DataTypes By Attributes");
+		AttrDataTypeLabel.setText("Attributes By DataType");
+		AttrDataTypeLabel.setTitle("Select Attributes By DataType");
 		AttrDataTypeLabel.setStyleName("attr-Label");
 		FormLabel AttributeLabel = new FormLabel();
 		AttributeLabel.setText("Attributes");
-		AttributeLabel.setTitle("Attributes");
+		AttributeLabel.setTitle("Select Attributes");
 		AttributeLabel.setStyleName("attr-Label");
 		FormLabel ModeLabel = new FormLabel();
 		ModeLabel.setText("Mode");
-		ModeLabel.setTitle("Mode");
+		ModeLabel.setTitle("Select Mode");
 		ModeLabel.setStyleName("attr-Label");
 		FormLabel ModeDetailsLabel = new FormLabel();
 		ModeDetailsLabel.setText("Mode Details");
-		ModeDetailsLabel.setTitle("Mode Details");
+		ModeDetailsLabel.setTitle("Select Mode Details");
 		ModeDetailsLabel.setStyleName("attr-Label");
 		FormLabel DateTimeLabel = new FormLabel();
 		DateTimeLabel.setText("DateTime");
-		DateTimeLabel.setTitle("DateTime");
+		DateTimeLabel.setTitle("Select DateTime");
 		DateTimeLabel.setStyleName("attr-Label");
 		FormLabel QuantityLabel = new FormLabel();
 		QuantityLabel.setText("Quantity");
-		QuantityLabel.setTitle("Quantity");
+		QuantityLabel.setTitle("Select Quantity");
 		QuantityLabel.setStyleName("attr-Label");
 		FormLabel UnitsLabel = new FormLabel();
 		UnitsLabel.setText("Units");
-		UnitsLabel.setTitle("Units");
+		UnitsLabel.setTitle("Select Units");
 		UnitsLabel.setStyleName("attr-Label");
 
 		Grid queryGrid = new Grid(8, 2);

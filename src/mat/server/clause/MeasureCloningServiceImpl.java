@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -14,6 +15,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.MeasureCloningService;
@@ -34,6 +36,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -230,11 +233,13 @@ implements MeasureCloningService {
 					filteredStringSupp, "elementRef",
 					"/measure/supplementalDataElements");
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString2);
+			xmlProcessor = new XmlProcessor(
+					clonedXml.getMeasureXMLAsString());
+			
 			if ((currentDetails.getMeasScoring() != null)
 					&& !currentDetails.getMeasScoring().equals(
 							measure.getMeasureScoring())) {
-				xmlProcessor = new XmlProcessor(
-						clonedXml.getMeasureXMLAsString());
+				
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
@@ -242,6 +247,30 @@ implements MeasureCloningService {
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
+			
+			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
+			if(cqlLookUpNode == null){
+				
+				NodeList populationsClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/populations//clause");
+				if(populationsClauseNodeList != null && populationsClauseNodeList.getLength() > 0){
+					for(int i=0;i<populationsClauseNodeList.getLength();i++){
+						Node clauseNode = populationsClauseNodeList.item(i);
+						clauseNode.removeChild(clauseNode.getFirstChild());
+					}
+				}
+				
+				NodeList stratificationClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/strata/stratification//clause");
+				if(stratificationClauseNodeList != null && stratificationClauseNodeList.getLength() > 0){
+					for(int i=0;i<stratificationClauseNodeList.getLength();i++){
+						Node clauseNode = stratificationClauseNodeList.item(i);
+						clauseNode.removeChild(clauseNode.getFirstChild());
+					}
+				}
+				
+				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
+						.transform(xmlProcessor.getOriginalDoc()));
+			}
+			
 			logger.info("Final XML after cloning/draft"
 					+ clonedXml.getMeasureXMLAsString());
 			measureXmlDAO.save(clonedXml);

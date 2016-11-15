@@ -251,21 +251,22 @@ implements MeasureCloningService {
 			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 			if(cqlLookUpNode == null){
 				
-				NodeList populationsClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/populations//clause");
-				if(populationsClauseNodeList != null && populationsClauseNodeList.getLength() > 0){
-					for(int i=0;i<populationsClauseNodeList.getLength();i++){
-						Node clauseNode = populationsClauseNodeList.item(i);
-						clauseNode.removeChild(clauseNode.getFirstChild());
-					}
+				Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
+				if(populationsNode != null){
+					Node parentNode = populationsNode.getParentNode();
+					parentNode.removeChild(populationsNode);
 				}
 				
-				NodeList stratificationClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/strata/stratification//clause");
-				if(stratificationClauseNodeList != null && stratificationClauseNodeList.getLength() > 0){
-					for(int i=0;i<stratificationClauseNodeList.getLength();i++){
-						Node clauseNode = stratificationClauseNodeList.item(i);
-						clauseNode.removeChild(clauseNode.getFirstChild());
-					}
+				Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
+				if(stratificationNode != null){
+					Node parentNode = stratificationNode.getParentNode();
+					parentNode.removeChild(stratificationNode);
 				}
+				
+				String scoringTypeId = MeasureDetailsUtil
+						.getScoringAbbr(clonedMeasure.getMeasureScoring());
+				
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
 				
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));

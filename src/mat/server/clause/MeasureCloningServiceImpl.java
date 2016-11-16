@@ -1,5 +1,6 @@
 package mat.server.clause;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import javax.xml.xpath.XPathFactory;
 
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.service.CQLService;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
@@ -35,6 +37,7 @@ import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -43,9 +46,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.ElementImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -70,6 +75,8 @@ implements MeasureCloningService {
 	/** The user dao. */
 	@Autowired
 	private UserDAO userDAO;
+	
+	private CQLService cqlService;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
@@ -145,6 +152,7 @@ implements MeasureCloningService {
 		measureXmlDAO = (MeasureXMLDAO) context.getBean("measureXMLDAO");
 		measureSetDAO = (MeasureSetDAO) context.getBean("measureSetDAO");
 		userDAO = (UserDAO) context.getBean("userDAO");
+		cqlService = (CQLService) context.getBean("cqlService");
 		
 		try {
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
@@ -248,29 +256,7 @@ implements MeasureCloningService {
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
 			
-			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
-			if(cqlLookUpNode == null){
-				
-				Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
-				if(populationsNode != null){
-					Node parentNode = populationsNode.getParentNode();
-					parentNode.removeChild(populationsNode);
-				}
-				
-				Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
-				if(stratificationNode != null){
-					Node parentNode = stratificationNode.getParentNode();
-					parentNode.removeChild(stratificationNode);
-				}
-				
-				String scoringTypeId = MeasureDetailsUtil
-						.getScoringAbbr(clonedMeasure.getMeasureScoring());
-				
-				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
-				
-				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
-						.transform(xmlProcessor.getOriginalDoc()));
-			}
+			updateForCQLMeasure(measure, clonedXml, xmlProcessor);
 			
 			logger.info("Final XML after cloning/draft"
 					+ clonedXml.getMeasureXMLAsString());
@@ -289,6 +275,125 @@ implements MeasureCloningService {
 			log(e.getMessage(), e);
 			throw new MatException(e.getMessage());
 		}
+	}
+
+	public void updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
+			XmlProcessor xmlProcessor) throws XPathExpressionException {
+		
+		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
+		
+		if(cqlLookUpNode != null){
+			return;
+		}
+		
+		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
+		if(populationsNode != null){
+			Node parentNode = populationsNode.getParentNode();
+			parentNode.removeChild(populationsNode);
+		}
+		
+		Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
+		if(stratificationNode != null){
+			Node parentNode = stratificationNode.getParentNode();
+			parentNode.removeChild(stratificationNode);
+		}
+		
+		String scoringTypeId = MeasureDetailsUtil
+				.getScoringAbbr(clonedMeasure.getMeasureScoring());
+		
+		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
+		xmlProcessor.checkForStratificationAndAdd();
+		//copy qdm to cqlLookup/valuesets
+		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");
+		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
+		
+		if(cqlValuesetsNode != null){
+			for(int i=0;i<qdmNodes.getLength();i++){
+				Node qdmNode = qdmNodes.item(i);
+				Node clonedqdmNode = qdmNode.cloneNode(true);
+				xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
+				cqlValuesetsNode.appendChild(clonedqdmNode);
+			}
+		}
+		
+		checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+		
+		clonedXml.setMeasureXMLAsByteArray(xmlProcessor
+				.transform(xmlProcessor.getOriginalDoc()));
+		
+	}
+	
+	/**
+	 * Append cql definitions.
+	 *
+	 * @param xmlProcessor the xml processor
+	 */
+	public void checkForDefaultCQLDefinitionsAndAppend(XmlProcessor xmlProcessor) {
+		
+		NodeList defaultCQLDefNodeList = findDefaultDefinitions(xmlProcessor);
+		
+		if (defaultCQLDefNodeList != null && defaultCQLDefNodeList.getLength() == 4) {
+			logger.info("All Default definition elements present in the measure.");
+			return;
+		}
+		
+		String defStr = cqlService.getSupplementalDefinitions();
+		System.out.println("defStr:"+defStr);
+		try {
+			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
+			
+			Node supplementalDataNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/supplementalDataElements");
+			while(supplementalDataNode.hasChildNodes()){
+				supplementalDataNode.removeChild(supplementalDataNode.getFirstChild());
+			}
+			
+			NodeList supplementalDefnNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), 
+					"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
+			
+			if(supplementalDefnNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<supplementalDefnNodes.getLength();i++){
+					Node supplNode = supplementalDefnNodes.item(i);
+				    System.out.println("name:"+supplNode.getAttributes().getNamedItem("name").getNodeValue());
+				    System.out.println("id:"+supplNode.getAttributes().getNamedItem("id").getNodeValue());
+					supplNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+					
+					Element cqlDefinitionRefNode = xmlProcessor.getOriginalDoc().createElement("cqldefinition");
+					cqlDefinitionRefNode.setAttribute("displayName", supplNode.getAttributes().getNamedItem("name").getNodeValue());
+					cqlDefinitionRefNode.setAttribute("uuid", supplNode.getAttributes().getNamedItem("id").getNodeValue());
+					supplementalDataNode.appendChild(cqlDefinitionRefNode);
+					
+				}
+			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This method will look into XPath "/measure/cqlLookUp/definitions/" and try and NodeList for Definitions with the following names;
+	 * 'SDE Ethnicity','SDE Payer','SDE Race','SDE Sex'.
+	 * @param xmlProcessor
+	 * @return
+	 */
+	public NodeList findDefaultDefinitions(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='SDE Ethnicity' or @name='SDE Payer' or @name='SDE Race' or @name='SDE Sex']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultDefinitionsXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
 	}
 	
 	/**

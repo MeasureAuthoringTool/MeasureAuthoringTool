@@ -52,7 +52,7 @@ public class CQLButtonToolBar extends Composite {
 		insertButton.setIconSize(IconSize.LARGE);
 		insertButton.setColor("#0964A2");
 		insertButton.setSize("30px", "30px");
-		
+		insertButton.getElement().setAttribute("aria-label", "Insert");
 		
 		saveButton.setType(ButtonType.LINK);
 		saveButton.getElement().setId("saveButton_"+sectionName);
@@ -62,16 +62,17 @@ public class CQLButtonToolBar extends Composite {
 		saveButton.setIconSize(IconSize.LARGE);
 		saveButton.setColor("#0964A2");
 		saveButton.setSize("30px", "30px");
+		saveButton.getElement().setAttribute("aria-label", "Save");
 		
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_"+sectionName);
 		deleteButton.setMarginTop(10);
 		deleteButton.setTitle("Delete");
-		
 		// MAT-7737, Use the trash.png image instead of the IconType.TRASH
 		Image trash = new Image("images/trash.png");
 		deleteButton.getElement().appendChild(trash.getElement());
 		deleteButton.setSize("30px", "30px");
+		deleteButton.getElement().setAttribute("aria-label", "Delete");
 		
 		eraseButton.setType(ButtonType.LINK);
 		eraseButton.getElement().setId("eraseButton_"+sectionName);
@@ -81,6 +82,7 @@ public class CQLButtonToolBar extends Composite {
 		eraseButton.setIconSize(IconSize.LARGE);
 		eraseButton.setColor("#0964A2");
 		eraseButton.setSize("30px", "30px");
+		eraseButton.getElement().setAttribute("aria-label", "Erase");
 		
 		infoButton.setType(ButtonType.LINK);
 		infoButton.getElement().setId("infoButton_"+sectionName);
@@ -90,6 +92,7 @@ public class CQLButtonToolBar extends Composite {
 		infoButton.setIconSize(IconSize.LARGE);
 		infoButton.setColor("#0964A2");
 		infoButton.setSize("30px", "30px");
+		infoButton.getElement().setAttribute("aria-label", "Information");
 		
 		timingExpIcon.setType(ButtonType.LINK);
 		timingExpIcon.getElement().setId("timingExpButton_"+sectionName);
@@ -99,6 +102,7 @@ public class CQLButtonToolBar extends Composite {
 		timingExpIcon.setIconSize(IconSize.LARGE);
 		timingExpIcon.setColor("#0964A2");
 		timingExpIcon.setSize("30px", "30px");
+		timingExpIcon.getElement().setAttribute("aria-label", "Timing Expression");
 		
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);

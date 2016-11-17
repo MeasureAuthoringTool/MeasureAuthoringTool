@@ -301,8 +301,9 @@ implements MeasureCloningService {
 		String scoringTypeId = MeasureDetailsUtil
 				.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
-		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
+		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,"v5.0");
 		xmlProcessor.checkForStratificationAndAdd();
+		
 		//copy qdm to cqlLookup/valuesets
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");

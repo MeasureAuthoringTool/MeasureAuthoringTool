@@ -108,7 +108,7 @@
 			<list>
 				<ref bean="cronTrigger" />
 				 <ref bean="cronPasswordChangeEmailTrigger" /> 
-				<ref bean="simpleTrigger" />
+<!-- 				<ref bean="simpleTrigger" /> -->
 				
 <!-- 				<ref bean="simpleLoginTrigger"/> -->
 			</list>

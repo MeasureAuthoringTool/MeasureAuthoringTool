@@ -143,7 +143,7 @@
 	
 	<!-- One time update all measures.  -->
 	
-	<bean id="onetimeMeasureXMLUpdateTask" class="mat.server.service.jobs.temprory.OnetimeMeasureXMLUpdateTask">
+	<!-- <bean id="onetimeMeasureXMLUpdateTask" class="mat.server.service.jobs.temprory.OnetimeMeasureXMLUpdateTask">
 	    <property name="measureDAO" ref="measureDAO"/>
 	    <property name="measurePackageService" ref="measurePackageService"/>
 	    <property name="measureLibraryService" ref="measureLibraryService"/>
@@ -161,7 +161,7 @@
  		<property name="jobDetail" ref="oneTimeMeasureXMLUpdateJob" />
 		<property name="repeatCount" value="0" />
 		<property name="startDelay" value="2000" />
-	</bean>	
+	</bean>	 -->
 	
 	
 </beans>

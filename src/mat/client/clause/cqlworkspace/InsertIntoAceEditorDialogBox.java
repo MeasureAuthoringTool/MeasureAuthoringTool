@@ -312,23 +312,21 @@ public class InsertIntoAceEditorDialogBox {
 		messageFormgroup.add(helpBlock);
 		messageFormgroup.getElement().setAttribute("role", "alert");
 
-		final ListBox DtAttriblistBox = new ListBox();
+		final ListBoxMVP DtAttriblistBox = new ListBoxMVP();
 		DtAttriblistBox.setWidth("18em");
 		DtAttriblistBox.setVisibleItemCount(10);
 		DtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
-		DtAttriblistBox.addItem("Select");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		DtAttriblistBox.setVisibleItemCount(1);
 
-		final ListBox AttriblistBox = new ListBox();
+		final ListBoxMVP AttriblistBox = new ListBoxMVP();
 		AttriblistBox.setWidth("18em");
 		AttriblistBox.setVisibleItemCount(10);
 		AttriblistBox.getElement().setId("Atrr_listBox");
-		AttriblistBox.addItem("Select");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		AttriblistBox.setVisibleItemCount(1);
 
-		final ListBox ModelistBox = new ListBox();
+		final ListBoxMVP ModelistBox = new ListBoxMVP();
 		ModelistBox.setWidth("18em");
 		ModelistBox.setVisibleItemCount(10);
 		ModelistBox.getElement().setId("Mode_listBox");
@@ -336,7 +334,7 @@ public class InsertIntoAceEditorDialogBox {
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModelistBox.setVisibleItemCount(1);
 
-		final ListBox ModeDetailslistBox = new ListBox();
+		final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
 		ModeDetailslistBox.setWidth("18em");
 		ModeDetailslistBox.setVisibleItemCount(10);
 		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
@@ -354,7 +352,7 @@ public class InsertIntoAceEditorDialogBox {
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
 
-		final ListBox UnitslistBox = new ListBox();
+		final ListBoxMVP UnitslistBox = new ListBoxMVP();
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
@@ -411,6 +409,7 @@ public class InsertIntoAceEditorDialogBox {
 		queryGrid.setStyleName("attr-grid");
 		
 		modalBody.add(queryGrid);
+		modalBody.add(messageFormgroup);
 
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
@@ -432,6 +431,37 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		
+		addAvailableItems(DtAttriblistBox, allDataTypes);
+		addAvailableItems(AttriblistBox, allAttributes);
+		
+		DtAttriblistBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				int selectedIndex = DtAttriblistBox.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String dataTypeSelected = DtAttriblistBox.getItemText(selectedIndex);
+					getAllAttibutesByDataType(AttriblistBox, dataTypeSelected);
+				} else {
+					AttriblistBox.clear();
+					addAvailableItems(AttriblistBox, allAttributes);
+				}
+			}
+		});
+		
+		
+		AttriblistBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+			}
+		});
+		
 		addButton.addClickHandler(new ClickHandler() {
 
 			@Override

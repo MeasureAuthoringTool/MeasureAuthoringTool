@@ -1,22 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
-import mat.client.shared.CustomDateTimeTextBox;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.shared.DateUtility;
-import mat.util.Dateutil;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -36,6 +21,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -49,10 +35,18 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
+import mat.client.shared.CustomDateTimeTextBox;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1334,15 +1328,4 @@ public class InsertIntoAceEditorDialogBox {
 		    }
 		return true;
 	}
-	
-	/*public static boolean isValidDate(String inDate) {
-	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy//MM//dd");
-	    dateFormat.setLenient(false);
-	    try {
-	      dateFormat.parse(inDate.trim());
-	    } catch (ParseException pe) {
-	      return false;
-	    }
-	    return true;
-	  }*/
 }

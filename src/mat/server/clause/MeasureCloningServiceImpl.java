@@ -313,7 +313,7 @@ implements MeasureCloningService {
 		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets
-		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");
+		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
 		
 		if(cqlValuesetsNode != null){
@@ -346,7 +346,7 @@ implements MeasureCloningService {
 		NodeList defaultCQLDefNodeList = findDefaultDefinitions(xmlProcessor);
 		
 		if (defaultCQLDefNodeList != null && defaultCQLDefNodeList.getLength() == 4) {
-			logger.info("All Default definition elements present in the measure.");
+			logger.info("All Default definition elements present in the measure while cloning.");
 			return;
 		}
 		

@@ -17,6 +17,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
@@ -32,6 +33,7 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLParameter;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureNotesService;
@@ -323,7 +325,11 @@ implements MeasureCloningService {
 			}
 		}
 		
+		checkForTimingElementsAndAppend(xmlProcessor);
+		checkForDefaultCQLParametersAndAppend(xmlProcessor);
 		checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
+		checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
+		checkForDefaultCQLCodesAndAppend(xmlProcessor);
 		
 		clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 				.transform(xmlProcessor.getOriginalDoc()));
@@ -396,6 +402,195 @@ implements MeasureCloningService {
 			try {				
 				String defaultDefinitionsXPath = "/measure/cqlLookUp/definitions/definition[@name ='SDE Ethnicity' or @name='SDE Payer' or @name='SDE Race' or @name='SDE Sex']";
 				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultDefinitionsXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
+	}
+	
+	public void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
+		
+		List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
+		
+		if (missingMeasurementPeriod.isEmpty()) {
+			logger.info("All timing elements present in the measure while cloning.");
+			return;
+		}
+		logger.info("While cloning, found the following timing elements missing:" + missingMeasurementPeriod);
+		
+		//		List<String> missingOIDList = new ArrayList<String>();
+		//		missingOIDList.add(missingMeasurementPeriod);
+		
+		QualityDataModelWrapper wrapper = measureXmlDAO.createTimingElementQDMs(missingMeasurementPeriod);
+		
+		// Object to XML for elementLookUp
+		ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
+		
+		String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),
+				"<measure>", "");
+		filteredString = removePatternFromXMLString(filteredString, "</measure>", "");
+		
+		try {
+			System.out.println("timing qdm String:"+filteredString);
+			xmlProcessor.appendNode(filteredString, "qdm", "/measure/elementLookUp");
+			String cqlValueSetString = filteredString.replaceAll("<qdm", "<valueset");
+			System.out.println("timing cql valueset string:"+cqlValueSetString);
+			xmlProcessor.appendNode(cqlValueSetString, "valueset", "/measure/cqlLookUp/valuesets");
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Check for default cql parameters and append.
+	 *
+	 * @param xmlProcessor the xml processor
+	 */
+	public void checkForDefaultCQLParametersAndAppend(XmlProcessor xmlProcessor) {
+		
+		List<String> missingDefaultCQLParameters = xmlProcessor.checkForDefaultParameters();
+		
+		if (missingDefaultCQLParameters.isEmpty()) {
+			logger.info("All Default parameter elements present in the measure while cloning.");
+			return;
+		}
+		logger.info("While cloning, found the following Default parameter elements missing:" + missingDefaultCQLParameters);
+		CQLParameter parameter = new  CQLParameter();
+	
+		parameter.setId(UUID.randomUUID().toString());
+		parameter.setParameterName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
+		parameter.setParameterLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
+		parameter.setReadOnly(true);	
+		String parStr = cqlService.createParametersXML(parameter);
+	
+		try {
+			xmlProcessor.appendNode(parStr, "parameter", "/measure/cqlLookUp/parameters");
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Check for default CQL code systems and append.
+	 *
+	 * @param processor the processor
+	 */
+	private void checkForDefaultCQLCodeSystemsAndAppend(XmlProcessor processor) {
+		
+		String codeSystemStr = cqlService.getDefaultCodeSystems();
+		
+		NodeList defaultCQLCodeSystemsList = findDefaultCodeSystems(processor);
+		
+		if (defaultCQLCodeSystemsList.getLength() > 0) {
+			logger.info("All Default codesystems elements present in the measure.");
+			return;
+		}
+		
+		try {
+			processor.appendNode(codeSystemStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
+			
+			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
+					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']");
+			
+			if(defaultCodeSystemNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<defaultCodeSystemNodes.getLength();i++){
+					Node codeSystemNode = defaultCodeSystemNodes.item(i);
+				    System.out.println("name:"+codeSystemNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
+				    System.out.println("id:"+codeSystemNode.getAttributes().getNamedItem("id").getNodeValue());
+				    codeSystemNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
+			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Check for default CQL codes and append.
+	 *
+	 * @param processor the processor
+	 */
+	private void checkForDefaultCQLCodesAndAppend(XmlProcessor processor) {
+		
+		String codeStr = cqlService.getDefaultCodes();
+		
+		NodeList defaultCQLCodesList = findDefaultCodes(processor);
+		
+		if (defaultCQLCodesList.getLength() > 0) {
+			logger.info("All Default code elements present in the measure.");
+			return;
+		}
+		
+		try {
+			processor.appendNode(codeStr, "code", "/measure/cqlLookUp/codes");
+			
+			NodeList defaultCodeNodes = processor.findNodeList(processor.getOriginalDoc(), 
+					"/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']");
+			
+			if(defaultCodeNodes != null){
+				System.out.println("suppl data elems..setting ids");
+				for(int i=0;i<defaultCodeNodes.getLength();i++){
+					Node codeNode = defaultCodeNodes.item(i);
+					System.out.println("codename:"+codeNode.getAttributes().getNamedItem("codeName").getNodeValue());
+				    System.out.println("codesystemname:"+codeNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
+				    System.out.println("id:"+codeNode.getAttributes().getNamedItem("id").getNodeValue());
+				    codeNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
+			}
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This method will look into XPath "/measure/cqlLookUp/codeSystems/" and try and NodeList for Definitions with the following names;
+	 * @param xmlProcessor
+	 * @return
+	 */
+	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		return returnNodeList;
+	}
+	
+	/**
+	 * This method will look into XPath "/measure/cqlLookUp/codes/" and try and NodeList for Definitions with the following names;
+	 * @param xmlProcessor
+	 * @return
+	 */
+	public NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
+		NodeList returnNodeList = null;
+		Document originalDoc = xmlProcessor.getOriginalDoc();
+		
+		if (originalDoc != null) {
+			try {				
+				String defaultCodesXPath = "/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']";
+				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodesXPath);
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}

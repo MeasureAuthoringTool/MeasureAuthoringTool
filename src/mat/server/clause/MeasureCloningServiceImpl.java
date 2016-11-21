@@ -292,6 +292,12 @@ implements MeasureCloningService {
 			parentNode.removeChild(populationsNode);
 		}
 		
+		Node measureObservationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureObservations");
+		if(measureObservationsNode != null){
+			Node parentNode = measureObservationsNode.getParentNode();
+			parentNode.removeChild(measureObservationsNode);
+		}
+		
 		Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
 		if(stratificationNode != null){
 			Node parentNode = stratificationNode.getParentNode();
@@ -302,7 +308,7 @@ implements MeasureCloningService {
 				.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
 		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,"v5.0");
-		xmlProcessor.checkForStratificationAndAdd();
+		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");

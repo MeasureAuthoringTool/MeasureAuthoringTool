@@ -288,20 +288,20 @@ implements MeasureCloningService {
 		
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){
-			Node parentNode = populationsNode.getParentNode();
-			parentNode.removeChild(populationsNode);
+			Node populationsParentNode = populationsNode.getParentNode();
+			populationsParentNode.removeChild(populationsNode);
 		}
 		
 		Node measureObservationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureObservations");
 		if(measureObservationsNode != null){
-			Node parentNode = measureObservationsNode.getParentNode();
-			parentNode.removeChild(measureObservationsNode);
+			Node measureObservationsParentNode = measureObservationsNode.getParentNode();
+			measureObservationsParentNode.removeChild(measureObservationsNode);
 		}
 		
 		Node stratificationNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/strata");
 		if(stratificationNode != null){
-			Node parentNode = stratificationNode.getParentNode();
-			parentNode.removeChild(stratificationNode);
+			Node strataParentNode = stratificationNode.getParentNode();
+			strataParentNode.removeChild(stratificationNode);
 		}
 		
 		String scoringTypeId = MeasureDetailsUtil

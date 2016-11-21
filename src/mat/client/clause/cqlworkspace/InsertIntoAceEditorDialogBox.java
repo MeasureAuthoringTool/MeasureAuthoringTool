@@ -423,7 +423,7 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailsLabel.setTitle("Select Mode Details");
 		ModeDetailsLabel.setStyleName("attr-Label");
 		FormLabel DateTimeLabel = new FormLabel();
-		DateTimeLabel.setText("DateTime");
+		DateTimeLabel.setText("Date/Time");
 		DateTimeLabel.setTitle("Select DateTime");
 		DateTimeLabel.setStyleName("attr-Label");
 		FormLabel QuantityLabel = new FormLabel();
@@ -455,13 +455,13 @@ public class InsertIntoAceEditorDialogBox {
 		queryGrid.setWidget(3, 0, ModelistBox);
 		queryGrid.setWidget(2, 1, ModeDetailsLabel);
 		queryGrid.setWidget(3, 1, ModeDetailslistBox);
-		/*queryGrid.setWidget(4, 0, DateTimeLabel);*/
-		queryGrid.setWidget(4, 0, datePanel);
-		queryGrid.setWidget(4, 1, timePanel);
-		queryGrid.setWidget(5, 0, QuantityLabel);
-		queryGrid.setWidget(6, 0, QuantityTextBox);
-		queryGrid.setWidget(5, 1, UnitsLabel);
-		queryGrid.setWidget(6, 1, UnitslistBox);
+		queryGrid.setWidget(4, 0, DateTimeLabel);
+		queryGrid.setWidget(5, 0, datePanel);
+		queryGrid.setWidget(5, 1, timePanel);
+		queryGrid.setWidget(6, 0, QuantityLabel);
+		queryGrid.setWidget(7, 0, QuantityTextBox);
+		queryGrid.setWidget(6, 1, UnitsLabel);
+		queryGrid.setWidget(7, 1, UnitslistBox);
 		
 		queryGrid.setStyleName("attr-grid");
 		
@@ -536,9 +536,9 @@ public class InsertIntoAceEditorDialogBox {
 							&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() 
 							&& ssTxtBox.getText().isEmpty() && msTxtBox.getText().isEmpty()){
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Enter a valid Date time.");
+						helpBlock.setText("Please Enter a valid Date/Time.");
 						messageFormgroup.setValidationState(ValidationState.ERROR);
-						
+						 
 						//check if either date and time fields are not null
 					} else if((!yyyyTxtBox.getText().isEmpty() || !mmTxtBox.getText().isEmpty() || !ddTxtBox.getText().isEmpty()) 
 							&& (!hhTextBox.getText().isEmpty() || !minTxtBox.getText().isEmpty() 
@@ -562,7 +562,7 @@ public class InsertIntoAceEditorDialogBox {
 								secondsFormGroup.setValidationState(ValidationState.ERROR);
 								millisecFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Enter a valid Date time");
+								helpBlock.setText("Please Enter a valid Date/Time.");
 								messageFormgroup.setValidationState(ValidationState.ERROR);
 							}
 							
@@ -571,7 +571,7 @@ public class InsertIntoAceEditorDialogBox {
 							mmFormGroup.setValidationState(ValidationState.ERROR);
 							ddFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Enter a valid Date time");
+							helpBlock.setText("Please Enter a valid Date/Time.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 						
@@ -592,7 +592,7 @@ public class InsertIntoAceEditorDialogBox {
 							mmFormGroup.setValidationState(ValidationState.ERROR);
 							ddFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Enter a valid Date time");
+							helpBlock.setText("Please Enter a valid Date/Time.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 					} else if((yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty()) 
@@ -610,7 +610,7 @@ public class InsertIntoAceEditorDialogBox {
 							secondsFormGroup.setValidationState(ValidationState.ERROR);
 							millisecFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Enter a valid Date time");
+							helpBlock.setText("Please Enter a valid Date/Time.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 					}
@@ -640,7 +640,7 @@ public class InsertIntoAceEditorDialogBox {
 			if(!isValidate(sb.toString())){
 				return false;
 			}	
-		} else if(!inRange(yyyyTxtBox.getText(), "0000", "9999") || !inRange(mmTxtBox.getText(), "01", "12") || !inRange(ddTxtBox.getText(), "01", "31")){
+		} else if(!inRange(yyyyTxtBox.getText(), "0001", "9999") || !inRange(mmTxtBox.getText(), "01", "12") || !inRange(ddTxtBox.getText(), "01", "31")){
 			return false;
 		}
 		return true;
@@ -689,12 +689,12 @@ public class InsertIntoAceEditorDialogBox {
 		
 		final FormLabel monthFormLabel = new FormLabel();
 		monthFormLabel.setText("MM");
-		monthFormLabel.setTitle("Month(s)");
+		monthFormLabel.setTitle("Month");
 		monthFormLabel.setStyleName("month-Label");
 		
 		final FormLabel dayFormLabel = new FormLabel();
 		dayFormLabel.setText("DD");
-		dayFormLabel.setTitle("Day(s)");
+		dayFormLabel.setTitle("Day");
 		dayFormLabel.setStyleName("day-Label");
 		
 		/*datePanel.add(yearFormGroup);

@@ -279,7 +279,7 @@ implements MeasureCloningService {
 		}
 	}
 
-	public void updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
+	private void updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
 			XmlProcessor xmlProcessor) throws XPathExpressionException {
 		
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
@@ -341,7 +341,7 @@ implements MeasureCloningService {
 	 *
 	 * @param xmlProcessor the xml processor
 	 */
-	public void checkForDefaultCQLDefinitionsAndAppend(XmlProcessor xmlProcessor) {
+	private void checkForDefaultCQLDefinitionsAndAppend(XmlProcessor xmlProcessor) {
 		
 		NodeList defaultCQLDefNodeList = findDefaultDefinitions(xmlProcessor);
 		
@@ -394,7 +394,7 @@ implements MeasureCloningService {
 	 * @param xmlProcessor
 	 * @return
 	 */
-	public NodeList findDefaultDefinitions(XmlProcessor xmlProcessor) {
+	private NodeList findDefaultDefinitions(XmlProcessor xmlProcessor) {
 		NodeList returnNodeList = null;
 		Document originalDoc = xmlProcessor.getOriginalDoc();
 		
@@ -409,7 +409,7 @@ implements MeasureCloningService {
 		return returnNodeList;
 	}
 	
-	public void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
+	private void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
 		
 		List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
 		
@@ -450,7 +450,7 @@ implements MeasureCloningService {
 	 *
 	 * @param xmlProcessor the xml processor
 	 */
-	public void checkForDefaultCQLParametersAndAppend(XmlProcessor xmlProcessor) {
+	private void checkForDefaultCQLParametersAndAppend(XmlProcessor xmlProcessor) {
 		
 		List<String> missingDefaultCQLParameters = xmlProcessor.checkForDefaultParameters();
 		
@@ -563,7 +563,7 @@ implements MeasureCloningService {
 	 * @param xmlProcessor
 	 * @return
 	 */
-	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
+	private NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
 		NodeList returnNodeList = null;
 		Document originalDoc = xmlProcessor.getOriginalDoc();
 		
@@ -583,7 +583,7 @@ implements MeasureCloningService {
 	 * @param xmlProcessor
 	 * @return
 	 */
-	public NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
+	private NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
 		NodeList returnNodeList = null;
 		Document originalDoc = xmlProcessor.getOriginalDoc();
 		

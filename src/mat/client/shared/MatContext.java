@@ -1584,8 +1584,10 @@ public class MatContext implements IsSerializable {
 
 			@Override
 			public void onSuccess(List<? extends HasListBox> result) {
-				for(HasListBox listBoxContent : result) {
-					allUnitsList.add(listBoxContent.getItem());
+				if(result != null){
+					for(HasListBox listBoxContent : result) {
+						allUnitsList.add(listBoxContent.getItem());
+					}
 				}
 			}
 		}); 

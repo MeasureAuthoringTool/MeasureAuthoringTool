@@ -64,6 +64,8 @@ public class InsertIntoAceEditorDialogBox {
 	/** The all attributes. */
 	private static List<String> allAttributes = MatContext.get().getAllAttributeList();
 	
+	private static List<String> allUnits = MatContext.get().getAllUnitsList(); 
+	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
@@ -402,6 +404,9 @@ public class InsertIntoAceEditorDialogBox {
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
 		UnitslistBox.addItem("Select");
+		for(String unit : allUnits) {
+			UnitslistBox.addItem(unit);
+		}
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		UnitslistBox.setVisibleItemCount(1);
 

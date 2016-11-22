@@ -403,7 +403,6 @@ public class InsertIntoAceEditorDialogBox {
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
-		UnitslistBox.addItem("Select");
 		for(String unit : allUnits) {
 			UnitslistBox.addItem(unit);
 		}

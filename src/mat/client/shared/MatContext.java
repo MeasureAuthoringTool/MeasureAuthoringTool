@@ -1585,6 +1585,8 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onSuccess(List<? extends HasListBox> result) {
 				if(result != null){
+					allUnitsList.clear();
+					allUnitsList.add(MatContext.PLEASE_SELECT);
 					for(HasListBox listBoxContent : result) {
 						allUnitsList.add(listBoxContent.getItem());
 					}

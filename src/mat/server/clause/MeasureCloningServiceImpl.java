@@ -135,6 +135,12 @@ implements MeasureCloningService {
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm [@suppDataElement='true']";
 	
+	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
+	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
+	
+	/** The Constant PATIENT_CHARACTERISTIC_EXPIRED_OID. */
+	private static final String PATIENT_CHARACTERISTIC_EXPIRED_OID = "419099009";
+	
 	/** The cloned doc. */
 	private Document clonedDoc;
 	
@@ -316,13 +322,39 @@ implements MeasureCloningService {
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
 		
+		/**
+		 * We need to capture old "Patient Characteristic Expired"(oid=419099009) and "Patient Characteristic Birthdate"(oid=21112-8)
+		 * and remove them.
+		 * Further below, when checkForTimingElementsAndAppend() is called, it will add back the above 2 elements with new properties.
+		 * For ex: "Patient Characteristic Expired" had an old name of "Expired", but the new name is "Dead".
+		 */
+		Node expiredtimingQDMNode = null; 
+		Node birthDataQDMNode = null;
+		
 		if(cqlValuesetsNode != null){
 			for(int i=0;i<qdmNodes.getLength();i++){
 				Node qdmNode = qdmNodes.item(i);
+				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
+				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
+					expiredtimingQDMNode = qdmNode;
+					continue;
+				}else if(oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
+					birthDataQDMNode = qdmNode;
+					continue;
+				}
 				Node clonedqdmNode = qdmNode.cloneNode(true);
 				xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
 				cqlValuesetsNode.appendChild(clonedqdmNode);
 			}
+		}
+		
+		if(expiredtimingQDMNode != null){
+			Node parentNode = expiredtimingQDMNode.getParentNode();
+			parentNode.removeChild(expiredtimingQDMNode);
+		}
+		if(birthDataQDMNode != null){
+			Node parentNode = birthDataQDMNode.getParentNode();
+			parentNode.removeChild(birthDataQDMNode);
 		}
 		
 		checkForTimingElementsAndAppend(xmlProcessor);

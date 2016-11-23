@@ -2019,18 +2019,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
-		
-		/*MeasureXmlModel measureXmlModel = createMeasureXmlModel(mDetail, meas, MEASURE_DETAILS, MEASURE); 
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
-			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-			xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(),
-					measureXmlModel.getParentNode());
-			String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-			measureXmlModel.setXml(newXml);
-			getService().saveMeasureXml(measureXmlModel);
-		}*/
-		
+				
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
 		result.setId(meas.getId());

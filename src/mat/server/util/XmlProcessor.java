@@ -2,7 +2,6 @@ package mat.server.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -854,6 +852,23 @@ public class XmlProcessor {
 			String clauseDisplayName = "Stratum";
 			Element stratificationElement = createTemplateNode(
 					stratificationsNodeName, clauseDisplayName);
+			
+			NodeList childs  = stratificationElement.getChildNodes();
+			Element stratificationEle = originalDoc
+					.createElement(STRATIFICATION);
+			stratificationEle.setAttribute(DISPLAY_NAME, STRATIFICATION_DISPLAYNAME);
+			stratificationEle.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
+			stratificationEle.setAttribute(TYPE, STRATIFICATION);
+			List<Node> nCList = new ArrayList<Node>();
+			for (int i = 0; i < childs.getLength(); i++) {
+				nCList.add(childs.item(i));
+				stratificationElement.removeChild(childs.item(i));
+			}
+			for (Node cNode : nCList) {
+				stratificationEle.appendChild(cNode);
+			}
+			stratificationElement.appendChild(stratificationEle);
+			
 			measureStratificationsNode = stratificationElement;
 			// insert measureObservations element after populations element
 			Node measureNode = populationsNode.getParentNode();
@@ -1464,41 +1479,6 @@ public class XmlProcessor {
 			}
 		}
 		return missingTimingElementList;
-	}
-	
-	/**
-	 * Check for stratification and add.
-	 *
-	 * @return Xml String.
-	 */
-	public void checkForStratificationAndAdd() {
-		if (originalDoc == null) {
-			return;
-		}
-		try {
-			Node strataNode = findNode(originalDoc, XPATH_STRATA);
-			if ((strataNode != null) && (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
-					.getNodeName().equalsIgnoreCase(STRATIFICATION)))) {
-				NodeList childs  = strataNode.getChildNodes();
-				Element stratificationEle = originalDoc
-						.createElement(STRATIFICATION);
-				stratificationEle.setAttribute(DISPLAY_NAME, STRATIFICATION_DISPLAYNAME);
-				stratificationEle.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
-				stratificationEle.setAttribute(TYPE, STRATIFICATION);
-				List<Node> nCList = new ArrayList<Node>();
-				for (int i = 0; i < childs.getLength(); i++) {
-					nCList.add(childs.item(i));
-					strataNode.removeChild(childs.item(i));
-				}
-				for (Node cNode : nCList) {
-					stratificationEle.appendChild(cNode);
-				}
-				strataNode.appendChild(stratificationEle);
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		
 	}
 	
 	/**

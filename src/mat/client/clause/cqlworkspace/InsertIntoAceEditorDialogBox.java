@@ -509,6 +509,7 @@ public class InsertIntoAceEditorDialogBox {
 					getAllAttibutesByDataType(AttriblistBox, dataTypeSelected);
 				} else {
 					AttriblistBox.clear();
+					UnitslistBox.setSelectedIndex(0);
 					addAvailableItems(AttriblistBox, allAttributes);
 				}
 			}

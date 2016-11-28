@@ -196,4 +196,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-7441_Modify_Expired.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-8038_Datatype_Changes.xml" />
         <include file="classpath:/liquibase/deploy_Sprint-105_MAT-8267_CQL_Populating_Attributes_Modified.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8318_Add_Unit.xml"/>
    	</databaseChangeLog>

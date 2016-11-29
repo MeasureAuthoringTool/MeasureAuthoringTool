@@ -538,9 +538,9 @@ public class InsertIntoAceEditorDialogBox {
 					messageFormgroup.setValidationState(ValidationState.NONE);
 					
 					//Quantity TextBox Validation
-					if(validateQuantity(QuantityTextBox.getText())){
+					/*if(validateQuantity(QuantityTextBox.getText())){
 						
-					}
+					}*/
 					
 					//check if all fields are null
 					if(yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty() 
@@ -1258,7 +1258,14 @@ public class InsertIntoAceEditorDialogBox {
 		if(s.isEmpty()){
 			return true;
 		}
-		return  s.compareToIgnoreCase(lowerBound) >= 0 && s.compareToIgnoreCase(upperBound) <= 0;
+		int lower = Integer.parseInt(lowerBound);
+		int upper = Integer.parseInt(upperBound);
+		int value = Integer.parseInt(s);
+		if(lower<=value && upper>=value){
+			return true;
+		}
+		return false;
+		//return  s.compareToIgnoreCase(lowerBound) >= 0 && s.compareToIgnoreCase(upperBound) <= 0;
 	}
 	
 	

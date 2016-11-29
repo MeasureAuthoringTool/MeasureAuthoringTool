@@ -42,6 +42,7 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.CustomDateTimeTextBox;
+import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
@@ -395,10 +396,10 @@ public class InsertIntoAceEditorDialogBox {
 		dateBox.setFormat(new DateBox.DefaultFormat(dateFormat));
 
 		
-		final TextBox QuantityTextBox = new TextBox();
+		final CustomQuantityTextBox QuantityTextBox = new CustomQuantityTextBox(20);
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
-
+		
 		final ListBoxMVP UnitslistBox = new ListBoxMVP();
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
@@ -536,6 +537,11 @@ public class InsertIntoAceEditorDialogBox {
 					helpBlock.setText("");
 					messageFormgroup.setValidationState(ValidationState.NONE);
 					
+					//Quantity TextBox Validation
+					if(validateQuantity(QuantityTextBox.getText())){
+						
+					}
+					
 					//check if all fields are null
 					if(yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty() 
 							&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() 
@@ -629,7 +635,18 @@ public class InsertIntoAceEditorDialogBox {
 			}
 
 		});
-		dialogModal.show();}
+		dialogModal.show();
+		}
+	
+	
+	private static boolean validateQuantity(String text) {
+		
+		char ch = text.charAt(text.length()-1); 
+		if(ch=='.' || ch=='-'){
+			return false;
+		}
+		return true;
+	}
 
 
 	private static boolean validateDate() {

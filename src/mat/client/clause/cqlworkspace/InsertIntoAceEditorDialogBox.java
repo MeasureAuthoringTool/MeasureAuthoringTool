@@ -1480,7 +1480,7 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static void clearAllBoxes(){
 		QuantityTextBox.clear();
-		UnitslistBox.clear();
+		UnitslistBox.setSelectedIndex(0);
 		yyyyTxtBox.clear();
 		mmTxtBox.clear();
 		ddTxtBox.clear();

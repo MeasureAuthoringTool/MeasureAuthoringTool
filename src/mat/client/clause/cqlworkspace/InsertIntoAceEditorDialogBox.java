@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -14,7 +15,6 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -487,6 +487,8 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
 		
+		Collections.sort(allAttributes);
+		Collections.sort(allAttributes);
 		addAvailableItems(DtAttriblistBox, allDataTypes);
 		addAvailableItems(AttriblistBox, allAttributes);
 		
@@ -497,6 +499,8 @@ public class InsertIntoAceEditorDialogBox {
 				helpBlock.setText("");
 				ModelistBox.clear();
 				ModeDetailslistBox.clear();
+				ModeDetailslistBox.setEnabled(false);
+				ModelistBox.setEnabled(false);
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = DtAttriblistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
@@ -517,14 +521,27 @@ public class InsertIntoAceEditorDialogBox {
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
 				ModelistBox.clear();
+				ModeDetailslistBox.clear();
+				ModelistBox.setEnabled(false);
+				ModeDetailslistBox.setEnabled(false);
 				messageFormgroup.setValidationState(ValidationState.NONE);
                 setWidgetEnabled(AttriblistBox);
 				int selectedIndex = AttriblistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String attribSelected = AttriblistBox.getItemText(selectedIndex);
-					addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attribSelected));
+					if(attribSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						ModelistBox.setEnabled(false);
+						ModeDetailslistBox.setEnabled(false);
+					}
+					else{
+						ModelistBox.setEnabled(true);
+						addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attribSelected));
+					}
+					
 				}
 				else {
+					ModelistBox.setEnabled(false);
+					ModeDetailslistBox.setEnabled(false);
 					ModelistBox.addItem(MatContext.get().PLEASE_SELECT);
 				}
 			}
@@ -541,9 +558,16 @@ public class InsertIntoAceEditorDialogBox {
 				int selectedIndex = ModelistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String modeSelected = ModelistBox.getItemText(selectedIndex);
-					addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
+					if(modeSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						ModeDetailslistBox.setEnabled(false);
+					}
+					else{
+						ModeDetailslistBox.setEnabled(true);
+						addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
+					}
 				}
 				else {
+					ModeDetailslistBox.setEnabled(false);
 					ModeDetailslistBox.addItem(MatContext.get().PLEASE_SELECT);
 				}
 			}
@@ -1201,6 +1225,7 @@ public class InsertIntoAceEditorDialogBox {
 				for (QDSAttributes qdsAttributes : result) {
 					filterAttrByDataTypeList.add(qdsAttributes.getName());
 				}
+				Collections.sort(filterAttrByDataTypeList);
 				availableAttributesToInsert.clear();
 				addAvailableItems(availableAttributesToInsert, filterAttrByDataTypeList);
 			}

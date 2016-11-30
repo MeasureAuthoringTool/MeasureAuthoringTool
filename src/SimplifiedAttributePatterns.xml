@@ -107,7 +107,7 @@
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
  </attribute>
- <attribute attribName="referenceRange ">
+ <attribute attribName="referenceRange">
   <mode mode="Nullable" />
  </attribute>
  <attribute attribName="refills">
@@ -156,7 +156,7 @@
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
  </attribute>
- <attribute attribName="identification">
+ <attribute attribName="id">
   <mode mode="ValueSets" />
  </attribute>
  <attribute attribName="recorder">

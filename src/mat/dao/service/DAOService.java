@@ -30,11 +30,14 @@ import mat.dao.UserPasswordDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.dao.clause.AttributeDetailsDAO;
+import mat.dao.clause.AttributesDAO;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
+import mat.dao.clause.ModesAttributesDAO;
+import mat.dao.clause.ModesDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -48,6 +51,9 @@ public class DAOService {
 	
 	/** The attribute details dao. */
 	private AttributeDetailsDAO attributeDetailsDAO;
+	
+	/** The attributes dao. */
+	private AttributesDAO attributesDAO;
 	
 	/** The audit log dao. */
 	private AuditLogDAO auditLogDAO;
@@ -104,6 +110,12 @@ public class DAOService {
 	
 	/** The measure xmldao. */
 	private MeasureXMLDAO measureXMLDAO;
+	
+	/** The modes attributes dao. */
+	private ModesAttributesDAO modesAttributesDAO;
+	
+	/** The modes dao. */
+	private ModesDAO modesDAO;
 	
 	/** The object status dao. */
 	private ObjectStatusDAO objectStatusDAO;
@@ -170,6 +182,24 @@ public class DAOService {
 		return attributeDetailsDAO;
 	}
 	
+	/**
+	 * @return the attributesDAO
+	 */
+	public AttributesDAO getAttributesDAO() {
+		return attributesDAO;
+	}
+
+
+
+	/**
+	 * @param attributesDAO the attributesDAO to set
+	 */
+	public void setAttributesDAO(AttributesDAO attributesDAO) {
+		this.attributesDAO = attributesDAO;
+	}
+
+
+
 	/**
 	 * Gets the audit log dao.
 	 * 
@@ -334,6 +364,34 @@ public class DAOService {
 		return measureXMLDAO;
 	}
 	
+	/**
+	 * @return the modesAttributesDAO
+	 */
+	public ModesAttributesDAO getModesAttributesDAO() {
+		return modesAttributesDAO;
+	}
+
+	/**
+	 * @param modesAttributesDAO the modesAttributesDAO to set
+	 */
+	public void setModesAttributesDAO(ModesAttributesDAO modesAttributesDAO) {
+		this.modesAttributesDAO = modesAttributesDAO;
+	}
+
+	/**
+	 * @return the modesDAO
+	 */
+	public ModesDAO getModesDAO() {
+		return modesDAO;
+	}
+
+	/**
+	 * @param modesDAO the modesDAO to set
+	 */
+	public void setModesDAO(ModesDAO modesDAO) {
+		this.modesDAO = modesDAO;
+	}
+
 	/**
 	 * Gets the object status dao.
 	 * 

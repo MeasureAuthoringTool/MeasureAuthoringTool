@@ -43,6 +43,7 @@ import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.CustomDateTimeTextBox;
 import mat.client.shared.CustomQuantityTextBox;
+import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
@@ -378,7 +379,6 @@ public class InsertIntoAceEditorDialogBox {
 		ModelistBox.setWidth("18em");
 		ModelistBox.setVisibleItemCount(10);
 		ModelistBox.getElement().setId("Mode_listBox");
-		ModelistBox.addItem("Select");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModelistBox.setVisibleItemCount(1);
 
@@ -386,7 +386,6 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailslistBox.setWidth("18em");
 		ModeDetailslistBox.setVisibleItemCount(10);
 		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
-		ModeDetailslistBox.addItem("Select");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
 
@@ -503,6 +502,8 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
+				ModelistBox.clear();
+				ModeDetailslistBox.clear();
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = DtAttriblistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
@@ -522,7 +523,35 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
+				ModelistBox.clear();
 				messageFormgroup.setValidationState(ValidationState.NONE);
+				int selectedIndex = AttriblistBox.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String attribSelected = AttriblistBox.getItemText(selectedIndex);
+					addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attribSelected));
+				}
+				else {
+					ModelistBox.addItem(MatContext.get().PLEASE_SELECT);
+				}
+			}
+
+		});
+		
+		ModelistBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				ModeDetailslistBox.clear();
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				int selectedIndex = ModelistBox.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String modeSelected = ModelistBox.getItemText(selectedIndex);
+					addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
+				}
+				else {
+					ModeDetailslistBox.addItem(MatContext.get().PLEASE_SELECT);
+				}
 			}
 		});
 		
@@ -1167,6 +1196,24 @@ public class InsertIntoAceEditorDialogBox {
 			}
 		}
 		
+	}
+	
+	private static void addModelist(ListBoxMVP availableItemToInsert, List<String> attrModeList) {
+		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < attrModeList.size(); i++) {
+			if(!attrModeList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(attrModeList.get(i));
+			}
+		}
+	}
+	
+	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<String> modeDetailsList) {
+		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < modeDetailsList.size(); i++) {
+			if(!modeDetailsList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(modeDetailsList.get(i));
+			}
+		}
 	}
 	
 	/**

@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import mat.client.clause.QDSAttributesService;
 import mat.dao.DataTypeDAO;
+import mat.dao.clause.AttributesDAO;
+import mat.dao.clause.ModesAttributesDAO;
+import mat.dao.clause.ModesDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
@@ -36,6 +39,15 @@ implements QDSAttributesService {
 	/** The q ds attributes dao. */
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
+	
+	@Autowired
+	private AttributesDAO attributesDAO;
+	
+	@Autowired
+	private ModesAttributesDAO modesAttributesDAO;
+	
+	@Autowired
+	private ModesDAO modesDAO;
 	
 	/*
 	 * (non-Javadoc)
@@ -98,6 +110,33 @@ implements QDSAttributesService {
 	 */
 	public QDSAttributesDAO getDAO() {
 		return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
+	}
+	
+	/**
+	 * Gets the attributes dao.
+	 * 
+	 * @return the dao
+	 */
+	public AttributesDAO getAttributesDAO() {
+		return (AttributesDAO) context.getBean("attributesDAO");
+	}
+	
+	/**
+	 * Gets the modes dao.
+	 * 
+	 * @return the dao
+	 */
+	public ModesDAO getModesDAO() {
+		return (ModesDAO) context.getBean("modesDAO");
+	}
+	
+	/**
+	 * Gets the mode attribute dao.
+	 * 
+	 * @return the dao
+	 */
+	public ModesAttributesDAO getModeAttrDAO() {
+		return (ModesAttributesDAO) context.getBean("modesAttributesDAO");
 	}
 	
 	/*
@@ -180,6 +219,27 @@ implements QDSAttributesService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#getModeDetailsJSONObjectFromXML()
+	 */
+	@Override
+	public String getModeDetailsJSONObjectFromXML() {
+		String result = null;
+		try {
+			result = convertModeDetailsXmlToString();
+			XMLSerializer xmlSerializer = new XMLSerializer();
+			xmlSerializer.setForceTopLevelObject(true);
+			xmlSerializer.setTypeHintsEnabled(false);
+			JSON json = xmlSerializer.read(result);
+			JSONObject jsonObject = JSONObject.fromObject(json.toString());
+			result = jsonObject.toString(4);
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		return result;
+	}
+	
 	/**
 	 * Convert xml to string.
 	 *
@@ -188,6 +248,41 @@ implements QDSAttributesService {
 	@SuppressWarnings("resource")
 	private String convertXmlToString() {
 		String fileName = "SimplifiedAttributePatterns.xml";
+		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
+		File xmlFile = null;
+		FileReader fr;
+		String line = "";
+		StringBuilder sb = new StringBuilder();
+		try {
+			try {
+				xmlFile = new File(templateFileUrl.toURI());
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+			fr = new FileReader(xmlFile);
+			BufferedReader br = new BufferedReader(fr);
+			
+			try {
+				while ((line = br.readLine()) != null) {
+					sb.append(line.trim());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Convert xml to string.
+	 *
+	 * @return the string
+	 */
+	@SuppressWarnings("resource")
+	private String convertModeDetailsXmlToString() {
+		String fileName = "ModeDetails.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
 		File xmlFile = null;
 		FileReader fr;

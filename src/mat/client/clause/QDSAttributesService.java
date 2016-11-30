@@ -62,6 +62,13 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return the JSON object from xml
 	 */
 	String getJSONObjectFromXML();
+	
+	/**
+	 * Gets the JSON object from mode details xml.
+	 *
+	 * @return the JSON object from mode details xml
+	 */
+	String getModeDetailsJSONObjectFromXML();
 
 	/**
 	 * Gets the all attributes.

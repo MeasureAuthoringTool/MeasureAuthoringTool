@@ -1,6 +1,11 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gwt.xml.client.Node;
 
 public class CQLWorkSpaceConstants {
 	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
@@ -19,6 +24,112 @@ public class CQLWorkSpaceConstants {
 	private static final ArrayList<String> RELATIVE_QUALIFIER = new ArrayList<String>();
 	
 	private static final ArrayList<String> WITHIN_TIMING_EXP = new ArrayList<String>();	
+	
+	/** The element look up name. */
+	public static Map<String, String> elementLookUpName;
+	
+	/** The element look up name. */
+	public static Map<String, String> elementLookUpDataTypeName;
+	
+	/** The element look up node. */
+	public static Map<String, Node> elementLookUpNode;
+	
+	/** The element look up name. */
+	public static LinkedHashMap<String, String> subTreeLookUpName;
+	/** The element look up node. */
+	public static LinkedHashMap<String, Node> subTreeLookUpNode;
+	
+	/** The datatype map. */
+	public static Map<String, List<String>> datatypeMap;
+	
+	/**
+	 * @return the elementLookUpName
+	 */
+	public static Map<String, String> getElementLookUpName() {
+		return elementLookUpName;
+	}
+
+	/**
+	 * @param elementLookUpName the elementLookUpName to set
+	 */
+	public static void setElementLookUpName(Map<String, String> elementLookUpName) {
+		CQLWorkSpaceConstants.elementLookUpName = elementLookUpName;
+	}
+
+	/**
+	 * @return the elementLookUpDataTypeName
+	 */
+	public static Map<String, String> getElementLookUpDataTypeName() {
+		return elementLookUpDataTypeName;
+	}
+
+	/**
+	 * @param elementLookUpDataTypeName the elementLookUpDataTypeName to set
+	 */
+	public static void setElementLookUpDataTypeName(Map<String, String> elementLookUpDataTypeName) {
+		CQLWorkSpaceConstants.elementLookUpDataTypeName = elementLookUpDataTypeName;
+	}
+
+	/**
+	 * @return the elementLookUpNode
+	 */
+	public static Map<String, Node> getElementLookUpNode() {
+		return elementLookUpNode;
+	}
+
+	/**
+	 * @param elementLookUpNode the elementLookUpNode to set
+	 */
+	public static void setElementLookUpNode(Map<String, Node> elementLookUpNode) {
+		CQLWorkSpaceConstants.elementLookUpNode = elementLookUpNode;
+	}
+
+	/**
+	 * @return the subTreeLookUpName
+	 */
+	public static LinkedHashMap<String, String> getSubTreeLookUpName() {
+		return subTreeLookUpName;
+	}
+
+	/**
+	 * @param subTreeLookUpName the subTreeLookUpName to set
+	 */
+	public static void setSubTreeLookUpName(LinkedHashMap<String, String> subTreeLookUpName) {
+		CQLWorkSpaceConstants.subTreeLookUpName = subTreeLookUpName;
+	}
+
+	/**
+	 * @return the subTreeLookUpNode
+	 */
+	public static LinkedHashMap<String, Node> getSubTreeLookUpNode() {
+		return subTreeLookUpNode;
+	}
+
+	/**
+	 * Gets the datatype map.
+	 *
+	 * @return the datatypeMap
+	 */
+	public static Map<String, List<String>> getDatatypeMap() {
+		return datatypeMap;
+	}
+	
+	/**
+	 * Sets the datatype map.
+	 *
+	 * @param datatypeMap the datatype map
+	 */
+	public static  void setDatatypeMap(Map<String, List<String>> datatypeMap) {
+		CQLWorkSpaceConstants.datatypeMap = datatypeMap;
+	}
+	
+	/**
+	 * @param subTreeLookUpNode the subTreeLookUpNode to set
+	 */
+	public static void setSubTreeLookUpNode(LinkedHashMap<String, Node> subTreeLookUpNode) {
+		CQLWorkSpaceConstants.subTreeLookUpNode = subTreeLookUpNode;
+	}
+
 	public static ArrayList<String> getAvailableItem() {
 		AVAILABLE_ITEM_TO_INSERT.clear();
 		AVAILABLE_ITEM_TO_INSERT.add("Parameters");

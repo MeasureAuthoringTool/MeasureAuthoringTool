@@ -267,7 +267,20 @@
          
     <bean id="qDSAttributesDAO"
         class="mat.dao.impl.clause.QDSAttributesDAO" parent="baseDAO">
-    </bean>     
+    </bean>  
+    
+     <bean id="attributesDAO"
+        class="mat.dao.impl.clause.AttributesDAO" parent="baseDAO">
+    </bean>  
+    
+    <bean id="modesDAO"
+        class="mat.dao.impl.clause.ModesDAO" parent="baseDAO">
+    </bean>  
+    
+    <bean id="modesAttributesDAO"
+        class="mat.dao.impl.clause.ModesAttributesDAO" parent="baseDAO">
+    </bean>  
+    
     <bean id="packagerDAO"
         class="mat.dao.impl.clause.PackagerDAO" parent="baseDAO">
     </bean>
@@ -342,6 +355,9 @@
 		<property name="measureSetDAO" ref="measureSetDAO"/>
 		<!-- <property name="clauseDAO" ref="clauseDAO"/> -->
 		<property name="qDSAttributesDAO" ref="qDSAttributesDAO"/>
+        <property name="attributesDAO" ref="attributesDAO"/>
+        <property name="modesDAO" ref="modesDAO"/>
+        <property name="modesAttributesDAO" ref="modesAttributesDAO"/>
 		<property name="qDSAttributeDetailsDAO" ref="qDSAttributeDetailsDAO"/>
 		<!-- <property name="contextDAO" ref="contextDAO"/> -->
 		<property name="measureScoreDAO" ref="measureScoreDAO"/>

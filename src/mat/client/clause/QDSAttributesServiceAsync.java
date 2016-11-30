@@ -72,6 +72,13 @@ public interface QDSAttributesServiceAsync {
 	void getJSONObjectFromXML( AsyncCallback<String> asyncCallback);
 
 	/**
+	 * Gets the JSON object from mode details xml.
+	 *
+	 * @return the JSON object from mode details xml
+	 */
+	void getModeDetailsJSONObjectFromXML(AsyncCallback<String> asyncCallback);
+	
+	/**
 	 * Gets the all attributes.
 	 *
 	 * @param callback the callback

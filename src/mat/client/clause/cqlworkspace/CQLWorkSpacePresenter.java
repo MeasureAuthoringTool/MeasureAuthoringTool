@@ -5,16 +5,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.criteria.CriteriaBuilder.In;
-
+import java.util.TreeMap;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
@@ -58,6 +58,11 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.NamedNodeMap;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
@@ -926,6 +931,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addEventHandlers();
 		addObserverHandler();
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
+		JSONAttributeModeUtility.getAllAttrModeList();
+		JSONAttributeModeUtility.getAllModeDetailsList();
 		MatContext.get().getAllAttributesList();
 	}
 	
@@ -2102,6 +2109,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		MatContext.get().getAllUnits();
 		getAppliedQDMList(true);
+		loadElementLookUpNode();
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
@@ -2865,5 +2873,91 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());		
 		}
 	}
+	
+	private void loadElementLookUpNode(){
+		
+		MatContext.get().getMeasureService().getMeasureXmlForMeasure(
+				MatContext.get().getCurrentMeasureId(), new AsyncCallback<MeasureXmlModel>() {
+			
+			@Override
+			public void onSuccess(MeasureXmlModel result) {
+				String xml = result != null ? result.getXml() : null;
+				setMeasureElementsMap(xml);
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		} );
+	}
+	
+	
+	/**
+	 * Sets the qdm elements map. 
+	 * Also finds SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
+	 * Also finds CQL dEfinitions and add to CQLDEfinitionsNode map.
+	 * @param xml            the new qdm elements map
+	 * @param measureId the measure id
+	 */
+	private void setMeasureElementsMap(String xml) {
+		
+		CQLWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
+		CQLWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
+		CQLWorkSpaceConstants.elementLookUpDataTypeName = new TreeMap<String, String>();
+		
+		Document document = XMLParser.parse(xml);
+		NodeList nodeList = document.getElementsByTagName("elementLookUp");
+		setupElementLookupQDMNodes(nodeList);
+		
+		List<String> dataTypeList = new ArrayList<String>();
+		dataTypeList.addAll(CQLWorkSpaceConstants.getElementLookUpDataTypeName().values());
+		attributeService.getDatatypeList(dataTypeList, new AsyncCallback<Map<String, List<String>>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				//Window.alert("I failed");
+				
+			}
+			@Override
+			public void onSuccess(Map<String, List<String>> datatypeMap) {
+				CQLWorkSpaceConstants.setDatatypeMap(datatypeMap);
+			}
+		});
+	}
+	
+	public void setupElementLookupQDMNodes(NodeList nodeList) {
+		if ((null != nodeList) && (nodeList.getLength() > 0)) {
+			NodeList qdms = nodeList.item(0).getChildNodes();
+			for (int i = 0; i < qdms.getLength(); i++) {
+				if ("qdm".equals(qdms.item(i).getNodeName())) {
+					NamedNodeMap namedNodeMap = qdms.item(i).getAttributes();
+					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
+					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
+						String name = namedNodeMap.getNamedItem("name").getNodeValue();
+						// Prod Issue fixed : qdm name has trailing spaces which is reterived frm VSAC.
+						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
+						name = name.trim();
+						//name = name.replaceAll("^\\s+|\\s+$", "");
+						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+						if (namedNodeMap.getNamedItem("instance") != null) {
+							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
+						}
+						
+						if (namedNodeMap.getNamedItem("datatype") != null) {
+							String dataType = namedNodeMap.getNamedItem("datatype").getNodeValue().trim();
+							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
+							CQLWorkSpaceConstants.elementLookUpDataTypeName.put(uuid, dataType);
+						}
+						CQLWorkSpaceConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
+						CQLWorkSpaceConstants.elementLookUpName.put(uuid, name);
+					}
+				}
+			}
+			
+		}
+	}	
 	
 }

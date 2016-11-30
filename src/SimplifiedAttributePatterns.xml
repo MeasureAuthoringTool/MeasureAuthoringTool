@@ -1,323 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <matattributes>
-    <attribute attribName="Active Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Admission Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Anatomical Approach Site">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Cause">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Cumulative Medication Duration">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Date">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <!--<mode mode="ValueSet"/> Removed by Stan: 1/22/2015 4:23 P.M. -->
-    </attribute>
-    <attribute attribName="Discharge Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Discharge Status">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Dose">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Facility Location">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Facility Location Arrival Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Facility Location Departure Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Frequency">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Incision Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Laterality">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Length Of Stay">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Method">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Ordinality">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Patient Preference">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Provider Preference">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Reaction">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Reason">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Refills">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Related To">
-       <!--  <mode mode="IsPresent"/> -->
-         <mode mode="ValueSet"/>
-         <!-- added: 1/22/2015 4:23 P.M. -->
-        <!--<mode mode="LessThanEqualTo"/> removed: 1/22/2015 4:23 P.M. -->
-    </attribute>
-    <attribute attribName="Removal Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Route">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Severity">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Signed Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Start Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/> <!-- added: 7/27/2015 2:02 P.M. -->
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Stop Datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Status">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Anatomical Location Site">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Target Outcome">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Time">
-        <mode mode="IsPresent"/>
-        <!--<mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/> Removed: 1/22/2015 4:23 P.M. -->
-    </attribute>
-    <attribute attribName="Radiation Dosage">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="Radiation Duration">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <!-- <attribute attribName="Result" datatypeList="Physical Exam, Performed; Procedure, Performed; Intervention, Performed">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <mode mode="ValueSet"/>
-    </attribute> Commented as below is representing same mode list.-->
-    <attribute attribName="Result" datatypeList="Diagnostic Study, Performed; Functional Status, Performed; Laboratory Test, Performed; Risk Category Assessment">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Health Record Field">
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Recorder">
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="Source">
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="negation rationale">
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="relationship">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-     <attribute attribName="onset age">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="recorded datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="onset datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="abatement datetime">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="reference range high">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="reference range low">
-        <mode mode="IsPresent"/>
-        <mode mode="Equals"/>
-        <mode mode="GreaterThan"/>
-        <mode mode="GreaterThanEqualTo"/>
-        <mode mode="LessThan"/>
-        <mode mode="LessThanEqualTo"/>
-    </attribute>
-    <attribute attribName="principal diagnosis">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
-    <attribute attribName="diagnosis">
-        <mode mode="IsPresent"/>
-        <mode mode="ValueSet"/>
-    </attribute>
+ <attribute attribName="activeDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="admissionSource">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="anatomicalApproachSite">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="anatomicalLocationSite">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="authorDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="cause">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="code">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="birthDateTime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="expiredDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="diagnosis">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="dischargeDisposition">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="dosage">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="supply">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="facilityLocation">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="frequency">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="incisionDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="lengthOfStay">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="locationPeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="method">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="negationRationale">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="ordinality">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="prevalencePeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="principalDiagnosis">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="radiationDosage">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="radiationDuration">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="reason">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="referenceRange ">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="refills">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="relatedTo">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="relationship">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="relevantPeriod">
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="result">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="resultDatetime">
+  <mode mode="Comparison" />
+  <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="route">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="severity">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="status">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="targetOutcome">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="type">
+  <mode mode="Nullable" />
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="identification">
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="recorder">
+  <mode mode="ValueSets" />
+ </attribute>
+ <attribute attribName="reporter">
+  <mode mode="ValueSets" />
+ </attribute>
 </matattributes>

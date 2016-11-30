@@ -199,4 +199,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8318_Add_Unit.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Add_New_Units.xml"/>
         <include file="classpath://liquibase/deploy_Sprint-106_MAT-8230_Mode.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Change_L_to_Liter.xml"/>
+        
    	</databaseChangeLog>

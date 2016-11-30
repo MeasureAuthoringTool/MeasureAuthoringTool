@@ -389,12 +389,10 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
-		
-		final CustomQuantityTextBox QuantityTextBox = new CustomQuantityTextBox(20);
+	
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
 		
-		final ListBoxMVP UnitslistBox = new ListBoxMVP();
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
@@ -1462,8 +1460,9 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static void setWidgetEnabled(ListBox attributeListBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-		System.out.println("AttributeName:"+ attributeName);
-		if(attributeName.contains("Datetime")){
+		attributeName = attributeName.toLowerCase();
+		clearAllBoxes();
+		if(attributeName.contains("datetime")){
 			setDateTimeEnabled(true);
 			QuantityTextBox.setEnabled(false);
 			UnitslistBox.setEnabled(false);
@@ -1476,6 +1475,19 @@ public class InsertIntoAceEditorDialogBox {
 			QuantityTextBox.setEnabled(true);
 			UnitslistBox.setEnabled(true);
 		}
+	}
+	
+	
+	private static void clearAllBoxes(){
+		QuantityTextBox.clear();
+		UnitslistBox.clear();
+		yyyyTxtBox.clear();
+		mmTxtBox.clear();
+		ddTxtBox.clear();
+		hhTextBox.clear();
+		minTxtBox.clear();
+		ssTxtBox.clear();
+		msTxtBox.clear();
 	}
 	
 	private static void setDateTimeEnabled(boolean enabled){

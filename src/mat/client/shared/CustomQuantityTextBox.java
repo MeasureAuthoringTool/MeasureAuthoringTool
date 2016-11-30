@@ -1,6 +1,5 @@
 package mat.client.shared;
 
-import org.gwtbootstrap3.client.ui.IntegerBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.core.client.Scheduler;
@@ -86,8 +85,12 @@ public class CustomQuantityTextBox extends TextBox {
             	} else if(firstChar == '-' && Character.isDigit(ch)) {
             		sb.append(ch);
             	} else if (i!=0 && ch=='.' &&  dotcount<=0){
+            			if(i==1 && firstChar=='-'){
+            				continue;
+            			}
             			sb.append(ch);
             			dotcount++;
+            		    
             	} 
             } 
 		}

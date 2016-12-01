@@ -68,9 +68,10 @@
                   );
              	
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Prevalent Period', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relevant Period', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relevantPeriod', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('type', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('severity', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('facilityLocation', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('id', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Adverse Event'), 'Data Type');
@@ -107,7 +108,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Care Goal'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Care Goal'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relatedTo', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Care Goal'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relevantPeriod', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Care Goal'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('targetOutcome', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Care Goal'), 'Data Type');
@@ -227,11 +227,11 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('method', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('radiationDosage', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('radiationDuration', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('id', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Active'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Admission Datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Active'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('facilityLocation', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Active'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('lengthOfStay', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Active'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('locationPeriod', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Active'), 'Data Type');
@@ -263,7 +263,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('admissionSource', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Performed'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Admission Datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('diagnosis', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('dischargeDisposition', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Encounter, Performed'), 'Data Type');
@@ -300,7 +299,7 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('negationRationale', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('identifier', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('id', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Ordered'), 'Data Type');
@@ -310,7 +309,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Not Ordered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('activeDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Signed Datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('supply', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reason', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Immunization, Order'), 'Data Type');
@@ -378,9 +376,7 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('method', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reference range low', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reference range high', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reference Range', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('referenceRange', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relevantPeriod', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('result', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('resultDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed'), 'Data Type');
@@ -458,7 +454,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('activeDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('signed datetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('dosage', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('supply', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('frequency', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Medication, Order'), 'Data Type');
@@ -615,7 +610,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Provider Characteristic'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Provider Characteristic'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Administered'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Supply', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('dosage', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('frequency', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Administered'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('relevantPeriod', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Administered'), 'Data Type');
@@ -652,7 +646,6 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Order'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('authorDatetime ', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('Supply', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('dosage', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('frequency', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('method', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Substance, Recommended'), 'Data Type');

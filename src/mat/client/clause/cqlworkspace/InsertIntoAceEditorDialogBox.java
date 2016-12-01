@@ -382,6 +382,8 @@ public class InsertIntoAceEditorDialogBox {
 		ModelistBox.getElement().setId("Mode_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModelistBox.setVisibleItemCount(1);
+		//Disabled by Default and enabled by other selections made.
+		ModelistBox.setEnabled(false);
 
 		final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
 		ModeDetailslistBox.setWidth("18em");
@@ -389,6 +391,8 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
+		//Disabled by Default and enabled by other selections made.
+		ModeDetailslistBox.setEnabled(false);
 	
 		QuantityTextBox.clear();
 		QuantityTextBox.setWidth("18em");

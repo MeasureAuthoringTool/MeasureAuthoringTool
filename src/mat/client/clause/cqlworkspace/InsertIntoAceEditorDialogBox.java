@@ -390,9 +390,11 @@ public class InsertIntoAceEditorDialogBox {
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
 	
+		QuantityTextBox.clear();
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
 		
+		UnitslistBox.clear();
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");

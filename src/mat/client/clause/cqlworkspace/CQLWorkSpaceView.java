@@ -1463,6 +1463,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		contextDefinePOPRadioBtn.setText("Population");
 		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
 		
+		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineConextPanel.add(contextDefinePATRadioBtn);
 		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
@@ -1697,6 +1698,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		contextFuncPOPRadioBtn.setValue(false);
 		contextFuncPOPRadioBtn.setText("Population");
 		contextFuncPOPRadioBtn.setId("context_PopulationRadioButton");
+		functionButtonBar.getTimingExpButton().setVisible(false);
 		
 		funcConextPanel.add(contextFuncPATRadioBtn);
 		funcConextPanel.add(contextFuncPOPRadioBtn);

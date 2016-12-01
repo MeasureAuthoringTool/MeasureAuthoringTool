@@ -1135,23 +1135,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		};
 		searchDisplay.getMainPanel().addDomHandler(cHandler, ClickEvent.getType());
 		
-		searchDisplay.getDefineTimingExpButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				buildTimingExpressionPopUp();
-			}
-		});
-		
-		
-		searchDisplay.getFuncTimingExpButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				buildTimingExpressionPopUp();
-			}
-		});
-		
 		searchDisplay.getParameterButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
 
 			@Override

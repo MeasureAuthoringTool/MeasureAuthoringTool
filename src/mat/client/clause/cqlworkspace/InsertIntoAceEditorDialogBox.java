@@ -1142,7 +1142,14 @@ public class InsertIntoAceEditorDialogBox {
 						addAvailableItems(availableDatatypes, allDataTypes);
 						addAvailableItems(availableAttributesToInsert, allAttributes);
 						
-					} else {
+					} else if (itemTypeSelected.equalsIgnoreCase("Timing")) {
+						//open new popup/dialogBox
+						dialogModal.clear();
+						dialogModal.hide();
+						searchDisplay.resetMessageDisplay();
+						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
+						searchDisplay.setIsPageDirty(true);
+					}else {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();

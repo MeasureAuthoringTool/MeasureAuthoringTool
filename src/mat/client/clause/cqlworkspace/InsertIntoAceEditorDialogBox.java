@@ -387,7 +387,6 @@ public class InsertIntoAceEditorDialogBox {
 		ModelistBox.setStyleName("form-control");
 		//Disabled by Default and enabled by other selections made.
 		ModelistBox.setEnabled(false);
-
 		final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
 		ModeDetailslistBox.setWidth("18em");
 		ModeDetailslistBox.setVisibleItemCount(10);
@@ -397,15 +396,15 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailslistBox.setStyleName("form-control");
 		//Disabled by Default and enabled by other selections made.
 		ModeDetailslistBox.setEnabled(false);
-	
 		QuantityTextBox.clear();
 		QuantityTextBox.setWidth("18em");
 		QuantityTextBox.getElement().setId("Qantity_TextBox");
-		
+		QuantityTextBox.setEnabled(false);
 		UnitslistBox.clear();
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
+		UnitslistBox.setEnabled(false);
 		for(String unit : allUnits) {
 			UnitslistBox.addItem(unit);
 		}
@@ -522,6 +521,7 @@ public class InsertIntoAceEditorDialogBox {
 					UnitslistBox.setSelectedIndex(0);
 					addAvailableItems(AttriblistBox, allAttributes);
 				}
+				setEnabled(false);
 			}
 		});
 		
@@ -536,7 +536,6 @@ public class InsertIntoAceEditorDialogBox {
 				ModelistBox.setEnabled(false);
 				ModeDetailslistBox.setEnabled(false);
 				messageFormgroup.setValidationState(ValidationState.NONE);
-                setWidgetEnabled(AttriblistBox);
 				int selectedIndex = AttriblistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String attribSelected = AttriblistBox.getItemText(selectedIndex);
@@ -547,6 +546,7 @@ public class InsertIntoAceEditorDialogBox {
 					else{
 						ModelistBox.setEnabled(true);
 						addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attribSelected));
+						ModelistBox.setSelectedIndex(0);
 					}
 					
 				}
@@ -555,6 +555,7 @@ public class InsertIntoAceEditorDialogBox {
 					ModeDetailslistBox.setEnabled(false);
 					ModelistBox.addItem(MatContext.get().PLEASE_SELECT);
 				}
+				setEnabled(false);
 			}
 
 		});
@@ -571,13 +572,18 @@ public class InsertIntoAceEditorDialogBox {
 					String modeSelected = ModelistBox.getItemText(selectedIndex);
 					if(modeSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
 						ModeDetailslistBox.setEnabled(false);
-					}
-					else{
+						setEnabled(false);
+					} else{
 						ModeDetailslistBox.setEnabled(true);
 						addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
+						if(modeSelected.equalsIgnoreCase("nullable") || modeSelected.equalsIgnoreCase("value sets")){
+							setEnabled(false);
+						} else {
+							setWidgetEnabled(AttriblistBox);
+						}
+						
 					}
-				}
-				else {
+				} else {
 					ModeDetailslistBox.setEnabled(false);
 					ModeDetailslistBox.addItem(MatContext.get().PLEASE_SELECT);
 				}
@@ -641,7 +647,7 @@ public class InsertIntoAceEditorDialogBox {
 						} else {
 							
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Enter valid date/time or quanitity.");
+							helpBlock.setText("You can not enter both DateTime and Quantity.");
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 						
@@ -691,7 +697,7 @@ public class InsertIntoAceEditorDialogBox {
 			if(!isValidate(sb.toString())){
 				return false;
 			}	
-		} else if(!inRange(yyyyTxtBox.getText(), "0001", "9999") || !inRange(mmTxtBox.getText(), "01", "12") || !inRange(ddTxtBox.getText(), "01", "31")){
+		} else if(!inRange(yyyyTxtBox.getText(), "0000", "9999") || !inRange(mmTxtBox.getText(), "01", "12") || !inRange(ddTxtBox.getText(), "01", "31")){
 			return false;
 		}
 		return true;
@@ -723,14 +729,17 @@ public class InsertIntoAceEditorDialogBox {
 		
 		yyyyTxtBox.clear();
 		yyyyTxtBox.setWidth("50px");
+		yyyyTxtBox.setEnabled(false);
 		yearFormGroup.add(yyyyTxtBox);
 		
 		mmTxtBox.clear();
 		mmTxtBox.setWidth("50px");
+		mmTxtBox.setEnabled(false);
 		mmFormGroup.add(mmTxtBox);
 		
 		ddTxtBox.clear();
 		ddTxtBox.setWidth("50px");
+		ddTxtBox.setEnabled(false);
 		ddFormGroup.add(ddTxtBox);
 		
 		final FormLabel yearFormLabel = new FormLabel();
@@ -773,7 +782,7 @@ public class InsertIntoAceEditorDialogBox {
 			public void onBlur(BlurEvent event) {
 				String year = yyyyTxtBox.getText();
 				if(!year.isEmpty()){
-					if(!inRange(year, "0001", "9999")){
+					if(!inRange(year, "0000", "9999")){
 						yearFormGroup.setValidationState(ValidationState.ERROR);
 					} else {
 						yearFormGroup.setValidationState(ValidationState.NONE);
@@ -913,18 +922,22 @@ public class InsertIntoAceEditorDialogBox {
 		
 		hhTextBox.clear();
 		hhTextBox.setWidth("50px");
+		hhTextBox.setEnabled(false);
 		hourFormGroup.add(hhTextBox);
 		
 		minTxtBox.clear();
 		minTxtBox.setWidth("50px");
+		minTxtBox.setEnabled(false);
 		minFormGroup.add(minTxtBox);
 		
 		ssTxtBox.clear();
 		ssTxtBox.setWidth("50px");
+		ssTxtBox.setEnabled(false);
 		secondsFormGroup.add(ssTxtBox);
 		
 		msTxtBox.clear();
 		msTxtBox.setWidth("50px");
+		msTxtBox.setEnabled(false);
 		millisecFormGroup.add(msTxtBox);
 		
 		final FormLabel hourFormLabel = new FormLabel();
@@ -1431,11 +1444,11 @@ public class InsertIntoAceEditorDialogBox {
 		} 
 		if(!mmTxtBox.getText().isEmpty()){
 			if(mmTxtBox.getText().length()<2){
-				sb.append("//").append(appendZeroString(2-mmTxtBox.getText().length()))
+				sb.append("-").append(appendZeroString(2-mmTxtBox.getText().length()))
 				.append(mmTxtBox.getText());
 				
 			} else {
-				sb.append("//"+mmTxtBox.getText());
+				sb.append("-"+mmTxtBox.getText());
 			}
 		}
 		if(!ddTxtBox.getText().isEmpty()){
@@ -1542,5 +1555,12 @@ public class InsertIntoAceEditorDialogBox {
 		ssTxtBox.setEnabled(enabled);
 		msTxtBox.setEnabled(enabled);
 		
+	}
+	
+	private static void setEnabled(boolean enabled){
+		
+		QuantityTextBox.setEnabled(enabled);
+		UnitslistBox.setEnabled(enabled);
+		setDateTimeEnabled(enabled);
 	}
 }

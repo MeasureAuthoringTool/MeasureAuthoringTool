@@ -579,14 +579,16 @@ public class InsertIntoAceEditorDialogBox {
 						if(modeSelected.equalsIgnoreCase("nullable") || modeSelected.equalsIgnoreCase("value sets")){
 							setEnabled(false);
 						} else {
-							setWidgetEnabled(AttriblistBox);
+							setWidgetEnabled(AttriblistBox, ModelistBox);
 						}
 						
 					}
 				} else {
 					ModeDetailslistBox.setEnabled(false);
 					ModeDetailslistBox.addItem(MatContext.get().PLEASE_SELECT);
+					setEnabled(false);
 				}
+				
 			}
 		});
 		
@@ -1453,11 +1455,11 @@ public class InsertIntoAceEditorDialogBox {
 		}
 		if(!ddTxtBox.getText().isEmpty()){
 			if(ddTxtBox.getText().length()<2){
-				sb.append("//").append(appendZeroString(2-ddTxtBox.getText().length()))
+				sb.append("-").append(appendZeroString(2-ddTxtBox.getText().length()))
 				.append(ddTxtBox.getText());
 				
 			} else {
-				sb.append("//"+ddTxtBox.getText());
+				sb.append("-"+ddTxtBox.getText());
 			}
 		}
 		if(!hhTextBox.getText().isEmpty()){
@@ -1514,14 +1516,24 @@ public class InsertIntoAceEditorDialogBox {
 	}
 	
 	
-	private static void setWidgetEnabled(ListBox attributeListBox){
+	private static void setWidgetEnabled(ListBox attributeListBox, ListBoxMVP ModelistBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+		String modeName = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
 		attributeName = attributeName.toLowerCase();
+		modeName = modeName.toLowerCase(); 
 		clearAllBoxes();
 		if(attributeName.contains("datetime")){
-			setDateTimeEnabled(true);
-			QuantityTextBox.setEnabled(false);
-			UnitslistBox.setEnabled(false);
+			
+			if(modeName.equalsIgnoreCase("comparison")){
+				setDateTimeEnabled(true);
+				QuantityTextBox.setEnabled(false);
+				UnitslistBox.setEnabled(false);
+			} else if(modeName.equalsIgnoreCase("computative")) {
+				setDateTimeEnabled(false);
+				QuantityTextBox.setEnabled(true);
+				UnitslistBox.setEnabled(true);
+			}
+		
 		} else if (attributeName.equalsIgnoreCase("result")) {
 			setDateTimeEnabled(true);
 			QuantityTextBox.setEnabled(true);

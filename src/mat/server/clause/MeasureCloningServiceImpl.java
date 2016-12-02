@@ -36,6 +36,7 @@ import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLParameter;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
@@ -79,6 +80,8 @@ implements MeasureCloningService {
 	private UserDAO userDAO;
 	
 	private CQLService cqlService;
+	
+	private MeasureLibraryService measureLibraryService;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
@@ -161,6 +164,7 @@ implements MeasureCloningService {
 		measureSetDAO = (MeasureSetDAO) context.getBean("measureSetDAO");
 		userDAO = (UserDAO) context.getBean("userDAO");
 		cqlService = (CQLService) context.getBean("cqlService");
+		measureLibraryService = (MeasureLibraryService) context.getBean("measureLibraryService");
 		
 		try {
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
@@ -177,9 +181,9 @@ implements MeasureCloningService {
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
-			if(measure.getReleaseVersion() != null){
-				clonedMeasure.setReleaseVersion("v5.0");
-			}
+//			if(measure.getReleaseVersion() != null){
+//				clonedMeasure.setReleaseVersion("v5.0");
+//			}
 			/*clonedMeasure.setMeasureStatus("In Progress");*/
 			clonedMeasure.setDraft(TRUE);
 			if (currentDetails.getMeasScoring() != null) {
@@ -264,7 +268,7 @@ implements MeasureCloningService {
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
 			
-			updateForCQLMeasure(measure, clonedXml, xmlProcessor);
+			updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure);
 			
 			logger.info("Final XML after cloning/draft"
 					+ clonedXml.getMeasureXMLAsString());
@@ -286,7 +290,7 @@ implements MeasureCloningService {
 	}
 
 	private void updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
-			XmlProcessor xmlProcessor) throws XPathExpressionException {
+			XmlProcessor xmlProcessor, Measure clonedMsr) throws XPathExpressionException {
 		
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 		
@@ -294,6 +298,8 @@ implements MeasureCloningService {
 			return;
 		}
 		
+		clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
+				
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){
 			Node populationsParentNode = populationsNode.getParentNode();
@@ -388,6 +394,12 @@ implements MeasureCloningService {
 			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 			
 			Node supplementalDataNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/supplementalDataElements");
+			
+			/*if(supplementalDataNode == null){
+				supplementalDataNode = xmlProcessor.getOriginalDoc().createElement("supplementalDataElements");
+				xmlProcessor.getOriginalDoc().getDocumentElement().appendChild(supplementalDataNode);
+			}*/
+			
 			while(supplementalDataNode.hasChildNodes()){
 				supplementalDataNode.removeChild(supplementalDataNode.getFirstChild());
 			}

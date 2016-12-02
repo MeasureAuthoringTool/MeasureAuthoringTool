@@ -368,6 +368,7 @@ public class InsertIntoAceEditorDialogBox {
 		DtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		DtAttriblistBox.setVisibleItemCount(1);
+		DtAttriblistBox.setStyleName("form-control");
 
 		final ListBoxMVP AttriblistBox = new ListBoxMVP();
 		AttriblistBox.setWidth("18em");
@@ -375,6 +376,7 @@ public class InsertIntoAceEditorDialogBox {
 		AttriblistBox.getElement().setId("Atrr_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		AttriblistBox.setVisibleItemCount(1);
+		AttriblistBox.setStyleName("form-control");
 
 		final ListBoxMVP ModelistBox = new ListBoxMVP();
 		ModelistBox.setWidth("18em");
@@ -382,6 +384,7 @@ public class InsertIntoAceEditorDialogBox {
 		ModelistBox.getElement().setId("Mode_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModelistBox.setVisibleItemCount(1);
+		ModelistBox.setStyleName("form-control");
 		//Disabled by Default and enabled by other selections made.
 		ModelistBox.setEnabled(false);
 
@@ -391,6 +394,7 @@ public class InsertIntoAceEditorDialogBox {
 		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		ModeDetailslistBox.setVisibleItemCount(1);
+		ModeDetailslistBox.setStyleName("form-control");
 		//Disabled by Default and enabled by other selections made.
 		ModeDetailslistBox.setEnabled(false);
 	
@@ -407,6 +411,7 @@ public class InsertIntoAceEditorDialogBox {
 		}
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		UnitslistBox.setVisibleItemCount(1);
+		UnitslistBox.setStyleName("form-control");
 
 		//All the Labels
 		FormLabel AttrDataTypeLabel = new FormLabel();

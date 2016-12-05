@@ -38,6 +38,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
+import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
@@ -166,6 +167,11 @@ implements MeasureCloningService {
 		cqlService = (CQLService) context.getBean("cqlService");
 		measureLibraryService = (MeasureLibraryService) context.getBean("measureLibraryService");
 		
+		boolean isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentDetails.getId());
+		if(!isMeasureClonable){
+			return new ManageMeasureSearchModel.Result();
+		}
+		
 		try {
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
 			Measure measure = measureDAO.find(currentDetails.getId());
@@ -229,6 +235,7 @@ implements MeasureCloningService {
 			clearChildNodes(MEASURE_GROUPING);
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
 			clearChildNodes(Risk_ADJUSTMENT_VARIABLES);
+			
 			// create the default 4 CMS supplemental QDM
 			QualityDataModelWrapper wrapper = measureXmlDAO
 					.createSupplimentalQDM(clonedMeasure.getId(), TRUE,

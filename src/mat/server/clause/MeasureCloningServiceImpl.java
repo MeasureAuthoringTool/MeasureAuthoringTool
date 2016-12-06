@@ -342,7 +342,7 @@ implements MeasureCloningService {
 		 * For ex: "Patient Characteristic Expired" had an old name of "Expired", but the new name is "Dead".
 		 */
 		Node expiredtimingQDMNode = null; 
-		Node birthDataQDMNode = null;
+		//Node birthDataQDMNode = null;
 		
 		if(cqlValuesetsNode != null){
 			for(int i=0;i<qdmNodes.getLength();i++){
@@ -352,7 +352,7 @@ implements MeasureCloningService {
 					expiredtimingQDMNode = qdmNode;
 					continue;
 				}else if(oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
-					birthDataQDMNode = qdmNode;
+					//birthDataQDMNode = qdmNode;
 					continue;
 				}
 				Node clonedqdmNode = qdmNode.cloneNode(true);
@@ -365,10 +365,11 @@ implements MeasureCloningService {
 			Node parentNode = expiredtimingQDMNode.getParentNode();
 			parentNode.removeChild(expiredtimingQDMNode);
 		}
-		if(birthDataQDMNode != null){
+		//Re-factored MAT-8295 : birthdate is not removed from QDM. This is to keep uuid same for ClauseWorkspace references to birthdate qdm.
+		/*if(birthDataQDMNode != null){
 			Node parentNode = birthDataQDMNode.getParentNode();
 			parentNode.removeChild(birthDataQDMNode);
-		}
+		}*/
 		
 		checkForTimingElementsAndAppend(xmlProcessor);
 		checkForDefaultCQLParametersAndAppend(xmlProcessor);

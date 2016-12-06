@@ -370,6 +370,13 @@ implements MeasureCloningService {
 					parentNode.removeChild(qdmNode);
 					continue;
 				}
+				//Remove Specific Occurrence of QDM
+				if(qdmNode.getAttributes().getNamedItem("instance") != null){
+					Node parentNode = qdmNode.getParentNode();
+					parentNode.removeChild(qdmNode);
+					continue;
+				}
+				
 				Node clonedqdmNode = qdmNode.cloneNode(true);
 				xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
 				cqlValuesetsNode.appendChild(clonedqdmNode);

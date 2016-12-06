@@ -63,7 +63,11 @@ import org.xml.sax.SAXException;
 @SuppressWarnings("serial")
 public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet
 implements MeasureCloningService {
-	
+	/** Constant for QDM Expired Name String**/
+	private static final String QDM_EXPIRED_NON_DEFAULT = "expired";
+	/** Constant for QDM Birth date Name String**/
+	private static final String QDM_BIRTHDATE_NON_DEFAULT = "birthdate";
+
 	/** The measure dao. */
 	@Autowired
 	private MeasureDAO measureDAO;
@@ -350,11 +354,20 @@ implements MeasureCloningService {
 			for(int i=0;i<qdmNodes.getLength();i++){
 				Node qdmNode = qdmNodes.item(i);
 				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
+				String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
 				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
 					expiredtimingQDMNode = qdmNode;
 					continue;
 				}else if(oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
 					//birthDataQDMNode = qdmNode;
+					continue;
+				} else if(qdmName.equalsIgnoreCase(QDM_BIRTHDATE_NON_DEFAULT) && !oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
+					Node parentNode = qdmNode.getParentNode();
+					parentNode.removeChild(qdmNode);
+					continue;
+				} else if(qdmName.equalsIgnoreCase(QDM_EXPIRED_NON_DEFAULT)&& !oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
+					Node parentNode = qdmNode.getParentNode();
+					parentNode.removeChild(qdmNode);
 					continue;
 				}
 				Node clonedqdmNode = qdmNode.cloneNode(true);

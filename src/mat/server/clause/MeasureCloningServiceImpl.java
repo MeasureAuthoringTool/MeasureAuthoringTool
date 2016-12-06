@@ -169,7 +169,9 @@ implements MeasureCloningService {
 		
 		boolean isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId());
 		if(!isMeasureClonable){
-			return new ManageMeasureSearchModel.Result();
+			Exception e = new Exception("Cannot access this measure.");
+			log(e.getMessage(), e);
+			throw new MatException(e.getMessage());
 		}
 		
 		try {

@@ -101,6 +101,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -2409,7 +2410,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String scoringTypeAfterNewXml = (String) xPath.evaluate(
 							"/measure/measureDetails/scoring/@id",
 							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
-					xmlProcessor.checkForScoringType(getCurrentReleaseVersion());
+					xmlProcessor.checkForScoringType(MATPropertiesUtil.QDM_VERSION);
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
@@ -2429,7 +2430,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
-			processor.checkForScoringType(getCurrentReleaseVersion());
+			processor.checkForScoringType(MATPropertiesUtil.QDM_VERSION);
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);

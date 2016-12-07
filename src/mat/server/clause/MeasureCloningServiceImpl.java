@@ -41,6 +41,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.MATPropertiesUtil;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
@@ -276,7 +277,7 @@ implements MeasureCloningService {
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
-				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,measure.getReleaseVersion());
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
@@ -334,7 +335,7 @@ implements MeasureCloningService {
 		String scoringTypeId = MeasureDetailsUtil
 				.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
-		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,"v5.0");
+		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);
 		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets

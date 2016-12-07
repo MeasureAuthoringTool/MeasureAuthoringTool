@@ -1599,26 +1599,29 @@ public class MatContext implements IsSerializable {
 	
 	/**
 	 * Gets of all of the units and updates the all units list. 
+	 * @return all cql list.
 	 */
-	public void getAllCQLUnits() {
-		
-		listBoxCodeProvider.getCQLUnitList(new AsyncCallback<List<? extends HasListBox>>() {
+	public List<String> getAllCQLUnits() {
+		getCodeListService().getAllCqlUnits(new AsyncCallback<List<String>> (){
 
 			@Override
-			public void onFailure(Throwable caught) {				
+			public void onFailure(Throwable caught) {
+				
 			}
 
 			@Override
-			public void onSuccess(List<? extends HasListBox> result) {
+			public void onSuccess(List<String> result) {
 				if(result != null){
 					allCQLUnitsList.clear();
 					allCQLUnitsList.add(MatContext.PLEASE_SELECT);
-					for(HasListBox listBoxContent : result) {
-						allCQLUnitsList.add(listBoxContent.getItem());
+					for(String listBoxContent : result) {
+						allCQLUnitsList.add(listBoxContent);
 					}
 				}
 			}
-		}); 
+		});
+		return allCQLUnitsList;
+		
 	}
 	
 	/**

@@ -2,7 +2,10 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -66,6 +69,10 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> allAttributes = MatContext.get().getAllAttributeList();
 	
 	private static List<String> allUnits = MatContext.get().getAllUnitsList(); 
+	
+	private static List<String> allCqlUnits = MatContext.get().getAllCQLUnits();
+	
+	private static Map<String,String> cqlUnitMap = new LinkedHashMap<String,String>();
 	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
@@ -1673,15 +1680,27 @@ public class InsertIntoAceEditorDialogBox {
 	 * @return the string
 	 */
 	private static String buildQuantityUnitString(){
+		cqlUnitMap = getCqlUnitMap();
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
 		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
 		String selectedQuantity = QuantityTextBox.getText();
-		String selectedUnit = UnitslistBox.getItemText(UnitslistBox.getSelectedIndex());
+		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
 		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
 		return sb.toString();
 		
 	}
+	
+	private static Map<String, String> getCqlUnitMap() {
+		 Map<String, String> map = new LinkedHashMap<String,String>(); ;
+		Iterator<String> i1 = allUnits.iterator();
+		Iterator<String> i2 = allCqlUnits.iterator();
+		while (i1.hasNext() && i2.hasNext()) {
+			map.put(i1.next(), i2.next());
+		}
+		return map;
+	}
+
 	/**
 	 * Builds the date time string.
 	 *

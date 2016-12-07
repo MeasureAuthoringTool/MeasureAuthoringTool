@@ -75,10 +75,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 	private List<AsyncCallback<List<? extends HasListBox>>> pendingUnitList =
 		new ArrayList<AsyncCallback<List<? extends HasListBox>>>();
 	
-	/** The pending unit list. */
-	private List<AsyncCallback<List<? extends HasListBox>>> pendingCQLUnitList =
-		new ArrayList<AsyncCallback<List<? extends HasListBox>>>();
-	
 	/** The pending unit type list. */
 	private List<AsyncCallback<List<? extends HasListBox>>> pendingUnitTypeList =
 		new ArrayList<AsyncCallback<List<? extends HasListBox>>>();
@@ -117,9 +113,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 	
 	/** The unit list. */
 	private List<? extends HasListBox> unitList;
-	
-	/** The unit list. */
-	private List<? extends HasListBox> cqlUnitList;
 	
 	/** The unit type list. */
 	private List<? extends HasListBox> unitTypeList;
@@ -177,9 +170,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 				for(AsyncCallback<List<? extends HasListBox>> callback : pendingUnitList) {
 					callback.onFailure(caught);
 				}	
-				for(AsyncCallback<List<? extends HasListBox>> callback : pendingCQLUnitList) {
-					callback.onFailure(caught);
-				}	
 				for(AsyncCallback<List<? extends HasListBox>> callback : pendingUnitTypeList) {
 					callback.onFailure(caught);
 				}
@@ -208,7 +198,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 
 				//US 62
 				pendingUnitList.clear();
-				pendingCQLUnitList.clear();
 				pendingUnitTypeList.clear();
 				pendingUnitTypeMatrixList.clear();
 				
@@ -229,7 +218,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 				measureTypeList = listBoxResults.getMeasureTypeList();
 				scoringList = listBoxResults.getScoringList();
 				unitList = listBoxResults.getUnitList();
-				cqlUnitList = listBoxResults.getCqlUnitList();
 				unitTypeList = listBoxResults.getUnitTypeList();
 				unitTypeMatrixList = listBoxResults.getUnitTypeMatrixList();
 				
@@ -275,9 +263,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 				for(AsyncCallback<List<? extends HasListBox>> callback : pendingUnitList) {
 					callback.onSuccess(unitList);
 				}
-				for(AsyncCallback<List<? extends HasListBox>> callback : pendingCQLUnitList) {
-					callback.onSuccess(cqlUnitList);
-				}
 				for(AsyncCallback<List<? extends HasListBox>> callback : pendingUnitTypeList) {
 					callback.onSuccess(unitTypeList);
 				}
@@ -305,7 +290,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 
 				//US 62
 				pendingUnitList.clear();
-				pendingCQLUnitList.clear();
 				pendingUnitTypeList.clear();
 				pendingUnitTypeMatrixList.clear();
 				
@@ -564,22 +548,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the unit list.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the unit list
-	 */
-	public void getCQLUnitList(AsyncCallback<List<? extends HasListBox>> callback) {
-		if(retrieved) {
-			callback.onSuccess(cqlUnitList);
-		}
-		else {
-			pendingCQLUnitList.add(callback);
-		}
-	}
-	
-	/**
 	 * Gets the unit type list.
 	 * 
 	 * @param callback
@@ -629,7 +597,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 		}
 		else {
 			pendingUnitList.add(callback);
-			pendingCQLUnitList.add(callback);
 			pendingUnitTypeList.add(callback);
 			pendingUnitTypeMatrixList.add(callback);
 		}

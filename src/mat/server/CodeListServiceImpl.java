@@ -600,4 +600,16 @@ implements mat.client.codelist.service.CodeListService {
 		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
 		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName);
 	}
+
+	@Override
+	public List<String> getAllCqlUnits() {
+		logger.info("getAllCqlUnits");
+		List<String> cqlUnits = new ArrayList<String>();
+		List<UnitDTO> data =  getCodeListService().getAllUnits();
+		for(int i=0;i<data.size();i++){
+			cqlUnits.add(data.get(i).getCqlunit());
+			
+		}
+		return cqlUnits;
+	}
 }

@@ -69,6 +69,9 @@ public interface CodeListService extends RemoteService {
 		/** The unit list. */
 		private List<? extends HasListBox> unitList;
 		
+		/** The unit list. */
+		private List<? extends HasListBox> cqlUnitList;
+		
 		/** The unit type list. */
 		private List<? extends HasListBox> unitTypeList;
 		
@@ -195,6 +198,20 @@ public interface CodeListService extends RemoteService {
 			return unitList;
 		}
 		
+		/**
+		 * @return the cqlUnitList
+		 */
+		public List<? extends HasListBox> getCqlUnitList() {
+			return cqlUnitList;
+		}
+
+		/**
+		 * @param cqlUnitList the cqlUnitList to set
+		 */
+		public void setCqlUnitList(List<? extends HasListBox> cqlUnitList) {
+			this.cqlUnitList = cqlUnitList;
+		}
+
 		/**
 		 * Gets the unit type list.
 		 * 
@@ -365,7 +382,7 @@ public interface CodeListService extends RemoteService {
 		public void setUnitTypeMatrixList(List<? extends HasListBox> unitTypeMatrixList) {
 			this.unitTypeMatrixList = unitTypeMatrixList;
 		}
-		
+
 		
 	}
 	
@@ -697,6 +714,8 @@ public interface CodeListService extends RemoteService {
 	
 	SaveUpdateCodeListResult saveCopiedQDMListToMeasure(mat.model.GlobalCopyPasteObject gbCopyPaste,
 			List<QualityDataSetDTO> qdmList, String measureId);
+
+	List<String> getAllCqlUnits();
 	
 	
 }

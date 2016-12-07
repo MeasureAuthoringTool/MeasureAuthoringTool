@@ -96,6 +96,15 @@ public interface CodeListServiceAsync {
 	void getAllUnits(AsyncCallback<List<String>> callback);
 	
 	/**
+	 * Gets the all units.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the all units
+	 */
+	void getAllCqlUnits(AsyncCallback<List<String>> callback);
+	
+	/**
 	 * Gets the code list.
 	 * 
 	 * @param key

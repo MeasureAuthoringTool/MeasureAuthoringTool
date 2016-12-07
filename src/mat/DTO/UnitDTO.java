@@ -16,6 +16,9 @@ public class UnitDTO implements IsSerializable, HasListBox {
 	/** The unit. */
 	private String unit;
 	
+	/** the cql unit **/
+	private String cqlunit;
+	
 	/** The sort order. */
 	private int sortOrder;
 	
@@ -90,6 +93,20 @@ public class UnitDTO implements IsSerializable, HasListBox {
 		this.unit = unit;
 	}
 	
+	/**
+	 * @return the cqlunit
+	 */
+	public String getCqlunit() {
+		return cqlunit;
+	}
+
+	/**
+	 * @param cqlunit the cqlunit to set
+	 */
+	public void setCqlunit(String cqlunit) {
+		this.cqlunit = cqlunit;
+	}
+
 	/**
 	 * Sets the sort order.
 	 * 

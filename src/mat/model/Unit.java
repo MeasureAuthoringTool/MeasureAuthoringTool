@@ -13,6 +13,9 @@ public class Unit implements IsSerializable{
 	/** The unit. */
 	private String unit;
 	
+	/** the cql unit **/
+	private String cqlunit;
+	
 	/** The sort order. */
 	private int sortOrder;
 	
@@ -55,6 +58,20 @@ public class Unit implements IsSerializable{
 		this.unit = unit;
 	}
 	
+	/**
+	 * @return the cqlunit
+	 */
+	public String getCqlunit() {
+		return cqlunit;
+	}
+
+	/**
+	 * @param cqlunit the cqlunit to set
+	 */
+	public void setCqlunit(String cqlunit) {
+		this.cqlunit = cqlunit;
+	}
+
 	/**
 	 * Sets the sort order.
 	 * 

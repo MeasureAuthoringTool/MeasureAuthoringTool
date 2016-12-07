@@ -41,6 +41,7 @@ public class UnitDAO extends GenericDAO<Unit, String> implements mat.dao.UnitDAO
 			UnitDTO unitDTO =  new UnitDTO();
 			unitDTO.setId(unit.getId());
 			unitDTO.setUnit(unit.getUnit());
+			unitDTO.setCqlunit(unit.getCqlunit());
 			unitDTO.setSortOrder(unit.getSortOrder());
 			unitDTOList.add(unitDTO);
 		}

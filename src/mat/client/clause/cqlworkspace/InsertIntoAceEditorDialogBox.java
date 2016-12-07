@@ -93,6 +93,24 @@ public class InsertIntoAceEditorDialogBox {
 	/** The Constant attrModal. */
 	private static Modal attrModal;
 	
+	final static ListBoxMVP DtAttriblistBox = new ListBoxMVP();
+	final static ListBoxMVP AttriblistBox = new ListBoxMVP();
+	final static ListBoxMVP ModelistBox = new ListBoxMVP();
+	final static ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
+	
+	final static FormGroup dtFormGroup = new FormGroup();
+	final static FormGroup attrFormGroup = new FormGroup();
+	final static FormGroup modeFormGroup = new FormGroup();
+	final static FormGroup modeDetailsFormGroup = new FormGroup();
+	final static FormGroup quantityFormGroup = new FormGroup();
+	final static FormGroup unitFormGroup = new FormGroup();
+	
+	final static HorizontalPanel dtPanel = new HorizontalPanel();
+	final static HorizontalPanel attrPanel = new HorizontalPanel();
+	final static HorizontalPanel modePanel = new HorizontalPanel();
+	final static HorizontalPanel modeDetailPanel = new HorizontalPanel();
+	final static HorizontalPanel quantityPanel = new HorizontalPanel();
+	final static HorizontalPanel unitPanel = new HorizontalPanel();
 	
 	/** The Constant yyyyTxtBox. */
 	final static CustomDateTimeTextBox yyyyTxtBox = new CustomDateTimeTextBox(4);
@@ -362,86 +380,23 @@ public class InsertIntoAceEditorDialogBox {
 		messageFormgroup.add(helpBlock);
 		messageFormgroup.getElement().setAttribute("role", "alert");
 
-		final ListBoxMVP DtAttriblistBox = new ListBoxMVP();
-		DtAttriblistBox.setWidth("18em");
-		DtAttriblistBox.setVisibleItemCount(10);
-		DtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		DtAttriblistBox.setVisibleItemCount(1);
-		DtAttriblistBox.setStyleName("form-control");
-
-		final ListBoxMVP AttriblistBox = new ListBoxMVP();
-		AttriblistBox.setWidth("18em");
-		AttriblistBox.setVisibleItemCount(10);
-		AttriblistBox.getElement().setId("Atrr_listBox");
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		AttriblistBox.setVisibleItemCount(1);
-		AttriblistBox.setStyleName("form-control");
-
-		final ListBoxMVP ModelistBox = new ListBoxMVP();
-		ModelistBox.setWidth("18em");
-		ModelistBox.setVisibleItemCount(10);
-		ModelistBox.getElement().setId("Mode_listBox");
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		ModelistBox.setVisibleItemCount(1);
-		ModelistBox.setStyleName("form-control");
-		//Disabled by Default and enabled by other selections made.
-		ModelistBox.setEnabled(false);
-		final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
-		ModeDetailslistBox.setWidth("18em");
-		ModeDetailslistBox.setVisibleItemCount(10);
-		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		ModeDetailslistBox.setVisibleItemCount(1);
-		ModeDetailslistBox.setStyleName("form-control");
-		//Disabled by Default and enabled by other selections made.
-		ModeDetailslistBox.setEnabled(false);
-		QuantityTextBox.clear();
-		QuantityTextBox.setWidth("18em");
-		QuantityTextBox.getElement().setId("Qantity_TextBox");
-		QuantityTextBox.setEnabled(false);
-		UnitslistBox.clear();
-		UnitslistBox.setWidth("18em");
-		UnitslistBox.setVisibleItemCount(10);
-		UnitslistBox.getElement().setId("Units_listBox");
-		UnitslistBox.setEnabled(false);
-		for(String unit : allUnits) {
-			UnitslistBox.addItem(unit);
-		}
-		//setting itemcount value to 1 turns listbox into a drop-down list.
-		UnitslistBox.setVisibleItemCount(1);
-		UnitslistBox.setStyleName("form-control");
-
+		//clear all Form Groups
+		clearAllFormGroups();
+		
+		
+		createDataTypeWidget(dtPanel);
+		createAttributeWidget(attrPanel);
+		createModeWidget(modePanel);
+		createModeDetailsWidget(modeDetailPanel);
+		createQuantityWidget(quantityPanel);
+		createUnitWidget(unitPanel);
+		
 		//All the Labels
-		FormLabel AttrDataTypeLabel = new FormLabel();
-		AttrDataTypeLabel.setText("Attributes By DataType");
-		AttrDataTypeLabel.setTitle("Select Attributes By DataType");
-		AttrDataTypeLabel.setStyleName("attr-Label");
-		FormLabel AttributeLabel = new FormLabel();
-		AttributeLabel.setText("Attributes");
-		AttributeLabel.setTitle("Select Attributes");
-		AttributeLabel.setStyleName("attr-Label");
-		FormLabel ModeLabel = new FormLabel();
-		ModeLabel.setText("Mode");
-		ModeLabel.setTitle("Select Mode");
-		ModeLabel.setStyleName("attr-Label");
-		FormLabel ModeDetailsLabel = new FormLabel();
-		ModeDetailsLabel.setText("Mode Details");
-		ModeDetailsLabel.setTitle("Select Mode Details");
-		ModeDetailsLabel.setStyleName("attr-Label");
 		FormLabel DateTimeLabel = new FormLabel();
 		DateTimeLabel.setText("Date/Time");
 		DateTimeLabel.setTitle("Select DateTime");
 		DateTimeLabel.setStyleName("attr-Label");
-		FormLabel QuantityLabel = new FormLabel();
-		QuantityLabel.setText("Quantity");
-		QuantityLabel.setTitle("Select Quantity");
-		QuantityLabel.setStyleName("attr-Label");
-		FormLabel UnitsLabel = new FormLabel();
-		UnitsLabel.setText("Units");
-		UnitsLabel.setTitle("Select Units");
-		UnitsLabel.setStyleName("attr-Label");
-
+		
 		HorizontalPanel datePanel = new HorizontalPanel();
 		datePanel.getElement().setId("HorizontalPanel_DatePanel");
 		createDateWidget(datePanel);
@@ -453,22 +408,16 @@ public class InsertIntoAceEditorDialogBox {
 		
 		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		
-		Grid queryGrid = new Grid(8, 2);
-		queryGrid.setWidget(0, 0, AttrDataTypeLabel);
-		queryGrid.setWidget(1, 0, DtAttriblistBox);
-		queryGrid.setWidget(0, 1, AttributeLabel);
-		queryGrid.setWidget(1, 1, AttriblistBox);
-		queryGrid.setWidget(2, 0, ModeLabel);
-		queryGrid.setWidget(3, 0, ModelistBox);
-		queryGrid.setWidget(2, 1, ModeDetailsLabel);
-		queryGrid.setWidget(3, 1, ModeDetailslistBox);
-		queryGrid.setWidget(4, 0, DateTimeLabel);
-		queryGrid.setWidget(5, 0, datePanel);
-		queryGrid.setWidget(5, 1, timePanel);
-		queryGrid.setWidget(6, 0, QuantityLabel);
-		queryGrid.setWidget(7, 0, QuantityTextBox);
-		queryGrid.setWidget(6, 1, UnitsLabel);
-		queryGrid.setWidget(7, 1, UnitslistBox);
+		Grid queryGrid = new Grid(6,2);
+		queryGrid.setWidget(0, 0, dtFormGroup);
+		queryGrid.setWidget(0, 1, attrFormGroup);
+		queryGrid.setWidget(1, 0, modeFormGroup);
+		queryGrid.setWidget(1, 1, modeDetailsFormGroup);
+		queryGrid.setWidget(2, 0, DateTimeLabel);
+		queryGrid.setWidget(3, 0, datePanel);
+		queryGrid.setWidget(3, 1, timePanel);
+		queryGrid.setWidget(4, 0, quantityFormGroup);
+		queryGrid.setWidget(4, 1, unitFormGroup);
 		
 		queryGrid.setStyleName("attr-grid");
 		
@@ -507,6 +456,7 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
+				dtFormGroup.setValidationState(ValidationState.NONE);
 				ModelistBox.clear();
 				ModeDetailslistBox.clear();
 				ModeDetailslistBox.setEnabled(false);
@@ -531,6 +481,7 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
+				attrFormGroup.setValidationState(ValidationState.NONE);
 				ModelistBox.clear();
 				ModeDetailslistBox.clear();
 				ModelistBox.setEnabled(false);
@@ -565,6 +516,7 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
+				modeFormGroup.setValidationState(ValidationState.NONE);
 				ModeDetailslistBox.clear();
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = ModelistBox.getSelectedIndex();
@@ -578,9 +530,7 @@ public class InsertIntoAceEditorDialogBox {
 						addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
 						if(modeSelected.equalsIgnoreCase("nullable") || modeSelected.equalsIgnoreCase("value sets")){
 							setEnabled(false);
-						} else {
-							setWidgetEnabled(AttriblistBox, ModelistBox);
-						}
+						} 
 						
 					}
 				} else {
@@ -589,6 +539,45 @@ public class InsertIntoAceEditorDialogBox {
 					setEnabled(false);
 				}
 				
+			}
+		});
+		
+		ModeDetailslistBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				modeDetailsFormGroup.setValidationState(ValidationState.NONE);
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				int selectedIndex = ModeDetailslistBox.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String modeDetailsSelected = ModeDetailslistBox.getItemText(selectedIndex);
+					if(modeDetailsSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						setEnabled(false);
+					} else{
+						setWidgetEnabled(AttriblistBox, ModelistBox);
+					}
+				}			
+			}
+		});
+		
+		QuantityTextBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				quantityFormGroup.setValidationState(ValidationState.NONE);
+				messageFormgroup.setValidationState(ValidationState.NONE);
+			}
+		});
+		
+		UnitslistBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				unitFormGroup.setValidationState(ValidationState.NONE);
+				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
 		});
 		
@@ -607,17 +596,39 @@ public class InsertIntoAceEditorDialogBox {
 					/*if(validateQuantity(QuantityTextBox.getText())){
 						
 					}*/
-					
-					if(QuantityTextBox.isEnabled() && !yyyyTxtBox.isEnabled()) {
+					if(ModelistBox.isEnabled() && 
+							ModelistBox.getItemText(ModelistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						modeFormGroup.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText("Please Select valid Mode.");
+						messageFormgroup.setValidationState(ValidationState.ERROR);
+					}else if(ModeDetailslistBox.isEnabled() && 
+							ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						modeDetailsFormGroup.setValidationState(ValidationState.ERROR);
+						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+						helpBlock.setText("Please Select valid Mode Details.");
+						messageFormgroup.setValidationState(ValidationState.ERROR);
+					}
+					else if(QuantityTextBox.isEnabled() && !yyyyTxtBox.isEnabled()) {
 						
-						if(validateQuantity(QuantityTextBox.getText())){
-							
+						if(validateQuantity(QuantityTextBox.getText()) 
+								&& validateUnit(UnitslistBox)){
+							editor.insertAtCursor(buildQuantityUnitString());
+							editor.focus();
+							dialogModal.hide();
 							
 						} else {
-							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Enter valid Quantity.");
-							messageFormgroup.setValidationState(ValidationState.ERROR);
-							
+							if(!validateQuantity(QuantityTextBox.getText())){
+								quantityFormGroup.setValidationState(ValidationState.ERROR);
+								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+								helpBlock.setText("Please Enter valid Quantity.");
+								messageFormgroup.setValidationState(ValidationState.ERROR);
+							}else if(!validateUnit(UnitslistBox)){
+								unitFormGroup.setValidationState(ValidationState.ERROR);
+								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+								helpBlock.setText("Please Enter valid Unit.");
+								messageFormgroup.setValidationState(ValidationState.ERROR);
+							}
 						}
 						
 					} else if(yyyyTxtBox.isEnabled() && !QuantityTextBox.isEnabled()){
@@ -631,14 +642,24 @@ public class InsertIntoAceEditorDialogBox {
 								&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() && ssTxtBox.getText().isEmpty()
 								&& msTxtBox.getText().isEmpty())){
 							
-							if(validateQuantity(QuantityTextBox.getText())){
-								//still have to work on Insert
+							if(validateQuantity(QuantityTextBox.getText()) 
+									&& validateUnit(UnitslistBox)){
+								editor.insertAtCursor(buildQuantityUnitString());
+								editor.focus();
+								dialogModal.hide();
 								
 							} else {
-								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Enter valid Quantity.");
-								messageFormgroup.setValidationState(ValidationState.ERROR);
-								
+								if(!validateQuantity(QuantityTextBox.getText())){
+									quantityFormGroup.setValidationState(ValidationState.ERROR);
+									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+									helpBlock.setText("Please Enter valid Quantity.");
+									messageFormgroup.setValidationState(ValidationState.ERROR);
+								}else if(!validateUnit(UnitslistBox)){
+									unitFormGroup.setValidationState(ValidationState.ERROR);
+									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+									helpBlock.setText("Please Enter valid Unit.");
+									messageFormgroup.setValidationState(ValidationState.ERROR);
+								}
 							}
 						} else if((QuantityTextBox.getText().isEmpty() && UnitslistBox.getSelectedIndex()==0) && (!yyyyTxtBox.getText().isEmpty() || !mmTxtBox.getText().isEmpty() || !ddTxtBox.getText().isEmpty()
 								|| !hhTextBox.getText().isEmpty() || !minTxtBox.getText().isEmpty() || !ssTxtBox.getText().isEmpty()
@@ -662,6 +683,7 @@ public class InsertIntoAceEditorDialogBox {
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 					helpBlock.setText("Please Select Item name to insert into Editor");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
+					attrFormGroup.setValidationState(ValidationState.ERROR);
 				}
 				
 			}
@@ -670,6 +692,213 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.show();
 		}
 	
+	
+	private static void clearAllFormGroups() {
+		dtFormGroup.setValidationState(ValidationState.NONE);
+		attrFormGroup.setValidationState(ValidationState.NONE);
+		modeFormGroup.setValidationState(ValidationState.NONE);
+		modeDetailsFormGroup.setValidationState(ValidationState.NONE);
+		yearFormGroup.setValidationState(ValidationState.NONE);
+		mmFormGroup.setValidationState(ValidationState.NONE);
+		ddFormGroup.setValidationState(ValidationState.NONE);
+		hourFormGroup.setValidationState(ValidationState.NONE);
+		minFormGroup.setValidationState(ValidationState.NONE);
+		secondsFormGroup .setValidationState(ValidationState.NONE);
+		millisecFormGroup.setValidationState(ValidationState.NONE);
+		quantityFormGroup.setValidationState(ValidationState.NONE);
+		unitFormGroup.setValidationState(ValidationState.NONE);
+		
+		dtFormGroup.clear();
+		attrFormGroup.clear();
+		modeFormGroup.clear();
+		modeDetailsFormGroup.clear();
+		yearFormGroup.clear();
+		mmFormGroup.clear();
+		ddFormGroup.clear();
+		hourFormGroup.clear();
+		minFormGroup.clear();
+		secondsFormGroup.clear(); 
+		millisecFormGroup.clear();
+		quantityFormGroup.clear();
+		unitFormGroup.clear();
+	}
+
+	private static void createUnitWidget(HorizontalPanel unitPanel) {
+		unitPanel.clear();
+		unitPanel.getElement().setId("HorizontalPanel_UnitsPanel");
+		UnitslistBox.clear();
+		UnitslistBox.setWidth("18em");
+		UnitslistBox.setVisibleItemCount(10);
+		UnitslistBox.getElement().setId("Units_listBox");
+		for(String unit : allUnits) {
+			UnitslistBox.addItem(unit);
+		}
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		UnitslistBox.setVisibleItemCount(1);
+		UnitslistBox.setStyleName("form-control");
+		
+		FormLabel UnitsLabel = new FormLabel();
+		UnitsLabel.setText("Units");
+		UnitsLabel.setTitle("Select Units");
+		UnitsLabel.setStyleName("attr-Label");
+		
+		unitFormGroup.clear();
+		unitFormGroup.add(UnitsLabel);
+		unitFormGroup.add(UnitslistBox);
+
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, unitFormGroup);
+		
+		//queryGrid.setStyleName("attr-grid");
+		
+		unitPanel.add(queryGrid);
+	}
+
+	private static void createQuantityWidget(HorizontalPanel quantityPanel) {
+		quantityPanel.clear();
+		quantityPanel.getElement().setId("HorizontalPanel_QuantityPanel");
+		QuantityTextBox.clear();
+		QuantityTextBox.setWidth("18em");
+		QuantityTextBox.getElement().setId("Qantity_TextBox");
+		
+		FormLabel QuantityLabel = new FormLabel();
+		QuantityLabel.setText("Quantity");
+		QuantityLabel.setTitle("Select Quantity");
+		QuantityLabel.setStyleName("attr-Label");
+		
+		quantityFormGroup.clear();
+		quantityFormGroup.add(QuantityLabel);
+		quantityFormGroup.add(QuantityTextBox);
+
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, quantityFormGroup);
+		
+		//queryGrid.setStyleName("attr-grid");
+		
+		quantityPanel.add(queryGrid);
+	}
+
+	private static void createDataTypeWidget(HorizontalPanel dtPanel) {
+		dtPanel.clear();
+		dtPanel.getElement().setId("HorizontalPanel_DtPanel");
+		//final ListBoxMVP DtAttriblistBox = new ListBoxMVP();
+		DtAttriblistBox.clear();
+		DtAttriblistBox.setWidth("18em");
+		DtAttriblistBox.setVisibleItemCount(10);
+		DtAttriblistBox.getElement().setId("DataTypeBtAtrr_listBox");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		DtAttriblistBox.setVisibleItemCount(1);
+		DtAttriblistBox.setStyleName("form-control");
+
+		FormLabel AttrDataTypeLabel = new FormLabel();
+		AttrDataTypeLabel.setText("Attributes By DataType");
+		AttrDataTypeLabel.setTitle("Select Attributes By DataType");
+		AttrDataTypeLabel.setStyleName("attr-Label");
+
+		dtFormGroup.clear();
+		dtFormGroup.add(AttrDataTypeLabel);
+		dtFormGroup.add(DtAttriblistBox);
+
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, dtFormGroup);
+
+		//queryGrid.setStyleName("attr-grid");
+
+		dtPanel.add(queryGrid);
+	}
+
+	private static void createAttributeWidget(HorizontalPanel attrPanel) {
+		attrPanel.clear();
+		attrPanel.getElement().setId("HorizontalPanel_AttrPanel");
+		//final ListBoxMVP AttriblistBox = new ListBoxMVP();
+		AttriblistBox.clear();
+		AttriblistBox.setWidth("18em");
+		AttriblistBox.setVisibleItemCount(10);
+		AttriblistBox.getElement().setId("Atrr_listBox");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		AttriblistBox.setVisibleItemCount(1);
+		AttriblistBox.setStyleName("form-control");
+
+		FormLabel AttributeLabel = new FormLabel();
+		AttributeLabel.setText("Attributes");
+		AttributeLabel.setTitle("Select Attributes");
+		AttributeLabel.setStyleName("attr-Label");
+
+		attrFormGroup.clear();
+		attrFormGroup.add(AttributeLabel);
+		attrFormGroup.add(AttriblistBox);
+
+		Grid queryGrid = new Grid(1, 1);
+		queryGrid.setWidget(0, 0, attrFormGroup);
+
+		//queryGrid.setStyleName("attr-grid");
+
+		attrPanel.add(queryGrid);
+
+	}
+
+	private static void createModeWidget(HorizontalPanel modePanel) {
+		modePanel.clear();
+		modePanel.getElement().setId("HorizontalPanel_ModePanel");
+		//final ListBoxMVP ModelistBox = new ListBoxMVP();
+		ModelistBox.clear();
+		ModelistBox.setWidth("18em");
+		ModelistBox.setVisibleItemCount(10);
+		ModelistBox.getElement().setId("Mode_listBox");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		ModelistBox.setVisibleItemCount(1);
+		ModelistBox.setStyleName("form-control");
+		//Disabled by Default and enabled by other selections made.
+		ModelistBox.setEnabled(false);
+		
+		FormLabel ModeLabel = new FormLabel();
+		ModeLabel.setText("Mode");
+		ModeLabel.setTitle("Select Mode");
+		ModeLabel.setStyleName("attr-Label");
+		
+		modeFormGroup.clear();
+		modeFormGroup.add(ModeLabel);
+		modeFormGroup.add(ModelistBox);
+		
+		Grid queryGrid = new Grid(1, 1);
+		queryGrid.setWidget(0, 0, modeFormGroup);
+		
+		//queryGrid.setStyleName("attr-grid");
+		
+		modePanel.add(queryGrid);
+		
+	}
+
+	private static void createModeDetailsWidget(HorizontalPanel modeDetailPanel) {
+		modeDetailPanel.clear();
+		modeDetailPanel.getElement().setId("HorizontalPanel_ModeDetailsPanel");
+		//final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
+		ModeDetailslistBox.clear();
+		ModeDetailslistBox.setWidth("18em");
+		ModeDetailslistBox.setVisibleItemCount(10);
+		ModeDetailslistBox.getElement().setId("ModeDetails_listBox");
+		//setting itemcount value to 1 turns listbox into a drop-down list.
+		ModeDetailslistBox.setVisibleItemCount(1);
+		ModeDetailslistBox.setStyleName("form-control");
+		//Disabled by Default and enabled by other selections made.
+		ModeDetailslistBox.setEnabled(false);
+		
+		FormLabel ModeDetailsLabel = new FormLabel();
+		ModeDetailsLabel.setText("Mode Details");
+		ModeDetailsLabel.setTitle("Select Mode Details");
+		ModeDetailsLabel.setStyleName("attr-Label");
+		
+		modeDetailsFormGroup.clear();
+		modeDetailsFormGroup.add(ModeDetailsLabel);
+		modeDetailsFormGroup.add(ModeDetailslistBox);
+		
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, modeDetailsFormGroup);
+		
+		//queryGrid.setStyleName("attr-grid");
+		
+		modeDetailPanel.add(queryGrid);
+	}
 	
 	private static boolean validateQuantity(String text) {
 		
@@ -685,6 +914,12 @@ public class InsertIntoAceEditorDialogBox {
 		return true;
 	}
 
+	private static boolean validateUnit(ListBoxMVP unitslistbox) {
+		if(unitslistbox.getItemText(UnitslistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+			return false;
+		}
+		return true;
+	}
 
 	private static boolean validateDate() {
 		
@@ -732,16 +967,19 @@ public class InsertIntoAceEditorDialogBox {
 		yyyyTxtBox.clear();
 		yyyyTxtBox.setWidth("50px");
 		yyyyTxtBox.setEnabled(false);
+		yearFormGroup.clear();
 		yearFormGroup.add(yyyyTxtBox);
 		
 		mmTxtBox.clear();
 		mmTxtBox.setWidth("50px");
 		mmTxtBox.setEnabled(false);
+		mmFormGroup.clear();
 		mmFormGroup.add(mmTxtBox);
 		
 		ddTxtBox.clear();
 		ddTxtBox.setWidth("50px");
 		ddTxtBox.setEnabled(false);
+		ddFormGroup.clear();
 		ddFormGroup.add(ddTxtBox);
 		
 		final FormLabel yearFormLabel = new FormLabel();
@@ -925,21 +1163,25 @@ public class InsertIntoAceEditorDialogBox {
 		hhTextBox.clear();
 		hhTextBox.setWidth("50px");
 		hhTextBox.setEnabled(false);
+		hourFormGroup.clear();
 		hourFormGroup.add(hhTextBox);
 		
 		minTxtBox.clear();
 		minTxtBox.setWidth("50px");
 		minTxtBox.setEnabled(false);
+		minFormGroup.clear();
 		minFormGroup.add(minTxtBox);
 		
 		ssTxtBox.clear();
 		ssTxtBox.setWidth("50px");
 		ssTxtBox.setEnabled(false);
+		secondsFormGroup.clear();
 		secondsFormGroup.add(ssTxtBox);
 		
 		msTxtBox.clear();
 		msTxtBox.setWidth("50px");
 		msTxtBox.setEnabled(false);
+		millisecFormGroup.clear();
 		millisecFormGroup.add(msTxtBox);
 		
 		final FormLabel hourFormLabel = new FormLabel();
@@ -1425,7 +1667,21 @@ public class InsertIntoAceEditorDialogBox {
 		//return  s.compareToIgnoreCase(lowerBound) >= 0 && s.compareToIgnoreCase(upperBound) <= 0;
 	}
 	
-	
+	/**
+	 * Builds the quantity units string.
+	 *
+	 * @return the string
+	 */
+	private static String buildQuantityUnitString(){
+		StringBuilder sb = new StringBuilder();
+		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		String selectedQuantity = QuantityTextBox.getText();
+		String selectedUnit = UnitslistBox.getItemText(UnitslistBox.getSelectedIndex());
+		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
+		return sb.toString();
+		
+	}
 	/**
 	 * Builds the date time string.
 	 *
@@ -1433,7 +1689,9 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	private static String buildDateTimeString(){
 		StringBuilder sb = new StringBuilder();
-		
+		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ");
 		if(!yyyyTxtBox.getText().isEmpty()){
 			
 			if(yyyyTxtBox.getText().length()<4){

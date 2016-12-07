@@ -7,9 +7,21 @@
 		
 	    <changeSet author="mat_dev_user" id="1" context="prod">
 	        <sql> 
-	            
-	            ALTER TABLE UNIT ADD CQL_UNIT varchar(60);
-	            
+	            SET @s = (SELECT IF(
+                    (SELECT COUNT(*)
+                        FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE table_name = 'UNIT'
+                        AND table_schema = DATABASE()
+                        AND column_name = 'CQL_UNIT'
+                    ) > 0,
+                    "SELECT 1",
+                    "ALTER TABLE UNIT ADD CQL_UNIT varchar(60)"
+                ));
+                
+                PREPARE stmt FROM @s;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
+
 	            UPDATE UNIT SET CQL_UNIT='millisecond' WHERE NAME='millisecond';
 	            UPDATE UNIT SET CQL_UNIT='milliseconds' WHERE NAME='milliseconds';
 	            UPDATE UNIT SET CQL_UNIT='second' WHERE NAME='second';

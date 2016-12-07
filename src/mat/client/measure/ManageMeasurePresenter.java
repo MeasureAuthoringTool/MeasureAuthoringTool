@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -42,6 +43,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -1267,7 +1269,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 								.getLockedUserInfo()));
 				// fireMeasureEditEvent();
 				Mat.hideLoadingMessage();
-				
+				isClone = false;
+
 				// LOGIT
 				if (isDraftCreation) {
 					MatContext
@@ -3116,7 +3119,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		if (isClone && isValid(currentDetails)) {
 			cloneMeasure(currentDetails, false);
-			isClone = false;
 		} else if (isValid(currentDetails)) {
 			final boolean isInsert = currentDetails.getId() == null;
 			final String name = currentDetails.getName();

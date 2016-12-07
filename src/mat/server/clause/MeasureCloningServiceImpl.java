@@ -183,6 +183,13 @@ implements MeasureCloningService {
 		try {
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
 			Measure measure = measureDAO.find(currentDetails.getId());
+			
+			if(checkNonCQLCloningValidation(measure, creatingDraft)){
+				Exception e = new Exception("Cannot clone this measure.");
+				log(e.getMessage(), e);
+				throw new MatException(e.getMessage());
+			}
+			
 			MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails
 					.getId());
 			clonedMeasure = new Measure();
@@ -278,7 +285,7 @@ implements MeasureCloningService {
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
-				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);  
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
@@ -834,6 +841,33 @@ implements MeasureCloningService {
 		/*clonedDoc.getElementsByTagName(MEASURE_STATUS).item(0)
 		.setTextContent(clonedMeasure.getMeasureStatus());*/
 		
+	}
+	
+	/**
+	 * Method to check If a user is trying to Clone a measure whose release version is not 
+	 * v5.xx. 
+	 * If the version is v4.xxx or v3.xxx or is NULL, then the method returns true, indicating cloning is not 
+	 * allowed for this measure.
+	 * 
+	 * @param measure
+	 * @param creatingDraft
+	 * @return
+	 */
+	private boolean checkNonCQLCloningValidation(Measure measure,
+			boolean creatingDraft) {
+		
+		if(creatingDraft){
+			return false;
+		}
+		
+		boolean returnValue = false;
+		
+		String measureReleaseVersion = (measure.getReleaseVersion() == null) ? "" : measure.getReleaseVersion();
+		if(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4") || measureReleaseVersion.startsWith("v3")){
+			returnValue = true;
+		}
+		
+		return returnValue;
 	}
 	
 	/**

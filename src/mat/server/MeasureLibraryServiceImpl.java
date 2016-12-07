@@ -1235,7 +1235,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setId(dto.getMeasureId());
 		detail.setStatus(dto.getStatus());
 		detail.seteMeasureId(dto.geteMeasureId());
-		detail.setClonable(isOwner || isSuperUser);
+		
+		String measureReleaseVersion = (measure.getReleaseVersion() == null)?"":measure.getReleaseVersion();
+		if(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4") || measureReleaseVersion.startsWith("v3")){
+			detail.setClonable(false);
+		}else{
+			detail.setClonable(isOwner || isSuperUser);
+		}
+		
 		detail.setEditable((isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());
 		detail.setExportable(dto.isPackaged());
 		detail.setHqmfReleaseVersion(measure.getReleaseVersion());

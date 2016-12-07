@@ -318,6 +318,14 @@ implements MeasureCloningService {
 		
 		if(cqlLookUpNode != null){
 			clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
+			
+			//Update QDM Version in Measure XMl for Draft and CQL Measures
+			Node qdmVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModelVersion");
+			if(qdmVersionNode!=null){
+				qdmVersionNode.setTextContent(MATPropertiesUtil.QDM_VERSION);
+			}
+			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
+					.transform(xmlProcessor.getOriginalDoc()));
 			return;
 		}
 		

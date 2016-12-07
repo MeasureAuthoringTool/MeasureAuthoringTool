@@ -919,14 +919,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results);
 
-		void setModelVersionValue(TextBox modelVersionValue);
-
-		TextBox getModelVersionValue();
-
-		TextArea getLibraryNameValue();
-
-		TextArea getLibraryVersionValue();
-		
 	}
 	
 	
@@ -2162,21 +2154,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result.getCqlModel() != null) {
-					
-					searchDisplay.getLibraryNameValue().setText(MatContext.get().getCurrentMeasureName().replaceAll(" ", ""));
-					
-					String measureVersion = MatContext.get().getCurrentMeasureVersion();
-					
-					measureVersion = measureVersion.replaceAll("Draft ", "").trim();
-					if(measureVersion.startsWith("v")){
-						measureVersion = measureVersion.substring(1);
-					}
-					
-					searchDisplay.getLibraryVersionValue().setText(measureVersion);
-					
-					if(result.getCqlModel().getUsedModel()!=null){
-						searchDisplay.getModelVersionValue().setText(result.getCqlModel().getUsedModel().getQdmVersion());
-					}
 					
 					if ((result.getCqlModel().getDefinitionList() != null) &&
 							(result.getCqlModel().getDefinitionList().size() > 0)) {

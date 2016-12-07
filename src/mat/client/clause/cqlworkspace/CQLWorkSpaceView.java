@@ -30,6 +30,7 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLParameter;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -357,11 +358,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	private GetUsedCQLArtifactsResult usedCqlArtifacts; 
 	
-	TextBox modelVersionValue = new TextBox();
 	
-	TextArea libraryNameValue = new TextArea();
-	
-	TextArea libraryVersionValue = new TextArea();
 	
 	//private AnchorListItem includeLibrary;
 	
@@ -863,16 +860,28 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryNameLabel.setWidth("150px");
+		
+		TextArea libraryNameValue = new TextArea();
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		libraryNameValue.setText("");
+		libraryNameValue.setText(MatContext.get().getCurrentMeasureName().replaceAll(" ", ""));
 		libraryNameValue.setReadOnly(true);
 		
 		Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
 		
 		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryVersionLabel.setWidth("150px");
+		
+		TextArea libraryVersionValue = new TextArea();
 		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		libraryVersionValue.setText("");
+		
+		String measureVersion = MatContext.get().getCurrentMeasureVersion();
+		
+		measureVersion = measureVersion.replaceAll("Draft ", "").trim();
+		if(measureVersion.startsWith("v")){
+			measureVersion = measureVersion.substring(1);
+		}
+		
+		libraryVersionValue.setText(measureVersion);
 		libraryVersionValue.setReadOnly(true);
 		
 		Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
@@ -887,10 +896,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		modelVersionLabel.setWidth("150px");
+		TextBox modelVersionValue = new TextBox();
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		//modelVersionValue.setText("5.0");
 		modelVersionValue.setReadOnly(true);
-		modelVersionValue.setText("");
+		modelVersionValue.setText(MATPropertiesUtil.QDM_VERSION);
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		// messagePanel.add(successMessageAlert);
@@ -3826,34 +3836,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results) {
 		this.usedCqlArtifacts = results; 
-	}
-
-	@Override
-	public TextBox getModelVersionValue() {
-		return modelVersionValue;
-	}
-
-	@Override
-	public void setModelVersionValue(TextBox modelVersionValue) {
-		this.modelVersionValue = modelVersionValue;
-	}
-
-	@Override
-	public TextArea getLibraryNameValue() {
-		return libraryNameValue;
-	}
-
-	public void setLibraryNameValue(TextArea libraryNameValue) {
-		this.libraryNameValue = libraryNameValue;
-	}
-
-	@Override
-	public TextArea getLibraryVersionValue() {
-		return libraryVersionValue;
-	}
-
-	public void setLibraryVersionValue(TextArea libraryVersionValue) {
-		this.libraryVersionValue = libraryVersionValue;
 	}
 	
 }

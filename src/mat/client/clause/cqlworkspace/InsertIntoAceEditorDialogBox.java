@@ -2,6 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -73,6 +74,8 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> allCqlUnits = MatContext.get().getAllCQLUnits();
 	
 	private static Map<String,String> cqlUnitMap = new LinkedHashMap<String,String>();
+	
+	private static HashSet<String> nonQuoteUnits = new HashSet<String>();
 	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
@@ -1680,13 +1683,18 @@ public class InsertIntoAceEditorDialogBox {
 	 * @return the string
 	 */
 	private static String buildQuantityUnitString(){
+		nonQuoteUnits = getNonQuotesUnits();
 		cqlUnitMap = getCqlUnitMap();
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
 		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
 		String selectedQuantity = QuantityTextBox.getText();
 		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
-		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
+		if(nonQuoteUnits.contains(selectedUnit)){
+			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append(selectedUnit);
+		}else{
+			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
+		}
 		return sb.toString();
 		
 	}
@@ -1701,6 +1709,28 @@ public class InsertIntoAceEditorDialogBox {
 		return map;
 	}
 
+	private static HashSet<String> getNonQuotesUnits(){
+		 HashSet<String> hset = 
+	               new HashSet<String>();
+		hset.add("millisecond");
+		hset.add("milliseconds");
+		hset.add("second");
+		hset.add("seconds");
+		hset.add("minute");
+		hset.add("minutes");
+		hset.add("hour");
+		hset.add("hours");
+		hset.add("day");
+		hset.add("days");
+		hset.add("week");
+		hset.add("weeks");
+		hset.add("month");
+		hset.add("months");
+		hset.add("year");
+		hset.add("years");
+		
+		return hset;
+	}
 	/**
 	 * Builds the date time string.
 	 *

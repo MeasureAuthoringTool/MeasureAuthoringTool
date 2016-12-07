@@ -3,6 +3,7 @@ package mat.server.clause;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -341,52 +342,55 @@ implements MeasureCloningService {
 		//copy qdm to cqlLookup/valuesets
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
-		
+		List<Node> qdmNodeList = new ArrayList<Node>();
 		/**
 		 * We need to capture old "Patient Characteristic Expired"(oid=419099009) and "Patient Characteristic Birthdate"(oid=21112-8)
-		 * and remove them.
+		 * and remove them. Also we need to remove qdm with name="Birthdate' and 'Expired' which are non default qdms along with Occurrence
+		 * qdm elements.
 		 * Further below, when checkForTimingElementsAndAppend() is called, it will add back the above 2 elements with new properties.
 		 * For ex: "Patient Characteristic Expired" had an old name of "Expired", but the new name is "Dead".
 		 */
-		Node expiredtimingQDMNode = null; 
-		//Node birthDataQDMNode = null;
+		
 		
 		if(cqlValuesetsNode != null){
 			for(int i=0;i<qdmNodes.getLength();i++){
 				Node qdmNode = qdmNodes.item(i);
+				boolean isClonable = true;
 				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 				String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
 				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
-					expiredtimingQDMNode = qdmNode;
-					continue;
+					//expiredtimingQDMNode = qdmNode;
+					qdmNodeList.add(qdmNode);
+					isClonable = false;
 				}else if(oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
 					//birthDataQDMNode = qdmNode;
-					continue;
+					isClonable = false;
 				} else if(qdmName.equalsIgnoreCase(QDM_BIRTHDATE_NON_DEFAULT) && !oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
-					Node parentNode = qdmNode.getParentNode();
-					parentNode.removeChild(qdmNode);
-					continue;
+					qdmNodeList.add(qdmNode);
+					isClonable = false;
 				} else if(qdmName.equalsIgnoreCase(QDM_EXPIRED_NON_DEFAULT)&& !oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
-					Node parentNode = qdmNode.getParentNode();
-					parentNode.removeChild(qdmNode);
-					continue;
+					qdmNodeList.add(qdmNode);
+					isClonable = false;
 				}
 				//Remove Specific Occurrence of QDM
 				if(qdmNode.getAttributes().getNamedItem("instance") != null){
-					Node parentNode = qdmNode.getParentNode();
-					parentNode.removeChild(qdmNode);
-					continue;
+					qdmNodeList.add(qdmNode);
+					isClonable = false;
 				}
-				
-				Node clonedqdmNode = qdmNode.cloneNode(true);
-				xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
-				cqlValuesetsNode.appendChild(clonedqdmNode);
+				if(isClonable){
+					Node clonedqdmNode = qdmNode.cloneNode(true);
+					xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
+					cqlValuesetsNode.appendChild(clonedqdmNode);
+				}
 			}
 		}
-		
-		if(expiredtimingQDMNode != null){
-			Node parentNode = expiredtimingQDMNode.getParentNode();
-			parentNode.removeChild(expiredtimingQDMNode);
+		//Remove all unclonable QDM's collected above in For Loop from elementLookUp tag.
+		if(qdmNodeList != null && qdmNodeList.size() >0){
+			for(int i=0;i<qdmNodeList.size();i++){
+				Node qNode = qdmNodeList.get(i);
+				Node parentNode = qNode.getParentNode();
+				parentNode.removeChild(qNode);
+			}
 		}
 		//Re-factored MAT-8295 : birthdate is not removed from QDM. This is to keep uuid same for ClauseWorkspace references to birthdate qdm.
 		/*if(birthDataQDMNode != null){
@@ -405,6 +409,7 @@ implements MeasureCloningService {
 		
 	}
 	
+
 	/**
 	 * Append cql definitions.
 	 *

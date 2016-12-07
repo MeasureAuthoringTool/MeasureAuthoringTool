@@ -32,7 +32,7 @@ public class HumanReadableGenerator {
 		
 		String html = "";
 		System.out.println("Generating human readable for ver:"+measureReleaseVersion);
-		if(measureReleaseVersion.equals("v5.0")){
+		if(measureReleaseVersion.equals("v5.0") || measureReleaseVersion.equals("v5.1")){
 			html = CQLHumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr);
 		}else{
 			html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);

@@ -1022,7 +1022,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null 
-				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v5.0")){
+				&& (packageOverview.getReleaseVersion().equalsIgnoreCase("v5.0") || packageOverview.getReleaseVersion().equalsIgnoreCase("v5.1"))){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
 			//Set supple data to empty if CQL measure

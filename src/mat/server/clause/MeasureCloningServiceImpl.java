@@ -317,6 +317,7 @@ implements MeasureCloningService {
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 		
 		if(cqlLookUpNode != null){
+			clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
 			return;
 		}
 		

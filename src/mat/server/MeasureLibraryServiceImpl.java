@@ -2204,7 +2204,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(false);
 				pkg = new Measure();
 				/*model.setMeasureStatus("In Progress");*/
-				pkg.setReleaseVersion("v5.0");
+				pkg.setReleaseVersion("v5.1");
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());				

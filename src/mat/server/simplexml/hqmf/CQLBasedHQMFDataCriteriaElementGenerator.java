@@ -137,7 +137,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				return VERSION_4_1_2_ID;
-			}else if(releaseVersion.equalsIgnoreCase("v5.0")) {
+			}else if(releaseVersion.equalsIgnoreCase("v5.0") || releaseVersion.equalsIgnoreCase("v5.1")) {
 				return VERSION_5_0_ID; 
 			} else {
 				return VERSION_4_3_ID;
@@ -200,7 +200,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				extensionValue = VERSION_4_1_2_ID;
 				
-			} else if(releaseVersion.equalsIgnoreCase("v5.0")) {
+			} else if(releaseVersion.equalsIgnoreCase("v5.0") || releaseVersion.equalsIgnoreCase("v5.1")) {
 				extensionValue = VERSION_5_0_ID; 
 			} else {
 				extensionValue = VERSION_4_3_ID;

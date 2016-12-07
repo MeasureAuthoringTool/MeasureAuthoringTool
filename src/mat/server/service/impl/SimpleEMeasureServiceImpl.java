@@ -632,7 +632,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	    
 	    String measureXML = ""; 
 
-	    if(measure.getReleaseVersion().equals("v5.0")) {
+	    if(measure.getReleaseVersion().equals("v5.0") || measure.getReleaseVersion().equalsIgnoreCase("v5.1")) {
 			measureXML = getCQLBasedEMeasureXML(measureExport);  
 		} else {
 			 measureXML = getNewEMeasureXML(measureExport);

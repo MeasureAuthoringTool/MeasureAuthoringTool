@@ -73,6 +73,8 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 			formatVersion = "4.2";
 		}else if("v5.0".equals(version)){
 			formatVersion = "5.0";
+		} else if("v5.1".equals(version)) {
+				formatVersion = "5.0.2";
 		}
 		return formatVersion;
 		

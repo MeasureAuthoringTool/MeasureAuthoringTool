@@ -562,7 +562,7 @@ public class InsertIntoAceEditorDialogBox {
 				int selectedIndex = ModeDetailslistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String modeDetailsSelected = ModeDetailslistBox.getItemText(selectedIndex);
-					if(modeDetailsSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+					if(modeDetailsSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT) ){
 						setEnabled(false);
 					} else{
 						setWidgetEnabled(AttriblistBox, ModelistBox);
@@ -595,103 +595,98 @@ public class InsertIntoAceEditorDialogBox {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				//TODO:This is not a working code but a sample one which needs to be replaced once we implement insert button functionality.
+				
 				int selectedIndex = AttriblistBox.getSelectedIndex();
+				
 				if(selectedIndex !=0){
-					String selectedItem = AttriblistBox.getItemText(selectedIndex);
+					
 					helpBlock.setText("");
 					messageFormgroup.setValidationState(ValidationState.NONE);
 					
-					//Quantity TextBox Validation
-					/*if(validateQuantity(QuantityTextBox.getText())){
+					if(ModelistBox.getSelectedIndex()!=0){
 						
-					}*/
-					if(ModelistBox.isEnabled() && 
-							ModelistBox.getItemText(ModelistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+						if(ModeDetailslistBox.getSelectedIndex()!=0){
+							
+							if(QuantityTextBox.isEnabled() && !yyyyTxtBox.isEnabled()) {
+								
+								if(validateQuantity(QuantityTextBox.getText())){
+									editor.insertAtCursor(attributeStringBuilder());
+									editor.focus();
+									dialogModal.hide();
+									
+								} else {
+									if(!validateQuantity(QuantityTextBox.getText())){
+										quantityFormGroup.setValidationState(ValidationState.ERROR);
+										helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+										helpBlock.setText("Please Enter valid Quantity.");
+										messageFormgroup.setValidationState(ValidationState.ERROR);
+									}
+								}
+								
+							} else if(yyyyTxtBox.isEnabled() && !QuantityTextBox.isEnabled()){
+								
+								validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
+								
+							} else if(QuantityTextBox.isEnabled() && yyyyTxtBox.isEnabled()){
+								//this scenario both time widget and Quantity are available for result
+									
+								if((!QuantityTextBox.getText().isEmpty() || UnitslistBox.getSelectedIndex()!=0) && (yyyyTxtBox.getText().isEmpty() 
+										&& mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty()
+										&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() && ssTxtBox.getText().isEmpty()
+										&& msTxtBox.getText().isEmpty())){
+									
+									if(validateQuantity(QuantityTextBox.getText())){
+										editor.insertAtCursor(attributeStringBuilder());
+										editor.focus();
+										dialogModal.hide();
+										
+									} else {
+										if(!validateQuantity(QuantityTextBox.getText())){
+											quantityFormGroup.setValidationState(ValidationState.ERROR);
+											helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+											helpBlock.setText("Please Enter valid Quantity.");
+											messageFormgroup.setValidationState(ValidationState.ERROR);
+										}
+									}
+								} else if((QuantityTextBox.getText().isEmpty() && UnitslistBox.getSelectedIndex()==0) 
+										&& (!yyyyTxtBox.getText().isEmpty() || !mmTxtBox.getText().isEmpty() || !ddTxtBox.getText().isEmpty()
+										|| !hhTextBox.getText().isEmpty() || !minTxtBox.getText().isEmpty() || !ssTxtBox.getText().isEmpty()
+										|| !msTxtBox.getText().isEmpty())){
+									
+									validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
+									
+								} else {
+									
+									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+									helpBlock.setText("You can not enter both DateTime and Quantity.");
+									messageFormgroup.setValidationState(ValidationState.ERROR);
+								}
+								
+							} else {
+								editor.insertAtCursor(attributeStringBuilder());
+								editor.focus();
+								dialogModal.hide();
+							}
+							
+						} else {
+							modeDetailsFormGroup.setValidationState(ValidationState.ERROR);
+							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+							helpBlock.setText("Please Select valid Mode Details.");
+							messageFormgroup.setValidationState(ValidationState.ERROR);
+						}
+						
+						
+					} else {
 						modeFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 						helpBlock.setText("Please Select valid Mode.");
 						messageFormgroup.setValidationState(ValidationState.ERROR);
-					}else if(ModeDetailslistBox.isEnabled() && 
-							ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-						modeDetailsFormGroup.setValidationState(ValidationState.ERROR);
-						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Select valid Mode Details.");
-						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
-					else if(QuantityTextBox.isEnabled() && !yyyyTxtBox.isEnabled()) {
-						
-						if(validateQuantity(QuantityTextBox.getText()) 
-								&& validateUnit(UnitslistBox)){
-							editor.insertAtCursor(buildQuantityUnitString());
-							editor.focus();
-							dialogModal.hide();
-							
-						} else {
-							if(!validateQuantity(QuantityTextBox.getText())){
-								quantityFormGroup.setValidationState(ValidationState.ERROR);
-								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Enter valid Quantity.");
-								messageFormgroup.setValidationState(ValidationState.ERROR);
-							}else if(!validateUnit(UnitslistBox)){
-								unitFormGroup.setValidationState(ValidationState.ERROR);
-								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please Enter valid Unit.");
-								messageFormgroup.setValidationState(ValidationState.ERROR);
-							}
-						}
-						
-					} else if(yyyyTxtBox.isEnabled() && !QuantityTextBox.isEnabled()){
-						
-						validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
-						
-					} else {
-						//this scenario both time widget and Quantity are available for result
-							
-						if((!QuantityTextBox.getText().isEmpty() || UnitslistBox.getSelectedIndex()!=0) && (yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty()
-								&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() && ssTxtBox.getText().isEmpty()
-								&& msTxtBox.getText().isEmpty())){
-							
-							if(validateQuantity(QuantityTextBox.getText()) 
-									&& validateUnit(UnitslistBox)){
-								editor.insertAtCursor(buildQuantityUnitString());
-								editor.focus();
-								dialogModal.hide();
-								
-							} else {
-								if(!validateQuantity(QuantityTextBox.getText())){
-									quantityFormGroup.setValidationState(ValidationState.ERROR);
-									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please Enter valid Quantity.");
-									messageFormgroup.setValidationState(ValidationState.ERROR);
-								}else if(!validateUnit(UnitslistBox)){
-									unitFormGroup.setValidationState(ValidationState.ERROR);
-									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please Enter valid Unit.");
-									messageFormgroup.setValidationState(ValidationState.ERROR);
-								}
-							}
-						} else if((QuantityTextBox.getText().isEmpty() && UnitslistBox.getSelectedIndex()==0) && (!yyyyTxtBox.getText().isEmpty() || !mmTxtBox.getText().isEmpty() || !ddTxtBox.getText().isEmpty()
-								|| !hhTextBox.getText().isEmpty() || !minTxtBox.getText().isEmpty() || !ssTxtBox.getText().isEmpty()
-								|| !msTxtBox.getText().isEmpty())){
-							
-							validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
-							
-						} else {
-							
-							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("You can not enter both DateTime and Quantity.");
-							messageFormgroup.setValidationState(ValidationState.ERROR);
-						}
-						
-					}
-					
-					//check if all fields are null
 					
 										
 				} else {
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Select Item name to insert into Editor");
+					helpBlock.setText("Please Select Attribute to insert into Editor");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					attrFormGroup.setValidationState(ValidationState.ERROR);
 				}
@@ -921,13 +916,6 @@ public class InsertIntoAceEditorDialogBox {
 			return false;
 		}
 		
-		return true;
-	}
-
-	private static boolean validateUnit(ListBoxMVP unitslistbox) {
-		if(unitslistbox.getItemText(UnitslistBox.getSelectedIndex()).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-			return false;
-		}
 		return true;
 	}
 
@@ -1682,19 +1670,24 @@ public class InsertIntoAceEditorDialogBox {
 	 *
 	 * @return the string
 	 */
-	private static String buildQuantityUnitString(){
+	private static String attributeStringBuilder(){
 		nonQuoteUnits = getNonQuotesUnits();
 		cqlUnitMap = getCqlUnitMap();
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		String selectedMode = ModelistBox.getItemText(ModelistBox.getSelectedIndex()); 
 		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
 		String selectedQuantity = QuantityTextBox.getText();
 		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
 		if(nonQuoteUnits.contains(selectedUnit)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append(selectedUnit);
-		}else{
+		}else if(selectedMode.equalsIgnoreCase("Nullable")){
+			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
+		} else if(selectedMode.equalsIgnoreCase("Value Sets")){
+			sb.append(".").append(selectedAttrItem).append(" in \"[").append(selectedMDetailsItem).append("]\"");
+		} else {
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
-		}
+		} 
 		return sb.toString();
 		
 	}
@@ -1740,15 +1733,15 @@ public class InsertIntoAceEditorDialogBox {
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
 		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
-		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ");
+		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" @");
 		if(!yyyyTxtBox.getText().isEmpty()){
 			
 			if(yyyyTxtBox.getText().length()<4){
-				sb.append("@").append(appendZeroString(4-yyyyTxtBox.getText().length()))
+				sb.append(appendZeroString(4-yyyyTxtBox.getText().length()))
 				.append(yyyyTxtBox.getText());
 				
 			} else {
-				sb.append("@"+yyyyTxtBox.getText());
+				sb.append(yyyyTxtBox.getText());
 			}
 		} 
 		if(!mmTxtBox.getText().isEmpty()){
@@ -1829,27 +1822,25 @@ public class InsertIntoAceEditorDialogBox {
 		attributeName = attributeName.toLowerCase();
 		modeName = modeName.toLowerCase(); 
 		clearAllBoxes();
-		if(attributeName.contains("datetime")){
-			
-			if(modeName.equalsIgnoreCase("comparison")){
+		
+		if (modeName.equalsIgnoreCase("comparison") 
+				|| modeName.equalsIgnoreCase("computative")) {
+
+			if (attributeName.contains("datetime") && modeName.equalsIgnoreCase("comparison")) {
 				setDateTimeEnabled(true);
 				QuantityTextBox.setEnabled(false);
 				UnitslistBox.setEnabled(false);
-			} else if(modeName.equalsIgnoreCase("computative")) {
+			} else if (attributeName.equalsIgnoreCase("result")) {
+				setEnabled(true);
+			} else {
 				setDateTimeEnabled(false);
 				QuantityTextBox.setEnabled(true);
 				UnitslistBox.setEnabled(true);
 			}
-		
-		} else if (attributeName.equalsIgnoreCase("result")) {
-			setDateTimeEnabled(true);
-			QuantityTextBox.setEnabled(true);
-			UnitslistBox.setEnabled(true);
 		} else {
-			setDateTimeEnabled(false);
-			QuantityTextBox.setEnabled(true);
-			UnitslistBox.setEnabled(true);
+			setEnabled(false);
 		}
+		
 	}
 	
 	

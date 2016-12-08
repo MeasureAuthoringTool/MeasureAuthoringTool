@@ -207,7 +207,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private ListDataProvider<CQLDefinition> cqlSupListProv;
 	
 	/** The sup population list. */
-	private ArrayList<QualityDataSetDTO> supPopulationList = new ArrayList<QualityDataSetDTO>();
+	private ArrayList<QualityDataSetDTO> supElementList = new ArrayList<QualityDataSetDTO>();
 	
 	/** The cql sup population list. */
 	private ArrayList<CQLDefinition> cqlSupPopulationList = new ArrayList<CQLDefinition>();
@@ -445,9 +445,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			public void onClick(ClickEvent event) {
 				if ((qdmPopulationList.size() > 0)
 						&& (qdmSelModel.getSelectedObject() != null)) {
-					supPopulationList.add(qdmSelModel.getSelectedObject());
+					supElementList.add(qdmSelModel.getSelectedObject());
 					qdmPopulationList.remove(qdmSelModel.getSelectedObject());
-					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					Collections.sort(supElementList , new QualityDataSetDTO.Comparator());
 					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
 					//					rightPagerPanel.clear();
 					//					rightPagerPanel.add(getSupCellList());
@@ -484,11 +484,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addQDMLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if ((supPopulationList.size() > 0)
+				if ((supElementList.size() > 0)
 						&& (supDataSelModel.getSelectedObject() != null)) {
 					qdmPopulationList.add(supDataSelModel.getSelectedObject());
-					supPopulationList.remove(supDataSelModel.getSelectedObject());
-					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					supElementList.remove(supDataSelModel.getSelectedObject());
+					Collections.sort(supElementList , new QualityDataSetDTO.Comparator());
 					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
 					/*rightPagerPanel.clear();
 					rightPagerPanel.add(getSupCellList());
@@ -526,9 +526,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			@Override
 			public void onClick(ClickEvent event) {
 				if (qdmPopulationList.size() != 0) {
-					supPopulationList.addAll(qdmPopulationList);
+					supElementList.addAll(qdmPopulationList);
 					qdmPopulationList.removeAll(qdmPopulationList);
-					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					Collections.sort(supElementList , new QualityDataSetDTO.Comparator());
 					supDataSelModel.clear();
 					qdmSelModel.clear();
 					/*rightPagerPanel.clear();
@@ -565,9 +565,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addAllQDMLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if (supPopulationList.size() != 0) {
-					qdmPopulationList.addAll(supPopulationList);
-					supPopulationList.removeAll(supPopulationList);
+				if (supElementList.size() != 0) {
+					qdmPopulationList.addAll(supElementList);
+					supElementList.removeAll(supElementList);
 					Collections.sort(qdmPopulationList , new QualityDataSetDTO.Comparator());
 					supDataSelModel.clear();
 					qdmSelModel.clear();
@@ -856,7 +856,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		//left cell list initialization
 		supDataCellList = new CellList<QualityDataSetDTO>(new QualityDataSetCell());
 		supDataCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		supListProv = new ListDataProvider<QualityDataSetDTO>(supPopulationList);
+		supListProv = new ListDataProvider<QualityDataSetDTO>(supElementList);
 		supListProv.addDataDisplay(supDataCellList);
 		supDataSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			
@@ -1150,9 +1150,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setQDMElementsInSuppElements(final List<QualityDataSetDTO> clauses) {
-		supPopulationList.clear();
-		supPopulationList.addAll(clauses);
-		Collections.sort(supPopulationList, new QualityDataSetDTO.Comparator());
+		supElementList.clear();
+		supElementList.addAll(clauses);
+		Collections.sort(supElementList, new QualityDataSetDTO.Comparator());
 		/*rightPagerPanel.clear();
 		rightPagerPanel.add(getSupCellList());*/
 		rightPagerPanel.setDisplay(getSupCellList());
@@ -1181,7 +1181,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
-		return supPopulationList;
+		return supElementList;
 	}
 	
 	

@@ -673,9 +673,9 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @return the intersection of qdm and sde
 	 */
 	private void getIntersectionOfQDMAndSDE(MeasurePackageOverview overview, XmlProcessor  processor, String measureId) {
-		Map<String, ArrayList<QualityDataSetDTO>> finalMap = new HashMap<String, ArrayList<QualityDataSetDTO>>();
+		//Map<String, ArrayList<QualityDataSetDTO>> finalMap = new HashMap<String, ArrayList<QualityDataSetDTO>>();
 		sortSDEAndQDMsForMeasurePackager(overview,processor);
-		logger.info("finalMap()of QualityDataSetDTO ::" + finalMap.size());
+		//logger.info("finalMap()of QualityDataSetDTO ::" + finalMap.size());
 		
 	}
 	

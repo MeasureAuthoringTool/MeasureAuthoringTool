@@ -46,6 +46,7 @@ import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
+import mat.shared.MATPropertiesUtil;
 import mat.shared.MeasurePackageClauseValidator;
 
 // TODO: Auto-generated Javadoc
@@ -270,7 +271,7 @@ public class PackagerServiceImpl implements PackagerService {
 			overview.setPackages(pkgs);
 			overview.setReleaseVersion(measure.getReleaseVersion());
 			if(measure.getReleaseVersion() != null && 
-					(measure.getReleaseVersion().equalsIgnoreCase("v5.0") || measure.getReleaseVersion().equalsIgnoreCase("v5.1"))){
+					(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesUtil.MAT_RELEASE_VERSION))){
 				qdmAndSupplDataforMeasurePackager(overview, processor);
 				getNewRiskAdjVariablesForMeasurePackager(overview, processor);
 			} else {

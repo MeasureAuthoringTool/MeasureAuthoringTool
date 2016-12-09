@@ -43,6 +43,7 @@ import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
+import mat.shared.MATPropertiesUtil;
 import mat.shared.StringUtility;
 import net.sf.saxon.TransformerFactoryImpl;
 
@@ -632,7 +633,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	    
 	    String measureXML = ""; 
 
-	    if(measure.getReleaseVersion().equals("v5.0") || measure.getReleaseVersion().equalsIgnoreCase("v5.1")) {
+	    if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesUtil.MAT_RELEASE_VERSION)) {
 			measureXML = getCQLBasedEMeasureXML(measureExport);  
 		} else {
 			 measureXML = getNewEMeasureXML(measureExport);

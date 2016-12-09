@@ -1034,11 +1034,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		else{
 			view.setCQLMeasure(false);
 			view.setRiskAdjustLabel(false);
+			//Set CQL Suppl data to empty
 			view.setCQLElementsInSuppElements(Collections.<CQLDefinition>emptyList());
 			view.setCQLQDMElements(Collections.<CQLDefinition>emptyList());
+			//Set QDM and Supplemental Data Elements.
 			view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 			view.setQDMElements(packageOverview.getQdmElements());
-			//Set CQL Suppl data to empty
+			
 			
 		}
 		//view.setQDMElements(packageOverview.getQdmElements());

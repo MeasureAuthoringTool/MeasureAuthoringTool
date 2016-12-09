@@ -201,4 +201,5 @@
         <include file="classpath://liquibase/deploy_Sprint-106_MAT-8230_12012016_Mode.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Change_L_to_Liter.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-107_Add_DISPLAY_CQL_UNITS_column.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8279_CQL_Add_Attributes.xml"/>
    	</databaseChangeLog>

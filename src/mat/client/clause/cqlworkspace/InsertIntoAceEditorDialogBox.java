@@ -221,32 +221,11 @@ public class InsertIntoAceEditorDialogBox {
 		selectItemListFormGroup.add(selectItemListFormLabel);
 		selectItemListFormGroup.add(listAllItemNames);
 		
-		//MAT 8222 Removing Attributes by Datatype and Attributes fields from Insert Icon and later added to new pop up screen.
-		/*final FormGroup availableDataTypesFormGroup = new FormGroup();
-		FormLabel availableDataTypesFormLabel = new FormLabel();
-		availableDataTypesFormLabel.setText("Attributes by Datatype");
-		availableDataTypesFormLabel.setTitle("Select DataType to Filter");
-		availableDataTypesFormLabel.setFor("availableDatatype");
-		availableDataTypesFormGroup.add(availableDataTypesFormLabel);
-		availableDataTypesFormGroup.add(availableDatatypes);
-		
-		final FormGroup availableAttributesFormGroup = new FormGroup();
-		FormLabel availableAttributesFormLabel = new FormLabel();
-		availableAttributesFormLabel.setText("Attributes");
-		availableAttributesFormLabel.setTitle("Select Attribute to Insert");
-		availableAttributesFormLabel.setFor("availableAttributeToInsert");
-		availableAttributesFormGroup.add(availableAttributesFormLabel);
-		availableAttributesFormGroup.add(availableAttributesToInsert);*/
-		
-		
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(availableItemTypeFormGroup);
 		formFieldSet.add(selectItemListFormGroup);
-		//MAT 8222 Removing Attributes by Datatype and Attributes fields from Insert Icon and later added to new pop up screen.
-		/*formFieldSet.add(availableDataTypesFormGroup);
-		formFieldSet.add(availableAttributesFormGroup);*/
 		
 		bodyForm.add(formFieldSet);
 		modalBody.add(bodyForm);
@@ -289,7 +268,6 @@ public class InsertIntoAceEditorDialogBox {
 								String attributeNameToBeInserted = availableAttributesToInsert.getValue(selectedIndex);
 								
 								if (attributeNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
-									//availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 									helpBlock.setText("Please select Attribute Name.");
 									messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -304,7 +282,6 @@ public class InsertIntoAceEditorDialogBox {
 								
 								
 							} else {
-								//availableAttributesFormGroup.setValidationState(ValidationState.ERROR);
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 								helpBlock.setText("Please select Attribute Name.");
 								messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -1317,8 +1294,6 @@ public class InsertIntoAceEditorDialogBox {
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
 				selectItemListFormGroup.setValidationState(ValidationState.NONE);
-				/*availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
-				availableAttributesFormGroup.setValidationState(ValidationState.NONE);*/
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableItemToInsert.getSelectedIndex();
@@ -1449,8 +1424,6 @@ public class InsertIntoAceEditorDialogBox {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				//availableDataTypesFormGroup.setValidationState(ValidationState.NONE);
-				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = availableDatatypes.getSelectedIndex();
@@ -1470,8 +1443,6 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				
-				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
-				//availableAttributesFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
@@ -1680,13 +1651,21 @@ public class InsertIntoAceEditorDialogBox {
 		String selectedQuantity = QuantityTextBox.getText();
 		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
 		if(nonQuoteUnits.contains(selectedUnit)){
-			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append(selectedUnit);
+			if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append(selectedUnit);
+			} else {
+				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity);
+			}
 		}else if(selectedMode.equalsIgnoreCase("Nullable")){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
 		} else if(selectedMode.equalsIgnoreCase("Value Sets")){
 			sb.append(".").append(selectedAttrItem).append(" in \"[").append(selectedMDetailsItem).append("]\"");
 		} else {
-			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
+			if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");
+			} else{
+				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity);
+			}
 		} 
 		return sb.toString();
 		

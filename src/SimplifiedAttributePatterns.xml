@@ -107,7 +107,10 @@
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
  </attribute>
- <attribute attribName="referenceRange">
+ <attribute attribName="reference range low">
+  <mode mode="Nullable" />
+ </attribute>
+  <attribute attribName="reference range high">
   <mode mode="Nullable" />
  </attribute>
  <attribute attribName="refills">

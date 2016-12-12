@@ -52,7 +52,7 @@ public class MATPropertiesUtil {
 	public static final String QDM_VERSION = "5.0.2";
 	
 	/** The Constant MAT_RELEASE_VERSION. */
-	public static final String MAT_RELEASE_VERSION = "5.1";
+	public static final String MAT_RELEASE_VERSION = "v5.1";
 	
 	/** The Constant QDM_DEFAULT_EXPANSION. */
 	public static final String QDM_DEFAULT_EXPANSION = "VSAC Auto Expansion";

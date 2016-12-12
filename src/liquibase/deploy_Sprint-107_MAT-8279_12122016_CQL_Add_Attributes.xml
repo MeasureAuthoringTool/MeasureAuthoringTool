@@ -6,7 +6,18 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 		
 	    <changeSet author="mat_dev_user" id="1" context="prod">
-	        <sql> 
+	        <sql>
+                 DELETE FROM `QDM_ATTRIBUTES` WHERE NAME='referenceRange';
+                 DELETE FROM `ATTRIBUTES` WHERE ATTRIBUTE_NAME='referenceRange';
+                 
+                 INSERT INTO `ATTRIBUTES` (`ATTRIBUTE_NAME`) SELECT * FROM (SELECT 'reference range low') AS tmp WHERE NOT EXISTS (SELECT `ATTRIBUTE_NAME` FROM `ATTRIBUTES` WHERE `ATTRIBUTE_NAME`='reference range low') LIMIT 1;
+                 INSERT INTO `ATTRIBUTES` (`ATTRIBUTE_NAME`) SELECT * FROM (SELECT 'reference range high') AS tmp WHERE NOT EXISTS (SELECT `ATTRIBUTE_NAME` FROM `ATTRIBUTES` WHERE `ATTRIBUTE_NAME`='reference range high') LIMIT 1;
+                 
+                 INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'reference range low', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' )) LIMIT 1;
+                 INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'reference range high', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' )) LIMIT 1;
+                 INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Laboratory Test, Performed' )) LIMIT 1;
+                 INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Physical Exam, Not Ordered' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Physical Exam, Not Ordered' )) LIMIT 1;
+	            
                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Not Performed' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Not Performed' )) LIMIT 1;
                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Not Recommended' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Assessment, Not Recommended' )) LIMIT 1;
                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) SELECT * FROM (SELECT 'authorDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Communication: From Patient To Provider, Not Done' ), 'Data Type') AS tmp WHERE NOT EXISTS (SELECT NAME FROM `QDM_ATTRIBUTES` WHERE `NAME`='authorDatetime' AND `DATA_TYPE_ID`=(SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Communication: From Patient To Provider, Not Done' )) LIMIT 1;

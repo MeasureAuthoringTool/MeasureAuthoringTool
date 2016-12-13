@@ -202,10 +202,9 @@ implements MeasureCloningService {
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
-//			if(measure.getReleaseVersion() != null){
-//				clonedMeasure.setReleaseVersion("v5.0");
-//			}
-			/*clonedMeasure.setMeasureStatus("In Progress");*/
+			
+			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
+			
 			clonedMeasure.setDraft(TRUE);
 			if (currentDetails.getMeasScoring() != null) {
 				clonedMeasure
@@ -251,31 +250,11 @@ implements MeasureCloningService {
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
 			clearChildNodes(Risk_ADJUSTMENT_VARIABLES);
 			
-			// create the default 4 CMS supplemental QDM
-			QualityDataModelWrapper wrapper = measureXmlDAO
-					.createSupplimentalQDM(clonedMeasure.getId(), TRUE,
-							getSupplementalUUIds());
-			ByteArrayOutputStream streamSuppDataEle = XmlProcessor
-					.convertQDMOToSuppleDataXML(wrapper);
-			// Remove <?xml> and then replace.
-			String filteredStringSupp = removePatternFromXMLString(
-					streamSuppDataEle.toString().substring(
-							streamSuppDataEle.toString()
-							.indexOf("<measure>", 0)), "<measure>", "");
-			filteredStringSupp = removePatternFromXMLString(filteredStringSupp,
-					"</measure>", "");
-			
 			String clonedXMLString = convertDocumenttoString(clonedDoc);
 			MeasureXML clonedXml = new MeasureXML();
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
 			clonedXml.setMeasure_id(clonedMeasure.getId());
 			XmlProcessor xmlProcessor = new XmlProcessor(
-					clonedXml.getMeasureXMLAsString());
-			String clonedXMLString2 = xmlProcessor.appendNode(
-					filteredStringSupp, "elementRef",
-					"/measure/supplementalDataElements");
-			clonedXml.setMeasureXMLAsByteArray(clonedXMLString2);
-			xmlProcessor = new XmlProcessor(
 					clonedXml.getMeasureXMLAsString());
 			
 			if ((currentDetails.getMeasScoring() != null)
@@ -290,7 +269,17 @@ implements MeasureCloningService {
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
 			
-			updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure);
+			boolean isUpdatedForCQL = updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure);
+			
+			if(!isUpdatedForCQL){
+				//this means this is a CQL Measure to CQL Measure draft/clone.
+				
+				//create the default 4 CMS supplemental definitions
+				appendSupplementalDefinitions(xmlProcessor, false);
+			}
+			
+			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
+					.transform(xmlProcessor.getOriginalDoc()));
 			
 			logger.info("Final XML after cloning/draft"
 					+ clonedXml.getMeasureXMLAsString());
@@ -311,14 +300,13 @@ implements MeasureCloningService {
 		}
 	}
 
-	private void updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
+	private boolean updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
 			XmlProcessor xmlProcessor, Measure clonedMsr) throws XPathExpressionException {
 		
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 		
 		if(cqlLookUpNode != null){
-			clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
-			
+					
 			//Update QDM Version in Measure XMl for Draft and CQL Measures
 			Node qdmVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModelVersion");
 			if(qdmVersionNode!=null){
@@ -326,7 +314,7 @@ implements MeasureCloningService {
 			}
 			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 					.transform(xmlProcessor.getOriginalDoc()));
-			return;
+			return false;
 		}
 		
 		clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
@@ -420,9 +408,7 @@ implements MeasureCloningService {
 		checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
 		checkForDefaultCQLCodesAndAppend(xmlProcessor);
 		
-		clonedXml.setMeasureXMLAsByteArray(xmlProcessor
-				.transform(xmlProcessor.getOriginalDoc()));
-		
+		return true;
 	}
 	
 
@@ -445,35 +431,7 @@ implements MeasureCloningService {
 		try {
 			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 			
-			Node supplementalDataNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/supplementalDataElements");
-			
-			/*if(supplementalDataNode == null){
-				supplementalDataNode = xmlProcessor.getOriginalDoc().createElement("supplementalDataElements");
-				xmlProcessor.getOriginalDoc().getDocumentElement().appendChild(supplementalDataNode);
-			}*/
-			
-			while(supplementalDataNode.hasChildNodes()){
-				supplementalDataNode.removeChild(supplementalDataNode.getFirstChild());
-			}
-			
-			NodeList supplementalDefnNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), 
-					"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
-			
-			if(supplementalDefnNodes != null){
-				System.out.println("suppl data elems..setting ids");
-				for(int i=0;i<supplementalDefnNodes.getLength();i++){
-					Node supplNode = supplementalDefnNodes.item(i);
-				    System.out.println("name:"+supplNode.getAttributes().getNamedItem("name").getNodeValue());
-				    System.out.println("id:"+supplNode.getAttributes().getNamedItem("id").getNodeValue());
-					supplNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
-					
-					Element cqlDefinitionRefNode = xmlProcessor.getOriginalDoc().createElement("cqldefinition");
-					cqlDefinitionRefNode.setAttribute("displayName", supplNode.getAttributes().getNamedItem("name").getNodeValue());
-					cqlDefinitionRefNode.setAttribute("uuid", supplNode.getAttributes().getNamedItem("id").getNodeValue());
-					supplementalDataNode.appendChild(cqlDefinitionRefNode);
-					
-				}
-			}
+			appendSupplementalDefinitions(xmlProcessor, true);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -481,6 +439,35 @@ implements MeasureCloningService {
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	private void appendSupplementalDefinitions(XmlProcessor xmlProcessor, boolean createNewIds)
+			throws XPathExpressionException {
+		Node supplementalDataNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/supplementalDataElements");
+					
+		while(supplementalDataNode.hasChildNodes()){
+			supplementalDataNode.removeChild(supplementalDataNode.getFirstChild());
+		}
+		
+		NodeList supplementalDefnNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), 
+				"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
+		
+		if(supplementalDefnNodes != null){
+			System.out.println("suppl data elems..setting ids");
+			for(int i=0;i<supplementalDefnNodes.getLength();i++){
+				Node supplNode = supplementalDefnNodes.item(i);
+			    			    
+				if(createNewIds){
+					supplNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
+				}
+				
+				Element cqlDefinitionRefNode = xmlProcessor.getOriginalDoc().createElement("cqldefinition");
+				cqlDefinitionRefNode.setAttribute("displayName", supplNode.getAttributes().getNamedItem("name").getNodeValue());
+				cqlDefinitionRefNode.setAttribute("uuid", supplNode.getAttributes().getNamedItem("id").getNodeValue());
+				supplementalDataNode.appendChild(cqlDefinitionRefNode);
+				
+			}
 		}
 	}
 	

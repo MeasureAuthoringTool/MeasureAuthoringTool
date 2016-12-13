@@ -198,8 +198,8 @@
         <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8267_CQL_12012016_RePopulating_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8318_Add_Unit.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Add_New_Units.xml"/>
-        <include file="classpath://liquibase/deploy_Sprint-106_MAT-8230_12122016_Mode.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8230_12132016_Mode.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Change_L_to_Liter.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-107_Add_DISPLAY_CQL_UNITS_column.xml"/>
-        <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8279_12122016_CQL_Add_Attributes.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8279_12132016_CQL_Add_Attributes.xml"/>
    	</databaseChangeLog>

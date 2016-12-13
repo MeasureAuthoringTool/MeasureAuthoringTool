@@ -1659,7 +1659,7 @@ public class InsertIntoAceEditorDialogBox {
 		}else if(selectedMode.equalsIgnoreCase("Nullable")){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
 		} else if(selectedMode.equalsIgnoreCase("Value Sets")){
-			sb.append(".").append(selectedAttrItem).append(" in \"[").append(selectedMDetailsItem).append("]\"");
+			sb.append(".").append(selectedAttrItem).append(" in \"").append(selectedMDetailsItem).append("\"");
 		} else {
 			if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
 				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append("'").append(selectedUnit).append("'");

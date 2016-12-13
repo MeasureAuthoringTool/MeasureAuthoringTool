@@ -299,10 +299,12 @@ public class InsertIntoAceEditorDialogBox {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
 									if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
-										String[] str = itemNameToBeInserted.split("\\.");
+										/*String[] str = itemNameToBeInserted.split("\\.");*/
+										String name = itemNameToBeInserted.substring(0, itemNameToBeInserted.lastIndexOf('.'));
+										String dataTypeName = itemNameToBeInserted.substring(itemNameToBeInserted.lastIndexOf('.') + 1);
 										StringBuilder sb = new StringBuilder();
-										sb = sb.append("[\"" + str[1] + "\"");
-										sb = sb.append(": \"").append(str[0] + "\"]");
+										sb = sb.append("[\"" + name + "\"");
+										sb = sb.append(": \"").append(dataTypeName + "\"]");
 										itemNameToBeInserted = sb.toString();
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
 										StringBuilder sb = new StringBuilder(); 
@@ -467,7 +469,6 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
-				attrFormGroup.setValidationState(ValidationState.NONE);
 				ModelistBox.clear();
 				ModeDetailslistBox.clear();
 				ModelistBox.setEnabled(false);
@@ -475,19 +476,11 @@ public class InsertIntoAceEditorDialogBox {
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = AttriblistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
-					String attribSelected = AttriblistBox.getItemText(selectedIndex);
-					if(attribSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-						ModelistBox.setEnabled(false);
-						ModeDetailslistBox.setEnabled(false);
-					}
-					else{
-						ModelistBox.setEnabled(true);
-						addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attribSelected));
-						ModelistBox.setSelectedIndex(0);
-					}
-					
-				}
-				else {
+					String attrSelected = AttriblistBox.getItemText(selectedIndex);
+					ModelistBox.setEnabled(true);
+					addModelist(ModelistBox,JSONAttributeModeUtility.getAttrModeList(attrSelected));
+					ModelistBox.setSelectedIndex(0);
+				} else {
 					ModelistBox.setEnabled(false);
 					ModeDetailslistBox.setEnabled(false);
 					ModelistBox.addItem(MatContext.get().PLEASE_SELECT);
@@ -503,28 +496,19 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
-				modeFormGroup.setValidationState(ValidationState.NONE);
 				ModeDetailslistBox.clear();
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = ModelistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
 					String modeSelected = ModelistBox.getItemText(selectedIndex);
-					if(modeSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-						ModeDetailslistBox.setEnabled(false);
-						setEnabled(false);
-					} else{
-						ModeDetailslistBox.setEnabled(true);
-						addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected));
-						if(modeSelected.equalsIgnoreCase("nullable") || modeSelected.equalsIgnoreCase("value sets")){
-							setEnabled(false);
-						} 
-						
-					}
+					ModeDetailslistBox.setEnabled(true);
+					addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected)); 
+					ModeDetailslistBox.setSelectedIndex(0);
 				} else {
 					ModeDetailslistBox.setEnabled(false);
 					ModeDetailslistBox.addItem(MatContext.get().PLEASE_SELECT);
-					setEnabled(false);
 				}
+				setEnabled(false);
 				defaultFrmGrpValidations();
 			}
 		});
@@ -534,16 +518,12 @@ public class InsertIntoAceEditorDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				helpBlock.setText("");
-				modeDetailsFormGroup.setValidationState(ValidationState.NONE);
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				int selectedIndex = ModeDetailslistBox.getSelectedIndex();
 				if (selectedIndex != 0) {
-					String modeDetailsSelected = ModeDetailslistBox.getItemText(selectedIndex);
-					if(modeDetailsSelected.equalsIgnoreCase(MatContext.get().PLEASE_SELECT) ){
-						setEnabled(false);
-					} else{
-						setWidgetEnabled(AttriblistBox, ModelistBox);
-					}
+					setWidgetEnabled(AttriblistBox, ModelistBox);	
+				} else {
+					setEnabled(false);
 				}
 				defaultFrmGrpValidations();
 			}
@@ -655,10 +635,9 @@ public class InsertIntoAceEditorDialogBox {
 						
 						
 					} else {
-						modeFormGroup.setValidationState(ValidationState.ERROR);
-						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please Select valid Mode.");
-						messageFormgroup.setValidationState(ValidationState.ERROR);
+						editor.insertAtCursor(attributeStringBuilder());
+						editor.focus();
+						dialogModal.hide();
 					}
 					
 										
@@ -1651,11 +1630,25 @@ public class InsertIntoAceEditorDialogBox {
 		nonQuoteUnits = getNonQuotesUnits();
 		cqlUnitMap = getCqlUnitMap();
 		StringBuilder sb = new StringBuilder();
-		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
-		String selectedMode = ModelistBox.getItemText(ModelistBox.getSelectedIndex()); 
-		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		String selectedAttrItem = "";
+		String selectedMode = "";
+		String selectedMDetailsItem = "";
 		String selectedQuantity = QuantityTextBox.getText();
 		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
+		
+		if(AttriblistBox.getSelectedIndex()>0){
+			selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		}
+		
+		if(ModelistBox.getSelectedIndex()>0){
+			selectedMode = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
+		}
+		
+		if(ModeDetailslistBox.getSelectedIndex()>0){
+			selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		}
+		 
+		
 		if(nonQuoteUnits.contains(selectedUnit)){
 			if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
 				sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ").append(selectedUnit);

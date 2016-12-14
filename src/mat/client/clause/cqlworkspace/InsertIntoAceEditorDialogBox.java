@@ -303,8 +303,8 @@ public class InsertIntoAceEditorDialogBox {
 										String name = itemNameToBeInserted.substring(0, itemNameToBeInserted.lastIndexOf('.'));
 										String dataTypeName = itemNameToBeInserted.substring(itemNameToBeInserted.lastIndexOf('.') + 1);
 										StringBuilder sb = new StringBuilder();
-										sb = sb.append("[\"" + name + "\"");
-										sb = sb.append(": \"").append(dataTypeName + "\"]");
+										sb = sb.append("[\"" + dataTypeName + "\"");
+										sb = sb.append(": \"").append(name + "\"]");
 										itemNameToBeInserted = sb.toString();
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
 										StringBuilder sb = new StringBuilder(); 

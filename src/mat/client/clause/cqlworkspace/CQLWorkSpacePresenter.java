@@ -6,31 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import mat.client.MatPresenter;
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
-import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.JSONAttributeModeUtility;
-import mat.client.shared.JSONCQLTimingExpressionUtility;
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.CQLErrors;
-import mat.shared.CQLModelValidator;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.SaveUpdateCQLResult;
 
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -38,7 +13,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
@@ -69,6 +43,31 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceMarkerType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceRange;
+import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.JSONAttributeModeUtility;
+import mat.client.shared.JSONCQLTimingExpressionUtility;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.CQLErrors;
+import mat.shared.CQLModelValidator;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.SaveUpdateCQLResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -2403,9 +2402,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (result.isSuccess()) {
 					if ((result.getCqlString() != null)
 							&& !result.getCqlString().isEmpty()) {
-						searchDisplay.getCqlAceEditor().setText(result.getCqlString());
+						validateViewCQLFile(result.getCqlString());
+						//searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 					}
-					//validateViewCQLFile();
+					
 				}
 			}
 			@Override
@@ -2533,57 +2533,45 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return searchDisplay;
 	}
 	
-	private void validateViewCQLFile(){
+	/**
+	 * Validate CQL file on View CQL and show warning or success message accordingly.
+	 * @param cqlText
+	 */
+	private void validateViewCQLFile(final String cqlText){
 		MatContext.get().getMeasureService().parseCQLForErrors(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageAlert().createAlert(
-						MatContext.get().getMessageDelegate().getGenericErrorMessage());							
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				searchDisplay.getCqlAceEditor().setText(cqlText);
 			}
 
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				
-				/*if(!result.getCqlErrors().isEmpty()){
-					StringBuilder strBuilder = new StringBuilder("Validation failed with following errors.");
-					for(int i=0; i<result.getCqlErrors().size(); i++) {
-						strBuilder.append("\n\n");
-						strBuilder.append(result.getCqlErrors().get(i));	
-					}
-					searchDisplay.getErrorMessageAlert()
-					.createAlert(strBuilder.toString());
-					
-					//searchDisplay.getCqlAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.FULL_LINE, true);
-				}*/
 				searchDisplay.getCqlAceEditor().clearAnnotations();
 				searchDisplay.getCqlAceEditor().removeAllMarkers();
 				searchDisplay.getCqlAceEditor().redisplay();
+				searchDisplay.getSuccessMessageAlert().clear();
+				searchDisplay.getWarningConfirmationMessageAlert().clear();
+				searchDisplay.getCqlAceEditor().setText("");
 				if(!result.getCqlErrors().isEmpty()){
-					/*searchDisplay.getErrorMessageAlert()
-					.createAlert("Validation Failure Check Text in Editor.");*/
-					//searchDisplay.getDefineAceEditor().addMarker(AceRange.create(1, 1, 1, 1), "yellowColor", AceMarkerType.TEXT, true);
+					searchDisplay.getWarningConfirmationMessageAlert().setVisible(true);
+					searchDisplay.getWarningConfirmationMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
 					for(CQLErrors error : result.getCqlErrors()){
-						//if(error.getErrorInLine() >= result.getCqlModel().getLines()){
 							String errorMessage = new String();
 							errorMessage = errorMessage.concat("Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset());
-							HTML html = new HTML("<h6>" + errorMessage + "</h6>");
-							//alert.add(html);
 							int line = error.getErrorInLine();
-							//line = line - result.getCqlModel().getLines() + 1;
 							int column = error.getErrorAtOffeset();
-							System.out.println("line: " + line + "  column: " + column);
 							searchDisplay.getCqlAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.WARNING);
-							//searchDisplay.getDefineAceEditor().setAnnotations();
-							// try SCREEN_LINE, FULL_LINE, TEXT          underline_squiggly
-						//	int id = searchDisplay.getDefineAceEditor().addMarker(AceRange.create(line - 1, 1, line-1, 15), "underline", AceMarkerType.FULL_LINE, false);
-							int id = searchDisplay.getCqlAceEditor().addMarker(AceRange.create(line - 1, column, line - 1, column + 50), "underline", AceMarkerType.FULL_LINE, false);
-						//}
 					}
-					
+					searchDisplay.getCqlAceEditor().setText(cqlText);
 					searchDisplay.getCqlAceEditor().setAnnotations();
 					searchDisplay.getCqlAceEditor().redisplay();
-					
+				} else {
+					searchDisplay.getSuccessMessageAlert().setVisible(true);
+					searchDisplay.getSuccessMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
+					searchDisplay.getCqlAceEditor().setText(cqlText);
 				}
 				
 			}

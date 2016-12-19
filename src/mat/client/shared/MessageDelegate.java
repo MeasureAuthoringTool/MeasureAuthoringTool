@@ -193,6 +193,9 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
+	public final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with few validations errors. Errors are marked with triangle sign on line number.";
+	public final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";
+	
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully saved CQL general information.";
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
 	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully saved function into CQL.";
@@ -2628,6 +2631,14 @@ public class MessageDelegate {
 	
 	public String getDELETE_WARNING_MESSAGE() {
 		return DELETE_WARNING_MESSAGE; 
+	}
+
+	public String getVIEW_CQL_ERROR_MESSAGE() {
+		return VIEW_CQL_ERROR_MESSAGE;
+	}
+
+	public String getVIEW_CQL_NO_ERRORS_MESSAGE() {
+		return VIEW_CQL_NO_ERRORS_MESSAGE;
 	}
 
 

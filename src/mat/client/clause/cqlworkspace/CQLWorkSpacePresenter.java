@@ -2394,7 +2394,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Method to build View for Anchor List item View CQL.
 	 */
 	private void buildCQLView() {
-		
+		searchDisplay.getCqlAceEditor().setText("");
 		MatContext.get().getMeasureService().getCQLFileData(MatContext.get()
 				.getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
@@ -2554,7 +2554,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlAceEditor().redisplay();
 				searchDisplay.getSuccessMessageAlert().clear();
 				searchDisplay.getWarningConfirmationMessageAlert().clear();
-				searchDisplay.getCqlAceEditor().setText("");
+				
 				if(!result.getCqlErrors().isEmpty()){
 					searchDisplay.getWarningConfirmationMessageAlert().setVisible(true);
 					searchDisplay.getWarningConfirmationMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());

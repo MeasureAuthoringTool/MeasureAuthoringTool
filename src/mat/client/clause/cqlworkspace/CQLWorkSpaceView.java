@@ -12,11 +12,11 @@ import java.util.TreeMap;
 
 import mat.client.CustomPager;
 import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -97,27 +97,6 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -933,7 +912,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		modelVersionLabel.setWidth("150px");
-		TextBox modelVersionValue = new TextBox();
+		TextArea modelVersionValue = new TextArea();
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		//modelVersionValue.setText("5.0");
 		modelVersionValue.setReadOnly(true);

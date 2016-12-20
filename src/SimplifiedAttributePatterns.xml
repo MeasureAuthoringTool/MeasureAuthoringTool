@@ -113,7 +113,6 @@
  <attribute attribName="refills">
   <mode mode="Comparison" />
   <mode mode="Nullable" />
-  <mode mode="ValueSets" />
  </attribute>
  <attribute attribName="relatedTo">
   <mode mode="Nullable" />

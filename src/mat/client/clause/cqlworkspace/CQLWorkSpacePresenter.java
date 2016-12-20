@@ -920,6 +920,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void buildAppliedQDM();
 
+	
 	}
 	
 	
@@ -2567,12 +2568,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param cqlText
 	 */
 	private void validateViewCQLFile(final String cqlText){
-		MatContext.get().getMeasureService().parseCQLForErrors(MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>(){
+		MatContext.get().getMeasureService().parseCQLStringForError(cqlText, new AsyncCallback<SaveUpdateCQLResult>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageAlert().createAlert(
-						MatContext.get().getMessageDelegate().getGenericErrorMessage());							
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				searchDisplay.getCqlAceEditor().setText(cqlText);
 			}
 
 			@Override

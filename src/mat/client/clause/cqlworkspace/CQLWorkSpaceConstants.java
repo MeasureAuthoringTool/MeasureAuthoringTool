@@ -228,6 +228,7 @@ public class CQLWorkSpaceConstants {
 	public final static String CQL_DEFINE_MENU = "define";
 	public final static String CQL_PARAMETER_MENU = "param";
 	public final static String CQL_GENERAL_MENU = "general";
+	public final static String CQL_APPLIED_QDM = "qdm";
 	public final static String CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME = "Measurement Period";
 	public final static String CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC = "Interval<DateTime>";
 	public static final String CQL_DEFAULT_DEFINITON_CONTEXT = "Patient";

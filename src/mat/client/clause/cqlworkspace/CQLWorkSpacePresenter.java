@@ -41,8 +41,6 @@ import com.google.gwt.xml.client.XMLParser;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceMarkerType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceRange;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -918,6 +916,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results);
 
+		AnchorListItem getAppliedQDM();
+
+		void buildAppliedQDM();
+
 	}
 	
 	
@@ -948,11 +950,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Builds the timing expression pop up.
 	 */
-	private void buildTimingExpressionPopUp() {
+	/*private void buildTimingExpressionPopUp() {
 		searchDisplay.resetMessageDisplay();
 		InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currentSection);
 		searchDisplay.setIsPageDirty(true);
-	}
+	}*/
 	
 	/**
 	 * Adds the event handlers.
@@ -2201,6 +2203,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
+		searchDisplay.getAppliedQDM().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.hideAceEditorAutoCompletePopUp();
+				appliedQDMEvent();
+			}
+		});
+		
 		
 		searchDisplay.getParameterLibrary().addClickHandler(new ClickHandler() {
 			
@@ -2281,6 +2292,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 			searchDisplay.buildGeneralInformation();
+		}
+		
+	}
+	
+	private void appliedQDMEvent() {
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+		if (searchDisplay.getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
+			searchDisplay.showUnsavedChangesWarning();
+			
+		} else {
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getAppliedQDM().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
+			searchDisplay.buildAppliedQDM();
 		}
 		
 	}
@@ -2387,6 +2414,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)) {
 				searchDisplay.getViewCQL().setActive(false);
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_APPLIED_QDM)) {
+				searchDisplay.getAppliedQDM().setActive(false);
 			}
 		}
 	}
@@ -2432,13 +2461,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param iconType the icon type
 	 * @param message the message
 	 * @return the msg panel
-	 */
+	 *//*
 	private HTML getMsgPanel(IconType iconType, String message) {
 		Icon checkIcon = new Icon(iconType);
 		HTML msgHtml = new HTML(checkIcon + " <b>" + message + "</b>");
 		return msgHtml;
 	}
-	
+	*/
 	/**
 	 * Get All Applied QDM List from Measure XML.
 	 *
@@ -2543,8 +2572,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageAlert().createAlert(
-						MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				searchDisplay.getCqlAceEditor().setText(cqlText);
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());							
 			}
 
 			@Override
@@ -2593,12 +2621,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 				int startLine = error.getStartErrorInLine(); 
 				int startColumn = error.getStartErrorAtOffset(); 
-				int endLine = error.getEndErrorInLine(); 
-				int endColumn = error.getEndErrorAtOffset(); 
+				//int endLine = error.getEndErrorInLine(); 
+				//int endColumn = error.getEndErrorAtOffset(); 
 				
 				
 				editor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
-				int id = editor.addMarker(AceRange.create(startLine, startColumn, endLine, endColumn), "underline", AceMarkerType.FULL_LINE, false);
+				//int id = editor.addMarker(AceRange.create(startLine, startColumn, endLine, endColumn), "underline", AceMarkerType.FULL_LINE, false);
 				if(!isInvalid) {
 					isInvalid = true;
 				}

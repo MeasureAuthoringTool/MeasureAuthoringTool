@@ -10,28 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import mat.client.CustomPager;
-import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -96,6 +74,27 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -143,6 +142,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The view cql. */
 	private AnchorListItem viewCQL = new AnchorListItem();
+	
+	/** The applied QDM Element anchorItem. */
+	private AnchorListItem appliedQDM = new AnchorListItem();
 	
 	/** The general information. */
 	private AnchorListItem generalInformation;
@@ -511,8 +513,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getFunctionArgNameMap().clear();
 		mainFlowPanel.clear();
 		
-		VerticalPanel parameterVP = new VerticalPanel();
-		SimplePanel parameterFP = new SimplePanel();
+		VerticalPanel cqlViewVP = new VerticalPanel();
+		SimplePanel cqlViewFP = new SimplePanel();
 		
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -527,17 +529,21 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		Label viewCQlFileLabel = new Label(LabelType.INFO);
 		viewCQlFileLabel.setText("View CQL file here");
 		viewCQlFileLabel.setTitle("View CQL file here");
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(viewCQlFileLabel);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(cqlAceEditor);
-		parameterFP.add(parameterVP);
-		parameterFP.setStyleName("cqlRightContainer");
-		parameterFP.setWidth("700px");
-		parameterFP.setStyleName("marginLeft15px");
-		mainFlowPanel.add(parameterFP);
+		cqlViewVP.add(new SpacerWidget());
+		cqlViewVP.add(new SpacerWidget());
+		//cqlViewVP.add(warningConfirmationMessageAlert);
+		//cqlViewVP.add(new SpacerWidget());
+		//cqlViewVP.add(successMessageAlert);
+		//cqlViewVP.add(new SpacerWidget());
+		cqlViewVP.add(viewCQlFileLabel);
+		cqlViewVP.add(new SpacerWidget());
+		cqlViewVP.add(new SpacerWidget());
+		cqlViewVP.add(cqlAceEditor);
+		cqlViewFP.add(cqlViewVP);
+		cqlViewFP.setStyleName("cqlRightContainer");
+		cqlViewFP.setWidth("700px");
+		cqlViewFP.setStyleName("marginLeft15px");
+		mainFlowPanel.add(cqlViewFP);
 		
 	}
 	
@@ -938,6 +944,33 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 	
+	@Override
+	public void buildAppliedQDM() {
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
+		getFunctionArgNameMap().clear();
+		if (getFunctionArgumentList().size() > 0) {
+			getFunctionArgumentList().clear();
+		}
+		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
+		/*CQLQDMAppliedView qdmView = new CQLQDMAppliedView();
+		appliedQDMTopPanel.add(qdmView.asWidget());*/
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		//vp.setWidth("715px");
+		//appliedQDMTopPanel.setWidth("700px");
+		appliedQDMTopPanel.setStyleName("marginLeft15px");
+		vp.add(appliedQDMTopPanel);
+		
+		mainFlowPanel.clear();
+		mainFlowPanel.add(vp);
+		
+		
+	}
+	
+	
 	/**
 	 * Method to create Right Hand side Nav bar in CQL Workspace.
 	 */
@@ -952,7 +985,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		navPills.setStacked(true);
 		
 		generalInformation = new AnchorListItem();
-		//includeLibrary = new AnchorListItem();
+		appliedQDM = new AnchorListItem();
 		parameterLibrary = new AnchorListItem();
 		definitionLibrary = new AnchorListItem();
 		functionLibrary = new AnchorListItem();
@@ -963,10 +996,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
 		
-		//includeLibrary.setIcon(IconType.INFO);
-		//includeLibrary.setText("Inlude library");
-		//includeLibrary.setTitle("Inlude library");
-		//includeLibrary.setActive(true);
+		appliedQDM.setIcon(IconType.PENCIL);
+		appliedQDM.setText("QDM Elements");
+		appliedQDM.setTitle("QDM Elements");
+		appliedQDM.setActive(false);
 		
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -1045,7 +1078,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		viewCQL.setTitle("View CQL");
 		
 		navPills.add(generalInformation);
-		//snavPills.add(includeLibrary);
+		navPills.add(appliedQDM);
 		navPills.add(parameterLibrary);
 		
 		navPills.add(definitionLibrary);
@@ -3836,6 +3869,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void setUsedCQLArtifacts(GetUsedCQLArtifactsResult results) {
 		this.usedCqlArtifacts = results; 
+	}
+	@Override
+	public AnchorListItem getAppliedQDM() {
+		return appliedQDM;
+	}
+
+	public void setAppliedQDM(AnchorListItem appliedQDM) {
+		this.appliedQDM = appliedQDM;
 	}
 	
 }

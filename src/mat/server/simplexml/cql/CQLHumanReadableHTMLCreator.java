@@ -86,7 +86,7 @@ public class CQLHumanReadableHTMLCreator {
 //															 "starts within end", "starts within start", "within"};
 	
 	
-	private static final String[] cqlAttributeListArray = 	{"activeDatetime", "admissionSource", "anatomicalApproachSite", "anatomicalLocationSite", "authorTime", "birthDatetime", 
+	private static final String[] cqlAttributeListArray = 	{"activeDatetime", "admissionSource", "anatomicalApproachSite", "anatomicalLocationSite", "authorDatetime", "authorTime", "birthDatetime", 
 															 "cause", "code", "diagnosis", "dischargeDisposition", "dosage", "expiredDatetime", "facilityLocation", "frequency", "id", 
 															 "incisionDatetime", "lengthOfStay", "locationPeriod", "method", "negationRationale", "ordinality", "prevalencePeriod", 
 															 "principalDiagnosis", "radiationDosage", "radiationDuration", "reason", "recorder", "referenceRange", "refills", "relatedTo", 
@@ -1388,10 +1388,7 @@ public class CQLHumanReadableHTMLCreator {
 			} else {
 				spanElem.appendText("parameter ");
 				spanElemDefName.appendText(statementSignature);
-			}
-	 
-			
-			
+			}			
 			
 			List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
 			

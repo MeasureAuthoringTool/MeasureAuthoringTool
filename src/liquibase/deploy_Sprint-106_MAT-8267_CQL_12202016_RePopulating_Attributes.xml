@@ -475,7 +475,7 @@
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('code', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');
-                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('birthDateTime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');
+                  INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('birthDatetime', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('id', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('recorder', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');
                   INSERT INTO `QDM_ATTRIBUTES` (`NAME`, `DATA_TYPE_ID`, `QDM_ATTRIBUTE_TYPE`) VALUES ('reporter', (SELECT DATA_TYPE_ID FROM DATA_TYPE where DESCRIPTION = 'Patient Characteristic Birthdate'), 'Data Type');

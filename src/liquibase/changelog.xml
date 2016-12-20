@@ -195,10 +195,10 @@
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7926_Add_Attributes_for_qdm5.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-7441_Modify_Expired.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-8038_Datatype_Changes.xml" />
-        <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8267_CQL_12012016_RePopulating_Attributes.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8267_CQL_12202016_RePopulating_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8318_Add_Unit.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Add_New_Units.xml"/>
-        <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8230_12132016_Mode.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8230_12202016_Mode.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Change_L_to_Liter.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-107_Add_DISPLAY_CQL_UNITS_column.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8279_12132016_CQL_Add_Attributes.xml"/>

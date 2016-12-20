@@ -30,7 +30,7 @@
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
  </attribute>
- <attribute attribName="birthDateTime">
+ <attribute attribName="birthDatetime">
   <mode mode="Comparison" />
   <mode mode="Computative" />
   <mode mode="Nullable" />
@@ -111,6 +111,7 @@
   <mode mode="Nullable" />
  </attribute>
  <attribute attribName="refills">
+  <mode mode="Comparison" />
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
  </attribute>

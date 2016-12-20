@@ -606,33 +606,19 @@ MeasureService {
 
 	@Override
 	public SaveUpdateCQLResult parseCQLForErrors(String measureId) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		List<String> Errors = new ArrayList<String>();
-		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
-		//MATCQLParser matcqlParser = new MATCQLParser();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId),"").toString();
-		/*cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlFileString));
-		System.out.println(cqlFileString);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		cqlParser parser = new cqlParser(tokens);
-		CQLErrorListener cqlErrorListener = new CQLErrorListener();
-		parser.addErrorListener(cqlErrorListener);
-		parser.setBuildParseTree(true);
-
-		ParserRuleContext tree = parser.logic();
-		parser.notifyErrorListeners("");
-
-		System.out.println(parser.getNumberOfSyntaxErrors());
-		System.out.println(cqlErrorListener.getErrors());
-
-		if(cqlErrorListener.getErrors().size()!=0){
-			//result.setValid(false);
-			result.setCqlErrors(cqlErrorListener.getErrors());
-		} else {
-			//result.setValid(true);
-		}*/
-
 		
+		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId),"").toString();
+		
+		return parseCQLStringForError(cqlFileString);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#parseCQLStringForError(java.lang.String)
+	 */
+	@Override
+	public SaveUpdateCQLResult parseCQLStringForError( String cqlFileString) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		if(!StringUtils.isBlank(cqlFileString)){
@@ -640,16 +626,13 @@ MeasureService {
 			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
 			cqlToElm.doTranslation(true, false, false);
 			
-			String elmString = cqlToElm.getElmString(); 
-			
 			if(cqlToElm.getErrors() != null) {
 				cqlErrorsList.addAll(cqlToElm.getErrors());
 			}
 		}
 		
 		for(CqlTranslatorException cte : cqlErrorsList){
-			//Errors.add(cte.getMessage());
-			//result.getCqlErrors().add(cte);
+			
 			CQLErrors cqlErrors = new CQLErrors();
 			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
 			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());

@@ -724,5 +724,7 @@ public interface MeasureServiceAsync {
 
 	void parseCQLForErrors(String cqlString, AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
+
 	
 }

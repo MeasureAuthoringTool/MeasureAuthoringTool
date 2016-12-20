@@ -665,4 +665,6 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult parseCQLForErrors(String cqlString);
 	
 	GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId);
+
+	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 }

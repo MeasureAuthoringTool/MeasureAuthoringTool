@@ -10,6 +10,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import mat.client.CustomPager;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -161,8 +184,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The CQL success message. */
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	
+	/** The CQL warning message */
+	private MessageAlert warningMessageAlert = new WarningMessageAlert();
+	
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
+	
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
@@ -602,6 +629,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					
 					successMessageAlert.clearAlert();
 					errorMessageAlert.clearAlert();
+					warningMessageAlert.clearAlert();
+
 				}
 				
 			}
@@ -668,6 +697,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					
 					successMessageAlert.clearAlert();
 					errorMessageAlert.clearAlert();
+					warningMessageAlert.clearAlert();
 				}
 			}
 		});
@@ -737,6 +767,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				createAddArgumentViewForFunctions(functionArgumentList);
 				successMessageAlert.clearAlert();
 				errorMessageAlert.clearAlert();
+				warningMessageAlert.clearAlert();
 			}
 		});
 	}
@@ -1088,6 +1119,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		navPills.setWidth("200px");
 		
 		messagePanel.add(successMessageAlert);
+		messagePanel.add(warningMessageAlert);
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
 		messagePanel.add(globalWarningConfirmationMessageAlert);
@@ -2844,6 +2876,39 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * (non-Javadoc)
 	 * 
 	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
+	 * getWarningMessageAlert()
+	 */
+	/**
+	 * Gets the warning message alert.
+	 *
+	 * @return the warning message alert
+	 */
+	@Override
+	public MessageAlert getWarningMessageAlert() {
+		warningMessageAlert.getElement().setAttribute("bg-color", "#ff3232");
+		return warningMessageAlert; 
+	}
+	
+	 /* (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
+	 * setWarningMessageAlert(org.gwtbootstrap3.client.ui.Alert)
+	 */
+	/**
+	 * Sets the warning message alert.
+	 *
+	 * @param warningMessageAlert
+	 *            the new warning message alert
+	 */
+	@Override
+	public void setWarningMessageAlert(WarningMessageAlert warningMessageAlert) {
+		this.warningMessageAlert = warningMessageAlert; 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
 	 * getErrorMessageAlertGenInfo()
 	 */
 	/**
@@ -3681,6 +3746,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void resetMessageDisplay() {
+		getWarningMessageAlert().clearAlert(); 
 		getSuccessMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
@@ -3806,6 +3872,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void showUnsavedChangesWarning() {
+		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
@@ -3819,6 +3886,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void showGlobalUnsavedChangesWarning() {
+		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
@@ -3849,6 +3917,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	@Override
 	public void showDeleteConfirmationMessageAlert(String message) {
+		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();

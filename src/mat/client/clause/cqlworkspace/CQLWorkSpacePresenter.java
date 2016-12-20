@@ -55,6 +55,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.QDSAttributes;
@@ -920,6 +921,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void buildAppliedQDM();
 
+		void setWarningMessageAlert(WarningMessageAlert warningMessageAlert);
+
+		MessageAlert getWarningMessageAlert();
+
 	
 	}
 	
@@ -1649,7 +1654,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										/*searchDisplay.getSuccessMessageAlert().add(getMsgPanel(IconType.CHECK_CIRCLE,
 												MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS()));
 												*/
-										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+										searchDisplay.getSuccessMessageAlert().clearAlert();
+										searchDisplay.getWarningMessageAlert().createAlert(MatContext.get()
 												.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
 
 										} else {
@@ -1710,7 +1716,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getFunctionBodyAceEditor().redisplay();
 								searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
-									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+									searchDisplay.getSuccessMessageAlert().clearAlert();
+									searchDisplay.getWarningMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS());
 								} else {
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
@@ -1802,7 +1809,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getParameterAceEditor().redisplay();
 									searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(true);
 									if(validateCQLArtifact(result, currentSection)){
-										searchDisplay.getSuccessMessageAlert().createAlert(
+										searchDisplay.getWarningMessageAlert().createAlert(
 												MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
 										
 									} else {
@@ -1856,7 +1863,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getParameterAceEditor().redisplay();
 								searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
-									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+									searchDisplay.getWarningMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS());
 								} else {
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
@@ -1952,7 +1959,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getDefineAceEditor().redisplay();
 											searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
 											if(validateCQLArtifact(result, currentSection)){
-												searchDisplay.getSuccessMessageAlert().createAlert(
+												searchDisplay.getWarningMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
 											} else {
 												searchDisplay.getSuccessMessageAlert().createAlert(
@@ -2010,7 +2017,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getDefineAceEditor().redisplay();
 								searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(true);
 								if(validateCQLArtifact(result, currentSection)){
-									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+									searchDisplay.getWarningMessageAlert().createAlert(MatContext.get()
 											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS());
 								} else {
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()

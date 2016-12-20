@@ -5320,6 +5320,12 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover {
 	border-color: #faebcc
 }
 
+.warning-alert{
+	color: #b06500;
+	background-color: #ffc575;
+	border-color: #ffb575
+}
+
 .alert-warning hr {
 	border-top-color: #f7e1b5
 }

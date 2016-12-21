@@ -10,29 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import mat.client.CustomPager;
-import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -97,6 +74,28 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.CustomPager;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -168,7 +167,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-	
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
@@ -263,7 +261,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
 	
 	/** The applied qdm list. */
-	private List<QualityDataSetDTO> appliedQdmList = new ArrayList<QualityDataSetDTO>();
+	private List<CQLQualityDataSetDTO> appliedQdmList = new ArrayList<CQLQualityDataSetDTO>();
 	
 	/**
 	 * List viewFunctions.
@@ -369,7 +367,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	private GetUsedCQLArtifactsResult usedCqlArtifacts; 
 	
-	
+	private CQLQDMAppliedView qdmView ;
 	
 	//private AnchorListItem includeLibrary;
 	
@@ -464,6 +462,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * Instantiates a new CQL work space view.
 	 */
 	public CQLWorkSpaceView() {
+		qdmView = new CQLQDMAppliedView();
 		defineAceEditor.startEditor();
 		parameterAceEditor.startEditor();
 		cqlAceEditor.startEditor();
@@ -959,21 +958,19 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	@Override
 	public void buildAppliedQDM() {
+		qdmView.resetQDSMsgPanel();
+		qdmView.resetVSACValueSetWidget();
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
-		getFunctionArgNameMap().clear();
-		if (getFunctionArgumentList().size() > 0) {
-			getFunctionArgumentList().clear();
-		}
+		
 		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
-		/*CQLQDMAppliedView qdmView = new CQLQDMAppliedView();
-		appliedQDMTopPanel.add(qdmView.asWidget());*/
+		appliedQDMTopPanel.add(qdmView.asWidget());
 		
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
-		//vp.setWidth("715px");
-		//appliedQDMTopPanel.setWidth("700px");
+		vp.setWidth("700px");
+		appliedQDMTopPanel.setWidth("700px");
 		appliedQDMTopPanel.setStyleName("marginLeft15px");
 		vp.add(appliedQDMTopPanel);
 		
@@ -3773,8 +3770,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return warningConfirmationMessageAlert;
 	}
 	
-	
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -3832,7 +3827,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * getAppliedQdmList()
 	 */
 	@Override
-	public List<QualityDataSetDTO> getAppliedQdmList() {
+	public List<CQLQualityDataSetDTO> getAppliedQdmList() {
 		return appliedQdmList;
 	}
 	
@@ -3843,7 +3838,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * setAppliedQdmList(java.util.List)
 	 */
 	@Override
-	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
+	public void setAppliedQdmList(List<CQLQualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
 	}
 	
@@ -3952,6 +3947,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	public void setAppliedQDM(AnchorListItem appliedQDM) {
 		this.appliedQDM = appliedQDM;
+	}
+	@Override
+	public CQLQDMAppliedView getQdmView() {
+		return qdmView;
 	}
 	
 }

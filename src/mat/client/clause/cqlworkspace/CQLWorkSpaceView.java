@@ -263,6 +263,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The applied qdm list. */
 	private List<CQLQualityDataSetDTO> appliedQdmList = new ArrayList<CQLQualityDataSetDTO>();
 	
+	/** The applied qdm to show in Table list. */
+	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
+	
 	/**
 	 * List viewFunctions.
 	 */
@@ -3951,6 +3954,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public CQLQDMAppliedView getQdmView() {
 		return qdmView;
+	}
+	@Override
+	public List<CQLQualityDataSetDTO> getAppliedQdmTableList() {
+		return appliedQdmTableList;
+	}
+	@Override
+	public void setAppliedQdmTableList(List<CQLQualityDataSetDTO> appliedQdmTableList) {
+		this.appliedQdmTableList = appliedQdmTableList;
 	}
 	
 }

@@ -956,6 +956,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		MessageAlert getWarningMessageAlert();
 
+		void setAppliedQdmTableList(List<CQLQualityDataSetDTO> appliedQdmTableList);
+
+		List<CQLQualityDataSetDTO> getAppliedQdmTableList();
+
 	
 	}
 	
@@ -2200,19 +2204,31 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result.getCqlModel() != null) {
 					
-					List<CQLQualityDataSetDTO> appliedValueSetList = new ArrayList<CQLQualityDataSetDTO>();
+					List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
+					List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 					List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetList();
 					for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 						if(dto.isSuppDataElement())
 							continue;
 						if (!dto.getOid().equalsIgnoreCase(MEASUREMENT_PERIOD_OID)) {
-							appliedValueSetList.add(dto);
+							appliedAllValueSetList.add(dto);
 						} else {
 							System.out.print("Skipping Measurement Period from QDM List.");
 						}
 					}
-					searchDisplay.setAppliedQdmList(appliedValueSetList);
-				
+					searchDisplay.setAppliedQdmList(appliedAllValueSetList);
+					
+					
+					for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
+						if(dto.isSuppDataElement())
+							continue;
+						if (!dto.getOid().equalsIgnoreCase(MEASUREMENT_PERIOD_OID)) {
+							appliedValueSetTableList.add(dto);
+						} else {
+							System.out.print("Skipping Measurement Period from QDM List.");
+						}
+					}
+					searchDisplay.setAppliedQdmTableList(appliedValueSetTableList);
 					
 					if ((result.getCqlModel().getDefinitionList() != null) &&
 							(result.getCqlModel().getDefinitionList().size() > 0)) {
@@ -2368,7 +2384,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getAppliedQDM().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
 			searchDisplay.buildAppliedQDM();
-			searchDisplay.getQdmView().buildAppliedQDMCellTable(searchDisplay.getAppliedQdmList(), MatContext.get().getMeasureLockService()
+			searchDisplay.getQdmView().buildAppliedQDMCellTable(searchDisplay.getAppliedQdmTableList(), MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
 		}
 		

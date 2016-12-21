@@ -368,6 +368,7 @@ public class CQLUtilityClass {
 			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
 			getCodeSystems(cqlModel, cqlLookUpXMLString);
 			getValueSet(cqlModel, cqlLookUpXMLString);
+			getAllValueSet(cqlModel, cqlLookUpXMLString);
 			getCodes(cqlModel, cqlLookUpXMLString);
 			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
 			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
@@ -430,6 +431,26 @@ public class CQLUtilityClass {
 			valuesetWrapper = (QualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
 				cqlModel.setValueSetList(convertToCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO()));
+			}
+		} catch (Exception e) {
+			logger.info("Error while getting valueset :" +e.getMessage());
+		}
+
+	}
+	
+	private static void getAllValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
+		QualityDataModelWrapper valuesetWrapper;
+		try {			 
+
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
+			Unmarshaller unmarshaller = new Unmarshaller(mapping);
+			unmarshaller.setClass(QualityDataModelWrapper.class);
+			unmarshaller.setWhitespacePreserve(true);
+
+			valuesetWrapper = (QualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
+				cqlModel.setAllValueSetList(convertToAllCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO()));
 			}
 		} catch (Exception e) {
 			logger.info("Error while getting valueset :" +e.getMessage());
@@ -559,6 +580,32 @@ public class CQLUtilityClass {
 			for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
 				CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
 				if(!tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") && !tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
+					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
+					convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
+					convertedCQLDataSet.setDataType(tempDataSet.getDataType());
+					convertedCQLDataSet.setId(tempDataSet.getId());
+					convertedCQLDataSet.setOid(tempDataSet.getOid());
+					convertedCQLDataSet.setSuppDataElement(tempDataSet.isSuppDataElement());
+					convertedCQLDataSet.setTaxonomy(tempDataSet.getTaxonomy());
+					convertedCQLDataSet.setType(tempDataSet.getType());
+					convertedCQLDataSet.setUuid(tempDataSet.getUuid());
+					convertedCQLDataSet.setVersion(tempDataSet.getVersion());
+					convertedCQLDataSet.setDataTypeHasRemoved(tempDataSet.isDataTypeHasRemoved());
+					convertedCQLDataSet.setExpansionIdentifier(tempDataSet.getExpansionIdentifier());
+					convertedCQLDataSet.setVsacExpIdentifier(tempDataSet.getVsacExpIdentifier());
+					convertedCQLDataSetList.add(convertedCQLDataSet);
+				}
+				
+			}
+		return convertedCQLDataSetList;
+		
+	}
+	
+	private static List<CQLQualityDataSetDTO> convertToAllCQLQualityDataSetDTO(List<QualityDataSetDTO> qualityDataSetDTO){
+		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
+			for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
+				CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
+				if(!tempDataSet.isSuppDataElement()){
 					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
 					convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
 					convertedCQLDataSet.setDataType(tempDataSet.getDataType());

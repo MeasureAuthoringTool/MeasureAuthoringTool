@@ -44,11 +44,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -66,7 +63,6 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
-import mat.model.QualityDataSetDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
@@ -511,7 +507,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
 			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
-			table.setSelectionModel(selectionModel);
+			//table.setSelectionModel(selectionModel);
 			
 			// Name Column
 			Column<CQLQualityDataSetDTO, SafeHtml> nameColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(

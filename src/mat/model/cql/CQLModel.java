@@ -11,6 +11,7 @@ public class CQLModel implements IsSerializable{
 	private List<CQLLibraryModel> includeLibraryList = new ArrayList<CQLLibraryModel>();
 	private String context;
 	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
+	private List<CQLQualityDataSetDTO> allValueSetList = new ArrayList<CQLQualityDataSetDTO>();
 	private List<CQLParameter> cqlParameters = new ArrayList<CQLParameter>();
 	private List<CQLDefinition> cqlDefinitions = new ArrayList<CQLDefinition>();
 	private List<CQLFunctions> cqlFunctions = new ArrayList<CQLFunctions>();
@@ -84,6 +85,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setCodeList(List<CQLCode> codeList) {
 		this.codeList = codeList;
+	}
+	public List<CQLQualityDataSetDTO> getAllValueSetList() {
+		return allValueSetList;
+	}
+	public void setAllValueSetList(List<CQLQualityDataSetDTO> allValueSetList) {
+		this.allValueSetList = allValueSetList;
 	}
 	
 }

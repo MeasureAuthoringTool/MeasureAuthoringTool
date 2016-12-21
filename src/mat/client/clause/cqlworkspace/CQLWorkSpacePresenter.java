@@ -2201,7 +2201,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (result.getCqlModel() != null) {
 					
 					List<CQLQualityDataSetDTO> appliedValueSetList = new ArrayList<CQLQualityDataSetDTO>();
-					List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getValueSetList();
+					List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetList();
 					for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 						if(dto.isSuppDataElement())
 							continue;
@@ -3047,6 +3047,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the QDM Search Panel event Handlers.
 	 */
 	private void addQDMELmentSearchPanelHandlers() {
+		addQDMElementExpIdentifierHandlers();
 		
 		/**
 		 * this functionality is to clear the content on the QDM Element Search Panel.
@@ -3087,7 +3088,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getQdmView().resetQDSMsgPanel();
 					String version = null;
 					String expansionProfile = null;
-					//searchValueSetInVsac(version, expansionProfile);
+					searchValueSetInVsac(version, expansionProfile);
 				}
 			}
 		});
@@ -3197,13 +3198,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						return ;
 					}
 					searchDisplay.getQdmView().getSearchHeader().setText("Search");
-					//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
-					//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
 					if(!searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
-						//expIdentifierToAllQDM = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getValue();
+						expIdentifierToAllQDM = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getValue();
 						//updateAllQDMsWithExpProfile(appliedQDMList);
 					} else if(!searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()){
-						//expIdentifierToAllQDM = "";
+						expIdentifierToAllQDM = "";
 						//updateAllQDMsWithExpProfile(appliedQDMList);
 					} else {
 						searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(MatContext.get()

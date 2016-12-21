@@ -911,6 +911,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void showDeleteConfirmationMessageAlert(String message);
 
+		DeleteConfirmationDialogBox getDeleteConfirmationDialogBox(); 
+		
+		com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxYesButton();
+		
+		com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxNoButton(); 
+		
 		Button getDeleteConfirmationYesButton();
 
 		Button getDeleteConfirmationNoButton();
@@ -1159,7 +1165,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedParamName = searchDisplay.getParameterNameTxtArea().getText();
 						if (!result.getUsedCQLParameters().contains(selectedParamName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Parameter?");	
+							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Parameter?");
 						} 
 					}
 					
@@ -1184,7 +1190,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedDefName = searchDisplay.getDefineNameTxtArea().getText();
 						if (!result.getUsedCQLDefinitions().contains(selectedDefName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Definition?");	
+							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Definition?");
 						} 
 					}
 					
@@ -1208,7 +1214,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedFuncName = searchDisplay.getFuncNameTxtArea().getText();
 						if(!result.getUsedCQLFunctionss().contains(selectedFuncName)) {
-							searchDisplay.showDeleteConfirmationMessageAlert("You have selected to delete this expression. Do you want to permanently delete this Function?");	
+							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Function?");
 						} 
 					}
 					
@@ -1217,28 +1223,32 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 		});
 		
-		searchDisplay.getDeleteConfirmationNoButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getDeleteConfirmationDialogBoxNoButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
+				searchDisplay.getDeleteConfirmationDialogBox().hide();
 			}
 		}); 
 		
-		searchDisplay.getDeleteConfirmationYesButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getDeleteConfirmationDialogBoxYesButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				if(searchDisplay.getDefineNameTxtArea().getText() != null) {
 					deleteDefinition();
+					searchDisplay.getDeleteConfirmationDialogBox().hide(); 
 				}
 				
 				if(searchDisplay.getFuncNameTxtArea().getText() != null) {
 					deleteFunction();
+					searchDisplay.getDeleteConfirmationDialogBox().hide(); 
 				}
 				
 				if(searchDisplay.getParameterNameTxtArea().getText() != null) {
 					deleteParameter();
+					searchDisplay.getDeleteConfirmationDialogBox().hide(); 
 				}
 			}
 		}); 

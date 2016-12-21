@@ -172,6 +172,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+
+	/** The delete confirmation box */
+	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox(); 
 	
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
@@ -3587,6 +3590,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		panel.show();
 	}
 	
+	public void buildDeleteConfirmationPanel(String message) {
+		
+		deleteConfirmationDialogBox.show(message);
+	}
+		
+	
 	
 	
 	
@@ -3764,6 +3773,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return warningConfirmationMessageAlert;
 	}
 	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -3784,6 +3795,22 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
+	}
+	
+	public DeleteConfirmationDialogBox getDeleteConfirmationDialogBox() {
+		return deleteConfirmationDialogBox;
+	}
+	
+	public void setDeleteConfirmationDialogBox(DeleteConfirmationDialogBox deleteConfirmationDialogBox) {
+		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
+	}
+	
+	public com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxYesButton() {
+		return this.deleteConfirmationDialogBox.getYesButton();
+	}
+	
+	public com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxNoButton() {
+		return this.deleteConfirmationDialogBox.getNoButton();
 	}
 	
 	/*

@@ -1190,7 +1190,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedParamName = searchDisplay.getParameterNameTxtArea().getText();
 						if (!result.getUsedCQLParameters().contains(selectedParamName)) {
-							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Parameter?");
+							searchDisplay.getDeleteConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER());
 						} 
 					}
 					
@@ -1215,7 +1215,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedDefName = searchDisplay.getDefineNameTxtArea().getText();
 						if (!result.getUsedCQLDefinitions().contains(selectedDefName)) {
-							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Definition?");
+							searchDisplay.getDeleteConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
 						} 
 					}
 					
@@ -1239,7 +1239,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						String selectedFuncName = searchDisplay.getFuncNameTxtArea().getText();
 						if(!result.getUsedCQLFunctionss().contains(selectedFuncName)) {
-							searchDisplay.getDeleteConfirmationDialogBox().show("You have selected to delete this expression. Do you want to permanently delete this Function?");
+							searchDisplay.getDeleteConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION());
 						} 
 					}
 					

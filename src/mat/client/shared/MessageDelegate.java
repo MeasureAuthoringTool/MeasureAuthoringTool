@@ -721,6 +721,13 @@ public class MessageDelegate {
 	
 	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
 	
+	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter?";
+	
+	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
+	
+	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
+	
+	
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
 	}
@@ -2639,6 +2646,18 @@ public class MessageDelegate {
 
 	public String getVIEW_CQL_NO_ERRORS_MESSAGE() {
 		return VIEW_CQL_NO_ERRORS_MESSAGE;
+	}
+
+	public String getDELETE_CONFIRMATION_PARAMETER() {
+		return DELETE_CONFIRMATION_PARAMETER;
+	}
+
+	public String getDELETE_CONFIRMATION_DEFINITION() {
+		return DELETE_CONFIRMATION_DEFINITION;
+	}
+
+	public String getDELETE_CONFIRMATION_FUNCTION() {
+		return DELETE_CONFIRMATION_FUNCTION;
 	}
 
 

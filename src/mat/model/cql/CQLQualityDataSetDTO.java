@@ -24,7 +24,14 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 		}
 		
 	}
+	/** QDM Modified At VSAC. */
+	private boolean hasModifiedAtVSAC;
 	
+	/** The is used. */
+	private boolean isUsed;
+	
+	/** QDM is not available in VSAC. */
+	private boolean notFoundInVSAC;
 	/** The code list name. */
 	private String codeListName;
 	
@@ -373,6 +380,42 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	public int compare(CQLQualityDataSetDTO o1, CQLQualityDataSetDTO o2) {
 		int num = o1.getUuid().compareTo(o2.getUuid());
 		return num;
+	}
+
+
+
+	public boolean isHasModifiedAtVSAC() {
+		return hasModifiedAtVSAC;
+	}
+
+
+
+	public void setHasModifiedAtVSAC(boolean hasModifiedAtVSAC) {
+		this.hasModifiedAtVSAC = hasModifiedAtVSAC;
+	}
+
+
+
+	public boolean isNotFoundInVSAC() {
+		return notFoundInVSAC;
+	}
+
+
+
+	public void setNotFoundInVSAC(boolean notFoundInVSAC) {
+		this.notFoundInVSAC = notFoundInVSAC;
+	}
+
+
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+
+
+
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
 	}
 	
 	

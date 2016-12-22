@@ -10,6 +10,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import mat.client.CustomPager;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MATPropertiesUtil;
+
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -74,28 +97,6 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.CustomPager;
-import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -884,7 +885,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		TextArea libraryNameValue = new TextArea();
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		libraryNameValue.setText(MatContext.get().getCurrentMeasureName().replaceAll(" ", ""));
+		libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
 		libraryNameValue.setReadOnly(true);
 		
 		Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
@@ -959,6 +960,28 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 	
+	/**
+	 * This method will take a String and remove all non-alphabet/non-numeric characters 
+	 * except underscore ("_") characters.
+	 * @param originalString
+	 * @return cleanedString
+	 */
+	private String createCQLLibraryName(String originalString) {
+		originalString = originalString.replaceAll(" ", "");
+		
+		String cleanedString = "";
+				
+		for(int i=0;i<originalString.length();i++){
+			char c = originalString.charAt(i);
+			int intc = (int)c;
+			if(c == '_' || (intc >= 48 && intc <= 57) || (intc >= 65 && intc <= 90) || (intc >= 97 && intc <= 122)){
+				cleanedString = cleanedString + "" + c;
+			}
+		}
+		
+		return cleanedString;
+	}
+
 	@Override
 	public void buildAppliedQDM() {
 		qdmView.resetQDSMsgPanel();

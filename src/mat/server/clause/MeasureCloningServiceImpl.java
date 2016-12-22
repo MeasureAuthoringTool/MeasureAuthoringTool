@@ -312,12 +312,11 @@ implements MeasureCloningService {
 			if(qdmVersionNode!=null){
 				qdmVersionNode.setTextContent(MATPropertiesUtil.QDM_VERSION);
 			}
-			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
-					.transform(xmlProcessor.getOriginalDoc()));
+			
 			return false;
 		}
 		
-		clonedMsr.setReleaseVersion(measureLibraryService.getCurrentReleaseVersion());
+		clonedMsr.setReleaseVersion(MATPropertiesUtil.MAT_RELEASE_VERSION);
 				
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){

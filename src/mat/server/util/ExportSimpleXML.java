@@ -328,13 +328,8 @@ public class ExportSimpleXML {
 		 * @throws XPathExpressionException
 		 */
 		private static void removeUnusedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject) throws XPathExpressionException {
-			System.out.println("Getting Used CQL Artifacts");
-			CQLUtil.CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getUsedCQLArtifacts(originalDoc, cqlFileObject);
 			
-			System.out.println("Used CQL Definitions: " + usedCQLArtifactHolder.getCqlDefinitionUUIDSet());
-			System.out.println("Used CQL Functions: " + usedCQLArtifactHolder.getCqlFunctionUUIDSet());
-			System.out.println("Used CQL Valuesets: " + usedCQLArtifactHolder.getCqlValuesetIdentifierSet());
-			System.out.println("Used CQL Parameters: " + usedCQLArtifactHolder.getCqlParameterIdentifierSet());
+			CQLUtil.CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getUsedCQLArtifacts(originalDoc, cqlFileObject);
 			
 			CQLUtil.removeUnusedCQLDefinitions(originalDoc, usedCQLArtifactHolder.getCqlDefinitionUUIDSet()); 
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, usedCQLArtifactHolder.getCqlFunctionUUIDSet());

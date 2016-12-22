@@ -2418,6 +2418,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							"/measure/measureDetails/scoring/@id",
 							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 					xmlProcessor.checkForScoringType(MATPropertiesUtil.QDM_VERSION);
+					xmlProcessor.updateCQLLibraryName();
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);

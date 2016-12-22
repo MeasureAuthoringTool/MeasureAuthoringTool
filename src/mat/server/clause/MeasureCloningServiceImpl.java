@@ -286,6 +286,7 @@ implements MeasureCloningService {
 				
 				//create the default 4 CMS supplemental definitions
 				appendSupplementalDefinitions(xmlProcessor, false);
+				xmlProcessor.updateCQLLibraryName();
 			}
 			
 			clonedXml.setMeasureXMLAsByteArray(xmlProcessor

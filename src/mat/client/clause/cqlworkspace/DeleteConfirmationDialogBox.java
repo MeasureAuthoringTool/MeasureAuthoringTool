@@ -2,9 +2,10 @@ package mat.client.clause.cqlworkspace;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.ErrorMessageDisplay;
@@ -13,7 +14,7 @@ public class DeleteConfirmationDialogBox {
 
 	private  Button yesButton = new Button("Yes"); 
 	private Button noButton = new Button("Cancel");
-	PopupPanel panel = new PopupPanel();
+	DialogBox panel = new DialogBox();
 
 	
 	public DeleteConfirmationDialogBox() {
@@ -25,10 +26,13 @@ public class DeleteConfirmationDialogBox {
 		panel.setAutoHideEnabled(false);
 		panel.setAnimationEnabled(true);
 		panel.setGlassEnabled(true);
+		panel.setModal(true);
+		panel.setText("Warning");
 		panel.getElement().getStyle().setZIndex(1000);
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		dialogContents.setWidth("28em");
+		dialogContents.setWidth("35em");
+		dialogContents.setHeight("10em");
 		panel.setWidget(dialogContents);
 		
 		ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
@@ -39,6 +43,12 @@ public class DeleteConfirmationDialogBox {
 		buttonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		buttonPanel.setSpacing(10);
+		
+		yesButton.getElement().getStyle().setWidth(55.0, Style.Unit.PX);
+		yesButton.getElement().getStyle().setHeight(35.0,Style.Unit.PX);
+		
+		noButton.getElement().getStyle().setWidth(55.0, Style.Unit.PX);
+		noButton.getElement().getStyle().setHeight(35.0,Style.Unit.PX);
 		
 		yesButton.getElement().getStyle().setMargin(5.0, Style.Unit.PX);
 		noButton.getElement().getStyle().setMargin(5.0, Style.Unit.PX);
@@ -51,6 +61,7 @@ public class DeleteConfirmationDialogBox {
 		buttonPanel.setCellHorizontalAlignment(noButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		
 		dialogContents.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		dialogContents.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
 		dialogContents.add(buttonPanel);
 		
 		panel.getElement().focus();

@@ -1898,7 +1898,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the composite cell for qdm modify and delete
 	 */
-	private CompositeCell<CQLFunctionArgument> getCompositeCellForQDMModifyAndDelete() {
+	private CompositeCell<CQLFunctionArgument> getCompositeCellForFuncArguModifyAndDelete() {
 		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
 		if (isEditable) {
 			cells.add(getModifyQDMButtonCell());
@@ -2104,7 +2104,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			
 			// Modify by Delete Column
 			table.addColumn(
-					new Column<CQLFunctionArgument, CQLFunctionArgument>(getCompositeCellForQDMModifyAndDelete()) {
+					new Column<CQLFunctionArgument, CQLFunctionArgument>(getCompositeCellForFuncArguModifyAndDelete()) {
 						
 						@Override
 						public CQLFunctionArgument getValue(CQLFunctionArgument object) {

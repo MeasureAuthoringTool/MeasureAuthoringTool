@@ -1591,4 +1591,23 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	}
 	
 	
+	/**
+	 * Sets the widgets read only.
+	 *
+	 * @param editable the new widgets read only
+	 */
+	public void setWidgetsReadOnly(boolean editable){
+		getQDMExpIdentifierListBox().setEnabled(editable);
+		getVersionListBox().setEnabled(editable);
+		getOIDInput().setEnabled(editable);
+		getUserDefinedInput().setEnabled(editable);
+		getApplyDefaultExpansionIdButton().setEnabled(editable);
+		
+		getCancelQDMButton().setEnabled(editable);
+		getRetrieveFromVSACButton().setEnabled(editable);
+		getSaveButton().setEnabled(editable);
+		getUpdateFromVSACButton().setEnabled(editable);
+		getDefaultExpIdentifierSel().setEnabled(editable);
+		
+	}
 }

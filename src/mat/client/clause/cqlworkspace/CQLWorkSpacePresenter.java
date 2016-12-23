@@ -2630,11 +2630,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlAceEditor().removeAllMarkers();
 				searchDisplay.getCqlAceEditor().redisplay();
 				searchDisplay.getSuccessMessageAlert().clear();
+				searchDisplay.getWarningMessageAlert().clear();
 				searchDisplay.getWarningConfirmationMessageAlert().clear();
-				
 				if(!result.getCqlErrors().isEmpty()){
-					searchDisplay.getWarningConfirmationMessageAlert().setVisible(true);
-					searchDisplay.getWarningConfirmationMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
+					searchDisplay.getWarningMessageAlert().setVisible(true);
+					searchDisplay.getWarningMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
 					for(CQLErrors error : result.getCqlErrors()){
 							String errorMessage = new String();
 							errorMessage = errorMessage.concat("Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset());

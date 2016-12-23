@@ -2386,6 +2386,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.buildAppliedQDM();
 			searchDisplay.getQdmView().buildAppliedQDMCellTable(searchDisplay.getAppliedQdmTableList(), MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
+			searchDisplay.getQdmView().setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 		}
 		
 	}

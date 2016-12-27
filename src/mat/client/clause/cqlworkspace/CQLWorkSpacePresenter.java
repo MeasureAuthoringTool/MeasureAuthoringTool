@@ -3209,8 +3209,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						return ;
 					}
 					searchDisplay.getQdmView().getSearchHeader().setText("Search");
-					if(!searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getSelectedValue().equalsIgnoreCase("--Select--")){
-						expIdentifierToAllQDM = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getSelectedValue();
+					//String selectedValue = searchDisplay.getQdmView().getExpValue(searchDisplay.getQdmView().getVSACExpansionIdentifierListBox());
+					/*if(!selectedValue.equalsIgnoreCase("--Select--")){
+						expIdentifierToAllQDM = selectedValue;
 						//updateAllQDMsWithExpProfile(appliedQDMList);
 					} else if(!searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()){
 						expIdentifierToAllQDM = "";
@@ -3218,7 +3219,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					} else {
 						searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(MatContext.get()
 								.getMessageDelegate().getVsacExpansionIdentifierSelection());
-					}
+					}*/
 				}
 			}
 		});

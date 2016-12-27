@@ -300,12 +300,22 @@ public class InsertIntoAceEditorDialogBox {
 									System.out.println(columnIndex);
 									if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
 										/*String[] str = itemNameToBeInserted.split("\\.");*/
-										String name = itemNameToBeInserted.substring(0, itemNameToBeInserted.lastIndexOf('.'));
-										String dataTypeName = itemNameToBeInserted.substring(itemNameToBeInserted.lastIndexOf('.') + 1);
-										StringBuilder sb = new StringBuilder();
-										sb = sb.append("[\"" + dataTypeName + "\"");
-										sb = sb.append(": \"").append(name + "\"]");
-										itemNameToBeInserted = sb.toString();
+										/*System.out.println("================== . index is ==== " +itemNameToBeInserted.lastIndexOf('.'));
+										if(itemNameToBeInserted.lastIndexOf('.') != -1){
+											String name = itemNameToBeInserted.substring(0, itemNameToBeInserted.lastIndexOf('.'));
+											String dataTypeName = itemNameToBeInserted.substring(itemNameToBeInserted.lastIndexOf('.') + 1);
+											
+											StringBuilder sb = new StringBuilder();
+											sb = sb.append("[\"" + dataTypeName + "\"");
+											sb = sb.append(": \"").append(name + "\"]");
+											itemNameToBeInserted = sb.toString();
+										} else {*/
+											StringBuilder sb = new StringBuilder();
+											String name = itemNameToBeInserted;
+											sb = sb.append("'" + name + "'");
+											itemNameToBeInserted = sb.toString();
+										//}
+										
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
 										StringBuilder sb = new StringBuilder(); 
 										sb = sb.append("\""); 
@@ -1361,11 +1371,25 @@ public class InsertIntoAceEditorDialogBox {
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
-							if(!searchDisplay.getAppliedQdmList().get(i)
+							/*if(!searchDisplay.getAppliedQdmList().get(i)
 									.getDataType().equalsIgnoreCase("attribute")){
 								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
 										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
 							}
+							if(searchDisplay.getAppliedQdmList().get(i).getDataType() != null
+									&& !searchDisplay.getAppliedQdmList().get(i)
+									.getDataType().equalsIgnoreCase("attribute")){
+								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
+										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
+							} else if(searchDisplay.getAppliedQdmList().get(i).getDataType() == null){*/
+								if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
+									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
+								} else {
+									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName());
+								}
+								
+							//}
+							
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
 						//open new popup/dialogBox

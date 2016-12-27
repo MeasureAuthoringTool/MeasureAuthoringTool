@@ -962,8 +962,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		if(checkForEnable()){
 			qdmExpIdentifierListBox.setEnabled(false);
 			versionListBox.setEnabled(false);
-			//dataTypeListBox.setEnabled(false);
-			//searchWidget.getSearchInput().setTitle("Enter OID");
+			sWidget.getSearchBox().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
 			//saveButton.setEnabled(false);
 			
@@ -1553,5 +1552,13 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		getUpdateFromVSACButton().setEnabled(editable);
 		getDefaultExpIdentifierSel().setEnabled(editable);
 		
+	}
+	
+	void setWidgetToDefault() {
+		getVersionListBox().clear();
+		getQDMExpIdentifierListBox().clear();
+		getOIDInput().setValue("");
+		getUserDefinedInput().setValue("");
+		getSaveButton().setEnabled(false);
 	}
 }

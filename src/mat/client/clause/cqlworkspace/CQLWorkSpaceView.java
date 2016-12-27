@@ -991,6 +991,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedFunctionObjId(null);
 		
 		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
+		qdmView.setWidgetToDefault();
 		appliedQDMTopPanel.add(qdmView.asWidget());
 		
 		VerticalPanel vp = new VerticalPanel();

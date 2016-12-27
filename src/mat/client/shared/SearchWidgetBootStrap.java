@@ -21,7 +21,7 @@ public class SearchWidgetBootStrap {
 		go.setIconPosition(IconPosition.LEFT);
 		go.setTitle(buttonText);
 		searchBox = new TextBox();
-		searchBox.setWidth("200px");
+		searchBox.setWidth("230px");
 		searchBox.setPlaceholder(placeHolderText);
 		searchBox.setTitle(placeHolderText);
 	}

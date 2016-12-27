@@ -1,20 +1,29 @@
 package mat.client.clause.cqlworkspace;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
+
+
 
 public class DeleteConfirmationDialogBox {
 
-	private  Button yesButton = new Button("Yes"); 
-	private Button noButton = new Button("Cancel");
-	DialogBox panel = new DialogBox();
+	private  final Button yesButton = new Button("Yes"); 
+	private final Button noButton = new Button("Cancel");
 
 	
 	public DeleteConfirmationDialogBox() {
@@ -23,53 +32,50 @@ public class DeleteConfirmationDialogBox {
 	}
 	
 	public void show(String message) {
-		panel.setAutoHideEnabled(false);
-		panel.setAnimationEnabled(true);
-		panel.setGlassEnabled(true);
-		panel.setModal(true);
-		panel.setText("Warning");
+		
+		Modal panel = new Modal();
+		ModalBody modalBody = new ModalBody(); 
+		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
+
+		modalBody.clear();
+		messageAlert.clear();
+		modalBody.remove(messageAlert);
+		panel.remove(modalBody);
+		panel.setTitle("Warning");
+		
+		panel.setClosable(true);
+		panel.setFade(true);
+		panel.setDataBackdrop(ModalBackdrop.STATIC);
+		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
-		VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		dialogContents.setWidth("35em");
-		dialogContents.setHeight("10em");
-		panel.setWidget(dialogContents);
 		
-		ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
-		errorMessageDisplay.setMessage(message);
-		dialogContents.add(errorMessageDisplay);
+		messageAlert.createAlert(message);
+		modalBody.add(messageAlert);
 		
-		HorizontalPanel buttonPanel = new HorizontalPanel();
-		buttonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
-		buttonPanel.setSpacing(10);
+		ModalFooter modalFooter = new ModalFooter(); 
 		
-		yesButton.getElement().getStyle().setWidth(55.0, Style.Unit.PX);
-		yesButton.getElement().getStyle().setHeight(35.0,Style.Unit.PX);
+		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
+		yesButton.setType(ButtonType.PRIMARY);
+		yesButton.setSize(ButtonSize.SMALL);
+		noButton.setType(ButtonType.DANGER);
+		noButton.setSize(ButtonSize.SMALL);
+		yesButton.setDataDismiss(ButtonDismiss.MODAL);
+		noButton.setDataDismiss(ButtonDismiss.MODAL);
+		buttonToolBar.add(yesButton);
+		buttonToolBar.add(noButton);
+		modalFooter.add(buttonToolBar);
+	
 		
-		noButton.getElement().getStyle().setWidth(55.0, Style.Unit.PX);
-		noButton.getElement().getStyle().setHeight(35.0,Style.Unit.PX);
+		panel.add(modalBody);
+		panel.add(modalFooter);
 		
-		yesButton.getElement().getStyle().setMargin(5.0, Style.Unit.PX);
-		noButton.getElement().getStyle().setMargin(5.0, Style.Unit.PX);
-		
-		buttonPanel.add(yesButton);
-		buttonPanel.add(noButton);
-		
-		
-		buttonPanel.setCellHorizontalAlignment(yesButton, HasHorizontalAlignment.ALIGN_RIGHT);
-		buttonPanel.setCellHorizontalAlignment(noButton, HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		dialogContents.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		dialogContents.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
-		dialogContents.add(buttonPanel);
 		
 		panel.getElement().focus();
-		panel.center();	
+		panel.show();
 	}
 	
 	public void hide() {
-		panel.hide();
+
 	}
 	
 	

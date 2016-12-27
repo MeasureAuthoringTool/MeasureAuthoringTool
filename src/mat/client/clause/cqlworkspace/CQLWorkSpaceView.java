@@ -3826,11 +3826,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
 	}
 	
-	public com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxYesButton() {
+	public Button getDeleteConfirmationDialogBoxYesButton() {
 		return this.deleteConfirmationDialogBox.getYesButton();
 	}
 	
-	public com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxNoButton() {
+	public Button getDeleteConfirmationDialogBoxNoButton() {
 		return this.deleteConfirmationDialogBox.getNoButton();
 	}
 	

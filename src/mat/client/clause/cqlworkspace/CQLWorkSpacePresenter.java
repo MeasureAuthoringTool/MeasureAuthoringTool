@@ -936,9 +936,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		DeleteConfirmationDialogBox getDeleteConfirmationDialogBox(); 
 		
-		com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxYesButton();
+		Button getDeleteConfirmationDialogBoxYesButton();
 		
-		com.google.gwt.user.client.ui.Button getDeleteConfirmationDialogBoxNoButton(); 
+		Button getDeleteConfirmationDialogBoxNoButton(); 
 		
 		Button getDeleteConfirmationYesButton();
 
@@ -2632,9 +2632,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getSuccessMessageAlert().clear();
 				searchDisplay.getWarningMessageAlert().clear();
 				searchDisplay.getWarningConfirmationMessageAlert().clear();
+				
 				if(!result.getCqlErrors().isEmpty()){
-					searchDisplay.getWarningMessageAlert().setVisible(true);
-					searchDisplay.getWarningMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
+					searchDisplay.getWarningConfirmationMessageAlert().setVisible(true);
+					searchDisplay.getWarningConfirmationMessageAlert().setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
 					for(CQLErrors error : result.getCqlErrors()){
 							String errorMessage = new String();
 							errorMessage = errorMessage.concat("Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset());

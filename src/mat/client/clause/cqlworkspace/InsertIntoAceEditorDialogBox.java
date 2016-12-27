@@ -312,7 +312,7 @@ public class InsertIntoAceEditorDialogBox {
 										} else {*/
 											StringBuilder sb = new StringBuilder();
 											String name = itemNameToBeInserted;
-											sb = sb.append("'" + name + "'");
+											sb = sb.append("\""  + name + "\"");
 											itemNameToBeInserted = sb.toString();
 										//}
 										
@@ -1382,11 +1382,11 @@ public class InsertIntoAceEditorDialogBox {
 								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
 										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
 							} else if(searchDisplay.getAppliedQdmList().get(i).getDataType() == null){*/
-								if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
+								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
 									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
-								} else {
+								} else {*/
 									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName());
-								}
+								//}
 								
 							//}
 							

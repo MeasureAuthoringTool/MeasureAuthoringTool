@@ -6,6 +6,7 @@ import java.util.List;
 
 /*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -43,7 +44,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
@@ -52,12 +52,11 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SearchWidget;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
@@ -203,17 +202,16 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar();
 	
 	/** The search widget. */
-	private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
-			"Enter OID", "textSearchWidget");
+	/*private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
+			"Enter OID", "textSearchWidget");*/
+	
+	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
 	
 	/** The main panel. */
 	VerticalPanel mainPanel;
 	
 	/** The qdm selected list. */
 	private List<CQLQualityDataSetDTO> qdmSelectedList;
-	
-	/** The selection model. */
-	private MultiSelectionModel<CQLQualityDataSetDTO> selectionModel;
 	
 	
 	/**
@@ -313,7 +311,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpIdentifierListBox.addItem("--Select--");
 		VerticalPanel searchPanel = new VerticalPanel();
-		searchPanel.setWidth("290px");
+		searchPanel.setWidth("300px");
 		searchPanel.setHeight("227px");
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("valueSetSearchPanel");
@@ -398,9 +396,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		versionListBox.setWidth("250px");
 				
 		saveCancelButtonBar.getSaveButton().setText("Apply");
-		searchWidget.getSearchInput().setWidth("220px");
+		/*searchWidget.getSearchInput().setWidth("220px");
 		searchWidget.getSearchInput().setHeight("20px");
-		searchWidget.getSearchInput().setTitle("Enter OID");
+		searchWidget.getSearchInput().setTitle("Enter OID");*/
 		Grid queryGrid = new Grid(7, 1);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "Name"));
 		queryGrid.setWidget(1, 0, nameInput);
@@ -412,7 +410,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		queryGrid.setWidget(5, 0, versionListBox);
 		queryGrid.setWidget(6, 0, saveCancelButtonBar);
 		queryGrid.setStyleName("secondLabel");
-		searchPanel.add(searchWidget);
+		searchPanel.add(sWidget.getSearchWidget());
 		searchPanel.add(new SpacerWidget());
 		searchPanel.add(queryGrid);
 		return searchPanel;
@@ -506,7 +504,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
-			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
+			
 			//table.setSelectionModel(selectionModel);
 			
 			// Name Column
@@ -965,7 +963,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			qdmExpIdentifierListBox.setEnabled(false);
 			versionListBox.setEnabled(false);
 			//dataTypeListBox.setEnabled(false);
-			searchWidget.getSearchInput().setTitle("Enter OID");
+			//searchWidget.getSearchInput().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
 			//saveButton.setEnabled(false);
 			
@@ -1191,62 +1189,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	
 	
 	/**
-	 * Gets the QDM check box cell.
-	 *
-	 * @return the QDM check box cell
-	 */
-	private HasCell<CQLQualityDataSetDTO, Boolean> getQDMCheckBoxCell(){
-		HasCell<CQLQualityDataSetDTO, Boolean> hasCell = new HasCell<CQLQualityDataSetDTO, Boolean>() {
-			
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
-			@Override
-			public Cell<Boolean> getCell() {
-				return cell;
-			}
-			@Override
-			public Boolean getValue(CQLQualityDataSetDTO object) {
-				boolean isSelected = false;
-				if (qdmSelectedList.size() > 0) {
-					for (int i = 0; i < qdmSelectedList.size(); i++) {
-						if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							selectionModel.setSelected(object, isSelected);
-							break;
-						}
-					}
-				} else {
-					isSelected = false;
-					selectionModel.setSelected(object, isSelected);
-				}
-				return isSelected;
-			}
-			@Override
-			public FieldUpdater<CQLQualityDataSetDTO, Boolean> getFieldUpdater() {
-				return new FieldUpdater<CQLQualityDataSetDTO, Boolean>() {
-					@Override
-					public void update(int index, CQLQualityDataSetDTO object,
-							Boolean isCBChecked) {
-						if(isCBChecked) {
-							qdmSelectedList.add(object);
-						} else{
-							for (int i = 0; i < qdmSelectedList.size(); i++) {
-								if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-									qdmSelectedList.remove(i);
-									break;
-								}
-							}
-						}
-						selectionModel.setSelected(object, isCBChecked);
-					}
-				};
-			}
-		};
-		return hasCell;
-	}
-	
-	
-	
-	/**
 	 * Gets the OID column tool tip.
 	 * 
 	 * @param columnText
@@ -1331,8 +1273,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the retrieve from vsac button
 	 */
 	//@Override
-	public PrimaryButton getRetrieveFromVSACButton(){
-		return searchWidget.getSearchButton();
+	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
+		//return searchWidget.getSearchButton();
+		return sWidget.getGo();
 	}
 	
 	/* (non-Javadoc)
@@ -1436,8 +1379,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the OID input
 	 */
 	//@Override
-	public MatTextBox getOIDInput() {
-		return searchWidget.getSearchInput();
+	public TextBox getOIDInput() {
+		//return searchWidget.getSearchInput();
+		return sWidget.getSearchBox();
 	}
 	
 	/* (non-Javadoc)

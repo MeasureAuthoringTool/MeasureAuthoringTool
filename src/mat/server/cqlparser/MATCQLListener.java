@@ -270,19 +270,38 @@ public class MATCQLListener extends cqlBaseListener {
 		
 		if(expressionContext != null){
 			List<ParseTree> parseTreeList = expressionContext.children;
-			if(parseTreeList != null){
-				for(ParseTree parseTree:parseTreeList){
-					if(parseTree != null && parseTree.getClass().getSimpleName().equals("QueryContext")){
-						QueryContext queryContext = (QueryContext)parseTree;
-						if(queryContext.whereClause() != null){
-							whereClauseContextList.add(queryContext.whereClause());
-						}
-					}
-				}
-			}
+			getQueryContext(whereClauseContextList, parseTreeList);
 		}
 		
 		return whereClauseContextList;
+	}
+
+	public void getQueryContext(
+			List<WhereClauseContext> whereClauseContextList,
+			List<ParseTree> parseTreeList) {
+		if(parseTreeList != null){
+			for(ParseTree parseTree:parseTreeList){
+				if(parseTree == null){
+					continue;
+				}
+				else if(parseTree.getClass().getSimpleName().equals("QueryContext")){
+					QueryContext queryContext = (QueryContext)parseTree;
+					if(queryContext.whereClause() != null){
+						whereClauseContextList.add(queryContext.whereClause());
+					}
+				}
+				else if(parseTree.getChildCount() > 0){
+					List<ParseTree> childParseTreeList = new ArrayList<ParseTree>();
+					
+					for(int i=0;i<parseTree.getChildCount();i++){
+						childParseTreeList.add(parseTree.getChild(i));
+					}
+					
+					getQueryContext(whereClauseContextList, childParseTreeList);
+					
+				}
+			}
+		}
 	}
 
 	/**

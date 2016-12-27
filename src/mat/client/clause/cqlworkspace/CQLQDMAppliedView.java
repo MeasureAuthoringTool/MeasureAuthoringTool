@@ -6,6 +6,7 @@ import java.util.List;
 
 /*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.cell.client.Cell;
@@ -119,7 +120,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private CheckBox defaultExpIdentifierSel = new CheckBox();
 //	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
-	private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
+	private ListBox defaultExpIdentifierListBox = new ListBox();
 	
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
@@ -171,14 +172,15 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private CQLQualityDataSetDTO lastSelectedObject;
 	
 	/** The expansion pro list box. */
-	ListBoxMVP qdmExpIdentifierListBox = new ListBoxMVP();
+	ListBox qdmExpIdentifierListBox = new ListBox();
 	
 	/** The version list box. */
-	ListBoxMVP versionListBox = new ListBoxMVP();
+	ListBox versionListBox = new ListBox();
 	
 	
 	/** The name input. */
 	private MatTextBox nameInput = new MatTextBox();
+	TextBox name = new TextBox();
 	
 	/** The is editable. */
 	private boolean isEditable;
@@ -769,7 +771,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the version value
 	 */
 	//@Override
-	public String getVersionValue(ListBoxMVP inputListBox) {
+	public String getVersionValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
 		} else {
@@ -787,7 +789,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the expansion Identifier value
 	 */
 	//@Override
-	public String getExpansionIdentifierValue(ListBoxMVP inputListBox) {
+	public String getExpansionIdentifierValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
 		} else {
@@ -808,7 +810,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the VSAC expansion Identifier list box
 	 */
 	//@Override
-	public ListBoxMVP getVSACExpansionIdentifierListBox() {
+	public ListBox getVSACExpansionIdentifierListBox() {
 		return defaultExpIdentifierListBox;
 	}
 	
@@ -880,7 +882,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @param itemList the item list
 	 * @param defaultOption the default option
 	 */
-	private void setQDMExpIdentifierListBoxItems(ListBoxMVP dataTypeListBox,
+	private void setQDMExpIdentifierListBoxItems(ListBox dataTypeListBox,
 			List<? extends HasListBox> itemList, String defaultOption) {
 		dataTypeListBox.clear();
 		dataTypeListBox.addItem(defaultOption, "");
@@ -922,7 +924,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @param itemList the item list
 	 * @param defaultOption the default option
 	 */
-	private void setVersionListBoxItems(ListBoxMVP dataTypeListBox,
+	private void setVersionListBoxItems(ListBox dataTypeListBox,
 			List<? extends HasListBox> itemList, String defaultOption) {
 		dataTypeListBox.clear();
 		dataTypeListBox.addItem(defaultOption, "");
@@ -1352,7 +1354,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the version list box
 	 */
 	//@Override
-	public ListBoxMVP getVersionListBox() {
+	public ListBox getVersionListBox() {
 		return versionListBox;
 	}
 	
@@ -1365,7 +1367,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the VSAC profile list box
 	 */
 	//@Override
-	public ListBoxMVP getQDMExpIdentifierListBox() {
+	public ListBox getQDMExpIdentifierListBox() {
 		return qdmExpIdentifierListBox;
 	}
 	

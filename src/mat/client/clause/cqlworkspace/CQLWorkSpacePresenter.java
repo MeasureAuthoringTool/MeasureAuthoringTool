@@ -14,6 +14,8 @@ import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -2662,21 +2664,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		boolean isInvalid = false;
 		if(!result.getCqlErrors().isEmpty()){
 			final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
-			System.out.println("In Presenter Errors");
-			
 			for(CQLErrors error : result.getCqlErrors()){
-				
-//				String errorMessage = "Error in line : "+ error.getErrorInLine() + " at Offset :" + error.getErrorAtOffeset();
-//				HTML html = new HTML("<h6>" + errorMessage + "</h6>"); 
-
 				int startLine = error.getStartErrorInLine(); 
 				int startColumn = error.getStartErrorAtOffset(); 
-				//int endLine = error.getEndErrorInLine(); 
-				//int endColumn = error.getEndErrorAtOffset(); 
-				
-				
 				editor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
-				//int id = editor.addMarker(AceRange.create(startLine, startColumn, endLine, endColumn), "underline", AceMarkerType.FULL_LINE, false);
 				if(!isInvalid) {
 					isInvalid = true;
 				}
@@ -3167,31 +3158,33 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * value change handler for Expansion Identifier in Search Panel in QDM Elements Tab
 		 * */
-		searchDisplay.getQdmView().getQDMExpIdentifierListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+		searchDisplay.getQdmView().getQDMExpIdentifierListBox().addChangeHandler(new ChangeHandler() {
 			
 			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
 				searchDisplay.getQdmView().resetQDSMsgPanel();
 				if(!searchDisplay.getQdmView().getExpansionIdentifierValue(
 						searchDisplay.getQdmView().getQDMExpIdentifierListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getQdmView().getVersionListBox().setSelectedIndex(0);
-				}
+				}	
 			}
-			
 		});
 		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
 		 * */
-		searchDisplay.getQdmView().getVersionListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+		searchDisplay.getQdmView().getVersionListBox().addChangeHandler(new ChangeHandler() {
+			
 			
 			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
+			public void onChange(ChangeEvent event) {
 				searchDisplay.getQdmView().resetQDSMsgPanel();
 				if(!searchDisplay.getQdmView().getVersionValue(
 						searchDisplay.getQdmView().getVersionListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getQdmView().getQDMExpIdentifierListBox().setSelectedIndex(0);
 				}
+				
 			}
 		});
 	}
@@ -3216,8 +3209,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						return ;
 					}
 					searchDisplay.getQdmView().getSearchHeader().setText("Search");
-					if(!searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getValue().equalsIgnoreCase("--Select--")){
-						expIdentifierToAllQDM = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getValue();
+					if(!searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getSelectedValue().equalsIgnoreCase("--Select--")){
+						expIdentifierToAllQDM = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getSelectedValue();
 						//updateAllQDMsWithExpProfile(appliedQDMList);
 					} else if(!searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()){
 						expIdentifierToAllQDM = "";

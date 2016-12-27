@@ -45,6 +45,7 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The id. */
 	private String id;
 	
+	private String displayName;
 	
 	/** The oid. */
 	private String oid;
@@ -416,6 +417,18 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 
 	public void setUsed(boolean isUsed) {
 		this.isUsed = isUsed;
+	}
+
+
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 	
 	

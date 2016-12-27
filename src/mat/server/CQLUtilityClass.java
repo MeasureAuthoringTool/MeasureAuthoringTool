@@ -368,7 +368,12 @@ public class CQLUtilityClass {
 			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
 			getCodeSystems(cqlModel, cqlLookUpXMLString);
 			getValueSet(cqlModel, cqlLookUpXMLString);
-			getAllValueSet(cqlModel, cqlLookUpXMLString);
+			// Combine Codes and Valuesets in this list for UI
+			if(!cqlModel.getValueSetList().isEmpty()){
+				List<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
+				valueSetsList.addAll(cqlModel.getValueSetList());
+				cqlModel.setAllValueSetList(valueSetsList);
+			}
 			getCodes(cqlModel, cqlLookUpXMLString);
 			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
 			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
@@ -411,6 +416,11 @@ public class CQLUtilityClass {
 			codeWrapper = (CQLCodeWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!codeWrapper.getCqlCodeList().isEmpty()){
 				cqlModel.setCodeList(codeWrapper.getCqlCodeList());
+				//Combine Codes and Value sets in allValueSetList for UI
+				List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(codeWrapper.getCqlCodeList());
+				if(!dtoList.isEmpty()){
+					cqlModel.getAllValueSetList().addAll(dtoList);
+				}
 			}
 		} catch (Exception e) {
 			logger.info("Error while getting codes :" +e.getMessage());
@@ -438,25 +448,6 @@ public class CQLUtilityClass {
 
 	}
 	
-	private static void getAllValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
-		QualityDataModelWrapper valuesetWrapper;
-		try {			 
-
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
-			Unmarshaller unmarshaller = new Unmarshaller(mapping);
-			unmarshaller.setClass(QualityDataModelWrapper.class);
-			unmarshaller.setWhitespacePreserve(true);
-
-			valuesetWrapper = (QualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
-			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
-				cqlModel.setAllValueSetList(convertToAllCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO()));
-			}
-		} catch (Exception e) {
-			logger.info("Error while getting valueset :" +e.getMessage());
-		}
-
-	}
 	
 	private static void getCQLGeneralInfo(CQLModel cqlModel, XmlProcessor measureXMLProcessor) {
 		
@@ -601,26 +592,17 @@ public class CQLUtilityClass {
 		
 	}
 	
-	private static List<CQLQualityDataSetDTO> convertToAllCQLQualityDataSetDTO(List<QualityDataSetDTO> qualityDataSetDTO){
+	private static List<CQLQualityDataSetDTO> convertCodesToQualityDataSetDTO(List<CQLCode> codeList){
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
-			for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
+			for (CQLCode tempDataSet : codeList) {
 				CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
-				if(!tempDataSet.isSuppDataElement()){
-					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
+					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeName());
 					convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
-					convertedCQLDataSet.setDataType(tempDataSet.getDataType());
 					convertedCQLDataSet.setId(tempDataSet.getId());
-					convertedCQLDataSet.setOid(tempDataSet.getOid());
-					convertedCQLDataSet.setSuppDataElement(tempDataSet.isSuppDataElement());
-					convertedCQLDataSet.setTaxonomy(tempDataSet.getTaxonomy());
-					convertedCQLDataSet.setType(tempDataSet.getType());
-					convertedCQLDataSet.setUuid(tempDataSet.getUuid());
-					convertedCQLDataSet.setVersion(tempDataSet.getVersion());
-					convertedCQLDataSet.setDataTypeHasRemoved(tempDataSet.isDataTypeHasRemoved());
-					convertedCQLDataSet.setExpansionIdentifier(tempDataSet.getExpansionIdentifier());
-					convertedCQLDataSet.setVsacExpIdentifier(tempDataSet.getVsacExpIdentifier());
+					convertedCQLDataSet.setOid(tempDataSet.getCodeOID());
+					convertedCQLDataSet.setVersion(tempDataSet.getCodeSystemVersion());
+					convertedCQLDataSet.setDisplayName(tempDataSet.getDisplayName());
 					convertedCQLDataSetList.add(convertedCQLDataSet);
-				}
 				
 			}
 		return convertedCQLDataSetList;

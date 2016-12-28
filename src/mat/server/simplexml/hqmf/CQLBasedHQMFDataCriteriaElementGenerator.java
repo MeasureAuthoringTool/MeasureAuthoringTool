@@ -9,8 +9,8 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
+import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
-import mat.shared.MATPropertiesUtil;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
@@ -138,7 +138,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				return VERSION_4_1_2_ID;
-			}else if(releaseVersion.equalsIgnoreCase(MATPropertiesUtil.MAT_RELEASE_VERSION)) {
+			}else if(releaseVersion.equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
 				return VERSION_5_0_ID; 
 			} else {
 				return VERSION_4_3_ID;

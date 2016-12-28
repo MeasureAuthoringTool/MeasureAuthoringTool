@@ -40,9 +40,9 @@ import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.MATPropertiesUtil;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
@@ -274,7 +274,7 @@ implements MeasureCloningService {
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
-				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);  
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesService.get().getQmdVersion());  
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
@@ -321,13 +321,13 @@ implements MeasureCloningService {
 			//Update QDM Version in Measure XMl for Draft and CQL Measures
 			Node qdmVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/usingModelVersion");
 			if(qdmVersionNode!=null){
-				qdmVersionNode.setTextContent(MATPropertiesUtil.QDM_VERSION);
+				qdmVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
 			}
 			
 			return false;
 		}
 		
-		clonedMsr.setReleaseVersion(MATPropertiesUtil.MAT_RELEASE_VERSION);
+		clonedMsr.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){
@@ -350,7 +350,7 @@ implements MeasureCloningService {
 		String scoringTypeId = MeasureDetailsUtil
 				.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
-		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesUtil.QDM_VERSION);
+		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesService.get().getQmdVersion());
 		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets

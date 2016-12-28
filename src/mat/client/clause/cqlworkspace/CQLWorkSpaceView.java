@@ -31,7 +31,6 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
 
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -922,7 +921,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		//modelVersionValue.setText("5.0");
 		modelVersionValue.setReadOnly(true);
-		modelVersionValue.setText(MATPropertiesUtil.QDM_VERSION);
+		modelVersionValue.setText("5.0.2");
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		// messagePanel.add(successMessageAlert);

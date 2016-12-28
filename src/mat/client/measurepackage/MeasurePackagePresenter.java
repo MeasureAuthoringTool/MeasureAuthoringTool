@@ -28,7 +28,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
-import mat.shared.MATPropertiesUtil;
+import mat.server.util.MATPropertiesService;
 import mat.shared.MeasurePackageClauseValidator;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.core.client.GWT;
@@ -1023,7 +1023,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null 
-				&& packageOverview.getReleaseVersion().equalsIgnoreCase(MATPropertiesUtil.MAT_RELEASE_VERSION)){
+				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v5.1")){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
 			//Set supple data to empty if CQL measure

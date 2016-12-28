@@ -92,6 +92,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.ExportSimpleXML;
+import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
@@ -101,7 +102,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MATPropertiesUtil;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -2204,7 +2204,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(false);
 				pkg = new Measure();
 				/*model.setMeasureStatus("In Progress");*/
-				pkg.setReleaseVersion(MATPropertiesUtil.MAT_RELEASE_VERSION);
+				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());				
@@ -2417,7 +2417,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String scoringTypeAfterNewXml = (String) xPath.evaluate(
 							"/measure/measureDetails/scoring/@id",
 							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
-					xmlProcessor.checkForScoringType(MATPropertiesUtil.QDM_VERSION);
+					xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
 					xmlProcessor.updateCQLLibraryName();
 					checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
@@ -2438,7 +2438,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
-			processor.checkForScoringType(MATPropertiesUtil.QDM_VERSION);
+			processor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
 			checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);

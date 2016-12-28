@@ -43,7 +43,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
-import mat.shared.MATPropertiesUtil;
+import mat.server.util.MATPropertiesService;
 import mat.shared.ValidationUtility;
 
 import org.apache.commons.logging.Log;
@@ -247,7 +247,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		MATCQLParser matcqlParser = new MATCQLParser();
 		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getMeasureXMLAsString(),measureId),"").toString();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
-		if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesUtil.MAT_RELEASE_VERSION)) {
+		if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlFileObject);
 		} else {
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO);

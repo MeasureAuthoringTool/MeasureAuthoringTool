@@ -92,4 +92,9 @@
         <property name="otpValidatorInterfaceForUser" ref="matOtpValidator"/>
     </bean>
     
+    <bean id="matPropertiesService" class="mat.server.util.MATPropertiesService">
+        <property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
+        <property name="qmdVersion" value="${mat.measure.current.qdm.version}"/>
+    </bean>
+    
 </beans>

@@ -4,9 +4,11 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InputGroup;
 import org.gwtbootstrap3.client.ui.InputGroupButton;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Style.Unit;
 
@@ -19,9 +21,12 @@ public class SearchWidgetBootStrap {
 		go.setType(ButtonType.PRIMARY);
 		go.setIcon(IconType.SEARCH);
 		go.setIconPosition(IconPosition.LEFT);
+		go.setSize(ButtonSize.SMALL);
 		go.setTitle(buttonText);
+		go.setPull(Pull.LEFT);
 		searchBox = new TextBox();
-		searchBox.setWidth("230px");
+		searchBox.setWidth("200px");
+		searchBox.setHeight("30px");
 		searchBox.setPlaceholder(placeHolderText);
 		searchBox.setTitle(placeHolderText);
 	}
@@ -32,9 +37,10 @@ public class SearchWidgetBootStrap {
 		iGroupButton.add(go);
 		iGroup.add(searchBox);
 		iGroup.add(iGroupButton);
-		iGroup.getElement().getStyle().setMarginLeft(10, Unit.PX);
+		iGroup.setWidth("300px");
+		/*iGroup.getElement().getStyle().setMarginLeft(10, Unit.PX);
 		iGroup.getElement().getStyle().setMarginRight(5, Unit.PX);
-		iGroup.getElement().getStyle().setMarginBottom(7, Unit.PX);
+		iGroup.getElement().getStyle().setMarginBottom(7, Unit.PX);*/
 		return iGroup;
 	}
 

@@ -37,7 +37,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -58,7 +57,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
@@ -106,16 +104,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		 */
 		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
 		
-		
-		/**
-		 * On top qdm paste clicked.
-		 */
-		void onTopQDMPasteClicked();
-		
-		/**
-		 * On bottom qdm paste clicked.
-		 */
-		void onBottomQDMPasteClicked();
 	}
 	
 	/** The observer. */
@@ -125,7 +113,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	/*private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
 			"Use a default Expansion Identifier ?", 1);*/
 	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
-	private CheckBox defaultExpIdentifierSel = new CheckBox(" Add Default Expansion Identifier",Direction.RTL);
+	private CheckBox defaultExpIdentifierSel = new CheckBox(" Add Default Expansion Identifier");
 //	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBox defaultExpIdentifierListBox = new ListBox();
@@ -136,9 +124,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	/** The vsacapi service async. */
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
-	
-	/** The error message panel. */
-	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	
 	/** The update vsac error message panel. */
 	private ErrorMessageDisplay updateVSACErrorMessagePanel = new ErrorMessageDisplay();
@@ -189,7 +174,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	
 	/** The name input. */
 	private TextArea nameInput = new TextArea();
-	TextBox name = new TextBox();
 	
 	/** The is editable. */
 	private boolean isEditable;
@@ -245,10 +229,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(successMessagePanel);
-		verticalPanel.add(errorMessagePanel);
-		errorMessagePanel.getElement().setId(
-				"errorMessagePanel_ErrorMessageDisplay");
 		
 		HorizontalPanel bottomButtonLayOut = new HorizontalPanel();
 		
@@ -358,7 +338,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		//InlineLabel defaultExpIdentifierLabel = new InlineLabel("Add Default Expansion Identifier");
 		
 		//defaultExpIdentifierLabel.setStyleName("qdmLabel");
-		defaultExpIdentifierSel.setStyleName("gwt-CheckBox");
+		defaultExpIdentifierSel.setStyleName("left-checkbox");
 		//qdmHorizontalPanel.add(defaultExpIdentifierLabel);
 		qdmHorizontalPanel.add(defaultExpIdentifierSel);
 		qdmHorizontalPanel.setStyleName("horizontalPanel");
@@ -967,9 +947,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the error message display
 	 */
 	//@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	/*public MessageAlert getErrorMessageDisplay() {
 		return errorMessagePanel;
-	}
+	}*/
 	
 	/*
 	 * (non-Javadoc)
@@ -1580,9 +1560,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the success message display
 	 */
 	//@Override
-	public SuccessMessageDisplay getSuccessMessageDisplay() {
+	/*public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessagePanel;
-	}
+	}*/
 	
 	/**
 	 * Gets the list data provider.
@@ -1630,9 +1610,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the update vsac error message panel
 	 */
 	//@Override
-	public ErrorMessageDisplay getUpdateVSACErrorMessagePanel() {
+	/*public ErrorMessageDisplay getUpdateVSACErrorMessagePanel() {
 		return updateVSACErrorMessagePanel;
-	}
+	}*/
 	
 	/**
 	 * Gets the update vsac success message panel.
@@ -1640,9 +1620,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the update vsac success message panel
 	 */
 	//@Override
-	public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
+	/*public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
 		return updateVSACSuccessMessagePanel;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getMainPanel()
@@ -1652,16 +1632,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		return mainPanel;
 	}
 	
-	
-	/**
-	 * Resets the  message panel.
-	 */
-	public void resetQDSMsgPanel() {
-		getSuccessMessageDisplay().clear();
-		getErrorMessageDisplay().clear();
-		getUpdateVSACSuccessMessagePanel().clear();
-		getUpdateVSACErrorMessagePanel().clear();
-	}
 	
 	
 	/**

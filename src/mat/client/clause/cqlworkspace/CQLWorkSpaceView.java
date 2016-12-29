@@ -982,9 +982,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	@Override
 	public void buildAppliedQDM() {
-		qdmView.resetQDSMsgPanel();
 		qdmView.resetVSACValueSetWidget();
 		qdmView.setWidgetToDefault();
+		resetMessageDisplay();
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);

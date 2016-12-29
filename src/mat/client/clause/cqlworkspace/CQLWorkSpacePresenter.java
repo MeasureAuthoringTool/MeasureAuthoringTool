@@ -1536,7 +1536,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			@Override
 			public void onDeleteClicked(CQLQualityDataSetDTO result, final int index) {
-				resetCQLQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 					isModified = false;
 				}
@@ -1586,26 +1586,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 			
-			/**
-			 * Resets the  message panel.
-			 */
-			private void resetCQLQDSMsgPanel() {
-				searchDisplay.getQdmView().getSuccessMessageDisplay().clear();
-				searchDisplay.getQdmView().getErrorMessageDisplay().clear();
-				searchDisplay.getQdmView().getUpdateVSACSuccessMessagePanel().clear();
-				searchDisplay.getQdmView().getUpdateVSACErrorMessagePanel().clear();
-			}
-			
-			@Override
-			public void onTopQDMPasteClicked() {
-				// TODO Auto-generated method stub
-				
-			}
-			@Override
-			public void onBottomQDMPasteClicked() {
-				// TODO Auto-generated method stub
-				
-			}
 			
 		});
 	
@@ -1642,8 +1622,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().buildAppliedQDMCellTable(list, isModified);
 					}
 					searchDisplay.setAppliedQdmTableList(list);
-					searchDisplay.getQdmView().getSuccessMessageDisplay().setMessage(
+					searchDisplay.getSuccessMessageAlert().setText(
 							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
+					searchDisplay.getSuccessMessageAlert().setVisible(true);
 				}
 			}
 		});
@@ -3240,7 +3221,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getQdmView().resetQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				isModified = false;
 				searchDisplay.getQdmView().getSearchHeader().setText("Search");
 				searchDisplay.getQdmView().getOIDInput().setEnabled(true);
@@ -3269,7 +3250,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
-					searchDisplay.getQdmView().resetQDSMsgPanel();
+					searchDisplay.resetMessageDisplay();
 					String version = null;
 					String expansionProfile = null;
 					searchValueSetInVsac(version, expansionProfile);
@@ -3289,7 +3270,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					MatContext.get().clearDVIMessages();
-					searchDisplay.getQdmView().resetQDSMsgPanel();
+					searchDisplay.resetMessageDisplay();
 					/*if(isModified && (modifyValueSetDTO != null)){
 							modifyQDM(isUserDefined);
 						
@@ -3310,7 +3291,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				searchDisplay.getQdmView().resetQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				validateUserDefinedInput();
 			}
 		});
@@ -3323,7 +3304,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				searchDisplay.getQdmView().resetQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				validateOIDInput();
 			}
 		});
@@ -3338,7 +3319,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				// TODO Auto-generated method stub
-				searchDisplay.getQdmView().resetQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				if(!searchDisplay.getQdmView().getExpansionIdentifierValue(
 						searchDisplay.getQdmView().getQDMExpIdentifierListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getQdmView().getVersionListBox().setSelectedIndex(0);
@@ -3354,7 +3335,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				searchDisplay.getQdmView().resetQDSMsgPanel();
+				searchDisplay.resetMessageDisplay();
 				if(!searchDisplay.getQdmView().getVersionValue(
 						searchDisplay.getQdmView().getVersionListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 					searchDisplay.getQdmView().getQDMExpIdentifierListBox().setSelectedIndex(0);
@@ -3375,12 +3356,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					// code for adding profile to List to applied QDM
-					searchDisplay.getQdmView().resetQDSMsgPanel();
+					searchDisplay.resetMessageDisplay();
 					if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
 						// Login
 						// Validation
-						searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(MatContext.get()
+						searchDisplay.getErrorMessageAlert().setText(MatContext.get()
 								.getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+						searchDisplay.getErrorMessageAlert().setVisible(true);
 						return ;
 					}
 					searchDisplay.getQdmView().getSearchHeader().setText("Search");
@@ -3407,12 +3389,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
 								// Login
 								// Validation
-								searchDisplay.getQdmView()
-								.getErrorMessageDisplay()
-								.setMessage(
+								searchDisplay.getErrorMessageAlert().setText(
 										MatContext.get()
 										.getMessageDelegate()
 										.getUMLS_NOT_LOGGEDIN());
+								searchDisplay.getErrorMessageAlert().setVisible(true);
 								return;
 							}
 							searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().setEnabled(
@@ -3442,17 +3423,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		final String oid = searchDisplay.getQdmView().getOIDInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
-			searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(
+			searchDisplay.getErrorMessageAlert().setText(
 					MatContext.get().getMessageDelegate()
 					.getUMLS_NOT_LOGGEDIN());
+			searchDisplay.getErrorMessageAlert().setVisible(true);
+			
 			return;
 		}
 		
 		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
-			searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(
+			searchDisplay.getErrorMessageAlert().setText(
 					MatContext.get().getMessageDelegate()
 					.getUMLS_OID_REQUIRED());
+			searchDisplay.getErrorMessageAlert().setVisible(true);
 			return;
 		}
 		//showSearchingBusy(true);
@@ -3468,9 +3452,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
-				searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(
+				searchDisplay.getErrorMessageAlert().setText(
 						MatContext.get().getMessageDelegate()
 						.getVSAC_RETRIEVE_FAILED());
+				searchDisplay.getErrorMessageAlert().setVisible(true);
 				//showSearchingBusy(false);
 			}
 			
@@ -3512,12 +3497,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().getVersionListBox().setEnabled(true);
 					}
 					//showSearchingBusy(false);
-					searchDisplay.getQdmView().getSuccessMessageDisplay().setMessage(MatContext.get()
+					searchDisplay.getSuccessMessageAlert().setText(MatContext.get()
 							.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+					searchDisplay.getSuccessMessageAlert().setVisible(true);
 					
 				} else {
 					String message = convertMessage(result.getFailureReason());
-					searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(message);
+					searchDisplay.getErrorMessageAlert().setText(message);
+					searchDisplay.getErrorMessageAlert().setVisible(true);
 					//showSearchingBusy(false);
 				}
 			}
@@ -3571,8 +3558,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				searchDisplay.getQdmView().getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+				searchDisplay.getErrorMessageAlert().setText(MatContext.get().getMessageDelegate()
 						.getVSAC_RETRIEVE_FAILED());
+				searchDisplay.getErrorMessageAlert().setVisible(true);
 				//showSearchingBusy(false);
 			}
 		});

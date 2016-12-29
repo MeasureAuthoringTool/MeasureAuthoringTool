@@ -1675,6 +1675,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	@Override
+	public final CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(final String measureId) {
+		logger.info("Inside MeasureLibraryServiceImp :: getDefaultCQLSDEFromMeasureXml :: Start");
+		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+		CQLQualityDataModelWrapper details = convertXmltoCQLQualityDataDTOModel(measureXmlModel);
+		ArrayList<CQLQualityDataSetDTO> finalList = new ArrayList<CQLQualityDataSetDTO>();
+		if (details != null) {
+			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
+				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+				for (CQLQualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+					if (dataSetDTO.getCodeListName() != null) {
+						if ((dataSetDTO.isSuppDataElement())) {
+							finalList.add(dataSetDTO);
+						}
+					}
+				}
+			}
+		}
+		details.setQualityDataDTO(finalList);
+		logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
+		logger.info("Inside MeasureLibraryServiceImp :: getDefaultSDEFromMeasureXml :: END");
+		return details;
+	}
+	
 	private CQLQualityDataModelWrapper convertXmltoCQLQualityDataDTOModel(MeasureXmlModel measureXmlModel) {
 
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoCQLQualityDataDTOModel()");
@@ -5468,43 +5492,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 
 	@Override
-	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID,
+	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(String toBeDelValueSetId, List<CQLQualityDataSetDTO> list, String measureID,
 			String expProfileToAllQDM) {
 		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		wrapper.setQualityDataDTO(list);
-		if((expProfileToAllQDM!=null) && !expProfileToAllQDM.isEmpty()){
-			wrapper.setVsacExpIdentifier(expProfileToAllQDM);
-		}
-		ByteArrayOutputStream stream = createQDMXML(wrapper);
-		int startIndex = stream.toString().indexOf("<valuesets", 0);
-		int lastIndex = stream.toString().indexOf("</cqlLookUp>", startIndex);
-		String xmlString = stream.toString().substring(startIndex, lastIndex);
-		String nodeName = "valuesets";
-		
 		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(measureID);
-		exportModal.setParentNode("/cqlLookUp");
-		exportModal.setToReplaceNode("valuesets");
-		System.out.println("XML " + xmlString);
-		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureID);
-		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) && ((nodeName != null) && StringUtils.isNotBlank(nodeName))) {
-			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-			String result = xmlProcessor.replaceNode(xmlString, nodeName, "cqlLookUp");
-			System.out.println("result" + result);
-			exportModal.setXml(result);
-			SaveUpdateCQLResult CQLFileData = getCQLFileData(measureID);
-			if (CQLFileData.isSuccess()) {
-				if ((CQLFileData.getCqlString() != null)
-						&& !CQLFileData.getCqlString().isEmpty()) {
-					SaveUpdateCQLResult ParseCQLFileData = parseCQLStringForError(CQLFileData.getCqlString());
-					if(ParseCQLFileData.getCqlErrors().isEmpty()){
-						getService().saveMeasureXml(exportModal);
+		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+		
+		SaveUpdateCQLResult CQLFileData = getCQLFileData(measureID);
+		if (CQLFileData.isSuccess()) {
+			if ((CQLFileData.getCqlString() != null)
+					&& !CQLFileData.getCqlString().isEmpty()) {
+				SaveUpdateCQLResult ParseCQLFileData = parseCQLStringForError(CQLFileData.getCqlString());
+				if(ParseCQLFileData.getCqlErrors().isEmpty()){
+					try {
+						String xpathforValueSet = "/measure/cqlLookUp//valueset[@id='"+ toBeDelValueSetId +"']";
+						Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),xpathforValueSet);
+						if (valueSetElements != null) {
+							Node parentNode = valueSetElements.getParentNode();
+							parentNode.removeChild(valueSetElements);
+							exportModal.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+							exportModal.setMeasureId(measureID);
+							getService().saveMeasureXml(exportModal);
+						}else{
+							logger.info("Unable to find the selected valueset element wit id : "+toBeDelValueSetId);
+						}
+					} catch (XPathExpressionException e) {
+						logger.info("Error in method createAndSaveCQLElementLookUp: "+ e.getMessage());
 					}
-					else{
-						cqlResult.setCqlErrors(ParseCQLFileData.getCqlErrors());
-					}
+				}
+				else{
+					cqlResult.setCqlErrors(ParseCQLFileData.getCqlErrors());
 				}
 			}
 		}

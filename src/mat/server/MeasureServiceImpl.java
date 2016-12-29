@@ -666,9 +666,9 @@ MeasureService {
 	}
 	
 	@Override
-	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID,
+	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Uuid, List<CQLQualityDataSetDTO> list, String measureID,
 			String expProfileToAllQDM) {
-		return this.getMeasureLibraryService().createAndSaveCQLElementLookUp(list, measureID, expProfileToAllQDM);
+		return this.getMeasureLibraryService().createAndSaveCQLElementLookUp(Uuid, list, measureID, expProfileToAllQDM);
 		
 	}
 

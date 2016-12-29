@@ -66,13 +66,14 @@ public interface MeasureServiceAsync {
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
 	/**
 	 * Creates the and save element look up.
+	 * @param uuid 
 	 *
 	 * @param list            the list
 	 * @param measureID            the measure id
 	 * @param expProfileToAllQDM the exp profile to all qdm
 	 * @param callback            the callback
 	 */
-	void createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list,
+	void createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**

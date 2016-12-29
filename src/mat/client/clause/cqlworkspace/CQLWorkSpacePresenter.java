@@ -1569,10 +1569,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.equals(searchDisplay.getQdmView()
 														.getSelectedElementToRemove()
 														.getUuid())) {
+											deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
 											iterator.remove();
 										}
 									}
-									deleteAndSaveMeasureXML(appliedValueSetTableList, index);
 								}
 							}
 						}
@@ -1593,12 +1593,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	/**
 	 * Save measure xml.
+	 * @param Id 
 	 *
 	 * @param list            the list
 	 * @param indexOf the index of
 	 */
-	private void deleteAndSaveMeasureXML(final List<CQLQualityDataSetDTO> list , final int indexOf) {
-		MatContext.get().getMeasureService().createAndSaveCQLElementLookUp(list, MatContext.get()
+	private void deleteAndSaveMeasureXML(String Id, final List<CQLQualityDataSetDTO> list , final int indexOf) {
+		MatContext.get().getMeasureService().createAndSaveCQLElementLookUp(Id, list, MatContext.get()
 				.getCurrentMeasureId(), expIdentifierToAllQDM, new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override

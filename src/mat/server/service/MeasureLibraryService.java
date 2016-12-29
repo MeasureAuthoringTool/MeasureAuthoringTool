@@ -732,8 +732,10 @@ public interface MeasureLibraryService {
 
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId);
 	
-	SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+	SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Uuid, List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 
 	CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId, boolean checkForSupplementData);
+
+	CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
 
 }

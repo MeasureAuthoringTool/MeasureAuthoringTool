@@ -82,6 +82,8 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.parser.CQLFileObject;
 import mat.server.cqlparser.MATCQLParser;
 import mat.server.model.MatUserDetails;
@@ -97,6 +99,7 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLErrors;
 import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
@@ -112,6 +115,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -1160,6 +1164,40 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
+	 * Method to create XML from CQLQualityDataModelWrapper object.
+	 * 
+	 * @param qualityDataSetDTO
+	 *            - {@link CQLQualityDataModelWrapper}.
+	 * @return {@link ByteArrayOutputStream}.
+	 * */
+	private ByteArrayOutputStream createQDMXML(final CQLQualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLValueSetsMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(qualityDataSetDTO);
+			logger.info("Marshalling of CQLQualityDataSetDTO is successful..");
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLValueSetsMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		return stream;
+	}
+	
+	/**
 	 * Creates the xml.
 	 * 
 	 * @param measureDetailModel
@@ -1597,7 +1635,85 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	@Override
+	public final CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(final String measureId,
+			final boolean checkForSupplementData) {
+		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+		CQLQualityDataModelWrapper details = convertXmltoCQLQualityDataDTOModel(measureXmlModel);
+		//add expansion Profile if existing
+		String expProfilestr = getDefaultExpansionIdentifier(measureId);
+		if(expProfilestr != null){
+			details.setVsacExpIdentifier(expProfilestr);
+		}
+		ArrayList<CQLQualityDataSetDTO> finalList = new ArrayList<CQLQualityDataSetDTO>();
+		if (details != null) {
+			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
+				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
+				for (CQLQualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
+					if (dataSetDTO.getCodeListName() != null) {
+						if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
+							continue;
+						} else {
+							if(!dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Birthdate") && !dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Expired")) {
+							finalList.add(dataSetDTO);
+							}
+						}
+					}
+				}
+			}
+			Collections.sort(finalList, new Comparator<CQLQualityDataSetDTO>() {
+				@Override
+				public int compare(final CQLQualityDataSetDTO o1, final CQLQualityDataSetDTO o2) {
+					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+				}
+			});
+		}
+		
+		details.setQualityDataDTO(finalList);
+		logger.info("finalList()of CQLQualityDataSetDTO ::" + finalList.size());
+		return details;
+		
+	}
 	
+	private CQLQualityDataModelWrapper convertXmltoCQLQualityDataDTOModel(MeasureXmlModel measureXmlModel) {
+
+		logger.info("In MeasureLibraryServiceImpl.convertXmltoCQLQualityDataDTOModel()");
+		CQLQualityDataModelWrapper details = null;
+		String xml = null;
+		if ((measureXmlModel != null) && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+			xml = new XmlProcessor(measureXmlModel.getXml()).getXmlByTagName("cqlLookUp");
+		}
+		try {
+			if (xml == null) {
+				// TODO: This Check should be replaced when the
+				// DataConversion is complete.
+				logger.info("xml is null or xml doesn't contain valuesets tag");
+				
+			} else {
+				Mapping mapping = new Mapping();
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLValueSetsMapping.xml"));
+				Unmarshaller unmar = new Unmarshaller(mapping);
+				unmar.setClass(CQLQualityDataModelWrapper.class);
+				unmar.setWhitespacePreserve(true);
+				details = (CQLQualityDataModelWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+				logger.info("unmarshalling complete..valuesets" + details.getQualityDataDTO().get(0).getCodeListName());
+			}
+			
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLValueSetsMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		return details;
+	
+	}
+
 	/**
 	 * Gets the attribute dao.
 	 * 
@@ -5350,5 +5466,77 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return getCqlService().getUsedCQlArtifacts(measureId);
 	}
 	
+
+	@Override
+	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID,
+			String expProfileToAllQDM) {
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		wrapper.setQualityDataDTO(list);
+		if((expProfileToAllQDM!=null) && !expProfileToAllQDM.isEmpty()){
+			wrapper.setVsacExpIdentifier(expProfileToAllQDM);
+		}
+		ByteArrayOutputStream stream = createQDMXML(wrapper);
+		int startIndex = stream.toString().indexOf("<valuesets", 0);
+		int lastIndex = stream.toString().indexOf("</cqlLookUp>", startIndex);
+		String xmlString = stream.toString().substring(startIndex, lastIndex);
+		String nodeName = "valuesets";
+		
+		MeasureXmlModel exportModal = new MeasureXmlModel();
+		exportModal.setMeasureId(measureID);
+		exportModal.setParentNode("/cqlLookUp");
+		exportModal.setToReplaceNode("valuesets");
+		System.out.println("XML " + xmlString);
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureID);
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) && ((nodeName != null) && StringUtils.isNotBlank(nodeName))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			String result = xmlProcessor.replaceNode(xmlString, nodeName, "cqlLookUp");
+			System.out.println("result" + result);
+			exportModal.setXml(result);
+			SaveUpdateCQLResult CQLFileData = getCQLFileData(measureID);
+			if (CQLFileData.isSuccess()) {
+				if ((CQLFileData.getCqlString() != null)
+						&& !CQLFileData.getCqlString().isEmpty()) {
+					SaveUpdateCQLResult ParseCQLFileData = parseCQLStringForError(CQLFileData.getCqlString());
+					if(ParseCQLFileData.getCqlErrors().isEmpty()){
+						getService().saveMeasureXml(exportModal);
+					}
+					else{
+						cqlResult.setCqlErrors(ParseCQLFileData.getCqlErrors());
+					}
+				}
+			}
+		}
+		return cqlResult;
+	}
+
+	public SaveUpdateCQLResult parseCQLStringForError( String cqlFileString) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		if(!StringUtils.isBlank(cqlFileString)){
+			
+			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
+			cqlToElm.doTranslation(true, false, false);
+			
+			if(cqlToElm.getErrors() != null) {
+				cqlErrorsList.addAll(cqlToElm.getErrors());
+			}
+		}
+		
+		for(CqlTranslatorException cte : cqlErrorsList){
+			
+			CQLErrors cqlErrors = new CQLErrors();
+			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+			cqlErrors.setErrorMessage(cte.getMessage());
+			errors.add(cqlErrors);
+		}
+		
+		result.setCqlErrors(errors);
+		
+	return result;
+	}
 }
 

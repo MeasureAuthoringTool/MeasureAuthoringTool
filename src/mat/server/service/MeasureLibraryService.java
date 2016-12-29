@@ -26,12 +26,12 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -731,7 +731,9 @@ public interface MeasureLibraryService {
 	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId);
-
-
 	
+	SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+
+	CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId, boolean checkForSupplementData);
+
 }

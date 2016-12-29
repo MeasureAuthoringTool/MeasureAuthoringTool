@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -27,12 +25,11 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.server.util.CQLUtil;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -125,6 +122,9 @@ public interface MeasureService extends RemoteService {
 	//			boolean checkForSupplementData);
 	
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
+			boolean checkForSupplementData);
+	
+	CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 	
 	/**
@@ -667,4 +667,6 @@ public interface MeasureService extends RemoteService {
 	GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId);
 
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
+
+	SaveUpdateCQLResult createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 }

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -22,13 +20,12 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.server.util.CQLUtil;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -67,6 +64,16 @@ public interface MeasureServiceAsync {
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
+	/**
+	 * Creates the and save element look up.
+	 *
+	 * @param list            the list
+	 * @param measureID            the measure id
+	 * @param expProfileToAllQDM the exp profile to all qdm
+	 * @param callback            the callback
+	 */
+	void createAndSaveCQLElementLookUp(List<CQLQualityDataSetDTO> list,
+			String measureID, String expProfileToAllQDM, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
 	 * Creates the and save cql look up.
@@ -133,6 +140,10 @@ public interface MeasureServiceAsync {
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
 			AsyncCallback<QualityDataModelWrapper> asyncCallback);
+	
+	void getCQLAppliedQDMFromMeasureXml(String measureId,
+			boolean checkForSupplementData,
+			AsyncCallback<CQLQualityDataModelWrapper> asyncCallback);
 	
 	/**
 	 * Gets the max e measure id.

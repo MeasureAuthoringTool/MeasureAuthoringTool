@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
 /*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -17,6 +19,7 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
@@ -44,11 +47,12 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,8 +66,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -113,7 +115,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	/*private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
 			"Use a default Expansion Identifier ?", 1);*/
 	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
-	private CheckBox defaultExpIdentifierSel = new CheckBox(" Add Default Expansion Identifier");
+	private CheckBox defaultExpIdentifierSel = new CheckBox();
 //	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBox defaultExpIdentifierListBox = new ListBox();
@@ -145,19 +147,16 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
 	
 	/** The update button. */
-	private Button updateVSACButton = new PrimaryButton("Update From VSAC ","primaryButton");
+	private Button updateVSACButton = new Button("Update From VSAC ");
 	
 	/** The apply button. */
-	private Button applyDefaultExpansionIdButton = new PrimaryButton("Apply", "primaryButton");
+	private Button applyDefaultExpansionIdButton = new Button("Apply");
 	
 	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
 	
 	/** The profile list. */
 	private List<String> expIdentifierList = new ArrayList<String>();
-	
-	/** The success message panel. */
-	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
 	
 	/** The update vsac success message panel. */
 	private SuccessMessageDisplay updateVSACSuccessMessagePanel = new SuccessMessageDisplay();
@@ -194,7 +193,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private MatSimplePager spager;
 	
 	/** The save cancel button bar. */
-	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar();
+	private Button saveValueSet = new Button("Apply");
+	
+	private Button cancelButton = new Button("Cancel");
 	
 	/** The search widget. */
 	/*private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
@@ -236,6 +237,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		hPanel.setWidth("600px");
+		updateVSACButton.setType(ButtonType.PRIMARY);
 		hPanel.add(updateVSACButton);
 		hPanel.add(bottomButtonLayOut);
 		
@@ -295,10 +297,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 	private Widget buildDefaultExpIdentifierPanel() {
 		/*defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");*/
-		defaultExpIdentifierListBox.setWidth("180px");
+		defaultExpIdentifierListBox.setWidth("250px");
 		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
 		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
 		applyDefaultExpansionIdButton.setTitle("Apply Expansion Identifier to all the QDM Element(s).");
+		applyDefaultExpansionIdButton.setType(ButtonType.PRIMARY);
 		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpIdentifierListBox.addItem("--Select--");
 		Panel searchPanel = new Panel();
@@ -335,11 +338,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		HorizontalPanel qdmHorizontalPanel = new HorizontalPanel();
 		qdmHorizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		qdmHorizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
-		//InlineLabel defaultExpIdentifierLabel = new InlineLabel("Add Default Expansion Identifier");
+		InlineLabel defaultExpIdentifierLabel = new InlineLabel("Add Default Expansion Identifier");
 		
-		//defaultExpIdentifierLabel.setStyleName("qdmLabel");
-		defaultExpIdentifierSel.setStyleName("left-checkbox");
-		//qdmHorizontalPanel.add(defaultExpIdentifierLabel);
+		defaultExpIdentifierLabel.setStyleName("qdmLabel");
+		defaultExpIdentifierSel.setStyleName("gwt-CheckBox");
+		qdmHorizontalPanel.add(defaultExpIdentifierLabel);
 		qdmHorizontalPanel.add(defaultExpIdentifierSel);
 		qdmHorizontalPanel.setStyleName("horizontalPanel");
 		queryGrid.setWidget(0, 0, qdmHorizontalPanel);
@@ -391,19 +394,13 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		
 		PanelHeader header = new PanelHeader();
 		
-		//header.setStyleName("loginNewBlueTitleHolder");
 		header.setStyleName("measureGroupingTableHeader");
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		header.add(searchHeaderText);
 		
 		searchPanel.add(header);
 		searchPanel.setWidth("350px");
-		searchPanel.setHeight("345px");
-		/*searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("valueSetHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
-		searchHeader.getElement().setTitle("Search by OID and Name");
-		searchPanel.add(searchHeader);*/
+		searchPanel.setHeight("355px");
 		searchPanelBody.add(new SpacerWidget());
 		
 		nameInput.getElement().setId("nameInput_TextBox");
@@ -419,38 +416,22 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		versionListBox.getElement().setTitle("Version Selection List");
 		versionListBox.setEnabled(false);
 		versionListBox.setWidth("250px");
-				
-		saveCancelButtonBar.getSaveButton().setText("Apply");
-		/*searchWidget.getSearchInput().setWidth("220px");
-		searchWidget.getSearchInput().setHeight("20px");
-		searchWidget.getSearchInput().setTitle("Enter OID");*/
+		
+		saveValueSet.setText("Apply");
+		saveValueSet.setTitle("Apply");
+		saveValueSet.setType(ButtonType.PRIMARY);
+		
+		cancelButton.setType(ButtonType.DANGER);
+		cancelButton.setTitle("Cancel");
+		
 		Grid queryGrid = new Grid(7, 1);
-		/*Label nameLabel =  new Label(LabelType.INFO,"Name");
-		VerticalPanel nameLabelPanel = new VerticalPanel();
-		nameLabelPanel.add(nameLabel);
-		nameLabelPanel.add(new SpacerWidget());
-		queryGrid.setWidget(0, 0,nameLabelPanel);
-		queryGrid.setWidget(1, 0, nameInput);*/
-		
-		/*Label expLabel =  new Label(LabelType.INFO,"Expansion Identifier");
-		VerticalPanel expLabelPanel = new VerticalPanel();
-		expLabelPanel.add(new SpacerWidget());
-		expLabelPanel.add(expLabel);
-		expLabelPanel.add(new SpacerWidget());
-		queryGrid.setWidget(2, 0, expLabelPanel);
-		queryGrid.setWidget(3, 0, qdmExpIdentifierListBox);*/
-		
-		/*Label verLabel =  new Label(LabelType.INFO,"Version");
-		VerticalPanel versionLabelPanel = new VerticalPanel();
-		versionLabelPanel.add(new SpacerWidget());
-		versionLabelPanel.add(verLabel);
-		versionLabelPanel.add(new SpacerWidget());
-		queryGrid.setWidget(4, 0, versionLabelPanel);
-		queryGrid.setWidget(5, 0, versionListBox);*/
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		buttonToolBar.add(saveValueSet);
+		buttonToolBar.add(cancelButton);
 		
 		VerticalPanel buttonPanel = new VerticalPanel();
 		buttonPanel.add(new SpacerWidget());
-		buttonPanel.add(saveCancelButtonBar);
+		buttonPanel.add(buttonToolBar);
 		buttonPanel.add(new SpacerWidget());
 		
 		queryGrid.setWidget(6, 0, buttonPanel);
@@ -470,7 +451,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		 nameLabel.setTitle("Name");
 		 nameFormGroup.add(nameLabel);
 		 nameFormGroup.add(nameInput);
-		 //searchForm.add(nameFormGroup);
 		 
 		 
 		 FormGroup expansionIdFormGroup = new FormGroup();
@@ -479,7 +459,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		 expLabelPanel.setTitle("Expansion Identifier");
 		 expansionIdFormGroup.add(expLabelPanel);
 		 expansionIdFormGroup.add(qdmExpIdentifierListBox);
-		// searchForm.add(expansionIdFormGroup);
 		 
 		 
 		 FormGroup versionFormGroup = new FormGroup();
@@ -488,10 +467,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		 verLabel.setTitle("Version");
 		 versionFormGroup.add(verLabel);
 		 versionFormGroup.add(versionListBox);
-		 //searchForm.add(versionFormGroup);
 		 
 		FormGroup buttonFormGroup = new FormGroup();
-		buttonFormGroup.add(saveCancelButtonBar);
+		buttonFormGroup.add(buttonToolBar);
 		 
 		 
 		FieldSet formFieldSet = new FieldSet();
@@ -503,11 +481,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		 
 		 searchPanelBody.add(searchForm);
 		
-		
-		
-		
-		/*searchPanelBody.add(new SpacerWidget());
-		searchPanelBody.add(queryGrid);*/
 		
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -1357,7 +1330,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 //	@Override
 	public Button getCancelQDMButton() {
-		return saveCancelButtonBar.getCancelButton();
+		//return saveCancelButtonBar.getCancelButton();
+		return cancelButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1397,7 +1371,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 	//@Override
 	public Button getSaveButton(){
-		return saveCancelButtonBar.getSaveButton();
+	//	return saveCancelButtonBar.getSaveButton();
+		return saveValueSet;
 	}
 	
 	/* (non-Javadoc)

@@ -407,7 +407,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		nameInput.getElement().setAttribute("tabIndex", "0");
 		nameInput.setTitle("Enter Name");
 		nameInput.setWidth("250px");
-		
+		nameInput.setHeight("30px");
 		qdmExpIdentifierListBox.getElement().setId("QDMExpansionIdentifier_ListBox");
 		qdmExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
 		qdmExpIdentifierListBox.setEnabled(false);

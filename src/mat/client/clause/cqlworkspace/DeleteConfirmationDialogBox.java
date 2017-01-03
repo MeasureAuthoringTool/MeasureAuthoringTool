@@ -12,9 +12,11 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
+import elemental.css.CSSStyleDeclaration.Unit;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 
@@ -49,11 +51,13 @@ public class DeleteConfirmationDialogBox {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
 		
+		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
+		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 		messageAlert.createAlert(message);
 		modalBody.add(messageAlert);
 		
-		ModalFooter modalFooter = new ModalFooter(); 
 		
+		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
 		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.SMALL);
@@ -63,13 +67,12 @@ public class DeleteConfirmationDialogBox {
 		noButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(yesButton);
 		buttonToolBar.add(noButton);
-		modalFooter.add(buttonToolBar);
 	
+		modalFooter.add(buttonToolBar);
 		
 		panel.add(modalBody);
+		
 		panel.add(modalFooter);
-		
-		
 		panel.getElement().focus();
 		panel.show();
 	}

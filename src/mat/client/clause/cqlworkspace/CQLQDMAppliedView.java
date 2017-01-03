@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-/*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
@@ -47,7 +46,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -111,12 +109,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	/** The observer. */
 	private Observer observer;
 	
-	/** The expansion Identifier selection. */
-	/*private CustomCheckBox defaultExpIdentifierSel = new CustomCheckBox("Select an Expansion Identifier",
-			"Use a default Expansion Identifier ?", 1);*/
-	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
 	private CheckBox defaultExpIdentifierSel = new CheckBox();
-//	ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBox defaultExpIdentifierListBox = new ListBox();
 	
@@ -165,10 +158,10 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private CQLQualityDataSetDTO lastSelectedObject;
 	
 	/** The expansion pro list box. */
-	ListBox qdmExpIdentifierListBox = new ListBox();
+	private ListBox qdmExpIdentifierListBox = new ListBox();
 	
 	/** The version list box. */
-	ListBox versionListBox = new ListBox();
+	private ListBox versionListBox = new ListBox();
 	
 	
 	/** The name input. */
@@ -197,17 +190,10 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	
 	private Button cancelButton = new Button("Cancel");
 	
-	/** The search widget. */
-	/*private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
-			"Enter OID", "textSearchWidget");*/
-	
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
 	
 	/** The main panel. */
-	VerticalPanel mainPanel;
-	
-	/** The qdm selected list. */
-	private List<CQLQualityDataSetDTO> qdmSelectedList;
+	private VerticalPanel mainPanel;
 	
 	
 	/**
@@ -247,7 +233,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		verticalPanel.add(new SpacerWidget());
 		updateVSACButton.setTitle("Retrieve the most recent versions of value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
-//		verticalPanel.add(topButtonLayOut);
+
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
@@ -260,17 +246,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 				"subQDMAPPliedListContainerPanel");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("cqlqdsContentPanel");
-		//MatContext.get().setQDMAppliedSelectionView(this);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#buildPasteTopPanel(boolean)
-	 */
-	
-	
-	
-	
 	
 	/**
 	 * Builds the element with vsac expansion identifier.
@@ -286,17 +262,13 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;
 	}
-	
-	
-	
-	
 	/**
 	 * Builds the vsac exp identifier panel.
 	 *
 	 * @return the widget
 	 */
 	private Widget buildDefaultExpIdentifierPanel() {
-		/*defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");*/
+		defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");
 		defaultExpIdentifierListBox.setWidth("250px");
 		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
 		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
@@ -316,7 +288,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		searchHeader.setStyleName("measureGroupingTableHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 		
-		//searchHeader.setStyleName("loginNewBlueTitleHolder");
 		HTML searchHeaderText = new HTML("<strong>Apply Expansion Identifier</strong>");
 		searchHeader.setTitle("Apply VSAC Expansion Identifier to Measure.");
 		searchHeader.add(searchHeaderText);
@@ -330,9 +301,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		defaultExpIdentifierHeader.setStyleName("valueSetHeader");
 		defaultExpIdentifierHeader.getElement().setAttribute("tabIndex", "0");
 		defaultExpIdentifierHeader.getElement().setTitle("Apply VSAC Expansion Identifier to Measure.");
-		
-		/*applyExpansionIdPanelBody.add(defaultExpIdentifierHeader);
-		applyExpansionIdPanelBody.add(new SpacerWidget());*/
 		
 		Grid queryGrid = new Grid(5, 1);
 		HorizontalPanel qdmHorizontalPanel = new HorizontalPanel();
@@ -357,8 +325,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		searchPanel.add(applyExpansionIdPanelBody);
 		return searchPanel;
 	}
-	
-	
 	
 	/**
 	 * Builds the element with vsac value set widget.
@@ -489,10 +455,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	/**
 	 * Builds the cell table.
 	 *
-	 * @param appliedListModel            the applied list model
+	 * @param List     the appliedValueSetList
 	 * @param isEditable the is editable
 	 */
-	////@Override
 	public void buildAppliedQDMCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
@@ -502,7 +467,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		searchHeader.setStyleName("measureGroupingTableHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 		
-		//searchHeader.setStyleName("loginNewBlueTitleHolder");
 		HTML searchHeaderText = new HTML("<strong>QDM Elements</strong>");
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
@@ -512,7 +476,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<CQLQualityDataSetDTO>();
-			qdmSelectedList = new ArrayList<CQLQualityDataSetDTO>();
+			/*qdmSelectedList = new ArrayList<CQLQualityDataSetDTO>();*/
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
@@ -555,17 +519,10 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			cellTablePanelBody.add(table);
 			cellTablePanelBody.add(spager);
 			cellTablePanel.add(cellTablePanelBody);
-			/*cellTablePanel.add(table);
-			cellTablePanel.add(new SpacerWidget());
-			cellTablePanel.add(spager);*/
 			
 		} else {
-			
-			
 			HTML desc = new HTML("<p> No QDM Elements.</p>");
 			cellTablePanelBody.add(desc);
-			
-			//cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(cellTablePanelBody);
 		}
 	}
@@ -730,94 +687,41 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	}
 	
 	/**
-	 * Adds the selection handler on table.
-	 * 
-	 * @param appliedListModel
-	 *            the applied list model
-	 * @return the single selection model
-	 */
-	/*public SingleSelectionModel<CQLQualityDataSetDTO> addSelectionHandlerOnTable(
-			final QDSAppliedListModel appliedListModel) {
-		final SingleSelectionModel<CQLQualityDataSetDTO> selectionModel = new SingleSelectionModel<CQLQualityDataSetDTO>();
-		selectionModel
-		.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				CQLQualityDataSetDTO qualityDataSetDTO = selectionModel
-						.getSelectedObject();
-				if (qualityDataSetDTO != null) {
-					errorMessagePanel.clear();
-					appliedListModel.setLastSelected(selectionModel
-							.getSelectedObject());
-					System.out
-					.println("appliedListModel.getLastSelected() =======>>>>"
-							+ appliedListModel
-							.getLastSelected());
-				}
-			}
-		});
-		return selectionModel;
-	}
-*/	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#asWidget()
-	 */
-	/**
 	 * As widget.
 	 *
 	 * @return the widget
 	 */
-	//@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
-	 * getVSACProfileInput()
-	 */
 	/**
 	 * Gets the VSAC profile input.
 	 *
 	 * @return the VSAC profile input
 	 */
-	//@Override
 	public HasValueChangeHandlers<Boolean> getDefaultExpIDInput() {
-//		return defaultExpIdentifierSel;
-		return null;
+		return defaultExpIdentifierSel;
 	}
 	//@Override
 	public CheckBox getDefaultExpIdentifierSel(){
 		return defaultExpIdentifierSel;
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSpecificOccChkBox()
-	 */
 	/**
 	 * Gets the specific occ chk box.
 	 *
 	 * @return the specific occ chk box
 	 */
-	//@Override
 	public CheckBox getSpecificOccChkBox(){
 		return specificOcurChkBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypeText(mat.client.shared.ListBoxMVP)
-	 */
 	/**
 	 * Gets the data type text.
 	 *
 	 * @param inputListBox the input list box
 	 * @return the data type text
 	 */
-	//@Override
 	public String getDataTypeText(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getItemText(inputListBox.getSelectedIndex());
@@ -826,16 +730,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypeValue(mat.client.shared.ListBoxMVP)
-	 */
 	/**
 	 * Gets the data type value.
 	 *
 	 * @param inputListBox the input list box
 	 * @return the data type value
 	 */
-	//@Override
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -844,16 +744,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getVersionValue(mat.client.shared.ListBoxMVP)
-	 */
 	/**
 	 * Gets the version value.
 	 *
 	 * @param inputListBox the input list box
 	 * @return the version value
 	 */
-	//@Override
 	public String getVersionValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -862,16 +758,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getExpansionProfileValue(mat.client.shared.ListBoxMVP)
-	 */
 	/**
 	 * Gets the expansion Identifier value.
 	 *
 	 * @param inputListBox the input list box
 	 * @return the expansion Identifier value
 	 */
-	//@Override
 	public String getExpansionIdentifierValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -879,20 +771,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			return "";
 		}
 	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
-	 * getVSACProfileListBox()
-	 */
 	/**
 	 * Gets the VSAC expansion Identifier list box.
 	 *
 	 * @return the VSAC expansion Identifier list box
 	 */
-	//@Override
 	public ListBox getVSACExpansionIdentifierListBox() {
 		return defaultExpIdentifierListBox;
 	}
@@ -906,34 +789,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
-	 * getErrorMessageDisplay()
-	 */
-	/**
-	 * Gets the error message display.
-	 *
-	 * @return the error message display
-	 */
-	//@Override
-	/*public MessageAlert getErrorMessageDisplay() {
-		return errorMessagePanel;
-	}*/
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
-	 * setVSACProfileListBox()
-	 */
 	/**
 	 * Sets the vsac expansion identifier list box.
 	 */
-	//@Override
 	public void setDefaultExpansionIdentifierListBox() {
 		defaultExpIdentifierListBox.clear();
 		defaultExpIdentifierListBox.addItem("--Select--");
@@ -943,16 +801,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		}
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVSACProfileListBoxOptions(java.util.List)
-	 */
 	/**
 	 * Sets the VSAC profile list box.
 	 *
 	 * @param texts the new VSAC profile list box
 	 */
-	//@Override
 	public void setQDMExpIdentifierListBox(List<? extends HasListBox> texts){
 		setQDMExpIdentifierListBoxItems(qdmExpIdentifierListBox, texts, MatContext.PLEASE_SELECT);
 	}
@@ -983,23 +836,14 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			}
 		}
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setVSACVersionListBoxOptions(java.util.List)
-	 */
 	/**
 	 * Sets the VSAC version list box options.
 	 *
 	 * @param texts the new VSAC version list box options
 	 */
-	//@Override
 	public void setQDMVersionListBoxOptions(List<? extends HasListBox> texts){
 		setVersionListBoxItems(versionListBox, texts, MatContext.PLEASE_SELECT);
 	}
-	
-	
 	/**
 	 * Sets the version list box items.
 	 *
@@ -1025,21 +869,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			}
 		}
 	}
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#
-	 * resetVSACValueSetWidget()
-	 */
 	/**
 	 * Reset vsac value set widget.
 	 */
-	//@Override
 	public void resetVSACValueSetWidget() {
 		defaultExpIdentifierSel.setValue(false);
-		//toggleSwitch.setValue(false);
 		defaultExpIdentifierListBox.clear();
 		defaultExpIdentifierListBox.setEnabled(false);
 		defaultExpIdentifierListBox.addItem("--Select--");
@@ -1049,43 +883,24 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			versionListBox.setEnabled(false);
 			sWidget.getSearchBox().setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
-			//saveButton.setEnabled(false);
 			
 		}
 		searchHeader.setText("Search");
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event
-	 * .shared.GwtEvent)
-	 */
 	/**
 	 * Fire event.
 	 *
 	 * @param event the event
 	 */
-	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
-	 * (com.google.gwt.event.logical.shared.SelectionHandler)
-	 */
 	/**
 	 * Adds the selection handler.
 	 *
 	 * @param handler the handler
 	 * @return the handler registration
 	 */
-	//@Override
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
@@ -1330,7 +1145,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 //	@Override
 	public Button getCancelQDMButton() {
-		//return saveCancelButtonBar.getCancelButton();
 		return cancelButton;
 	}
 	
@@ -1357,7 +1171,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 	//@Override
 	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
-		//return searchWidget.getSearchButton();
 		return sWidget.getGo();
 	}
 	
@@ -1371,7 +1184,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 	//@Override
 	public Button getSaveButton(){
-	//	return saveCancelButtonBar.getSaveButton();
 		return saveValueSet;
 	}
 	
@@ -1464,7 +1276,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 */
 	//@Override
 	public TextBox getOIDInput() {
-		//return searchWidget.getSearchInput();
 		return sWidget.getSearchBox();
 	}
 	
@@ -1500,18 +1311,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		this.isEditable = isEditable;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getInProgressMessageDisplay()
-	 */
-	/**
-	 * Gets the in progress message display.
-	 *
-	 * @return the in progress message display
-	 */
-	//@Override
-	public InProgressMessageDisplay getInProgressMessageDisplay() {
-		return inProgressMessageDisplay;
-	}
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSearchHeader()
@@ -1526,18 +1326,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		return searchHeader;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSuccessMessageDisplay()
-	 */
-	/**
-	 * Gets the success message display.
-	 *
-	 * @return the success message display
-	 */
-	//@Override
-	/*public SuccessMessageDisplay getSuccessMessageDisplay() {
-		return successMessagePanel;
-	}*/
 	
 	/**
 	 * Gets the list data provider.
@@ -1579,25 +1367,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		return spager;
 	}
 	
-	/**
-	 * Gets the update vsac error message panel.
-	 *
-	 * @return the update vsac error message panel
-	 */
-	//@Override
-	/*public ErrorMessageDisplay getUpdateVSACErrorMessagePanel() {
-		return updateVSACErrorMessagePanel;
-	}*/
-	
-	/**
-	 * Gets the update vsac success message panel.
-	 *
-	 * @return the update vsac success message panel
-	 */
-	//@Override
-	/*public SuccessMessageDisplay getUpdateVSACSuccessMessagePanel() {
-		return updateVSACSuccessMessagePanel;
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getMainPanel()

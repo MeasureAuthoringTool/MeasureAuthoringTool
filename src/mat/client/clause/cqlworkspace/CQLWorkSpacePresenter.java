@@ -2855,9 +2855,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 				if (!result.getCqlErrors().isEmpty()) {
 					modifyQDMStatus(true);
-					searchDisplay.getWarningMessageAlert().setVisible(true);
-					searchDisplay.getWarningMessageAlert()
-							.setText(MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
+					searchDisplay.getWarningMessageAlert().createAlert(
+							MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
 					for (CQLErrors error : result.getCqlErrors()) {
 						String errorMessage = new String();
 						errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine() + " at Offset :"

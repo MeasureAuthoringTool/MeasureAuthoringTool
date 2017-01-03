@@ -13,12 +13,8 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
-import elemental.css.CSSStyleDeclaration.Unit;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
 
 
 

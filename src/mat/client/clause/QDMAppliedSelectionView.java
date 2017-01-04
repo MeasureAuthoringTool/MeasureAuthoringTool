@@ -277,9 +277,9 @@ HasSelectionHandlers<Boolean> {
 		clearQDMTopButton.getElement().setAttribute("tabIndex", "0");
 		
 		topButtonLayOut.getElement().setId("topButtonLayOut_HorzPanel");
-		topButtonLayOut.add(copyQDMTopButton);
-		topButtonLayOut.add(buildPasteTopPanel(checkForEnable()));
-		topButtonLayOut.add(clearQDMTopButton);
+//		topButtonLayOut.add(copyQDMTopButton);
+//		topButtonLayOut.add(buildPasteTopPanel(checkForEnable()));
+//		topButtonLayOut.add(clearQDMTopButton);
 		topButtonLayOut.setStyleName("continueButton");
 		
 		HorizontalPanel hp = new HorizontalPanel();
@@ -306,9 +306,9 @@ HasSelectionHandlers<Boolean> {
 		bottomButtonLayOut.getElement().setId("bottomButtonLayOut_HorzPanel");
 		pasteTopPanel.add(pasteQDMBottomButton);
 		
-		bottomButtonLayOut.add(copyQDMBottomButton);
-		bottomButtonLayOut.add(buildPasteBottomPanel(checkForEnable()));
-		bottomButtonLayOut.add(clearQDMBottomButton);
+//		bottomButtonLayOut.add(copyQDMBottomButton);
+//		bottomButtonLayOut.add(buildPasteBottomPanel(checkForEnable()));
+//		bottomButtonLayOut.add(clearQDMBottomButton);
 		bottomButtonLayOut.setStyleName("continueButton");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
@@ -551,6 +551,7 @@ HasSelectionHandlers<Boolean> {
 	 */
 	@Override
 	public void buildAppliedQDMCellTable(QDSAppliedListModel appliedListModel, boolean isEditable) {
+		isEditable = false; 
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if ((appliedListModel.getAppliedQDMs() != null)
@@ -767,20 +768,20 @@ HasSelectionHandlers<Boolean> {
 			
 			String colName = "Modify";
 			
-			if(!isEditable){
-				colName = "Select";
-			}
-			
-			// Modify by Delete Column
-			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
-					getCompositeCellForQDMModifyAndDelete(isEditable)) {
-				
-				@Override
-				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));
+//			if(!isEditable){
+//				colName = "Select";
+//			}
+//			
+//			// Modify by Delete Column
+//			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
+//					getCompositeCellForQDMModifyAndDelete(isEditable)) {
+//				
+//				@Override
+//				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
+//					return object;
+//				}
+//			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+//					+ colName + "</span>"));
 			
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
@@ -1198,8 +1199,9 @@ HasSelectionHandlers<Boolean> {
 		if(isEditable){
 			cells.add(getModifyQDMButtonCell());
 			cells.add(getDeleteQDMButtonCell());
+			cells.add(getQDMCheckBoxCell());
+
 		}
-		cells.add(getQDMCheckBoxCell());
 		CompositeCell<QualityDataSetDTO> cell = new CompositeCell<QualityDataSetDTO>(
 				cells) {
 			@Override

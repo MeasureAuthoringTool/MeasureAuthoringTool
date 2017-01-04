@@ -2131,12 +2131,11 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	public void displaySearch() {
 		panel.clear();
 		resetQDSMsgPanel();
-		setWidgetsReadOnly(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());
+		setWidgetsReadOnly(false);
 		searchDisplay.resetVSACValueSetWidget();
 		populateAllDataType();
 		getAppliedQDMList(true);
-		setWidgetToDefault();
+//		setWidgetToDefault();
 		panel.add(searchDisplay.asWidget());
 	}
 	

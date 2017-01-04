@@ -220,6 +220,8 @@ public class MatContext implements IsSerializable {
 	
 	/** The data type list. */
 	private List<String> dataTypeList = new ArrayList<String>();
+	
+	private List<String> qdmDataTypeList = new ArrayList<String>();
 		
 	/** The profile list. */
 	private List<String> expIdentifierList = new ArrayList<String>();
@@ -1520,6 +1522,16 @@ public class MatContext implements IsSerializable {
 					}
 				});
 	}
+	public List<String> getQdmDataTypeList() {
+		return qdmDataTypeList;
+	}
+
+
+	public void setQdmDataTypeList(List<String> qdmDataTypeList) {
+		this.qdmDataTypeList = qdmDataTypeList;
+	}
+
+
 	// Get all CQL Data types/Timings/Functions from cqlTemplate.xml
 	// And All QDM Data types except Attributes.
 	/**
@@ -1543,8 +1555,12 @@ public class MatContext implements IsSerializable {
 				
 			}
 		});
+		getAllDataType();
 		
-		
+	}
+
+
+/*	private void getAllDataTypes() {
 		listBoxCodeProvider.getAllDataType(
 				new AsyncCallback<List<? extends HasListBox>>() {
 					
@@ -1570,8 +1586,7 @@ public class MatContext implements IsSerializable {
 						}
 					}
 				});
-		
-	}
+	}*/
 	
 	/**
 	 * Gets of all of the units and updates the all units list. 
@@ -1645,10 +1660,11 @@ public class MatContext implements IsSerializable {
 		if (itemList != null) {
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
-				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") &&
-						! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired")){
-					dataTypeList.add(listBoxContent.getItem());
+				if(! listBoxContent.getItem().equalsIgnoreCase("attribute")){
+						dataTypeList.add(listBoxContent.getItem());
 				}
+				qdmDataTypeList.add(listBoxContent.getItem());
+			
 				
 			}
 			

@@ -31,13 +31,13 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		if (state <= 0) {
 			state = 0;
 			if (subState == 0) {
-				setPageNames("UNDEFINED", "QDM Elements");
+				setPageNames("UNDEFINED", "CQL Workspace");
 				buttonPanel.remove(previousButton);
 				buttonPanel.remove(continueButton);
 				buttonPanel.add(continueButton);
 			}
 		} else if (state == 1) {
-			setPageNames("Measure Details", "CQL Workspace");
+			setPageNames("Measure Details", "Population Workspace");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
@@ -49,7 +49,7 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} */else if (state == 2) {
-			setPageNames("QDM Elements", "Population Workspace");
+			setPageNames("CQL Workspace", "Measure Packager");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
@@ -70,25 +70,28 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.add(continueButton);
 		} */else if (state == 3) {
 			state = 3;
-			setPageNames("CQL Workspace", "Measure Packager");
+			setPageNames("Population Workspace", "Measure Notes");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} else if (state == 4) {
 			state = 4;
-			setPageNames("Population Workspace", "Measure Notes");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} else if (state == 5) {
-			state = 5;
 			setPageNames("Measure Packager", "UNDEFINED");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
-		} 
+		} else if(state == 5) {
+			state = 5; 
+			setPageNames("UNDEFINED", "UNDEFINED");
+			buttonPanel.remove(continueButton);
+			buttonPanel.remove(previousButton);
+		} else if(state == 6) {
+			state = 6; 
+			setPageNames("UNDEFINED", "UNDEFINED");
+			buttonPanel.remove(continueButton);
+			buttonPanel.remove(previousButton);
+		}
 	}
 	
 	/**

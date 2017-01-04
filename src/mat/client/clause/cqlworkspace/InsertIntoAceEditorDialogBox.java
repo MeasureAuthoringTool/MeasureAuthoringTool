@@ -269,7 +269,7 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
-		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames,availableDatatypes,
+		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
 				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);
 		
@@ -738,7 +738,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
 	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ViewDisplay searchDisplay,
-			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,
+			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
 	
@@ -889,8 +889,22 @@ public class InsertIntoAceEditorDialogBox {
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
 				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
+			}
+		});
+		
+		availableQDMDatatypes.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
+				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				
 			}
 		});
 		
@@ -910,6 +924,7 @@ public class InsertIntoAceEditorDialogBox {
 				}
 			}
 		});
+		
 		
 		
        availableAttributesToInsert.addChangeHandler(new ChangeHandler() {

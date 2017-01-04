@@ -289,11 +289,11 @@ HasSelectionHandlers<Boolean> {
 		hp.add(buildElementWithVSACExpansionIdentifier());
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(successMessagePanel);
-		verticalPanel.add(errorMessagePanel);
-		errorMessagePanel.getElement().setId(
-				"errorMessagePanel_ErrorMessageDisplay");
+//		verticalPanel.add(new SpacerWidget());
+//		verticalPanel.add(successMessagePanel);
+//		verticalPanel.add(errorMessagePanel);
+//		errorMessagePanel.getElement().setId(
+//				"errorMessagePanel_ErrorMessageDisplay");
 		
 		HorizontalPanel bottomButtonLayOut = new HorizontalPanel();
 		SimplePanel pasteTopPanel =  new SimplePanel();
@@ -313,18 +313,18 @@ HasSelectionHandlers<Boolean> {
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		hPanel.setWidth("930px");
-		hPanel.add(updateVSACButton);
+//		hPanel.add(updateVSACButton);
 		hPanel.add(bottomButtonLayOut);
 		
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(new SpacerWidget());
+//		verticalPanel.add(new SpacerWidget());
+//		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hp);
-		verticalPanel.add(new SpacerWidget());
+//		verticalPanel.add(new SpacerWidget());
 		updateVSACButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
 		verticalPanel.add(topButtonLayOut);
 		verticalPanel.add(cellTablePanel);
-		verticalPanel.add(new SpacerWidget());
+//		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
 		verticalPanel.add(inProgressMessageDisplay);
 		verticalPanel.add(updateVSACSuccessMessagePanel);
@@ -409,7 +409,7 @@ HasSelectionHandlers<Boolean> {
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
 		mainPanel.setWidth("95%");
-		mainPanel.add(buildDefaultExpIdentifierPanel());
+//		mainPanel.add(buildDefaultExpIdentifierPanel());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;
@@ -477,7 +477,7 @@ HasSelectionHandlers<Boolean> {
 		mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
 		mainPanel.setWidth("95%");
-		mainPanel.add(buildSearchPanel());
+//		mainPanel.add(buildSearchPanel());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;

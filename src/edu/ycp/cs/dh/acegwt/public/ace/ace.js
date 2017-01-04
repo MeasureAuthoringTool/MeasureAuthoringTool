@@ -10692,7 +10692,7 @@ exports.commands = [
 }, {
     name: "removeline",
     bindKey: bindKey("Ctrl-D", "Command-D"),
-    exec: function(editor) { editor.removeLines(); },
+    exec: function(editor) { },
     scrollIntoView: "cursor",
     multiSelectAction: "forEachLine"
 }, {
@@ -10765,7 +10765,7 @@ exports.commands = [
     scrollIntoView: "cursor"
 }, {
     name: "del",
-    bindKey: bindKey("Delete", "Delete|Ctrl-D|Shift-Delete"),
+    bindKey: bindKey("Delete", "Delete|Shift-Delete"),
     exec: function(editor) { editor.remove("right"); },
     multiSelectAction: "forEach",
     scrollIntoView: "cursor"

@@ -36,6 +36,7 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	
 	public void createWarningAlert() {
 		clear();
+		setStyleName("alert warning-alert");
 		getElement().setAttribute("id", "WarningConfirmationMessageAlert");
 		super.setMessage(getMsgPanel(IconType.WARNING, MatContext.get().getMessageDelegate().getSaveErrorMsg()));
 		createButtons();
@@ -44,7 +45,6 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	}
 		
 	private void createButtons() {
-		setType(AlertType.WARNING);
 		add(new SpacerWidget());
 		
 		yesButton.setType(ButtonType.PRIMARY);

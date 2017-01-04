@@ -669,4 +669,6 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
 	SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+	
+	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
 }

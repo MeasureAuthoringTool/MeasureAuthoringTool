@@ -8,7 +8,7 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -162,6 +162,10 @@ public interface CQLService {
 	String getDefaultCodes();
 
 	GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
+
+	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
+
+	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
 
 
 

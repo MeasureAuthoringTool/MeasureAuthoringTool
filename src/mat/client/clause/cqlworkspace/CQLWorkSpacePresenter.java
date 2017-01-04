@@ -1604,8 +1604,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.equals(searchDisplay.getQdmView()
 														.getSelectedElementToRemove()
 														.getUuid())) {
-											deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
-											iterator.remove();
+											if(!dataSetDTO.isUsed()){
+												deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
+												iterator.remove();
+											}
 										}
 									}
 								}
@@ -1863,11 +1865,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getSuccessMessageAlert().createAlert(
 													MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
 										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
-										}
 										searchDisplay.getFunctionBodyAceEditor().setAnnotations();
 										searchDisplay.getFunctionBodyAceEditor().redisplay();
 
@@ -1932,11 +1929,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										} else {
 											searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_FUNCTIONS());
-										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
 										}
 										searchDisplay.getFunctionBodyAceEditor().setAnnotations();
 										searchDisplay.getFunctionBodyAceEditor().redisplay();
@@ -2036,11 +2028,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 													MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
 
 										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
-										}
 										searchDisplay.getParameterAceEditor().setAnnotations();
 										searchDisplay.getParameterAceEditor().redisplay();
 
@@ -2097,11 +2084,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_PARAMETER());
 										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
-										}
 										searchDisplay.getParameterAceEditor().setAnnotations();
 										searchDisplay.getParameterAceEditor().redisplay();
 									} else if (result.getFailureReason() == 1) {
@@ -2134,7 +2116,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 	}
-
+	
 	/**
 	 * This method is called to Add/Modify Definitions into Measure Xml.
 	 * 
@@ -2198,11 +2180,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										} else {
 											searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
-										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
 										}
 										searchDisplay.getDefineAceEditor().setAnnotations();
 										searchDisplay.getDefineAceEditor().redisplay();
@@ -2270,11 +2247,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										} else {
 											searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_DEFINITION());
-										}
-										if (!result.getCqlErrors().isEmpty()) {
-											modifyQDMStatus(true);
-										} else {
-											modifyQDMStatus(false);
 										}
 										searchDisplay.getDefineAceEditor().setAnnotations();
 										searchDisplay.getDefineAceEditor().redisplay();
@@ -2499,8 +2471,35 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.hideAceEditorAutoCompletePopUp();
-				appliedQDMEvent();
+
+				MatContext.get().getMeasureService().getCQLValusets(MatContext.get().getCurrentMeasureId(),
+						new AsyncCallback<List<CQLQualityDataSetDTO>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+
+					}
+
+					@Override
+					public void onSuccess(List<CQLQualityDataSetDTO> result) {
+						List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
+						if(result != null){
+							for (CQLQualityDataSetDTO dto : result) {
+								if (dto.isSuppDataElement())
+									continue;
+								if (!dto.getOid().equalsIgnoreCase(MEASUREMENT_PERIOD_OID)) {
+									appliedValueSetTableList.add(dto);
+								} else {
+									System.out.print("Skipping Measurement Period from QDM List.");
+								}
+							}
+							searchDisplay.setAppliedQdmTableList(appliedValueSetTableList);
+						}
+						searchDisplay.hideAceEditorAutoCompletePopUp();
+						appliedQDMEvent();
+					}
+				});
 			}
 		});
 
@@ -2854,7 +2853,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getWarningConfirmationMessageAlert().clear();
 
 				if (!result.getCqlErrors().isEmpty()) {
-					modifyQDMStatus(true);
 					searchDisplay.getWarningMessageAlert().createAlert(
 							MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
 					for (CQLErrors error : result.getCqlErrors()) {
@@ -2870,7 +2868,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlAceEditor().setAnnotations();
 					searchDisplay.getCqlAceEditor().redisplay();
 				} else {
-					modifyQDMStatus(false);
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
 					searchDisplay.getSuccessMessageAlert()
 							.setText(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
@@ -2879,23 +2876,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			}
 		});
-
-	}
-
-	// Method to check for CQL Errors to disable delete icon.
-	private void modifyQDMStatus(boolean hasErrors) {
-		List<CQLQualityDataSetDTO> cqlQDMs = searchDisplay.getAppliedQdmTableList();
-		List<CQLQualityDataSetDTO> modifiedCqlQDMs = new ArrayList<CQLQualityDataSetDTO>();
-		for (int i = 0; i < cqlQDMs.size(); i++) {
-			if (!hasErrors) {
-				// TODO: check for QDMS usage in logic
-			} else {
-				cqlQDMs.get(i).setUsed(hasErrors);
-			}
-			modifiedCqlQDMs.add(cqlQDMs.get(i));
-		}
-		searchDisplay.getQdmView().buildAppliedQDMCellTable(modifiedCqlQDMs,
-				MatContext.get().getMeasureLockService().checkForEditPermission());
 
 	}
 

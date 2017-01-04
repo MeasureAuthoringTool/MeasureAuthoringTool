@@ -614,31 +614,7 @@ MeasureService {
 	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError( String cqlFileString) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		if(!StringUtils.isBlank(cqlFileString)){
-			
-			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
-			cqlToElm.doTranslation(true, false, false);
-			
-			if(cqlToElm.getErrors() != null) {
-				cqlErrorsList.addAll(cqlToElm.getErrors());
-			}
-		}
-		
-		for(CqlTranslatorException cte : cqlErrorsList){
-			
-			CQLErrors cqlErrors = new CQLErrors();
-			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-			cqlErrors.setErrorMessage(cte.getMessage());
-			errors.add(cqlErrors);
-		}
-		
-		result.setCqlErrors(errors);
-		
-	return result;
+		return this.getMeasureLibraryService().parseCQLStringForError(cqlFileString);
 	}
 
 	@Override
@@ -670,6 +646,11 @@ MeasureService {
 			String expProfileToAllQDM) {
 		return this.getMeasureLibraryService().createAndSaveCQLElementLookUp(Uuid, list, measureID, expProfileToAllQDM);
 		
+	}
+
+	@Override
+	public List<CQLQualityDataSetDTO> getCQLValusets(String measureID) {
+		return this.getMeasureLibraryService().getCQLValusets(measureID);
 	}
 
 }

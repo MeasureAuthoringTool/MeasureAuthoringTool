@@ -5529,32 +5529,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return cqlResult;
 	}
 
+	@Override
 	public SaveUpdateCQLResult parseCQLStringForError( String cqlFileString) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		if(!StringUtils.isBlank(cqlFileString)){
-			
-			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
-			cqlToElm.doTranslation(true, false, false);
-			
-			if(cqlToElm.getErrors() != null) {
-				cqlErrorsList.addAll(cqlToElm.getErrors());
-			}
-		}
-		
-		for(CqlTranslatorException cte : cqlErrorsList){
-			
-			CQLErrors cqlErrors = new CQLErrors();
-			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-			cqlErrors.setErrorMessage(cte.getMessage());
-			errors.add(cqlErrors);
-		}
-		
-		result.setCqlErrors(errors);
-		
-	return result;
+		return this.getCqlService().parseCQLStringForError(cqlFileString);
+	}
+
+	@Override
+	public List<CQLQualityDataSetDTO> getCQLValusets(String measureID) {
+		return this.getCqlService().getCQLValusets(measureID);
 	}
 }
 

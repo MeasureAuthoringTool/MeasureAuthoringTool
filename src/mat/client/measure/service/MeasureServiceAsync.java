@@ -738,5 +738,5 @@ public interface MeasureServiceAsync {
 
 	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	
+	void getCQLValusets(String measureID, AsyncCallback<List<CQLQualityDataSetDTO>> callback);
 }

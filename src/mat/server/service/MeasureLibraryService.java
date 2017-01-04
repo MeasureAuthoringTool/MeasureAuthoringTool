@@ -738,4 +738,8 @@ public interface MeasureLibraryService {
 
 	CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
 
+	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
+
+	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
+
 }

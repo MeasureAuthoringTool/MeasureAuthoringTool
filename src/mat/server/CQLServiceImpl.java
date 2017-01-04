@@ -15,7 +15,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
@@ -27,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -46,7 +44,6 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.service.CQLService;
 import mat.dao.clause.CQLDAO;
 import mat.model.clause.CQLData;
-import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
@@ -55,6 +52,7 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
@@ -949,8 +947,22 @@ public class CQLServiceImpl implements CQLService {
 				measureId);
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(xmlModel.getXml(),measureId);
+		
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+		SaveUpdateCQLResult parsedCQL = parseCQLStringForError(cqlFileString);
+		if (!parsedCQL.getCqlErrors().isEmpty()) {
+			modifyQDMStatus(cqlModel);	
+		}else{
+			findUsedValuesets(measureId, cqlModel);		
+			}
 		result.setCqlModel(cqlModel);
 		return result;
+	}
+	
+	private static void modifyQDMStatus(CQLModel cqlModel) {
+		for (int i = 0; i < cqlModel.getValueSetList().size(); i++) {
+			cqlModel.getValueSetList().get(i).setUsed(true);
+		}
 	}
 	
 	/**
@@ -1868,5 +1880,68 @@ public class CQLServiceImpl implements CQLService {
 		
 		return result; 
 	}
+	
+	private void findUsedValuesets(String measureId, CQLModel cqlModel){
+		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
+		XmlProcessor processor = new XmlProcessor(measureXML.getXml());
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml() ,measureId), "").toString();
+		System.out.println(cqlFileString);
+	
+		MATCQLParser matcqlParser = new MATCQLParser();
+		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		try {
+			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getUsedCQLValuesets(processor.getOriginalDoc(), cqlFileObject);
+			List<String> usedValuesets = new ArrayList<String>();
+			
+			usedValuesets.addAll(new ArrayList<String>(cqlArtifactHolder.getCqlValuesetIdentifierSet()));
+			cqlModel.getValueSetList();
+			
+			
+			for(int i=0; i<cqlModel.getValueSetList().size(); i++){
+				CQLQualityDataSetDTO cqlDataset = cqlModel.getValueSetList().get(i);
+				
+				if(usedValuesets.contains(cqlDataset.getCodeListName())){
+					cqlDataset.setUsed(true);
+				}
+			}
+			
+			
+		} catch (XPathExpressionException e) {
+			logger.info("Error while trying to find used value sets : "+e.getMessage());
+		}
+	}
 
+	@Override
+	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		if(!StringUtils.isBlank(cqlFileString)){
+			
+			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
+			cqlToElm.doTranslation(true, false, false);
+			
+			if(cqlToElm.getErrors() != null) {
+				cqlErrorsList.addAll(cqlToElm.getErrors());
+			}
+		}
+		
+		for(CqlTranslatorException cte : cqlErrorsList){
+			
+			CQLErrors cqlErrors = new CQLErrors();
+			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+			cqlErrors.setErrorMessage(cte.getMessage());
+			errors.add(cqlErrors);
+		}
+		
+		result.setCqlErrors(errors);
+		
+	return result;
+	}
+
+	@Override
+	public List<CQLQualityDataSetDTO> getCQLValusets(String measureId) {
+		return getCQLData(measureId).getCqlModel().getValueSetList();
+	}
 }

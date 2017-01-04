@@ -66,6 +66,8 @@ public class InsertIntoAceEditorDialogBox {
 	/** The all data types. */
 	private static List<String> allDataTypes = MatContext.get().getDataTypeList();
 	
+	private static List<String> allQdmDataTypes = MatContext.get().getQdmDataTypeList();
+	
 	/** The all attributes. */
 	private static List<String> allAttributes = MatContext.get().getAllAttributeList();
 	
@@ -187,6 +189,15 @@ public class InsertIntoAceEditorDialogBox {
 		availableDatatypes.setEnabled(false);
 		availableDatatypes.getElement().setId("availableDatatypes_ListBox");
 		
+		
+		
+		final ListBoxMVP allQDMDatatypes = new ListBoxMVP();
+		allQDMDatatypes.clear();
+		allQDMDatatypes.setWidth("350px");
+		allQDMDatatypes.setEnabled(true);
+		allQDMDatatypes.getElement().setId("allQDMDatatypes_ListBox");
+		addAvailableItems(allQDMDatatypes, allQdmDataTypes);
+		
 		final ListBoxMVP availableAttributesToInsert = new ListBoxMVP();
 		availableAttributesToInsert.clear();
 		availableAttributesToInsert.setWidth("350px");
@@ -221,11 +232,20 @@ public class InsertIntoAceEditorDialogBox {
 		selectItemListFormGroup.add(selectItemListFormLabel);
 		selectItemListFormGroup.add(listAllItemNames);
 		
+		final FormGroup dataTypeListFormGroup = new FormGroup();
+		FormLabel dataTypeListFormLabel = new FormLabel();
+		dataTypeListFormLabel.setText("Datatype");
+		dataTypeListFormLabel.setTitle("Select Datatype to insert");
+		dataTypeListFormLabel.setFor("listItemType");
+		dataTypeListFormGroup.add(dataTypeListFormLabel);
+		dataTypeListFormGroup.add(allQDMDatatypes);
+		dataTypeListFormGroup.setVisible(false);
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(availableItemTypeFormGroup);
 		formFieldSet.add(selectItemListFormGroup);
+		formFieldSet.add(dataTypeListFormGroup);
 		
 		bodyForm.add(formFieldSet);
 		modalBody.add(bodyForm);
@@ -249,9 +269,9 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
-		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames, availableDatatypes,
+		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames,availableDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
-				availableItemTypeFormGroup, selectItemListFormGroup);
+				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);
 		
 		addButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -678,7 +698,588 @@ public class InsertIntoAceEditorDialogBox {
 	
 	
 	
-	private static void defaultFrmGrpValidations(){
+	/**
+	 * This method add's addChangeHandler event to 'availableItemToInsert' and 'listAllItemNames' ListBox.
+	 *
+	 * @param dialogModal the dialog modal
+	 * @param searchDisplay -ViewDisplay.
+	 * @param availableItemToInsert - ListBoxMVP.
+	 * @param listAllItemNames - ListBoxMVP.
+	 * @param availableDatatypes the available datatypes
+	 * @param availableAttributesToInsert the available attributes to insert
+	 * @param messageFormgroup - FormGroup.
+	 * @param helpBlock - HelpBlock.
+	 * @param availableItemTypeFormGroup - FormGroup.
+	 * @param selectItemListFormGroup - FormGroup.
+	 */
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ViewDisplay searchDisplay,
+			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,
+			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
+			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
+		availableItemToInsert.addChangeHandler(new ChangeHandler() {
+			
+			/* (non-Javadoc)
+			 * @see com.google.gwt.event.dom.client.ChangeHandler#onChange(com.google.gwt.event.dom.client.ChangeEvent)
+			 */
+			@Override
+			public void onChange(ChangeEvent event) {
+				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
+				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setVisible(false);
+				int selectedIndex = availableItemToInsert.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String itemTypeSelected = availableItemToInsert.getItemText(selectedIndex);
+					if (itemTypeSelected.equalsIgnoreCase("parameters")) {
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < searchDisplay.getViewParameterList().size(); i++) {
+							listAllItemNames.addItem(searchDisplay.getViewParameterList().get(i)
+									.getParameterName());
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
+							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
+							String funcArg = getFunctionArgumentValueBuilder(functions);
+							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
+							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < searchDisplay.getViewDefinitions().size(); i++) {
+							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
+									.getDefinitionName());
+						}
+					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
+						listAllItemNames.clear();
+						listAllItemNames.setEnabled(true);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < timingList.size(); i++) {
+							listAllItemNames.addItem(timingList.get(i));
+						}
+					}*/ else if (itemTypeSelected.equalsIgnoreCase("Pre-Defined Functions")) {
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < cqlFunctionsList.size(); i++) {
+							listAllItemNames.addItem(cqlFunctionsList.get(i));
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("Applied QDM")) {
+						dataTypeFormGroup.setVisible(true);
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
+							/*if(!searchDisplay.getAppliedQdmList().get(i)
+									.getDataType().equalsIgnoreCase("attribute")){
+								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
+										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
+							}
+							if(searchDisplay.getAppliedQdmList().get(i).getDataType() != null
+									&& !searchDisplay.getAppliedQdmList().get(i)
+									.getDataType().equalsIgnoreCase("attribute")){
+								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
+										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
+							} else if(searchDisplay.getAppliedQdmList().get(i).getDataType() == null){*/
+								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
+									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
+								} else {*/
+									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName());
+								//}
+								
+							//}
+							
+						}
+					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
+						//open new popup/dialogBox
+						dialogModal.clear();
+						dialogModal.hide();
+						showAttributesDialogBox(searchDisplay, currention_Section);
+						listAllItemNames.setEnabled(false);
+						availableDatatypes.setEnabled(true);
+						availableAttributesToInsert.setEnabled(true);
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						addAvailableItems(availableDatatypes, allDataTypes);
+						addAvailableItems(availableAttributesToInsert, allAttributes);
+						
+					} else if (itemTypeSelected.equalsIgnoreCase("Timing")) {
+						//open new popup/dialogBox
+						dialogModal.clear();
+						dialogModal.hide();
+						searchDisplay.resetMessageDisplay();
+						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
+						searchDisplay.setIsPageDirty(true);
+					}else {
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(false);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+					}
+				} else {
+					listAllItemNames.clear();
+					availableDatatypes.clear();
+					availableAttributesToInsert.clear();
+					listAllItemNames.setEnabled(false);
+					availableDatatypes.setEnabled(false);
+					availableAttributesToInsert.setEnabled(false);
+				}
+			}
+		});
+		
+		
+		listAllItemNames.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
+				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+			}
+		});
+		
+		availableDatatypes.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+				int selectedIndex = availableDatatypes.getSelectedIndex();
+				if (selectedIndex != 0) {
+					String dataTypeSelected = availableDatatypes.getItemText(selectedIndex);
+					getAllAttibutesByDataType(availableAttributesToInsert, dataTypeSelected);
+				} else {
+					availableAttributesToInsert.clear();
+					addAvailableItems(availableAttributesToInsert, allAttributes);
+				}
+			}
+		});
+		
+		
+       availableAttributesToInsert.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				
+				helpBlock.setText("");
+				messageFormgroup.setValidationState(ValidationState.NONE);
+			}
+		});
+		
+		
+		
+	}
+	
+	/**
+	 * Gets the all attibutes by data type.
+	 *
+	 * @param availableAttributesToInsert the available attributes to insert
+	 * @param dataType the data type
+	 * @return the all attibutes by data type
+	 */
+	private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
+		
+		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
+			
+			@Override
+			public void onSuccess(List<QDSAttributes> result) {
+				List<String> filterAttrByDataTypeList = new ArrayList<String>();
+				for (QDSAttributes qdsAttributes : result) {
+					filterAttrByDataTypeList.add(qdsAttributes.getName());
+				}
+				Collections.sort(filterAttrByDataTypeList);
+				availableAttributesToInsert.clear();
+				addAvailableItems(availableAttributesToInsert, filterAttrByDataTypeList);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+			}
+		});
+	}
+	/**
+	 * Method to Reterive Instance of Ace Editor based on current Section in CQL WorkSpace.
+	 * @param searchDisplay - ViewDisplay.
+	 * @param currentSection - String.
+	 * @return AceEditor.
+	 */
+	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+		AceEditor editor = null;
+		switch(currentSection) {
+			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
+				editor = searchDisplay.getDefineAceEditor();
+				break;
+			case CQLWorkSpaceConstants.CQL_FUNCTION_MENU:
+				editor = searchDisplay.getFunctionBodyAceEditor();
+				break;
+			default:
+				editor = searchDisplay.getDefineAceEditor();
+				break;
+		}
+		return editor;
+	}
+	
+	/**
+	 * This method populates first drop down of the pop up.
+	 *
+	 * @param availableItemToInsert - ListBoxMVP
+	 * @param availableInsertItemList the available insert item list
+	 */
+	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
+			List<String> availableInsertItemList) {
+		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < availableInsertItemList.size(); i++) {
+			if(!availableInsertItemList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(availableInsertItemList.get(i));
+			}
+		}
+		
+	}
+	
+	private static void addModelist(ListBoxMVP availableItemToInsert, List<String> attrModeList) {
+		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < attrModeList.size(); i++) {
+			if(!attrModeList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(attrModeList.get(i));
+			}
+		}
+	}
+	
+	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<String> modeDetailsList) {
+		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < modeDetailsList.size(); i++) {
+			if(!modeDetailsList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(modeDetailsList.get(i));
+			}
+		}
+	}
+	
+	/**
+	 * Gets the function argument value builder.
+	 *
+	 * @param functions the functions
+	 * @return the function argument value builder
+	 */
+	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		functionNameBuilder.append("(");
+		StringBuilder argumentType = new StringBuilder();
+		if (functions.getArgumentList() != null) {
+			for (int j = 0; j < functions.getArgumentList().size(); j++) {
+				CQLFunctionArgument argument = functions.getArgumentList().get(j);
+				argumentType = argumentType.append(argument.getArgumentName());
+				if (j <  (functions.getArgumentList().size() - 1)) {
+					argumentType.append(",");
+				}
+			}
+		}
+		functionNameBuilder.append(argumentType + ")");
+		return functionNameBuilder.toString();
+	}
+	
+	/**
+	 * Gets the function argument tool tip builder.
+	 *
+	 * @param functions the functions
+	 * @return the function argument tool tip builder
+	 */
+	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		functionNameBuilder.append("(");
+		StringBuilder argumentType = new StringBuilder();
+		if (functions.getArgumentList() != null) {
+			for (int j = 0; j < functions.getArgumentList().size(); j++) {
+				CQLFunctionArgument argument = functions.getArgumentList().get(j);
+				argumentType = argumentType.append(argument.getArgumentName());
+				if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
+					argumentType = argumentType.append(" " +'"' + argument.getQdmDataType() + '"');
+				}
+				else if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
+					argumentType = argumentType.append(" " + argument.getOtherType());
+				}
+				else{
+					argumentType = argumentType.append(" " +argument.getArgumentType());
+				}
+				if (j <  (functions.getArgumentList().size() - 1)) {
+					argumentType.append(",");
+				}
+			}
+		}
+		functionNameBuilder.append(argumentType + ")");
+		return functionNameBuilder.toString();
+	}
+	
+	/**
+	 * Convert to camel case.
+	 *
+	 * @param str the str
+	 * @return the string
+	 */
+	private static String convertToCamelCase(String str){
+        String result = "";
+        char firstChar = str.charAt(0);
+        result = result + Character.toLowerCase(firstChar);
+        for (int i = 1; i < str.length(); i++) {
+            char currentChar = str.charAt(i);
+            char previousChar = str.charAt(i - 1);
+            if (previousChar == ' ') {
+                result = result + Character.toUpperCase(currentChar);
+            } else {
+                result = result + currentChar;
+            }
+        }
+        return result.replaceAll(" ", "");
+	}
+	
+	/**
+	 * In range.
+	 *
+	 * @param s the s
+	 * @param lowerBound the lower bound
+	 * @param upperBound the upper bound
+	 * @return true, if successful
+	 */
+	private static boolean inRange(String s, String lowerBound, String upperBound) {
+		if(s.isEmpty()){
+			return true;
+		}
+		int lower = Integer.parseInt(lowerBound);
+		int upper = Integer.parseInt(upperBound);
+		int value = Integer.parseInt(s);
+		if(lower<=value && upper>=value){
+			return true;
+		}
+		return false;
+		//return  s.compareToIgnoreCase(lowerBound) >= 0 && s.compareToIgnoreCase(upperBound) <= 0;
+	}
+	
+	/**
+	 * Builds the quantity units string.
+	 *
+	 * @return the string
+	 */
+	private static String attributeStringBuilder(){
+		nonQuoteUnits = getNonQuotesUnits();
+		cqlUnitMap = getCqlUnitMap();
+		StringBuilder sb = new StringBuilder();
+		String selectedAttrItem = "";
+		String selectedMode = "";
+		String selectedMDetailsItem = "";
+		String selectedQuantity = QuantityTextBox.getText();
+		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
+		
+		if(AttriblistBox.getSelectedIndex()>0){
+			selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		}
+		
+		if(ModelistBox.getSelectedIndex()>0){
+			selectedMode = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
+		}
+		
+		if(ModeDetailslistBox.getSelectedIndex()>0){
+			selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		}
+		 
+		if(selectedMode.isEmpty() && selectedMDetailsItem.isEmpty()){
+			sb.append(".").append(selectedAttrItem);
+		}else if(selectedMode.equalsIgnoreCase("Nullable")){
+			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
+		}else if(selectedMode.equalsIgnoreCase("Value Sets")){
+			sb.append(".").append(selectedAttrItem).append(" in \"").append(selectedMDetailsItem).append("\"");
+		}else if(QuantityTextBox.isEnabled()){
+			
+			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ");
+			if(nonQuoteUnits.contains(selectedUnit)){
+				 sb.append(selectedUnit);
+			} else if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+				sb.append("'").append(selectedUnit).append("'");
+			}
+		} 
+		return sb.toString();
+		
+	}
+	
+	private static Map<String, String> getCqlUnitMap() {
+		 Map<String, String> map = new LinkedHashMap<String,String>(); ;
+		Iterator<String> i1 = allUnits.iterator();
+		Iterator<String> i2 = allCqlUnits.iterator();
+		while (i1.hasNext() && i2.hasNext()) {
+			map.put(i1.next(), i2.next());
+		}
+		return map;
+	}
+
+	private static HashSet<String> getNonQuotesUnits(){
+		 HashSet<String> hset = 
+	               new HashSet<String>();
+		hset.add("millisecond");
+		hset.add("milliseconds");
+		hset.add("second");
+		hset.add("seconds");
+		hset.add("minute");
+		hset.add("minutes");
+		hset.add("hour");
+		hset.add("hours");
+		hset.add("day");
+		hset.add("days");
+		hset.add("week");
+		hset.add("weeks");
+		hset.add("month");
+		hset.add("months");
+		hset.add("year");
+		hset.add("years");
+		
+		return hset;
+	}
+	/**
+	 * Builds the date time string.
+	 *
+	 * @return the string
+	 */
+	private static String buildDateTimeString(){
+		StringBuilder sb = new StringBuilder();
+		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
+		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" @");
+		if(!yyyyTxtBox.getText().isEmpty()){
+			
+			if(yyyyTxtBox.getText().length()<4){
+				sb.append(appendZeroString(4-yyyyTxtBox.getText().length()))
+				.append(yyyyTxtBox.getText());
+				
+			} else {
+				sb.append(yyyyTxtBox.getText());
+			}
+		} 
+		if(!mmTxtBox.getText().isEmpty()){
+			if(mmTxtBox.getText().length()<2){
+				sb.append("-").append(appendZeroString(2-mmTxtBox.getText().length()))
+				.append(mmTxtBox.getText());
+				
+			} else {
+				sb.append("-"+mmTxtBox.getText());
+			}
+		}
+		if(!ddTxtBox.getText().isEmpty()){
+			if(ddTxtBox.getText().length()<2){
+				sb.append("-").append(appendZeroString(2-ddTxtBox.getText().length()))
+				.append(ddTxtBox.getText());
+				
+			} else {
+				sb.append("-"+ddTxtBox.getText());
+			}
+		}
+		if(!hhTextBox.getText().isEmpty()){
+			
+			if(hhTextBox.getText().length()<2){
+				sb.append("T").append(appendZeroString(2-hhTextBox.getText().length()))
+				.append(hhTextBox.getText());
+			} else {
+				sb.append("T"+hhTextBox.getText());
+			}
+		} 
+		if(!minTxtBox.getText().isEmpty()){
+			if(minTxtBox.getText().length()<2){
+				sb.append(":").append(appendZeroString(2-minTxtBox.getText().length()))
+				.append(minTxtBox.getText());
+				
+			} else {
+				sb.append(":"+minTxtBox.getText());
+			}
+		} 
+		if(!ssTxtBox.getText().isEmpty()){
+			if(ssTxtBox.getText().length()<2){
+				sb.append(":").append(appendZeroString(2-ssTxtBox.getText().length()))
+				.append(ssTxtBox.getText());
+				
+			} else {
+				sb.append(":"+ssTxtBox.getText());
+			}
+		} 
+		if(!msTxtBox.getText().isEmpty()){
+			sb.append("."+msTxtBox.getText());
+		}
+		
+		return sb.toString();
+	}
+	
+	private static String appendZeroString(int count){
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<count;i++){
+			sb.append("0");
+		}
+		return sb.toString();
+	}
+	
+	public static boolean isValidate(String inDate){
+		DateTimeFormat format = DateTimeFormat.getFormat("yyyy/MM/dd");
+		try {
+			format.parseStrict(inDate);
+		} catch (IllegalArgumentException pe) {
+		      return false; 
+		    }
+		return true;
+	}
+	
+	
+	private static void setWidgetEnabled(ListBox attributeListBox, ListBoxMVP ModelistBox){
+		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+		String modeName = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
+		attributeName = attributeName.toLowerCase();
+		modeName = modeName.toLowerCase(); 
+		
+		if (modeName.equalsIgnoreCase("comparison") 
+				|| modeName.equalsIgnoreCase("computative")) {
+
+			if (attributeName.contains("datetime") && modeName.equalsIgnoreCase("comparison")) {
+				setDateTimeEnabled(true);
+				QuantityTextBox.setEnabled(false);
+				UnitslistBox.setEnabled(false);
+			} else if (attributeName.equalsIgnoreCase("result")) {
+				setEnabled(true);
+			} else {
+				setDateTimeEnabled(false);
+				QuantityTextBox.setEnabled(true);
+				UnitslistBox.setEnabled(true);
+			}
+		} else {
+			setEnabled(false);
+		}
+		
+	}
+private static void defaultFrmGrpValidations(){
 		
 		dtFormGroup.setValidationState(ValidationState.NONE);
 		attrFormGroup.setValidationState(ValidationState.NONE);
@@ -1272,587 +1873,6 @@ public class InsertIntoAceEditorDialogBox {
 		});
 	}
 
-	
-	
-	/**
-	 * This method add's addChangeHandler event to 'availableItemToInsert' and 'listAllItemNames' ListBox.
-	 *
-	 * @param dialogModal the dialog modal
-	 * @param searchDisplay -ViewDisplay.
-	 * @param availableItemToInsert - ListBoxMVP.
-	 * @param listAllItemNames - ListBoxMVP.
-	 * @param availableDatatypes the available datatypes
-	 * @param availableAttributesToInsert the available attributes to insert
-	 * @param messageFormgroup - FormGroup.
-	 * @param helpBlock - HelpBlock.
-	 * @param availableItemTypeFormGroup - FormGroup.
-	 * @param selectItemListFormGroup - FormGroup.
-	 */
-	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ViewDisplay searchDisplay,
-			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames, final ListBoxMVP availableDatatypes,
-			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
-			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup) {
-		availableItemToInsert.addChangeHandler(new ChangeHandler() {
-			
-			/* (non-Javadoc)
-			 * @see com.google.gwt.event.dom.client.ChangeHandler#onChange(com.google.gwt.event.dom.client.ChangeEvent)
-			 */
-			@Override
-			public void onChange(ChangeEvent event) {
-				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
-				selectItemListFormGroup.setValidationState(ValidationState.NONE);
-				helpBlock.setText("");
-				messageFormgroup.setValidationState(ValidationState.NONE);
-				int selectedIndex = availableItemToInsert.getSelectedIndex();
-				if (selectedIndex != 0) {
-					String itemTypeSelected = availableItemToInsert.getItemText(selectedIndex);
-					if (itemTypeSelected.equalsIgnoreCase("parameters")) {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(true);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewParameterList().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewParameterList().get(i)
-									.getParameterName());
-						}
-					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(true);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
-							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
-							String funcArg = getFunctionArgumentValueBuilder(functions);
-							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
-							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
-						}
-					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(true);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewDefinitions().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
-									.getDefinitionName());
-						}
-					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
-						listAllItemNames.clear();
-						listAllItemNames.setEnabled(true);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < timingList.size(); i++) {
-							listAllItemNames.addItem(timingList.get(i));
-						}
-					}*/ else if (itemTypeSelected.equalsIgnoreCase("Pre-Defined Functions")) {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(true);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < cqlFunctionsList.size(); i++) {
-							listAllItemNames.addItem(cqlFunctionsList.get(i));
-						}
-					} else if (itemTypeSelected.equalsIgnoreCase("Applied QDM")) {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(true);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
-							/*if(!searchDisplay.getAppliedQdmList().get(i)
-									.getDataType().equalsIgnoreCase("attribute")){
-								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
-										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
-							}
-							if(searchDisplay.getAppliedQdmList().get(i).getDataType() != null
-									&& !searchDisplay.getAppliedQdmList().get(i)
-									.getDataType().equalsIgnoreCase("attribute")){
-								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
-										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
-							} else if(searchDisplay.getAppliedQdmList().get(i).getDataType() == null){*/
-								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
-									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
-								} else {*/
-									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName());
-								//}
-								
-							//}
-							
-						}
-					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
-						//open new popup/dialogBox
-						dialogModal.clear();
-						dialogModal.hide();
-						showAttributesDialogBox(searchDisplay, currention_Section);
-						listAllItemNames.setEnabled(false);
-						availableDatatypes.setEnabled(true);
-						availableAttributesToInsert.setEnabled(true);
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						addAvailableItems(availableDatatypes, allDataTypes);
-						addAvailableItems(availableAttributesToInsert, allAttributes);
-						
-					} else if (itemTypeSelected.equalsIgnoreCase("Timing")) {
-						//open new popup/dialogBox
-						dialogModal.clear();
-						dialogModal.hide();
-						searchDisplay.resetMessageDisplay();
-						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
-						searchDisplay.setIsPageDirty(true);
-					}else {
-						listAllItemNames.clear();
-						availableDatatypes.clear();
-						availableAttributesToInsert.clear();
-						listAllItemNames.setEnabled(false);
-						availableDatatypes.setEnabled(false);
-						availableAttributesToInsert.setEnabled(false);
-					}
-				} else {
-					listAllItemNames.clear();
-					availableDatatypes.clear();
-					availableAttributesToInsert.clear();
-					listAllItemNames.setEnabled(false);
-					availableDatatypes.setEnabled(false);
-					availableAttributesToInsert.setEnabled(false);
-				}
-			}
-		});
-		
-		
-		listAllItemNames.addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
-				selectItemListFormGroup.setValidationState(ValidationState.NONE);
-				helpBlock.setText("");
-				messageFormgroup.setValidationState(ValidationState.NONE);
-			}
-		});
-		
-		availableDatatypes.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				helpBlock.setText("");
-				messageFormgroup.setValidationState(ValidationState.NONE);
-				int selectedIndex = availableDatatypes.getSelectedIndex();
-				if (selectedIndex != 0) {
-					String dataTypeSelected = availableDatatypes.getItemText(selectedIndex);
-					getAllAttibutesByDataType(availableAttributesToInsert, dataTypeSelected);
-				} else {
-					availableAttributesToInsert.clear();
-					addAvailableItems(availableAttributesToInsert, allAttributes);
-				}
-			}
-		});
-		
-		
-       availableAttributesToInsert.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				
-				helpBlock.setText("");
-				messageFormgroup.setValidationState(ValidationState.NONE);
-			}
-		});
-		
-		
-		
-	}
-	
-	/**
-	 * Gets the all attibutes by data type.
-	 *
-	 * @param availableAttributesToInsert the available attributes to insert
-	 * @param dataType the data type
-	 * @return the all attibutes by data type
-	 */
-	private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
-		
-		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
-			
-			@Override
-			public void onSuccess(List<QDSAttributes> result) {
-				List<String> filterAttrByDataTypeList = new ArrayList<String>();
-				for (QDSAttributes qdsAttributes : result) {
-					filterAttrByDataTypeList.add(qdsAttributes.getName());
-				}
-				Collections.sort(filterAttrByDataTypeList);
-				availableAttributesToInsert.clear();
-				addAvailableItems(availableAttributesToInsert, filterAttrByDataTypeList);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-		});
-	}
-	/**
-	 * Method to Reterive Instance of Ace Editor based on current Section in CQL WorkSpace.
-	 * @param searchDisplay - ViewDisplay.
-	 * @param currentSection - String.
-	 * @return AceEditor.
-	 */
-	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
-		AceEditor editor = null;
-		switch(currentSection) {
-			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
-				editor = searchDisplay.getDefineAceEditor();
-				break;
-			case CQLWorkSpaceConstants.CQL_FUNCTION_MENU:
-				editor = searchDisplay.getFunctionBodyAceEditor();
-				break;
-			default:
-				editor = searchDisplay.getDefineAceEditor();
-				break;
-		}
-		return editor;
-	}
-	
-	/**
-	 * This method populates first drop down of the pop up.
-	 *
-	 * @param availableItemToInsert - ListBoxMVP
-	 * @param availableInsertItemList the available insert item list
-	 */
-	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
-			List<String> availableInsertItemList) {
-		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
-		for (int i = 0; i < availableInsertItemList.size(); i++) {
-			if(!availableInsertItemList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-				availableItemToInsert.addItem(availableInsertItemList.get(i));
-			}
-		}
-		
-	}
-	
-	private static void addModelist(ListBoxMVP availableItemToInsert, List<String> attrModeList) {
-		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
-		for (int i = 0; i < attrModeList.size(); i++) {
-			if(!attrModeList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-				availableItemToInsert.addItem(attrModeList.get(i));
-			}
-		}
-	}
-	
-	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<String> modeDetailsList) {
-		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
-		for (int i = 0; i < modeDetailsList.size(); i++) {
-			if(!modeDetailsList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-				availableItemToInsert.addItem(modeDetailsList.get(i));
-			}
-		}
-	}
-	
-	/**
-	 * Gets the function argument value builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument value builder
-	 */
-	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
-	}
-	
-	/**
-	 * Gets the function argument tool tip builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument tool tip builder
-	 */
-	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
-					argumentType = argumentType.append(" " +'"' + argument.getQdmDataType() + '"');
-				}
-				else if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
-					argumentType = argumentType.append(" " + argument.getOtherType());
-				}
-				else{
-					argumentType = argumentType.append(" " +argument.getArgumentType());
-				}
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
-	}
-	
-	/**
-	 * Convert to camel case.
-	 *
-	 * @param str the str
-	 * @return the string
-	 */
-	private static String convertToCamelCase(String str){
-        String result = "";
-        char firstChar = str.charAt(0);
-        result = result + Character.toLowerCase(firstChar);
-        for (int i = 1; i < str.length(); i++) {
-            char currentChar = str.charAt(i);
-            char previousChar = str.charAt(i - 1);
-            if (previousChar == ' ') {
-                result = result + Character.toUpperCase(currentChar);
-            } else {
-                result = result + currentChar;
-            }
-        }
-        return result.replaceAll(" ", "");
-	}
-	
-	/**
-	 * In range.
-	 *
-	 * @param s the s
-	 * @param lowerBound the lower bound
-	 * @param upperBound the upper bound
-	 * @return true, if successful
-	 */
-	private static boolean inRange(String s, String lowerBound, String upperBound) {
-		if(s.isEmpty()){
-			return true;
-		}
-		int lower = Integer.parseInt(lowerBound);
-		int upper = Integer.parseInt(upperBound);
-		int value = Integer.parseInt(s);
-		if(lower<=value && upper>=value){
-			return true;
-		}
-		return false;
-		//return  s.compareToIgnoreCase(lowerBound) >= 0 && s.compareToIgnoreCase(upperBound) <= 0;
-	}
-	
-	/**
-	 * Builds the quantity units string.
-	 *
-	 * @return the string
-	 */
-	private static String attributeStringBuilder(){
-		nonQuoteUnits = getNonQuotesUnits();
-		cqlUnitMap = getCqlUnitMap();
-		StringBuilder sb = new StringBuilder();
-		String selectedAttrItem = "";
-		String selectedMode = "";
-		String selectedMDetailsItem = "";
-		String selectedQuantity = QuantityTextBox.getText();
-		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
-		
-		if(AttriblistBox.getSelectedIndex()>0){
-			selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
-		}
-		
-		if(ModelistBox.getSelectedIndex()>0){
-			selectedMode = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
-		}
-		
-		if(ModeDetailslistBox.getSelectedIndex()>0){
-			selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
-		}
-		 
-		if(selectedMode.isEmpty() && selectedMDetailsItem.isEmpty()){
-			sb.append(".").append(selectedAttrItem);
-		}else if(selectedMode.equalsIgnoreCase("Nullable")){
-			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
-		}else if(selectedMode.equalsIgnoreCase("Value Sets")){
-			sb.append(".").append(selectedAttrItem).append(" in \"").append(selectedMDetailsItem).append("\"");
-		}else if(QuantityTextBox.isEnabled()){
-			
-			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ");
-			if(nonQuoteUnits.contains(selectedUnit)){
-				 sb.append(selectedUnit);
-			} else if(!selectedUnit.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
-				sb.append("'").append(selectedUnit).append("'");
-			}
-		} 
-		return sb.toString();
-		
-	}
-	
-	private static Map<String, String> getCqlUnitMap() {
-		 Map<String, String> map = new LinkedHashMap<String,String>(); ;
-		Iterator<String> i1 = allUnits.iterator();
-		Iterator<String> i2 = allCqlUnits.iterator();
-		while (i1.hasNext() && i2.hasNext()) {
-			map.put(i1.next(), i2.next());
-		}
-		return map;
-	}
-
-	private static HashSet<String> getNonQuotesUnits(){
-		 HashSet<String> hset = 
-	               new HashSet<String>();
-		hset.add("millisecond");
-		hset.add("milliseconds");
-		hset.add("second");
-		hset.add("seconds");
-		hset.add("minute");
-		hset.add("minutes");
-		hset.add("hour");
-		hset.add("hours");
-		hset.add("day");
-		hset.add("days");
-		hset.add("week");
-		hset.add("weeks");
-		hset.add("month");
-		hset.add("months");
-		hset.add("year");
-		hset.add("years");
-		
-		return hset;
-	}
-	/**
-	 * Builds the date time string.
-	 *
-	 * @return the string
-	 */
-	private static String buildDateTimeString(){
-		StringBuilder sb = new StringBuilder();
-		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
-		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
-		sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" @");
-		if(!yyyyTxtBox.getText().isEmpty()){
-			
-			if(yyyyTxtBox.getText().length()<4){
-				sb.append(appendZeroString(4-yyyyTxtBox.getText().length()))
-				.append(yyyyTxtBox.getText());
-				
-			} else {
-				sb.append(yyyyTxtBox.getText());
-			}
-		} 
-		if(!mmTxtBox.getText().isEmpty()){
-			if(mmTxtBox.getText().length()<2){
-				sb.append("-").append(appendZeroString(2-mmTxtBox.getText().length()))
-				.append(mmTxtBox.getText());
-				
-			} else {
-				sb.append("-"+mmTxtBox.getText());
-			}
-		}
-		if(!ddTxtBox.getText().isEmpty()){
-			if(ddTxtBox.getText().length()<2){
-				sb.append("-").append(appendZeroString(2-ddTxtBox.getText().length()))
-				.append(ddTxtBox.getText());
-				
-			} else {
-				sb.append("-"+ddTxtBox.getText());
-			}
-		}
-		if(!hhTextBox.getText().isEmpty()){
-			
-			if(hhTextBox.getText().length()<2){
-				sb.append("T").append(appendZeroString(2-hhTextBox.getText().length()))
-				.append(hhTextBox.getText());
-			} else {
-				sb.append("T"+hhTextBox.getText());
-			}
-		} 
-		if(!minTxtBox.getText().isEmpty()){
-			if(minTxtBox.getText().length()<2){
-				sb.append(":").append(appendZeroString(2-minTxtBox.getText().length()))
-				.append(minTxtBox.getText());
-				
-			} else {
-				sb.append(":"+minTxtBox.getText());
-			}
-		} 
-		if(!ssTxtBox.getText().isEmpty()){
-			if(ssTxtBox.getText().length()<2){
-				sb.append(":").append(appendZeroString(2-ssTxtBox.getText().length()))
-				.append(ssTxtBox.getText());
-				
-			} else {
-				sb.append(":"+ssTxtBox.getText());
-			}
-		} 
-		if(!msTxtBox.getText().isEmpty()){
-			sb.append("."+msTxtBox.getText());
-		}
-		
-		return sb.toString();
-	}
-	
-	private static String appendZeroString(int count){
-		
-		StringBuilder sb = new StringBuilder();
-		for(int i=0;i<count;i++){
-			sb.append("0");
-		}
-		return sb.toString();
-	}
-	
-	public static boolean isValidate(String inDate){
-		DateTimeFormat format = DateTimeFormat.getFormat("yyyy/MM/dd");
-		try {
-			format.parseStrict(inDate);
-		} catch (IllegalArgumentException pe) {
-		      return false; 
-		    }
-		return true;
-	}
-	
-	
-	private static void setWidgetEnabled(ListBox attributeListBox, ListBoxMVP ModelistBox){
-		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-		String modeName = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
-		attributeName = attributeName.toLowerCase();
-		modeName = modeName.toLowerCase(); 
-		
-		if (modeName.equalsIgnoreCase("comparison") 
-				|| modeName.equalsIgnoreCase("computative")) {
-
-			if (attributeName.contains("datetime") && modeName.equalsIgnoreCase("comparison")) {
-				setDateTimeEnabled(true);
-				QuantityTextBox.setEnabled(false);
-				UnitslistBox.setEnabled(false);
-			} else if (attributeName.equalsIgnoreCase("result")) {
-				setEnabled(true);
-			} else {
-				setDateTimeEnabled(false);
-				QuantityTextBox.setEnabled(true);
-				UnitslistBox.setEnabled(true);
-			}
-		} else {
-			setEnabled(false);
-		}
-		
-	}
-	
 	
 	private static void clearAllBoxes(){
 		QuantityTextBox.clear();

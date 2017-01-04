@@ -196,7 +196,7 @@ public class InsertIntoAceEditorDialogBox {
 		allQDMDatatypes.setWidth("350px");
 		allQDMDatatypes.setEnabled(true);
 		allQDMDatatypes.getElement().setId("allQDMDatatypes_ListBox");
-		addAvailableItems(allQDMDatatypes, allQdmDataTypes);
+		addAvailableItems(allQDMDatatypes, allDataTypes);
 		
 		final ListBoxMVP availableAttributesToInsert = new ListBoxMVP();
 		availableAttributesToInsert.clear();
@@ -319,22 +319,25 @@ public class InsertIntoAceEditorDialogBox {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
 									if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
-										/*String[] str = itemNameToBeInserted.split("\\.");*/
-										/*System.out.println("================== . index is ==== " +itemNameToBeInserted.lastIndexOf('.'));
-										if(itemNameToBeInserted.lastIndexOf('.') != -1){
-											String name = itemNameToBeInserted.substring(0, itemNameToBeInserted.lastIndexOf('.'));
-											String dataTypeName = itemNameToBeInserted.substring(itemNameToBeInserted.lastIndexOf('.') + 1);
+										int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
+										String dataType =null;
+										if (selectedDatatypeIndex != 0) {
+											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
+											}
 											
+										}
+										String name = itemNameToBeInserted;
+										if(dataType != null){
 											StringBuilder sb = new StringBuilder();
-											sb = sb.append("[\"" + dataTypeName + "\"");
+											sb = sb.append("[\"" + dataType + "\"");
 											sb = sb.append(": \"").append(name + "\"]");
 											itemNameToBeInserted = sb.toString();
-										} else {*/
+										} else {
 											StringBuilder sb = new StringBuilder();
-											String name = itemNameToBeInserted;
-											sb = sb.append("\""  + name + "\"");
+											sb = sb.append("\"" + name + "\"");
 											itemNameToBeInserted = sb.toString();
-										//}
+										}
 										
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
 										StringBuilder sb = new StringBuilder(); 
@@ -355,10 +358,32 @@ public class InsertIntoAceEditorDialogBox {
 									dialogModal.hide();
 								}
 							} else {
-								selectItemListFormGroup.setValidationState(ValidationState.ERROR);
-								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please select Item Name.");
-								messageFormgroup.setValidationState(ValidationState.ERROR);
+								if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
+									int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
+									String dataType =null;
+									if (selectedDatatypeIndex != 0) {
+										if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+											dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
+											StringBuilder sb = new StringBuilder();
+											sb = sb.append("[\"" + dataType + "\"]");
+											editor.insertAtCursor(sb.toString());
+											editor.focus();
+											dialogModal.hide();
+										} 
+										
+									} else {
+										selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+										dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+										helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+										helpBlock.setText("Please select Item Name or Datatype.");
+										messageFormgroup.setValidationState(ValidationState.ERROR);
+									}
+								} else{
+									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+									helpBlock.setText("Please select Item Name.");
+									messageFormgroup.setValidationState(ValidationState.ERROR);
+								}
 							}
 						}
 					} else {
@@ -716,8 +741,8 @@ public class InsertIntoAceEditorDialogBox {
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
+	
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
-			
 			/* (non-Javadoc)
 			 * @see com.google.gwt.event.dom.client.ChangeHandler#onChange(com.google.gwt.event.dom.client.ChangeEvent)
 			 */
@@ -725,6 +750,7 @@ public class InsertIntoAceEditorDialogBox {
 			public void onChange(ChangeEvent event) {
 				availableItemTypeFormGroup.setValidationState(ValidationState.NONE);
 				selectItemListFormGroup.setValidationState(ValidationState.NONE);
+				dataTypeFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
 				messageFormgroup.setValidationState(ValidationState.NONE);
 				dataTypeFormGroup.setVisible(false);

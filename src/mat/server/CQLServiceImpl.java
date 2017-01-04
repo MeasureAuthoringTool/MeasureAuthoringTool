@@ -953,7 +953,7 @@ public class CQLServiceImpl implements CQLService {
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			modifyQDMStatus(cqlModel);	
 		}else{
-			findUsedValuesets(measureId, cqlModel);		
+			findUsedValuesets(cqlFileString, cqlModel);		
 			}
 		result.setCqlModel(cqlModel);
 		return result;
@@ -1881,16 +1881,11 @@ public class CQLServiceImpl implements CQLService {
 		return result; 
 	}
 	
-	private void findUsedValuesets(String measureId, CQLModel cqlModel){
-		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
-		XmlProcessor processor = new XmlProcessor(measureXML.getXml());
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml() ,measureId), "").toString();
-		System.out.println(cqlFileString);
-	
+	private void findUsedValuesets(String cqlFileString, CQLModel cqlModel){
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		try {
-			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getUsedCQLValuesets(processor.getOriginalDoc(), cqlFileObject);
+			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getUsedCQLValuesets(cqlFileObject);
 			List<String> usedValuesets = new ArrayList<String>();
 			
 			usedValuesets.addAll(new ArrayList<String>(cqlArtifactHolder.getCqlValuesetIdentifierSet()));

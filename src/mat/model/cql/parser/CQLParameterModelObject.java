@@ -44,6 +44,8 @@ public class CQLParameterModelObject extends CQLBaseModelDefinitionObject implem
 	 */
 	private List<CQLParameterModelObject> referredByParameters = new ArrayList<CQLParameterModelObject>();
 	
+	private List<CQLCodeModelObject> referredToCodes = new ArrayList<CQLCodeModelObject>();
+	
 	
 	
 	public String getId() {
@@ -154,8 +156,14 @@ public class CQLParameterModelObject extends CQLBaseModelDefinitionObject implem
 
 	@Override
 	public List<CQLCodeModelObject> getReferredToCodes() {
-		// TODO Auto-generated method stub
-		return null;
+		return referredToCodes;
+	}
+
+	/**
+	 * @param referredToCodes the referredToCodes to set
+	 */
+	public void setReferredToCodes(List<CQLCodeModelObject> referredToCodes) {
+		this.referredToCodes = referredToCodes;
 	}
 	
 }

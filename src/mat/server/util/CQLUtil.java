@@ -1,7 +1,9 @@
 package mat.server.util;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.xpath.XPathConstants;
@@ -252,43 +254,43 @@ public class CQLUtil {
 		return cqlArtifactHolder;
 	}
 
-	public static CQLArtifactHolder getUsedCQLValuesets(Document originalDoc, CQLFileObject cqlFileObject) throws XPathExpressionException {
+	public static CQLArtifactHolder getUsedCQLValuesets(CQLFileObject cqlFileObject) throws XPathExpressionException {
         
         CQLUtil cqlUtil = new CQLUtil();
         CQLArtifactHolder usedCQLArtifactHolder = cqlUtil.new CQLArtifactHolder();
         
-        String xPathCQLDef = "/measure/cqlLookUp/definitions/definition";
-        String xPathCQLFunc = "/measure/cqlLookUp/functions/function";
-        String xPathCQLParam = "/measure/cqlLookUp/parameters/parameter";
+        Map<String, CQLDefinitionModelObject> defnMap = cqlFileObject.getDefinitionsMap();
+        Collection<CQLDefinitionModelObject> cqlDefinitionModelObjects = defnMap.values();
         
-        NodeList cqlDefinition = (NodeList) xPath.evaluate(xPathCQLDef, 
-                     originalDoc.getDocumentElement(), XPathConstants.NODESET);
-        
-        NodeList cqlFunction = (NodeList) xPath.evaluate(xPathCQLFunc, 
-                     originalDoc.getDocumentElement(), XPathConstants.NODESET);
-        
-        NodeList cqlParam = (NodeList) xPath.evaluate(xPathCQLParam, 
-                     originalDoc.getDocumentElement(), XPathConstants.NODESET);
-        
-        for(int i=0; i<cqlDefinition.getLength();i++){
-               Node childNode = cqlDefinition.item(i);
-               String cqlDefnName = "\"" + childNode.getAttributes().getNamedItem("name").getNodeValue() + "\"";
-               CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get(cqlDefnName);
-               CQLUtil.collectUsedCQLArtifacts(originalDoc, cqlFileObject, cqlDefinitionModelObject, usedCQLArtifactHolder);
+        for(CQLDefinitionModelObject cqlDefinitionModelObject:cqlDefinitionModelObjects){
+              
+        // get valuesets used by current artifact
+   		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlDefinitionModelObject.getReferredToValueSets();
+   		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+   			 usedCQLArtifactHolder.addValuesetIdentifier(cqlValueSetModelObject.getIdentifier().replace("\"", ""));
+   		 }	
         }
         
-        for(int i=0; i<cqlFunction.getLength();i++){
-               Node childNode = cqlFunction.item(i);
-               String cqlFuncName = "\"" + childNode.getAttributes().getNamedItem("name").getNodeValue() + "\"";
-               CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(cqlFuncName);
-               CQLUtil.collectUsedCQLArtifacts(originalDoc, cqlFileObject, cqlFunctionModelObject, usedCQLArtifactHolder);
+        Map<String, CQLFunctionModelObject> funcMap = cqlFileObject.getFunctionsMap();
+        Collection<CQLFunctionModelObject> cqlFunctionModelObjects = funcMap.values();
+        
+        for(CQLFunctionModelObject cqlFunctionModelObject:cqlFunctionModelObjects){
+        	// get valuesets used by current artifact
+      		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlFunctionModelObject.getReferredToValueSets();
+      		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+      			 usedCQLArtifactHolder.addValuesetIdentifier(cqlValueSetModelObject.getIdentifier().replace("\"", ""));
+      		 }	
         }
         
-        for(int i=0; i<cqlParam.getLength();i++){
-               Node childNode = cqlParam.item(i);
-               String cqlParamName = "\"" + childNode.getAttributes().getNamedItem("name").getNodeValue() + "\"";
-               CQLParameterModelObject cqlParameterModelObject = cqlFileObject.getParametersMap().get(cqlParamName);
-               //CQLUtil.collectUsedCQLArtifacts(originalDoc, cqlFileObject, cqlParameterModelObject, usedCQLArtifactHolder);
+        Map<String, CQLParameterModelObject> paramMap = cqlFileObject.getParametersMap();
+        Collection<CQLParameterModelObject> cqlParameterModelObjects = paramMap.values();
+        
+        for(CQLParameterModelObject cqlParameterModelObject:cqlParameterModelObjects){
+        	// get valuesets used by current artifact
+     		 List<CQLValueSetModelObject> cqlValueSetModelObjects = cqlParameterModelObject.getReferredToValueSets();
+     		 for(CQLValueSetModelObject cqlValueSetModelObject: cqlValueSetModelObjects){
+     			 usedCQLArtifactHolder.addValuesetIdentifier(cqlValueSetModelObject.getIdentifier().replace("\"", ""));
+     		 }	
         }
         
         return usedCQLArtifactHolder;

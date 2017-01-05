@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
@@ -139,6 +139,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		void buildView();
 
 		/**
+		 * Gets the includes library.
+		 *
+		 * @return the includes library
+		 */
+		AnchorListItem getIncludesLibrary();
+		
+		/**
 		 * Gets the definition library.
 		 *
 		 * @return the definition library
@@ -171,6 +178,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		void buildGeneralInformation();
 
+		/**
+		 * Builds the includes library view.
+		 */
+		void buildIncludesView();
+		
 		/**
 		 * Builds the parameter library view.
 		 */
@@ -277,6 +289,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		Map<String, CQLDefinition> getDefinitionMap();
 
 		/**
+		 * Gets the includes name list box.
+		 *
+		 * @return the includes name list box
+		 */
+		ListBox getIncludesNameListBox();
+
+		
+		/**
 		 * Gets the define name list box.
 		 *
 		 * @return the define name list box
@@ -305,6 +325,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		void setViewDefinitions(List<CQLDefinition> viewDefinitions);
 
+		/**
+		 * Gets the alias name txt area.
+		 *
+		 * @return the alias name txt area
+		 */
+		TextBox getAliasNameTxtArea();
+		
 		/**
 		 * Gets the define name txt area.
 		 *
@@ -339,7 +366,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the param badge
 		 */
 		Badge getParamBadge();
-
+		
 		/**
 		 * Gets the param collapse.
 		 *
@@ -551,6 +578,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		void clearAndAddFunctionsNamesToListBox();
 
+		/**
+		 * Gets the includes collapse.
+		 *
+		 * @return the includes collapse
+		 */
+		PanelCollapse getIncludesCollapse();
+		
 		/**
 		 * Gets the function collapse.
 		 *
@@ -984,6 +1018,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		void setAppliedQdmTableList(List<CQLQualityDataSetDTO> appliedQdmTableList);
 
 		List<CQLQualityDataSetDTO> getAppliedQdmTableList();
+
+		void clearAndAddAliasNamesToListBox();
+
+		CQLIncludeLibraryView getIncludeView();
+
+		CQLIncludeLibraryView getInclView();
 
 	}
 
@@ -1434,6 +1474,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getDefineNameListBox().fireEvent(new DoubleClickEvent() {
 			});
 			break;
+		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
+			searchDisplay.getIncludesNameListBox().fireEvent(new DoubleClickEvent() {
+			});
+			break;
 		default:
 			break;
 		}
@@ -1447,6 +1491,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void changeSectionSelection() {
 		// Unset current selected section.
 		switch (currentSection) {
+		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getIncludesLibrary().setActive(false);
+			break;
 		case (CQLWorkSpaceConstants.CQL_APPLIED_QDM):
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getAppliedQDM().setActive(false);
@@ -1476,6 +1524,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		// Set Next Selected Section.
 		switch (nextSection) {
+		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
+			currentSection = nextSection;
+			includesEvent();
+			searchDisplay.getIncludesCollapse().getElement().setClassName("panel-collapse collapse in");
+			break;
 		case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
 			currentSection = nextSection;
 			functionEvent();
@@ -2303,6 +2356,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
+		searchDisplay.getIncludesCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
@@ -2338,6 +2392,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		panel.add(searchDisplay.getMainHPanel());
 	}
 
+	/**
+	 * Sets the includes widget read only.
+	 *
+	 * @param isEditable
+	 *            the new includes widget read only
+	 */
+	private void setIncludesWidgetReadOnly(boolean isEditable) {
+
+		searchDisplay.getAliasNameTxtArea().setEnabled(isEditable);
+	}
+	
 	/**
 	 * Sets the definition widget read only.
 	 *
@@ -2464,6 +2529,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.hideAceEditorAutoCompletePopUp();
 				generalInfoEvent();
+			}
+		});
+		
+		searchDisplay.getIncludesLibrary().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.setIsNavBarClick(true);
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.hideAceEditorAutoCompletePopUp();
+				if (searchDisplay.getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
+					searchDisplay.showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					includesEvent();
+				}
+
 			}
 		});
 
@@ -2623,6 +2706,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	/**
+	 * Build View for Includes when Includes AnchorList item is clicked.
+	 */
+	private void includesEvent() {
+		unsetActiveMenuItem(currentSection);
+		searchDisplay.setIsNavBarClick(true);
+		searchDisplay.setIsDoubleClick(false);
+
+		searchDisplay.getIncludesLibrary().setActive(true);
+		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
+		searchDisplay.buildIncludesView();
+		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+	}
+	
+	/**
 	 * Build View for Definition when Definition AnchorList item is clicked.
 	 */
 	private void definitionEvent() {
@@ -2712,6 +2809,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getViewCQL().setActive(false);
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_APPLIED_QDM)) {
 				searchDisplay.getAppliedQDM().setActive(false);
+			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_INCLUDES_MENU)) {
+				searchDisplay.getIncludesLibrary().setActive(false);
+				searchDisplay.getIncludesNameListBox().setSelectedIndex(-1);
+				if (searchDisplay.getIncludesCollapse().getElement().getClassName()
+						.equalsIgnoreCase("panel-collapse collapse in")) {
+					searchDisplay.getIncludesCollapse().getElement().setClassName("panel-collapse collapse");
+				}
 			}
 		}
 	}

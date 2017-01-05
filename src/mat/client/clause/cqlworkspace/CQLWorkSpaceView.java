@@ -65,7 +65,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -91,6 +91,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
@@ -148,6 +149,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The general information. */
 	private AnchorListItem generalInformation;
+	
+	/** The includes section. */
+	private AnchorListItem includesLibrary;
 	
 	/** The parameter library. */
 	private AnchorListItem parameterLibrary;
@@ -210,11 +214,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * Button removeParameterButton.
 	 */
 	private Button removeParameterButton;
-	
+
 	/**
 	 * ListBox parameterNameListBox.
 	 */
 	private ListBox parameterNameListBox;
+	
+	/** The view alias list. */
+	private List<CQLLibraryModel> viewAliasList = new ArrayList<CQLLibraryModel>();
 	
 	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
@@ -225,6 +232,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The function arg name map. */
 	private Map<String, CQLFunctionArgument> functionArgNameMap = new  HashMap<String, CQLFunctionArgument>();
 	
+	private ListBox includesNameListbox;
 	
 	/**
 	 * ListBox defineNameListBox.
@@ -253,7 +261,18 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * SuggestBox searchSuggestFuncTextBox.
 	 */
+	private SuggestBox searchSuggestIncludeTextBox;
+	
+	/**
+	 * SuggestBox searchSuggestFuncTextBox.
+	 */
 	private SuggestBox searchSuggestFuncTextBox;
+	
+	/**
+	 * List viewIncludes.
+	 */
+	private List<CQLLibraryModel> viewIncludes = new ArrayList<CQLLibraryModel>();
+	
 	/**
 	 * List viewDefinitions.
 	 */
@@ -294,6 +313,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The function button bar. */
 	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar("function");
 	
+	/** The define badge. */
+	private Badge includesBadge = new Badge();
+	
 	/** The param badge. */
 	private Badge paramBadge = new Badge();
 	
@@ -302,6 +324,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The Function badge. */
 	private Badge functionBadge = new Badge();
+	
+	/** The includes label. */
+	private Label includesLabel = new Label("Includes");
 	
 	/** The param label. */
 	private Label paramLabel = new Label("Parameter");
@@ -319,6 +344,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	PanelCollapse defineCollapse = new PanelCollapse();
 	/** The function Collapse. */
 	PanelCollapse functionCollapse = new PanelCollapse();
+	
+	/** The Includes Collapse. */
+	PanelCollapse includesCollapse = new PanelCollapse();
 	
 	/** The clicked menu. */
 	public String clickedMenu = "general";
@@ -370,6 +398,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private GetUsedCQLArtifactsResult usedCqlArtifacts; 
 	
 	private CQLQDMAppliedView qdmView ;
+	
+	private CQLIncludeLibraryView inclView ;
 	
 	//private AnchorListItem includeLibrary;
 	
@@ -465,6 +495,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	public CQLWorkSpaceView() {
 		qdmView = new CQLQDMAppliedView();
+		inclView = new CQLIncludeLibraryView();
 		defineAceEditor.startEditor();
 		parameterAceEditor.startEditor();
 		cqlAceEditor.startEditor();
@@ -483,6 +514,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void buildView() {
 		resetAll();
+		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
 		functionCollapse = createFunctionCollapsablePanel();
@@ -1006,6 +1038,25 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 	
+	@Override
+	public void buildIncludesView() {
+		
+		mainFlowPanel.clear();
+		resetMessageDisplay();
+		
+		VerticalPanel includesTopPanel = new VerticalPanel();
+		
+		includesTopPanel.add(inclView.asWidget());
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		includesTopPanel.setWidth("700px");
+		includesTopPanel.setStyleName("marginLeft15px");
+		vp.add(includesTopPanel);
+		
+		mainFlowPanel.add(vp);
+	}
 	
 	/**
 	 * Method to create Right Hand side Nav bar in CQL Workspace.
@@ -1021,6 +1072,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		navPills.setStacked(true);
 		
 		generalInformation = new AnchorListItem();
+		includesLibrary = new AnchorListItem();
 		appliedQDM = new AnchorListItem();
 		parameterLibrary = new AnchorListItem();
 		definitionLibrary = new AnchorListItem();
@@ -1031,6 +1083,29 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		generalInformation.setText("General Information");
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
+		
+		includesLibrary.setIcon(IconType.PENCIL);
+		includesLibrary.setTitle("Includes");
+		includesBadge.setText("0" + viewIncludes.size());
+		Anchor includesAnchor = (Anchor) (includesLibrary.getWidget(0));
+		// Double Click causing issues.So Event is not propogated
+		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				event.stopPropagation();
+			}
+		});
+		includesLabel.setStyleName("transparentLabel");
+		includesAnchor.add(includesLabel);
+		includesBadge.setPull(Pull.RIGHT);
+		includesBadge.setMarginLeft(52);
+		includesAnchor.add(includesBadge);
+		includesAnchor.setDataParent("#navGroup");
+		includesLibrary.setDataToggle(Toggle.COLLAPSE);
+		includesLibrary.setHref("#collapseIncludes");
+		
+		includesLibrary.add(includesCollapse);
 		
 		appliedQDM.setIcon(IconType.PENCIL);
 		appliedQDM.setText("QDM Elements");
@@ -1114,6 +1189,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		viewCQL.setTitle("View CQL");
 		
 		navPills.add(generalInformation);
+		navPills.add(includesLibrary);
 		navPills.add(appliedQDM);
 		navPills.add(parameterLibrary);
 		
@@ -1132,6 +1208,65 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		// rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
+	}
+	
+	/**
+	 * Creates the includes collapsable panel.
+	 *
+	 * @return the panel collapse
+	 */
+	private PanelCollapse createIncludesCollapsablePanel(){
+
+		includesCollapse.setId("collapseIncludes");
+		
+		PanelBody includesCollapseBody = new PanelBody();
+		
+		HorizontalPanel includesFP = new HorizontalPanel();
+		
+		VerticalPanel rightVerticalPanel = new VerticalPanel();
+		rightVerticalPanel.setSpacing(10);
+		
+		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelIncludes");
+		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		Label includesLibraryLabel = new Label("Includes Library");
+		searchSuggestIncludeTextBox = new SuggestBox();
+		searchSuggestIncludeTextBox.setWidth("180px");
+		searchSuggestIncludeTextBox.setText("Search");
+		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
+		
+		searchSuggestIncludeTextBox.getValueBox().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if ("Search".equals(searchSuggestIncludeTextBox.getText())) {
+					searchSuggestIncludeTextBox.setText("");
+				}
+			}
+		});
+		
+		includesNameListbox = new ListBox();
+		includesNameListbox.setWidth("180px");
+		includesNameListbox.setVisibleItemCount(10);
+		includesNameListbox.getElement().setAttribute("id", "includesListBox");
+		
+		clearAndAddAliasNamesToListBox();
+		
+		addSuggestHandler(searchSuggestIncludeTextBox, includesNameListbox);
+		addListBoxHandler(includesNameListbox, searchSuggestIncludeTextBox);
+		
+		searchSuggestIncludeTextBox.getElement().setAttribute("id", "searchSuggestIncludesTextBox");
+		rightVerticalPanel.add(searchSuggestIncludeTextBox);
+		searchSuggestIncludeTextBox.getElement().setId("searchSuggesIncludestTextBox_SuggestBox");
+		rightVerticalPanel.add(includesNameListbox);
+		includesNameListbox.getElement().setId("includesNameListBox_ListBox");
+		rightVerticalPanel.setCellHorizontalAlignment(includesLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
+		includesFP.add(rightVerticalPanel);
+		includesCollapseBody.add(includesFP);
+		
+		includesCollapse.add(includesCollapseBody);
+		return includesCollapse;
+		
+	
 	}
 	
 	/**
@@ -1442,6 +1577,39 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			}
 		});
 	}
+	
+	/**
+	 * Clear and add alias names to list box.
+	 */
+	@Override
+	public void clearAndAddAliasNamesToListBox() {
+		if (includesNameListbox != null) {
+			includesNameListbox.clear();
+			viewAliasList = sortAliasList(viewAliasList);
+			for (CQLLibraryModel incl : viewAliasList) {
+				includesNameListbox.addItem(incl.getAliasName(), incl.getId());
+			}
+			// Set tooltips for each element in listbox
+			SelectElement selectElement = SelectElement.as(includesNameListbox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				String title = options.getItem(i).getText();
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(title);
+			}
+		}
+	}
+	
+	private List<CQLLibraryModel> sortAliasList(List<CQLLibraryModel> viewAliasList) {
+		Collections.sort(viewAliasList, new Comparator<CQLLibraryModel>() {
+		      @Override
+		      public int compare(final CQLLibraryModel object1, final CQLLibraryModel object2) {
+		          return object1.getAliasName().compareToIgnoreCase(object2.getAliasName());
+		      }
+		  });
+	return viewAliasList;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -2125,6 +2293,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private void resetAll() {
 		rightHandNavPanel.clear();
 		mainFlowPanel.clear();
+		getIncludeView().setAliasNameTxtArea("");
 		parameterNameTxtArea.setText("");
 		defineNameTxtArea.setText("");
 		funcNameTxtArea.setText("");
@@ -2135,10 +2304,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlAceEditor.setText("");
 		functionBodyAceEditor.setText("");
 		
+		viewAliasList.clear();
 		viewParameterList.clear();
 		viewDefinitions.clear();
 		viewFunctions.clear();
 		
+		if (includesCollapse != null) {
+			includesCollapse.clear();
+		}
 		if (paramCollapse != null) {
 			paramCollapse.clear();
 		}
@@ -2257,6 +2430,20 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		this.parameterLibrary = parameterLibrary;
 	}
 	
+	/**
+	 * @return the includesLibrary
+	 */
+	public AnchorListItem getIncludesLibrary() {
+		return includesLibrary;
+	}
+
+	/**
+	 * @param includesLibrary the includesLibrary to set
+	 */
+	public void setIncludesLibrary(AnchorListItem includesLibrary) {
+		this.includesLibrary = includesLibrary;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2565,6 +2752,16 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void setViewDefinitions(List<CQLDefinition> viewDefinitions) {
 		this.viewDefinitions = viewDefinitions;
+	}
+	
+	/**
+	 * Gets the alias name txt area.
+	 *
+	 * @return the alias name txt area
+	 */
+	@Override
+	public TextBox getAliasNameTxtArea() {
+		return getInclView().getAliasNameTxtArea();
 	}
 	
 	/*
@@ -3974,6 +4171,17 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setAppliedQDM(AnchorListItem appliedQDM) {
 		this.appliedQDM = appliedQDM;
 	}
+	
+	@Override
+	public CQLIncludeLibraryView getIncludeView() {
+		return inclView;
+	}
+
+	@Override
+	public CQLIncludeLibraryView getInclView() {
+		return inclView;
+	}
+	
 	@Override
 	public CQLQDMAppliedView getQdmView() {
 		return qdmView;
@@ -3986,5 +4194,25 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setAppliedQdmTableList(List<CQLQualityDataSetDTO> appliedQdmTableList) {
 		this.appliedQdmTableList = appliedQdmTableList;
 	}
-	
+
+	/**
+	 * @return the includesCollapse
+	 */
+	@Override
+	public PanelCollapse getIncludesCollapse() {
+		return includesCollapse;
+	}
+
+	/**
+	 * @param includesCollapse the includesCollapse to set
+	 */
+	public void setIncludesCollapse(PanelCollapse includesCollapse) {
+		this.includesCollapse = includesCollapse;
+	}
+
+	@Override
+	public ListBox getIncludesNameListBox() {
+		return includesNameListbox;
+	}
+
 }

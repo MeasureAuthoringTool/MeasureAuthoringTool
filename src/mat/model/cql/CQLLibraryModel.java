@@ -15,6 +15,8 @@ public class CQLLibraryModel implements IsSerializable{
 	private String setId;
 	private boolean isFamily;
 	private String releaseVersion;
+	private String ownerFirstName;
+	private String ownerLastName;
 	
 	public String getId() {
 		return id;
@@ -75,6 +77,18 @@ public class CQLLibraryModel implements IsSerializable{
 	}
 	public void setReleaseVersion(String releaseVersion) {
 		this.releaseVersion = releaseVersion;
+	}
+	public String getOwnerFirstName() {
+		return ownerFirstName;
+	}
+	public void setOwnerFirstName(String ownerFirstName) {
+		this.ownerFirstName = ownerFirstName;
+	}
+	public String getOwnerLastName() {
+		return ownerLastName;
+	}
+	public void setOwnerLastName(String ownerLastName) {
+		this.ownerLastName = ownerLastName;
 	}
 
 }

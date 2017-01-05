@@ -371,10 +371,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter) previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-		} else if ((selectedIndex == 2) && (previousPresenter instanceof CQLWorkSpacePresenter)) {
+		} else if ((selectedIndex == 1) && (previousPresenter instanceof CQLWorkSpacePresenter)) {
 			CQLWorkSpacePresenter cqlPresenter = (CQLWorkSpacePresenter) previousPresenter;
 			validateCQLWorkspaceTab(cqlPresenter, selectedIndex);
-		} else if ((selectedIndex == 3) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
+		} else if ((selectedIndex == 2) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
 			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 		} 

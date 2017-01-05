@@ -1661,7 +1661,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().buildAppliedQDMCellTable(list, isModified);
 					}
 					searchDisplay.setAppliedQdmTableList(list);
-					searchDisplay.getSuccessMessageAlert().setText(
+					searchDisplay.getSuccessMessageAlert().createAlert(
 							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
 				}
@@ -2870,7 +2870,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
 					searchDisplay.getSuccessMessageAlert()
-							.setText(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
+							.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
 					searchDisplay.getCqlAceEditor().setText(cqlText);
 				}
 
@@ -3445,7 +3445,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						// Login
 						// Validation
 						searchDisplay.getErrorMessageAlert()
-								.setText(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+								.createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 						searchDisplay.getErrorMessageAlert().setVisible(true);
 						return;
 					}
@@ -3477,7 +3477,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								// Login
 								// Validation
 								searchDisplay.getErrorMessageAlert()
-										.setText(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+										.createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 								searchDisplay.getErrorMessageAlert().setVisible(true);
 								return;
 							}
@@ -3506,7 +3506,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		final String oid = searchDisplay.getQdmView().getOIDInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
-			searchDisplay.getErrorMessageAlert().setText(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+			searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			searchDisplay.getErrorMessageAlert().setVisible(true);
 
 			return;
@@ -3514,7 +3514,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
-			searchDisplay.getErrorMessageAlert().setText(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
+			searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
 			searchDisplay.getErrorMessageAlert().setVisible(true);
 			return;
 		}
@@ -3531,7 +3531,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageAlert()
-						.setText(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getErrorMessageAlert().setVisible(true);
 				// showSearchingBusy(false);
 			}
@@ -3574,12 +3574,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					// showSearchingBusy(false);
 					searchDisplay.getSuccessMessageAlert()
-							.setText(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
 
 				} else {
 					String message = convertMessage(result.getFailureReason());
-					searchDisplay.getErrorMessageAlert().setText(message);
+					searchDisplay.getErrorMessageAlert().createAlert(message);
 					searchDisplay.getErrorMessageAlert().setVisible(true);
 					// showSearchingBusy(false);
 				}
@@ -3631,7 +3631,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageAlert()
-						.setText(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getErrorMessageAlert().setVisible(true);
 				// showSearchingBusy(false);
 			}

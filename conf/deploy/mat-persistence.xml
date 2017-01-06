@@ -309,7 +309,7 @@
     <bean id="cqlDAO"
 		class="mat.dao.impl.clause.CQLDAO" parent="baseDAO">
 	</bean>
-	<bean id="cqlLibraryDAO" class="mat.dao.impl.clause.CQLLibraryDAO"></bean>
+	<bean id="cqlLibraryDAO" class="mat.dao.impl.clause.CQLLibraryDAO" parent="baseDAO"></bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>

@@ -25,6 +25,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
@@ -44,6 +47,8 @@ public class CQLIncludeLibraryView {
 	
 	private PanelBody cellTablePanelBody = new PanelBody();
 	
+	private AceEditor cqlAceEditor = new AceEditor();
+	
 	/** The table. */
 	private CellTable<CQLLibraryModel> table;
 	
@@ -61,6 +66,7 @@ public class CQLIncludeLibraryView {
 	private TextBox aliasNameTxtArea = new TextBox();
 	
 	public CQLIncludeLibraryView(){
+		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
 		verticalPanel.add(new SpacerWidget());
@@ -92,12 +98,35 @@ public class CQLIncludeLibraryView {
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
 		
+		cqlAceEditor.startEditor();
+		cqlAceEditor.setMode(AceEditorMode.CQL);
+		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		cqlAceEditor.setSize("590px", "500px");
+		cqlAceEditor.setAutocompleteEnabled(true);
+		cqlAceEditor.setReadOnly(true);
+		cqlAceEditor.setUseWrapMode(true);
+		cqlAceEditor.clearAnnotations();
+		cqlAceEditor.redisplay();
+		Label viewCQlFileLabel = new Label(LabelType.INFO);
+		viewCQlFileLabel.setText("View CQL file here");
+		viewCQlFileLabel.setTitle("View CQL file here");
+		
+		VerticalPanel viewCQLVP = new VerticalPanel();
+		viewCQLVP.add(new SpacerWidget());
+		viewCQLVP.add(new SpacerWidget());
+		viewCQLVP.add(viewCQlFileLabel);
+		viewCQLVP.add(new SpacerWidget());
+		viewCQLVP.add(cqlAceEditor);
+		
 		verticalPanel.add(aliasNameVP);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(searchLibraryVP);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(viewCQLVP);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.setWidth("700px");
 		containerPanel.getElement().setAttribute("id",
@@ -136,6 +165,10 @@ public class CQLIncludeLibraryView {
 		HTML searchHeaderText = new HTML("<strong>Include Libraries</strong>");
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
+		
+		
+		
+		
 		if ((cqlLibraryList != null)
 				&& (cqlLibraryList.size() > 0)) {
 			table = new CellTable<CQLLibraryModel>();

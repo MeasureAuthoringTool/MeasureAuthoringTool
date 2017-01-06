@@ -647,7 +647,7 @@ public class InsertIntoAceEditorDialogBox {
 								// this scenario both time widget and Quantity
 								// are available for result
 
-								if ((QuantityTextBox.getText().isEmpty() || UnitslistBox.getSelectedIndex() == 0)
+								if ((QuantityTextBox.getText().isEmpty() && UnitslistBox.getSelectedIndex() == 0)
 										&& (yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty()
 												&& ddTxtBox.getText().isEmpty() && hhTextBox.getText().isEmpty()
 												&& minTxtBox.getText().isEmpty() && ssTxtBox.getText().isEmpty()

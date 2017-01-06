@@ -38,10 +38,10 @@
         <property name="password" value="admin"/>
     </bean> -->
      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-	    <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWERER"/>
-        <property name="username" value="mat_newerer_usr"/>
-        <property name="password" value="***REMOVED***"/>  
+  		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/mat_app" />
+        <property name="username" value="root" />
+        <property name="password" value="root" />  
     <!--<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWER_TS"/>
          <property name="username" value="mat_newer_ts_usr"/>
          <property name="password" value="***REMOVED***"/>  -->
@@ -330,6 +330,7 @@
 	<bean id="cqlDAO"
 		class="mat.dao.impl.clause.CQLDAO" parent="baseDAO">
 	</bean>
+	<bean id="cqlLibraryDAO" class="mat.dao.impl.clause.CQLLibraryDAO"></bean>
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -378,6 +379,7 @@
 		<property name="organizationDAO" ref="organizationDAO"/>
 		<property name="userPasswordHistoryDAO" ref="userPasswordHistoryDAO"/>
 		<property name="cqlDAO" ref="cqlDAO"/>
+		<property name="cqlLibraryDAO" ref="cqlLibraryDAO"/>
 	</bean>
 	 
 </beans>

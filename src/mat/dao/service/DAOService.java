@@ -32,6 +32,7 @@ import mat.dao.UserSecurityQuestionDAO;
 import mat.dao.clause.AttributeDetailsDAO;
 import mat.dao.clause.AttributesDAO;
 import mat.dao.clause.CQLDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
@@ -172,6 +173,8 @@ public class DAOService {
 	private UserAuditLogDAO userAuditLogDAO;
 	
 	private CQLDAO cqlDAO;
+	
+	private CQLLibraryDAO cqlLibraryDAO; 
 	
 	/**
 	 * Gets the attribute details dao.
@@ -927,6 +930,14 @@ public class DAOService {
 
 	public void setCqlDAO(CQLDAO cqlDAO) {
 		this.cqlDAO = cqlDAO;
+	}
+
+	public CQLLibraryDAO getCqlLibraryDAO() {
+		return cqlLibraryDAO;
+	}
+
+	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
+		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
 	
 	/**

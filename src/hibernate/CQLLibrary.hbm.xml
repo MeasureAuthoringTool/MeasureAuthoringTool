@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.CQLLibrary" table="CQL_LIBRARY" lazy="true">
+    <id name="id" column="ID" >
+        <generator class="uuid"/>
+    </id>
+    <property name="name" column="NAME"/>
+    <property name="measureId" column="MEASURE_ID" unique="true"/>
+    <property name="ownerId" column="OWNER_ID"/>
+    <property name="setId" column="SET_ID"/>
+    <property name="version" column="VERSION"/>
+    <property name="draft" column="DRAFT"/>
+    <property name="finalizedDate" column="FINALIZED_DATE" type="timestamp"/>
+    <property name="cqlXML" column="CQL_XML" type="blob"/>
+    <property name="releaseVersion" column="RELEASE_VERSION"/> 
+    <property name="lockedUserId" column="LOCKED_USER_ID"/>
+    <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>
+            
+   </class>
+</hibernate-mapping>

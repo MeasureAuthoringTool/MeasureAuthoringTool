@@ -28,6 +28,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryModel;
@@ -53,6 +54,7 @@ public class CQLIncludeLibraryView {
 	
 	/** The spager. */
 	private MatSimplePager spager;
+	SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	/**
 	 * Textbox aliasNameTxtArea.
 	 */
@@ -64,7 +66,6 @@ public class CQLIncludeLibraryView {
 		verticalPanel.add(new SpacerWidget());
 		
 		VerticalPanel aliasNameVP = new VerticalPanel();
-		
 		Label aliasLabel = new Label(LabelType.INFO, "Alias Name");
 		aliasLabel.setMarginTop(5);
 		aliasLabel.setId("Alias_Label");
@@ -78,7 +79,24 @@ public class CQLIncludeLibraryView {
 		aliasNameVP.add(new SpacerWidget());
 		aliasNameVP.add(aliasNameTxtArea);
 		
+		VerticalPanel searchLibraryVP = new VerticalPanel();
+		Label librariesLabel = new Label(LabelType.INFO, "Libraries");
+		librariesLabel.setMarginTop(5);
+		librariesLabel.setId("Alias_Label");
+		librariesLabel.setTitle("Libraries");
+		
+		searchLibraryVP.add(new SpacerWidget());
+		searchLibraryVP.add(librariesLabel);
+		searchLibraryVP.add(new SpacerWidget());
+		sWidget.getSearchBox().setWidth("590px");
+		searchLibraryVP.add(sWidget.getSearchWidget());
+		searchLibraryVP.add(new SpacerWidget());
+		
 		verticalPanel.add(aliasNameVP);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(searchLibraryVP);
+		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.setWidth("700px");

@@ -1227,7 +1227,9 @@ left:50px;
 	float:right;
 	margin-right: 5px;
 }
-
+.margintop20px {
+	margin-top: 20px;
+}
 .marginLeft20px {
 	margin-left: 20px;
 }

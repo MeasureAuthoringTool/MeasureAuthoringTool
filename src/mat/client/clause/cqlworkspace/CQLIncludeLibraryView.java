@@ -29,6 +29,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
+import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -59,6 +60,9 @@ public class CQLIncludeLibraryView {
 	
 	/** The spager. */
 	private MatSimplePager spager;
+	
+	private CQLButtonToolBar includesButtonBar;
+	
 	SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	/**
 	 * Textbox aliasNameTxtArea.
@@ -66,12 +70,15 @@ public class CQLIncludeLibraryView {
 	private TextBox aliasNameTxtArea = new TextBox();
 	
 	public CQLIncludeLibraryView(){
+		includesButtonBar = new CQLButtonToolBar("includes");
+		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
 		verticalPanel.add(new SpacerWidget());
 		
 		VerticalPanel aliasNameVP = new VerticalPanel();
+		HorizontalPanel aliasLabelHP = new HorizontalPanel();
 		Label aliasLabel = new Label(LabelType.INFO, "Alias Name");
 		aliasLabel.setMarginTop(5);
 		aliasLabel.setId("Alias_Label");
@@ -81,9 +88,18 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtArea.setName("aliasName");
 		aliasLabel.setText("Alias Name");
 		
-		aliasNameVP.add(aliasLabel);
-		aliasNameVP.add(new SpacerWidget());
-		aliasNameVP.add(aliasNameTxtArea);
+		VerticalPanel aliasLabelVP = new VerticalPanel();
+		aliasLabelVP.add(aliasLabel);
+		aliasLabelVP.add(new SpacerWidget());
+		aliasLabelVP.add(aliasNameTxtArea);
+		aliasLabelVP.setWidth("580px");
+		aliasLabelVP.setStylePrimaryName("margintop20px");
+		
+		aliasLabelHP.add(aliasLabelVP);
+		aliasLabelHP.add(new SpacerWidget());
+		aliasLabelHP.add(new SpacerWidget());
+		aliasLabelHP.add(createIncludesButtonBar());
+		aliasNameVP.add(aliasLabelHP);
 		
 		VerticalPanel searchLibraryVP = new VerticalPanel();
 		Label librariesLabel = new Label(LabelType.INFO, "Libraries");
@@ -150,6 +166,17 @@ public class CQLIncludeLibraryView {
 		this.aliasNameTxtArea.setText("");
 		
 	}
+	
+	private CQLButtonToolBar createIncludesButtonBar() {
+		getIncludesButtonBar().getSaveButton().setVisible(true);
+		getIncludesButtonBar().getEraseButton().setVisible(true);
+		getIncludesButtonBar().getDeleteButton().setVisible(true);
+		getIncludesButtonBar().getInfoButton().removeFromParent();
+		getIncludesButtonBar().getInsertButton().removeFromParent();
+		getIncludesButtonBar().getTimingExpButton().removeFromParent();
+		return getIncludesButtonBar();
+	}
+
 	
 	
 	public void buildIncludeLibraryCellTable(List<CQLLibraryModel> cqlLibraryList, boolean isEditable) {
@@ -322,6 +349,14 @@ public class CQLIncludeLibraryView {
 		}
 		table.setWidth("100%");
 		return table;
+	}
+
+	public CQLButtonToolBar getIncludesButtonBar() {
+		return this.includesButtonBar;
+	}
+
+	public void setIncludesButtonBar(CQLButtonToolBar includesButtonBar) {
+		this.includesButtonBar = includesButtonBar;
 	}
 	
 	

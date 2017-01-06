@@ -1,7 +1,11 @@
 package mat.model.clause;
 
 import java.sql.Timestamp;
-import com.mysql.jdbc.Blob;
+
+import mat.model.LockedUserInfo;
+import mat.model.User;
+
+import java.sql.Blob;
 
 public class CQLLibrary {
 	
@@ -23,12 +27,17 @@ public class CQLLibrary {
 	/**
 	 * The owner id
 	 */
-	private String ownerId; 
+	private User ownerId; 
 	
 	/**
-	 * The set id
+	 * The measure set id
 	 */
-	private String setId; 
+	private MeasureSet measureSetId;
+	
+	/**
+	 * The cql set id
+	 */
+	private String cqlSetId; 
 	
 	/**
 	 * The version
@@ -49,11 +58,11 @@ public class CQLLibrary {
 	 * The release version
 	 */
 	private String releaseVersion; 
-	
+		
 	/**
 	 * The locked user id
 	 */
-	private String lockedUserId; 
+	private LockedUserInfo lockedUserId; 
 	
 	/**
 	 * The locked out date
@@ -89,20 +98,12 @@ public class CQLLibrary {
 		this.measureId = measureId;
 	}
 
-	public String getOwnerId() {
+	public User getOwnerId() {
 		return ownerId;
 	}
 
-	public void setOwnerId(String ownerId) {
+	public void setOwnerId(User ownerId) {
 		this.ownerId = ownerId;
-	}
-
-	public String getSetId() {
-		return setId;
-	}
-
-	public void setSetId(String setId) {
-		this.setId = setId;
 	}
 
 	public String getVersion() {
@@ -133,8 +134,8 @@ public class CQLLibrary {
 		return cqlXML;
 	}
 
-	public void setCqlXML(Blob cqlXML) {
-		this.cqlXML = cqlXML;
+	public void setCqlXML(java.sql.Blob cqlBlob) {
+		this.cqlXML = cqlBlob;
 	}
 
 	public String getReleaseVersion() {
@@ -145,11 +146,11 @@ public class CQLLibrary {
 		this.releaseVersion = releaseVersion;
 	}
 
-	public String getLockedUserId() {
+	public LockedUserInfo getLockedUserId() {
 		return lockedUserId;
 	}
 
-	public void setLockedUserId(String lockedUserId) {
+	public void setLockedUserId(LockedUserInfo lockedUserId) {
 		this.lockedUserId = lockedUserId;
 	}
 
@@ -159,6 +160,22 @@ public class CQLLibrary {
 
 	public void setLockedOutDate(Timestamp lockedOutDate) {
 		this.lockedOutDate = lockedOutDate;
+	}
+
+	public MeasureSet getMeasureSetId() {
+		return measureSetId;
+	}
+
+	public void setMeasureSetId(MeasureSet measureSetId) {
+		this.measureSetId = measureSetId;
+	}
+
+	public String getCqlSetId() {
+		return cqlSetId;
+	}
+
+	public void setCqlSetId(String cqlSetId) {
+		this.cqlSetId = cqlSetId;
 	} 
 	
 	

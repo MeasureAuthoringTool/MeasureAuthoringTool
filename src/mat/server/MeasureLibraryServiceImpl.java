@@ -53,10 +53,12 @@ import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
+import mat.dao.impl.clause.MeasureExportDAO;
 import mat.model.Author;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
@@ -71,7 +73,9 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
+import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
@@ -122,6 +126,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
@@ -133,6 +138,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.ibm.icu.text.DateFormat;
+import com.mysql.jdbc.Blob;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -223,6 +231,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The organization dao. */
 	@Autowired
 	private OrganizationDAO organizationDAO;
+	
+	/**
+	 * The cql library dao
+	 */
+	@Autowired
+	private CQLLibraryDAO cqlLibraryDAO; 
+		
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
@@ -2167,6 +2182,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
+		
+		if(MATPropertiesService.get().getCurrentReleaseVersion().equals(meas.getReleaseVersion())) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(meas.getId());
+			exportCQLibraryFromMeasure(meas, mDetail, xmlModel);
+		}
 				
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
@@ -2404,6 +2424,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor, final String version) {
+		
+
 		logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
 		Measure m = getService().getById(measureId);
 		logger.info("Measure Loaded for: " + measureId);
@@ -2413,7 +2435,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
 		}
-		
+						
 		String versionNumber = null;
 		if (isMajor) {
 			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
@@ -2454,9 +2476,72 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
 				}
 			}
+			
+			
 		} else {
 			return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
 		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void exportCQLibraryFromMeasure(Measure measure, ManageMeasureDetailModel mDetail, MeasureXmlModel xmlModel) {
+				
+		System.out.println("EXPOrTING CQL LIBRARY FOR MEAURE");
+		// get simple xml for cql
+		
+		java.sql.Blob cqlBlob = null;
+		String cqlLibraryName = "";
+		if(!xmlModel.getXml().isEmpty()) {
+			String xPathForCQLLookup = "/measure/cqlLookUp";
+			String xPathFromCQLLibraryName = "/measure/cqlLookUp/library";
+			
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			Document document = xmlProcessor.getOriginalDoc();
+			Node cqlLookUpNode = null;
+			try {
+				cqlLookUpNode = (Node) xPath.evaluate(xPathForCQLLookup, document.getDocumentElement(), XPathConstants.NODE);
+				Node cqlLibraryNode = (Node) xPath.evaluate(xPathFromCQLLibraryName, document.getDocumentElement(), XPathConstants.NODE);
+				cqlLibraryName = cqlLibraryNode.getTextContent(); 
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			
+			if(cqlLookUpNode != null){
+				String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
+				System.out.println(cqlXML);
+				byte[] xmlByteArr = cqlXML.getBytes();
+				cqlBlob = Hibernate.createBlob(xmlByteArr);	
+			}
+			String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
+			System.out.println(cqlXML);
+		}		
+		
+		// extract cql information from the measure and save it in the cql library table
+		CQLLibrary cqlLibrary = new CQLLibrary();
+		cqlLibrary.setName(cqlLibraryName);
+		cqlLibrary.setMeasureId(mDetail.getId());
+		cqlLibrary.setOwnerId(measure.getOwner());
+		cqlLibrary.setMeasureSetId(measure.getMeasureSet());
+		cqlLibrary.setVersion(mDetail.getVersionNumber());
+		// cqlLibrary.setCqlSetId(null); // TODO Real data
+		cqlLibrary.setDraft(0);
+		System.out.println(mDetail.getFinalizedDate());
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
+		Date date = null;
+		try {
+			date = dateFormat.parse(mDetail.getFinalizedDate());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		long time = date.getTime();
+		Timestamp timestamp = new Timestamp(time);
+		
+		cqlLibrary.setFinalizedDate(timestamp);
+		cqlLibrary.setCqlXML(cqlBlob);	
+		cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
+		
+		cqlLibraryDAO.save(cqlLibrary);
 	}
 	
 	/* (non-Javadoc)

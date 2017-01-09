@@ -32,6 +32,7 @@ import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -60,6 +61,7 @@ import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.dao.impl.clause.MeasureExportDAO;
 import mat.model.Author;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
@@ -249,14 +251,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName, final MeasureXmlModel newMeasureXmlModel, final String newNodeName) {
+	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
-		MeasureXmlModel newXmlModel = getService().getMeasureXmlForMeasure(newMeasureXmlModel.getMeasureId());
-		if (((xmlModel != null && newXmlModel != null) && (StringUtils.isNotBlank(xmlModel.getXml()) && StringUtils.isNotBlank(newXmlModel.getXml())))
-				&& ((nodeName != null && newNodeName != null) && (StringUtils.isNotBlank(nodeName) && StringUtils.isNotBlank(newNodeName)))) {
+		if ((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml()))
+				&& (nodeName != null && StringUtils.isNotBlank(nodeName))) {
 			String result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName, measureXmlModel.getParentNode());
-			xmlModel.setXml(result);
-			result = callAppendNode(xmlModel, newMeasureXmlModel.getXml(), newNodeName, newMeasureXmlModel.getParentNode());
 			xmlModel.setXml(result);
 			getService().saveMeasureXml(xmlModel);
 		}
@@ -589,7 +588,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
 		
-		List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
+		/*List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
 		
 		if (missingMeasurementPeriod.isEmpty()) {
 			logger.info("All timing elements present in the measure.");
@@ -619,7 +618,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 	
@@ -1669,9 +1668,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
 							continue;
 						} else {
-							if(!dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Birthdate") && !dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Expired")) {
+							//if(!dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Birthdate") && !dataSetDTO.getDataType().equalsIgnoreCase("Patient Characteristic Expired")) {
 							finalList.add(dataSetDTO);
-							}
+							//}
 						}
 					}
 				}
@@ -2644,7 +2643,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 					xmlProcessor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
 					xmlProcessor.updateCQLLibraryName();
-					checkForTimingElementsAndAppend(xmlProcessor);
+					//checkForTimingElementsAndAppend(xmlProcessor);
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 					checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
@@ -2664,7 +2663,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
 			processor.checkForScoringType(MATPropertiesService.get().getQmdVersion());
-			checkForTimingElementsAndAppend(processor);
+			//checkForTimingElementsAndAppend(processor);
 			checkForDefaultCQLParametersAndAppend(processor);
 			checkForDefaultCQLDefinitionsAndAppend(processor);
 			checkForDefaultCQLCodeSystemsAndAppend(processor);
@@ -2673,7 +2672,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			//Add QDM elements for Supplemental Definitions for Race, Payer, Sex, Ethnicity
 			measureXmlModel.setXml(processor.transform(processor.getOriginalDoc()));
-			QualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(
+			CQLQualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(
 					measureXmlModel.getMeasureId(), false, null);
 			
 			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
@@ -2682,17 +2681,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)), "<measure>", "");
 			filteredString = removePatternFromXMLString(filteredString, "</measure>", "");
 			
-			String result = callAppendNode(measureXmlModel, filteredString, "qdm", "/measure/elementLookUp");
+			String result = callAppendNode(measureXmlModel, filteredString, "valueset", "/measure//valuesets");
 			measureXmlModel.setXml(result);
 			processor = new XmlProcessor(measureXmlModel.getXml());
 			
-			String cqlFilteredString = filteredString.replaceAll("<qdm", "<valueset");
+		/*	String cqlFilteredString = filteredString.replaceAll("<qdm", "<valueset");
 			try {
 				processor.appendNode(cqlFilteredString, "valueset", "/measure/cqlLookUp/valuesets");
 			} catch (SAXException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}
+			}*/
 			
 			Document measureXMLDocument = processor.getOriginalDoc();
 			
@@ -3299,6 +3298,91 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			e.printStackTrace();
 		}
 		logger.debug(" MeasureLibraryServiceImpl: updateElementLookUp End :  ");
+	}
+	
+	
+	@Override
+	public void updateValueSetsInCQLLookUp(final CQLQualityDataSetDTO modifyWithDTO,
+			final CQLQualityDataSetDTO modifyDTO, final String measureId) {
+		
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		
+		logger.debug(" MeasureLibraryServiceImpl: updateValueSetsInCQLLookUp Start :  ");
+		
+		if (model != null) {
+			XmlProcessor processor = new XmlProcessor(model.getXml());
+			
+			// XPath Expression to find all elementRefs in elementLookUp for to be modified QDM.
+			String XPATH_EXPRESSION_VALUESETS = "/measure/cqlLookUp/valuesets/valueset[@uuid='"
+					+ modifyDTO.getUuid() + "']";
+			try {
+				NodeList nodesValuesets = (NodeList) xPath.evaluate(XPATH_EXPRESSION_VALUESETS, processor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				if(nodesValuesets.getLength()>1){
+					Node parentNode = nodesValuesets.item(0).getParentNode();
+					if (parentNode.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
+						if (!StringUtils.isBlank(modifyWithDTO.getVsacExpIdentifier())) {
+							parentNode.getAttributes().getNamedItem("vsacExpIdentifier").setNodeValue(
+									modifyWithDTO.getExpansionIdentifier());
+						} else {
+							parentNode.getAttributes().removeNamedItem("vsacExpIdentifier");
+						}
+					} else {
+						if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
+							Attr vsacExpIdentifierAttr = processor.getOriginalDoc().createAttribute("vsacExpIdentifier");
+							vsacExpIdentifierAttr.setNodeValue(modifyWithDTO.getVsacExpIdentifier());
+							parentNode.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+						}
+					}
+				}
+				for (int i = 0; i < nodesValuesets.getLength(); i++) {
+					Node newNode = nodesValuesets.item(i);
+					newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
+					newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
+					if ((newNode.getAttributes().getNamedItem("codeSystemName") == null)
+							&& (modifyWithDTO.getCodeSystemName() != null)) {
+						Attr attrNode = processor.getOriginalDoc().createAttribute("codeSystemName");
+						attrNode.setNodeValue(modifyWithDTO.getCodeSystemName());
+						newNode.getAttributes().setNamedItem(attrNode);
+					} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
+							&& (modifyWithDTO.getCodeSystemName() == null)) {
+						newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(null);
+					} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
+							&& (modifyWithDTO.getCodeSystemName() != null)) {
+						newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(
+								modifyWithDTO.getCodeSystemName());
+					}
+					newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
+					newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
+					newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
+					if (modifyWithDTO.isSuppDataElement()) {
+						newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+					} else {
+						newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
+					}
+					
+					if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+						if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
+							newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(
+									modifyWithDTO.getExpansionIdentifier());
+						} else {
+							newNode.getAttributes().removeNamedItem("expansionIdentifier");
+						}
+					} else {
+						if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
+							Attr expansionIdentifierAttr = processor.getOriginalDoc().createAttribute("expansionIdentifier");
+							expansionIdentifierAttr.setNodeValue(modifyWithDTO.getExpansionIdentifier());
+							newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
+						}
+					}
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+			model.setXml(processor.transform(processor.getOriginalDoc()));
+			getService().saveMeasureXml(model);
+		}
+		logger.debug(" MeasureLibraryServiceImpl: updateValueSetsInCQLLookUp End :  ");
 	}
 	
 	
@@ -5620,8 +5704,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public List<CQLQualityDataSetDTO> getCQLValusets(String measureID) {
-		return this.getCqlService().getCQLValusets(measureID);
+	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {
+		CQLQualityDataModelWrapper cqlQualityDataModelWrapper = new CQLQualityDataModelWrapper();
+		String expProfilestr = getDefaultExpansionIdentifier(measureID);
+		if(expProfilestr != null){
+			cqlQualityDataModelWrapper.setVsacExpIdentifier(expProfilestr);
+		}
+		
+		return this.getCqlService().getCQLValusets(measureID, cqlQualityDataModelWrapper);
+	}
+	
+	@Override
+	public SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject){
+		return this.getCqlService().saveQDStoMeasure(valueSetTransferObject);
+	}
+	
+	@Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject){
+		return this.getCqlService().saveUserDefinedQDStoMeasure(matValueSetTransferObject);
+	}
+	
+	@Override
+	public SaveUpdateCodeListResult updateQDStoMeasure(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		return this.getCqlService().updateQDStoMeasure(matValueSetTransferObject);
 	}
 }
 

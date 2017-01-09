@@ -12,6 +12,8 @@ import mat.model.ListObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 import org.hibernate.Criteria;
@@ -118,22 +120,22 @@ mat.dao.clause.MeasureXMLDAO {
 	 * @return {@link QualityDataModelWrapper}.
 	 */
 	@Override
-	public final QualityDataModelWrapper createSupplimentalQDM(final String measureId,
+	public final CQLQualityDataModelWrapper createSupplimentalQDM(final String measureId,
 			final boolean isClone, final HashMap<String, String> uuidMap) {
 		// Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = listObjectDAO
 				.getSupplimentalCodeList();
-		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
 		wrapper.setQualityDataDTO(qdsList);
 		for (ListObject lo : listOfSuppElements) {
-			QualityDataSetDTO qds = new QualityDataSetDTO();
+			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 			qds.setOid(lo.getOid());
 			qds.setCodeListName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
 			qds.setVersion("1.0");
 			qds.setId(lo.getId());
-			qds.setDataType(findDataTypeForOID(lo.getOid(), lo.getCategory().getId()));
+			qds.setDataType(findDataTypeForOID(lo.getOid(), lo.getCategory().getId())); 
 			if (isClone && uuidMap != null) {
 				qds.setUuid(uuidMap.get(lo.getName()));
 			} else {

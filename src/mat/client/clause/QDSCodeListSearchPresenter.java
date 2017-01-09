@@ -791,7 +791,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		System.out.println("NEW XML " + valuesetXMLString);
 		newExportModal.setXml(valuesetXMLString);
 		
-		service.appendAndSaveNode(exportModal, nodeName, newExportModal, newNodeName,
+		service.appendAndSaveNode(exportModal, nodeName,
 				new AsyncCallback<Void>() {
 			
 			@Override

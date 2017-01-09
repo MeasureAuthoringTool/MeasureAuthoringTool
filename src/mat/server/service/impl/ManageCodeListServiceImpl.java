@@ -1735,7 +1735,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		matValueSetTransferObject.scrubForMarkUp();
 		QDMInputValidator validator = new QDMInputValidator();
 		List<String> errorMessages = new ArrayList<String>();
-		errorMessages = validator.validate(matValueSetTransferObject);
+		//errorMessages = validator.validate(matValueSetTransferObject);
 		if (errorMessages.size() == 0) {
 			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 			List<QualityDataSetDTO> existingQDSList = matValueSetTransferObject
@@ -2127,8 +2127,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QDMInputValidator validator = new QDMInputValidator();
-		List<String> messageList = validator
-				.validate(matValueSetTransferObject);
+		List<String> messageList = new ArrayList<String>();
+		//validator.validate(matValueSetTransferObject);
 		if (messageList.size() == 0) {
 			if (!isDuplicate(matValueSetTransferObject, false, false)) {
 				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();

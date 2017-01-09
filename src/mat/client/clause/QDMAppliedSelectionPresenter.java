@@ -573,7 +573,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		System.out.println("NEW XML " + valuesetXMLString);
 		newExportModal.setXml(valuesetXMLString);
 		
-		service.appendAndSaveNode(exportModal, nodeName, newExportModal, newNodeName,
+		service.appendAndSaveNode(exportModal, nodeName,
 				new AsyncCallback<Void>() {
 			
 			@Override
@@ -1436,7 +1436,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			QDMInputValidator qdmInputValidator = new QDMInputValidator();
-			List<String> messList = qdmInputValidator.validate(matValueSetTransferObject);
+			List<String> messList = new ArrayList<String>(); 
+			//qdmInputValidator.validate(matValueSetTransferObject);
 			if (messList.size() == 0) {
 				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 				matValueSetTransferObject.setDatatype(dataType);
@@ -1789,7 +1790,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 				object.scrubForMarkUp();
 				QDMInputValidator qdmInputValidator = new QDMInputValidator();
-				List<String> meStrings = qdmInputValidator.validate(object);
+				List<String> meStrings = new ArrayList<String>();
+				//qdmInputValidator.validate(object);
 				if (meStrings.size() == 0) {
 					CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
 					modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
@@ -2135,7 +2137,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.resetVSACValueSetWidget();
 		populateAllDataType();
 		getAppliedQDMList(true);
-//		setWidgetToDefault();
+		setWidgetToDefault();
 		panel.add(searchDisplay.asWidget());
 	}
 	

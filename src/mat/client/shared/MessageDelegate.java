@@ -372,7 +372,7 @@ public class MessageDelegate {
 	private final String DOESNT_FOLLOW_RULES = "The new password you entered does not match the following rules:";
 	
 	/** The duplicate applied qdm. */
-	private final String DUPLICATE_APPLIED_QDM = "OID is already applied in combination with Datatype, Version, or Expansion Identifier.";
+	private final String DUPLICATE_APPLIED_QDM = "Valueset with unique name already exists.";
 	
 	/** The duplicate codes msg. */
 	private final String DUPLICATE_CODES_MSG = "All code(s) were identified as duplicates to code(s) already in the value set and were ignored upon import.";
@@ -626,7 +626,7 @@ public class MessageDelegate {
 	private final String STEWARD_REQUIRED = "Steward is required.";
 	
 	/** The successful modify applied qdm. */
-	private final String SUCCESSFUL_MODIFY_APPLIED_QDM = "Selected QDM element has been modified successfully.";
+	private final String SUCCESSFUL_MODIFY_APPLIED_QDM = "Selected Valueset has been modified successfully.";
 	
 	/** The system error. */
 	private final String SYSTEM_ERROR = "Import failed due to system error. Please try again.";
@@ -671,7 +671,7 @@ public class MessageDelegate {
 	private final String VALIDATION_MSG_DATA_TYPE_VSAC = "Please select datatype from drop down list.";
 	
 	/** The validation msg element without vsac. */
-	private final String VALIDATION_MSG_ELEMENT_WITHOUT_VSAC = "Please enter name and select a datatype associated with it.";
+	private final String VALIDATION_MSG_ELEMENT_WITHOUT_VSAC = "Please enter valueset name.";
 	
 	/** The value set date invalid. */
 	private final String VALUE_SET_DATE_INVALID = "Value Set Package Date is not a valid date.";
@@ -2660,5 +2660,9 @@ public class MessageDelegate {
 		return DELETE_CONFIRMATION_FUNCTION;
 	}
 
+	public String getValuesetSuccessMessage(String codeListName) {
+		return " The QDM Element " + codeListName + " has been added successfully.";
+	}
 
+	
 }

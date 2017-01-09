@@ -13,9 +13,6 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	/** The quality data dto list. */
 	private List<CQLQualityDataSetDTO> qualityDataDTOList;
 	
-	/** The risk adj var dto list. */
-	private List<RiskAdjustmentDTO> riskAdjVarDTOList;
-	
 	/** The vsac profile. */
 	private String vsacExpIdentifier;
 	/**
@@ -35,24 +32,6 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	 */
 	public void setQualityDataDTO(List<CQLQualityDataSetDTO> qualityDataDTOList) {
 		this.qualityDataDTOList = qualityDataDTOList;
-	}
-
-	/**
-	 * Gets the risk adj var dto list.
-	 *
-	 * @return the risk adj var dto list
-	 */
-	public List<RiskAdjustmentDTO> getRiskAdjVarDTO() {
-		return riskAdjVarDTOList;
-	}
-
-	/**
-	 * Sets the risk adj var dto list.
-	 *
-	 * @param riskAdjVarDTOList the new risk adj var dto list
-	 */
-	public void setRiskAdjVarDTO(List<RiskAdjustmentDTO> riskAdjVarDTOList) {
-		this.riskAdjVarDTOList = riskAdjVarDTOList;
 	}
 
 	/**

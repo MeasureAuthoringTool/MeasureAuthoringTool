@@ -598,7 +598,7 @@ implements mat.client.codelist.service.CodeListService {
 		
 		
 		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
-		measureService.appendAndSaveNode(exportModal,nodeName,newExportModal, newNodeName);
+		measureService.appendAndSaveNode(exportModal,nodeName);
 	}
 
 	@Override

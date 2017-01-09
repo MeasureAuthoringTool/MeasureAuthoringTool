@@ -9,6 +9,7 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -18,6 +19,7 @@ import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureType;
@@ -55,8 +57,7 @@ public interface MeasureLibraryService {
 	 * @param nodeName
 	 *            the new node name
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
-			String newNodeName);
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	
 	/**
 	 * Check for timing elements and append.
@@ -740,6 +741,15 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
-	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
+	CQLQualityDataModelWrapper getCQLValusets(String measureID);
+
+	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
+			String measureId);
 
 }

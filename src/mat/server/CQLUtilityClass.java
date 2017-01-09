@@ -2,6 +2,8 @@ package mat.server;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,6 +26,7 @@ import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
@@ -372,6 +375,8 @@ public class CQLUtilityClass {
 			if(!cqlModel.getValueSetList().isEmpty()){
 				List<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
 				valueSetsList.addAll(cqlModel.getValueSetList());
+				//sorting out CQL all Value sets and codes
+				sortCQLQualityDataSetDto(valueSetsList);
 				cqlModel.setAllValueSetList(valueSetsList);
 			}
 			getCodes(cqlModel, cqlLookUpXMLString);
@@ -428,19 +433,19 @@ public class CQLUtilityClass {
 		
 	}
 
-	private static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
-		QualityDataModelWrapper valuesetWrapper;
+	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
+		CQLQualityDataModelWrapper valuesetWrapper;
 		try {			 
 
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
-			unmarshaller.setClass(QualityDataModelWrapper.class);
+			unmarshaller.setClass(CQLQualityDataModelWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
 
-			valuesetWrapper = (QualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			valuesetWrapper = (CQLQualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
-				cqlModel.setValueSetList(convertToCQLQualityDataSetDTO(valuesetWrapper.getQualityDataDTO()));
+				cqlModel.setValueSetList(valuesetWrapper.getQualityDataDTO());
 			}
 		} catch (Exception e) {
 			logger.info("Error while getting valueset :" +e.getMessage());
@@ -566,9 +571,9 @@ public class CQLUtilityClass {
 		}
 	}
 	
-	private static List<CQLQualityDataSetDTO> convertToCQLQualityDataSetDTO(List<QualityDataSetDTO> qualityDataSetDTO){
+	private static List<CQLQualityDataSetDTO> convertToCQLQualityDataSetDTO(List<CQLQualityDataSetDTO> qualityDataSetDTO){
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
-			for (QualityDataSetDTO tempDataSet : qualityDataSetDTO) {
+			for (CQLQualityDataSetDTO tempDataSet : qualityDataSetDTO) {
 				CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
 				if(!tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") && !tempDataSet.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
 					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeListName());
@@ -634,6 +639,17 @@ public class CQLUtilityClass {
 	        lines = lines + 2;
 	    }
 	    return lines;
+	}
+	
+	public static List<CQLQualityDataSetDTO> sortCQLQualityDataSetDto(List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs){
+		Collections.sort(cqlQualityDataSetDTOs, new Comparator<CQLQualityDataSetDTO>() {
+			@Override
+			public int compare(final CQLQualityDataSetDTO o1, final CQLQualityDataSetDTO o2) {
+				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+			}
+		});
+		
+		return cqlQualityDataSetDTOs;
 	}
 	
 }

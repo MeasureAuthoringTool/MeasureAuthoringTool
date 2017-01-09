@@ -8,12 +8,14 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
@@ -52,8 +54,7 @@ public interface MeasureService extends RemoteService {
 	 * @param nodeName
 	 *            the new node name
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel,
-			String newNodeName);
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	
 	/**
 	 * Clone measure xml.
@@ -670,5 +671,14 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 	
-	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
+	CQLQualityDataModelWrapper getCQLValusets(String measureID);
+
+	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+
+	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
+			String measureId);
 }

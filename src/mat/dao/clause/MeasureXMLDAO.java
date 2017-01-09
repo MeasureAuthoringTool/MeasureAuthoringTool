@@ -6,6 +6,7 @@ import java.util.List;
 import mat.dao.IDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLQualityDataModelWrapper;
 
 /**
  * The Interface MeasureXMLDAO.
@@ -32,7 +33,7 @@ public interface MeasureXMLDAO extends IDAO<MeasureXML, String> {
 	 *            the uuid map
 	 * @return the quality data model wrapper
 	 */
-	public QualityDataModelWrapper createSupplimentalQDM(String measureId,
+	public CQLQualityDataModelWrapper createSupplimentalQDM(String measureId,
 			boolean isClone, HashMap<String, String> uuidMap);
 
 	/**

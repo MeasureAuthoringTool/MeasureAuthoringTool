@@ -78,7 +78,7 @@ import mat.shared.ConstantMessages;
 /**
  * The Class QDMAppliedSelectionView.
  */
-public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
+public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	
 	static final String GROUPING_QDM = " (G)";
 	static final String EXTENSIONAL_QDM = " (E)";
@@ -177,7 +177,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
 	
 	/** The search header. */
-	private  Label searchHeader = new Label("Search");
+	//private  Label searchHeader = new Label("Search");
 	
 	/** The vsac profile header. */
 	private Label defaultExpIdentifierHeader = new Label(LabelType.INFO,"Apply Expansion Identifier");
@@ -194,6 +194,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel;
+	
+	private PanelHeader searchHeader = new PanelHeader();
 	
 	
 	/**
@@ -283,16 +285,16 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
 		
-		PanelHeader searchHeader = new PanelHeader();//new Label("QDM Elements");
-		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("measureGroupingTableHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		PanelHeader expIdentifierHeader = new PanelHeader();//new Label("QDM Elements");
+		expIdentifierHeader.getElement().setId("searchHeader_Label");
+		expIdentifierHeader.setStyleName("measureGroupingTableHeader");
+		expIdentifierHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>Apply Expansion Identifier</strong>");
-		searchHeader.setTitle("Apply VSAC Expansion Identifier to Measure.");
-		searchHeader.add(searchHeaderText);
+		expIdentifierHeader.setTitle("Apply VSAC Expansion Identifier to Measure.");
+		expIdentifierHeader.add(searchHeaderText);
 		
-		searchPanel.add(searchHeader);
+		searchPanel.add(expIdentifierHeader);
 		
 		PanelBody applyExpansionIdPanelBody = new PanelBody();
 		applyExpansionIdPanelBody.setPull(Pull.LEFT);
@@ -321,7 +323,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		queryGrid.setStyleName("secondLabel");
 		applyExpansionIdPanelBody.add(queryGrid);
 		
-		searchPanel.add(searchHeader);
+		searchPanel.add(expIdentifierHeader);
 		searchPanel.add(applyExpansionIdPanelBody);
 		return searchPanel;
 	}
@@ -358,13 +360,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
-		PanelHeader header = new PanelHeader();
-		
-		header.setStyleName("measureGroupingTableHeader");
+		searchHeader.setStyleName("measureGroupingTableHeader");
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
-		header.add(searchHeaderText);
+		searchHeader.clear();
+		searchHeader.add(searchHeaderText);
 		
-		searchPanel.add(header);
+		searchPanel.add(searchHeader);
 		searchPanel.setWidth("350px");
 		searchPanel.setHeight("355px");
 		searchPanelBody.add(new SpacerWidget());
@@ -462,14 +463,14 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		PanelHeader searchHeader = new PanelHeader();//new Label("QDM Elements");
-		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("measureGroupingTableHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
+		PanelHeader qdmElementsHeader = new PanelHeader();//new Label("QDM Elements");
+		qdmElementsHeader.getElement().setId("searchHeader_Label");
+		qdmElementsHeader.setStyleName("measureGroupingTableHeader");
+		qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>QDM Elements</strong>");
-		searchHeader.add(searchHeaderText);
-		cellTablePanel.add(searchHeader);
+		qdmElementsHeader.add(searchHeaderText);
+		cellTablePanel.add(qdmElementsHeader);
 		if ((appliedValueSetList != null)
 				&& (appliedValueSetList.size() > 0)) {
 			table = new CellTable<CQLQualityDataSetDTO>();
@@ -885,7 +886,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 			nameInput.setTitle("Enter Name");
 			
 		}
-		searchHeader.setText("Search");
+		HTML searchHeaderText = new HTML("<strong>Search</strong>");
+		searchHeader.clear();
+		searchHeader.add(searchHeaderText);
 	}
 	/**
 	 * Fire event.
@@ -1004,7 +1007,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 					public void update(int index, CQLQualityDataSetDTO object,
 							SafeHtml value) {
 						if ((object != null)) {
-							//observer.onModifyClicked(object);
+							observer.onModifyClicked(object);
 						}
 					}
 				};
@@ -1322,7 +1325,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean> {
 	 * @return the search header
 	 */
 	//@Override
-	public Label getSearchHeader() {
+	public PanelHeader getSearchHeader() {
 		return searchHeader;
 	}
 	

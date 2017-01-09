@@ -30,6 +30,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.model.QualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
@@ -1317,13 +1318,13 @@ public class XmlProcessor {
 	 * @return the org.apache.commons.io.output. byte array output stream
 	 */
 	public static org.apache.commons.io.output.ByteArrayOutputStream convertQualityDataDTOToXML(
-			QualityDataModelWrapper qualityDataSetDTO) {
+			CQLQualityDataModelWrapper qualityDataSetDTO) {
 		LOG.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		Mapping mapping = new Mapping();
 		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
 		try {
 			mapping.loadMapping(new ResourceLoader()
-			.getResourceAsURL("QualityDataModelMapping.xml"));
+			.getResourceAsURL("ValueSetsMapping.xml"));
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
 					stream));
 			marshaller.setMapping(mapping);
@@ -1444,19 +1445,19 @@ public class XmlProcessor {
 	 * 
 	 * @return String
 	 */
-	public List<String> checkForTimingElements() {
+	/*public List<String> checkForTimingElements() {
 		List<String> missingTimingElementList = new ArrayList<String>();
 		
 		if (originalDoc != null) {
 			try {
 				// Measurement Period commented - MAT-7104.
 				// Default Measurement Period is created in Parameter section so it is not required in Elementlookup.
-				/*Node measurementPeriodNode = this.findNode(originalDoc,
+				Node measurementPeriodNode = this.findNode(originalDoc,
 						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_PERIOD_OID + "']");
 				if (measurementPeriodNode == null) {
 					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
-				}*/
+				}
 				
 				//Patient Characteristic Birth Data
 				Node patientCharacteristicBirthDateNode = this.findNode(originalDoc,
@@ -1481,11 +1482,11 @@ public class XmlProcessor {
 		return missingTimingElementList;
 	}
 	
-	/**
+	*//**
 	 * Check for qdm id and update.
 	 *
 	 * @return the string
-	 */
+	 *//*
 	public String checkForQdmIDAndUpdate() {
 		if (originalDoc == null) {
 			return "";
@@ -1515,7 +1516,7 @@ public class XmlProcessor {
 			e.printStackTrace();
 		}
 		return transform(originalDoc);
-	}
+	}*/
 	
 	/**
 	 * Transform.

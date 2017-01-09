@@ -41,8 +41,16 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
+import mat.client.shared.QDMInputValidator;
 import mat.dao.clause.CQLDAO;
+import mat.model.CQLValueSetTransferObject;
+import mat.model.DataType;
+import mat.model.MatValueSet;
+import mat.model.MatValueSetTransferObject;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -52,6 +60,7 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
@@ -66,6 +75,7 @@ import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLErrors;
 import mat.shared.CQLModelValidator;
+import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import net.sf.json.JSON;
@@ -728,6 +738,9 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#deleteDefinition(java.lang.String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList) {
@@ -788,6 +801,9 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#deleteFunctions(java.lang.String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
@@ -847,6 +863,9 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#deleteParameter(java.lang.String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
+	 */
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
@@ -954,11 +973,16 @@ public class CQLServiceImpl implements CQLService {
 			modifyQDMStatus(cqlModel);	
 		}else{
 			findUsedValuesets(cqlFileString, cqlModel);		
-			}
+		}
 		result.setCqlModel(cqlModel);
 		return result;
 	}
 	
+	/**
+	 * Modify QDM status.
+	 *
+	 * @param cqlModel the cql model
+	 */
 	private static void modifyQDMStatus(CQLModel cqlModel) {
 		for (int i = 0; i < cqlModel.getValueSetList().size(); i++) {
 			cqlModel.getValueSetList().get(i).setUsed(true);
@@ -1806,12 +1830,18 @@ public class CQLServiceImpl implements CQLService {
 	    return lines;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getDefaultCodes()
+	 */
 	@Override
 	public String getDefaultCodes() {
 		return cqlDefaultCodesXMLString;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getUsedCQlArtifacts(java.lang.String)
+	 */
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId) {
 		GetUsedCQLArtifactsResult result = new GetUsedCQLArtifactsResult(); 
@@ -1881,6 +1911,12 @@ public class CQLServiceImpl implements CQLService {
 		return result; 
 	}
 	
+	/**
+	 * Find used valuesets.
+	 *
+	 * @param cqlFileString the cql file string
+	 * @param cqlModel the cql model
+	 */
 	private void findUsedValuesets(String cqlFileString, CQLModel cqlModel){
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
@@ -1906,6 +1942,9 @@ public class CQLServiceImpl implements CQLService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#parseCQLStringForError(java.lang.String)
+	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -1929,14 +1968,436 @@ public class CQLServiceImpl implements CQLService {
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
-		
+
 		result.setCqlErrors(errors);
+
+		return result;
+	}
+	
+	
+	/**
+	 * Save QD sto measure.
+	 *
+	 * @param valueSetTransferObject the value set transfer object
+	 * @return the save update code list result
+	 */
+	@Override
+	public final SaveUpdateCodeListResult saveQDStoMeasure(
+			CQLValueSetTransferObject valueSetTransferObject) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
+		//valueSetTransferObject.scrubForMarkUp();
+		CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
+		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
+		qds.setOid(matValueSet.getID());
+		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+		qds.setCodeListName(matValueSet.getDisplayName());
+		if (matValueSet.isGrouping()) {
+			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+		} else {
+			qds.setTaxonomy(matValueSet.getCodeSystemName());
+		}
+		qds.setUuid(UUID.randomUUID().toString());
+		if (valueSetTransferObject.isVersion()) {
+			qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
+		} else {
+			qds.setVersion("1.0");
+		}
+		if (valueSetTransferObject.isExpansionProfile()) {
+			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet()
+					.getExpansionProfile());
+		}
+
+		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject
+				.getAppliedQDMList();
+
+		 // Treat as regular QDM
 		
-	return result;
+			if (!isDuplicate(valueSetTransferObject, true)) {
+				wrapper.getQualityDataDTO().add(qds);
+				String xmlString = addCQLAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				qualityDataSetDTOs.add(qds);
+				result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
+				result.setXmlString(xmlString);
+			} else {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+			}
+		
+		return result;
+	}
+	
+	/**
+	 * Sort quality data set list.
+	 *
+	 * @param finalList the final list
+	 * @return the list
+	 */
+	private List<CQLQualityDataSetDTO> sortQualityDataSetList(
+			final List<CQLQualityDataSetDTO> finalList) {
+
+		Collections.sort(finalList, new Comparator<CQLQualityDataSetDTO>() {
+			@Override
+			public int compare(final CQLQualityDataSetDTO o1,
+					final CQLQualityDataSetDTO o2) {
+				return o1.getCodeListName().compareToIgnoreCase(
+						o2.getCodeListName());
+			}
+		});
+
+		return finalList;
+
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#saveUserDefinedQDStoMeasure(mat.model.CQLValueSetTransferObject)
+	 */
+	@Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		matValueSetTransferObject.scrubForMarkUp();
+		QDMInputValidator validator = new QDMInputValidator();
+		String errorMessage = validator.validate(matValueSetTransferObject);
+		if (errorMessage.isEmpty()) {
+			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+			List<CQLQualityDataSetDTO> existingQDSList = matValueSetTransferObject
+					.getAppliedQDMList();
+			boolean isQDSExist = false;
+			for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
+				if (dataSetDTO.getOid().equalsIgnoreCase(
+						ConstantMessages.USER_DEFINED_QDM_OID) && dataSetDTO.getCodeListName()
+						.equalsIgnoreCase(matValueSetTransferObject
+								.getUserDefinedText())) {
+						isQDSExist = true;
+						break;
+				}
+			}
+			if (!isQDSExist) {
+				wrapper.setQualityDataDTO(qdsList);
+				CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
+				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+				qds.setId(UUID.randomUUID().toString());
+				qds.setCodeListName(matValueSetTransferObject
+						.getUserDefinedText());
+				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+				qds.setUuid(UUID.randomUUID().toString());
+				qds.setVersion("1.0");
+				wrapper.getQualityDataDTO().add(qds);
+				String qdmXMLString = addCQLAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
+						.getQualityDataDTO()));
+				result.setXmlString(qdmXMLString);
+			} else {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+			}
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
+		}
+		return result;
+	}
+	
+	
+	
+	/**
+	 * Checks if is duplicate.
+	 *
+	 * @param matValueSetTransferObject the mat value set transfer object
+	 * @param isVSACValueSet the is VSAC value set
+	 * @return true, if is duplicate
+	 */
+	private boolean isDuplicate(CQLValueSetTransferObject matValueSetTransferObject, boolean isVSACValueSet) {
+		logger.info(" checkForDuplicates Method Call Start.");
+		boolean isQDSExist = false;
+		String qdmCompareName = "";
+		
+		if (isVSACValueSet) {
+			qdmCompareName = matValueSetTransferObject.getMatValueSet()
+					.getDisplayName();
+		} else {
+			qdmCompareName = matValueSetTransferObject.getCodeListSearchDTO().getName();
+		}
+		
+		List<CQLQualityDataSetDTO> existingQDSList = matValueSetTransferObject.getAppliedQDMList();
+		for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
+
+			String codeListName = "";
+			codeListName = dataSetDTO.getCodeListName();
+
+			if (codeListName.equalsIgnoreCase(qdmCompareName)) {
+				isQDSExist = true;
+				break;
+			}
+		}
+		logger.info("checkForDuplicates Method Call End.Check resulted in :" + (isQDSExist));
+		return isQDSExist;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#updateQDStoMeasure(mat.model.CQLValueSetTransferObject)
+	 */
+	@Override
+	public final SaveUpdateCodeListResult updateQDStoMeasure(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		SaveUpdateCodeListResult result = null;
+		matValueSetTransferObject.scrubForMarkUp();
+		if (matValueSetTransferObject.getMatValueSet() != null) {
+			result = updateVSACValueSetInElementLookUp(matValueSetTransferObject);
+		} else if (matValueSetTransferObject.getCodeListSearchDTO() != null) {
+			result = updateUserDefineQDMInElementLookUp(matValueSetTransferObject);
+		}
+		return result;
+	}
+	
+	/**
+	 * Update VSAC value set in element look up.
+	 *
+	 * @param matValueSetTransferObject the mat value set transfer object
+	 * @return the save update code list result
+	 */
+	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		CQLQualityDataSetDTO oldQdm = new CQLQualityDataSetDTO();
+		populatedOldQDM(oldQdm,
+				matValueSetTransferObject.getCqlQualityDataSetDTO());
+		  // Treat as regular QDM
+			List<CQLQualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject
+					.getAppliedQDMList();
+			List<CQLQualityDataSetDTO> tempAppliedQDMList = new ArrayList<CQLQualityDataSetDTO>();
+			tempAppliedQDMList.addAll(matValueSetTransferObject
+					.getAppliedQDMList());
+			// Removing the QDS that is being modified from the
+			// tempAppliedQDMList.
+			Iterator<CQLQualityDataSetDTO> iterator = tempAppliedQDMList
+					.iterator();
+			while (iterator.hasNext()) {
+				CQLQualityDataSetDTO qualityDataSetDTO = iterator.next();
+				if (qualityDataSetDTO.getUuid().equals(
+						matValueSetTransferObject.getCqlQualityDataSetDTO()
+								.getUuid())) {
+					iterator.remove();
+					break;
+				}
+			}
+			matValueSetTransferObject.setAppliedQDMList(tempAppliedQDMList);
+
+			if (!isDuplicate(matValueSetTransferObject, true)) {
+				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
+				CQLQualityDataSetDTO qds = matValueSetTransferObject
+						.getCqlQualityDataSetDTO();
+				MatValueSet matValueSet = matValueSetTransferObject
+						.getMatValueSet();
+				qds.setOid(matValueSet.getID());
+				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				qds.setCodeListName(matValueSet.getDisplayName());
+				if (matValueSet.isGrouping()) {
+					qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+				} else {
+					qds.setTaxonomy(matValueSet.getCodeSystemName());
+				}
+				if (matValueSetTransferObject.isVersion()) {
+					qds.setVersion(matValueSetTransferObject.getMatValueSet()
+							.getVersion());
+				} else {
+					qds.setVersion("1.0");
+				}
+				if (matValueSetTransferObject.isExpansionProfile()) {
+					qds.setExpansionIdentifier(matValueSetTransferObject
+							.getMatValueSet().getExpansionProfile());
+				} else {
+					qds.setExpansionIdentifier(null);
+				}
+				CQLQualityDataModelWrapper wrapper = modifyAppliedElementList(
+						qds,
+						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject
+								.getAppliedQDMList());
+				
+				result.setSuccess(true);
+				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
+						.getQualityDataDTO()));
+				result.setCqlQualityDataSetDTO(qds);
+			} else {
+				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+			}
+		return result;
+	}
+	
+	/**
+	 * Update user define QDM in element look up.
+	 *
+	 * @param matValueSetTransferObject the mat value set transfer object
+	 * @return the save update code list result
+	 */
+	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QDMInputValidator validator = new QDMInputValidator();
+		List<String> messageList = new ArrayList<String>();
+		validator.validate(matValueSetTransferObject);
+		if (messageList.size() == 0) {
+			if (!isDuplicate(matValueSetTransferObject, false)) {
+				ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+				wrapper.setQualityDataDTO(qdsList);
+				CQLQualityDataSetDTO qds = matValueSetTransferObject
+						.getCqlQualityDataSetDTO();
+				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+				qds.setId(UUID.randomUUID().toString());
+				qds.setCodeListName(matValueSetTransferObject
+						.getCodeListSearchDTO().getName());
+				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+				qds.setVersion("1.0");
+				wrapper = modifyAppliedElementList(
+						qds,
+						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject
+								.getAppliedQDMList());
+				String qdmXMLString = addCQLAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
+						.getQualityDataDTO()));
+				result.setXmlString(qdmXMLString);
+				result.setCqlQualityDataSetDTO(qds);
+			} else {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+			}
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
+		}
+		return result;
 	}
 
+
+
+	
+	/**
+	 * Adds the new applied QDM in measure XML.
+	 *
+	 * @param qualityDataSetDTOWrapper the quality data set DTO wrapper
+	 * @return the string
+	 */
+	private String addCQLAppliedQDMInMeasureXML(
+			final CQLQualityDataModelWrapper qualityDataSetDTOWrapper) {
+		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
+		ByteArrayOutputStream stream = createNewXML(qualityDataSetDTOWrapper);
+		int startIndex = stream.toString().indexOf("<valueset ", 0);
+		int lastIndex = stream.toString().indexOf("/>", startIndex);
+		String xmlString = stream.toString().substring(startIndex,
+				lastIndex + 2);
+		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: "
+				+ xmlString);
+		return xmlString;
+	}
+	
+	/**
+	 * Creates the new XML.
+	 *
+	 * @param qualityDataSetDTO the quality data set DTO
+	 * @return the byte array output stream
+	 */
+	private ByteArrayOutputStream createNewXML(
+			final CQLQualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader()
+					.getResourceAsURL("ValueSetsMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
+					stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(qualityDataSetDTO);
+			logger.debug("Marshalling of QualityDataSetDTO is successful.."
+					+ stream.toString());
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load ValueSetsMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		return stream;
+	}
+	
+	/**
+	 * Modify applied element list.
+	 *
+	 * @param dataSetDTO the data set DTO
+	 * @param appliedQDM the applied QDM
+	 * @return the CQL quality data model wrapper
+	 */
+	private CQLQualityDataModelWrapper modifyAppliedElementList(
+			final CQLQualityDataSetDTO dataSetDTO,
+			final ArrayList<CQLQualityDataSetDTO> appliedQDM) {
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		Iterator<CQLQualityDataSetDTO> iterator = appliedQDM.iterator();
+		while (iterator.hasNext()) {
+			CQLQualityDataSetDTO qualityDataSetDTO = iterator.next();
+			if (qualityDataSetDTO.getUuid().equals(dataSetDTO.getUuid())) {
+				CQLQualityDataSetDTO qdm = qualityDataSetDTO;
+				iterator.remove();
+				break;
+			}
+		}
+		appliedQDM.add(dataSetDTO);
+		wrapper.setQualityDataDTO(appliedQDM);
+		return wrapper;
+	}
+	
+	
+	/**
+	 * Populated old QDM.
+	 *
+	 * @param oldQdm the old qdm
+	 * @param qualityDataSetDTO the quality data set DTO
+	 */
+	private void populatedOldQDM(CQLQualityDataSetDTO oldQdm,
+		CQLQualityDataSetDTO qualityDataSetDTO) {
+		oldQdm.setCodeListName(qualityDataSetDTO.getCodeListName());
+		oldQdm.setOid(qualityDataSetDTO.getOid());
+		oldQdm.setUuid(qualityDataSetDTO.getUuid());
+		oldQdm.setVersion(qualityDataSetDTO.getVersion());
+		oldQdm.setExpansionIdentifier(qualityDataSetDTO
+				.getExpansionIdentifier());
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#getCQLValusets(java.lang.String)
+	 */
 	@Override
-	public List<CQLQualityDataSetDTO> getCQLValusets(String measureId) {
-		return getCQLData(measureId).getCqlModel().getValueSetList();
+	public CQLQualityDataModelWrapper getCQLValusets(String measureId, CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
+				measureId);
+		CQLModel cqlModel = new CQLModel();
+		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlModel.getXml());
+		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
+		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
+			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
+		}
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(measureId).getCqlModel().getValueSetList());
+		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
+		
+		return cqlQualityDataModelWrapper;
 	}
 }

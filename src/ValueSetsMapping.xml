@@ -3,17 +3,17 @@
                          "http://castor.org/mapping.dtd">
 
 <mapping>
-	<class name="mat.model.QualityDataModelWrapper">
-		<map-to xml="cqlLookUp" />
+	<class name="mat.model.cql.CQLQualityDataModelWrapper">
+		<map-to xml="measure" />
 
        <field name = "vsacExpIdentifier" type="java.lang.String">
             <bind-xml name="vsacExpIdentifier"  node="attribute" location="valuesets"/>
        </field>
-		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
+		<field name="qualityDataDTOList" type="mat.model.cql.CQLQualityDataSetDTO"
 			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
 			collection="arraylist">
 			<bind-xml name="valueset" location="valuesets">
-				<class name="mat.model.QualityDataSetDTO">
+				<class name="mat.model.cql.CQLQualityDataSetDTO">
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
@@ -25,9 +25,6 @@
 					</field>
 					<field name="oid" type="java.lang.String">
 						<bind-xml name="oid" node="attribute" />
-					</field>
-					<field name="occurrenceText" type="java.lang.String">
-						<bind-xml name="instance" node="attribute" />
 					</field>
 					<field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />

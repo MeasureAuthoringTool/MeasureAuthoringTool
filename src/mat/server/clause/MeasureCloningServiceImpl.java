@@ -420,7 +420,7 @@ implements MeasureCloningService {
 			parentNode.removeChild(birthDataQDMNode);
 		}*/
 		
-		checkForTimingElementsAndAppend(xmlProcessor);
+		//checkForTimingElementsAndAppend(xmlProcessor);
 		checkForDefaultCQLParametersAndAppend(xmlProcessor);
 		checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 		checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
@@ -512,7 +512,7 @@ implements MeasureCloningService {
 	
 	private void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
 		
-		List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
+		/*List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
 		
 		if (missingMeasurementPeriod.isEmpty()) {
 			logger.info("All timing elements present in the measure while cloning.");
@@ -542,7 +542,7 @@ implements MeasureCloningService {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 	

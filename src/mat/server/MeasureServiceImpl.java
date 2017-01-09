@@ -13,6 +13,7 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -23,6 +24,7 @@ import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
@@ -55,8 +57,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, MeasureXmlModel newMeasureXmlModel, String newNodeName) {
-		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName, newMeasureXmlModel, newNodeName);
+	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName) {
+		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName);
 		
 	}
 	
@@ -649,8 +651,30 @@ MeasureService {
 	}
 
 	@Override
-	public List<CQLQualityDataSetDTO> getCQLValusets(String measureID) {
+	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {
 		return this.getMeasureLibraryService().getCQLValusets(measureID);
 	}
 
+	@Override
+	public SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+		return this.getMeasureLibraryService().saveQDStoMeasure(valueSetTransferObject);
+	}
+	
+	@Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+		return this.getMeasureLibraryService().saveUserDefinedQDStoMeasure(valueSetTransferObject);
+	}
+	
+	@Override
+	public SaveUpdateCodeListResult updateQDStoMeasure(
+			CQLValueSetTransferObject matValueSetTransferObject) {
+		return this.getMeasureLibraryService().updateQDStoMeasure(matValueSetTransferObject);
+	}
+	
+	@Override
+	public void updateValueSetsInCQLLookUp(final CQLQualityDataSetDTO modifyWithDTO,
+			final CQLQualityDataSetDTO modifyDTO, final String measureId) {
+		this.getMeasureLibraryService().updateValueSetsInCQLLookUp(modifyWithDTO, modifyDTO, measureId);
+	}
+	
 }

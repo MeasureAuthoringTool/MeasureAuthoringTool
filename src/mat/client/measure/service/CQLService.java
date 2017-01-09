@@ -2,12 +2,15 @@ package mat.client.measure.service;
 
 import java.util.List;
 
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -165,7 +168,13 @@ public interface CQLService {
 
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
 
-	List<CQLQualityDataSetDTO> getCQLValusets(String measureID);
+	CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
+
+	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
 
 

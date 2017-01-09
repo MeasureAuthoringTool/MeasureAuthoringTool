@@ -6,6 +6,7 @@ import java.util.List;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.shared.GenericResult;
 import mat.model.QualityDataSetDTO;
+import mat.model.cql.CQLQualityDataSetDTO;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,8 +65,13 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	/** The applied qdm list. */
 	List<QualityDataSetDTO> appliedQDMList ;
 	
+	/** The cql applied QDM list. */
+	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
+	
 	/** The data set dto. */
 	QualityDataSetDTO dataSetDTO;
+	
+	CQLQualityDataSetDTO cqlQualityDataSetDTO;
 	
 	/** The all oi ds updated. */
 	boolean allOIDsUpdated;
@@ -340,6 +346,32 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 */
 	public void setAllOIDsUpdated(boolean allOIDsUpdated) {
 		this.allOIDsUpdated = allOIDsUpdated;
+	}
+
+	/**
+	 * Gets the cql applied QDM list.
+	 *
+	 * @return the cql applied QDM list
+	 */
+	public List<CQLQualityDataSetDTO> getCqlAppliedQDMList() {
+		return cqlAppliedQDMList;
+	}
+
+	/**
+	 * Sets the cql applied QDM list.
+	 *
+	 * @param cqlAppliedQDMList the new cql applied QDM list
+	 */
+	public void setCqlAppliedQDMList(List<CQLQualityDataSetDTO> cqlAppliedQDMList) {
+		this.cqlAppliedQDMList = cqlAppliedQDMList;
+	}
+
+	public CQLQualityDataSetDTO getCqlQualityDataSetDTO() {
+		return cqlQualityDataSetDTO;
+	}
+
+	public void setCqlQualityDataSetDTO(CQLQualityDataSetDTO cqlQualityDataSetDTO) {
+		this.cqlQualityDataSetDTO = cqlQualityDataSetDTO;
 	}
 	
 }

@@ -2523,7 +2523,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlLibrary.setMeasureSetId(measure.getMeasureSet());
 		cqlLibrary.setVersion(mDetail.getVersionNumber());
 		// cqlLibrary.setCqlSetId(null); // TODO Real data
-		cqlLibrary.setDraft(0);
+		cqlLibrary.setDraft(false);
 		System.out.println(mDetail.getFinalizedDate());
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");

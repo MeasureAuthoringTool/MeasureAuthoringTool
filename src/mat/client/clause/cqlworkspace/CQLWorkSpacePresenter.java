@@ -74,6 +74,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
@@ -2524,6 +2525,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	public void beforeDisplay() {
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		getCQLData();
+		getAllIncludeLibraryList("");
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		searchDisplay.resetMessageDisplay();
@@ -2535,6 +2537,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
 		panel.add(searchDisplay.getMainHPanel());
+	}
+
+	private void getAllIncludeLibraryList(String searchText) {
+		MatContext.get().getCQLLibraryService().search(searchText,"measureLib", new AsyncCallback<List<CQLLibraryDataSetObject>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<CQLLibraryDataSetObject> result) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 	}
 
 	/**

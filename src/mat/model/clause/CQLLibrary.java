@@ -47,7 +47,7 @@ public class CQLLibrary {
 	/**
 	 * The draft
 	 */
-	private int draft;
+	private boolean draft;
 	
 	/**
 	 * The finalized date
@@ -114,11 +114,11 @@ public class CQLLibrary {
 		this.version = version;
 	}
 
-	public int getDraft() {
+	public boolean isDraft() {
 		return draft;
 	}
 
-	public void setDraft(int draft) {
+	public void setDraft(boolean draft) {
 		this.draft = draft;
 	}
 

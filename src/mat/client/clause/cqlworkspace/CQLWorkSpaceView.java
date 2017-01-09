@@ -284,6 +284,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The applied qdm to show in Table list. */
 	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
 	
+	private List<CQLLibraryModel> includeLibraryList = new ArrayList<CQLLibraryModel>();
+	
 	/**
 	 * List viewFunctions.
 	 */
@@ -4213,6 +4215,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public ListBox getIncludesNameListBox() {
 		return includesNameListbox;
+	}
+
+	public List<CQLLibraryModel> getIncludeLibraryList() {
+		return includeLibraryList;
+	}
+
+	public void setIncludeLibraryList(List<CQLLibraryModel> includeLibraryList) {
+		this.includeLibraryList = includeLibraryList;
 	}
 
 }

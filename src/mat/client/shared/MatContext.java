@@ -35,6 +35,8 @@ import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
+import mat.client.measure.service.CQLLibraryService;
+import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measurepackage.service.PackageService;
@@ -100,6 +102,8 @@ public class MatContext implements IsSerializable {
 	
 	/** The measure service. */
 	private MeasureServiceAsync measureService;
+	
+	private CQLLibraryServiceAsync cqlLibraryService;
 	
 	/** The measure package service. */
 	private PackageServiceAsync measurePackageService;
@@ -561,6 +565,15 @@ public class MatContext implements IsSerializable {
 			measureService = (MeasureServiceAsync) GWT.create(MeasureService.class);
 		}
 		return measureService;
+	}
+	
+	public CQLLibraryServiceAsync getCQLLibraryService(){
+		if(cqlLibraryService == null){
+			cqlLibraryService = (CQLLibraryServiceAsync)GWT.create(CQLLibraryService.class);
+			
+		}
+		return cqlLibraryService;
+		
 	}
 	
 	/**

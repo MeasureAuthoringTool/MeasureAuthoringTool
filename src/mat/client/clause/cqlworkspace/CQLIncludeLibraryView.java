@@ -314,7 +314,7 @@ public class CQLIncludeLibraryView {
 				@Override
 				public SafeHtml getValue(CQLLibraryModel object) {
 					StringBuilder owner = new StringBuilder();
-					owner = owner.append(object.getOwnerFirstName()).append(" ").append(object.getOwnerLastName());
+					//owner = owner.append(object.getOwnerFirstName()).append(" ").append(object.getOwnerLastName());
 					return CellTableUtility.getColumnToolTip(owner.toString(),
 							owner.toString());
 				}

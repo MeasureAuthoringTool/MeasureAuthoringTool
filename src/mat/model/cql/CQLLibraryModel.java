@@ -10,13 +10,13 @@ public class CQLLibraryModel implements IsSerializable{
 	private String aliasName;
 	private boolean isInclude;
 	private String id;
-	private boolean isLocked;
+	/*private boolean isLocked;
 	private LockedUserInfo lockedUserInfo;
 	private String setId;
 	private boolean isFamily;
 	private String releaseVersion;
 	private String ownerFirstName;
-	private String ownerLastName;
+	private String ownerLastName;*/
 	
 	public String getId() {
 		return id;
@@ -48,47 +48,6 @@ public class CQLLibraryModel implements IsSerializable{
 	public void setInclude(boolean isInclude) {
 		this.isInclude = isInclude;
 	}
-	public boolean isLocked() {
-		return isLocked;
-	}
-	public void setLocked(boolean isLocked) {
-		this.isLocked = isLocked;
-	}
-	public LockedUserInfo getLockedUserInfo() {
-		return lockedUserInfo;
-	}
-	public void setLockedUserInfo(LockedUserInfo lockedUserInfo) {
-		this.lockedUserInfo = lockedUserInfo;
-	}
-	public String getSetId() {
-		return setId;
-	}
-	public void setSetId(String setId) {
-		this.setId = setId;
-	}
-	public boolean isFamily() {
-		return isFamily;
-	}
-	public void setFamily(boolean isFamily) {
-		this.isFamily = isFamily;
-	}
-	public String getReleaseVersion() {
-		return releaseVersion;
-	}
-	public void setReleaseVersion(String releaseVersion) {
-		this.releaseVersion = releaseVersion;
-	}
-	public String getOwnerFirstName() {
-		return ownerFirstName;
-	}
-	public void setOwnerFirstName(String ownerFirstName) {
-		this.ownerFirstName = ownerFirstName;
-	}
-	public String getOwnerLastName() {
-		return ownerLastName;
-	}
-	public void setOwnerLastName(String ownerLastName) {
-		this.ownerLastName = ownerLastName;
-	}
+	
 
 }

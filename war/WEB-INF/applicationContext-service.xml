@@ -82,6 +82,8 @@
     
     </bean>
     
+    <bean id="cqlLibraryService" class="mat.server.CQLLibraryService"/>
+   
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
     </bean>

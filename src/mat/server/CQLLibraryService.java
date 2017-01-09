@@ -1,5 +1,6 @@
 package mat.server;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLLibraryModel;
+import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
@@ -71,6 +72,21 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), "", cqlLibrary.isDraft());
 		dataSetObject.setVersion(formattedVersion);
 		
+		
+		CQLModel cqlModel = new CQLModel();
+		byte[] bdata;
+		try {
+			bdata = cqlLibrary.getCqlXML().getBytes(1, (int) cqlLibrary.getCqlXML().length());
+			String data = new String(bdata);
+			cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(data,"");
+			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+			dataSetObject.setCqlText(cqlFileString);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		
 		return dataSetObject;
 		
 	}
@@ -81,7 +97,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			if (lockedOutDate == null) {
 				return locked;
 			}
-			
 			long currentTime = System.currentTimeMillis();
 			long lockedOutTime = lockedOutDate.getTime();
 			long timeDiff = currentTime - lockedOutTime;

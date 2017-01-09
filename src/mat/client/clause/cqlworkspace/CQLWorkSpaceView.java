@@ -91,6 +91,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -284,7 +285,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The applied qdm to show in Table list. */
 	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
 	
-	private List<CQLLibraryModel> includeLibraryList = new ArrayList<CQLLibraryModel>();
+	private List<CQLLibraryDataSetObject> includeLibraryList = new ArrayList<CQLLibraryDataSetObject>();
 	
 	/**
 	 * List viewFunctions.
@@ -4216,12 +4217,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public ListBox getIncludesNameListBox() {
 		return includesNameListbox;
 	}
-
-	public List<CQLLibraryModel> getIncludeLibraryList() {
+	@Override
+	public List<CQLLibraryDataSetObject> getIncludeLibraryList() {
 		return includeLibraryList;
 	}
-
-	public void setIncludeLibraryList(List<CQLLibraryModel> includeLibraryList) {
+	@Override
+	public void setIncludeLibraryList(List<CQLLibraryDataSetObject> includeLibraryList) {
 		this.includeLibraryList = includeLibraryList;
 	}
 

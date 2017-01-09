@@ -1155,6 +1155,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		CQLIncludeLibraryView getInclView();
 
+		void setIncludeLibraryList(List<CQLLibraryDataSetObject> result);
+
+		List<CQLLibraryDataSetObject> getIncludeLibraryList();
+
 	}
 
 	/**
@@ -2550,7 +2554,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(List<CQLLibraryDataSetObject> result) {
-				// TODO Auto-generated method stub
+				searchDisplay.setIncludeLibraryList(result);
+				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, true);
 				
 			}
 		});
@@ -2872,7 +2877,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludesLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.buildIncludesView();
-		searchDisplay.getInclView().buildIncludeLibraryCellTable(new ArrayList<CQLLibraryModel>(), true);
+		searchDisplay.getInclView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), true);
 		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	

@@ -35,6 +35,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
+import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 
 public class CQLIncludeLibraryView {
@@ -51,12 +52,12 @@ public class CQLIncludeLibraryView {
 	private AceEditor cqlAceEditor = new AceEditor();
 	
 	/** The table. */
-	private CellTable<CQLLibraryModel> table;
+	private CellTable<CQLLibraryDataSetObject> table;
 	
 	/** The sort provider. */
-	private ListDataProvider<CQLLibraryModel> listDataProvider;
+	private ListDataProvider<CQLLibraryDataSetObject> listDataProvider;
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 5;
+	private static final int TABLE_ROW_COUNT = 10;
 	
 	/** The spager. */
 	private MatSimplePager spager;
@@ -86,7 +87,7 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtArea.setSize("260px", "25px");
 		aliasNameTxtArea.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtArea.setName("aliasName");
-		aliasLabel.setText("Alias Name");
+		aliasLabel.setText("Library Alias");
 		
 		VerticalPanel aliasLabelVP = new VerticalPanel();
 		aliasLabelVP.add(aliasLabel);
@@ -102,10 +103,10 @@ public class CQLIncludeLibraryView {
 		aliasNameVP.add(aliasLabelHP);
 		
 		VerticalPanel searchLibraryVP = new VerticalPanel();
-		Label librariesLabel = new Label(LabelType.INFO, "Libraries");
+		Label librariesLabel = new Label(LabelType.INFO, "Library");
 		librariesLabel.setMarginTop(5);
-		librariesLabel.setId("Alias_Label");
-		librariesLabel.setTitle("Libraries");
+		librariesLabel.setId("search_Lib_Lbl");
+		librariesLabel.setTitle("Library Search");
 		
 		searchLibraryVP.add(new SpacerWidget());
 		searchLibraryVP.add(librariesLabel);
@@ -179,7 +180,7 @@ public class CQLIncludeLibraryView {
 
 	
 	
-	public void buildIncludeLibraryCellTable(List<CQLLibraryModel> cqlLibraryList, boolean isEditable) {
+	public void buildIncludeLibraryCellTable(List<CQLLibraryDataSetObject> cqlLibraryList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -189,7 +190,7 @@ public class CQLIncludeLibraryView {
 		searchHeader.setStyleName("measureGroupingTableHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 		
-		HTML searchHeaderText = new HTML("<strong>Include Libraries</strong>");
+		HTML searchHeaderText = new HTML("<strong>Available Libraries</strong>");
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
 		
@@ -198,16 +199,16 @@ public class CQLIncludeLibraryView {
 		
 		if ((cqlLibraryList != null)
 				&& (cqlLibraryList.size() > 0)) {
-			table = new CellTable<CQLLibraryModel>();
+			table = new CellTable<CQLLibraryDataSetObject>();
 			//setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			listDataProvider = new ListDataProvider<CQLLibraryModel>();
+			listDataProvider = new ListDataProvider<CQLLibraryDataSetObject>();
 			/*qdmSelectedList = new ArrayList<CQLLibraryModel>();*/
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(cqlLibraryList);
-			ListHandler<CQLLibraryModel> sortHandler = new ListHandler<CQLLibraryModel>(
+			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			table = addColumnToTable(table, sortHandler, isEditable);
@@ -260,9 +261,9 @@ public class CQLIncludeLibraryView {
 	 * @param isEditable the is editable
 	 * @return the cell table
 	 */
-	private CellTable<CQLLibraryModel> addColumnToTable(
-			final CellTable<CQLLibraryModel> table,
-			ListHandler<CQLLibraryModel> sortHandler, boolean isEditable) {
+	private CellTable<CQLLibraryDataSetObject> addColumnToTable(
+			final CellTable<CQLLibraryDataSetObject> table,
+			ListHandler<CQLLibraryDataSetObject> sortHandler, boolean isEditable) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			/*Label searchHeader = new Label("QDM Elements");
 			searchHeader.getElement().setId("searchHeader_Label");
@@ -275,13 +276,13 @@ public class CQLIncludeLibraryView {
 			//table.setSelectionModel(selectionModel);
 			
 			// Name Column
-			Column<CQLLibraryModel, SafeHtml> nameColumn = new Column<CQLLibraryModel, SafeHtml>(
+			Column<CQLLibraryDataSetObject, SafeHtml> nameColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
-				public SafeHtml getValue(CQLLibraryModel object) {
+				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					StringBuilder title = new StringBuilder();
 					StringBuilder value = new StringBuilder();
-					value = value.append(object.getLibraryName());
+					value = value.append(object.getCqlName());
 					title = title.append("Name : ").append(value);
 
 					title.append("");
@@ -296,12 +297,12 @@ public class CQLIncludeLibraryView {
 			
 			
 			// Expansion Identifier Column
-			Column<CQLLibraryModel, SafeHtml> versionColumn = new Column<CQLLibraryModel, SafeHtml>(
+			Column<CQLLibraryDataSetObject, SafeHtml> versionColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
-				public SafeHtml getValue(CQLLibraryModel object) {
+				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					
-					return CellTableUtility.getColumnToolTip(object.getVersionUsed());
+					return CellTableUtility.getColumnToolTip(object.getVersion());
 				}
 			};
 			table.addColumn(versionColumn, SafeHtmlUtils
@@ -309,12 +310,12 @@ public class CQLIncludeLibraryView {
 							+ "Version" + "</span>"));
 			
 			// Version Column
-			Column<CQLLibraryModel, SafeHtml> ownerColumn = new Column<CQLLibraryModel, SafeHtml>(
+			Column<CQLLibraryDataSetObject, SafeHtml> ownerColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
-				public SafeHtml getValue(CQLLibraryModel object) {
+				public SafeHtml getValue(CQLLibraryDataSetObject object) {
 					StringBuilder owner = new StringBuilder();
-					//owner = owner.append(object.getOwnerFirstName()).append(" ").append(object.getOwnerLastName());
+					owner = owner.append(object.getOwnerFirstName()).append(" ").append(object.getOwnerLastName());
 					return CellTableUtility.getColumnToolTip(owner.toString(),
 							owner.toString());
 				}

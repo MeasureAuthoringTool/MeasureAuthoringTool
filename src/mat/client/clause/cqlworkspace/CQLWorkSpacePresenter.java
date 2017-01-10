@@ -1852,6 +1852,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().buildAppliedQDMCellTable(list, isModified);
 					}
 					searchDisplay.setAppliedQdmTableList(list);
+					//The below call will update the Applied QDM drop down list in insert popup.
+					getAppliedQDMList();
 					searchDisplay.getSuccessMessageAlert().createAlert(
 							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
 					searchDisplay.getSuccessMessageAlert().setVisible(true);

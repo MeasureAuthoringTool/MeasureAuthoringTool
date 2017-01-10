@@ -2660,7 +2660,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLQualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(
 					measureXmlModel.getMeasureId(), false, null);
 			
-			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
+			ByteArrayOutputStream streamQDM = MeasureUtility.convertQualityDataDTOToXML(wrapper);
 						
 			String filteredString = removePatternFromXMLString(
 					streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)), "<measure>", "");

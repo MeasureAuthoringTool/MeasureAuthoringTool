@@ -46,7 +46,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	
 	@Override
 	public void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
-			Timestamp finalizedDate, Blob cqlXML) {
+			Timestamp finalizedDate, byte[] cqlByteArray) {
 		
 		CQLLibrary cqlLibrary = new CQLLibrary(); 
 		
@@ -60,7 +60,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		// cqlLibrary.setCqlSetId(cqlSetId);
 		cqlLibrary.setDraft(false);
 		cqlLibrary.setFinalizedDate(finalizedDate);
-		cqlLibrary.setCqlXML(cqlXML);
+		cqlLibrary.setCqlXML(cqlByteArray);
 		
 		this.cqlLibraryDAO.save(cqlLibrary);
 	}

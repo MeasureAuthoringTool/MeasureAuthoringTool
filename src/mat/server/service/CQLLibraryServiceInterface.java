@@ -13,7 +13,7 @@ public interface CQLLibraryServiceInterface {
 	List<CQLLibraryDataSetObject> search(String searchText, String searchFrom);
 	
 	void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
-			Timestamp finalizedDate, Blob cqlXML);
+			Timestamp finalizedDate, byte[] cqlByteArray);
 	
 	
 }

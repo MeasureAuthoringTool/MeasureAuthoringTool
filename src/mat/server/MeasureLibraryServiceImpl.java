@@ -141,9 +141,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.ibm.icu.text.DateFormat;
-import com.mysql.jdbc.Blob;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class MeasureLibraryServiceImpl.
@@ -2488,21 +2485,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@SuppressWarnings("deprecation")
 	private void exportCQLibraryFromMeasure(Measure measure, ManageMeasureDetailModel mDetail, MeasureXmlModel xmlModel) {
 				
-		System.out.println("EXPOrTING CQL LIBRARY FOR MEAURE");
 		// get simple xml for cql
-		
-		java.sql.Blob cqlBlob = null;
 		String cqlLibraryName = "";
+		byte[] cqlByteArray = null; 
 		if(!xmlModel.getXml().isEmpty()) {
 			String xPathForCQLLookup = "/measure/cqlLookUp";
-			String xPathFromCQLLibraryName = "/measure/cqlLookUp/library";
+			String xPathForCQLLibraryName = "/measure/cqlLookUp/library";
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			Document document = xmlProcessor.getOriginalDoc();
 			Node cqlLookUpNode = null;
 			try {
-				cqlLookUpNode = (Node) xPath.evaluate(xPathForCQLLookup, document.getDocumentElement(), XPathConstants.NODE);
-				Node cqlLibraryNode = (Node) xPath.evaluate(xPathFromCQLLibraryName, document.getDocumentElement(), XPathConstants.NODE);
+				cqlLookUpNode = xmlProcessor.findNode(document, xPathForCQLLookup);
+				Node cqlLibraryNode = xmlProcessor.findNode(document, xPathForCQLLibraryName);
 				cqlLibraryName = cqlLibraryNode.getTextContent(); 
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
@@ -2510,13 +2505,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			if(cqlLookUpNode != null){
 				String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
-				System.out.println(cqlXML);
-				byte[] xmlByteArr = cqlXML.getBytes();
-				cqlBlob = Hibernate.createBlob(xmlByteArr);	
+				cqlByteArray = cqlXML.getBytes();
 			}
 		}		
 		
-		// extract cql information from the measure and save it in the cql library table
 		String measureId = mDetail.getId();
 		User owner = measure.getOwner(); 
 		MeasureSet measureSet = measure.getMeasureSet();
@@ -2533,7 +2525,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		long time = date.getTime();
 		Timestamp timestamp = new Timestamp(time);
 		
-		this.cqlLibraryService.save(cqlLibraryName, measureId, owner, measureSet, version, releaseVersion, timestamp, cqlBlob);
+		this.cqlLibraryService.save(cqlLibraryName, measureId, owner, measureSet, version, releaseVersion, timestamp, cqlByteArray);
 	}
 	
 	/* (non-Javadoc)

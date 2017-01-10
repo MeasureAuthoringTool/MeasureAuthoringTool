@@ -2,6 +2,8 @@ package mat.model.clause;
 
 import java.sql.Timestamp;
 
+import org.hibernate.Hibernate;
+
 import mat.model.LockedUserInfo;
 import mat.model.User;
 
@@ -134,8 +136,9 @@ public class CQLLibrary {
 		return cqlXML;
 	}
 
-	public void setCqlXML(java.sql.Blob cqlBlob) {
-		this.cqlXML = cqlBlob;
+	public void setCqlXML(byte[] cqlByteArray) {
+		this.cqlXML = Hibernate.createBlob(cqlByteArray);
+		
 	}
 
 	public String getReleaseVersion() {

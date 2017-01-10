@@ -112,6 +112,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		userIdLabel.setFor("inputUserId");
 		userIdText.setWidth("250px");
 		userIdText.setHeight("27px");
+		userIdText.setText("JaMeyer7230");
 		userIdText.setId("inputUserId");
 		userIdText.setPlaceholder("Enter User ID");
 		userIdText.setTitle("Enter User ID");
@@ -122,6 +123,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		passwordLabel.setText("Password");
 		passwordLabel.setTitle("Password");
 		passwordLabel.setFor("inputPwd");
+		passwordInput.setText("Dr2gtgx6##");
 		passwordInput.setWidth("250px");
 		passwordInput.setHeight("27px");
 		passwordInput.setId("inputPwd");
@@ -135,6 +137,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		authLabel.setText("Security Code");
 		authLabel.setTitle("Security Code");
 		authLabel.setFor("inputAuthCode");
+		securityCodeInput.setText("123456");
 		securityCodeInput.setWidth("210px");
 		securityCodeInput.setHeight("28.5px");
 		securityCodeInput.setId("inputAuthCode");

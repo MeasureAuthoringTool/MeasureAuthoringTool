@@ -2723,12 +2723,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(CQLQualityDataModelWrapper result) {
 						appliedValueSetTableList.clear();
+						List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();
 						if(result != null){
 							for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
 								if (dto.isSuppDataElement())
 									continue;
-								appliedValueSetTableList.add(dto);
+								allValuesets.add(dto);
 							}
+							searchDisplay.setAppliedQdmList(allValuesets);
+							for(CQLQualityDataSetDTO valueset : allValuesets){
+								//filtering out codes from valuesets list
+								if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8"))
+									continue;
+									
+								appliedValueSetTableList.add(valueset);		
+							}
+							
 							searchDisplay.setAppliedQdmTableList(appliedValueSetTableList);
 						}
 						searchDisplay.hideAceEditorAutoCompletePopUp();
@@ -4197,11 +4207,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				public void onSuccess(CQLQualityDataModelWrapper result) {
 
 					appliedValueSetTableList.clear();
+					
+					List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();
+					
 					for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
 						if(dto.isSuppDataElement())
 							continue;
-						appliedValueSetTableList.add(dto);
+						allValuesets.add(dto);
 					}
+					
+					searchDisplay.setAppliedQdmList(allValuesets);
+					for(CQLQualityDataSetDTO valueset : allValuesets){
+						//filtering out codes from valuesets list
+						if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8")) 
+							continue;
+								
+						appliedValueSetTableList.add(valueset);
+					}
+					
+					
 					searchDisplay.getQdmView().buildAppliedQDMCellTable(appliedValueSetTableList, MatContext.get().getMeasureLockService()
 							.checkForEditPermission());
 					//if UMLS is not logged in

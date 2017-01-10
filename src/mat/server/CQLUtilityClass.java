@@ -445,7 +445,7 @@ public class CQLUtilityClass {
 
 			valuesetWrapper = (CQLQualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
-				cqlModel.setValueSetList(valuesetWrapper.getQualityDataDTO());
+				cqlModel.setValueSetList(filterValuesets(valuesetWrapper.getQualityDataDTO()));
 			}
 		} catch (Exception e) {
 			logger.info("Error while getting valueset :" +e.getMessage());
@@ -650,6 +650,26 @@ public class CQLUtilityClass {
 		});
 		
 		return cqlQualityDataSetDTOs;
+	}
+	
+	private static List<CQLQualityDataSetDTO> filterValuesets(List<CQLQualityDataSetDTO> cqlValuesets){
+		
+		List<CQLQualityDataSetDTO> filteredValuesets = new ArrayList<CQLQualityDataSetDTO>();
+		 
+		for(int i=0; i<cqlValuesets.size(); i++){
+			CQLQualityDataSetDTO cqlQualityDataSetDTO = cqlValuesets.get(i);
+			if(cqlQualityDataSetDTO.getDataType()!= null){
+				if(!cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") 
+						&& !cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
+					filteredValuesets.add(cqlQualityDataSetDTO);
+				}
+			} else {
+				filteredValuesets.add(cqlQualityDataSetDTO);
+			}
+		}
+		
+		return filteredValuesets;
+		
 	}
 	
 }

@@ -2396,7 +2396,7 @@ public class CQLServiceImpl implements CQLService {
 			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
 		}
 		
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(measureId).getCqlModel().getValueSetList());
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(measureId).getCqlModel().getAllValueSetList());
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		
 		return cqlQualityDataModelWrapper;

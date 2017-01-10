@@ -1,6 +1,8 @@
 package mat.server;
 
+import java.sql.Blob;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,7 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.MeasureSet;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
@@ -39,6 +42,27 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			allLibraries.add(object);
 		}
 		return allLibraries;
+	}
+	
+	@Override
+	public void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
+			Timestamp finalizedDate, Blob cqlXML) {
+		
+		CQLLibrary cqlLibrary = new CQLLibrary(); 
+		
+		cqlLibrary.setName(libraryName);
+		cqlLibrary.setMeasureId(measureId);
+		cqlLibrary.setOwnerId(owner);
+		cqlLibrary.setMeasureSetId(measureSet);
+		cqlLibrary.setVersion(version);
+		cqlLibrary.setReleaseVersion(releaseVersion);
+		// TODO CQL SET
+		// cqlLibrary.setCqlSetId(cqlSetId);
+		cqlLibrary.setDraft(false);
+		cqlLibrary.setFinalizedDate(finalizedDate);
+		cqlLibrary.setCqlXML(cqlXML);
+		
+		this.cqlLibraryDAO.save(cqlLibrary);
 	}
 	
 	private CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary){

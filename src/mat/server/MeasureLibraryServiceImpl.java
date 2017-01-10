@@ -239,6 +239,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO; 
+	
+	@Autowired
+	private CQLLibraryService cqlLibraryService; 
 		
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -2511,20 +2514,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				byte[] xmlByteArr = cqlXML.getBytes();
 				cqlBlob = Hibernate.createBlob(xmlByteArr);	
 			}
-			String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
-			System.out.println(cqlXML);
 		}		
 		
 		// extract cql information from the measure and save it in the cql library table
-		CQLLibrary cqlLibrary = new CQLLibrary();
-		cqlLibrary.setName(cqlLibraryName);
-		cqlLibrary.setMeasureId(mDetail.getId());
-		cqlLibrary.setOwnerId(measure.getOwner());
-		cqlLibrary.setMeasureSetId(measure.getMeasureSet());
-		cqlLibrary.setVersion(mDetail.getVersionNumber());
-		// cqlLibrary.setCqlSetId(null); // TODO Real data
-		cqlLibrary.setDraft(false);
-		System.out.println(mDetail.getFinalizedDate());
+		String measureId = mDetail.getId();
+		User owner = measure.getOwner(); 
+		MeasureSet measureSet = measure.getMeasureSet();
+		String version = mDetail.getVersionNumber();
+		String releaseVersion = measure.getReleaseVersion();
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
 		Date date = null;
@@ -2536,11 +2533,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		long time = date.getTime();
 		Timestamp timestamp = new Timestamp(time);
 		
-		cqlLibrary.setFinalizedDate(timestamp);
-		cqlLibrary.setCqlXML(cqlBlob);	
-		cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
-		
-		cqlLibraryDAO.save(cqlLibrary);
+		this.cqlLibraryService.save(cqlLibraryName, measureId, owner, measureSet, version, releaseVersion, timestamp, cqlBlob);
 	}
 	
 	/* (non-Javadoc)

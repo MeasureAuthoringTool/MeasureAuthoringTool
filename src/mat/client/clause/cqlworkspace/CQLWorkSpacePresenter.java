@@ -3610,6 +3610,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
+		searchDisplay.getQdmView().getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				updateVSACValueSets();
+			}
+		});
+	
 		/**
 		 * this functionality is to retrieve the value set from VSAC with latest
 		 * information which consists of Expansion Identifier list and Version
@@ -3709,6 +3717,45 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getQdmView().getQDMExpIdentifierListBox().setSelectedIndex(0);
 				}
 
+			}
+		});
+	}
+	
+	/**
+	 * Update vsac value sets.
+	 */
+	private void updateVSACValueSets() {
+		
+		String expansionId = null;
+		if(expIdentifierToAllQDM.isEmpty()){
+			expansionId = null;
+		} else {
+			expansionId = expIdentifierToAllQDM;
+		}
+		vsacapiService.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
+				new AsyncCallback<VsacApiResult>() {
+			
+			@Override
+			public void onFailure(final Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+			
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				if (result.isSuccess()) {
+					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
+					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
+					for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
+						if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO
+								.getDataType()) && !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO
+										.getDataType()))  {
+							appliedListModel.add(cqlQDMDTO);
+						} 
+					}
+					searchDisplay.getQdmView().buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService().checkForEditPermission());
+				} else {
+					searchDisplay.getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
+				}
 			}
 		});
 	}

@@ -25,4 +25,6 @@ public interface VSACApiService {
 	VsacApiResult updateAllVSACValueSetsAtPackage(String measureId, String sessionId);
 	
 	VsacApiResult getAllExpIdentifierList(String sessionId);
+
+	VsacApiResult updateCQLVSACValueSets(String measureId, String defaultExpId, String sessionId);
 }

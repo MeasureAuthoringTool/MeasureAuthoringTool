@@ -6,6 +6,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionIdentifier;
 import mat.model.VSACVersion;
+import mat.model.cql.CQLQualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -34,6 +35,10 @@ public class VsacApiResult implements IsSerializable {
 	
 	/** The QualityDataSetDTO List. */
 	private List<QualityDataSetDTO> updatedQualityDataDTOLIst;
+	
+	/** The CQLQualityDataSetDTO List. */
+	private List<CQLQualityDataSetDTO> updatedCQLQualityDataDTOLIst;
+	
 	/** The vsac response. */
 	private List<MatValueSet> vsacResponse;
 	
@@ -118,6 +123,20 @@ public class VsacApiResult implements IsSerializable {
 	 */
 	public void setUpdatedQualityDataDTOLIst(List<QualityDataSetDTO> updatedQualityDataDTOLIst) {
 		this.updatedQualityDataDTOLIst = updatedQualityDataDTOLIst;
+	}
+
+	/**
+	 * @return the updatedCQLQualityDataDTOLIst
+	 */
+	public List<CQLQualityDataSetDTO> getUpdatedCQLQualityDataDTOLIst() {
+		return updatedCQLQualityDataDTOLIst;
+	}
+
+	/**
+	 * @param updatedCQLQualityDataDTOLIst the updatedCQLQualityDataDTOLIst to set
+	 */
+	public void setUpdatedCQLQualityDataDTOLIst(List<CQLQualityDataSetDTO> updatedCQLQualityDataDTOLIst) {
+		this.updatedCQLQualityDataDTOLIst = updatedCQLQualityDataDTOLIst;
 	}
 
 	/**

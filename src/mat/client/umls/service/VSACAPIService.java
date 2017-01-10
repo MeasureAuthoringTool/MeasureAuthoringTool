@@ -61,6 +61,16 @@ public interface VSACAPIService extends RemoteService {
 	VsacApiResult updateVSACValueSets(String measureId, String defaultExpId);
 	
 	/**
+	 * Update vsac CQL value sets.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param defaultExpId TODO
+	 * @return the vsac api result
+	 */
+	VsacApiResult updateCQLVSACValueSets(String measureId, String defaultExpId);
+	
+	/**
 	 * Validate vsac user.
 	 * 
 	 * @param userName

@@ -7,19 +7,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
 import mat.model.DataType;
-import mat.model.MatConcept;
 import mat.model.MatValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionIdentifierWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.model.VSACVersionWrapper;
-import mat.model.cql.CQLCodeSystem;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
 import mat.server.util.ResourceLoader;
@@ -244,6 +243,23 @@ public class VSACApiServImpl implements VSACApiService{
 			Map.Entry<QualityDataSetDTO, QualityDataSetDTO> entrySet = it.next();
 			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
 			getMeasureLibraryService().updateMeasureXML(entrySet.getKey(),
+					entrySet.getValue(), measureId);
+			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
+		}
+		LOGGER.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
+	}
+	
+	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
+	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
+	 * @param map - HaspMap
+	 * @param measureId - String */
+	private void updateAllCQLInMeasureXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String measureId) {
+		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
+		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
+			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
+			getMeasureLibraryService().updateValueSetsInCQLLookUp(entrySet.getKey(),
 					entrySet.getValue(), measureId);
 			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
 		}
@@ -586,6 +602,141 @@ public class VSACApiServImpl implements VSACApiService{
 		LOGGER.info("End VSACAPIServiceImpl updateVSACValueSets method :");
 		return result;
 	}
+	
+	/**
+	 * *
+	 * Method to update valueset's without versions from VSAC in Measure XML.
+	 * Skip supplemental Data Elements and Timing elements, Expired, Birth date and User defined QDM.
+	 *
+	 * @param measureId            - Selected Measure Id.
+	 * @param defaultExpId the default exp id
+	 * @return VsacApiResult - Result.
+	 */
+	@Override
+	public final VsacApiResult updateCQLVSACValueSets(final String measureId, String defaultExpId, String sessionId) {
+		VsacApiResult result = new VsacApiResult();
+		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
+		if (isAlreadySignedIn(sessionId)) {
+			CQLQualityDataModelWrapper details = getMeasureLibraryService().getCQLAppliedQDMFromMeasureXml(measureId, false);
+			List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
+			HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> updateInMeasureXml =
+					new HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO>();
+			ArrayList<CQLQualityDataSetDTO> modifiedQDMList = new ArrayList<CQLQualityDataSetDTO>();
+			if (defaultExpId == null) {
+				defaultExpId = getDefaultExpId();
+			}
+			for (CQLQualityDataSetDTO cqlQualityDataSetDTO : appliedQDMList) {
+				CQLQualityDataSetDTO toBeModifiedQDM = cqlQualityDataSetDTO;
+				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: " + cqlQualityDataSetDTO.getOid());
+				// Filter out Timing Element , Expired, Birthdate, User defined QDM's and
+				// supplemental data elements.
+				if (ConstantMessages.TIMING_ELEMENT.equals(cqlQualityDataSetDTO.getDataType())
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())
+						|| cqlQualityDataSetDTO.isSuppDataElement()
+						|| ConstantMessages.BIRTHDATE_OID.equals(cqlQualityDataSetDTO.getOid())
+						|| ConstantMessages.EXPIRED_OID.equals(cqlQualityDataSetDTO.getOid())) {
+					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
+							+ "for following type Supplemental data or User defined or Timing Element.");
+					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
+						toBeModifiedQDM.setNotFoundInVSAC(true);
+						toBeModifiedQDM.setHasModifiedAtVSAC(true);
+						modifiedQDMList.add(toBeModifiedQDM);
+						DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
+						if ((qdmDataType == null) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(
+								cqlQualityDataSetDTO.getDataType()) || ConstantMessages.
+								PATIENT_CHARACTERISTIC_EXPIRED.equals(cqlQualityDataSetDTO.getDataType())) {
+							toBeModifiedQDM.setDataTypeHasRemoved(true);
+						}
+					}
+					continue;
+				} else {
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
+					VSACResponseResult vsacResponseResult = null;
+					try {
+						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
+								UMLSSessionTicket.getTicket(sessionId));
+						if(cqlQualityDataSetDTO.getExpansionIdentifier() != null){
+							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(cqlQualityDataSetDTO.getOid(),
+									cqlQualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
+						} else  {
+							if (!(cqlQualityDataSetDTO.getVersion().equals("1.0")
+									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
+								vsacResponseResult = vGroovyClient.
+										getMultipleValueSetsResponseByOIDAndVersion(cqlQualityDataSetDTO.getOid(),
+												cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+							} else {
+								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
+										cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
+							}
+						}
+					} catch (Exception ex) {
+						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
+								+ "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "
+								+ cqlQualityDataSetDTO.getDataType());
+					}
+					if ((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)) {
+						if (vsacResponseResult.getIsFailResponse()
+								&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+							LOGGER.info("Value Set reterival failed at VSAC for OID :"
+									+ cqlQualityDataSetDTO.getOid() + " with Data Type : "
+									+ cqlQualityDataSetDTO.getDataType() + ". Failure Reason: "
+									+ vsacResponseResult.getFailReason());
+							// inValidateVsacUser();
+							// MatContext.get().setUMLSLoggedIn(false);
+							result.setSuccess(false);
+							result.setFailureReason(vsacResponseResult.getFailReason());
+							return result;
+						}
+						if ((vsacResponseResult.getXmlPayLoad() != null)
+								&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
+							if (matValueSet != null) {
+								cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
+								if (matValueSet.isGrouping()) {
+									cqlQualityDataSetDTO.setTaxonomy(ConstantMessages.
+											GROUPING_CODE_SYSTEM);
+								} else {
+									if (matValueSet.getConceptList().getConceptList() != null) {
+										cqlQualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+												getConceptList().get(0).getCodeSystemName());
+									} else {
+										cqlQualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
+									}
+								}
+								updateInMeasureXml.put(cqlQualityDataSetDTO, toBeModifiedQDM);
+								toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
+								//to show icons in CellTable.
+							}
+						} else {
+							toBeModifiedQDM.setHasModifiedAtVSAC(true);
+							toBeModifiedQDM.setNotFoundInVSAC(true);
+						}
+					} else {
+						toBeModifiedQDM.setHasModifiedAtVSAC(true);
+						toBeModifiedQDM.setNotFoundInVSAC(true);
+					}
+				}
+				//to validate removed DataTypes in Applied QDM ELements
+				DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
+				if((qdmDataType == null) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(cqlQualityDataSetDTO.getDataType())
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(cqlQualityDataSetDTO.getDataType())){
+					toBeModifiedQDM.setDataTypeHasRemoved(true);
+				}
+				modifiedQDMList.add(toBeModifiedQDM);
+			}
+			updateAllCQLInMeasureXml(updateInMeasureXml, measureId);
+			result.setSuccess(true);
+			result.setUpdatedCQLQualityDataDTOLIst(modifiedQDMList);
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: UMLS Login is required");
+		}
+		LOGGER.info("End VSACAPIServiceImpl updateVSACValueSets method :");
+		return result;
+	}
+	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
 	 *@param userName - String.

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -75,17 +76,17 @@ public class CQLIncludeLibraryView {
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
-	private CQLButtonToolBar includesButtonBar;
+	private CQLButtonToolBar includesButtonBar = new CQLButtonToolBar("includes");
 	
-	SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
+	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	/**
 	 * Textbox aliasNameTxtArea.
 	 */
-	private TextBox aliasNameTxtArea = new TextBox();
-	List<CQLLibraryDataSetObject> selectedList;
+	private TextBox aliasNameTxtBox = new TextBox();
+	private List<CQLLibraryDataSetObject> selectedList;
 	
 	public CQLIncludeLibraryView(){
-		includesButtonBar = new CQLButtonToolBar("includes");
+	
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -97,16 +98,16 @@ public class CQLIncludeLibraryView {
 		Label aliasLabel = new Label(LabelType.INFO, "Alias Name");
 		aliasLabel.setMarginTop(5);
 		aliasLabel.setId("Alias_Label");
-		aliasNameTxtArea.setText("");
-		aliasNameTxtArea.setSize("260px", "25px");
-		aliasNameTxtArea.getElement().setId("aliasNameField_IncludeSection");
-		aliasNameTxtArea.setName("aliasName");
+		aliasNameTxtBox.setText("");
+		aliasNameTxtBox.setSize("260px", "25px");
+		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
+		aliasNameTxtBox.setName("aliasName");
 		aliasLabel.setText("Library Alias");
 		
 		VerticalPanel aliasLabelVP = new VerticalPanel();
 		aliasLabelVP.add(aliasLabel);
 		aliasLabelVP.add(new SpacerWidget());
-		aliasLabelVP.add(aliasNameTxtArea);
+		aliasLabelVP.add(aliasNameTxtBox);
 		aliasLabelVP.setWidth("580px");
 		aliasLabelVP.setStylePrimaryName("margintop20px");
 		
@@ -123,8 +124,8 @@ public class CQLIncludeLibraryView {
 		librariesLabel.setTitle("Library Search");
 		
 		searchLibraryVP.add(new SpacerWidget());
-		searchLibraryVP.add(librariesLabel);
-		searchLibraryVP.add(new SpacerWidget());
+		//searchLibraryVP.add(librariesLabel);
+		//searchLibraryVP.add(new SpacerWidget());
 		sWidget.getSearchBox().setWidth("590px");
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
@@ -174,11 +175,11 @@ public class CQLIncludeLibraryView {
 	}
 
 	public TextBox getAliasNameTxtArea() {
-		return aliasNameTxtArea;
+		return aliasNameTxtBox;
 	}
 
 	public void setAliasNameTxtArea(String string) {
-		this.aliasNameTxtArea.setText("");
+		this.aliasNameTxtBox.setText("");
 		
 	}
 	
@@ -486,6 +487,35 @@ public class CQLIncludeLibraryView {
 		this.includesButtonBar = includesButtonBar;
 	}
 	
+	public Button getSaveButton(){
+		return getIncludesButtonBar().getSaveButton();
+	}
 	
+	public Button getEraseButton(){
+		return getIncludesButtonBar().getEraseButton();
+	}
 	
+	public Button getDeleteButton(){
+		return getIncludesButtonBar().getDeleteButton();
+	}
+	
+	public Button getSearchButton(){
+		return sWidget.getGo();
+	}
+	
+	public TextBox getSearchTextBox(){
+		return sWidget.getSearchBox();
+	}
+	
+	public AceEditor getViewCQLEditor(){
+		return cqlAceEditor;
+	}
+	
+	public List<CQLLibraryDataSetObject> selectedObjectList(){
+		return selectedList;
+	}
+	
+	public void setSelectedObjectList(List<CQLLibraryDataSetObject> selectedObjectList){
+		selectedList = selectedObjectList;
+	}
 }

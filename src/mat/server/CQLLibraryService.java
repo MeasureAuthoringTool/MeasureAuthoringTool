@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -60,7 +61,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		// cqlLibrary.setCqlSetId(cqlSetId);
 		cqlLibrary.setDraft(false);
 		cqlLibrary.setFinalizedDate(finalizedDate);
-		cqlLibrary.setCqlXML(cqlByteArray);
+		cqlLibrary.setCqlXML(Hibernate.createBlob(cqlByteArray));
 		
 		this.cqlLibraryDAO.save(cqlLibrary);
 	}

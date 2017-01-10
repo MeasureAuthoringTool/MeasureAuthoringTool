@@ -136,9 +136,8 @@ public class CQLLibrary {
 		return cqlXML;
 	}
 
-	public void setCqlXML(byte[] cqlByteArray) {
-		this.cqlXML = Hibernate.createBlob(cqlByteArray);
-		
+	public void setCqlXML(java.sql.Blob cqlBlob) {
+		this.cqlXML = cqlBlob;
 	}
 
 	public String getReleaseVersion() {

@@ -743,11 +743,11 @@ public interface MeasureLibraryService {
 
 	CQLQualityDataModelWrapper getCQLValusets(String measureID);
 
-	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
 	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);

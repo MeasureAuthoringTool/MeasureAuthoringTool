@@ -673,12 +673,9 @@ public interface MeasureService extends RemoteService {
 	
 	CQLQualityDataModelWrapper getCQLValusets(String measureID);
 
-	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
-
-	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
-			String measureId);
+	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 }

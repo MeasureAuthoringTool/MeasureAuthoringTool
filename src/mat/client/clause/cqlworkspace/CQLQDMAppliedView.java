@@ -80,7 +80,10 @@ import mat.shared.ConstantMessages;
  */
 public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	
+	/** The Constant GROUPING_QDM. */
 	static final String GROUPING_QDM = " (G)";
+	
+	/** The Constant EXTENSIONAL_QDM. */
 	static final String EXTENSIONAL_QDM = " (E)";
 	
 	/**
@@ -109,6 +112,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The observer. */
 	private Observer observer;
 	
+	/** The default exp identifier sel. */
 	private CheckBox defaultExpIdentifierSel = new CheckBox();
 	/** The vsac profile list box. */
 	private ListBox defaultExpIdentifierListBox = new ListBox();
@@ -129,6 +133,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The cell table panel. */
 	private Panel cellTablePanel = new Panel();
 	
+	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
 	/** Cell Table Row Count. */
 	private static final int TABLE_ROW_COUNT = 15;
@@ -188,13 +193,16 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The save cancel button bar. */
 	private Button saveValueSet = new Button("Apply");
 	
+	/** The cancel button. */
 	private Button cancelButton = new Button("Cancel");
 	
+	/** The s widget. */
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel;
 	
+	/** The search header. */
 	private PanelHeader searchHeader = new PanelHeader();
 	
 	
@@ -361,9 +369,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
 		searchHeader.setStyleName("measureGroupingTableHeader");
-		HTML searchHeaderText = new HTML("<strong>Search</strong>");
+		/*HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();
-		searchHeader.add(searchHeaderText);
+		searchHeader.add(searchHeaderText);*/
 		
 		searchPanel.add(searchHeader);
 		searchPanel.setWidth("350px");
@@ -456,7 +464,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/**
 	 * Builds the cell table.
 	 *
-	 * @param List     the appliedValueSetList
+	 * @param appliedValueSetList the applied value set list
 	 * @param isEditable the is editable
 	 */
 	public void buildAppliedQDMCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
@@ -704,6 +712,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	public HasValueChangeHandlers<Boolean> getDefaultExpIDInput() {
 		return defaultExpIdentifierSel;
 	}
+	
+	/**
+	 * Gets the default exp identifier sel.
+	 *
+	 * @return the default exp identifier sel
+	 */
 	//@Override
 	public CheckBox getDefaultExpIdentifierSel(){
 		return defaultExpIdentifierSel;
@@ -1374,6 +1388,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getMainPanel()
 	 */
+	/**
+	 * Gets the main panel.
+	 *
+	 * @return the main panel
+	 */
 	//@Override
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
@@ -1401,7 +1420,10 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		
 	}
 	
-	void setWidgetToDefault() {
+	/**
+	 * Sets the widget to default.
+	 */
+	public void setWidgetToDefault() {
 		getVersionListBox().clear();
 		getQDMExpIdentifierListBox().clear();
 		getOIDInput().setValue("");

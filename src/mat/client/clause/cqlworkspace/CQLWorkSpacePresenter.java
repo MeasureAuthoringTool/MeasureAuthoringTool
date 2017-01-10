@@ -66,8 +66,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
-import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionIdentifier;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
@@ -90,9 +88,7 @@ import mat.shared.SaveUpdateCQLResult;
  * The Class CQLPresenterNavBarWithList.
  */
 public class CQLWorkSpacePresenter implements MatPresenter {
-	/** The Measurement Period OID . */
-	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
-
+	
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 
@@ -127,9 +123,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/** The is expansion profile. */
 	private boolean isExpansionIdentifier = false;
-
-	/** The is all oi ds updated. */
-	private boolean isAllOIDsUpdated = false;
 
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet;
@@ -1752,8 +1745,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().setObserver(new CQLQDMAppliedView.Observer() {
 			@Override
 			public void onModifyClicked(CQLQualityDataSetDTO result) {
-
-				resetQDMSearchPanel();
+				searchDisplay.resetMessageDisplay();
+				resetCQLValuesetearchPanel();
 				isModified = true;
 				modifyValueSetDTO = result;
 				String displayName = result.getCodeListName();
@@ -1774,6 +1767,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(CQLQualityDataSetDTO result, final int index) {
 				searchDisplay.resetMessageDisplay();
+				resetCQLValuesetearchPanel();
 				if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 					isModified = false;
 				}
@@ -2846,6 +2840,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					MatContext.get().getMeasureLockService().checkForEditPermission());
 			searchDisplay.getQdmView()
 					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+			resetCQLValuesetearchPanel();
 		}
 
 	}
@@ -3173,7 +3168,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/**
 	 * Validate user defined input. In this functionality we are disabling all
-	 * the fields in Search Panel except Name and DataType Selection List Box
+	 * the fields in Search Panel except Name
 	 * which are required to create new UserDefined QDM Element.
 	 */
 	private void validateUserDefinedInput() {
@@ -3601,21 +3596,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
 				isModified = false;
-				searchDisplay.getQdmView().getSearchHeader().setText("Search");
-				searchDisplay.getQdmView().getOIDInput().setEnabled(true);
-				searchDisplay.getQdmView().getOIDInput().setValue("");
-				searchDisplay.getQdmView().getOIDInput().setTitle("Enter OID");
-				searchDisplay.getQdmView().getUserDefinedInput().setEnabled(true);
-				searchDisplay.getQdmView().getUserDefinedInput().setTitle("Enter Name");
-				searchDisplay.getQdmView().getUserDefinedInput().setValue("");
-				searchDisplay.getQdmView().getQDMExpIdentifierListBox().clear();
-				searchDisplay.getQdmView().getVersionListBox().clear();
-
-				searchDisplay.getQdmView().getQDMExpIdentifierListBox().setEnabled(false);
-				searchDisplay.getQdmView().getVersionListBox().setEnabled(false);
-
-				searchDisplay.getQdmView().getSaveButton().setEnabled(false);
-
+				resetCQLValuesetearchPanel();
 			}
 		});
 
@@ -3882,10 +3863,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Adds the QDS with value set.
 	 */
-	private void addQDSWithValueSet() {
+	private void addVSACCQLValueset() {
 
 		String measureID = MatContext.get().getCurrentMeasureId();
-
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(measureID);
 		matValueSetTransferObject.scrubForMarkUp();
 		final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
@@ -3900,8 +3880,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		// Check if QDM name already exists in the list.
 		if (!CheckNameInQDMList(codeListName)) {
 
-			MatContext.get().getMeasureService().saveQDStoMeasure(matValueSetTransferObject,
-					new AsyncCallback<SaveUpdateCodeListResult>() {
+			MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject,
+					new AsyncCallback<SaveUpdateCQLResult>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
@@ -3911,16 +3891,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						}
 
 						@Override
-						public void onSuccess(SaveUpdateCodeListResult result) {
+						public void onSuccess(SaveUpdateCQLResult result) {
 							String message = "";
-							if (result.getXmlString() != null) {
-								saveMeasureXML(result.getXmlString());
-							}
 							if (result.isSuccess()) {
+								
 								message = MatContext.get().getMessageDelegate().getValuesetSuccessMessage(codeListName);
 								MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeListName));
-								resetQDMSearchPanel();
+								resetCQLValuesetearchPanel();
 								searchDisplay.getSuccessMessageAlert().createAlert(message);
+								getAppliedQDMList();
 							} else {
 								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 									searchDisplay.getErrorMessageAlert().createAlert(
@@ -3942,16 +3921,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addSelectedCodeListtoMeasure(final boolean isUserDefinedQDM) {
 		if (!isUserDefinedQDM) {
-			addQDSWithValueSet();
+			addVSACCQLValueset();
 		} else {
-			addQDSWithOutValueSet();
+			addUserDefinedValueSet();
 		}
 	}
 	
 	/**
 	 * Adds the QDS with out value set.
 	 */
-	private void addQDSWithOutValueSet() {
+	private void addUserDefinedValueSet() {
 
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(
 				MatContext.get().getCurrentMeasureId());
@@ -3974,8 +3953,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				// Check if QDM name already exists in the list.
 				if (!CheckNameInQDMList(userDefinedInput)) {
-					MatContext.get().getMeasureService().saveUserDefinedQDStoMeasure(matValueSetTransferObject,
-							new AsyncCallback<SaveUpdateCodeListResult>() {
+					MatContext.get().getMeasureService().saveCQLUserDefinedValuesettoMeasure(matValueSetTransferObject,
+							new AsyncCallback<SaveUpdateCQLResult>() {
 								@Override
 								public void onFailure(final Throwable caught) {
 									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -3983,14 +3962,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 								@SuppressWarnings("static-access")
 								@Override
-								public void onSuccess(final SaveUpdateCodeListResult result) {
+								public void onSuccess(final SaveUpdateCQLResult result) {
 									if (result.isSuccess()) {
-										if (result.getXmlString() != null) {
-											saveMeasureXML(result.getXmlString());
+										if (result.getCqlString() != null) {
+											
 											String message = MatContext.get().getMessageDelegate()
 													.getValuesetSuccessMessage(userDefinedInput);
 											searchDisplay.getSuccessMessageAlert().createAlert(message);
-											searchDisplay.getQdmView().getUserDefinedInput().setText("");
+											resetCQLValuesetearchPanel();
+											getAppliedQDMList();
 										}
 									} else {
 										if (result.getFailureReason() == result.ALREADY_EXISTS) {
@@ -4024,7 +4004,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (!isUserDefined) { //Normal Available QDM Flow
 			modifyValueSetQDM();
 		} else { //Pseudo QDM Flow
-			modifyQDMWithOutValueSet();
+			modifyUserDefinedValueSet();
 		}
 	}
 
@@ -4053,6 +4033,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if(modifyValueSetDTO.getVersion() == null){
 				modifyValueSetDTO.setVersion("");
 			}
+			
+			modifyQDMList(modifyValueSetDTO);
+			
 			if(!CheckNameInQDMList(displayName)){
 				updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
@@ -4066,7 +4049,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Modify QDM with out value set.
 	 */
-	private void modifyQDMWithOutValueSet() {
+	private void modifyUserDefinedValueSet() {
 		modifyValueSetDTO.setExpansionIdentifier("");
 		modifyValueSetDTO.setVersion("");
 		if ((searchDisplay.getQdmView().getUserDefinedInput().getText().trim().length() > 0)) {
@@ -4079,6 +4062,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if(version == null){
 				version = "";
 			}
+			
+			modifyQDMList(modifyValueSetDTO);
 			if(!CheckNameInQDMList(usrDefDisplayName)){
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getQdmView().getUserDefinedInput().getText());
@@ -4108,7 +4093,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void updateAppliedQDMList(final MatValueSet matValueSet , final CodeListSearchDTO codeListSearchDTO ,
 			final CQLQualityDataSetDTO qualityDataSetDTO, final boolean isUSerDefined) {
 		
-		modifyQDMList(qualityDataSetDTO);
+		//modifyQDMList(qualityDataSetDTO);
 		String version = searchDisplay.getQdmView().getVersionValue(searchDisplay.getQdmView().getVersionListBox());
 		String expansionProfile = searchDisplay.getQdmView().getExpansionIdentifierValue(
 				searchDisplay.getQdmView().getQDMExpIdentifierListBox());
@@ -4143,37 +4128,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			matValueSetTransferObject.setVersion(false);
 		}
 		matValueSetTransferObject.scrubForMarkUp();
-		MatContext.get().getMeasureService().updateQDStoMeasure(matValueSetTransferObject,
-				new AsyncCallback<SaveUpdateCodeListResult>() {
+		MatContext.get().getMeasureService().updateCQLValuesetsToMeasure(matValueSetTransferObject,
+				new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
-				if (!isUSerDefined) {
-					searchDisplay.getErrorMessageAlert().createAlert(
+				searchDisplay.getErrorMessageAlert().createAlert(
 							MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				} else {
-					searchDisplay.getErrorMessageAlert().createAlert(
-							MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				}
+		
 			}
 			@Override
-			public void onSuccess(final SaveUpdateCodeListResult result) {
+			public void onSuccess(final SaveUpdateCQLResult result) {
 				
 				if(result.isSuccess()){
 					isModified = false;
-					appliedValueSetTableList = result.getCqlAppliedQDMList();
-					isAllOIDsUpdated = result.isAllOIDsUpdated();
-					updateMeasureXML(result.getCqlQualityDataSetDTO() , qualityDataSetDTO, isUSerDefined);
-					resetQDMSearchPanel();
+					resetCQLValuesetearchPanel();
+					modifyValueSetDTO = result.getCqlQualityDataSetDTO();
+					getAppliedQDMList();
 				} else{
 					
 					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-						if (!isUSerDefined) {
-							searchDisplay.getErrorMessageAlert().createAlert(
+						searchDisplay.getErrorMessageAlert().createAlert(
 									MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-						} else {
-							searchDisplay.getErrorMessageAlert().createAlert(
-									MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-						}
+					
 					} else if (result.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
 						searchDisplay.getErrorMessageAlert().createAlert("Invalid Input data.");
 					}
@@ -4183,72 +4159,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 	}
 	
-	
-	/**
-	 * Update measure XML.
-	 *
-	 * @param modifyWithDTO the modify with DTO
-	 * @param modifyableDTO the modifyable DTO
-	 * @param isUserDefined the is user defined
-	 */
-	private void updateMeasureXML(final CQLQualityDataSetDTO modifyWithDTO,
-			final CQLQualityDataSetDTO modifyableDTO, final boolean isUserDefined) {
-		service.updateValueSetsInCQLLookUp(modifyWithDTO, modifyableDTO,
-				MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				if (!isUserDefined) {
-					searchDisplay.getErrorMessageAlert().createAlert(
-							MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				} else {
-					searchDisplay.getErrorMessageAlert().createAlert(
-							MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				}
-			}
-			
-			@Override
-			public void onSuccess(final Void result) {
-			
-				searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-				modifyValueSetDTO = modifyWithDTO;
-				getAppliedQDMList();
-			}
-		});
-	}
-	
-	/**
-	 * Save measure XML.
-	 *
-	 * @param valuesetXMLString the valueset XML string
-	 */
-	private void saveMeasureXML(final String valuesetXMLString) {
-		final String nodeName = "valueset";
-		
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		exportModal.setParentNode("/measure/cqlLookUp/valuesets");
-		exportModal.setToReplaceNode("valueset");
-
-		System.out.println("NEW XML " + valuesetXMLString);
-		exportModal.setXml(valuesetXMLString);
-		
-		service.appendAndSaveNode(exportModal, nodeName, new AsyncCallback<Void>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.getErrorMessageAlert().createAlert(
-						MatContext.get().getMessageDelegate()
-						.getGenericErrorMessage());
-			}
-			
-			@Override
-			public void onSuccess(final Void result) {
-				getAppliedQDMList();
-			}
-
-		});
-	}
 	
 	
 	/**
@@ -4414,24 +4324,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	
 	/**
-	 * Name count in QDM list.
-	 *
-	 * @param userDefinedInput the user defined input
-	 * @return the int
-	 */
-	private int nameCountInQDMList(String userDefinedInput) {
-		int count = 0;
-		Iterator<CQLQualityDataSetDTO> qdmIterator = appliedValueSetTableList
-				.iterator();
-		while (qdmIterator.hasNext()) {
-			if(qdmIterator.next().getCodeListName().equals(userDefinedInput)){
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	/**
 	 * Convert message.
 	 * 
 	 * @param id
@@ -4486,16 +4378,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Reset QDM search panel.
 	 */
-	private void resetQDMSearchPanel() {
-		searchDisplay.getQdmView().getSearchHeader().setText("Search");
+	private void resetCQLValuesetearchPanel() {
+		HTML searchHeaderText = new HTML("<strong>Search</strong>");
+		searchDisplay.getQdmView().getSearchHeader().clear();
+		searchDisplay.getQdmView().getSearchHeader().add(searchHeaderText);
+		
 		searchDisplay.getQdmView().getOIDInput().setEnabled(true);
 		searchDisplay.getQdmView().getOIDInput().setValue("");
+		searchDisplay.getQdmView().getOIDInput().setTitle("Enter OID");
+		
 		searchDisplay.getQdmView().getUserDefinedInput().setEnabled(true);
 		searchDisplay.getQdmView().getUserDefinedInput().setValue("");
+		searchDisplay.getQdmView().getUserDefinedInput().setTitle("Enter Name");
+		
 		searchDisplay.getQdmView().getQDMExpIdentifierListBox().clear();
 		searchDisplay.getQdmView().getVersionListBox().clear();
+		
 		searchDisplay.getQdmView().getQDMExpIdentifierListBox().setEnabled(false);
 		searchDisplay.getQdmView().getVersionListBox().setEnabled(false);
+		
+		searchDisplay.getQdmView().getSaveButton().setEnabled(false);
 	}
 	
 

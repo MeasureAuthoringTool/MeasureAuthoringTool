@@ -1616,7 +1616,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void addQDSWithValueSet() {
 		final String dataType;
 		final String dataTypeText;
-		final boolean isSpecificOccurrence;
 		dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 
 		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")) {

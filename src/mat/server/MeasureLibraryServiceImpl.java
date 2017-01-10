@@ -5703,6 +5703,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return this.getCqlService().parseCQLStringForError(cqlFileString);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getCQLValusets(java.lang.String)
+	 */
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {
 		CQLQualityDataModelWrapper cqlQualityDataModelWrapper = new CQLQualityDataModelWrapper();
@@ -5714,20 +5717,55 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return this.getCqlService().getCQLValusets(measureID, cqlQualityDataModelWrapper);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveCQLValueSettoMeasure(mat.model.CQLValueSetTransferObject)
+	 */
 	@Override
-	public SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject){
-		return this.getCqlService().saveQDStoMeasure(valueSetTransferObject);
+	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject){
+		SaveUpdateCQLResult result = getCqlService().saveCQLValuesettoMeasure(valueSetTransferObject);
+		saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveUserDefinedQDStoMeasure(mat.model.CQLValueSetTransferObject)
+	 */
 	@Override
-	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject){
-		return this.getCqlService().saveUserDefinedQDStoMeasure(matValueSetTransferObject);
+	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject){
+		SaveUpdateCQLResult result = getCqlService().saveCQLUserDefinedValuesettoMeasure(matValueSetTransferObject);
+		saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
+		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#updateQDStoMeasure(mat.model.CQLValueSetTransferObject)
+	 */
 	@Override
-	public SaveUpdateCodeListResult updateQDStoMeasure(
+	public SaveUpdateCQLResult updateCQLValueSetstoMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		return this.getCqlService().updateQDStoMeasure(matValueSetTransferObject);
+		
+		SaveUpdateCQLResult result = getCqlService().updateCQLValueSetstoMeasure(matValueSetTransferObject);
+		updateValueSetsInCQLLookUp(result.getCqlQualityDataSetDTO(), matValueSetTransferObject.getCqlQualityDataSetDTO(),
+				matValueSetTransferObject.getMeasureId());
+		return result;
+	}
+	
+	/**
+	 * Save CQL valueset in measure xml.
+	 *
+	 * @param result the result
+	 */
+	private void saveCQLValuesetInMeasureXml(SaveUpdateCQLResult result, String measureId){
+		final String nodeName = "valueset";
+		MeasureXmlModel xmlModal = new MeasureXmlModel();
+		xmlModal.setMeasureId(measureId);
+		xmlModal.setParentNode("/measure/cqlLookUp/valuesets");
+		xmlModal.setToReplaceNode(nodeName);
+
+		System.out.println("NEW XML " + result.getCqlString());
+		xmlModal.setXml(result.getCqlString());
+		
+		appendAndSaveNode(xmlModal, nodeName);
 	}
 }
 

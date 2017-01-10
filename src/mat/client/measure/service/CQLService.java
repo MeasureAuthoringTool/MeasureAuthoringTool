@@ -170,11 +170,11 @@ public interface CQLService {
 
 	CQLQualityDataModelWrapper getCQLValusets(String measureID, CQLQualityDataModelWrapper cqlQualityDataModelWrapper);
 
-	SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject);
+	SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCodeListResult updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
 
 

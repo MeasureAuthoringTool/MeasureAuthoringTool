@@ -741,14 +741,12 @@ public interface MeasureServiceAsync {
 
 	void getCQLValusets(String measureID, AsyncCallback<CQLQualityDataModelWrapper> callback);
 	
-	void saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject, AsyncCallback<SaveUpdateCodeListResult> callback);
+	void saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject, 
+			AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveUserDefinedQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
+	void saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject,
+			AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void updateQDStoMeasure(CQLValueSetTransferObject matValueSetTransferObject,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
-
-	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
-			String measureId, AsyncCallback<Void> callback);
+	void updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject,
+			AsyncCallback<SaveUpdateCQLResult> callback);
 }

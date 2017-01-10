@@ -1982,13 +1982,13 @@ public class CQLServiceImpl implements CQLService {
 	 * @return the save update code list result
 	 */
 	@Override
-	public final SaveUpdateCodeListResult saveQDStoMeasure(
+	public final SaveUpdateCQLResult saveCQLValuesettoMeasure(
 			CQLValueSetTransferObject valueSetTransferObject) {
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
 		wrapper.setQualityDataDTO(qdsList);
-		//valueSetTransferObject.scrubForMarkUp();
+	    valueSetTransferObject.scrubForMarkUp();
 		CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
 		qds.setOid(matValueSet.getID());
@@ -2021,7 +2021,7 @@ public class CQLServiceImpl implements CQLService {
 				result.setSuccess(true);
 				qualityDataSetDTOs.add(qds);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
-				result.setXmlString(xmlString);
+				result.setCqlString(xmlString);
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
@@ -2057,9 +2057,9 @@ public class CQLServiceImpl implements CQLService {
 	 * @see mat.client.measure.service.CQLService#saveUserDefinedQDStoMeasure(mat.model.CQLValueSetTransferObject)
 	 */
 	@Override
-	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(
+	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
 		QDMInputValidator validator = new QDMInputValidator();
@@ -2093,7 +2093,7 @@ public class CQLServiceImpl implements CQLService {
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
-				result.setXmlString(qdmXMLString);
+				result.setCqlString(qdmXMLString);
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
@@ -2146,14 +2146,14 @@ public class CQLServiceImpl implements CQLService {
 	 * @see mat.client.measure.service.CQLService#updateQDStoMeasure(mat.model.CQLValueSetTransferObject)
 	 */
 	@Override
-	public final SaveUpdateCodeListResult updateQDStoMeasure(
+	public final SaveUpdateCQLResult updateCQLValueSetstoMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCodeListResult result = null;
+		SaveUpdateCQLResult result = null;
 		matValueSetTransferObject.scrubForMarkUp();
 		if (matValueSetTransferObject.getMatValueSet() != null) {
-			result = updateVSACValueSetInElementLookUp(matValueSetTransferObject);
+			result = updateVSACValueSetInCQLLookUp(matValueSetTransferObject);
 		} else if (matValueSetTransferObject.getCodeListSearchDTO() != null) {
-			result = updateUserDefineQDMInElementLookUp(matValueSetTransferObject);
+			result = updateUserDefineValuesetInCQLLookUp(matValueSetTransferObject);
 		}
 		return result;
 	}
@@ -2164,9 +2164,9 @@ public class CQLServiceImpl implements CQLService {
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(
+	private SaveUpdateCQLResult updateVSACValueSetInCQLLookUp(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataSetDTO oldQdm = new CQLQualityDataSetDTO();
 		populatedOldQDM(oldQdm,
 				matValueSetTransferObject.getCqlQualityDataSetDTO());
@@ -2240,10 +2240,10 @@ public class CQLServiceImpl implements CQLService {
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(
+	private SaveUpdateCQLResult updateUserDefineValuesetInCQLLookUp(
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		QDMInputValidator validator = new QDMInputValidator();
 		List<String> messageList = new ArrayList<String>();
 		validator.validate(matValueSetTransferObject);
@@ -2267,7 +2267,7 @@ public class CQLServiceImpl implements CQLService {
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
-				result.setXmlString(qdmXMLString);
+				result.setCqlString(qdmXMLString);
 				result.setCqlQualityDataSetDTO(qds);
 			} else {
 				result.setSuccess(false);
@@ -2395,6 +2395,7 @@ public class CQLServiceImpl implements CQLService {
 		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
 			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
 		}
+		
 		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(measureId).getCqlModel().getValueSetList());
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		

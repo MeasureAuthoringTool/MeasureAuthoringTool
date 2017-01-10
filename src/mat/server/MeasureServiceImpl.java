@@ -656,25 +656,19 @@ MeasureService {
 	}
 
 	@Override
-	public SaveUpdateCodeListResult saveQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
-		return this.getMeasureLibraryService().saveQDStoMeasure(valueSetTransferObject);
+	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+		return this.getMeasureLibraryService().saveCQLValuesettoMeasure(valueSetTransferObject);
 	}
 	
 	@Override
-	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
-		return this.getMeasureLibraryService().saveUserDefinedQDStoMeasure(valueSetTransferObject);
+	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+		return this.getMeasureLibraryService().saveCQLUserDefinedValuesettoMeasure(valueSetTransferObject);
 	}
 	
 	@Override
-	public SaveUpdateCodeListResult updateQDStoMeasure(
+	public SaveUpdateCQLResult updateCQLValuesetsToMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		return this.getMeasureLibraryService().updateQDStoMeasure(matValueSetTransferObject);
+		return this.getMeasureLibraryService().updateCQLValueSetstoMeasure(matValueSetTransferObject);
 	}
-	
-	@Override
-	public void updateValueSetsInCQLLookUp(final CQLQualityDataSetDTO modifyWithDTO,
-			final CQLQualityDataSetDTO modifyDTO, final String measureId) {
-		this.getMeasureLibraryService().updateValueSetsInCQLLookUp(modifyWithDTO, modifyDTO, measureId);
-	}
-	
+
 }

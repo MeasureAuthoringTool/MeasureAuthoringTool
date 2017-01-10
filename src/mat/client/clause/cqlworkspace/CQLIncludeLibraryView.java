@@ -1,5 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Label;
@@ -9,10 +11,16 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -24,6 +32,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SelectionChangeEvent.Handler;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
@@ -31,12 +42,12 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLLibraryModel;
 
 public class CQLIncludeLibraryView {
 	
@@ -62,6 +73,8 @@ public class CQLIncludeLibraryView {
 	/** The spager. */
 	private MatSimplePager spager;
 	
+	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
+	
 	private CQLButtonToolBar includesButtonBar;
 	
 	SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
@@ -69,6 +82,7 @@ public class CQLIncludeLibraryView {
 	 * Textbox aliasNameTxtArea.
 	 */
 	private TextBox aliasNameTxtArea = new TextBox();
+	List<CQLLibraryDataSetObject> selectedList;
 	
 	public CQLIncludeLibraryView(){
 		includesButtonBar = new CQLButtonToolBar("includes");
@@ -194,8 +208,7 @@ public class CQLIncludeLibraryView {
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
 		
-		
-		
+		selectedList = new ArrayList<CQLLibraryDataSetObject>();
 		
 		if ((cqlLibraryList != null)
 				&& (cqlLibraryList.size() > 0)) {
@@ -211,8 +224,12 @@ public class CQLIncludeLibraryView {
 			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
+			selectionModel = new SingleSelectionModel<CQLLibraryDataSetObject>();
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setSelectionModel(selectionModel);
 			table = addColumnToTable(table, sortHandler, isEditable);
 			listDataProvider.addDataDisplay(table);
+			addSelectionHandler();
 			CustomPager.Resources pagerResources = GWT
 					.create(CustomPager.Resources.class);
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
@@ -253,6 +270,31 @@ public class CQLIncludeLibraryView {
 		}
 	}
 	
+	/**
+	 * Selection Change Handler for Selection Model to make checkbox behave like radio button.
+	 */
+	private void addSelectionHandler() {
+		selectionModel.addSelectionChangeHandler(new Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				CQLLibraryDataSetObject selectedObject  = selectionModel.getSelectedObject();
+				if(selectedObject !=null) {
+					for(CQLLibraryDataSetObject obj : listDataProvider.getList()){
+						if(!obj.getId().equals(selectedObject.getId())){
+							obj.setSelected(false);
+							selectionModel.setSelected(obj, false);
+						}
+					}
+					
+					listDataProvider.refresh();
+				}
+				
+			}
+		});
+		
+	}
+
 	/**
 	 * Adds the column to table.
 	 *
@@ -324,34 +366,118 @@ public class CQLIncludeLibraryView {
 					.fromSafeConstant("<span title=\"Owner\">" + "Owner"
 							+ "</span>"));
 			
-			String colName = "Modify";
-			
-			if(!isEditable){
-				colName = "Select";
-			}
-			
-			/*// Modify by Delete Column
-			table.addColumn(new Column<CQLLibraryModel, CQLLibraryModel>(
-					getCompositeCellForQDMModifyAndDelete(isEditable)) {
-				
+			table.addColumn(new Column<CQLLibraryDataSetObject, CQLLibraryDataSetObject>(getCheckBoxCellForTable()) {
 				@Override
-				public CQLLibraryModel getValue(CQLLibraryModel object) {
+				public CQLLibraryDataSetObject getValue(CQLLibraryDataSetObject object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));*/
+			}, "Select");
 			
 			
 			table.setColumnWidth(0, 35.0, Unit.PCT);
 			table.setColumnWidth(1, 35.0, Unit.PCT);
 			table.setColumnWidth(2, 14.0, Unit.PCT);
-			//table.setColumnWidth(3, 14.0, Unit.PCT);
+			table.setColumnWidth(3, 14.0, Unit.PCT);
 			
 		}
 		table.setWidth("100%");
 		return table;
 	}
 
+	
+	private CompositeCell<CQLLibraryDataSetObject> getCheckBoxCellForTable(){
+		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<HasCell<CQLLibraryDataSetObject, ?>>();
+		cells.add(getCheckBoxCell());
+		CompositeCell<CQLLibraryDataSetObject> cell = new CompositeCell<CQLLibraryDataSetObject>(cells) {
+			@Override
+			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant("<table><tbody><tr>");
+				for (HasCell<CQLLibraryDataSetObject, ?> hasCell : cells) {
+					render(context, object, sb, hasCell);
+				}
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			@Override
+			protected <X> void render(Context context, CQLLibraryDataSetObject object,
+					SafeHtmlBuilder sb, HasCell<CQLLibraryDataSetObject, X> hasCell) {
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td class='emptySpaces'>");
+				if ((object != null)) {
+					cell.render(context, hasCell.getValue(object), sb);
+				} else {
+					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				}
+				sb.appendHtmlConstant("</td>");
+			}
+			@Override
+			protected Element getContainerElement(Element parent) {
+				return parent.getFirstChildElement().getFirstChildElement()
+						.getFirstChildElement();
+			}
+		};
+		
+		return cell;
+		
+	}
+	
+	
+	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(){
+		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
+			
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
+			
+			@Override
+			public Cell<Boolean> getCell() {
+				return cell;
+			}
+			@Override
+			public Boolean getValue(CQLLibraryDataSetObject object) {
+				boolean isSelected = false;
+				if (selectedList.size() > 0) {
+					for (int i = 0; i < selectedList.size(); i++) {
+						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							isSelected = true;
+							selectionModel.setSelected(object, isSelected);
+							selectedList.get(i).setSelected(true);
+							break;
+						} 
+					}
+			} else {
+				isSelected = false;
+				selectionModel.setSelected(object, isSelected);
+				}
+				return isSelected;		
+				
+			}
+			@Override
+			public FieldUpdater<CQLLibraryDataSetObject, Boolean> getFieldUpdater() {
+				return new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
+					@Override
+					public void update(int index, CQLLibraryDataSetObject object,
+							Boolean isCBChecked) {
+						if(isCBChecked) {
+							for (int i = 0; i < selectedList.size(); i++) {
+								selectionModel.setSelected(selectedList.get(i), false);
+							}
+							selectedList.clear();
+							selectedList.add(object);
+						}
+						else{
+							for (int i = 0; i < selectedList.size(); i++) {
+								if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+									selectedList.remove(i);
+									break;
+								}
+							}
+						}
+						selectionModel.setSelected(object, isCBChecked);
+					}
+				};
+			}
+		};
+		return hasCell;
+	}
+	
 	public CQLButtonToolBar getIncludesButtonBar() {
 		return this.includesButtonBar;
 	}

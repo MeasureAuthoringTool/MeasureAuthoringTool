@@ -22,6 +22,7 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	private String ownerLastName;
 	private String cqlText;
 	private String measureId;
+	private boolean isSelected;
 	
 	public boolean isLocked() {
 		return isLocked;
@@ -113,5 +114,11 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	}
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
+	}
+	public boolean isSelected() {
+		return isSelected;
+	}
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 }

@@ -50,7 +50,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 		CQLLibrary cqlLibrary = new CQLLibrary(); 
 		
-		cqlLibrary.setName(libraryName);
+		cqlLibrary.setName(libraryName.substring(0, 44));
 		cqlLibrary.setMeasureId(measureId);
 		cqlLibrary.setOwnerId(owner);
 		cqlLibrary.setMeasureSetId(measureSet);

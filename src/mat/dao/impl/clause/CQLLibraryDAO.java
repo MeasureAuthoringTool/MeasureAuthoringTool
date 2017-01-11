@@ -81,7 +81,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 				.createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		if(!searchFrom.equalsIgnoreCase("StandAlone")){
-			//cCriteria.add(Restrictions.eq("draft", "0"));
+			cCriteria.add(Restrictions.eq("draft", false));
 			cCriteria.addOrder(Order.desc("measureSetId.id"))
 			.addOrder(Order.desc("version"));
 		} else{

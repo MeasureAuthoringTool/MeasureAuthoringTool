@@ -26,7 +26,8 @@ public class MatTextBox extends TextBox {
 	public MatTextBox() {
 		
 		super(Document.get().createTextInputElement());
-		setStyleName("gwt-TextArea");
+		removeStyleName("gwt-Text-box");
+		setStyleName("Text-Box");
 		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
 		MatTextBox.this.addKeyDownHandler(new KeyDownHandler() {
 			

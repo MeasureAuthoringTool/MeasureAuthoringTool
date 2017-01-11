@@ -30,7 +30,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
-import org.gwtbootstrap3.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBox;
+//import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
@@ -2551,7 +2552,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(List<CQLLibraryDataSetObject> result) {
 				searchDisplay.setIncludeLibraryList(result);
-				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, true);
+				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
 				
 			}
 		});
@@ -2884,7 +2885,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludesLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.buildIncludesView();
-		searchDisplay.getInclView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), true);
+		searchDisplay.getInclView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), MatContext.get().getMeasureLockService().checkForEditPermission());
 		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	

@@ -3,18 +3,19 @@ package mat.client.shared;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InputGroup;
 import org.gwtbootstrap3.client.ui.InputGroupButton;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.TextBox;
+
+import mat.client.util.MatTextBox;
 
 public class SearchWidgetBootStrap {
 	private Button go;
-	private TextBox searchBox ;
+	private MatTextBox searchBox ;
 	
 	public SearchWidgetBootStrap(String buttonText , String placeHolderText){
 		go = new Button(buttonText);
@@ -24,10 +25,12 @@ public class SearchWidgetBootStrap {
 		go.setSize(ButtonSize.SMALL);
 		go.setTitle(buttonText);
 		go.setPull(Pull.LEFT);
-		searchBox = new TextBox();
+		searchBox = new MatTextBox();
+		/*searchBox.removeStyleName("gwt-TextBox");
+		searchBox.setStyleName("Text-Box");*/
 		searchBox.setWidth("200px");
 		searchBox.setHeight("30px");
-		searchBox.setPlaceholder(placeHolderText);
+		//searchBox.setPlaceholder(placeHolderText);
 		searchBox.setTitle(placeHolderText);
 	}
 	
@@ -56,7 +59,7 @@ public class SearchWidgetBootStrap {
 		return searchBox;
 	}
 
-	public void setSearchBox(TextBox searchBox) {
+	public void setSearchBox(MatTextBox searchBox) {
 		this.searchBox = searchBox;
 	}
 

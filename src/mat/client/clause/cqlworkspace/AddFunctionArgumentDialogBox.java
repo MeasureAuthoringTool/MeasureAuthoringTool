@@ -4,6 +4,7 @@ import java.util.List;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.util.MatTextBox;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.CQLModelValidator;
 import mat.shared.UUIDUtilClient;
@@ -144,7 +145,7 @@ public class AddFunctionArgumentDialogBox {
 		argumentNameFormLabel.setTitle("Argument Name");
 		argumentNameFormLabel.setFor("inputArgumentName");
 		argumentNameFormLabel.setId("ArgumentNameLanel");
-		final TextBox argumentNameTextArea = new TextBox();
+		final MatTextBox argumentNameTextArea = new MatTextBox();
 		//argumentNameTextArea.setPlaceholder("Enter Argument Name");
 		argumentNameTextArea.setWidth("290px");
 		argumentNameTextArea.setHeight("38px");

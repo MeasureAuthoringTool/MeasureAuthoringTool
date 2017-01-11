@@ -9,7 +9,7 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.TextBox;
+//import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 
 import com.google.gwt.cell.client.Cell;
@@ -30,6 +30,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -48,6 +49,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
+import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLIncludeLibraryView {
@@ -82,7 +84,7 @@ public class CQLIncludeLibraryView {
 	/**
 	 * Textbox aliasNameTxtArea.
 	 */
-	private TextBox aliasNameTxtBox = new TextBox();
+	private MatTextBox aliasNameTxtBox = new MatTextBox();
 	private List<CQLLibraryDataSetObject> selectedList;
 	
 	public CQLIncludeLibraryView(){

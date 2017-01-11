@@ -65,7 +65,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import org.gwtbootstrap3.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBox;
+//import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -87,6 +88,7 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.client.util.MatTextBox;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -184,7 +186,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
-	private TextBox parameterNameTxtArea = new TextBox();
+	private MatTextBox parameterNameTxtArea = new MatTextBox();
 	
 	/** The parameter ace editor. */
 	private AceEditor parameterAceEditor = new AceEditor();
@@ -247,12 +249,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private TextBox defineNameTxtArea = new TextBox();
+	private MatTextBox defineNameTxtArea = new MatTextBox();
 	
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private TextBox funcNameTxtArea = new TextBox();
+	private MatTextBox funcNameTxtArea = new MatTextBox();
 	
 	/**
 	 * SuggestBox searchSuggestDefineTextBox.
@@ -3142,7 +3144,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @param funcNameTxtArea
 	 *            the new func name txt area
 	 */
-	public void setFuncNameTxtArea(TextBox funcNameTxtArea) {
+	public void setFuncNameTxtArea(MatTextBox funcNameTxtArea) {
 		this.funcNameTxtArea = funcNameTxtArea;
 	}
 	

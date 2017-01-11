@@ -17,7 +17,7 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.gwtbootstrap3.client.ui.TextBox;
+
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -52,6 +52,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -69,6 +70,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
+import mat.client.util.MatTextBox;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
@@ -170,7 +172,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	
 	
 	/** The name input. */
-	private TextArea nameInput = new TextArea();
+	private MatTextBox nameInput = new MatTextBox();
 	
 	/** The is editable. */
 	private boolean isEditable;
@@ -380,6 +382,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
+		/*nameInput.removeStyleName("gwt-TextBox");
+		nameInput.setStyleName("Text-Box");*/
 		nameInput.setTitle("Enter Name");
 		nameInput.setWidth("250px");
 		nameInput.setHeight("30px");
@@ -409,52 +413,61 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		buttonPanel.add(buttonToolBar);
 		buttonPanel.add(new SpacerWidget());
 		
-		queryGrid.setWidget(6, 0, buttonPanel);
-		queryGrid.setStyleName("secondLabel");
+		//queryGrid.setWidget(6, 0, buttonPanel);
+		//queryGrid.setStyleName("secondLabel");
 		
 		
 		Form searchForm = new Form();
 		
-		 FormGroup searchWidgetFormGroup = new FormGroup();
+		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		 searchWidgetFormGroup.add(sWidget.getSearchWidget());
-		 searchForm.add(searchWidgetFormGroup);
-		
+		// searchForm.add(searchWidgetFormGroup);
+		 searchWidgetFormGroup.add(new SpacerWidget());
 
-		 FormGroup nameFormGroup = new FormGroup();
+		// FormGroup nameFormGroup = new FormGroup();
+		 VerticalPanel namePanel = new VerticalPanel();
 		 FormLabel nameLabel = new FormLabel();
 		 nameLabel.setText("Name");
 		 nameLabel.setTitle("Name");
-		 nameFormGroup.add(nameLabel);
-		 nameFormGroup.add(nameInput);
+		 namePanel.add(nameLabel);
+		 namePanel.add(nameInput);
+		 namePanel.add(new SpacerWidget());
 		 
-		 
-		 FormGroup expansionIdFormGroup = new FormGroup();
+		 VerticalPanel expansionIdFormGroup = new VerticalPanel();
 		 FormLabel expLabelPanel = new FormLabel();
 		 expLabelPanel.setText("Expansion Identifier");
 		 expLabelPanel.setTitle("Expansion Identifier");
 		 expansionIdFormGroup.add(expLabelPanel);
 		 expansionIdFormGroup.add(qdmExpIdentifierListBox);
+		 expansionIdFormGroup.add(new SpacerWidget());
 		 
-		 
-		 FormGroup versionFormGroup = new FormGroup();
+		 VerticalPanel versionFormGroup = new VerticalPanel();
 		 FormLabel verLabel = new FormLabel();
 		 verLabel.setText("Version");
 		 verLabel.setTitle("Version");
 		 versionFormGroup.add(verLabel);
 		 versionFormGroup.add(versionListBox);
+		 versionFormGroup.add(new SpacerWidget());
 		 
-		FormGroup buttonFormGroup = new FormGroup();
+		 VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
+		buttonFormGroup.add(new SpacerWidget());
 		 
-		 
-		FieldSet formFieldSet = new FieldSet();
-		formFieldSet.add(nameFormGroup);
+		/*FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(namePanel);
 		formFieldSet.add(expansionIdFormGroup);
 		formFieldSet.add(versionFormGroup);
 		formFieldSet.add(buttonFormGroup);
-		searchForm.add(formFieldSet);
+		searchForm.add(formFieldSet);*/
+		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
+		queryGrid.setWidget(1, 0, namePanel);
+		queryGrid.setWidget(2, 0, expansionIdFormGroup);
+		queryGrid.setWidget(3, 0, versionFormGroup);
+		queryGrid.setWidget(4, 0, buttonFormGroup);
+		queryGrid.setStyleName("secondLabel");
+		
 		 
-		 searchPanelBody.add(searchForm);
+		searchPanelBody.add(queryGrid);
 		
 		
 		searchPanel.add(searchPanelBody);
@@ -1305,7 +1318,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 * @return the user defined input
 	 */
 	//@Override
-	public TextArea getUserDefinedInput() {
+	public TextBox getUserDefinedInput() {
 		return nameInput;
 	}
 	

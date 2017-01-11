@@ -918,7 +918,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryNameLabel.setWidth("150px");
 		
-		TextArea libraryNameValue = new TextArea();
+		MatTextBox libraryNameValue = new MatTextBox();
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
 		libraryNameValue.setReadOnly(true);
@@ -928,7 +928,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryVersionLabel.setWidth("150px");
 		
-		TextArea libraryVersionValue = new TextArea();
+		MatTextBox libraryVersionValue = new MatTextBox();
 		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		
 		String measureVersion = MatContext.get().getCurrentMeasureVersion();
@@ -942,7 +942,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		libraryVersionValue.setReadOnly(true);
 		
 		Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
-		TextArea usingModelValue = new TextArea();
+		MatTextBox usingModelValue = new MatTextBox();
 		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		usingModeLabel.setWidth("150px");
 		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
@@ -953,7 +953,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		modelVersionLabel.setWidth("150px");
-		TextArea modelVersionValue = new TextArea();
+		MatTextBox modelVersionValue = new MatTextBox();
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		//modelVersionValue.setText("5.0");
 		modelVersionValue.setReadOnly(true);

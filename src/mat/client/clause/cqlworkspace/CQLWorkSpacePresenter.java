@@ -3916,16 +3916,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			expansionId = expIdentifierToAllQDM;
 		}
+		showSearchingBusyOnQDM(true);
 		vsacapiService.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				showSearchingBusyOnQDM(false);
 			}
 			
 			@Override
 			public void onSuccess(final VsacApiResult result) {
+				showSearchingBusyOnQDM(false);
 				if (result.isSuccess()) {
 					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
 					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();

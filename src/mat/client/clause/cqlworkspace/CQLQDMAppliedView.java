@@ -14,6 +14,8 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
@@ -55,15 +57,12 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
@@ -132,7 +131,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 15;
+	private static final int TABLE_ROW_COUNT = 10;
 	
 	/** The table. */
 	private CellTable<CQLQualityDataSetDTO> table;
@@ -221,8 +220,16 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		bottomButtonLayOut.setStyleName("continueButton");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
-		hPanel.setWidth("600px");
+		hPanel.setWidth("690px");
 		updateVSACButton.setType(ButtonType.PRIMARY);
+		
+		updateVSACButton.setMarginTop(10);
+		updateVSACButton.setTitle("Update From VSAC");
+		updateVSACButton.setText("Update From VSAC");
+		updateVSACButton.setIcon(IconType.REFRESH);
+		updateVSACButton.setIconSize(IconSize.LARGE);
+		updateVSACButton.setPull(Pull.RIGHT);
+		
 		hPanel.add(updateVSACButton);
 		hPanel.add(bottomButtonLayOut);
 		
@@ -233,9 +240,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		updateVSACButton.setTitle("Retrieve the most recent versions of value sets from VSAC");
 		updateVSACButton.getElement().setId("updateVsacButton_Button");
 
-		verticalPanel.add(cellTablePanel);
-		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		
 		

@@ -42,6 +42,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -3844,7 +3845,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			return;
 		}
-
+		showSearchingBusyOnQDM(true);
 		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
@@ -3866,7 +3867,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getErrorMessageAlert().setVisible(true);
-				// showSearchingBusy(false);
+				showSearchingBusyOnQDM(false);
 			}
 
 			/**
@@ -3905,7 +3906,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().getQDMExpIdentifierListBox().setEnabled(true);
 						searchDisplay.getQdmView().getVersionListBox().setEnabled(true);
 					}
-					// showSearchingBusy(false);
+					showSearchingBusyOnQDM(false);
 					searchDisplay.getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
@@ -3914,7 +3915,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageAlert().createAlert(message);
 					searchDisplay.getErrorMessageAlert().setVisible(true);
-					// showSearchingBusy(false);
+					showSearchingBusyOnQDM(false);
 				}
 			}
 		});
@@ -4531,6 +4532,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private List<? extends HasListBox> getProfileList(List<VSACExpansionIdentifier> list) {
 		return list;
+	}
+	
+	/**
+	 * This method enable/disable's reterive and updateFromVsac button
+	 * and hide/show loading please wait message.
+	 * @param busy
+	 */
+	private void showSearchingBusyOnQDM(final boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		searchDisplay.getQdmView().getUpdateFromVSACButton().setEnabled(!busy);
+		searchDisplay.getQdmView().getRetrieveFromVSACButton().setEnabled(!busy);
 	}
 
 }

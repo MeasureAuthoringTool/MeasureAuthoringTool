@@ -4028,14 +4028,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			return;
 		}
-		showSearchingBusyOnQDM(true);
+		
 		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
 			searchDisplay.getErrorMessageAlert().setVisible(true);
 			return;
 		}
-		// showSearchingBusy(true);
+		showSearchingBusyOnQDM(true);
 
 		if (expIdentifierToAllQDM.isEmpty()) {
 			expansionProfile = null;

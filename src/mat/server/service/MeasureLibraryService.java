@@ -29,6 +29,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -751,5 +752,8 @@ public interface MeasureLibraryService {
 
 	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
+	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+			List<CQLIncludeLibrary> incLibraryList);
 
 }

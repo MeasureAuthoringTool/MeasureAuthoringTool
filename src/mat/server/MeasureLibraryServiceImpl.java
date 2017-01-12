@@ -85,6 +85,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -5751,6 +5752,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		xmlModal.setXml(result.getCqlString());
 		
 		appendAndSaveNode(xmlModal, nodeName);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+			List<CQLIncludeLibrary> incLibraryList){
+		return getCqlService().saveAndModifyIncludeLibray(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 }
 

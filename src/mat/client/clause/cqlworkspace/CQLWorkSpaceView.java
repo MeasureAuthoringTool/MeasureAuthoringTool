@@ -93,6 +93,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLParameter;
@@ -224,7 +225,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private ListBox parameterNameListBox;
 	
 	/** The view alias list. */
-	private List<CQLLibraryModel> viewAliasList = new ArrayList<CQLLibraryModel>();
+	//private List<CQLLibraryModel> viewAliasList = new ArrayList<CQLLibraryModel>();
 	
 	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
@@ -293,6 +294,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * List viewFunctions.
 	 */
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
+	
+	private List<CQLIncludeLibrary> viewIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
 	/**
 	 * TreeMap defineNameMap.
 	 */
@@ -302,6 +305,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * TreeMap funcNameMap.
 	 */
 	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+	
+	private Map<String, String> includeLibraryNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	/**
 	 * HashMap definitionMap.
 	 */
@@ -311,6 +316,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * HashMap definitionMap.
 	 */
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
+	
+	private HashMap<String, CQLIncludeLibrary> includeLibraryMap = new HashMap<String, CQLIncludeLibrary>();
 	
 	/** The add new argument. */
 	private Button addNewArgument = new Button();
@@ -367,6 +374,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
+	
+	private String currentSelectedIncLibraryObjId = null;
 	
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
@@ -554,6 +563,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedFunctionObjId(null);
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		if (getFunctionArgumentList().size() > 0) {
 			getFunctionArgumentList().clear();
 		}
@@ -675,7 +685,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 					if (selectedIndex != -1) {
 						final String selectedDefinitionID = getDefineNameListBox().getValue(selectedIndex);
 						currentSelectedDefinitionObjId = selectedDefinitionID;
-						if (getDefinitionMap().get(selectedDefinitionID) != null) {
+						if (getDefinitionMap().get(selectedDefinitionID) != null) { 
 							getDefineNameTxtArea()
 							.setText(getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
 							getDefineAceEditor()
@@ -792,6 +802,53 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		});
 	}
 	
+	private void addIncludeLibraryHandlers(){
+		
+		getIncludesNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+		
+				//System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
+				setIsDoubleClick(true);
+				setIsNavBarClick(false);
+				if (getIsPageDirty()) {
+					showUnsavedChangesWarning();
+				} else {
+					int selectedIndex  = getIncludesNameListBox().getSelectedIndex();
+					if (selectedIndex != -1) {
+						final String selectedIncludeLibraryID = getIncludesNameListBox().getValue(selectedIndex);
+						currentSelectedIncLibraryObjId = selectedIncludeLibraryID;
+						if(getIncludeLibraryMap().get(selectedIncludeLibraryID) != null){
+							getAliasNameTxtArea().setText(getIncludeLibraryMap().get(selectedIncludeLibraryID).getAliasName());
+							inclView.setSelectedObject(getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
+							/*inclView.setIncludedList(getIncludedList(getIncludeLibraryMap()));*/
+							inclView.getSelectedObjectList().clear();
+							inclView.redrawCellTable();
+							//selectedList.add(getIncludeLibraryMap().get(selectedIncludeLibraryID));
+							//inclView.setSelectedObjectList(selectedObjectList);
+							
+						}
+					} 
+					resetMessageDisplay();
+					/*successMessageAlert.clearAlert();
+					errorMessageAlert.clearAlert();
+					warningMessageAlert.clearAlert();*/
+
+				}
+				
+			}
+		});
+	}
+	
+	@Override
+	public List<String> getIncludedList(Map<String, CQLIncludeLibrary> includeMap){
+		List<String> list = new ArrayList<String>();
+		for (Map.Entry<String, CQLIncludeLibrary> entry : includeMap.entrySet()) {
+			list.add(entry.getValue().getCqlLibraryId());
+		}
+		return list;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -874,6 +931,24 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
+	@Override
+	public void udpateIncludeLibraryMap(){
+		includeLibraryMap.clear();
+		includeLibraryNameMap.clear();
+		for (CQLIncludeLibrary incLibrary : viewIncludeLibrarys) {
+			includeLibraryNameMap.put(incLibrary.getId(), incLibrary.getAliasName());
+			includeLibraryMap.put(incLibrary.getId(), incLibrary);
+		}
+		updateNewSuggestIncLibOracle();
+		if(viewIncludeLibrarys.size() < 10){
+			includesBadge.setText("0" + viewIncludeLibrarys.size());
+		} else {
+			includesBadge.setText("" + viewIncludeLibrarys.size());
+		}
+		
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -907,6 +982,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		getFunctionArgNameMap().clear();
 		if (getFunctionArgumentList().size() > 0) {
 			getFunctionArgumentList().clear();
@@ -1025,6 +1101,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		
 		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
 		
@@ -1045,7 +1122,15 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	@Override
 	public void buildIncludesView() {
-		
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
+		getFunctionArgNameMap().clear();
+		//setIsPageDirty(false);
+		if (getFunctionArgumentList().size() > 0) {
+			getFunctionArgumentList().clear();
+		}
 		mainFlowPanel.clear();
 		resetMessageDisplay();
 		
@@ -1059,7 +1144,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		includesTopPanel.setWidth("700px");
 		includesTopPanel.setStyleName("marginLeft15px");
 		vp.add(includesTopPanel);
-		
+		addIncludeLibraryHandlers();
 		mainFlowPanel.add(vp);
 	}
 	
@@ -1070,6 +1155,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		getFunctionArgumentList().clear();
 		getFunctionArgNameMap().clear();
 		rightHandNavPanel.clear();
@@ -1091,7 +1177,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		includesLibrary.setIcon(IconType.PENCIL);
 		includesLibrary.setTitle("Includes");
-		includesBadge.setText("0" + viewIncludes.size());
+		includesBadge.setText("0" + viewIncludeLibrarys.size());
 		Anchor includesAnchor = (Anchor) (includesLibrary.getWidget(0));
 		// Double Click causing issues.So Event is not propogated
 		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
@@ -1234,7 +1320,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelIncludes");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label includesLibraryLabel = new Label("Includes Library");
-		searchSuggestIncludeTextBox = new SuggestBox();
+		searchSuggestIncludeTextBox = new SuggestBox(getSuggestOracle(includeLibraryNameMap.values()));
 		searchSuggestIncludeTextBox.setWidth("180px");
 		searchSuggestIncludeTextBox.setText("Search");
 		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
@@ -1466,6 +1552,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		if (getFunctionArgumentList().size() > 0) {
 			getFunctionArgumentList().clear();
 		}
@@ -1590,8 +1677,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void clearAndAddAliasNamesToListBox() {
 		if (includesNameListbox != null) {
 			includesNameListbox.clear();
-			viewAliasList = sortAliasList(viewAliasList);
-			for (CQLLibraryModel incl : viewAliasList) {
+			viewIncludeLibrarys = sortAliasList(viewIncludeLibrarys);
+			for (CQLIncludeLibrary incl : viewIncludeLibrarys) {
 				includesNameListbox.addItem(incl.getAliasName(), incl.getId());
 			}
 			// Set tooltips for each element in listbox
@@ -1605,10 +1692,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
-	private List<CQLLibraryModel> sortAliasList(List<CQLLibraryModel> viewAliasList) {
-		Collections.sort(viewAliasList, new Comparator<CQLLibraryModel>() {
+	private List<CQLIncludeLibrary> sortAliasList(List<CQLIncludeLibrary> viewAliasList) {
+		Collections.sort(viewAliasList, new Comparator<CQLIncludeLibrary>() {
 		      @Override
-		      public int compare(final CQLLibraryModel object1, final CQLLibraryModel object2) {
+		      public int compare(final CQLIncludeLibrary object1, final CQLIncludeLibrary object2) {
 		          return object1.getAliasName().compareToIgnoreCase(object2.getAliasName());
 		      }
 		  });
@@ -1669,6 +1756,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		getFunctionArgNameMap().clear();
 		//setIsPageDirty(false);
 		if (getFunctionArgumentList().size() > 0) {
@@ -1808,6 +1896,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		}
 	}
 	
+	public void updateNewSuggestIncLibOracle() {
+		if (searchSuggestIncludeTextBox != null) {
+			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(includeLibraryNameMap.values());
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1878,6 +1972,38 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			  });
 		return viewFunc;
 	}
+	
+	
+	@Override
+	public void clearAndAddIncludesNamesToListBox() {
+		if (includesNameListbox != null) {
+			includesNameListbox.clear();
+			//sort Include Librarys
+			viewIncludeLibrarys = sortIncludesNames(viewIncludeLibrarys);
+			for (CQLIncludeLibrary incLib : viewIncludeLibrarys) {
+				includesNameListbox.addItem(incLib.getAliasName(), incLib.getId());
+			}
+			// Set tooltips for each element in listbox
+			SelectElement selectElement = SelectElement.as(includesNameListbox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				String title = options.getItem(i).getText();
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(title);
+			}
+		}
+	}
+	
+	private List<CQLIncludeLibrary> sortIncludesNames(List<CQLIncludeLibrary> viewInclib) {
+			  Collections.sort(viewInclib, new Comparator<CQLIncludeLibrary>() {
+			      @Override
+			      public int compare(final CQLIncludeLibrary object1, final CQLIncludeLibrary object2) {
+			          return object1.getAliasName().compareToIgnoreCase(object2.getAliasName());
+			      }
+			  });
+		return viewInclib;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -1894,6 +2020,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		setCurrentSelectedDefinitionObjId(null);
 		setCurrentSelectedParamerterObjId(null);
 		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedIncLibraryObjId(null);
 		getFunctionArgNameMap().clear();
 		if (getFunctionArgumentList().size() > 0) {
 			getFunctionArgumentList().clear();
@@ -2309,10 +2436,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlAceEditor.setText("");
 		functionBodyAceEditor.setText("");
 		
-		viewAliasList.clear();
+		viewIncludeLibrarys.clear();
 		viewParameterList.clear();
 		viewDefinitions.clear();
 		viewFunctions.clear();
+		viewIncludeLibrarys.clear();
 		
 		if (includesCollapse != null) {
 			includesCollapse.clear();
@@ -3263,6 +3391,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return functionMap;
 	}
 	
+	@Override
+	public Map<String, CQLIncludeLibrary> getIncludeLibraryMap() {
+		return includeLibraryMap;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -3631,6 +3764,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return searchSuggestFuncTextBox;
 	}
 	
+	@Override
+	public SuggestBox getSearchSuggestIncludeTextBox() {
+		return searchSuggestIncludeTextBox;
+	}
+	
 	/**
 	 * Gets the func name map.
 	 *
@@ -3638,6 +3776,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	public Map<String, String> getFuncNameMap() {
 		return funcNameMap;
+	}
+	
+	public Map<String, String> getIncludeLibraryNameMap() {
+		return includeLibraryNameMap;
 	}
 	
 	/**
@@ -3648,6 +3790,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public Badge getFunctionBadge() {
 		return functionBadge;
+	}
+	
+	@Override
+	public Badge getIncludesBadge(){
+		return includesBadge;
 	}
 	
 	/**
@@ -4226,6 +4373,26 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void setIncludeLibraryList(List<CQLLibraryDataSetObject> includeLibraryList) {
 		this.includeLibraryList = includeLibraryList;
+	}
+
+	@Override
+	public String getCurrentSelectedIncLibraryObjId() {
+		return currentSelectedIncLibraryObjId;
+	}
+
+	@Override
+	public void setCurrentSelectedIncLibraryObjId(String currentSelectedIncLibraryObjId) {
+		this.currentSelectedIncLibraryObjId = currentSelectedIncLibraryObjId;
+	}
+
+	@Override
+	public List<CQLIncludeLibrary> getViewIncludeLibrarys() {
+		return viewIncludeLibrarys;
+	}
+
+	@Override
+	public void setViewIncludeLibrarys(List<CQLIncludeLibrary> viewIncludeLibrarys) {
+		this.viewIncludeLibrarys = viewIncludeLibrarys;
 	}
 
 }

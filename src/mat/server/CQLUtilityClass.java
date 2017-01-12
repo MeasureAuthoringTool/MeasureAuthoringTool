@@ -9,9 +9,15 @@ import java.util.Scanner;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.xml.Unmarshaller;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
@@ -22,6 +28,8 @@ import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -30,14 +38,6 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 public class CQLUtilityClass {
 	
@@ -82,6 +82,17 @@ public class CQLUtilityClass {
 			cqlStr = cqlStr.append("\n\n");
 		}
 
+		//includes
+		List<CQLIncludeLibrary> includeLibList = cqlModel.getCqlIncludeLibrarys();
+		if(includeLibList != null){
+			for(CQLIncludeLibrary includeLib : includeLibList){
+				cqlStr = cqlStr.append("include ").append(includeLib.getCqlLibraryName());
+				cqlStr = cqlStr.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
+				cqlStr = cqlStr.append("called ").append(includeLib.getAliasName());
+				cqlStr = cqlStr.append("\n\n");
+			}
+		}
+		
 		//CodeSystems
 		List<CQLCodeSystem> codeSystemList = cqlModel.getCodeSystemList();
 		List<String> codeSystemAlreadyUsed = new ArrayList<String>();
@@ -369,6 +380,7 @@ public class CQLUtilityClass {
 		
 		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
 			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
+			getCQLIncludeLibrarysInfo(cqlModel, cqlLookUpXMLString);
 			getCodeSystems(cqlModel, cqlLookUpXMLString);
 			getValueSet(cqlModel, cqlLookUpXMLString);
 			// Combine Codes and Valuesets in this list for UI
@@ -388,6 +400,7 @@ public class CQLUtilityClass {
 		return cqlModel;
 	}
 	
+
 	private static void getCodeSystems(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLCodeSystemWrapper codeSystemWrapper;
 		try {			 
@@ -611,6 +624,26 @@ public class CQLUtilityClass {
 				
 			}
 		return convertedCQLDataSetList;
+		
+	}
+	
+	private static void getCQLIncludeLibrarysInfo(CQLModel cqlModel, String cqlLookUpXMLString) {
+		CQLIncludeLibraryWrapper details = null;
+		
+		try {			 
+			
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLIncludeLibrayMapping.xml"));
+			Unmarshaller unmarshaller = new Unmarshaller(mapping);
+			unmarshaller.setClass(CQLIncludeLibraryWrapper.class);
+			unmarshaller.setWhitespacePreserve(true);
+			
+			details = (CQLIncludeLibraryWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			cqlModel.setCqlIncludeLibrarys(details.getCqlIncludeLibrary());
+			
+		} catch (Exception e) {
+			logger.info("Error while getting cql definition :" +e.getMessage());
+		}
 		
 	}
 	

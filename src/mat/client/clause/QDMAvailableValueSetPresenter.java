@@ -599,7 +599,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
 							&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
 						searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-								MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+								MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 					} else {
 						updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
 					}
@@ -618,7 +618,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 						&& modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
 						&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)){
 					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-							MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+							MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 				} else {
 					updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
 				}
@@ -881,10 +881,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			public void onSuccess(final Void result) {
 				if (!isUserDefined) {
 					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-							MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+							MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 				} else {
 					searchDisplay.getSuccessMessageUserDefinedPanel().setMessage(
-							MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+							MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 					searchDisplay.getUserDefinedInput().setText("");
 					searchDisplay.getAllDataTypeInput().setSelectedIndex(0);
 				}

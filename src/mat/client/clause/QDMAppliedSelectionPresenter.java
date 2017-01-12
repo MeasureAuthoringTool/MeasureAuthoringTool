@@ -1959,7 +1959,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(final Void result) {
 				List<String> messages = new ArrayList<String>();
-				messages.add(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+				messages.add(MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 				if(isAllOIDsUpdated){
 					messages.add(MatContext.get().getMessageDelegate().getSUCCESSFULLY_MODIFIED_ALL_OIDS());
 				}
@@ -2034,7 +2034,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						if (modifyWithDTO.getID().equalsIgnoreCase(modifyValueSetDTO.getOid())
 								&& (modifyValueSetDTO.isSpecificOccurrence() && isSpecificOccurrence)) {
 							searchDisplay.getSuccessMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+									MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 						} else {
 							updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
 						}
@@ -2057,19 +2057,19 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								modifyValueSetDTO.getExpansionIdentifier())) {
 							resetQDMSearchPanel();
 							searchDisplay.getSuccessMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+									MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 						} else if(!version.isEmpty() && version.equalsIgnoreCase(
 								modifyValueSetDTO.getVersion())){
 							resetQDMSearchPanel();
 							searchDisplay.getSuccessMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+									MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 						} else if((modifyValueSetDTO.getVersion().equals("1.0") ||
 								modifyValueSetDTO.getVersion().equals("1"))
 								&& expansionId.isEmpty() && version.isEmpty()
 								&& (modifyValueSetDTO.getExpansionIdentifier() == null)){
 							resetQDMSearchPanel();
 							searchDisplay.getSuccessMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+									MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 						} else {
 							updateAppliedQDMList(modifyWithDTO, null, modifyValueSetDTO, dataType, isSpecificOccurrence, false);
 						}

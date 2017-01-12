@@ -33,6 +33,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -669,6 +670,13 @@ MeasureService {
 	public SaveUpdateCQLResult updateCQLValuesetsToMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		return this.getMeasureLibraryService().updateCQLValueSetstoMeasure(matValueSetTransferObject);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+			List<CQLIncludeLibrary> incLibraryList){
+		return this.getMeasureLibraryService().saveAndModifyIncludeLibray(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 
 }

@@ -74,6 +74,7 @@ import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLParameter;
@@ -1154,6 +1155,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		List<CQLLibraryDataSetObject> getIncludeLibraryList();
 
+		String getCurrentSelectedIncLibraryObjId();
+
+		void setCurrentSelectedIncLibraryObjId(String currentSelectedIncLibraryObjId);
+
+		Badge getIncludesBadge();
+
+		Map<String, CQLIncludeLibrary> getIncludeLibraryMap();
+
+		List<CQLIncludeLibrary> getViewIncludeLibrarys();
+
+		void setViewIncludeLibrarys(List<CQLIncludeLibrary> viewIncludeLibrarys);
+
+		void clearAndAddIncludesNamesToListBox();
+
+		void udpateIncludeLibraryMap();
+
+		SuggestBox getSearchSuggestIncludeTextBox();
+
+		List<String> getIncludedList(Map<String, CQLIncludeLibrary> includeMap);
+
 	}
 
 	/**
@@ -1284,6 +1305,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				/*searchDisplay.resetMessageDisplay();
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.setIsNavBarClick(false);
+				if (searchDisplay.getIsPageDirty()) {
+					searchDisplay.showUnsavedChangesWarning();
+				} else {
+					clearIncludeLibrary();
+				}*/
+			}
+		});
+
 
 		searchDisplay.getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
 
@@ -1483,6 +1520,97 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addEventHandlerOnAceEditors();
 		addEventHandlersOnContextRadioButtons();
 		addQDMELmentSearchPanelHandlers();
+		addIncludeCQLLibraryHandlers();
+	}
+
+	private void addIncludeCQLLibraryHandlers() {
+		
+		searchDisplay.getIncludeView().getIncludesButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					addAndModifyIncludeLibrary();
+				}
+			}
+		});
+		
+	}
+	
+	private void addAndModifyIncludeLibrary() {
+		searchDisplay.resetMessageDisplay();
+		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
+		
+		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size()>0) {
+			//functioanlity to add Include Library
+			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList().get(0);
+			
+			if (!validator.validateForSpecialChar(aliasName.trim())) {
+				
+				CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
+				incLibrary.setAliasName(aliasName);
+				incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
+				incLibrary.setVersion(cqlLibraryDataSetObject.getVersion().replace("v", ""));
+				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
+				//this is just to add include library and not modify
+				MatContext.get().getMeasureService().saveAndModifyIncludeLibray(MatContext.get().getCurrentMeasureId(), 
+						null, incLibrary, searchDisplay.getViewIncludeLibrarys(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								searchDisplay.getErrorMessageAlert().createAlert(
+										MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								
+							}
+
+							@Override
+							public void onSuccess(SaveUpdateCQLResult result) {
+								if (result.isSuccess()) {
+									searchDisplay.resetMessageDisplay();
+									searchDisplay.setIsPageDirty(false);
+									searchDisplay.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+									searchDisplay.clearAndAddAliasNamesToListBox();
+									searchDisplay.udpateIncludeLibraryMap();
+									searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
+									//searchDisplay.getAliasNameTxtArea().setText(result.getIncludeLibrary().getAliasName());
+									//searchDisplay.setCurrentSelectedIncLibraryObjId(result.getIncludeLibrary().getId());
+									/*searchDisplay.getAliasNameTxtArea().setText("");
+									searchDisplay.getIncludeView().getSelectedObjectList().clear();
+									searchDisplay.getIncludeView().setSelectedObject(null);
+									searchDisplay.getIncludeView().setIncludedList(null);
+									searchDisplay.getIncludeView().redrawCellTable();*/
+									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY());
+									searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
+								}  else if (result.getFailureReason() == 1) {
+									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
+									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+								} else if (result.getFailureReason() == 2) {
+									searchDisplay.getErrorMessageAlert().createAlert("Missing IncludesLibrary Tag.");
+									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+								}  else if(result.getFailureReason() == 3){
+									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
+											.getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
+									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+								}
+							}
+						});
+				
+				
+				
+			
+			} else {
+				searchDisplay.getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+			}
+			
+			
+		} else {
+			searchDisplay.getErrorMessageAlert().createAlert("Please Enter Alias Name and Select CQL library");
+		}
 	}
 
 	/**
@@ -1985,6 +2113,34 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getContextFuncPOPRadioBtn().setValue(false);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
+	
+	//this is for clear functionality
+	/*private void clearIncludeLibrary() {
+		searchDisplay.setCurrentSelectedIncLibraryObjId(null);
+		searchDisplay.setIsPageDirty(false);
+		if ((searchDisplay.getAliasNameTxtArea() != null)) {
+			searchDisplay.getAliasNameTxtArea().setText("");
+		}
+		
+		// Below lines are to clear search suggestion textbox and listbox
+		// selection after erase.
+		searchDisplay.getSearchSuggestIncludeTextBox().setText("");
+		if (searchDisplay.getIncludesNameListBox().getSelectedIndex() >= 0) {
+			searchDisplay.getIncludesNameListBox()
+					.setItemSelected(searchDisplay.getIncludesNameListBox().getSelectedIndex(), false);
+		}
+
+		searchDisplay.getIncludeView().setSelectedObjectList(null);
+		searchDisplay.getIncludeView().setSelectedObject(null);
+		searchDisplay.getIncludeView().setIncludedList(null);
+		searchDisplay.getIncludeView().redrawCellTable();
+	
+		// include library when erased.
+		searchDisplay.getAliasNameTxtArea().setEnabled(true);
+		searchDisplay.getIncludeView().getSaveButton().setEnabled(true);
+		searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+		searchDisplay.getIncludeView().getEraseButton().setEnabled(false);
+	}*/
 
 	/**
 	 * Adds and modify function.
@@ -2671,6 +2827,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							} else {
 								searchDisplay.getFunctionBadge().setText("00");
 							}
+							if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
+									&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
+								searchDisplay.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+								searchDisplay.clearAndAddIncludesNamesToListBox();
+								searchDisplay.udpateIncludeLibraryMap();
+								MatContext.get()
+										.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+							} else {
+								searchDisplay.getIncludesBadge().setText("00");
+								searchDisplay.getIncludeLibraryMap().clear();
+							}
 
 						}
 
@@ -2886,6 +3053,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludesLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.buildIncludesView();
+		searchDisplay.getInclView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 		searchDisplay.getInclView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), MatContext.get().getMeasureLockService().checkForEditPermission());
 		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
@@ -3093,6 +3261,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			funcList.add(functionList.get(i).getFunctionName());
 		}
 		return funcList;
+	}
+	
+	private List<String> getIncludesList(List<CQLIncludeLibrary> includesList) {
+
+		List<String> incLibList = new ArrayList<String>();
+
+		for (int i = 0; i < includesList.size(); i++) {
+			incLibList.add(includesList.get(i).getAliasName());
+		}
+		return incLibList;
 	}
 
 	/**
@@ -4204,6 +4382,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					isModified = false;
 					resetCQLValuesetearchPanel();
 					modifyValueSetDTO = result.getCqlQualityDataSetDTO();
+					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 					getAppliedQDMList();
 				} else{
 					

@@ -7,6 +7,7 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -175,6 +176,9 @@ public interface CQLService {
 	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
 	SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
 
 
 

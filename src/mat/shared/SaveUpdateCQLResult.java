@@ -6,6 +6,7 @@ import java.util.List;
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -33,6 +34,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	/** The function. */
 	private CQLFunctions function;
+	
+	private CQLIncludeLibrary includeLibrary;
 	
 	/**  The start line of the result. */
 	private int startLine; 
@@ -243,6 +246,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 	 */
 	public void setCqlQualityDataSetDTO(CQLQualityDataSetDTO cqlQualityDataSetDTO) {
 		this.cqlQualityDataSetDTO = cqlQualityDataSetDTO;
+	}
+
+	public CQLIncludeLibrary getIncludeLibrary() {
+		return includeLibrary;
+	}
+
+	public void setIncludeLibrary(CQLIncludeLibrary includeLibrary) {
+		this.includeLibrary = includeLibrary;
 	}
 	
 }

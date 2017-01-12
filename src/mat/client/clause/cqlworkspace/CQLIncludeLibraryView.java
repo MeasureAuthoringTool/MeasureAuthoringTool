@@ -9,7 +9,6 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-//import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 
 import com.google.gwt.cell.client.Cell;
@@ -86,6 +85,8 @@ public class CQLIncludeLibraryView {
 	 */
 	private MatTextBox aliasNameTxtBox = new MatTextBox();
 	private List<CQLLibraryDataSetObject> selectedList;
+	private String selectedObject;
+	private List<String> includedList;
 	
 	public CQLIncludeLibraryView(){
 	
@@ -212,6 +213,8 @@ public class CQLIncludeLibraryView {
 		cellTablePanel.add(searchHeader);
 		
 		selectedList = new ArrayList<CQLLibraryDataSetObject>();
+		selectedObject = null;
+		//includedList = new ArrayList<String>();
 		
 		if ((cqlLibraryList != null)
 				&& (cqlLibraryList.size() > 0)) {
@@ -369,7 +372,7 @@ public class CQLIncludeLibraryView {
 					.fromSafeConstant("<span title=\"Owner\">" + "Owner"
 							+ "</span>"));
 			
-			table.addColumn(new Column<CQLLibraryDataSetObject, CQLLibraryDataSetObject>(getCheckBoxCellForTable()) {
+			table.addColumn(new Column<CQLLibraryDataSetObject, CQLLibraryDataSetObject>(getCheckBoxCellForTable(isEditable)) {
 				@Override
 				public CQLLibraryDataSetObject getValue(CQLLibraryDataSetObject object) {
 					return object;
@@ -388,7 +391,7 @@ public class CQLIncludeLibraryView {
 	}
 
 	
-	private CompositeCell<CQLLibraryDataSetObject> getCheckBoxCellForTable(){
+	private CompositeCell<CQLLibraryDataSetObject> getCheckBoxCellForTable(final boolean isEditable){
 		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<HasCell<CQLLibraryDataSetObject, ?>>();
 		cells.add(getCheckBoxCell());
 		CompositeCell<CQLLibraryDataSetObject> cell = new CompositeCell<CQLLibraryDataSetObject>(cells) {
@@ -404,7 +407,19 @@ public class CQLIncludeLibraryView {
 			protected <X> void render(Context context, CQLLibraryDataSetObject object,
 					SafeHtmlBuilder sb, HasCell<CQLLibraryDataSetObject, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td class='emptySpaces'>");
+
+				if(isEditable){
+					if (selectedObject != null && object.getId().equals(selectedObject)){
+						sb.appendHtmlConstant("<td class='emptySpaces'>");
+					}  else if(includedList != null && includedList.contains(object.getId())){
+						sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\">");
+					}  else {
+						sb.appendHtmlConstant("<td class='emptySpaces'>");
+					}
+				} else {
+					sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\">");
+				}
+				
 				if ((object != null)) {
 					cell.render(context, hasCell.getValue(object), sb);
 				} else {
@@ -445,10 +460,17 @@ public class CQLIncludeLibraryView {
 							break;
 						} 
 					}
-			} else {
-				isSelected = false;
-				selectionModel.setSelected(object, isSelected);
+			}
+			
+			else {
+				if(selectedObject != null && object.getId().equals(selectedObject)){
+					isSelected = true;
+				} else {
+					isSelected = false;
 				}
+				
+				selectionModel.setSelected(object, isSelected);
+			}
 				return isSelected;		
 				
 			}
@@ -513,11 +535,32 @@ public class CQLIncludeLibraryView {
 		return cqlAceEditor;
 	}
 	
-	public List<CQLLibraryDataSetObject> selectedObjectList(){
+	public List<CQLLibraryDataSetObject> getSelectedObjectList(){
 		return selectedList;
 	}
 	
 	public void setSelectedObjectList(List<CQLLibraryDataSetObject> selectedObjectList){
 		selectedList = selectedObjectList;
 	}
+
+	public String getSelectedObject() {
+		return selectedObject;
+	}
+
+	public void setSelectedObject(String selectedObject) {
+		this.selectedObject = selectedObject;
+	}
+	
+	public void redrawCellTable(){
+		table.redraw();
+	}
+
+	public List<String> getIncludedList() {
+		return includedList;
+	}
+
+	public void setIncludedList(List<String> includedList) {
+		this.includedList = includedList;
+	}
+
 }

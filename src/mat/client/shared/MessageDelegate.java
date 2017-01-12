@@ -200,6 +200,7 @@ public class MessageDelegate {
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
 	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully saved function into CQL.";
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully saved parameter into CQL.";
+	public final String SUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY  = "Library Insert Alias Name Here successfully Included.";
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name.";
 	
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS  = "Successfully saved definition into CQL with errors.";
@@ -223,6 +224,7 @@ public class MessageDelegate {
 			"Duplicate name or use of restricted character(s).";
 	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
 			"Duplicate name or use of restricted character(s).";
+	public final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR  = "Invalid Library Alias. Must be unique, alpha-numeric only, and not contain spaces.";
 	
 	public final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
 	
@@ -626,7 +628,7 @@ public class MessageDelegate {
 	private final String STEWARD_REQUIRED = "Steward is required.";
 	
 	/** The successful modify applied qdm. */
-	private final String SUCCESSFUL_MODIFY_APPLIED_QDM = "Selected Valueset has been modified successfully.";
+	private final String SUCCESSFUL_MODIFY_APPLIED_VALUESET = "Selected Valueset has been modified successfully.";
 	
 	/** The system error. */
 	private final String SYSTEM_ERROR = "Import failed due to system error. Please try again.";
@@ -1880,8 +1882,8 @@ public class MessageDelegate {
 	 * 
 	 * @return String
 	 */
-	public String getSuccessfulModifyQDMMsg() {
-		return SUCCESSFUL_MODIFY_APPLIED_QDM;
+	public String getSUCCESSFUL_MODIFY_APPLIED_VALUESET() {
+		return SUCCESSFUL_MODIFY_APPLIED_VALUESET;
 		
 	}
 	
@@ -2662,6 +2664,14 @@ public class MessageDelegate {
 
 	public String getValuesetSuccessMessage(String codeListName) {
 		return " The QDM Element " + codeListName + " has been added successfully.";
+	}
+
+	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {
+		return ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR;
+	}
+
+	public String getSUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY() {
+		return SUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY;
 	}
 
 	

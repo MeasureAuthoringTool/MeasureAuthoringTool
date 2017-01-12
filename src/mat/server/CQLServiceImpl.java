@@ -35,6 +35,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -56,6 +57,8 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -738,6 +741,168 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.CQLService#saveAndModifyIncludeLibray(java.lang.String, mat.model.cql.CQLIncludeLibrary, mat.model.cql.CQLIncludeLibrary, java.util.List)
+	 */
+	@Override
+	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+			List<CQLIncludeLibrary> incLibraryList) {
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
+				measureId);
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
+		CQLModelValidator validator= new CQLModelValidator();
+		boolean isDuplicate = false;
+		if (xmlModel != null) {
+		
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			//before adding includeLibrary Node we need need to add <includeLibrarys> tag
+			
+			checkAndAppendIncludeLibraryParentNode(processor);
+			
+			if (toBeModifiedObj != null) { // this is a part of Modify functionality
+				
+			} else { // this is part of save functionality
+				currentObj.setId(UUID.randomUUID().toString());
+				isDuplicate = validator.validateForSpecialChar(currentObj.getAliasName());
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(result.NO_SPECIAL_CHAR);
+					return result;
+				}
+				
+				isDuplicate = isDuplicateIdentifierName(
+						currentObj.getAliasName(), measureId);
+				
+				isDuplicate = isDupidnNameWithMsrName(currentObj.getAliasName(), 
+						measureId);
+				
+				if (!isDuplicate) {
+					String cqlString = createIncludeLibraryXML(currentObj);
+					String XPATH_EXPRESSION_DEFINTIONS = "/measure/cqlLookUp/includeLibrarys";
+					try {
+						Node nodeDefinitions = processor.findNode(
+								processor.getOriginalDoc(),
+								XPATH_EXPRESSION_DEFINTIONS);
+						
+						if (nodeDefinitions != null) {
+							
+							processor.appendNode(cqlString, "includeLibrary",
+									XPATH_EXPRESSION_DEFINTIONS);
+							processor.setOriginalXml(processor
+									.transform(processor.getOriginalDoc()));
+							xmlModel.setXml(processor.getOriginalXml());
+							getService().saveMeasureXml(xmlModel);
+							/*String name = "define" + " \"" + currentObj.getAliasName() + "\""; 
+							parseCQLDefForErrors(result, measureId, name, currentObj.getDefinitionLogic());*/
+							result.setSuccess(true);
+							result.setIncludeLibrary(currentObj);
+							incLibraryList.add(currentObj);
+							wrapper.setCqlIncludeLibrary(incLibraryList);
+						} else {
+							result.setSuccess(false);
+							result.setFailureReason(result.NODE_NOT_FOUND);
+						}
+						
+						
+					} catch (XPathExpressionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				} else {
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_UNIQUE);
+				}
+			}
+		}
+		
+		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
+			result.getCqlModel().setCqlIncludeLibrarys(
+					sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Check and append include library parent node.
+	 *
+	 * @param processor the processor
+	 */
+	private void checkAndAppendIncludeLibraryParentNode(XmlProcessor processor) {
+		
+		try {
+			Node cqlNode = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp");
+			if(cqlNode != null){
+				
+				Node cqlIncludeLibNode = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp/includeLibrarys");
+				if(cqlIncludeLibNode == null){
+					Element includesChildElem = processor.getOriginalDoc().createElement("includeLibrarys");
+					cqlNode.appendChild(includesChildElem);
+				}
+				
+				
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * Creates the include library XML.
+	 *
+	 * @param includeLibrary the include library
+	 * @return the string
+	 */
+	private String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) {
+		logger.info("In CQLServiceImpl.createIncludeLibraryXML");
+		Mapping mapping = new Mapping();
+		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
+		List<CQLIncludeLibrary> includeLibraryList = new ArrayList<CQLIncludeLibrary>();
+		includeLibraryList.add(includeLibrary);
+		wrapper.setCqlIncludeLibrary(includeLibraryList);
+		
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader()
+			.getResourceAsURL("CQLIncludeLibrayMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
+					stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(wrapper);
+			logger.info("Marshalling of CQLIncludeLibrary is successful..");
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLIncludeLibrayMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				// logger.info(e.printStackTrace());
+				e.printStackTrace();
+			}
+		}
+		logger.info("Exiting CQLServiceImpl.createIncludeLibraryXML()");
+		return stream.toString();
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.CQLService#deleteDefinition(java.lang.String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
 	 */
@@ -1440,6 +1605,44 @@ public class CQLServiceImpl implements CQLService {
 		return false;
 	}
 	
+	
+	/**
+	 * Checks if is dupidn name with msr name.
+	 *
+	 * @param identifierName the identifier name
+	 * @param measureId the measure id
+	 * @return true, if is dupidn name with msr name
+	 */
+	private boolean isDupidnNameWithMsrName(String identifierName, String measureId) {
+
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		if (xmlModel != null) {
+
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+			String XPATH_MEASURE_NAME = "/measure/measureDetails/title";
+			try {
+				Node node = processor.findNode(processor.getOriginalDoc(), XPATH_MEASURE_NAME);
+
+				if (node != null) {
+					String msrName = node.getTextContent();
+					if(identifierName.equalsIgnoreCase(msrName)){
+						return true;	
+					}
+
+				}
+
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return false;
+	}
+	
+	
+	
+	
 	/**
 	 * Check if keyword for func arguments.
 	 *
@@ -1620,6 +1823,28 @@ public class CQLServiceImpl implements CQLService {
 		
 		return funcList;
 	}
+	
+	
+	/**
+	 * Sort include lib list.
+	 *
+	 * @param IncLibList the inc lib list
+	 * @return the list
+	 */
+	private List<CQLIncludeLibrary> sortIncludeLibList(
+			List<CQLIncludeLibrary> IncLibList) {
+		
+		Collections.sort(IncLibList, new Comparator<CQLIncludeLibrary>() {
+			@Override
+			public int compare(final CQLIncludeLibrary o1, final CQLIncludeLibrary o2) {
+				return o1.getAliasName().compareToIgnoreCase(
+						o2.getAliasName());
+			}
+		});
+		
+		return IncLibList;
+	}
+	
 	
 	
 	/* (non-Javadoc)

@@ -24,6 +24,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
@@ -678,4 +679,7 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject);
 
 	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+
+	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
 }

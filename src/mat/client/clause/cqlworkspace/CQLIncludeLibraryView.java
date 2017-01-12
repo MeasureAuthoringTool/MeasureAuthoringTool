@@ -70,7 +70,7 @@ public class CQLIncludeLibraryView {
 	/** The sort provider. */
 	private ListDataProvider<CQLLibraryDataSetObject> listDataProvider;
 	/** Cell Table Row Count. */
-	private static final int TABLE_ROW_COUNT = 10;
+	private static final int TABLE_ROW_COUNT = 5;
 	
 	/** The spager. */
 	private MatSimplePager spager;

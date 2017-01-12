@@ -122,8 +122,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
 	
-	/** The update vsac error message panel. */
-	private ErrorMessageDisplay updateVSACErrorMessagePanel = new ErrorMessageDisplay();
 	
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
@@ -154,8 +152,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The profile list. */
 	private List<String> expIdentifierList = new ArrayList<String>();
 	
-	/** The update vsac success message panel. */
-	private SuccessMessageDisplay updateVSACSuccessMessagePanel = new SuccessMessageDisplay();
 	
 	/** The last selected object. */
 	private CQLQualityDataSetDTO lastSelectedObject;
@@ -176,11 +172,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The specific occurrence check box. */
 	private CheckBox specificOcurChkBox;
 	
-	/** The in progress message display. */
-	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
-	
-	/** The search header. */
-	//private  Label searchHeader = new Label("Search");
 	
 	/** The vsac profile header. */
 	private Label defaultExpIdentifierHeader = new Label(LabelType.INFO,"Apply Expansion Identifier");
@@ -245,9 +236,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hPanel);
-		verticalPanel.add(inProgressMessageDisplay);
-		verticalPanel.add(updateVSACSuccessMessagePanel);
-		verticalPanel.add(updateVSACErrorMessagePanel);
+		verticalPanel.add(new SpacerWidget());
+		
 		
 		mainPanel.add(verticalPanel);
 		containerPanel.getElement().setAttribute("id",
@@ -367,9 +357,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
 		searchHeader.setStyleName("measureGroupingTableHeader");
-		/*HTML searchHeaderText = new HTML("<strong>Search</strong>");
-		searchHeader.clear();
-		searchHeader.add(searchHeaderText);*/
+		
 		
 		searchPanel.add(searchHeader);
 		searchPanel.setWidth("350px");
@@ -378,8 +366,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
-		/*nameInput.removeStyleName("gwt-TextBox");
-		nameInput.setStyleName("Text-Box");*/
+		
 		nameInput.setTitle("Enter Name");
 		nameInput.setWidth("250px");
 		nameInput.setHeight("30px");
@@ -409,18 +396,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		buttonPanel.add(buttonToolBar);
 		buttonPanel.add(new SpacerWidget());
 		
-		//queryGrid.setWidget(6, 0, buttonPanel);
-		//queryGrid.setStyleName("secondLabel");
 		
-		
-		//Form searchForm = new Form();
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		 searchWidgetFormGroup.add(sWidget.getSearchWidget());
-		// searchForm.add(searchWidgetFormGroup);
 		 searchWidgetFormGroup.add(new SpacerWidget());
 
-		// FormGroup nameFormGroup = new FormGroup();
 		 VerticalPanel namePanel = new VerticalPanel();
 		 FormLabel nameLabel = new FormLabel();
 		 nameLabel.setText("Name");
@@ -446,15 +427,10 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		 versionFormGroup.add(new SpacerWidget());
 		 
 		 VerticalPanel buttonFormGroup = new VerticalPanel();
-		buttonFormGroup.add(buttonToolBar);
-		buttonFormGroup.add(new SpacerWidget());
+		 buttonFormGroup.add(buttonToolBar);
+		 buttonFormGroup.add(new SpacerWidget());
 		 
-		/*FieldSet formFieldSet = new FieldSet();
-		formFieldSet.add(namePanel);
-		formFieldSet.add(expansionIdFormGroup);
-		formFieldSet.add(versionFormGroup);
-		formFieldSet.add(buttonFormGroup);
-		searchForm.add(formFieldSet);*/
+		
 		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
 		queryGrid.setWidget(1, 0, namePanel);
 		queryGrid.setWidget(2, 0, expansionIdFormGroup);
@@ -464,8 +440,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		
 		 
 		searchPanelBody.add(queryGrid);
-		
-		
+			
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
@@ -1233,87 +1208,56 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	public List<String> getExpIdentifierList() {
 		return expIdentifierList;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setProfileList(java.util.List)
-	 */
 	/**
 	 * Sets the profile list.
 	 *
 	 * @param expIdentifierList the new profile list
 	 */
-	//@Override
 	public void setExpIdentifierList(List<String> expIdentifierList) {
 		this.expIdentifierList = expIdentifierList;
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSelectedElementToRemove()
-	 */
 	/**
 	 * Gets the selected element to remove.
 	 *
 	 * @return the selected element to remove
 	 */
-	//@Override
 	public CQLQualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getDataTypesListBox()
-	 */
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getVersionListBox()
-	 */
 	/**
 	 * Gets the version list box.
 	 *
 	 * @return the version list box
 	 */
-	//@Override
 	public ListBox getVersionListBox() {
 		return versionListBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getExpansionProfileListBox()
-	 */
 	/**
 	 * Gets the VSAC profile list box.
 	 *
 	 * @return the VSAC profile list box
 	 */
-	//@Override
 	public ListBox getQDMExpIdentifierListBox() {
 		return qdmExpIdentifierListBox;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getOIDInput()
-	 */
 	/**
 	 * Gets the OID input.
 	 *
 	 * @return the OID input
 	 */
-	//@Override
 	public TextBox getOIDInput() {
 		return sWidget.getSearchBox();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getUserDefinedInput()
-	 */
 	/**
 	 * Gets the user defined input.
 	 *
 	 * @return the user defined input
 	 */
-	//@Override
 	public TextBox getUserDefinedInput() {
 		return nameInput;
 	}
@@ -1337,17 +1281,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		this.isEditable = isEditable;
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSearchHeader()
-	 */
 	/**
 	 * Gets the search header.
 	 *
 	 * @return the search header
 	 */
-	//@Override
 	public PanelHeader getSearchHeader() {
 		return searchHeader;
 	}
@@ -1358,7 +1296,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the list data provider
 	 */
-	//@Override
 	public ListDataProvider<CQLQualityDataSetDTO> getListDataProvider(){
 		return listDataProvider;
 	}
@@ -1368,7 +1305,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the simple pager
 	 */
-	//@Override
 	public MatSimplePager getSimplePager(){
 		return spager;
 	}
@@ -1378,7 +1314,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the celltable
 	 */
-	//@Override
 	public CellTable<CQLQualityDataSetDTO> getCelltable(){
 		return table;
 	}
@@ -1388,21 +1323,15 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the pager
 	 */
-	//@Override
 	public MatSimplePager getPager(){
 		return spager;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.QDMAppliedSelectionPresenter.SearchDisplay#getMainPanel()
-	 */
 	/**
 	 * Gets the main panel.
 	 *
 	 * @return the main panel
 	 */
-	//@Override
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
 	}
@@ -1415,8 +1344,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 * @param editable the new widgets read only
 	 */
 	public void setWidgetsReadOnly(boolean editable){
-		//getQDMExpIdentifierListBox().setEnabled(editable);
-		//getVersionListBox().setEnabled(editable);
+		
 		getOIDInput().setEnabled(editable);
 		getUserDefinedInput().setEnabled(editable);
 		getApplyDefaultExpansionIdButton().setEnabled(editable);

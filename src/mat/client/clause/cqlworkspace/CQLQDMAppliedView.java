@@ -7,17 +7,12 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
-import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.TextArea;
-
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -32,6 +27,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -417,7 +413,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		//queryGrid.setStyleName("secondLabel");
 		
 		
-		Form searchForm = new Form();
+		//Form searchForm = new Form();
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		 searchWidgetFormGroup.add(sWidget.getSearchWidget());
@@ -561,13 +557,13 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 			final CellTable<CQLQualityDataSetDTO> table,
 			ListHandler<CQLQualityDataSetDTO> sortHandler, boolean isEditable) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
-			/*Label searchHeader = new Label("QDM Elements");
+			Label searchHeader = new Label("QDM Elements");
 			searchHeader.getElement().setId("searchHeader_Label");
-			searchHeader.setStyleName("measureGroupingTableHeader");
 			searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
-			caption.appendChild(searchHeader.getElement());*/
+			searchHeader.setVisible(false);
+			caption.appendChild(searchHeader.getElement());
 			
 			//table.setSelectionModel(selectionModel);
 			

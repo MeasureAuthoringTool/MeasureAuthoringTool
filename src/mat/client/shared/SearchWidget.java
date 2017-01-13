@@ -23,7 +23,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 	private PrimaryButton searchButton;
 	
 	/** The search input. {@link WatermarkedTextBox}. */
-	private MatTextBox searchInput = new MatTextBox();
+	private TextBox searchInput = new TextBox();
 	
 	/** Default Constructor. */
 //	public SearchWidget() {
@@ -120,7 +120,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 	/** Gets the search input.
 	 * 
 	 * @return the textBox {@link TextBox}. */
-	public final MatTextBox getSearchInput() {
+	public final TextBox getSearchInput() {
 		return searchInput;
 	}
 	

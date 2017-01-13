@@ -3,34 +3,10 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import mat.client.CustomPager;
-import mat.client.ImageResources;
-import mat.client.codelist.HasListBox;
-import mat.client.shared.CustomButton;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.InProgressMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SearchWidget;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.util.CellTableUtility;
-import mat.client.util.MatTextBox;
-import mat.model.QualityDataSetDTO;
-import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.ConstantMessages;
+
 /*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -68,12 +44,37 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+
+import mat.client.CustomPager;
+import mat.client.ImageResources;
+import mat.client.codelist.HasListBox;
+import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.InProgressMessageDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SearchWidget;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.util.CellTableUtility;
+import mat.client.util.MatTextBox;
+import mat.model.QualityDataSetDTO;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.ConstantMessages;
 
 
 
@@ -127,7 +128,7 @@ HasSelectionHandlers<Boolean> {
 			"Use a default Expansion Identifier ?", 1);*/
 	/*CustomBootStrapCheckBox defaultExpIdentifierSel = new CustomBootStrapCheckBox("Use a default Expansion Identifier ?");*/
 	private CheckBox defaultExpIdentifierSel = new CheckBox();
-	ToggleSwitch toggleSwitch = new ToggleSwitch();
+	//ToggleSwitch toggleSwitch = new ToggleSwitch();
 	/** The vsac profile list box. */
 	private ListBoxMVP defaultExpIdentifierListBox = new ListBoxMVP();
 	
@@ -1640,7 +1641,7 @@ HasSelectionHandlers<Boolean> {
 	 * @return the OID input
 	 */
 	@Override
-	public MatTextBox getOIDInput() {
+	public TextBox getOIDInput() {
 		return searchWidget.getSearchInput();
 	}
 	

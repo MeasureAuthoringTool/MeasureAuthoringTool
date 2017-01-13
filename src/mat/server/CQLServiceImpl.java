@@ -1629,7 +1629,7 @@ public class CQLServiceImpl implements CQLService {
 		if (xmlModel != null) {
 
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_MEASURE_NAME = "/measure/measureDetails/title";
+			String XPATH_MEASURE_NAME = "/measure/cqlLookUp/library";
 			try {
 				Node node = processor.findNode(processor.getOriginalDoc(), XPATH_MEASURE_NAME);
 

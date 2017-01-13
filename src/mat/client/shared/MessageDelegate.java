@@ -374,7 +374,7 @@ public class MessageDelegate {
 	private final String DOESNT_FOLLOW_RULES = "The new password you entered does not match the following rules:";
 	
 	/** The duplicate applied qdm. */
-	private final String DUPLICATE_APPLIED_QDM = "Valueset with unique name already exists.";
+	private final String DUPLICATE_APPLIED_QDM = "Valueset with name already exists.";
 	
 	/** The duplicate codes msg. */
 	private final String DUPLICATE_CODES_MSG = "All code(s) were identified as duplicates to code(s) already in the value set and were ignored upon import.";
@@ -2663,7 +2663,7 @@ public class MessageDelegate {
 	}
 
 	public String getValuesetSuccessMessage(String codeListName) {
-		return " The QDM Element " + codeListName + " has been added successfully.";
+		return " The Valueset " + codeListName + " has been added successfully.";
 	}
 
 	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {
@@ -2674,5 +2674,8 @@ public class MessageDelegate {
 		return SUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY;
 	}
 
+	public String getIncludeLibrarySuccessMessage(String aliasName) {
+		return " Library " + aliasName + " successfully included.";
+	}
 	
 }

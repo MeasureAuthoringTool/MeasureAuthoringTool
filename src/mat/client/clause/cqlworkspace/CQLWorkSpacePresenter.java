@@ -1581,7 +1581,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getIncludeView().setIncludedList(null);
 									searchDisplay.getIncludeView().redrawCellTable();*/
 									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
-											.getMessageDelegate().getSUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY());
+											.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
 									searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
 								}  else if (result.getFailureReason() == 1) {
 									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()

@@ -777,9 +777,19 @@ public class CQLServiceImpl implements CQLService {
 				
 				isDuplicate = isDuplicateIdentifierName(
 						currentObj.getAliasName(), measureId);
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_UNIQUE);
+					return result;
+				}
 				
 				isDuplicate = isDupidnNameWithMsrName(currentObj.getAliasName(), 
 						measureId);
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(result.NAME_NOT_UNIQUE);
+					return result;
+				}
 				
 				if (!isDuplicate) {
 					String cqlString = createIncludeLibraryXML(currentObj);

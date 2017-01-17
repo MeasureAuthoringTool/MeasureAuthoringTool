@@ -768,8 +768,8 @@ public class CQLServiceImpl implements CQLService {
 				
 			} else { // this is part of save functionality
 				currentObj.setId(UUID.randomUUID().toString());
-				isDuplicate = validator.validateForSpecialChar(currentObj.getAliasName());
-				if (isDuplicate) {
+				isDuplicate = validator.validateForAliasNameSpecialChar(currentObj.getAliasName());
+				if (!isDuplicate) {
 					result.setSuccess(false);
 					result.setFailureReason(result.NO_SPECIAL_CHAR);
 					return result;

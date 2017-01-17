@@ -1545,7 +1545,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			//functioanlity to add Include Library
 			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList().get(0);
 			
-			if (!validator.validateForSpecialChar(aliasName.trim())) {
+			if (validator.validateForAliasNameSpecialChar(aliasName.trim())) {
 				
 				CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
 				incLibrary.setAliasName(aliasName);

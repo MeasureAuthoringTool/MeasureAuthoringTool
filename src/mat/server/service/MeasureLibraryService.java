@@ -752,7 +752,7 @@ public interface MeasureLibraryService {
 
 	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
-	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList);
 

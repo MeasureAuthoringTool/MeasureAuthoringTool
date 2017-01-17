@@ -5755,10 +5755,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList){
-		return getCqlService().saveAndModifyIncludeLibray(measureId, toBeModifiedObj, currentObj, incLibraryList);
+		return getCqlService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 }
 

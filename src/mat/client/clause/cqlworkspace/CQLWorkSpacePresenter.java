@@ -1530,14 +1530,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-					addAndModifyIncludeLibrary();
+					addIncludeLibraryInCQLLookUp();
 				}
 			}
 		});
 		
 	}
 	
-	private void addAndModifyIncludeLibrary() {
+	private void addIncludeLibraryInCQLLookUp() {
 		searchDisplay.resetMessageDisplay();
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 		
@@ -1552,54 +1552,54 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
 				incLibrary.setVersion(cqlLibraryDataSetObject.getVersion().replace("v", ""));
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
-				//this is just to add include library and not modify
-				MatContext.get().getMeasureService().saveAndModifyIncludeLibray(MatContext.get().getCurrentMeasureId(), 
-						null, incLibrary, searchDisplay.getViewIncludeLibrarys(), new AsyncCallback<SaveUpdateCQLResult>() {
+				
+				if (searchDisplay.getCurrentSelectedIncLibraryObjId() == null) {
+					//this is just to add include library and not modify
+					MatContext.get().getMeasureService().saveIncludeLibrayInCQLLookUp(MatContext.get().getCurrentMeasureId(), 
+							null, incLibrary, searchDisplay.getViewIncludeLibrarys(), new AsyncCallback<SaveUpdateCQLResult>() {
 
-							@Override
-							public void onFailure(Throwable caught) {
-								searchDisplay.getErrorMessageAlert().createAlert(
-										MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								
-							}
-
-							@Override
-							public void onSuccess(SaveUpdateCQLResult result) {
-								if (result.isSuccess()) {
-									searchDisplay.resetMessageDisplay();
-									searchDisplay.setIsPageDirty(false);
-									searchDisplay.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
-									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-									searchDisplay.clearAndAddAliasNamesToListBox();
-									searchDisplay.udpateIncludeLibraryMap();
-									searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
-									//searchDisplay.getAliasNameTxtArea().setText(result.getIncludeLibrary().getAliasName());
-									//searchDisplay.setCurrentSelectedIncLibraryObjId(result.getIncludeLibrary().getId());
-									/*searchDisplay.getAliasNameTxtArea().setText("");
-									searchDisplay.getIncludeView().getSelectedObjectList().clear();
-									searchDisplay.getIncludeView().setSelectedObject(null);
-									searchDisplay.getIncludeView().setIncludedList(null);
-									searchDisplay.getIncludeView().redrawCellTable();*/
-									searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
-											.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
-									searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
-								}  else if (result.getFailureReason() == 1) {
-									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
-											.getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
-									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
-								} else if (result.getFailureReason() == 2) {
-									searchDisplay.getErrorMessageAlert().createAlert("Missing IncludesLibrary Tag.");
-									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
-								}  else if(result.getFailureReason() == 3){
-									searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
-											.getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-									searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+								@Override
+								public void onFailure(Throwable caught) {
+									searchDisplay.getErrorMessageAlert().createAlert(
+											MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									
 								}
-							}
-						});
-				
-				
-				
+
+								@Override
+								public void onSuccess(SaveUpdateCQLResult result) {
+									if (result.isSuccess()) {
+										searchDisplay.resetMessageDisplay();
+										searchDisplay.setIsPageDirty(false);
+										searchDisplay.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+										MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+										searchDisplay.clearAndAddAliasNamesToListBox();
+										searchDisplay.udpateIncludeLibraryMap();
+										searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
+										//searchDisplay.getAliasNameTxtArea().setText(result.getIncludeLibrary().getAliasName());
+										//searchDisplay.setCurrentSelectedIncLibraryObjId(result.getIncludeLibrary().getId());
+										/*searchDisplay.getAliasNameTxtArea().setText("");
+										searchDisplay.getIncludeView().getSelectedObjectList().clear();
+										searchDisplay.getIncludeView().setSelectedObject(null);
+										searchDisplay.getIncludeView().setIncludedList(null);
+										searchDisplay.getIncludeView().redrawCellTable();*/
+										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
+										searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
+									}  else if (result.getFailureReason() == 1) {
+										searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
+										searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+									} else if (result.getFailureReason() == 2) {
+										searchDisplay.getErrorMessageAlert().createAlert("Missing IncludesLibrary Tag.");
+										searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+									}  else if(result.getFailureReason() == 3){
+										searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
+										searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
+									}
+								}
+							});
+				}
 			
 			} else {
 				searchDisplay.getErrorMessageAlert()

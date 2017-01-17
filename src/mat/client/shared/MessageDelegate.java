@@ -2663,7 +2663,7 @@ public class MessageDelegate {
 	}
 
 	public String getValuesetSuccessMessage(String codeListName) {
-		return " The Valueset " + codeListName + " has been added successfully.";
+		return "Valueset " + codeListName + " has been added successfully.";
 	}
 
 	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {

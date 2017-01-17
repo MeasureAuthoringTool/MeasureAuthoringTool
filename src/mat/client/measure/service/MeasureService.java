@@ -680,6 +680,6 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId, CQLIncludeLibrary toBeModifiedObj,
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
 }

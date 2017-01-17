@@ -751,6 +751,6 @@ public interface MeasureServiceAsync {
 	void updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveAndModifyIncludeLibray(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+	void saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 }

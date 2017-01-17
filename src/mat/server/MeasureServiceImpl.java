@@ -673,10 +673,10 @@ MeasureService {
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList){
-		return this.getMeasureLibraryService().saveAndModifyIncludeLibray(measureId, toBeModifiedObj, currentObj, incLibraryList);
+		return this.getMeasureLibraryService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 
 }

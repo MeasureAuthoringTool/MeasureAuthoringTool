@@ -745,7 +745,7 @@ public class CQLServiceImpl implements CQLService {
 	 * @see mat.client.measure.service.CQLService#saveAndModifyIncludeLibray(java.lang.String, mat.model.cql.CQLIncludeLibrary, mat.model.cql.CQLIncludeLibrary, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId,
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList) {
 		
@@ -783,7 +783,7 @@ public class CQLServiceImpl implements CQLService {
 					return result;
 				}
 				
-				isDuplicate = isDupidnNameWithMsrName(currentObj.getAliasName(), 
+				isDuplicate = isDupParentCQLLibraryName(currentObj.getAliasName(), 
 						measureId);
 				if (isDuplicate) {
 					result.setSuccess(false);
@@ -1623,13 +1623,13 @@ public class CQLServiceImpl implements CQLService {
 	 * @param measureId the measure id
 	 * @return true, if is dupidn name with msr name
 	 */
-	private boolean isDupidnNameWithMsrName(String identifierName, String measureId) {
+	private boolean isDupParentCQLLibraryName(String identifierName, String measureId) {
 
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		if (xmlModel != null) {
 
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
-			String XPATH_MEASURE_NAME = "/measure/cqlLookUp/library";
+			String XPATH_MEASURE_NAME = "//cqlLookUp/library";
 			try {
 				Node node = processor.findNode(processor.getOriginalDoc(), XPATH_MEASURE_NAME);
 

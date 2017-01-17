@@ -177,7 +177,7 @@ public interface CQLService {
 
 	SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveAndModifyIncludeLibray(String measureId, CQLIncludeLibrary toBeModifiedObj,
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
 
 

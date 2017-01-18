@@ -564,6 +564,7 @@ public class CQLIncludeLibraryView {
 		this.includedList = includedList;
 	}
 
+	
 	/**
 	 * This method enable/disable's search button
 	 * and hide/show loading please wait message.

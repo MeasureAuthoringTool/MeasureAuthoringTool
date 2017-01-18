@@ -3725,6 +3725,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return mainFlowPanel;
 	}
 	
+	
 	/**
 	 * Gets the search suggest text box.
 	 *

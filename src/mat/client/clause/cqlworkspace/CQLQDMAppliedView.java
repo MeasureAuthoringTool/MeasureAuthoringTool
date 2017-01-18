@@ -1375,6 +1375,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		getUserDefinedInput().setValue("");
 		getSaveButton().setEnabled(false);
 	}
+	
 	/**
 	 * This method enable/disable's reterive and updateFromVsac button
 	 * and hide/show loading please wait message.

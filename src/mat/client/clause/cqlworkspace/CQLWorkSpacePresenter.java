@@ -3084,6 +3084,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildIncludesView();
 		getAllIncludeLibraryList("");
 		
+		
 		//temporary deleting text area.this is removed after clear functionality is implemented
 		searchDisplay.getInclView().getAliasNameTxtArea().setText("");
 		searchDisplay.getInclView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));

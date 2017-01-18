@@ -11,6 +11,8 @@ import mat.shared.ConstantMessages;
  */
 public class MessageDelegate {
 	
+	
+	
 	/** The Constant WELCOME_MESSAGE. */
 	public static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
 	
@@ -74,6 +76,8 @@ public class MessageDelegate {
 	
 	/** The Constant NO_MEASURES. */
 	public static final String NO_MEASURES = "No measures returned. Please search again.";
+	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
+	
 	
 	/** The Constant OID_REQUIRED. */
 	public static final String OID_REQUIRED = "OID is required.";
@@ -2663,7 +2667,7 @@ public class MessageDelegate {
 	}
 
 	public String getValuesetSuccessMessage(String codeListName) {
-		return "The Valueset " + codeListName + " has been added successfully.";
+		return "The Value set " + codeListName + " has been added successfully.";
 	}
 
 	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {
@@ -2676,6 +2680,10 @@ public class MessageDelegate {
 
 	public String getIncludeLibrarySuccessMessage(String aliasName) {
 		return " Library " + aliasName + " successfully included.";
+	}
+
+	public  String getNoIncludes() {
+		return NO_INCLUDES;
 	}
 	
 }

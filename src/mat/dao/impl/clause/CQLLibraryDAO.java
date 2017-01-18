@@ -6,17 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import mat.dao.impl.clause.MeasureDAO.MeasureComparator;
-import mat.dao.impl.clause.MeasureDAO.MeasureListComparator;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.CQLLibrary;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.cql.CQLLibraryModel;
 import mat.shared.StringUtility;
 
 public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
@@ -53,10 +47,10 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	}
 	
 	/*
-	 * assumption: each measure in this list is part of the same measure set
+	 * assumption: each CQL in this list is part of the same measure set
 	 */
 	/**
-	 * The Class MeasureListComparator.
+	 * The Class CQLLibraryListComparator.
 	 */
 	class CQLLibraryListComparator implements Comparator<List<CQLLibrary>> {
 		
@@ -100,7 +94,6 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 			
 			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su,
 					cqlLibrary);
-			
 			if (matchesSearch) {
 				orderedList.add(cqlLibrary);
 			}
@@ -108,39 +101,38 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		return orderedList;
 		
 	}
+	/**
+	 * Sort Library list by measure set Id.
+	 * @param librariesResultList
+	 * @return
+	 */
 	private List<CQLLibrary> sortLibraryList(List<CQLLibrary> librariesResultList) {
 		// generate sortable lists
-		List<List<CQLLibrary>> measureLists = new ArrayList<List<CQLLibrary>>();
-		for (CQLLibrary m : librariesResultList) {
+		List<List<CQLLibrary>> cqlLibList = new ArrayList<List<CQLLibrary>>();
+		for (CQLLibrary cql : librariesResultList) {
 			boolean hasList = false;
-			/* if(m.getDeleted()==null){ */
-			for (List<CQLLibrary> mlist : measureLists) {
-				String msetId = mlist.get(0).getMeasureSetId().getId();
-				if (m.getMeasureSetId().getId().equalsIgnoreCase(msetId)) {
-					mlist.add(m);
+			for (List<CQLLibrary> cqlSubSetList : cqlLibList) {
+				String msetId = cqlSubSetList.get(0).getMeasureSetId().getId();
+				if (cql.getMeasureSetId().getId().equalsIgnoreCase(msetId)) {
+					cqlSubSetList.add(cql);
 					hasList = true;
 					break;
 				}
 			}
-			// }
 			if (!hasList) {
-				List<CQLLibrary> mlist = new ArrayList<CQLLibrary>();
-				// Check if Measure is softDeleted then dont include that into
-				// list.
-				// if(m.getDeleted()==null){
-				mlist.add(m);
-				measureLists.add(mlist);
-				// }
+				List<CQLLibrary> finalList = new ArrayList<CQLLibrary>();
+				finalList.add(cql);
+				cqlLibList.add(finalList);
 			}
 		}
 		// sort
-		for (List<CQLLibrary> mlist : measureLists) {
+		for (List<CQLLibrary> mlist : cqlLibList) {
 			Collections.sort(mlist, new CQlLibraryComparator());
 		}
-		Collections.sort(measureLists, new CQLLibraryListComparator());
+		Collections.sort(cqlLibList, new CQLLibraryListComparator());
 		// compile list
 		List<CQLLibrary> retList = new ArrayList<CQLLibrary>();
-		for (List<CQLLibrary> mlist : measureLists) {
+		for (List<CQLLibrary> mlist : cqlLibList) {
 			for (CQLLibrary m : mlist) {
 				retList.add(m);
 			}
@@ -152,17 +144,27 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	
 	
 	
+	/**
+	 * Search method to search cql lib by owner name(First/last) or by cql library name.
+	 * @param searchTextLC
+	 * @param stringUtility
+	 * @param cqlLibrary
+	 * @return boolean
+	 */
 	private boolean searchResultsForCQLLibrary(String searchTextLC,
 			StringUtility stringUtility, CQLLibrary cqlLibrary) {
+		
 		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true :
-		// measure name
-				cqlLibrary.getName().toLowerCase().contains(searchTextLC) ? true : // measure
+		// CQL name
+				cqlLibrary.getName().toLowerCase().contains(searchTextLC) ? true : // CQL
 																					// owner
 																					// first
 																					// name
 						cqlLibrary.getOwnerId().getFirstName().toLowerCase().contains(searchTextLC) ? true :
-						// measure owner last name
-								cqlLibrary.getOwnerId().getLastName().toLowerCase().contains(searchTextLC) ? true
+						// CQL owner last name
+								cqlLibrary.getOwnerId().getLastName().toLowerCase().contains(searchTextLC) ? true:
+									// Owner email address
+									cqlLibrary.getOwnerId().getEmailAddress().contains(searchTextLC) ? true
 										: false;
 		return matchesSearch;
 	}

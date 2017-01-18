@@ -70,6 +70,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	@Override
 	public List<CQLLibrary> search(String searchText, String searchFrom) {
 		
+		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);

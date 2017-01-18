@@ -76,6 +76,7 @@ public class MessageDelegate {
 	
 	/** The Constant NO_MEASURES. */
 	public static final String NO_MEASURES = "No measures returned. Please search again.";
+	
 	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
 	
 	

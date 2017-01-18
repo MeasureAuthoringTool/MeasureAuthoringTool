@@ -3720,6 +3720,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *
 	 * @return the main flow panel
 	 */
+	@Override
 	public FlowPanel getMainFlowPanel() {
 		return mainFlowPanel;
 	}

@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -1175,6 +1176,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		List<String> getIncludedList(Map<String, CQLIncludeLibrary> includeMap);
 
+		FlowPanel getMainFlowPanel();
+
 	}
 
 	/**
@@ -1532,6 +1535,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					addIncludeLibraryInCQLLookUp();
 				}
+			}
+		});
+		
+		searchDisplay.getIncludeView().getSearchButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				getAllIncludeLibraryList(searchDisplay.getInclView().getSearchTextBox().getText().trim());
 			}
 		});
 		
@@ -2683,7 +2694,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	public void beforeDisplay() {
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		getCQLData();
-		getAllIncludeLibraryList("");
+		//getAllIncludeLibraryList("");
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		searchDisplay.resetMessageDisplay();
@@ -2697,20 +2708,37 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		panel.add(searchDisplay.getMainHPanel());
 	}
 
-	private void getAllIncludeLibraryList(String searchText) {
+	/**
+	 * This method is called at beforeDisplay and get searchButton click on Include section
+	 * and reterives CQL Versioned libraries eligible to be included into any parent cql library.
+	 * @param searchText
+	 */
+	private void getAllIncludeLibraryList(final String searchText) {
+		searchDisplay.getErrorMessageAlert().clearAlert();
+		searchDisplay.getSuccessMessageAlert().clearAlert();
+		searchDisplay.getWarningMessageAlert().clearAlert();
+		searchDisplay.getIncludeView().showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().search(searchText,"measureLib", new AsyncCallback<List<CQLLibraryDataSetObject>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+				searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}
 
 			@Override
 			public void onSuccess(List<CQLLibraryDataSetObject> result) {
-				searchDisplay.setIncludeLibraryList(result);
-				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
 				
+				if(searchText != null && searchText.trim().isEmpty()){
+					searchDisplay.setIncludeLibraryList(result);
+					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
+				} else {
+					if(result == null || result.size() == 0){
+						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
+						searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
+					}
+				}
+				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}
 		});
 		
@@ -3052,7 +3080,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		searchDisplay.getIncludesLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
+		searchDisplay.getMainFlowPanel().clear();
 		searchDisplay.buildIncludesView();
+		getAllIncludeLibraryList("");
+		
 		//temporary deleting text area.this is removed after clear functionality is implemented
 		searchDisplay.getInclView().getAliasNameTxtArea().setText("");
 		searchDisplay.getInclView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
@@ -3916,19 +3947,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			expansionId = expIdentifierToAllQDM;
 		}
-		showSearchingBusyOnQDM(true);
+		searchDisplay.getQdmView().showSearchingBusyOnQDM(true);
 		vsacapiService.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				showSearchingBusyOnQDM(false);
+				searchDisplay.getQdmView().showSearchingBusyOnQDM(false);
 			}
 			
 			@Override
 			public void onSuccess(final VsacApiResult result) {
-				showSearchingBusyOnQDM(false);
+				searchDisplay.getQdmView().showSearchingBusyOnQDM(false);
 				if (result.isSuccess()) {
 					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
 					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
@@ -4035,7 +4066,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getErrorMessageAlert().setVisible(true);
 			return;
 		}
-		showSearchingBusyOnQDM(true);
+		searchDisplay.getQdmView().showSearchingBusyOnQDM(true);
 
 		if (expIdentifierToAllQDM.isEmpty()) {
 			expansionProfile = null;
@@ -4050,7 +4081,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getErrorMessageAlert().setVisible(true);
-				showSearchingBusyOnQDM(false);
+				searchDisplay.getQdmView().showSearchingBusyOnQDM(false);
 			}
 
 			/**
@@ -4089,7 +4120,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getQdmView().getQDMExpIdentifierListBox().setEnabled(true);
 						searchDisplay.getQdmView().getVersionListBox().setEnabled(true);
 					}
-					showSearchingBusyOnQDM(false);
+					searchDisplay.getQdmView().showSearchingBusyOnQDM(false);
 					searchDisplay.getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
 					searchDisplay.getSuccessMessageAlert().setVisible(true);
@@ -4098,7 +4129,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageAlert().createAlert(message);
 					searchDisplay.getErrorMessageAlert().setVisible(true);
-					showSearchingBusyOnQDM(false);
+					searchDisplay.getQdmView().showSearchingBusyOnQDM(false);
 				}
 			}
 		});
@@ -4718,19 +4749,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return list;
 	}
 	
-	/**
-	 * This method enable/disable's reterive and updateFromVsac button
-	 * and hide/show loading please wait message.
-	 * @param busy
-	 */
-	private void showSearchingBusyOnQDM(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		searchDisplay.getQdmView().getUpdateFromVSACButton().setEnabled(!busy);
-		searchDisplay.getQdmView().getRetrieveFromVSACButton().setEnabled(!busy);
-	}
+	
+	
 
 }

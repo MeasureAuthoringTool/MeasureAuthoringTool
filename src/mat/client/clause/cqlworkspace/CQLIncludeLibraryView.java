@@ -41,6 +41,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
+import mat.client.Mat;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -563,4 +564,19 @@ public class CQLIncludeLibraryView {
 		this.includedList = includedList;
 	}
 
+	/**
+	 * This method enable/disable's search button
+	 * and hide/show loading please wait message.
+	 * @param busy
+	 */
+	public void showSearchingBusy(final boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		getSearchButton().setEnabled(!busy);
+		
+	}
+	
 }

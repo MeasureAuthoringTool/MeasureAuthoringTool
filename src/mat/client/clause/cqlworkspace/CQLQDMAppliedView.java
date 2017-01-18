@@ -56,6 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
+import mat.client.Mat;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
@@ -1373,5 +1374,19 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		getOIDInput().setValue("");
 		getUserDefinedInput().setValue("");
 		getSaveButton().setEnabled(false);
+	}
+	/**
+	 * This method enable/disable's reterive and updateFromVsac button
+	 * and hide/show loading please wait message.
+	 * @param busy
+	 */
+	public void showSearchingBusyOnQDM(final boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		getUpdateFromVSACButton().setEnabled(!busy);
+		getRetrieveFromVSACButton().setEnabled(!busy);
 	}
 }

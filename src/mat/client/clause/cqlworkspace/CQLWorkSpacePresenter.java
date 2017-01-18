@@ -2729,14 +2729,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(List<CQLLibraryDataSetObject> result) {
 				
-				if(searchText != null && searchText.trim().isEmpty()){
+				if(result != null && result.size() > 0){
 					searchDisplay.setIncludeLibraryList(result);
 					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
 				} else {
-					if(result == null || result.size() == 0){
 						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
 						searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
-					}
 				}
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}

@@ -357,6 +357,8 @@ implements MeasureCloningService {
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
 		List<Node> qdmNodeList = new ArrayList<Node>();
+		List<Node> cqlValuesetsNodeList = new ArrayList<Node>();
+		
 		/**
 		 * We need to capture old "Patient Characteristic Expired"(oid=419099009) and "Patient Characteristic Birthdate"(oid=21112-8)
 		 * and remove them. Also we need to remove qdm with name="Birthdate' and 'Expired' which are non default qdms along with Occurrence
@@ -406,6 +408,28 @@ implements MeasureCloningService {
 				}
 			}
 		}
+		
+		for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
+			cqlValuesetsNodeList.add(cqlValuesetsNode.getChildNodes().item(i));
+		}
+		
+		//Remove all duplicate value sets for new Value Sets workspace.
+		if(cqlValuesetsNodeList != null && cqlValuesetsNodeList.size() >0){
+			List<String> cqlValueSetNames = new ArrayList<String>();
+			for(int i=0;i<cqlValuesetsNodeList.size();i++){
+				Node cqlNode = cqlValuesetsNodeList.get(i);
+				Node parentNode = cqlNode.getParentNode();
+				String valuesetName = cqlNode.getAttributes().getNamedItem("name").getTextContent();
+				if(!cqlValueSetNames.contains(valuesetName)){
+					cqlValueSetNames.add(valuesetName);
+				}
+				else{
+					parentNode.removeChild(cqlNode);
+				}
+			}
+			cqlValueSetNames.clear();
+		}
+		
 		//Remove all unclonable QDM's collected above in For Loop from elementLookUp tag.
 		if(qdmNodeList != null && qdmNodeList.size() >0){
 			for(int i=0;i<qdmNodeList.size();i++){

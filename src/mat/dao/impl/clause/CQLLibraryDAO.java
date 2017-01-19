@@ -165,8 +165,8 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 						// CQL owner last name
 								cqlLibrary.getOwnerId().getLastName().toLowerCase().contains(searchTextLC) ? true:
 									// Owner email address
-									cqlLibrary.getOwnerId().getEmailAddress().contains(searchTextLC) ? true
-										: false;
+									//cqlLibrary.getOwnerId().getEmailAddress().contains(searchTextLC) ? true :
+									false;
 		return matchesSearch;
 	}
 	

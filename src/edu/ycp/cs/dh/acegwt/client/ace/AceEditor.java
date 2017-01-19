@@ -888,7 +888,29 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	  
 	  $wnd.allAttributeList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createAttributesJsArrayString();
 	  
+	  $wnd.dataTypeList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createDatatypesJsArrayString(); 
+	  
 	}-*/;
+	
+	/**
+	 * Creates the datatypes js array string
+	 * 
+	 * 
+	 * @return the js array string
+	 */
+	private static JsArrayString createDatatypesJsArrayString() {
+		List<String> dataTypeList = MatContext.get().dataTypeList;
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		
+		for(String string: dataTypeList) {
+			
+			if(!string.equals(MatContext.get().PLEASE_SELECT)) {
+				jsArray.push("[\"" +string + "\"]");
+			}
+		}
+		
+		return jsArray; 
+	}
 	
 	/**
 	 * Creates the definitions js array string.

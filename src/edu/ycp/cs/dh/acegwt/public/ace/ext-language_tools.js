@@ -1572,7 +1572,11 @@ var Autocomplete = function() {
             } else if(keyString == "a"){
             	matches = [];
             	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
+            } else if(keyString == "y"){
+            	matches = []; 
+            	this.getSpecificKeyWords(datatypeKeywords, matches, "datatypes");
             } else if(keyString == "space"){
+            	this.getSpecificKeyWords(datatypeKeywords, matches, "datatypes");
             	this.getSpecificKeyWords(timingKeywords,matches, "timings");
             	
             	var fk1 = [];

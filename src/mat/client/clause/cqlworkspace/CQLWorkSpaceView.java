@@ -3948,19 +3948,21 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		panel.setWidget(dialogContents);
 		
-		HTML html1 = new HTML("CTRL-Alt-t  : Timings");
-		HTML html2 = new HTML("Ctrl-Alt-f  : Functions");
-		HTML html3 = new HTML("Ctrl-Alt-d  : Definitions");
-		HTML html4 = new HTML("Ctrl-Alt-p  : Parameters");
-		HTML html5 = new HTML("Ctrl-Alt-a  : Attributes");
-		HTML html6 = new HTML("Ctrl-Space  : All");
+		HTML html1 = new HTML("Ctrl-Alt-y  : Datatypes");
+		HTML html2 = new HTML("CTRL-Alt-t  : Timings");
+		HTML html3 = new HTML("Ctrl-Alt-f  : Functions");
+		HTML html4 = new HTML("Ctrl-Alt-d  : Definitions");
+		HTML html5 = new HTML("Ctrl-Alt-p  : Parameters");
+		HTML html6 = new HTML("Ctrl-Alt-a  : Attributes");
+		HTML html7 = new HTML("Ctrl-Space  : All");
 		dialogContents.add(html1);
 		dialogContents.add(html2);
 		dialogContents.add(html3);
 		dialogContents.add(html4);
 		dialogContents.add(html5);
 		dialogContents.add(html6);
-		
+		dialogContents.add(html7);
+
 		panel.show();
 	}
 	

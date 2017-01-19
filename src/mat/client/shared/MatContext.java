@@ -224,7 +224,7 @@ public class MatContext implements IsSerializable {
 	public Map<String, String> removedRelationshipTypes = new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER);
 	
 	/** The data type list. */
-	private List<String> dataTypeList = new ArrayList<String>();
+	public List<String> dataTypeList = new ArrayList<String>();
 	
 	/** The qdm data type list. */
 	private List<String> qdmDataTypeList = new ArrayList<String>();

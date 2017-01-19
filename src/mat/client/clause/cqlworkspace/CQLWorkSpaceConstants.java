@@ -137,7 +137,7 @@ public class CQLWorkSpaceConstants {
 		AVAILABLE_ITEM_TO_INSERT.add("Functions");
 		AVAILABLE_ITEM_TO_INSERT.add("Timing");
 		AVAILABLE_ITEM_TO_INSERT.add("Pre-Defined Functions");
-		AVAILABLE_ITEM_TO_INSERT.add("Applied QDM");
+		AVAILABLE_ITEM_TO_INSERT.add("Applied Value Sets/Codes");
 		AVAILABLE_ITEM_TO_INSERT.add("Attributes");
 		return AVAILABLE_ITEM_TO_INSERT;
 	}

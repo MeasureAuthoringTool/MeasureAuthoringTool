@@ -1199,8 +1199,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		includesLibrary.add(includesCollapse);
 		
 		appliedQDM.setIcon(IconType.PENCIL);
-		appliedQDM.setText("QDM Elements");
-		appliedQDM.setTitle("QDM Elements");
+		appliedQDM.setText("Value Sets/Codes");
+		appliedQDM.setTitle("Value Sets/Codes");
 		appliedQDM.setActive(false);
 		
 		parameterLibrary.setIcon(IconType.PENCIL);

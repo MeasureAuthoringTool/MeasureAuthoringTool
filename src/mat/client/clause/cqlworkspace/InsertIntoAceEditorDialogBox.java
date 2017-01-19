@@ -318,7 +318,7 @@ public class InsertIntoAceEditorDialogBox {
 								} else {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
-									if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
+									if (itemTypeName.equalsIgnoreCase("Applied Value Sets/Codes")) {
 										int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
 										String dataType =null;
 										if (selectedDatatypeIndex != 0) {
@@ -358,7 +358,7 @@ public class InsertIntoAceEditorDialogBox {
 									dialogModal.hide();
 								}
 							} else {
-								if (itemTypeName.equalsIgnoreCase("Applied QDM")) {
+								if (itemTypeName.equalsIgnoreCase("Applied Value Sets/Codes")) {
 									int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
 									String dataType =null;
 									if (selectedDatatypeIndex != 0) {
@@ -813,7 +813,7 @@ public class InsertIntoAceEditorDialogBox {
 						for (int i = 0; i < cqlFunctionsList.size(); i++) {
 							listAllItemNames.addItem(cqlFunctionsList.get(i));
 						}
-					} else if (itemTypeSelected.equalsIgnoreCase("Applied QDM")) {
+					} else if (itemTypeSelected.equalsIgnoreCase("Applied Value Sets/Codes")) {
 						dataTypeFormGroup.setVisible(true);
 						listAllItemNames.clear();
 						availableDatatypes.clear();

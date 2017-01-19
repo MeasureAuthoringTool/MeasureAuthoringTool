@@ -29,7 +29,6 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.MeasureNotes;
-import mat.model.QualityDataModelWrapper;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
@@ -43,10 +42,10 @@ import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.ElementImpl;
@@ -415,19 +414,42 @@ implements MeasureCloningService {
 		
 		//Remove all duplicate value sets for new Value Sets workspace.
 		if(cqlValuesetsNodeList != null && cqlValuesetsNodeList.size() >0){
-			List<String> cqlValueSetNames = new ArrayList<String>();
+			List<String> cqlVSACValueSets = new ArrayList<String>();
+			List<String> cqlUsedDefValueSets = new ArrayList<String>();
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
 				String valuesetName = cqlNode.getAttributes().getNamedItem("name").getTextContent();
-				if(!cqlValueSetNames.contains(valuesetName)){
-					cqlValueSetNames.add(valuesetName);
+				String valuesetOID = cqlNode.getAttributes().getNamedItem("oid").getTextContent();
+				if(!valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+					if(!cqlVSACValueSets.contains(valuesetName)){
+					cqlVSACValueSets.add(valuesetName);
+					}else{
+						parentNode.removeChild(cqlNode);
+					}
 				}
 				else{
-					parentNode.removeChild(cqlNode);
+					if(!cqlUsedDefValueSets.contains(valuesetName)){
+					cqlUsedDefValueSets.add(valuesetName);
+					}else{
+						parentNode.removeChild(cqlNode);
+					}
 				}
 			}
-			cqlValueSetNames.clear();
+			
+			//Loop through user Defined and remove if it exista already in VSAC list
+			for(int i=0;i<cqlValuesetsNodeList.size();i++){
+				Node cqlNode = cqlValuesetsNodeList.get(i);
+				Node parentNode = cqlNode.getParentNode();
+				for (String userDefName : cqlUsedDefValueSets) {
+					if(cqlVSACValueSets.contains(userDefName)){
+						parentNode.removeChild(cqlNode);
+					}
+				}
+			}
+			
+			cqlVSACValueSets.clear();
+			cqlUsedDefValueSets.clear();
 		}
 		
 		//Remove all unclonable QDM's collected above in For Loop from elementLookUp tag.

@@ -415,7 +415,7 @@ implements MeasureCloningService {
 		//Remove all duplicate value sets for new Value Sets workspace.
 		if(cqlValuesetsNodeList != null && cqlValuesetsNodeList.size() >0){
 			List<String> cqlVSACValueSets = new ArrayList<String>();
-			List<String> cqlUsedDefValueSets = new ArrayList<String>();
+			List<String> cqlUserDefValueSets = new ArrayList<String>();
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
@@ -429,27 +429,30 @@ implements MeasureCloningService {
 					}
 				}
 				else{
-					if(!cqlUsedDefValueSets.contains(valuesetName)){
-					cqlUsedDefValueSets.add(valuesetName);
+					if(!cqlUserDefValueSets.contains(valuesetName)){
+						cqlUserDefValueSets.add(valuesetName);
 					}else{
 						parentNode.removeChild(cqlNode);
 					}
 				}
 			}
 			
-			//Loop through user Defined and remove if it exista already in VSAC list
+			//Loop through user Defined and remove if it exists already in VSAC list
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
-				for (String userDefName : cqlUsedDefValueSets) {
-					if(cqlVSACValueSets.contains(userDefName)){
-						parentNode.removeChild(cqlNode);
+				String valuesetOID = cqlNode.getAttributes().getNamedItem("oid").getTextContent();
+				if(valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+					for (String userDefName : cqlUserDefValueSets) {
+						if(cqlVSACValueSets.contains(userDefName)){
+							parentNode.removeChild(cqlNode);
+						}
 					}
 				}
 			}
 			
 			cqlVSACValueSets.clear();
-			cqlUsedDefValueSets.clear();
+			cqlUserDefValueSets.clear();
 		}
 		
 		//Remove all unclonable QDM's collected above in For Loop from elementLookUp tag.

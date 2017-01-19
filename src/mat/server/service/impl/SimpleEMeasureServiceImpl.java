@@ -589,11 +589,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public final byte[] getZipBarr(final String measureId,final MeasureExport me)
 			throws Exception {
 				byte[] wkbkbarr = null;
-				if (me.getCodeList() == null) {
+				/*if (me.getCodeList() == null) {
 					wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
 				} else {
 					wkbkbarr = me.getCodeListBarr();
-				}
+				}*/
 				
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());
@@ -679,11 +679,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public final byte[] getZipBarr(final String measureId,Date exportDate, final MeasureExport me, String releaseVersion)
 			throws Exception {
 		byte[] wkbkbarr = null;
-		if (me.getCodeList() == null) {
+		/*if (me.getCodeList() == null) {
 			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
 		} else {
 			wkbkbarr = me.getCodeListBarr();
-		}
+		}*/
 		System.out.println("MAKING THE ZIP FILE!!!!!!");
 		StringUtility su = new StringUtility();
 		ExportResult emeasureXMLResult = getEMeasureXML(measureId);
@@ -865,11 +865,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			final String seqNum) throws Exception {
 		
 		byte[] wkbkbarr = null;
-		if (me.getCodeList() == null) {
+		/*if (me.getCodeList() == null) {
 			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
 		} else {
 			wkbkbarr = me.getCodeListBarr();
-		}
+		}*/
 		
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());
@@ -904,11 +904,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			final MeasureExport me, final Map<String, byte[]> filesMap,
 			final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
-		if (me.getCodeList() == null) {
+		/*if (me.getCodeList() == null) {
 			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
 		} else {
 			wkbkbarr = me.getCodeListBarr();
-		}
+		}*/
 		StringUtility su = new StringUtility();
 		ExportResult emeasureXMLResult = getEMeasureXML(measureId, me);
 		String emeasureName = emeasureXMLResult.measureName;

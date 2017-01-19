@@ -35,7 +35,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private RadioButton eMeasureRadio = new RadioButton("format", "eMeasure");
 	
 	/** The code list radio. */
-	private RadioButton codeListRadio = new RadioButton("format", "Measure Value Set");
+	//private RadioButton codeListRadio = new RadioButton("format", "Measure Value Set");
 	
 	/** The e measure package radio. */
 	private RadioButton eMeasurePackageRadio = new RadioButton("format", "eMeasure Package");
@@ -75,7 +75,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		
 		eMeasurePackageRadio.setValue(true);
 		content.add(wrapRadioButton(eMeasureRadio));
-		content.add(wrapRadioButton(codeListRadio));
+		//content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
 		content.add(wrapRadioButton(elmRadio));
 		content.add(wrapRadioButton(eMeasurePackageRadio));
@@ -182,10 +182,10 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isCodeList()
 	 */
-	@Override
+	/*@Override
 	public boolean isCodeList() {
 		return codeListRadio.getValue();
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isEMeasurePackage()

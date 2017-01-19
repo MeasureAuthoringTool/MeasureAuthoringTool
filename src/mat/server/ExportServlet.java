@@ -54,7 +54,7 @@ public class ExportServlet extends HttpServlet {
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
 	
 	/** The Constant VALUESET. */
-	private static final String VALUESET = "valueset";
+	//private static final String VALUESET = "valueset";
 	
 	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
@@ -166,10 +166,10 @@ public class ExportServlet extends HttpServlet {
 						measure, exportDate, fnu);
 			} else if (SUBTREE_HTML.equals(format)){
 				export = exportSubTreeHumanReadable(req, resp, id);
-			} else if (VALUESET.equals(format)) {
+			} /*else if (VALUESET.equals(format)) {
 				export = exportValueSetListXLS(resp, measureLibraryService, id,
 						measure, fnu);
-			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
+			} */else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
 				exportActiveUserListCSV(resp, fnu);
 			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
 				exportActiveOrganizationListCSV(resp, fnu);

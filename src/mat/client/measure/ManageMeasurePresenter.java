@@ -275,7 +275,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return true, if is code list
 		 */
-		public boolean isCodeList();
+		//public boolean isCodeList();
 		
 		/**
 		 * Checks if is e measure.
@@ -1166,7 +1166,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		url += (exportDisplay.isEMeasure() ? "emeasure" : 
 				exportDisplay.isSimpleXML() ? "simplexml" :
-				exportDisplay.isCodeList() ? "codelist" : 
+				//exportDisplay.isCodeList() ? "codelist" : 
 				exportDisplay.isCQLLibrary() ? "cqlLibrary" : 
 				exportDisplay.isELM() ? "elm" :	
 				"zip");

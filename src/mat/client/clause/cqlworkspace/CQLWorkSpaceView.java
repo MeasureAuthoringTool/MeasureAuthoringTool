@@ -1079,14 +1079,22 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	private String createCQLLibraryName(String originalString) {
 		originalString = originalString.replaceAll(" ", "");
-		
+		int num = 0;
 		String cleanedString = "";
 				
 		for(int i=0;i<originalString.length();i++){
 			char c = originalString.charAt(i);
 			int intc = (int)c;
 			if(c == '_' || (intc >= 48 && intc <= 57) || (intc >= 65 && intc <= 90) || (intc >= 97 && intc <= 122)){
-				cleanedString = cleanedString + "" + c;
+				
+				if(i==num && Character.isDigit(c)){
+					num++;
+				} else {
+					cleanedString = cleanedString + "" + c;
+				}
+				
+			} else {
+				num++;
 			}
 		}
 		

@@ -3080,7 +3080,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.getMainFlowPanel().clear();
 		searchDisplay.buildIncludesView();
-		getAllIncludeLibraryList("");
+		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		
 		
 		//temporary deleting text area.this is removed after clear functionality is implemented

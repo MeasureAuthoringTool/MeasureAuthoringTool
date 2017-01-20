@@ -1079,7 +1079,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	private String createCQLLibraryName(String originalString) {
 		originalString = originalString.replaceAll(" ", "");
-		int num = 0;
 		String cleanedString = "";
 				
 		for(int i=0;i<originalString.length();i++){
@@ -1087,15 +1086,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			int intc = (int)c;
 			if(c == '_' || (intc >= 48 && intc <= 57) || (intc >= 65 && intc <= 90) || (intc >= 97 && intc <= 122)){
 				
-				if(i==num && Character.isDigit(c)){
-					num++;
-				} else {
+				if(!(cleanedString.isEmpty() && Character.isDigit(c))){
 					cleanedString = cleanedString + "" + c;
 				}
 				
-			} else {
-				num++;
-			}
+			} 
+			
 		}
 		
 		return cleanedString;

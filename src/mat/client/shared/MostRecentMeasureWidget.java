@@ -152,33 +152,19 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					String title = "";
 					String cssClass = "";
 					if ((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
-						if(object.getHqmfReleaseVersion().equals("v3")){
+						if (object.getHqmfReleaseVersion().equals("v3")) {
 							title = "Click to Export MATv3";
 							cssClass = "customExportButton";
-							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv3</button>");	
-							} if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4")){
-								title = "Click to Export MATv4";
-								cssClass = "customExportButtonRed";
-								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv4</button>");	
-							} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v4.3")) {
-								title = "Click to Export MATv4.3";
-								cssClass = "customExportButtonRed";
-								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv4.3</button>");	
-							} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v5.0")) {
-								cssClass = "customExportButtonRed";
-								title = "Click to Export MAT v5.0";
-								sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Export MAT v5.0</button>");	
-							} else if(object.getHqmfReleaseVersion().equalsIgnoreCase("v5.1")) {
-								cssClass = "customExportButtonRed";
-								title = "Click to Export MAT v5.1";
-								sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\">Export MAT v5.1</button>");
-							}
+							sb.appendHtmlConstant("<button type=\"button\" title='" + title
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv3</button>");
+						} else {
+							cssClass = "customExportButtonRed";
+							title = "Click to Export MAT " + object.getHqmfReleaseVersion();
+							sb.appendHtmlConstant(
+									"<button  type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
+											+ "\">Export MAT " + object.getHqmfReleaseVersion() + "</button>");
 						}
+					}
 					return sb.toSafeHtml();
 					}
 				};

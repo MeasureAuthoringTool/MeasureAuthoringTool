@@ -364,7 +364,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * 
 		 * @return the include vsac data
 		 */
-		CheckBox getIncludeVSACData();
+		//CheckBox getIncludeVSACData();
 		/**
 		 * Gets the measure error message display.
 		 *
@@ -702,7 +702,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.clear();
 		panel.add(view.asWidget());
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		view.getIncludeVSACData().setValue(false);
+		//view.getIncludeVSACData().setValue(false);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
@@ -712,7 +712,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		view.getIncludeVSACData().setValue(false);
+		//view.getIncludeVSACData().setValue(false);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
@@ -725,7 +725,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
 			view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-			view.getIncludeVSACData().setValue(false);
+			//view.getIncludeVSACData().setValue(false);
 		} else {
 			displayEmpty();
 		}
@@ -1023,7 +1023,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null 
-				&& packageOverview.getReleaseVersion().equalsIgnoreCase("v5.1")){
+				&& isCQLMeasure(packageOverview.getReleaseVersion())){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
 			//Set supple data to empty if CQL measure
@@ -1225,20 +1225,22 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onSuccess(Void result) {
 				String measureId = MatContext.get()
 						.getCurrentMeasureId();
-				if (view.getIncludeVSACData().getValue().equals(Boolean.TRUE)) {
+				/*if (view.getIncludeVSACData().getValue().equals(Boolean.TRUE)) {
 					updateValueSetsBeforePackaging(measureId);
-				} else {
+				} else {*/
 					validateMeasureAndExport(measureId, null);
-				}
+				//}
 			}
 		});
 	}
 	
 	/**
 	 * Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
+	 *
 	 * @param measureId - String.
-	 */
-	private void updateValueSetsBeforePackaging(final String measureId) {
+	 * @param updateVsacResult the update vsac result
+	 */ //commented out for 5.1 release
+	/*private void updateValueSetsBeforePackaging(final String measureId) {
 		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId,
 				new AsyncCallback<VsacApiResult>() {
 			
@@ -1257,7 +1259,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 						result);
 			}
 		});
-	}
+	}*/
 	
 	/**
 	 * Service Call to generate Simple Xml and value set sheet.
@@ -1380,7 +1382,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 		Window.Location.replace(url + "&type=save");
 	}
 	
-	
+	/**
+	 * Checks if is measure is CQL Measure depending 
+	 * on Measure release version.
+	 *
+	 * @param releaseVersion the release version
+	 * @return true, if is CQL measure
+	 */
+	private boolean isCQLMeasure(String releaseVersion) {
+		
+		String str[] = releaseVersion.replace("v", "").split("\\.");
+		int version_int = Integer.parseInt(str[0]);
+		if(version_int<5){
+			return false;
+		}
+		
+		return true;
+	}
 	
 }
 

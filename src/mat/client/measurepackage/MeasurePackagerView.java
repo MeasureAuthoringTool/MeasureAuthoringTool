@@ -166,7 +166,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The include vsac data. */
 	/*private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
 			+ "a measure package with VSAC data.", "Include VSAC value set data", true);*/
-	private CheckBox includeVSACData = new CheckBox("Include VSAC value set data");
+	//private CheckBox includeVSACData = new CheckBox("Include VSAC value set data");
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSaveErrorMessageDisplay()
@@ -328,9 +328,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(topRiskAdjContainer);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		includeVSACData.setTitle("Select 'Include VSAC value set data' to create "
-				+ "a measure package with VSAC data.");
-		content.add(includeVSACData);
+		//includeVSACData.setTitle("Select 'Include VSAC value set data' to create "
+		//		+ "a measure package with VSAC data.");
+		//content.add(includeVSACData);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(measurePackageSuccessMsg);
@@ -1674,10 +1674,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getIncludeVSACData()
 	 */
-	@Override
+	/*@Override
 	public CheckBox getIncludeVSACData() {
 		return includeVSACData;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasureErrorMessageDisplay()

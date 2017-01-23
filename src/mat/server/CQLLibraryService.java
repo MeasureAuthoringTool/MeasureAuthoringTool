@@ -1,6 +1,5 @@
 package mat.server;
 
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -67,6 +66,11 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		this.cqlLibraryDAO.save(cqlLibrary);
 	}
 	
+	/**
+	 * Method to extract from DB CQLLibrary object to Client side DTO.
+	 * @param cqlLibrary
+	 * @return
+	 */
 	private CQLLibraryDataSetObject extractCQLLibraryDataObject(CQLLibrary cqlLibrary){
 		
 		CQLLibraryDataSetObject dataSetObject = new CQLLibraryDataSetObject();

@@ -2169,7 +2169,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param mDetail
 	 *            - {@link ManageMeasureDetailModel}.
 	 * @param meas
-	 *            - {@link Measure}.
+	 *            - {@link Measure}.O
 	 * @return {@link SaveMeasureResult}. *
 	 */
 	private SaveMeasureResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,
@@ -2182,6 +2182,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
+		String versionStr = mVersion.toString();
+		//Divide the number by 1 and check for a remainder. 
+		//Any whole number should always have a remainder of 0 when divided by 1.
+		// For major versions, there may be case the minor version value is zero.
+		//THis makes the BigDecimal as Integer value causing issue while formatVersionText method.
+		//To fix that we are explicitly appending .0 in versionString.
+		if(mVersion.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) ==0){
+			versionStr = versionStr.concat(".0");
+		}
+		
+		//This code is added to update version value for both measureDetails version tag and cqlLookUp version tag.
+		setVersionInMeasureDetailsAndCQLLookUp(meas, versionStr);
 		
 		if(MATPropertiesService.get().getCurrentReleaseVersion().equals(meas.getReleaseVersion())) {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(meas.getId());
@@ -2191,10 +2203,47 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
 		result.setId(meas.getId());
-		String versionStr = meas.getMajorVersionStr() + "." + meas.getMinorVersionStr();
+		
 		result.setVersionStr(versionStr);
 		logger.info("Result passed for Version Number " + versionStr);
 		return result;
+	}
+
+	/**
+	 * Method to set version in measureDetail/version tag and cqlLookUp/version tag
+	 * when measure is versioned.
+	 * @param meas - Measure
+	 * @param versionStr
+	 */
+	private void setVersionInMeasureDetailsAndCQLLookUp(final Measure meas, String versionStr) {
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(meas.getId());
+		if ((measureXmlModel != null) && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+			
+				XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
+				String cqlVersionXPath = "//cqlLookUp/version";
+				String measureVersionXPath = "//measureDetails/version";
+				try {
+					Node measureVersionNode = (Node)xPath.evaluate(measureVersionXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+					if(measureVersionNode!=null){
+						measureVersionNode.setTextContent(MeasureUtility.formatVersionText(versionStr));
+					} else {
+						logger.info("measureDetails Node not found. This is in measure : " + meas.geteMeasureId());
+					}
+					
+					Node cqlVersionNode = (Node)xPath.evaluate(cqlVersionXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+					if(cqlVersionNode!=null){
+						cqlVersionNode.setTextContent(MeasureUtility.formatVersionText(meas.getRevisionNumber(), versionStr));
+					} else {
+						logger.info("CQLLookUp Node not found. This is in measure : " + meas.geteMeasureId());
+					}
+					measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+					getService().saveMeasureXml(measureXmlModel);
+				} catch (XPathExpressionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+		}
 	}
 	
 	// TODO refactor this logic into a shared location: see MeasureDAO.
@@ -2483,15 +2532,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void exportCQLibraryFromMeasure(Measure measure, ManageMeasureDetailModel mDetail, MeasureXmlModel xmlModel) {
 				
 		// get simple xml for cql
 		String cqlLibraryName = "";
 		byte[] cqlByteArray = null; 
 		if(!xmlModel.getXml().isEmpty()) {
-			String xPathForCQLLookup = "/measure/cqlLookUp";
-			String xPathForCQLLibraryName = "/measure/cqlLookUp/library";
+			String xPathForCQLLookup = "//cqlLookUp";
+			String xPathForCQLLibraryName = "//cqlLookUp/library";
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			Document document = xmlProcessor.getOriginalDoc();
@@ -2721,7 +2769,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param processor the processor
 	 */
 	private void updateCQLVersion(XmlProcessor processor) {
-		String cqlVersionXPath = "/measure/cqlLookUp/version";
+		String cqlVersionXPath = "//cqlLookUp/version";
 		try {
 			String version = (String) xPath.evaluate(
 					"/measure/measureDetails/version/text()",

@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -1543,6 +1544,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				getAllIncludeLibraryList(searchDisplay.getInclView().getSearchTextBox().getText().trim());
+			}
+		});
+		searchDisplay.getIncludeView().getFocusPanel().addKeyDownHandler(new KeyDownHandler(){
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				//Search when enter is pressed.
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+					searchDisplay.getIncludeView().getSearchButton().click();
+				}
 			}
 		});
 		

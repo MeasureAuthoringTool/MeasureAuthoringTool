@@ -19,6 +19,7 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -26,6 +27,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -57,6 +59,7 @@ public class CQLIncludeLibraryView {
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
 	
+	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
 	
 	/** The cell table panel. */
 	private Panel cellTablePanel = new Panel();
@@ -134,6 +137,7 @@ public class CQLIncludeLibraryView {
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
 		
+		searchWidgetFocusPanel.add(searchLibraryVP);
 		cqlAceEditor.startEditor();
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -158,7 +162,7 @@ public class CQLIncludeLibraryView {
 		verticalPanel.add(aliasNameVP);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(searchLibraryVP);
+		verticalPanel.add(searchWidgetFocusPanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
@@ -178,6 +182,10 @@ public class CQLIncludeLibraryView {
 		return containerPanel;
 	}
 
+	public HasKeyDownHandlers getFocusPanel(){
+		return searchWidgetFocusPanel;
+	}
+	
 	public TextBox getAliasNameTxtArea() {
 		return aliasNameTxtBox;
 	}
@@ -487,6 +495,7 @@ public class CQLIncludeLibraryView {
 							}
 							selectedList.clear();
 							selectedList.add(object);
+							//cqlAceEditor.setText(object.getCqlText());
 						}
 						else{
 							for (int i = 0; i < selectedList.size(); i++) {
@@ -495,6 +504,7 @@ public class CQLIncludeLibraryView {
 									break;
 								}
 							}
+						//	cqlAceEditor.setText("");
 						}
 						selectionModel.setSelected(object, isCBChecked);
 					}

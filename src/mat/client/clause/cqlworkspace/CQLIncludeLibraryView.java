@@ -495,7 +495,7 @@ public class CQLIncludeLibraryView {
 							}
 							selectedList.clear();
 							selectedList.add(object);
-							//cqlAceEditor.setText(object.getCqlText());
+							cqlAceEditor.setText(object.getCqlText());
 						}
 						else{
 							for (int i = 0; i < selectedList.size(); i++) {
@@ -504,7 +504,7 @@ public class CQLIncludeLibraryView {
 									break;
 								}
 							}
-						//	cqlAceEditor.setText("");
+							cqlAceEditor.setText("");
 						}
 						selectionModel.setSelected(object, isCBChecked);
 					}

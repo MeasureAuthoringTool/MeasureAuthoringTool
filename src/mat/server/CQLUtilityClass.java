@@ -374,7 +374,7 @@ public class CQLUtilityClass {
 	public static CQLModel getCQLStringFromMeasureXML(String measureXML,String measureId){
 		
 		CQLModel cqlModel = new CQLModel();
-		System.out.println("Measure XML:"+measureXML);
+		System.out.println("XML:"+measureXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
 		
@@ -479,10 +479,10 @@ public class CQLUtilityClass {
 		
 		if (measureXMLProcessor != null) {
 					
-			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "/measure/cqlLookUp/library/text()";
-			String XPATH_EXPRESSION_CQLLOOKUP_USING = "/measure/cqlLookUp/usingModel/text()";
-			String XPATH_EXPRESSION_CQLLOOKUP_USING_VERSION = "/measure/cqlLookUp/usingModelVersion/text()";
-			String XPATH_EXPRESSION_CQLLOOKUP_VERSION = "/measure/measureDetails/version/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "//cqlLookUp/library/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_USING = "//cqlLookUp/usingModel/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_USING_VERSION = "//cqlLookUp/usingModelVersion/text()";
+			String XPATH_EXPRESSION_CQLLOOKUP_VERSION = "//cqlLookUp/version/text()";
 			
 			try {
 				

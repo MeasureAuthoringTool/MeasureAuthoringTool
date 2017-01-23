@@ -37,7 +37,7 @@ public class CQLUtil {
 		usedCQLArtifactHolder.getCqlFunctionUUIDSet().addAll(cqlArtifactHolder.getCqlFunctionUUIDSet());
 		
 		for(String cqlDefnUUID: cqlArtifactHolder.getCqlDefinitionUUIDSet()){
-			String xPathCQLDef = "/measure/cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
+			String xPathCQLDef = "//cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
 			Node cqlDefinition = (Node) xPath.evaluate(xPathCQLDef, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -48,7 +48,7 @@ public class CQLUtil {
 		}
 		
 		for(String cqlFuncUUID: cqlArtifactHolder.getCqlFunctionUUIDSet()){
-			String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
+			String xPathCQLDef = "//cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
 			Node cqlFunction = (Node) xPath.evaluate(xPathCQLDef, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -72,7 +72,7 @@ public class CQLUtil {
 		usedCQLArtifactHolder.getCqlFunctionUUIDSet().addAll(cqlArtifactHolder.getCqlFunctionUUIDSet());
 		
 		for(String cqlParamUUID: cqlArtifactHolder.getCqlParameterIdentifierSet()){
-			String xPathCQLParam = "/measure/cqlLookUp/definitions/parameter[@id='" + cqlParamUUID +"']";
+			String xPathCQLParam = "//cqlLookUp/definitions/parameter[@id='" + cqlParamUUID +"']";
 			Node cqlParam = (Node) xPath.evaluate(xPathCQLParam, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -83,7 +83,7 @@ public class CQLUtil {
 		}
 		
 		for(String cqlDefnUUID: cqlArtifactHolder.getCqlDefinitionUUIDSet()){
-			String xPathCQLDef = "/measure/cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
+			String xPathCQLDef = "//cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
 			Node cqlDefinition = (Node) xPath.evaluate(xPathCQLDef, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -94,7 +94,7 @@ public class CQLUtil {
 		}
 		
 		for(String cqlFuncUUID: cqlArtifactHolder.getCqlFunctionUUIDSet()){
-			String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
+			String xPathCQLDef = "//cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
 			Node cqlFunction = (Node) xPath.evaluate(xPathCQLDef, 
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -182,7 +182,7 @@ public class CQLUtil {
 			 cqlArtifactName = "functions//function";
 		 }
 		 
-		 String xPathForDefinitions = "/measure/cqlLookUp/"+cqlArtifactName+"[@name='"+defnName+"']/@id";
+		 String xPathForDefinitions = "//cqlLookUp/"+cqlArtifactName+"[@name='"+defnName+"']/@id";
 		 System.out.println(xPathForDefinitions);
 		 Node cqlDefinitionUUID = (Node) xPath.evaluate(xPathForDefinitions, originalDoc.getDocumentElement(), XPathConstants.NODE);
 		 return cqlDefinitionUUID.getNodeValue();
@@ -198,11 +198,11 @@ public class CQLUtil {
 		CQLUtil cqlUtil = new CQLUtil();
 		CQLUtil.CQLArtifactHolder cqlArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
-		String xPathForDefinitions = "/measure//cqldefinition/@uuid";
-		String xPathForFunctions = "/measure//cqlfunction/@uuid";
+		String xPathForDefinitions = "//cqldefinition/@uuid";
+		String xPathForFunctions = "//cqlfunction/@uuid";
 		
-		String xPathForDefIdentifiers = "/measure//cqldefinition/@displayName"; 
-		String xPathForFuncIdentifiers = "/measure//cqlfunction/@displayName"; 
+		String xPathForDefIdentifiers = "//cqldefinition/@displayName"; 
+		String xPathForFuncIdentifiers = "//cqlfunction/@displayName"; 
 		try {
 			NodeList cqlDefinitions = (NodeList) xPath.evaluate(xPathForDefinitions, 
 												originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -313,7 +313,7 @@ public class CQLUtil {
 			idXPathString += "[@id !='" + id + "']"; 
 		}
 		
-		String xPathForUnusedDefinitions = "/measure/cqlLookUp//definition" + idXPathString; 
+		String xPathForUnusedDefinitions = "//cqlLookUp//definition" + idXPathString; 
 		System.out.println(xPathForUnusedDefinitions);
 		
 		NodeList unusedCQLDefNodeList = (NodeList) xPath.evaluate(xPathForUnusedDefinitions, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
@@ -342,7 +342,7 @@ public class CQLUtil {
 			idXPathString += "[@id !='" + id + "']";
 		}
 		
-		String xPathForUnusedFunctions = "/measure/cqlLookUp//function" + idXPathString; 
+		String xPathForUnusedFunctions = "//cqlLookUp//function" + idXPathString; 
 		System.out.println(xPathForUnusedFunctions);
 		
 		NodeList unusedCqlFuncNodeList = (NodeList) xPath.evaluate(xPathForUnusedFunctions, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -369,7 +369,7 @@ public class CQLUtil {
 			nameXPathString += "[@name !='" + name + "']";
 		}
 		
-		String xPathForUnusedValuesets= "/measure/cqlLookUp//valueset" + nameXPathString; 
+		String xPathForUnusedValuesets= "//cqlLookUp//valueset" + nameXPathString; 
 		System.out.println(xPathForUnusedValuesets);
 		
 		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -398,7 +398,7 @@ public class CQLUtil {
 			nameXPathString += "[@codeName !='" + codeName + "']";
 		}
 		
-		String xPathForUnusedCodes= "/measure/cqlLookUp//code" + nameXPathString; 
+		String xPathForUnusedCodes= "//cqlLookUp//code" + nameXPathString; 
 		System.out.println(xPathForUnusedCodes);
 		
 		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -419,7 +419,7 @@ public class CQLUtil {
 	 * @param oid the oid
 	 */
 	private static void removeUnsedCodeSystems(Document originalDoc, String oid) {
-		String xPathForUnusedCodeSystems= "/measure/cqlLookUp//codeSystem[@valueSetOID='"+ oid +"']" ; 
+		String xPathForUnusedCodeSystems= "//cqlLookUp//codeSystem[@valueSetOID='"+ oid +"']" ; 
 		try {
 			NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			for(int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++){
@@ -448,7 +448,7 @@ public class CQLUtil {
 			nameXPathString += "[@name !='" + name + "']";
 		}
 		
-		String xPathForUnusedParameters = "/measure/cqlLookUp//parameter" + nameXPathString; 
+		String xPathForUnusedParameters = "//cqlLookUp//parameter" + nameXPathString; 
 		System.out.println(xPathForUnusedParameters);
 		
 		NodeList unusedCqlParameterNodeList = (NodeList) xPath.evaluate(xPathForUnusedParameters, originalDoc.getDocumentElement(), XPathConstants.NODESET); 

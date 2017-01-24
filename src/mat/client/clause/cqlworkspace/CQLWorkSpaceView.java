@@ -1138,7 +1138,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		resetMessageDisplay();
 		
 		VerticalPanel includesTopPanel = new VerticalPanel();
-		
+		inclView.resetToDefault();
 		includesTopPanel.add(inclView.asWidget());
 		
 		VerticalPanel vp = new VerticalPanel();

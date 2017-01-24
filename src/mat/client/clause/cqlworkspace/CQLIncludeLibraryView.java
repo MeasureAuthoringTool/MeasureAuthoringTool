@@ -519,7 +519,6 @@ public class CQLIncludeLibraryView {
 							cqlAceEditor.clearAnnotations();
 							cqlAceEditor.removeAllMarkers();
 							cqlAceEditor.redisplay();
-							
 							if (!object.getCqlErrors().isEmpty()) {
 								getWarningMessageAlert().createAlert(
 										MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
@@ -559,6 +558,14 @@ public class CQLIncludeLibraryView {
 		};
 		return hasCell;
 	}
+	
+	public void resetToDefault(){
+		cellTablePanel.clear();
+		cqlAceEditor.setText("");
+		successMessageAlert.clearAlert();
+		warningMessageAlert.clearAlert();
+	}
+	
 	
 	public CQLButtonToolBar getIncludesButtonBar() {
 		return this.includesButtonBar;
@@ -635,5 +642,7 @@ public class CQLIncludeLibraryView {
 		getSearchButton().setEnabled(!busy);
 		
 	}
+	
+	
 	
 }

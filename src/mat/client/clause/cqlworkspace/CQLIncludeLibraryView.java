@@ -516,7 +516,7 @@ public class CQLIncludeLibraryView {
 							}
 							selectedList.clear();
 							selectedList.add(object);
-							cqlAceEditor.clearAnnotations();
+							/*cqlAceEditor.clearAnnotations();
 							cqlAceEditor.removeAllMarkers();
 							cqlAceEditor.redisplay();
 							if (!object.getCqlErrors().isEmpty()) {
@@ -535,9 +535,9 @@ public class CQLIncludeLibraryView {
 								cqlAceEditor.setAnnotations();
 								cqlAceEditor.redisplay();
 							} else {
-								successMessageAlert.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
+								successMessageAlert.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());*/
 								cqlAceEditor.setText(object.getCqlText());
-							}
+							//}
 						}
 						else{
 							for (int i = 0; i < selectedList.size(); i++) {
@@ -546,7 +546,8 @@ public class CQLIncludeLibraryView {
 									break;
 								}
 							}
-							resetAceEditor();
+							//resetAceEditor();
+							cqlAceEditor.setText("");
 						}
 						selectionModel.setSelected(object, isCBChecked);
 					}

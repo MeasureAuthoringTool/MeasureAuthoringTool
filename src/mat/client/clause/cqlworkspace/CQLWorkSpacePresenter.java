@@ -2746,7 +2746,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					if(!searchDisplay.getInclView().getSearchTextBox().getText().isEmpty())
 						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
-					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
+						searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
 				}
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}
@@ -2822,11 +2822,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()
 									.getAllValueSetList();
 							
+							List<String> valuesets = new ArrayList<String>(); 
+							
 							for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 								if (dto.isSuppDataElement())
 									continue;
 								appliedAllValueSetList.add(dto);
 							}
+							
+							MatContext.get().setValuesets(appliedAllValueSetList);
 							searchDisplay.setAppliedQdmList(appliedAllValueSetList);
 							appliedValueSetTableList.clear();
 							for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
@@ -4255,6 +4259,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											String message = MatContext.get().getMessageDelegate()
 													.getValuesetSuccessMessage(userDefinedInput);
 											searchDisplay.getSuccessMessageAlert().createAlert(message);
+											MatContext.get().setValuesets(result.getCqlAppliedQDMList());
 											resetCQLValuesetearchPanel();
 											getAppliedQDMList();
 										}
@@ -4485,7 +4490,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 					appliedValueSetTableList.clear();
 					
-					List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();
+					List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();				
 					
 					for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
 						if(dto.isSuppDataElement())
@@ -4494,6 +4499,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					
 					searchDisplay.setAppliedQdmList(allValuesets);
+					MatContext.get().setValuesets(allValuesets);
 					for(CQLQualityDataSetDTO valueset : allValuesets){
 						//filtering out codes from valuesets list
 						if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8")) 

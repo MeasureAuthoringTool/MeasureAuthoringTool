@@ -1555,6 +1555,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
+		searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.setIsDoubleClick(false);
+					searchDisplay.setIsNavBarClick(false);				
+					clearAlias();	
+				}
+			}
+		});
 	}
 	
 	private void addIncludeLibraryInCQLLookUp() {
@@ -2038,6 +2050,44 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 
 				});
+	}
+	
+	/**
+	 * This method Clears alias view on Erase Button click when isPageDirty
+	 * is not set.
+	 */
+	private void clearAlias() {
+		searchDisplay.setCurrentSelectedIncLibraryObjId(null);
+		searchDisplay.setIsPageDirty(false);
+		if ((searchDisplay.getIncludeView().getAliasNameTxtArea() != null)) {
+			searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+		}
+		if((searchDisplay.getIncludeView().getViewCQLEditor().getText() != null)){
+			searchDisplay.getIncludeView().getViewCQLEditor().setText("");
+		}
+		//Below lines are to clear Library search text box.
+		if((searchDisplay.getIncludeView().getSearchTextBox().getText() != null)){
+			searchDisplay.getIncludeView().getSearchTextBox().setText("");
+		}
+		unCheckAvailableLibraryCheckBox();
+		
+		// Below lines are to clear search suggestion textbox and listbox
+		// selection after erase.
+		searchDisplay.getSearchSuggestIncludeTextBox().setText("");
+		if (searchDisplay.getIncludesNameListBox().getSelectedIndex() >= 0) {
+			searchDisplay.getIncludesNameListBox()
+					.setItemSelected(searchDisplay.getIncludesNameListBox().getSelectedIndex(), false);
+		}
+
+	}
+
+	private void unCheckAvailableLibraryCheckBox() {
+		List<CQLLibraryDataSetObject> availableLibraries = new ArrayList<CQLLibraryDataSetObject>();
+		availableLibraries = searchDisplay.getIncludeLibraryList();
+		for (int i = 0; i < availableLibraries.size(); i++) {
+			availableLibraries.get(i).setSelected(false);
+		}
+		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries,true);
 	}
 
 	/**

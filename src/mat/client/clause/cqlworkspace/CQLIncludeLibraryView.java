@@ -546,10 +546,7 @@ public class CQLIncludeLibraryView {
 									break;
 								}
 							}
-							cqlAceEditor.clearAnnotations();
-							cqlAceEditor.removeAllMarkers();
-							cqlAceEditor.redisplay();
-							cqlAceEditor.setText("");
+							resetAceEditor();
 						}
 						selectionModel.setSelected(object, isCBChecked);
 					}
@@ -561,9 +558,16 @@ public class CQLIncludeLibraryView {
 	
 	public void resetToDefault(){
 		cellTablePanel.clear();
-		cqlAceEditor.setText("");
+		resetAceEditor();
 		successMessageAlert.clearAlert();
 		warningMessageAlert.clearAlert();
+	}
+
+	private void resetAceEditor() {
+		cqlAceEditor.clearAnnotations();
+		cqlAceEditor.removeAllMarkers();
+		cqlAceEditor.redisplay();
+		cqlAceEditor.setText("");
 	}
 	
 	

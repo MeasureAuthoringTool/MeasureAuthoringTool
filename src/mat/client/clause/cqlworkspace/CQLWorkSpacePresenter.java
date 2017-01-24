@@ -52,7 +52,6 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
@@ -133,9 +132,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 	
-	/** The service. */
-	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -2869,8 +2865,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
 							List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()
 									.getAllValueSetList();
-							
-							List<String> valuesets = new ArrayList<String>(); 
 							
 							for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 								if (dto.isSuppDataElement())

@@ -9,7 +9,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+
 import mat.dao.clause.CQLLibraryDAO;
+import mat.server.CQLServiceImpl;
 import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
@@ -19,10 +21,13 @@ import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
+import mat.shared.SaveUpdateCQLResult;
 
 public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Autowired
-	private CQLLibraryDAO cqlLibraryDAO; 
+	private CQLLibraryDAO cqlLibraryDAO;
+	@Autowired
+	private CQLServiceImpl cqlService;
 	
 	/** The context. */
 	@Autowired
@@ -110,7 +115,10 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			String data = new String(bdata);
 			cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(data,"");
 			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+			SaveUpdateCQLResult result = cqlService.parseCQLStringForError(cqlFileString);
 			dataSetObject.setCqlText(cqlFileString);
+			dataSetObject.setCqlModel(cqlModel);
+			dataSetObject.setCqlErrors(result.getCqlErrors());;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

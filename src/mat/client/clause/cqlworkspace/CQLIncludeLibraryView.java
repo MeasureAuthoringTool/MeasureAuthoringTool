@@ -39,6 +39,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -47,12 +48,17 @@ import mat.client.Mat;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.CQLErrors;
 
 public class CQLIncludeLibraryView {
 	
@@ -84,6 +90,10 @@ public class CQLIncludeLibraryView {
 	private CQLButtonToolBar includesButtonBar = new CQLButtonToolBar("includes");
 	
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
+	
+	private MessageAlert warningMessageAlert = new WarningMessageAlert();
+	
+	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	/**
 	 * Textbox aliasNameTxtArea.
 	 */
@@ -155,6 +165,10 @@ public class CQLIncludeLibraryView {
 		VerticalPanel viewCQLVP = new VerticalPanel();
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(new SpacerWidget());
+		viewCQLVP.add(warningMessageAlert);
+		viewCQLVP.add(successMessageAlert);
+		viewCQLVP.add(new SpacerWidget());
+		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(viewCQlFileLabel);
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(cqlAceEditor);
@@ -178,6 +192,11 @@ public class CQLIncludeLibraryView {
 		
 	}
 
+	public MessageAlert getWarningMessageAlert() {
+		warningMessageAlert.getElement().setAttribute("bg-color", "#ff3232");
+		return warningMessageAlert; 
+	}
+	
 	public Widget asWidget() {
 		return containerPanel;
 	}
@@ -489,13 +508,37 @@ public class CQLIncludeLibraryView {
 					@Override
 					public void update(int index, CQLLibraryDataSetObject object,
 							Boolean isCBChecked) {
+						getWarningMessageAlert().clearAlert();
+						successMessageAlert.clearAlert();
 						if(isCBChecked) {
 							for (int i = 0; i < selectedList.size(); i++) {
 								selectionModel.setSelected(selectedList.get(i), false);
 							}
 							selectedList.clear();
 							selectedList.add(object);
-							cqlAceEditor.setText(object.getCqlText());
+							cqlAceEditor.clearAnnotations();
+							cqlAceEditor.removeAllMarkers();
+							cqlAceEditor.redisplay();
+							
+							if (!object.getCqlErrors().isEmpty()) {
+								getWarningMessageAlert().createAlert(
+										MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
+								for (CQLErrors error : object.getCqlErrors()) {
+									String errorMessage = new String();
+									errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine() + " at Offset :"
+											+ error.getErrorAtOffeset());
+									int line = error.getErrorInLine();
+									int column = error.getErrorAtOffeset();
+									cqlAceEditor.addAnnotation(line - 1, column, error.getErrorMessage(),
+											AceAnnotationType.WARNING);
+								}
+								cqlAceEditor.setText(object.getCqlText());
+								cqlAceEditor.setAnnotations();
+								cqlAceEditor.redisplay();
+							} else {
+								successMessageAlert.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
+								cqlAceEditor.setText(object.getCqlText());
+							}
 						}
 						else{
 							for (int i = 0; i < selectedList.size(); i++) {
@@ -504,6 +547,9 @@ public class CQLIncludeLibraryView {
 									break;
 								}
 							}
+							cqlAceEditor.clearAnnotations();
+							cqlAceEditor.removeAllMarkers();
+							cqlAceEditor.redisplay();
 							cqlAceEditor.setText("");
 						}
 						selectionModel.setSelected(object, isCBChecked);

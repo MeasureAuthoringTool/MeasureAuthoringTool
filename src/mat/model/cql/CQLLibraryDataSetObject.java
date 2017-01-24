@@ -1,10 +1,13 @@
 package mat.model.cql;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.LockedUserInfo;
+import mat.shared.CQLErrors;
 
 public class CQLLibraryDataSetObject implements IsSerializable{
 	private String id;
@@ -23,6 +26,9 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	private String cqlText;
 	private String measureId;
 	private boolean isSelected;
+	private CQLModel cqlModel;
+	/** The cql errors. */
+	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
 	
 	public boolean isLocked() {
 		return isLocked;
@@ -120,5 +126,17 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	}
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+	public CQLModel getCqlModel() {
+		return cqlModel;
+	}
+	public void setCqlModel(CQLModel cqlModel) {
+		this.cqlModel = cqlModel;
+	}
+	public List<CQLErrors> getCqlErrors() {
+		return cqlErrors;
+	}
+	public void setCqlErrors(List<CQLErrors> cqlErrors) {
+		this.cqlErrors = cqlErrors;
 	}
 }

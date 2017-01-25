@@ -146,4 +146,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	private UserService getUserService() {
 		return (UserService) context.getBean("userService");
 	}
+	
+	@Override
+	public CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId){
+		return extractCQLLibraryDataObject(cqlLibraryDAO.find(cqlLibraryId)); 
+	}
 }

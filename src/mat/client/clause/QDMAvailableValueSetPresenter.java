@@ -625,7 +625,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().
-					getMessageDelegate().getMODIFY_QDM_SELECT_ATLEAST_ONE());
+					getMessageDelegate().getMODIFY_VALUE_SET_SELECT_ATLEAST_ONE());
 		}
 	}
 	
@@ -810,10 +810,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 					if (!isUSerDefined) {
 						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
 					} else {
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
 					}
 				} else {
 					appliedQDMList = result.getAppliedQDMList();

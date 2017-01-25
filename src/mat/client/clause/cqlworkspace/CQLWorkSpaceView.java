@@ -810,6 +810,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				//System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
+				getIncludeView().getSearchCellTablePanel().clear();
+				getIncludeView().buildOwnerTextBoxWidget();
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
 				} else {
@@ -818,11 +820,31 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 						final String selectedIncludeLibraryID = getIncludesNameListBox().getValue(selectedIndex);
 						currentSelectedIncLibraryObjId = selectedIncludeLibraryID;
 						if(getIncludeLibraryMap().get(selectedIncludeLibraryID) != null){
-							getAliasNameTxtArea().setText(getIncludeLibraryMap().get(selectedIncludeLibraryID).getAliasName());
+							
+							MatContext.get().getCQLLibraryService().findCQLLibraryByID(getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId(), new AsyncCallback<CQLLibraryDataSetObject>() {
+								
+								@Override
+								public void onSuccess(CQLLibraryDataSetObject result) {
+									if(result != null){
+										
+										getAliasNameTxtArea().setText(getIncludeLibraryMap().get(selectedIncludeLibraryID).getAliasName());
+										getViewCQLEditor().setText(result.getCqlText());
+										getIncludeView().getOwnerNameTextBox().setText(getOwnerName(result));
+										getIncludeView().createReadOnlyViewIncludesButtonBar();
+									}
+								}
+								
+								@Override
+								public void onFailure(Throwable caught) {
+									
+								}
+							});
+	
 							inclView.setSelectedObject(getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
 							/*inclView.setIncludedList(getIncludedList(getIncludeLibraryMap()));*/
 							inclView.getSelectedObjectList().clear();
-							inclView.redrawCellTable();
+							//inclView.redrawCellTable();
+							
 							//selectedList.add(getIncludeLibraryMap().get(selectedIncludeLibraryID));
 							//inclView.setSelectedObjectList(selectedObjectList);
 							
@@ -1139,6 +1161,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		VerticalPanel includesTopPanel = new VerticalPanel();
 		inclView.resetToDefault();
+		//building searchWidget for adding new aliasName
+		inclView.getOwnerTextboxPanel().clear();
+		inclView.createIncludesButtonBar();
+		inclView.buildsearchCellTableWidget();
+		
 		includesTopPanel.add(inclView.asWidget());
 		
 		VerticalPanel vp = new VerticalPanel();
@@ -1599,6 +1626,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
+		parameterButtonBar.getCloseButton().setVisible(false);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterLabel);
 		parameterVP.add(new SpacerWidget());
@@ -1808,6 +1836,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
 		
 		defineButtonBar.getTimingExpButton().setVisible(false);
+		defineButtonBar.getCloseButton().setVisible(false);
 		defineConextPanel.add(contextDefinePATRadioBtn);
 		defineConextPanel.add(contextDefinePOPRadioBtn);
 		defineConextPanel.setStyleName("contextToggleSwitch");
@@ -2082,7 +2111,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		contextFuncPOPRadioBtn.setText("Population");
 		contextFuncPOPRadioBtn.setId("context_PopulationRadioButton");
 		functionButtonBar.getTimingExpButton().setVisible(false);
-		
+		functionButtonBar.getCloseButton().setVisible(false);
 		funcConextPanel.add(contextFuncPATRadioBtn);
 		funcConextPanel.add(contextFuncPOPRadioBtn);
 		funcConextPanel.setStyleName("contextToggleSwitch");
@@ -2897,7 +2926,17 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public TextBox getAliasNameTxtArea() {
-		return getInclView().getAliasNameTxtArea();
+		return getIncludeView().getAliasNameTxtArea();
+	}
+	
+	@Override
+	public AceEditor getViewCQLEditor(){
+		return getIncludeView().getViewCQLEditor();
+	}
+	
+	@Override
+	public TextBox getOwnerNameTextBox(){
+		return getIncludeView().getOwnerNameTextBox();
 	}
 	
 	/*
@@ -4338,10 +4377,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return inclView;
 	}
 
-	@Override
+	/*@Override
 	public CQLIncludeLibraryView getInclView() {
 		return inclView;
-	}
+	}*/
 	
 	@Override
 	public CQLQDMAppliedView getQdmView() {
@@ -4404,4 +4443,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		this.viewIncludeLibrarys = viewIncludeLibrarys;
 	}
 
+	private String getOwnerName(CQLLibraryDataSetObject cqlLibrary){
+		StringBuilder owner = new StringBuilder();
+		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
+		return owner.toString();
+	}
+	
 }

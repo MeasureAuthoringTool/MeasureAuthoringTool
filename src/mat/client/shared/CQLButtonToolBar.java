@@ -27,9 +27,13 @@ public class CQLButtonToolBar extends Composite {
 	/** The erase button. */
 	private Button eraseButton = new Button();
 	
+	/** The close button. */
+	private Button closeButton = new Button();
+	
 	/** The info button. */
 	private Button infoButton = new Button();
 	
+	/** The timing exp icon. */
 	private Button timingExpIcon = new Button();
 	
 	/** The button layout. */
@@ -37,6 +41,8 @@ public class CQLButtonToolBar extends Composite {
 	
 	/**
 	 * Instantiates a new CQL Button tool bar.
+	 *
+	 * @param sectionName the section name
 	 */
 	public CQLButtonToolBar(String sectionName) {
 		
@@ -84,6 +90,16 @@ public class CQLButtonToolBar extends Composite {
 		eraseButton.setSize("30px", "30px");
 		eraseButton.getElement().setAttribute("aria-label", "Erase");
 		
+		closeButton.setType(ButtonType.LINK);
+		closeButton.getElement().setId("closeButton_"+sectionName);
+		closeButton.setMarginTop(10);
+		closeButton.setTitle("Close");
+		closeButton.setIcon(IconType.CLOSE);
+		closeButton.setIconSize(IconSize.LARGE);
+		closeButton.setColor("#0964A2");
+		closeButton.setSize("30px", "30px");
+		closeButton.getElement().setAttribute("aria-label", "Close");
+		
 		infoButton.setType(ButtonType.LINK);
 		infoButton.getElement().setId("infoButton_"+sectionName);
 		infoButton.setMarginTop(10);
@@ -110,6 +126,7 @@ public class CQLButtonToolBar extends Composite {
 		buttonLayout.add(timingExpIcon);
 		buttonLayout.add(infoButton);
 		buttonLayout.add(deleteButton);
+		buttonLayout.add(closeButton);
 		initWidget(buttonLayout);
 		
 	}
@@ -126,6 +143,7 @@ public class CQLButtonToolBar extends Composite {
 		deleteButton.setEnabled(isEnabled);
 		eraseButton.setEnabled(isEnabled);
 		infoButton.setEnabled(isEnabled);
+		closeButton.setEnabled(isEnabled);
 	}
 	
 	/**
@@ -174,6 +192,11 @@ public class CQLButtonToolBar extends Composite {
 		return infoButton;
 	}
 	
+	/**
+	 * Gets the timing exp button.
+	 *
+	 * @return the timing exp button
+	 */
 	public Button getTimingExpButton(){
 		return timingExpIcon;
 	}
@@ -186,6 +209,15 @@ public class CQLButtonToolBar extends Composite {
 	 */
 	public HorizontalPanel getButtonLayout() {
 		return buttonLayout;
+	}
+	
+	/**
+	 * Gets the close button.
+	 *
+	 * @return the close button
+	 */
+	public Button getCloseButton(){
+		return closeButton;
 	}
 	
 }

@@ -70,8 +70,10 @@ public class CQLIncludeLibraryView {
 	/** The cell table panel. */
 	private Panel cellTablePanel = new Panel();
 	
+	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
 	
+	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
 	
 	/** The table. */
@@ -85,10 +87,13 @@ public class CQLIncludeLibraryView {
 	/** The spager. */
 	private MatSimplePager spager;
 	
+	/** The selection model. */
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
+	/** The includes button bar. */
 	private CQLButtonToolBar includesButtonBar = new CQLButtonToolBar("includes");
 	
+	/** The s widget. */
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	
 	private MessageAlert warningMessageAlert = new WarningMessageAlert();
@@ -98,10 +103,28 @@ public class CQLIncludeLibraryView {
 	 * Textbox aliasNameTxtArea.
 	 */
 	private MatTextBox aliasNameTxtBox = new MatTextBox();
+	
+	/** The owner name text box. */
+	private MatTextBox ownerNameTextBox = new MatTextBox();
+	
+	/** The selected list. */
 	private List<CQLLibraryDataSetObject> selectedList;
+	
+	/** The selected object. */
 	private String selectedObject;
+	
+	/** The included list. */
 	private List<String> includedList;
 	
+	/** The search cell table panel. */
+	private VerticalPanel searchCellTablePanel = new VerticalPanel();
+	
+	/** The owner textbox panel. */
+	private VerticalPanel ownerTextboxPanel = new VerticalPanel();
+	
+	/**
+	 * Instantiates a new CQL include library view.
+	 */
 	public CQLIncludeLibraryView(){
 	
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
@@ -131,10 +154,10 @@ public class CQLIncludeLibraryView {
 		aliasLabelHP.add(aliasLabelVP);
 		aliasLabelHP.add(new SpacerWidget());
 		aliasLabelHP.add(new SpacerWidget());
-		aliasLabelHP.add(createIncludesButtonBar());
+		aliasLabelHP.add(includesButtonBar);
 		aliasNameVP.add(aliasLabelHP);
 		
-		VerticalPanel searchLibraryVP = new VerticalPanel();
+		/*VerticalPanel searchLibraryVP = new VerticalPanel();
 		Label librariesLabel = new Label(LabelType.INFO, "Library");
 		librariesLabel.setMarginTop(5);
 		librariesLabel.setId("search_Lib_Lbl");
@@ -147,11 +170,12 @@ public class CQLIncludeLibraryView {
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
 		
-		searchWidgetFocusPanel.add(searchLibraryVP);
+		searchWidgetFocusPanel.add(searchLibraryVP);*/
 		cqlAceEditor.startEditor();
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		cqlAceEditor.setText("");
 		cqlAceEditor.setSize("590px", "500px");
 		cqlAceEditor.setAutocompleteEnabled(true);
 		cqlAceEditor.setReadOnly(true);
@@ -176,9 +200,14 @@ public class CQLIncludeLibraryView {
 		verticalPanel.add(aliasNameVP);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(searchWidgetFocusPanel);
+		verticalPanel.add(ownerTextboxPanel);
+		verticalPanel.add(searchCellTablePanel);
+		
+		/*verticalPanel.add(searchWidgetFocusPanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(cellTablePanel);
+		verticalPanel.add(new SpacerWidget());
+		*/
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(viewCQLVP);
 		verticalPanel.add(new SpacerWidget());
@@ -191,41 +220,138 @@ public class CQLIncludeLibraryView {
 		
 		
 	}
-
+	
 	public MessageAlert getWarningMessageAlert() {
 		warningMessageAlert.getElement().setAttribute("bg-color", "#ff3232");
 		return warningMessageAlert; 
 	}
 	
+	/**
+	 * Builds the owner text box widget.
+	 */
+	public void buildOwnerTextBoxWidget(){
+		ownerTextboxPanel.clear();
+		aliasNameTxtBox.setEnabled(false);
+		
+		Label ownerLabel = new Label(LabelType.INFO, "Alias Name");
+		ownerLabel.setMarginTop(5);
+		ownerLabel.setId("ownerName_Label");
+		ownerLabel.setText("Owner Name");
+		ownerNameTextBox.setText("");
+		ownerNameTextBox.setSize("260px", "25px");
+		ownerNameTextBox.getElement().setId("ownerNameField_IncludeSection");
+		ownerNameTextBox.setName("aliasName");
+		ownerNameTextBox.setEnabled(false);
+		
+		ownerTextboxPanel.add(ownerLabel);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(ownerNameTextBox);
+	}
+	
+	
+	/**
+	 * Buildsearch cell table widget.
+	 */
+	public void buildsearchCellTableWidget() {
+		
+		searchCellTablePanel.clear();
+		searchWidgetFocusPanel.clear();
+		
+		aliasNameTxtBox.setEnabled(true);
+		
+		VerticalPanel searchLibraryVP = new VerticalPanel();
+		Label librariesLabel = new Label(LabelType.INFO, "Library");
+		librariesLabel.setMarginTop(5);
+		librariesLabel.setId("search_Lib_Lbl");
+		librariesLabel.setTitle("Library Search");
+
+		searchLibraryVP.add(new SpacerWidget());
+
+		sWidget.getSearchBox().setWidth("590px");
+		searchLibraryVP.add(sWidget.getSearchWidget());
+		searchLibraryVP.add(new SpacerWidget());
+
+		searchWidgetFocusPanel.add(searchLibraryVP);
+
+		searchCellTablePanel.add(searchWidgetFocusPanel);
+		searchCellTablePanel.add(new SpacerWidget());
+		searchCellTablePanel.add(cellTablePanel);
+		
+		//return searchCellTablePanel;
+	}
+
+	/**
+	 * As widget.
+	 *
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
+	/**
+	 * Gets the focus panel.
+	 *
+	 * @return the focus panel
+	 */
 	public HasKeyDownHandlers getFocusPanel(){
 		return searchWidgetFocusPanel;
 	}
 	
+	/**
+	 * Gets the alias name txt area.
+	 *
+	 * @return the alias name txt area
+	 */
 	public TextBox getAliasNameTxtArea() {
 		return aliasNameTxtBox;
 	}
 
+	/**
+	 * Sets the alias name txt area.
+	 *
+	 * @param string the new alias name txt area
+	 */
 	public void setAliasNameTxtArea(String string) {
 		this.aliasNameTxtBox.setText("");
 		
 	}
 	
-	private CQLButtonToolBar createIncludesButtonBar() {
-		getIncludesButtonBar().getSaveButton().setVisible(true);
-		getIncludesButtonBar().getEraseButton().setVisible(true);
-		getIncludesButtonBar().getDeleteButton().setVisible(true);
-		getIncludesButtonBar().getInfoButton().removeFromParent();
-		getIncludesButtonBar().getInsertButton().removeFromParent();
-		getIncludesButtonBar().getTimingExpButton().removeFromParent();
-		return getIncludesButtonBar();
+	/**
+	 * Creates the includes button bar.
+	 *
+	 * @return the CQL button tool bar
+	 */
+	public CQLButtonToolBar createIncludesButtonBar() {
+		includesButtonBar.getSaveButton().setVisible(true);
+		includesButtonBar.getEraseButton().setVisible(true);
+		includesButtonBar.getCloseButton().setVisible(false);
+		includesButtonBar.getDeleteButton().setVisible(false);
+		includesButtonBar.getInfoButton().removeFromParent();
+		includesButtonBar.getInsertButton().removeFromParent();
+		includesButtonBar.getTimingExpButton().removeFromParent();
+		return includesButtonBar;
+	}
+	
+	public CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
+		includesButtonBar.getDeleteButton().setVisible(true);
+		includesButtonBar.getCloseButton().setVisible(true);;
+		includesButtonBar.getSaveButton().setVisible(false);
+		includesButtonBar.getEraseButton().setVisible(false);
+		includesButtonBar.getInfoButton().removeFromParent();
+		includesButtonBar.getInsertButton().removeFromParent();
+		includesButtonBar.getTimingExpButton().removeFromParent();
+		return includesButtonBar;
 	}
 
 	
 	
+	/**
+	 * Builds the include library cell table.
+	 *
+	 * @param cqlLibraryList the cql library list
+	 * @param isEditable the is editable
+	 */
 	public void buildIncludeLibraryCellTable(List<CQLLibraryDataSetObject> cqlLibraryList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
@@ -419,6 +545,12 @@ public class CQLIncludeLibraryView {
 	}
 
 	
+	/**
+	 * Gets the check box cell for table.
+	 *
+	 * @param isEditable the is editable
+	 * @return the check box cell for table
+	 */
 	private CompositeCell<CQLLibraryDataSetObject> getCheckBoxCellForTable(final boolean isEditable){
 		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<HasCell<CQLLibraryDataSetObject, ?>>();
 		cells.add(getCheckBoxCell());
@@ -437,19 +569,25 @@ public class CQLIncludeLibraryView {
 				Cell<X> cell = hasCell.getCell();
 
 				if(isEditable){
-					if (selectedObject != null && object.getId().equals(selectedObject)){
+					/*if (selectedObject != null && object.getId().equals(selectedObject)){
 						sb.appendHtmlConstant("<td class='emptySpaces'>");
 					}  else if(includedList != null && includedList.contains(object.getId())){
-						sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\">");
-					}  else {
+						sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\" checked>");
+					}  else {*/
 						sb.appendHtmlConstant("<td class='emptySpaces'>");
-					}
+					//}
 				} else {
 					sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\">");
 				}
 				
 				if ((object != null)) {
-					cell.render(context, hasCell.getValue(object), sb);
+					if(includedList != null && includedList.contains(object.getId())){
+						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\""
+					+ "title = \"QDM Updated From VSAC.\"/>");
+					} else {
+						cell.render(context, hasCell.getValue(object), sb);
+					}
+					
 				} else {
 					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
 				}
@@ -467,6 +605,11 @@ public class CQLIncludeLibraryView {
 	}
 	
 	
+	/**
+	 * Gets the check box cell.
+	 *
+	 * @return the check box cell
+	 */
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(){
 		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
 			
@@ -557,6 +700,15 @@ public class CQLIncludeLibraryView {
 		return hasCell;
 	}
 	
+	/**
+	 * Gets the includes button bar.
+	 *
+	 * @return the includes button bar
+	 */
+	public CQLButtonToolBar getIncludesButtonBar() {
+		return this.includesButtonBar;
+	}
+	
 	public void resetToDefault(){
 		cellTablePanel.clear();
 		resetAceEditor();
@@ -571,63 +723,127 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setText("");
 	}
 	
-	
-	public CQLButtonToolBar getIncludesButtonBar() {
-		return this.includesButtonBar;
-	}
 
 	public void setIncludesButtonBar(CQLButtonToolBar includesButtonBar) {
 		this.includesButtonBar = includesButtonBar;
 	}
 	
+	/**
+	 * Gets the save button.
+	 *
+	 * @return the save button
+	 */
 	public Button getSaveButton(){
 		return getIncludesButtonBar().getSaveButton();
 	}
 	
+	/**
+	 * Gets the erase button.
+	 *
+	 * @return the erase button
+	 */
 	public Button getEraseButton(){
 		return getIncludesButtonBar().getEraseButton();
 	}
 	
+	/**
+	 * Gets the delete button.
+	 *
+	 * @return the delete button
+	 */
 	public Button getDeleteButton(){
 		return getIncludesButtonBar().getDeleteButton();
 	}
 	
+	
+	public Button getCloseButton(){
+		return getIncludesButtonBar().getCloseButton();
+	}
+	
+	/**
+	 * Gets the search button.
+	 *
+	 * @return the search button
+	 */
 	public Button getSearchButton(){
 		return sWidget.getGo();
 	}
 	
+	/**
+	 * Gets the search text box.
+	 *
+	 * @return the search text box
+	 */
 	public TextBox getSearchTextBox(){
 		return sWidget.getSearchBox();
 	}
 	
+	/**
+	 * Gets the view CQL editor.
+	 *
+	 * @return the view CQL editor
+	 */
 	public AceEditor getViewCQLEditor(){
 		return cqlAceEditor;
 	}
 	
+	/**
+	 * Gets the selected object list.
+	 *
+	 * @return the selected object list
+	 */
 	public List<CQLLibraryDataSetObject> getSelectedObjectList(){
 		return selectedList;
 	}
 	
+	/**
+	 * Sets the selected object list.
+	 *
+	 * @param selectedObjectList the new selected object list
+	 */
 	public void setSelectedObjectList(List<CQLLibraryDataSetObject> selectedObjectList){
 		selectedList = selectedObjectList;
 	}
 
+	/**
+	 * Gets the selected object.
+	 *
+	 * @return the selected object
+	 */
 	public String getSelectedObject() {
 		return selectedObject;
 	}
 
+	/**
+	 * Sets the selected object.
+	 *
+	 * @param selectedObject the new selected object
+	 */
 	public void setSelectedObject(String selectedObject) {
 		this.selectedObject = selectedObject;
 	}
 	
+	/**
+	 * Redraw cell table.
+	 */
 	public void redrawCellTable(){
 		table.redraw();
 	}
 
+	/**
+	 * Gets the included list.
+	 *
+	 * @return the included list
+	 */
 	public List<String> getIncludedList() {
 		return includedList;
 	}
 
+	/**
+	 * Sets the included list.
+	 *
+	 * @param includedList the new included list
+	 */
 	public void setIncludedList(List<String> includedList) {
 		this.includedList = includedList;
 	}
@@ -636,7 +852,8 @@ public class CQLIncludeLibraryView {
 	/**
 	 * This method enable/disable's search button
 	 * and hide/show loading please wait message.
-	 * @param busy
+	 *
+	 * @param busy the busy
 	 */
 	public void showSearchingBusy(final boolean busy) {
 		if (busy) {
@@ -646,6 +863,29 @@ public class CQLIncludeLibraryView {
 		}
 		getSearchButton().setEnabled(!busy);
 		
+	}
+
+
+	/**
+	 * Gets the search cell table panel.
+	 *
+	 * @return the search cell table panel
+	 */
+	public VerticalPanel getSearchCellTablePanel() {
+		return searchCellTablePanel;
+	}
+
+	/**
+	 * Gets the owner textbox panel.
+	 *
+	 * @return the owner textbox panel
+	 */
+	public VerticalPanel getOwnerTextboxPanel() {
+		return ownerTextboxPanel;
+	}
+
+	public MatTextBox getOwnerNameTextBox() {
+		return ownerNameTextBox;
 	}
 	
 	

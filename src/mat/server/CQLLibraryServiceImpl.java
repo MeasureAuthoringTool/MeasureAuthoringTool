@@ -3,6 +3,7 @@ package mat.server;
 import java.util.List;
 
 import mat.client.measure.service.CQLLibraryService;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryModel;
 import mat.server.service.CQLLibraryServiceInterface;
@@ -14,6 +15,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public List<CQLLibraryDataSetObject> search(String searchText,String searchFrom) {
 		return this.getCQLLibraryService().search(searchText,searchFrom);
 	}
+	
+	@Override
+	public CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID){
+		return this.getCQLLibraryService().findCQLLibraryByID(cqlLibraryID);
+	}
+	
 	
 	/**
 	 * Gets the measure library service.

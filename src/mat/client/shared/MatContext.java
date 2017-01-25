@@ -243,7 +243,7 @@ public class MatContext implements IsSerializable {
 	private GlobalCopyPasteObject globalCopyPaste;
 	
 	
-	public List<CQLQualityDataSetDTO> valuesets = new ArrayList<CQLQualityDataSetDTO>(); 
+	public List<String> valuesets = new ArrayList<String>(); 
 	
 	/** The definitions. */
 	public List<String> definitions = new ArrayList<String>(); 
@@ -1994,26 +1994,23 @@ public class MatContext implements IsSerializable {
 	 * @return the valuests
 	 */
 	public List<String> getValuesets() {
-		
-		List<String> valuesetNames = new ArrayList<>(); 
-		
-		for(int i = 0; i < this.valuesets.size(); i++) {
-			valuesetNames.add(this.valuesets.get(i).getCodeListName());
-		}
-		
-		return valuesetNames;
-	}
-	
-	public List<CQLQualityDataSetDTO> getValuesetList() {
 		return this.valuesets;
 	}
-
+	
 	/**
 	 * Sets the valuesets
 	 * @param valuesets the valuesets
 	 */
 	public void setValuesets(List<CQLQualityDataSetDTO> valuesets) {
-		this.valuesets = valuesets;
+		
+		List<String> valuesetNames = new ArrayList<>(); 
+		
+		for(int i = 0; i < valuesets.size(); i++) {
+			valuesetNames.add(valuesets.get(i).getCodeListName());
+		}
+		
+		
+		this.valuesets = valuesetNames;
 	}
 	
 	

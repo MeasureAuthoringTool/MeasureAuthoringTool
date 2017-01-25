@@ -93,12 +93,12 @@ public class CQLButtonToolBar extends Composite {
 		closeButton.setType(ButtonType.LINK);
 		closeButton.getElement().setId("closeButton_"+sectionName);
 		closeButton.setMarginTop(10);
-		closeButton.setTitle("Close");
+		closeButton.setTitle("Cancel");
 		closeButton.setIcon(IconType.CLOSE);
 		closeButton.setIconSize(IconSize.LARGE);
 		closeButton.setColor("#0964A2");
 		closeButton.setSize("30px", "30px");
-		closeButton.getElement().setAttribute("aria-label", "Close");
+		closeButton.getElement().setAttribute("aria-label", "Cancel");
 		
 		infoButton.setType(ButtonType.LINK);
 		infoButton.getElement().setId("infoButton_"+sectionName);

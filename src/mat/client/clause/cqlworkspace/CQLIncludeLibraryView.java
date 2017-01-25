@@ -39,7 +39,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -48,7 +47,6 @@ import mat.client.Mat;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -58,7 +56,6 @@ import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.shared.CQLErrors;
 
 public class CQLIncludeLibraryView {
 	
@@ -106,6 +103,8 @@ public class CQLIncludeLibraryView {
 	
 	/** The owner name text box. */
 	private MatTextBox ownerNameTextBox = new MatTextBox();
+	
+	private MatTextBox cqlLibraryNameTextBox = new MatTextBox();
 	
 	/** The selected list. */
 	private List<CQLLibraryDataSetObject> selectedList;
@@ -233,7 +232,7 @@ public class CQLIncludeLibraryView {
 		ownerTextboxPanel.clear();
 		aliasNameTxtBox.setEnabled(false);
 		
-		Label ownerLabel = new Label(LabelType.INFO, "Alias Name");
+		Label ownerLabel = new Label(LabelType.INFO, "Owner Name");
 		ownerLabel.setMarginTop(5);
 		ownerLabel.setId("ownerName_Label");
 		ownerLabel.setText("Owner Name");
@@ -243,9 +242,23 @@ public class CQLIncludeLibraryView {
 		ownerNameTextBox.setName("aliasName");
 		ownerNameTextBox.setEnabled(false);
 		
+		Label cqlLibNameLabel = new Label(LabelType.INFO, "CQL Library Name");
+		cqlLibNameLabel.setMarginTop(5);
+		cqlLibNameLabel.setId("cqlLibraryName_Label");
+		cqlLibNameLabel.setText("CQL Library Name");
+		cqlLibraryNameTextBox.setText("");
+		cqlLibraryNameTextBox.setSize("260px", "25px");
+		cqlLibraryNameTextBox.getElement().setId("cqlLibraryNameField_IncludeSection");
+		cqlLibraryNameTextBox.setName("aliasName");
+		cqlLibraryNameTextBox.setEnabled(false);
+		
 		ownerTextboxPanel.add(ownerLabel);
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(ownerNameTextBox);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(cqlLibNameLabel);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(cqlLibraryNameTextBox);
 	}
 	
 	
@@ -335,6 +348,7 @@ public class CQLIncludeLibraryView {
 	
 	public CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesButtonBar.getDeleteButton().setVisible(true);
+		includesButtonBar.getDeleteButton().setEnabled(false);
 		includesButtonBar.getCloseButton().setVisible(true);;
 		includesButtonBar.getSaveButton().setVisible(false);
 		includesButtonBar.getEraseButton().setVisible(false);
@@ -582,8 +596,8 @@ public class CQLIncludeLibraryView {
 				
 				if ((object != null)) {
 					if(includedList != null && includedList.contains(object.getId())){
-						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\""
-					+ "title = \"QDM Updated From VSAC.\"/>");
+						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"CQL Library already used.\""
+					+ "title = \"CQL Library already used.\"/>");
 					} else {
 						cell.render(context, hasCell.getValue(object), sb);
 					}
@@ -711,6 +725,7 @@ public class CQLIncludeLibraryView {
 	
 	public void resetToDefault(){
 		cellTablePanel.clear();
+		aliasNameTxtBox.setText("");
 		resetAceEditor();
 		successMessageAlert.clearAlert();
 		warningMessageAlert.clearAlert();
@@ -886,6 +901,10 @@ public class CQLIncludeLibraryView {
 
 	public MatTextBox getOwnerNameTextBox() {
 		return ownerNameTextBox;
+	}
+
+	public MatTextBox getCqlLibraryNameTextBox() {
+		return cqlLibraryNameTextBox;
 	}
 	
 	

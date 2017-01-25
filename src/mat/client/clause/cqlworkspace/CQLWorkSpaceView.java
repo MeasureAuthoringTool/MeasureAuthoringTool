@@ -830,6 +830,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 										getAliasNameTxtArea().setText(getIncludeLibraryMap().get(selectedIncludeLibraryID).getAliasName());
 										getViewCQLEditor().setText(result.getCqlText());
 										getIncludeView().getOwnerNameTextBox().setText(getOwnerName(result));
+										getIncludeView().getCqlLibraryNameTextBox().setText(result.getCqlName());
 										getIncludeView().createReadOnlyViewIncludesButtonBar();
 									}
 								}
@@ -841,7 +842,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 							});
 	
 							inclView.setSelectedObject(getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
-							/*inclView.setIncludedList(getIncludedList(getIncludeLibraryMap()));*/
+							inclView.setIncludedList(getIncludedList(getIncludeLibraryMap()));
 							inclView.getSelectedObjectList().clear();
 							//inclView.redrawCellTable();
 							
@@ -851,9 +852,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 						}
 					} 
 					resetMessageDisplay();
-					/*successMessageAlert.clearAlert();
-					errorMessageAlert.clearAlert();
-					warningMessageAlert.clearAlert();*/
 
 				}
 				

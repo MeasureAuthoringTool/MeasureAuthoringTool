@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -1143,38 +1144,106 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Gets the incl view.
 		 *
+		 * @param result the new include library list
 		 * @return the incl view
 		 */
 		//CQLIncludeLibraryView getInclView();
 
 		void setIncludeLibraryList(List<CQLLibraryDataSetObject> result);
 
+		/**
+		 * Gets the include library list.
+		 *
+		 * @return the include library list
+		 */
 		List<CQLLibraryDataSetObject> getIncludeLibraryList();
 
+		/**
+		 * Gets the current selected inc library obj id.
+		 *
+		 * @return the current selected inc library obj id
+		 */
 		String getCurrentSelectedIncLibraryObjId();
 
+		/**
+		 * Sets the current selected inc library obj id.
+		 *
+		 * @param currentSelectedIncLibraryObjId the new current selected inc library obj id
+		 */
 		void setCurrentSelectedIncLibraryObjId(String currentSelectedIncLibraryObjId);
 
+		/**
+		 * Gets the includes badge.
+		 *
+		 * @return the includes badge
+		 */
 		Badge getIncludesBadge();
 
+		/**
+		 * Gets the include library map.
+		 *
+		 * @return the include library map
+		 */
 		Map<String, CQLIncludeLibrary> getIncludeLibraryMap();
 
+		/**
+		 * Gets the view include librarys.
+		 *
+		 * @return the view include librarys
+		 */
 		List<CQLIncludeLibrary> getViewIncludeLibrarys();
 
+		/**
+		 * Sets the view include librarys.
+		 *
+		 * @param viewIncludeLibrarys the new view include librarys
+		 */
 		void setViewIncludeLibrarys(List<CQLIncludeLibrary> viewIncludeLibrarys);
 
+		/**
+		 * Clear and add includes names to list box.
+		 */
 		void clearAndAddIncludesNamesToListBox();
 
+		/**
+		 * Udpate include library map.
+		 */
 		void udpateIncludeLibraryMap();
 
+		/**
+		 * Gets the search suggest include text box.
+		 *
+		 * @return the search suggest include text box
+		 */
 		SuggestBox getSearchSuggestIncludeTextBox();
 
+		/**
+		 * Gets the included list.
+		 *
+		 * @param includeMap the include map
+		 * @return the included list
+		 */
 		List<String> getIncludedList(Map<String, CQLIncludeLibrary> includeMap);
 
+		/**
+		 * Gets the main flow panel.
+		 *
+		 * @return the main flow panel
+		 */
 		FlowPanel getMainFlowPanel();
 
+		/**
+		 * Gets the view CQL editor.
+		 *
+		 * @return the view CQL editor
+		 */
 		AceEditor getViewCQLEditor();
 
+		/**
+		 * Gets the owner name text box.
+		 *
+		 * @return the owner name text box
+		 */
 		TextBox getOwnerNameTextBox();
 
 	}
@@ -1328,7 +1397,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				includesEvent();				
+				searchDisplay.buildIncludesView();
+				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
+						searchDisplay.getIncludeLibraryList(),true);
 			}
 		});
 
@@ -1534,6 +1605,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addIncludeCQLLibraryHandlers();
 	}
 
+	/**
+	 * Adds the include CQL library handlers.
+	 */
 	private void addIncludeCQLLibraryHandlers() {
 		
 		searchDisplay.getIncludeView().getIncludesButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
@@ -1578,6 +1652,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 	}
 	
+	/**
+	 * Adds the include library in CQL look up.
+	 */
 	private void addIncludeLibraryInCQLLookUp() {
 		searchDisplay.resetMessageDisplay();
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
@@ -1625,7 +1702,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getIncludeView().redrawCellTable();*/
 										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 												.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
-										searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(true);
+										
 										//clearIncludeLibrary();
 										
 									}  else if (result.getFailureReason() == 1) {
@@ -2093,6 +2170,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Un check available library check box.
+	 */
 	private void unCheckAvailableLibraryCheckBox() {
 		List<CQLLibraryDataSetObject> availableLibraries = new ArrayList<CQLLibraryDataSetObject>();
 		availableLibraries = searchDisplay.getIncludeLibraryList();
@@ -2196,6 +2276,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
 	
+	/**
+	 * Clear include library.
+	 */
 	//this is for clear functionality
 	private void clearIncludeLibrary() {
 		searchDisplay.setCurrentSelectedIncLibraryObjId(null);
@@ -2781,7 +2864,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * This method is called at beforeDisplay and get searchButton click on Include section
 	 * and reterives CQL Versioned libraries eligible to be included into any parent cql library.
-	 * @param searchText
+	 *
+	 * @param searchText the search text
+	 * @return the all include library list
 	 */
 	private void getAllIncludeLibraryList(final String searchText) {
 		searchDisplay.getErrorMessageAlert().clearAlert();
@@ -2801,11 +2886,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 				if(result != null && result.size() > 0){
 					searchDisplay.setIncludeLibraryList(result);
-					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
 				} else {
-						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
-						searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result, MatContext.get().getMeasureLockService().checkForEditPermission());
+					searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
 				}
+				
+				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}
 		});
@@ -2821,6 +2906,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void setIncludesWidgetReadOnly(boolean isEditable) {
 
 		searchDisplay.getAliasNameTxtArea().setEnabled(isEditable);
+		searchDisplay.getIncludeView().getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
+		searchDisplay.getIncludeView().getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 	
 	/**
@@ -3152,13 +3239,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.getMainFlowPanel().clear();
 		searchDisplay.buildIncludesView();
+		//addIncludeLibraryHandlers();
+		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		
 		
 		//temporary deleting text area.this is removed after clear functionality is implemented
-		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+		//searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
-		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), MatContext.get().getMeasureLockService().checkForEditPermission());
+		//searchDisplay.getIncludeView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), MatContext.get().getMeasureLockService().checkForEditPermission());
 		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
@@ -3173,6 +3262,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getDefinitionLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 		searchDisplay.buildDefinitionLibraryView();
+		
 		setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
@@ -3367,6 +3457,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return funcList;
 	}
 	
+	/**
+	 * Gets the includes list.
+	 *
+	 * @param includesList the includes list
+	 * @return the includes list
+	 */
 	private List<String> getIncludesList(List<CQLIncludeLibrary> includesList) {
 
 		List<String> incLibList = new ArrayList<String>();
@@ -4663,10 +4759,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Check name in QDM list.
 	 *
 	 * @param userDefinedInput the user defined input
-	 * @param oidCode the oid code
-	 * @param expId the exp id
-	 * @param version the version
-	 * @param isQDMModified the is QDM modified
 	 * @return true, if successful
 	 */
 	private boolean CheckNameInQDMList(String userDefinedInput) {
@@ -4798,8 +4890,80 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		searchDisplay.getQdmView().getSaveButton().setEnabled(isUserDefined);
 	}
+	
+	
+	/**
+	 * Adds the include library handlers.
+	 */
+	/*private void addIncludeLibraryHandlers() {
 
+		searchDisplay.getIncludesNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
 
+				searchDisplay.setIsDoubleClick(true);
+				searchDisplay.setIsNavBarClick(false);
+				searchDisplay.getIncludeView().getSearchCellTablePanel().clear();
+				searchDisplay.getIncludeView().buildOwnerTextBoxWidget();
+				if (searchDisplay.getIsPageDirty()) {
+					searchDisplay.showUnsavedChangesWarning();
+				} else {
+					int selectedIndex = searchDisplay.getIncludesNameListBox().getSelectedIndex();
+					if (selectedIndex != -1) {
+						final String selectedIncludeLibraryID = searchDisplay.getIncludesNameListBox()
+								.getValue(selectedIndex);
+						searchDisplay.setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
+						if (searchDisplay.getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
+
+							MatContext.get().getCQLLibraryService()
+									.findCQLLibraryByID(searchDisplay.getIncludeLibraryMap()
+											.get(selectedIncludeLibraryID).getCqlLibraryId(),
+											new AsyncCallback<CQLLibraryDataSetObject>() {
+
+												@Override
+												public void onSuccess(CQLLibraryDataSetObject result) {
+													if (result != null) {
+
+														searchDisplay.getAliasNameTxtArea().setText(searchDisplay.getIncludeLibraryMap()
+																.get(selectedIncludeLibraryID).getAliasName());
+														searchDisplay.getViewCQLEditor().setText(result.getCqlText());
+														searchDisplay.getIncludeView().getOwnerNameTextBox()
+																.setText(getOwnerName(result));
+														searchDisplay.getIncludeView().createReadOnlyViewIncludesButtonBar();
+													}
+												}
+
+												@Override
+												public void onFailure(Throwable caught) {
+													Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+												}
+											});
+
+							searchDisplay.getIncludeView().setSelectedObject(
+									searchDisplay.getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
+							
+							searchDisplay.getIncludeView().getSelectedObjectList().clear();
+						}
+					}
+					searchDisplay.resetMessageDisplay();
+				}
+
+			}
+		});
+	}
+	
+	*//**
+	 * Gets the owner name.
+	 *
+	 * @param cqlLibrary the cql library
+	 * @return the owner name
+	 *//*
+	private String getOwnerName(CQLLibraryDataSetObject cqlLibrary){
+		StringBuilder owner = new StringBuilder();
+		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
+		return owner.toString();
+	}
+*/
 	/**
 	 * Gets the version list.
 	 *

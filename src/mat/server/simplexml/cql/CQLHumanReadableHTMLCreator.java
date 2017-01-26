@@ -333,15 +333,19 @@ public class CQLHumanReadableHTMLCreator {
 
 				// make the output string from the qdm node information and add it to the string list.
 				for(int i = 0; i < qdmElementList.getLength(); i++) {
-					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					//Commented data type usage in 'generateQDMDataElements' method till code to find Value sets with Data type is added in Release 5.2
+					/*String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
 					if("attribute".equals(dataTypeName)){
 						dataTypeName = "Attribute";
-					}
+					}*/
+					//End Comment
 					String name = qdmElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
 					String oid = qdmElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
 					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 
-					
-					String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
+					//Commented data type usage in 'generateQDMDataElements' method till code to find Value sets with Data type is added in Release 5.2
+					//String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
+					//End Comment
+					String output = String.format("\"%s\" using \"%s %s Value Set (%s)\"", name, name, taxonomy, oid);
 					qdmElementStringList.add(output); 
 				}
 				

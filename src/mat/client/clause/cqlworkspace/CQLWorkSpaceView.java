@@ -196,7 +196,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	//private AceEditor parameterAceEditor = new AceEditor();
 	
 	/** The define ace editor. */
-	private AceEditor defineAceEditor = new AceEditor();
+	//private AceEditor defineAceEditor = new AceEditor();
 	
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
@@ -253,7 +253,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea defineNameTxtArea.
 	 */
-	private MatTextBox defineNameTxtArea = new MatTextBox();
+	//private MatTextBox defineNameTxtArea = new MatTextBox();
 	
 	/**
 	 * TextArea defineNameTxtArea.
@@ -392,14 +392,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
 	
-	/** The context pat toggle switch. */
+	/** The context pat toggle switch. *//*
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
 	
-	/** The context pop toggle switch. */
+	*//** The context pop toggle switch. *//*
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 	
-	/** The define button bar. */
-	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar("definition");
+	*//** The define button bar. *//*
+	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar("definition");*/
 	
 	/** The parameter button bar. */
 	//private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
@@ -419,7 +419,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private CQLIncludeLibraryView inclView ;
 	
 	private CQLGeneralInformationView generalInformationView;
-	CQLParametersView cqlParametersView;
+	private CQLParametersView cqlParametersView;
+	private CQlDefinitionsView cqlDefinitionsView;
 	
 	//private AnchorListItem includeLibrary;
 	
@@ -516,9 +517,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public CQLWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
+		cqlDefinitionsView = new CQlDefinitionsView();
 		qdmView = new CQLQDMAppliedView();
 		inclView = new CQLIncludeLibraryView();
-		defineAceEditor.startEditor();
+		//defineAceEditor.startEditor();
 		//cqlParametersView.getParameterAceEditor().startEditor();
 		cqlAceEditor.startEditor();
 		functionBodyAceEditor.startEditor();
@@ -675,9 +677,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				defineAceEditor.clearAnnotations();
-				defineAceEditor.removeAllMarkers();
-				defineAceEditor.redisplay();
+				cqlDefinitionsView.getDefineAceEditor().clearAnnotations();
+				cqlDefinitionsView.getDefineAceEditor().removeAllMarkers();
+				cqlDefinitionsView.getDefineAceEditor().redisplay();
 				setIsDoubleClick(true);
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
@@ -1002,7 +1004,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildGeneralInformation() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		mainFlowPanel.add(generalInformationView.asWidget());
+		mainFlowPanel.add(generalInformationView.getView());
 		
 	}
 
@@ -1467,7 +1469,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		//setIsPageDirty(false);
 		mainFlowPanel.clear();
 		addParameterEventHandler();
-		mainFlowPanel.add(cqlParametersView.asWidget());
+		mainFlowPanel.add(cqlParametersView.getView());
 		
 		
 	}
@@ -1603,79 +1605,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildDefinitionLibraryView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		VerticalPanel definitionVP = new VerticalPanel();
-		HorizontalPanel definitionFP = new HorizontalPanel();
-		
-		Label defineLabel = new Label(LabelType.INFO, "Definition Name");
-		defineLabel.setMarginTop(5);
-		defineLabel.setId("Definition_Label");
-		defineNameTxtArea.setText("");
-		//defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
-		defineNameTxtArea.setSize("260px", "25px");
-		defineNameTxtArea.getElement().setId("defineNameField");
-		defineNameTxtArea.setName("defineName");
-		defineLabel.setText("Definition Name");
-		
-		SimplePanel defAceEditorPanel = new SimplePanel();
-		defAceEditorPanel.setSize("685px", "510px");
-		defineAceEditor.setText("");
-		defineAceEditor.setMode(AceEditorMode.CQL);
-		defineAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-		defineAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		defineAceEditor.setSize("675px", "500px");
-		defineAceEditor.setAutocompleteEnabled(true);
-		defineAceEditor.addAutoCompletions();
-		defineAceEditor.setUseWrapMode(true);
-		defineAceEditor.removeAllMarkers();
-		defineAceEditor.clearAnnotations();
-		defineAceEditor.redisplay();
-		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
-		defAceEditorPanel.add(defineAceEditor);
-		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
-		defAceEditorPanel.setStyleName("cqlRightContainer");
-		
-		Label defineContextLabel = new Label(LabelType.INFO, "Context");
-		FlowPanel defineConextPanel = new FlowPanel();
-				
-		contextDefinePATRadioBtn.setValue(true);
-		contextDefinePATRadioBtn.setText("Patient");
-		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
-		contextDefinePOPRadioBtn.setValue(false);
-		contextDefinePOPRadioBtn.setText("Population");
-		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
-		
-		defineButtonBar.getTimingExpButton().setVisible(false);
-		defineButtonBar.getCloseButton().setVisible(false);
-		defineConextPanel.add(contextDefinePATRadioBtn);
-		defineConextPanel.add(contextDefinePOPRadioBtn);
-		defineConextPanel.setStyleName("contextToggleSwitch");
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineLabel);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineNameTxtArea);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineContextLabel);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineConextPanel);
-		definitionVP.add(defineButtonBar);
-		definitionVP.add(defAceEditorPanel);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.setStyleName("topping");
-		definitionFP.add(definitionVP);
-		definitionFP.setStyleName("cqlRightContainer");
-				
-		VerticalPanel vp = new VerticalPanel();
-		vp.setStyleName("cqlRightContainer");
-		vp.setWidth("700px");
-		vp.setHeight("500px");
-		definitionFP.setWidth("700px");
-		definitionFP.setStyleName("marginLeft15px");
-		
-		vp.add(new SpacerWidget());
-		vp.add(definitionFP);
-		vp.setHeight("675px");
 		addDefineEventHandlers();
-		mainFlowPanel.add(vp);
+		mainFlowPanel.add(cqlDefinitionsView.getView());
 	}
 	
 	/*
@@ -2261,10 +2192,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.clear();
 		getIncludeView().setAliasNameTxtArea("");
 		//cqlParametersView.getParameterNameTxtArea().setText("");
-		defineNameTxtArea.setText("");
+		//defineNameTxtArea.setText("");
 		funcNameTxtArea.setText("");
 		
-		defineAceEditor.setText("");
+		//defineAceEditor.setText("");
 		//cqlParametersView.getParameterAceEditor().setText("");
 		System.out.println(" in resetAll doing setText");
 		cqlAceEditor.setText("");
@@ -2289,6 +2220,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			functionCollapse.clear();
 		}
 		cqlParametersView.resetAll();
+		cqlDefinitionsView.resetAll();
 		setIsPageDirty(false);
 		resetMessageDisplay();
 	}
@@ -2674,7 +2606,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getDeleteDefineButton() {
-		return defineButtonBar.getDeleteButton();
+		return cqlDefinitionsView.getDefineButtonBar().getDeleteButton();
 	}
 	
 	/**
@@ -2755,7 +2687,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public TextBox getDefineNameTxtArea() {
-		return defineNameTxtArea;
+		return cqlDefinitionsView.getDefineNameTxtArea();
 	}
 	
 	/*
@@ -2771,7 +2703,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getAddDefineButton() {
-		return defineButtonBar.getSaveButton();
+		return cqlDefinitionsView.getDefineButtonBar().getSaveButton();
 	}
 	
 	/*
@@ -2820,7 +2752,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public AceEditor getDefineAceEditor() {
-		return defineAceEditor;
+		return cqlDefinitionsView.getDefineAceEditor();
 	}
 	
 	/**
@@ -2830,7 +2762,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *            the new define ace editor
 	 */
 	public void setDefineAceEditor(AceEditor defineAceEditor) {
-		this.defineAceEditor = defineAceEditor;
+		cqlDefinitionsView.setDefineAceEditor(defineAceEditor);
 	}
 	
 	/*
@@ -3138,7 +3070,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getEraseDefineButton() {
-		return defineButtonBar.getEraseButton();
+		return cqlDefinitionsView.getDefineButtonBar().getEraseButton();
 	}
 	
 	/**
@@ -3385,7 +3317,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public InlineRadio getContextDefinePATRadioBtn() {
-		return contextDefinePATRadioBtn;
+		return cqlDefinitionsView.getContextDefinePATRadioBtn();
 	}
 	
 	/*
@@ -3396,7 +3328,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public InlineRadio getContextDefinePOPRadioBtn() {
-		return contextDefinePOPRadioBtn;
+		return cqlDefinitionsView.getContextDefinePOPRadioBtn();
 	}
 	
 	/*
@@ -3429,7 +3361,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public CQLButtonToolBar getDefineButtonBar() {
-		return defineButtonBar;
+		return cqlDefinitionsView.getDefineButtonBar();
 	}
 	
 	/*
@@ -3739,7 +3671,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void setParameterWidgetReadOnly(boolean isEditable){
-		cqlParametersView.setParameterWidgetReadOnly(isEditable);
+		cqlParametersView.setWidgetReadOnly(isEditable);
 	}
 	
 	/**
@@ -3749,16 +3681,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void setDefinitionWidgetReadOnly(boolean isEditable){
-		
-		getDefineNameTxtArea().setEnabled(isEditable);
-		getDefineAceEditor().setReadOnly(!isEditable);
-		getContextDefinePATRadioBtn().setEnabled(isEditable);
-		getContextDefinePOPRadioBtn().setEnabled(isEditable);
-		System.out.println("in setDefinitionWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
-		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
-		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
-		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
-		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
+		cqlDefinitionsView.setWidgetReadOnly(isEditable);
 	}
 	
 	
@@ -3822,9 +3745,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	@Override
 	public void hideAceEditorAutoCompletePopUp() {
-		defineAceEditor.detach();
+		//defineAceEditor.detach();
 		//cqlParametersView.getParameterAceEditor().detach();
-		cqlParametersView.hideParamAceEditorAutoCompletePopUp();
+		cqlDefinitionsView.hideAceEditorAutoCompletePopUp();
+		cqlParametersView.hideAceEditorAutoCompletePopUp();
 		functionBodyAceEditor.detach();
 	}
 	
@@ -3928,7 +3852,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getDefineInfoButton(){
-		return defineButtonBar.getInfoButton();
+		return cqlDefinitionsView.getDefineButtonBar().getInfoButton();
 	}
 	
 	@Override

@@ -34,11 +34,10 @@ public class CQLParametersView {
 
 	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
 
-	VerticalPanel vp = new VerticalPanel();
+	VerticalPanel mainParamViewVerticalPanel = new VerticalPanel();
 
 	public CQLParametersView() {
-		// TODO Auto-generated constructor stub
-		// buildView();
+		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		parameterAceEditor.startEditor();
 	}
 
@@ -51,7 +50,6 @@ public class CQLParametersView {
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
 		parameterNameTxtArea.setText("");
-		// parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
 		parameterNameTxtArea.setSize("260px", "25px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
@@ -59,7 +57,6 @@ public class CQLParametersView {
 
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("685px", "510px");
-		// parameterAceEditor.startEditor();
 		parameterAceEditor.setText("");
 		System.out.println("In buildParameterLibraryView setText to ace editor.");
 		parameterAceEditor.setMode(AceEditorMode.CQL);
@@ -94,16 +91,15 @@ public class CQLParametersView {
 		parameterFP.add(parameterVP);
 		parameterFP.setStyleName("cqlRightContainer");
 		
-		vp.clear();
-		vp.setStyleName("cqlRightContainer");
-		vp.setWidth("700px");
-		vp.setHeight("500px");
+		mainParamViewVerticalPanel.setStyleName("cqlRightContainer");
+		mainParamViewVerticalPanel.setWidth("700px");
+		mainParamViewVerticalPanel.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
 
-		vp.add(new SpacerWidget());
-		vp.add(parameterFP);
-		vp.setHeight("675px");
+		mainParamViewVerticalPanel.add(new SpacerWidget());
+		mainParamViewVerticalPanel.add(parameterFP);
+		mainParamViewVerticalPanel.setHeight("675px");
 	}
 
 	public MatTextBox getParameterNameTxtArea() {
@@ -122,10 +118,11 @@ public class CQLParametersView {
 		return parameterButtonBar;
 	}
 
-	public VerticalPanel asWidget() {
+	public VerticalPanel getView() {
+		mainParamViewVerticalPanel.clear();
 		resetAll();
 		buildView();
-		return vp;
+		return mainParamViewVerticalPanel;
 	}
 
 	public void resetAll() {
@@ -133,7 +130,7 @@ public class CQLParametersView {
 		getParameterAceEditor().setText("");
 	}
 
-	public void setParameterWidgetReadOnly(boolean isEditable) {
+	public void setWidgetReadOnly(boolean isEditable) {
 
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
@@ -144,7 +141,7 @@ public class CQLParametersView {
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
 	}
 
-	public void hideParamAceEditorAutoCompletePopUp() {
+	public void hideAceEditorAutoCompletePopUp() {
 		getParameterAceEditor().detach();
 	}
 }

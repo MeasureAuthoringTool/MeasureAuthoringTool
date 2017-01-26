@@ -126,7 +126,7 @@ public class CQLGeneralInformationView {
 		return cleanedString;
 	}
 
-	public VerticalPanel asWidget(){
+	public VerticalPanel getView(){
 		generalInfoMainVPanel.clear();
 		buildView();
 		return generalInfoMainVPanel;

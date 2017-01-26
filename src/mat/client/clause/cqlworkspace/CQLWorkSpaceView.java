@@ -190,10 +190,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * TextArea parameterNameTxtArea.
 	 */
-	private MatTextBox parameterNameTxtArea = new MatTextBox();
+	//private MatTextBox parameterNameTxtArea = new MatTextBox();
 	
 	/** The parameter ace editor. */
-	private AceEditor parameterAceEditor = new AceEditor();
+	//private AceEditor parameterAceEditor = new AceEditor();
 	
 	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
@@ -402,7 +402,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private CQLButtonToolBar defineButtonBar = new CQLButtonToolBar("definition");
 	
 	/** The parameter button bar. */
-	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
+	//private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
@@ -419,6 +419,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private CQLIncludeLibraryView inclView ;
 	
 	private CQLGeneralInformationView generalInformationView;
+	CQLParametersView cqlParametersView;
 	
 	//private AnchorListItem includeLibrary;
 	
@@ -514,10 +515,11 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	public CQLWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
+		cqlParametersView = new CQLParametersView();
 		qdmView = new CQLQDMAppliedView();
 		inclView = new CQLIncludeLibraryView();
 		defineAceEditor.startEditor();
-		parameterAceEditor.startEditor();
+		//cqlParametersView.getParameterAceEditor().startEditor();
 		cqlAceEditor.startEditor();
 		functionBodyAceEditor.startEditor();
 		resetAll();
@@ -611,9 +613,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				parameterAceEditor.clearAnnotations();
-				parameterAceEditor.removeAllMarkers();
-				parameterAceEditor.redisplay();
+				cqlParametersView.getParameterAceEditor().clearAnnotations();
+				cqlParametersView.getParameterAceEditor().removeAllMarkers();
+				cqlParametersView.getParameterAceEditor().redisplay();
 				System.out.println("In addParameterEventHandler on DoubleClick isPageDirty = " + getIsPageDirty() + " selectedIndex = " + getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
@@ -1459,75 +1461,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Builds the parameter library view.
 	 */
-	@SuppressWarnings("static-access")
 	@Override
 	public void buildParameterLibraryView() {
 		unsetEachSectionSelectedObject();
 		//setIsPageDirty(false);
 		mainFlowPanel.clear();
-		VerticalPanel parameterVP = new VerticalPanel();
-		HorizontalPanel parameterFP = new HorizontalPanel();
-		
-		Label parameterLabel = new Label(LabelType.INFO, "Parameter");
-		parameterLabel.setMarginTop(5);
-		parameterLabel.setId("Parameter_Label");
-		parameterNameTxtArea.setText("");
-		//parameterNameTxtArea.setPlaceholder("Enter Parameter Name here.");
-		parameterNameTxtArea.setSize("260px", "25px");
-		parameterNameTxtArea.getElement().setId("parameterNameField");
-		parameterNameTxtArea.setName("parameterName");
-		parameterLabel.setText("Parameter");
-		
-		SimplePanel paramAceEditorPanel = new SimplePanel();
-		paramAceEditorPanel.setSize("685px", "510px");
-		// parameterAceEditor.startEditor();
-		parameterAceEditor.setText("");
-		System.out.println("In buildParameterLibraryView setText to ace editor.");
-		parameterAceEditor.setMode(AceEditorMode.CQL);
-		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		parameterAceEditor.setSize("675px", "500px");
-		parameterAceEditor.setAutocompleteEnabled(true);
-		parameterAceEditor.addAutoCompletions();
-		parameterAceEditor.setUseWrapMode(true);
-		parameterAceEditor.clearAnnotations();
-		parameterAceEditor.removeAllMarkers();
-		parameterAceEditor.redisplay();
-		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
-		paramAceEditorPanel.add(parameterAceEditor);
-		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
-		paramAceEditorPanel.setStyleName("cqlRightContainer");
-		
-		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
-		
-		parameterButtonBar.getInsertButton().setVisible(false);
-		parameterButtonBar.getTimingExpButton().setVisible(false);
-		parameterButtonBar.getCloseButton().setVisible(false);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterLabel);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterNameTxtArea);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterButtonBar);
-		parameterVP.add(paramAceEditorPanel);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.setStyleName("topping");
-		parameterFP.add(parameterVP);
-		parameterFP.setStyleName("cqlRightContainer");
-		
-		VerticalPanel vp = new VerticalPanel();
-		vp.setStyleName("cqlRightContainer");
-		vp.setWidth("700px");
-		vp.setHeight("500px");
-		parameterFP.setWidth("700px");
-		parameterFP.setStyleName("marginLeft15px");
-		
-		vp.add(new SpacerWidget());
-		vp.add(parameterFP);
-		vp.setHeight("675px");	
-		
 		addParameterEventHandler();
-		mainFlowPanel.add(vp);
+		mainFlowPanel.add(cqlParametersView.asWidget());
+		
 		
 	}
 	
@@ -2319,12 +2260,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		rightHandNavPanel.clear();
 		mainFlowPanel.clear();
 		getIncludeView().setAliasNameTxtArea("");
-		parameterNameTxtArea.setText("");
+		//cqlParametersView.getParameterNameTxtArea().setText("");
 		defineNameTxtArea.setText("");
 		funcNameTxtArea.setText("");
 		
 		defineAceEditor.setText("");
-		parameterAceEditor.setText("");
+		//cqlParametersView.getParameterAceEditor().setText("");
 		System.out.println(" in resetAll doing setText");
 		cqlAceEditor.setText("");
 		functionBodyAceEditor.setText("");
@@ -2347,7 +2288,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		if (functionCollapse != null) {
 			functionCollapse.clear();
 		}
-		
+		cqlParametersView.resetAll();
 		setIsPageDirty(false);
 		resetMessageDisplay();
 	}
@@ -2577,7 +2518,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public TextBox getParameterNameTxtArea() {
-		return parameterNameTxtArea;
+		return cqlParametersView.getParameterNameTxtArea();
 	}
 	
 	/*
@@ -2743,7 +2684,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getDeleteParameterButton() {
-		return parameterButtonBar.getDeleteButton();
+		return cqlParametersView.getParameterButtonBar().getDeleteButton();
 	}
 	
 	/*
@@ -2862,18 +2803,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public AceEditor getParameterAceEditor() {
-		return parameterAceEditor;
+		return cqlParametersView.getParameterAceEditor();
 	}
 	
-	/**
-	 * Sets the parameter ace editor.
-	 *
-	 * @param parameterAceEditor
-	 *            the new parameter ace editor
-	 */
-	public void setParameterAceEditor(AceEditor parameterAceEditor) {
-		this.parameterAceEditor = parameterAceEditor;
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -3216,7 +3148,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getEraseParameterButton() {
-		return parameterButtonBar.getEraseButton();
+		return cqlParametersView.getParameterButtonBar().getEraseButton();
 	}
 	
 	/**
@@ -3475,7 +3407,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public Button getAddParameterButton() {
-		return parameterButtonBar.getSaveButton();
+		return cqlParametersView.getParameterButtonBar().getSaveButton();
 	}
 	
 	/*
@@ -3486,7 +3418,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public CQLButtonToolBar getParameterButtonBar() {
-		return parameterButtonBar;
+		return cqlParametersView.getParameterButtonBar();
 	}
 	
 	/*
@@ -3807,13 +3739,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void setParameterWidgetReadOnly(boolean isEditable){
-		
-		getParameterNameTxtArea().setEnabled(isEditable);
-		getParameterAceEditor().setReadOnly(!isEditable);
-		System.out.println("in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
-		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
-		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
-		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
+		cqlParametersView.setParameterWidgetReadOnly(isEditable);
 	}
 	
 	/**
@@ -3876,137 +3802,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		deleteConfirmationDialogBox.show(message);
 	}
 		
-	
-	
-	
-	
-	/**
-	 * The Class CustomTextAreaWithNoWhiteSpaces.
-	 */
-	/*public class CustomTextAreaWithNoWhiteSpaces extends TextArea {
-		
-		*//** The max length. *//*
-		private int maxLength;
-		
-		*//**
-		 * Constructor.
-		 *
-		 * @param maxLen
-		 *            the max len
-		 *//*
-		public CustomTextAreaWithNoWhiteSpaces(int maxLen) {
-			
-			super(Document.get().createTextAreaElement());
-			maxLength = maxLen;
-			setStyleName("gwt-TextArea");
-			sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
-			
-			CustomTextAreaWithNoWhiteSpaces.this.addValueChangeHandler(new ValueChangeHandler<String>() {
-				
-				@Override
-				public void onValueChange(ValueChangeEvent<String> event) {
-					if (!CustomTextAreaWithNoWhiteSpaces.this.isReadOnly()) {
-//						String nameTextArea = event.getValue().replaceAll(" ", "").trim();
-						String nameTextArea = event.getValue().trim();
-						CustomTextAreaWithNoWhiteSpaces.this.setText(nameTextArea);
-						
-						if (nameTextArea.length() >= maxLength) {
-							String subStringText = nameTextArea.substring(0, maxLength);
-							CustomTextAreaWithNoWhiteSpaces.this.setValue(subStringText);
-							setCursorPos(maxLength);
-						} else {
-							CustomTextAreaWithNoWhiteSpaces.this.setValue(nameTextArea);
-							setCursorPos(nameTextArea.length());
-						}
-						resetMessageDisplay();
-						setIsPageDirty(true);
-					}
-				}
-			});
-		}
-		
-		*//**
-		 * Description: Takes the browser event.
-		 *
-		 * @param event
-		 *            declared.
-		 *//*
-		@Override
-		public void onBrowserEvent(Event event) {
-			
-			String nameTextArea;
-			try {
-				nameTextArea = CustomTextAreaWithNoWhiteSpaces.this.getText();
-			} catch (Exception e) {
-				nameTextArea = "";
-			}
-			
-			//Checking on Click Events
-			if (event.getTypeInt() == Event.ONCLICK) {
-				NativeEvent nativeEvent = Document.get().createClickEvent(1, 0, 0,
-						0, 0, false, false, false, false);
-				DomEvent.fireNativeEvent(nativeEvent, this);
-			}
-			
-			// Checking for paste event
-			if (event.getTypeInt() == Event.ONPASTE) {
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						ValueChangeEvent.fire(CustomTextAreaWithNoWhiteSpaces.this,
-								CustomTextAreaWithNoWhiteSpaces.this.getText());
-					}
-				});
-				return;
-			}
-			// Checking for key Down event.
-			if ((event.getTypeInt() == Event.ONKEYDOWN) && (nameTextArea.length() > maxLength)
-					&& (event.getKeyCode() != KeyCodes.KEY_LEFT) && (event.getKeyCode() != KeyCodes.KEY_TAB)
-					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT) && (event.getKeyCode() != KeyCodes.KEY_DELETE)
-					&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE) && (event.getKeyCode() != KeyCodes.KEY_SHIFT)
-					&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
-				event.preventDefault();
-			} 
-			else if ((event.getTypeInt() == Event.ONKEYDOWN) && (event.getKeyCode() == KeyCodes.KEY_SPACE)) {
-				event.preventDefault();
-			} 
-			else if ((event.getTypeInt() == Event.ONKEYDOWN) && (nameTextArea.length() <= maxLength)) {
-				if ((event.getKeyCode() != KeyCodes.KEY_LEFT) && (event.getKeyCode() != KeyCodes.KEY_TAB)
-						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT) && (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
-					if (!event.getCtrlKey()) {
-						Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-							@Override
-							public void execute() {
-								ValueChangeEvent.fire(CustomTextAreaWithNoWhiteSpaces.this,
-										CustomTextAreaWithNoWhiteSpaces.this.getText());
-							}
-						});
-					}
-				}
-			}
-		}
-		
-		*//**
-		 * Getter for maximum length.
-		 * 
-		 * @return - int.
-		 *//*
-		public int getMaxLength() {
-			return maxLength;
-		}
-		
-		*//**
-		 * Setter for maximum length.
-		 *
-		 * @param maxLength
-		 *            the new max length
-		 *//*
-		@Override
-		public void setMaxLength(int maxLength) {
-			this.maxLength = maxLength;
-		}
-	}
-	*/
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -4027,7 +3823,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void hideAceEditorAutoCompletePopUp() {
 		defineAceEditor.detach();
-		parameterAceEditor.detach();
+		//cqlParametersView.getParameterAceEditor().detach();
+		cqlParametersView.hideParamAceEditorAutoCompletePopUp();
 		functionBodyAceEditor.detach();
 	}
 	
@@ -4136,7 +3933,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	@Override
 	public Button getParamInfoButton(){
-		return parameterButtonBar.getInfoButton();
+		return cqlParametersView.getParameterButtonBar().getInfoButton();
 	}
 	
 	@Override
@@ -4147,10 +3944,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getArgumentTextArea()
 	 */
-	@Override
+	/*@Override
 	public TextBox getArgumentTextArea(){
 		return new TextBox();
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#showUnsavedChangesWarning()

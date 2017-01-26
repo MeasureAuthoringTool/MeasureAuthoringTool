@@ -872,7 +872,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the argument text area
 		 */
-		TextBox getArgumentTextArea();
+		//TextBox getArgumentTextArea();
 
 		/**
 		 * Sets the parameter widget read only.
@@ -1144,7 +1144,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Gets the incl view.
 		 *
-		 * @param result the new include library list
 		 * @return the incl view
 		 */
 		//CQLIncludeLibraryView getInclView();
@@ -2829,6 +2828,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
+		//To Do : Uncomment it when Lori will add bug for Modify Value Set in Jira.
+		//isModified = false;
+		//modifyValueSetDTO = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getMessagePanel().clear();
 		panel.clear();

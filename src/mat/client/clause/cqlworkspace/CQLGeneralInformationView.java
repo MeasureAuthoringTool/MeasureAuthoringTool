@@ -13,6 +13,13 @@ public class CQLGeneralInformationView {
 	private VerticalPanel generalInfoMainVPanel = new VerticalPanel();
 	
 	public CQLGeneralInformationView(){
+		generalInfoMainVPanel.clear();
+	}
+
+	/**
+	 * 
+	 */
+	private void buildView() {
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
@@ -120,6 +127,8 @@ public class CQLGeneralInformationView {
 	}
 
 	public VerticalPanel asWidget(){
+		generalInfoMainVPanel.clear();
+		buildView();
 		return generalInfoMainVPanel;
 	}
 

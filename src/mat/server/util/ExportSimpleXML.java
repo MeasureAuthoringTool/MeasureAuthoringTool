@@ -355,7 +355,7 @@ public class ExportSimpleXML {
 			
 			//collect value-sets,data-type combinations for definitions
 			for(String cqlDefnUUID: cqlArtifactHolder.getCqlDefinitionUUIDSet()){
-				String xPathCQLDef = "/measure/cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
+				String xPathCQLDef = "//cqlLookUp/definitions/definition[@id='" + cqlDefnUUID +"']";
 				Node cqlDefinition = (Node) xPath.evaluate(xPathCQLDef, 
 						originalDoc.getDocumentElement(), XPathConstants.NODE);
 				
@@ -377,7 +377,7 @@ public class ExportSimpleXML {
 			
 			//collect value-sets,data-type combinations for functions
 			for(String cqlFuncUUID : cqlArtifactHolder.getCqlFunctionUUIDSet()){
-				String xPathCQLDef = "/measure/cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
+				String xPathCQLDef = "//cqlLookUp/functions/function[@id='" + cqlFuncUUID +"']";
 				Node cqlFunction = (Node) xPath.evaluate(xPathCQLDef, 
 						originalDoc.getDocumentElement(), XPathConstants.NODE);
 				
@@ -402,12 +402,12 @@ public class ExportSimpleXML {
 			for(String valueSetDatatype: valueSetDataTypeMap.keySet()){
 				CQLValueSetModelObject cqlValueSetModelObject = valueSetDataTypeMap.get(valueSetDatatype);
 				
-				String xPathForValueset= "/measure/cqlLookUp//valueset[@name ='" + cqlValueSetModelObject.getIdentifier().replace("\"", "") + "']"; 
+				String xPathForValueset= "//cqlLookUp//valueset[@name ='" + cqlValueSetModelObject.getIdentifier().replace("\"", "") + "']"; 
 				System.out.println(xPathForValueset);
 				
 				Node cqlValuesetNode = (Node) xPath.evaluate(xPathForValueset, originalDoc.getDocumentElement(), XPathConstants.NODE);
 				Node newCQLValueSetNode = cqlValuesetNode.cloneNode(true);
-				newCQLValueSetNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlValueSetModelObject.getDataTypeUsed().replace("\"", ""));
+				//newCQLValueSetNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlValueSetModelObject.getDataTypeUsed().replace("\"", ""));
 				newCQLValueSetNodes.add(newCQLValueSetNode);
 				
 				Node newCQLQDMNode = newCQLValueSetNode.cloneNode(true);
@@ -424,13 +424,15 @@ public class ExportSimpleXML {
 				String xPathForCode= "//elementLookUp/qdm[@name ='" + cqlCodeModelObject.getCodeIdentifier().replace("\"", "") + "']";
 								
 				Node cqlQDMNode = (Node) xPath.evaluate(xPathForCode, originalDoc.getDocumentElement(), XPathConstants.NODE);
-				Node newCQLQDMNode = cqlQDMNode.cloneNode(true);
-				newCQLQDMNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlCodeModelObject.getDataTypeUsed().replace("\"", ""));
-				newCQLQDMNodes.add(newCQLQDMNode);
+				if(cqlQDMNode != null){
+					Node newCQLQDMNode = cqlQDMNode.cloneNode(true);
+					//newCQLQDMNode.getAttributes().getNamedItem("datatype").setNodeValue(cqlCodeModelObject.getDataTypeUsed().replace("\"", ""));
+					newCQLQDMNodes.add(newCQLQDMNode);
+				}
 			}
 			
 			//remove & replace valueset nodes in cqlLookUp/valuesets
-			String xPathForValuesets= "/measure/cqlLookUp/valuesets";
+			String xPathForValuesets= "//cqlLookUp/valuesets";
 			Node cqlValuesetsNode = (Node) xPath.evaluate(xPathForValuesets, originalDoc.getDocumentElement(), XPathConstants.NODE);
 			Node cqlLookUpNode = cqlValuesetsNode.getParentNode();
 			cqlLookUpNode.removeChild(cqlValuesetsNode);
@@ -485,7 +487,7 @@ public class ExportSimpleXML {
 				}
 			}
 						
-			String xPathForUnusedCodeSystem= "/measure/cqlLookUp/codeSystems/codeSystem" + nameXPathString; 
+			String xPathForUnusedCodeSystem= "//cqlLookUp/codeSystems/codeSystem" + nameXPathString; 
 			System.out.println(xPathForUnusedCodeSystem);
 			
 			NodeList unusedCqlCodeSysNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystem, originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -500,7 +502,7 @@ public class ExportSimpleXML {
 		private static List<String> getAllCQLDefnArtifacts(Document originalDoc, CQLFileObject cqlObject){
 			List<String> usedAllCQLArtifacts = new ArrayList<String>();
 			try {
-				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqldefinition/@displayName",
+				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("//cqldefinition/@displayName",
 						originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				
 				for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
@@ -564,7 +566,7 @@ public class ExportSimpleXML {
 		private static List<String> getAllCQLFuncArtifacts(Document originalDoc, CQLFileObject cqlObject){
 			List<String> usedAllCQLArtifacts = new ArrayList<String>();
 			try {
-				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//cqlfunction/@displayName",
+				NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("//cqlfunction/@displayName",
 						originalDoc.getDocumentElement(), XPathConstants.NODESET);
 				for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
 					Node cqlfuncNameAttributeNode = subTreeRefIdsNodeList.item(i);

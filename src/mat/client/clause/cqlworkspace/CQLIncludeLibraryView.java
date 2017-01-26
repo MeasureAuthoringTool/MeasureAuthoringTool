@@ -175,7 +175,7 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
 		cqlAceEditor.setText("");
-		cqlAceEditor.setSize("590px", "500px");
+		cqlAceEditor.setSize("650px", "500px");
 		cqlAceEditor.setAutocompleteEnabled(true);
 		cqlAceEditor.setReadOnly(true);
 		cqlAceEditor.setUseWrapMode(true);

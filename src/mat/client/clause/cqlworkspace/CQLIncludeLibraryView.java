@@ -269,7 +269,6 @@ public class CQLIncludeLibraryView {
 		
 		searchCellTablePanel.clear();
 		searchWidgetFocusPanel.clear();
-		
 		aliasNameTxtBox.setEnabled(true);
 		
 		VerticalPanel searchLibraryVP = new VerticalPanel();
@@ -288,6 +287,7 @@ public class CQLIncludeLibraryView {
 
 		searchCellTablePanel.add(searchWidgetFocusPanel);
 		searchCellTablePanel.add(new SpacerWidget());
+		
 		searchCellTablePanel.add(cellTablePanel);
 		
 		//return searchCellTablePanel;
@@ -369,7 +369,7 @@ public class CQLIncludeLibraryView {
 	public void buildIncludeLibraryCellTable(List<CQLLibraryDataSetObject> cqlLibraryList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
-		//cellTablePanel.setStyleName("cellTablePanel");
+		cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("95%");
 		PanelHeader searchHeader = new PanelHeader();//new Label("QDM Elements");
 		searchHeader.getElement().setId("searchHeader_Label_IncludeSection");
@@ -442,7 +442,6 @@ public class CQLIncludeLibraryView {
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}
-		cellTablePanel.setStyleName("cellTablePanel");
 	}
 	
 	/**

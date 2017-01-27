@@ -1376,7 +1376,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1390,7 +1390,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
-
+*/
 		
 		searchDisplay.getIncludeView().getCloseButton().addClickHandler(new ClickHandler() {
 
@@ -1658,6 +1658,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		
+		/*searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.setIsDoubleClick(false);
+				searchDisplay.setIsNavBarClick(false);
+				if (searchDisplay.getIsPageDirty()) {
+					searchDisplay.showUnsavedChangesWarning();
+				} else {
+					clearIncludeLibrary();
+				}
+			}
+		});
+*/
 	}
 	
 	/**
@@ -1703,13 +1720,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 										//searchDisplay.getAliasNameTxtArea().setText(result.getIncludeLibrary().getAliasName());
 										//searchDisplay.setCurrentSelectedIncLibraryObjId(result.getIncludeLibrary().getId());
-										searchDisplay.getAliasNameTxtArea().setText("");
+										/*searchDisplay.getAliasNameTxtArea().setText("");
 										searchDisplay.getIncludeView().getSelectedObjectList().clear();
 										searchDisplay.getIncludeView().setSelectedObject(null);
 										searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
-										searchDisplay.getIncludeView().redrawCellTable();
+										searchDisplay.getIncludeView().redrawCellTable();*/
 										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 												.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
+										clearAlias();
 									
 										
 									}  else if (result.getFailureReason() == 1) {
@@ -2165,6 +2183,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if((searchDisplay.getIncludeView().getSearchTextBox().getText() != null)){
 			searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		}
+		searchDisplay.getIncludeView().getSelectedObjectList().clear();
+		searchDisplay.getIncludeView().setSelectedObject(null);
+		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 		unCheckAvailableLibraryCheckBox();
 		
 		// Below lines are to clear search suggestion textbox and listbox
@@ -2287,7 +2308,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Clear include library.
 	 */
 	//this is for clear functionality
-	private void clearIncludeLibrary() {
+	/*private void clearIncludeLibrary() {
 		searchDisplay.setCurrentSelectedIncLibraryObjId(null);
 		searchDisplay.setIsPageDirty(false);
 		if ((searchDisplay.getAliasNameTxtArea() != null)) {
@@ -2312,7 +2333,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getSaveButton().setEnabled(true);
 		searchDisplay.getIncludeView().getEraseButton().setEnabled(true);
 	}
-
+*/
 	/**
 	 * Adds and modify function.
 	 */
@@ -2899,7 +2920,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
 				}
-				
+				searchDisplay.buildIncludesView();
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 			}
@@ -3248,7 +3269,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludesLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
 		searchDisplay.getMainFlowPanel().clear();
-		searchDisplay.buildIncludesView();
+//		searchDisplay.buildIncludesView();
 		//addIncludeLibraryHandlers();
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
@@ -3256,7 +3277,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		//temporary deleting text area.this is removed after clear functionality is implemented
 		//searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
-		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
+		//searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 		//searchDisplay.getIncludeView().buildIncludeLibraryCellTable(searchDisplay.getIncludeLibraryList(), MatContext.get().getMeasureLockService().checkForEditPermission());
 		setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}

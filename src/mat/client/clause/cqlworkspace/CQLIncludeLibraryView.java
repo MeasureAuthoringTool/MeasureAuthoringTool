@@ -369,7 +369,7 @@ public class CQLIncludeLibraryView {
 	public void buildIncludeLibraryCellTable(List<CQLLibraryDataSetObject> cqlLibraryList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
-		cellTablePanel.setStyleName("cellTablePanel");
+		//cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("95%");
 		PanelHeader searchHeader = new PanelHeader();//new Label("QDM Elements");
 		searchHeader.getElement().setId("searchHeader_Label_IncludeSection");
@@ -442,6 +442,7 @@ public class CQLIncludeLibraryView {
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}
+		cellTablePanel.setStyleName("cellTablePanel");
 	}
 	
 	/**
@@ -596,8 +597,8 @@ public class CQLIncludeLibraryView {
 				
 				if ((object != null)) {
 					if(includedList != null && includedList.contains(object.getId())){
-						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"CQL Library already used.\""
-					+ "title = \"CQL Library already used.\"/>");
+						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"Library already in use.\""
+					+ "title = \"Library already in use.\"/>");
 					} else {
 						cell.render(context, hasCell.getValue(object), sb);
 					}

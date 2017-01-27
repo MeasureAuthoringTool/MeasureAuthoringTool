@@ -46,6 +46,8 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.QDMInputValidator;
 import mat.dao.clause.CQLDAO;
+import mat.dao.clause.CQLLibraryAssociationDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.DataType;
 import mat.model.MatValueSet;
@@ -60,6 +62,7 @@ import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.model.cql.CQLKeywords;
+import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
@@ -98,6 +101,10 @@ public class CQLServiceImpl implements CQLService {
 	/** The context. */
 	@Autowired
 	private ApplicationContext context;
+	
+	/** The cql library association DAO. */
+	@Autowired
+	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
@@ -807,6 +814,7 @@ public class CQLServiceImpl implements CQLService {
 									.transform(processor.getOriginalDoc()));
 							xmlModel.setXml(processor.getOriginalXml());
 							getService().saveMeasureXml(xmlModel);
+							saveCQLAssociation(currentObj, measureId);
 							/*String name = "define" + " \"" + currentObj.getAliasName() + "\""; 
 							parseCQLDefForErrors(result, measureId, name, currentObj.getDefinitionLogic());*/
 							result.setSuccess(true);
@@ -846,6 +854,19 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
+	/**
+	 * Save CQL association.
+	 *
+	 * @param currentObj the current obj
+	 * @param measureId the measure id
+	 */
+	private void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId) {
+		CQLLibraryAssociation cqlLibraryAssociation = new CQLLibraryAssociation();
+		cqlLibraryAssociation.setCqlLibraryId(currentObj.getCqlLibraryId());
+		cqlLibraryAssociation.setAssociationId(measureId);
+		cqlLibraryAssociationDAO.save(cqlLibraryAssociation);
+	}
+
 	/**
 	 * Check and append include library parent node.
 	 *

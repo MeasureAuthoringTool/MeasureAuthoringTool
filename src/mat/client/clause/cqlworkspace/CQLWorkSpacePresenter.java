@@ -1396,6 +1396,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				
+				// Below lines are to clear search suggestion textbox and listbox
+				// selection after erase.
+				searchDisplay.getSearchSuggestIncludeTextBox().setText("");
+				if (searchDisplay.getIncludesNameListBox().getSelectedIndex() >= 0) {
+					searchDisplay.getIncludesNameListBox()
+							.setItemSelected(searchDisplay.getIncludesNameListBox().getSelectedIndex(), false);
+				}
+				
 				searchDisplay.buildIncludesView();
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						searchDisplay.getIncludeLibraryList(),true);
@@ -1694,15 +1703,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
 										//searchDisplay.getAliasNameTxtArea().setText(result.getIncludeLibrary().getAliasName());
 										//searchDisplay.setCurrentSelectedIncLibraryObjId(result.getIncludeLibrary().getId());
-										/*searchDisplay.getAliasNameTxtArea().setText("");
+										searchDisplay.getAliasNameTxtArea().setText("");
 										searchDisplay.getIncludeView().getSelectedObjectList().clear();
 										searchDisplay.getIncludeView().setSelectedObject(null);
-										searchDisplay.getIncludeView().setIncludedList(null);
-										searchDisplay.getIncludeView().redrawCellTable();*/
+										searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
+										searchDisplay.getIncludeView().redrawCellTable();
 										searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
 												.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
-										
-										//clearIncludeLibrary();
+									
 										
 									}  else if (result.getFailureReason() == 1) {
 										searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()

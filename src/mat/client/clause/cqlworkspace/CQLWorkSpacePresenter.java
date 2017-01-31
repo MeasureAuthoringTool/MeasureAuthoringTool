@@ -20,7 +20,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -49,7 +48,7 @@ import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView.Observer;
+import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -234,13 +233,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 */
 		Button getAddParameterButton();
 
-		/**
-		 * Gets the removes the parameter button.
-		 *
-		 * @return the removes the parameter button
-		 */
-		Button getRemoveParameterButton();
-
+		
 		/**
 		 * Gets the parameter name txt area.
 		 *
@@ -714,7 +707,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the observer
 		 */
-		Observer getObserver();
+		//mat.client.clause.cqlworkspace.CQLFunctionsView.Observer getObserver();
 
 		/**
 		 * Sets the observer.
@@ -722,7 +715,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @param observer
 		 *            the new observer
 		 */
-		void setObserver(Observer observer);
+		//void setObserver(mat.client.clause.cqlworkspace.CQLFunctionsView.Observer observer);
 
 		/**
 		 * Gets the parameter button bar.
@@ -1244,6 +1237,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @return the owner name text box
 		 */
 		TextBox getOwnerNameTextBox();
+
+		CQLFunctionsView getCqlFunctionsView();
 
 	}
 
@@ -1987,9 +1982,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the observer handler.
 	 */
 	private void addObserverHandler() {
-		searchDisplay.setObserver(new CQLWorkSpaceView.Observer() {
+		searchDisplay.getCqlFunctionsView().setObserver( new Observer() {
+			
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
+				// TODO Auto-generated method stub
 				searchDisplay.setIsPageDirty(true);
 				searchDisplay.resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
@@ -1997,9 +1994,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay);
 				}
-
+				
 			}
-
+			
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
 				searchDisplay.setIsPageDirty(true);
@@ -2014,10 +2011,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						break;
 					}
 				}
+				
 			}
-
 		});
-
+		
 		searchDisplay.getQdmView().setObserver(new CQLQDMAppliedView.Observer() {
 			@Override
 			public void onModifyClicked(CQLQualityDataSetDTO result) {

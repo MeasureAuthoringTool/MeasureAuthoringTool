@@ -90,6 +90,12 @@ public class ClientConstants {
 	/** The Constant TITLE_MEASURE_LIB. */
 	public final static String TITLE_MEASURE_LIB ="Measure Library";
 	
+	/** The Constant TITLE_CQL_LIB. */
+	public final static String TITLE_CQL_LIB="CQL Library";
+	
+	/** The Constant TITLE_CQL_COMPOSER. */
+	public final static String TITLE_CQL_COMPOSER="CQL Composer";
+	
 	/** The Constant TITLE_MEASURE_LIB_CHANGE_OWNERSHIP. */
 	public final static String TITLE_MEASURE_LIB_CHANGE_OWNERSHIP ="Measure Library Ownership";
 	

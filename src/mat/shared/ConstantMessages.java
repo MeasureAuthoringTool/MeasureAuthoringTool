@@ -454,6 +454,9 @@ public  class ConstantMessages {
 	/** The Constant MEASURE_COMPOSER_TAB. */
 	public static final String MEASURE_COMPOSER_TAB = "measureTab";
 	
+	/** The constant CQL_COMPOSER_TAB. */
+	public static final String CQL_COMPOSER_TAB = "cqlTab";
+	
 	/** The Constant USER_DEFINED_QDM_OID. */
 	public static final String USER_DEFINED_QDM_OID="1.1.1.1";
 	

@@ -164,6 +164,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	/** The measure library. */
 	private ManageMeasurePresenter measureLibrary;
 	
+	/** The cql composer. */
+	private CqlComposerPresenter cqlComposer;
+	
+	/** The cql library. */
+	private CqlLibraryPresenter cqlLibrary;
+	
 	private ManageAdminReportingPresenter reportingPresenter;
 	
 	/** The tab index. */
@@ -230,6 +236,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	}
 	
 	/**
+	 * Builds the cql composer.
+	 *
+	 * @return the cql composer presenter
+	 */
+	private CqlComposerPresenter buildCqlComposer() {
+		return new CqlComposerPresenter();
+	}
+	
+	/**
 	 * Builds the measure library widget.
 	 *
 	 * @param isAdmin the is admin
@@ -276,6 +291,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		
 	}
 	
+	/**
+	 * Builds the cql library widget.
+	 *
+	 * @param isAdmin the is admin
+	 * @return the cql library presenter
+	 */
+	private CqlLibraryPresenter buildCqlLibraryWidget() {
+		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter();
+		return cqlLibraryPresenter;
+	}
 	/**
 	 * Builds the my account widget.
 	 *
@@ -510,6 +535,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;
 			tabIndex = mainTabLayout.addPresenter(measureComposer, mainTabLayout.fmt.normalTitle(title));
+			
+			cqlLibrary = buildCqlLibraryWidget();
+			title = ClientConstants.TITLE_CQL_LIB;
+			tabIndex = mainTabLayout.addPresenter(cqlLibrary, mainTabLayout.fmt.normalTitle(title));
+			
+			cqlComposer= buildCqlComposer();
+			title = ClientConstants.TITLE_CQL_COMPOSER;
+			tabIndex = mainTabLayout.addPresenter(cqlComposer, mainTabLayout.fmt.normalTitle(title));
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));

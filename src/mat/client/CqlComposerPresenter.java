@@ -6,6 +6,7 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
 import mat.shared.ConstantMessages;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -14,6 +15,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 /**
@@ -68,6 +70,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		subSkipContentHolder.setFocus(true);
 	}
 	
+	/** The button bar. */
+	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
+	
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
 	
@@ -103,6 +108,10 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 				if (!History.getToken().equals(newToken)) {
 					//TODO: create CqlLibrarySelectedEvent and get its info
 					//CqlSelectedEvent cse = MatContext.get().getCurrentCqlInfo();
+					//String msg = " [measure] " + cse.getLibraryName() + " [version] " + cse.getLibraryVersion();
+					//String mid = cse.getLibraryId();
+					//MatContext.get().recordTransactionEvent(mid, null, "CQL_LIBRARY_TAB_EVENT", newToken + msg, ConstantMessages.DB_LOG);
+					
 					History.newItem(newToken, false);
 				}
 			} });
@@ -127,7 +136,40 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	 */
 	@Override
 	public void beforeDisplay() {
+		//TODO: Write a code in MatContext to get currentLibraryID
+		// currentLibraryId = MatContext.get().getCurrentLibraryId();
 		
+		//if ((currentLibraryId != null) && !"".equals(currentLibraryId)) {
+			/*if (MatContext.get().isCurrentLibraryEditable()) {
+				MatContext.get().getLibraryLockService().setLibraryLock();
+			}*/
+			//TODO: Get Library name and version from MatContext.
+/*			String heading = MatContext.get().getCurrentLibraryName() + " ";
+			String version = MatContext.get().getCurrentLibraryVersion();*/
+			//when a library is initaly created we need to explictly create the heading
+			/*if (!version.startsWith("Draft") && !version.startsWith("v")) {
+				version = "Draft based on v" + version;
+				version = LibraryUtility.getVersionText(version, true);
+			}
+			
+			heading = heading + version;
+			cqlComposerContent.setHeading(heading, "CqlComposer");*/
+			FlowPanel fp = new FlowPanel();
+			fp.getElement().setId("fp_FlowPanel");
+			setSubSkipEmbeddedLink("MetaDataView.containerPanel");
+			fp.add(subSkipContentHolder);
+			fp.add(cqlComposerTabLayout);
+			cqlComposerContent.setContent(fp);
+			MatContext.get().setVisible(buttonBar, true);
+			MatContext.get().getZoomFactorService().resetFactorArr();
+	//	} else {
+			//cqlComposerContent.setHeading("No Library Selected", "CqlComposer");
+			//cqlComposerContent.setContent(emptyWidget);
+			//MatContext.get().setVisible(buttonBar, false);
+		//}
+		Mat.focusSkipLists("MainContent");
+		buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
+		buttonBar.setPageNamesOnState();
 	}
 	
 	/**

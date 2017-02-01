@@ -43,7 +43,7 @@ public class CQLLibrary {
 	/**
 	 * The cql set id
 	 */
-	private String cqlSetId;
+	private CQLLibrarySet cqlSetId;
 
 	/**
 	 * The version
@@ -245,11 +245,11 @@ public class CQLLibrary {
 		this.measureSetId = measureSetId;
 	}
 
-	public String getCqlSetId() {
+	public CQLLibrarySet getCqlSetId() {
 		return cqlSetId;
 	}
 
-	public void setCqlSetId(String cqlSetId) {
+	public void setCqlSetId(CQLLibrarySet cqlSetId) {
 		this.cqlSetId = cqlSetId;
 	}
 

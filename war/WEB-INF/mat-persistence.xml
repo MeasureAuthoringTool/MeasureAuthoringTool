@@ -38,13 +38,23 @@
         <property name="password" value="admin"/>
     </bean> -->
      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-  		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/mat_app" />
-        <property name="username" value="root" />
-        <property name="password" value="root" />  
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	   <!--  <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWERER"/>
+        <property name="username" value="mat_newerer_usr"/>
+        <property name="password" value="***REMOVED***"/>  --> 
     <!--<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWER_TS"/>
          <property name="username" value="mat_newer_ts_usr"/>
          <property name="password" value="***REMOVED***"/>  -->
+       
+       
+        <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_APP2"/>
+         <property name="username" value="rtadepally"/>
+        <property name="password" value="***REMOVED***"/>  
+        
+       <!--  <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_Stage_Copy"/>
+         <property name="username" value="cbajikar"/>
+        <property name="password" value="***REMOVED***"/> -->
+         
     </bean>
     
    <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -225,6 +235,10 @@
 		class="mat.dao.impl.clause.MeasureSetDAO" parent="baseDAO">
 	</bean>		
 	
+	<bean id="cqlLibrarySetDAO"
+		class="mat.dao.impl.clause.CQLLibrarySetDAO" parent="baseDAO">
+	</bean>	
+	
 	<!-- <bean id="metadataDAO"
 		class="mat.dao.impl.clause.MetadataDAO" parent="baseDAO">
 	</bean> -->			
@@ -360,6 +374,7 @@
 		<property name="operatorDAO" ref="operatorDAO"/>
 		<property name="measureDAO" ref="measureDAO"/>
 		<property name="measureSetDAO" ref="measureSetDAO"/>
+		<property name="cqlLibrarySetDAO" ref="cqlLibrarySetDAO"/>
 		<!-- <property name="clauseDAO" ref="clauseDAO"/> -->
 		<property name="qDSAttributesDAO" ref="qDSAttributesDAO"/>
         <property name="attributesDAO" ref="attributesDAO"/>

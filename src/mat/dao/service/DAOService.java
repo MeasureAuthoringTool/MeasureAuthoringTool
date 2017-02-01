@@ -25,6 +25,7 @@ import mat.dao.TransactionAuditLogDAO;
 import mat.dao.UnitDAO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
+import mat.dao.UserAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordDAO;
 import mat.dao.UserPasswordHistoryDAO;
@@ -34,6 +35,7 @@ import mat.dao.clause.AttributesDAO;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
@@ -43,7 +45,6 @@ import mat.dao.clause.ModesDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
-import mat.dao.UserAuditLogDAO;
 
 
 /**
@@ -105,6 +106,8 @@ public class DAOService {
 	
 	/** The measure set dao. */
 	private MeasureSetDAO measureSetDAO;
+	
+	private CQLLibrarySetDAO cqlLibrarySetDAO;
 	
 	/** The measure validation log dao. */
 	private MeasureValidationLogDAO measureValidationLogDAO;
@@ -351,6 +354,7 @@ public class DAOService {
 	public MeasureSetDAO getMeasureSetDAO() {
 		return measureSetDAO;
 	}
+	
 	
 	/**
 	 * Gets the measure validation log dao.
@@ -939,6 +943,8 @@ public class DAOService {
 		return cqlLibraryDAO;
 	}
 
+	
+	
 	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
 		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
@@ -963,5 +969,15 @@ public class DAOService {
 	public void setSecurityQuestionsDAO(SecurityQuestionsDAO securityQuestionsDAO) {
 		this.securityQuestionsDAO = securityQuestionsDAO;
 	}*/
+	
+/** The measure set dao. */
+	
+	public CQLLibrarySetDAO getCqlLibrarySetDAO() {
+		return cqlLibrarySetDAO;
+	}
+
+	public void setCqlLibrarySetDAO(CQLLibrarySetDAO cqlLibrarySetDAO) {
+		this.cqlLibrarySetDAO = cqlLibrarySetDAO;
+	}
 	
 }

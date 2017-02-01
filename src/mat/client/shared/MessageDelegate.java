@@ -168,7 +168,7 @@ public class MessageDelegate {
 	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully Applied VSAC Expansion Identifier to QDM Elements.";
 	
 	/** The successful oid retreival from vsac. */
-	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Successfully retrieved value set data from the VSAC.";
+	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Value set successfully retrieved from VSAC.";
 	
 	/** The warning pasting in applied qdm elements. */
 	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure." +
@@ -233,7 +233,7 @@ public class MessageDelegate {
 	
 	public final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
 	
-	public final String SAVE_INCLUDE_LIBRARY_VALIATION_ERROR = "Alias name and cql library selection is required.";
+	public final String SAVE_INCLUDE_LIBRARY_VALIATION_ERROR = "Alias name and CQL Library selection are required.";
 	
 	/**
 	 * Gets the measure save server error message.
@@ -2670,7 +2670,7 @@ public class MessageDelegate {
 	}
 
 	public String getValuesetSuccessMessage(String codeListName) {
-		return "The value set " + codeListName + " has been added successfully.";
+		return "Value set " + codeListName + " has been applied successfully.";
 	}
 
 	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {

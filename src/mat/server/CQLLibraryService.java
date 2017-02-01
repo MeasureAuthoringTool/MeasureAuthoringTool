@@ -53,8 +53,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			Timestamp finalizedDate, byte[] cqlByteArray) {
 		
 		CQLLibrary cqlLibrary = new CQLLibrary(); 
-		if(libraryName.length() >45){
-			libraryName = libraryName.substring(0, 44);
+		if(libraryName.length() >200){
+			libraryName = libraryName.substring(0, 199);
 		}
 		cqlLibrary.setName(libraryName);
 		cqlLibrary.setMeasureId(measureId);

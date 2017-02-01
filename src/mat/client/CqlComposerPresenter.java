@@ -163,9 +163,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			MatContext.get().setVisible(buttonBar, true);
 			MatContext.get().getZoomFactorService().resetFactorArr();
 	//	} else {
-			//cqlComposerContent.setHeading("No Library Selected", "CqlComposer");
-			//cqlComposerContent.setContent(emptyWidget);
-			//MatContext.get().setVisible(buttonBar, false);
+			cqlComposerContent.setHeading("No Library Selected", "CqlComposer");
+			cqlComposerContent.setContent(emptyWidget);
+			MatContext.get().setVisible(buttonBar, false);
 		//}
 		Mat.focusSkipLists("MainContent");
 		buttonBar.state = cqlComposerTabLayout.getSelectedIndex();

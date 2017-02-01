@@ -648,8 +648,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 				// getParameterNameListBox().getSelectedIndex());
 				setIsDoubleClick(true);
 				setIsNavBarClick(false);
-				getIncludeView().getSearchCellTablePanel().clear();
-				getIncludeView().buildOwnerTextBoxWidget();
+				
 				if (getIsPageDirty()) {
 					showUnsavedChangesWarning();
 				} else {
@@ -666,14 +665,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 										@Override
 										public void onSuccess(CQLLibraryDataSetObject result) {
 											if (result != null) {
-
+												getIncludeView().buildIncludesReadOnlyView();
+												
 												getAliasNameTxtArea().setText(getIncludeLibraryMap()
 														.get(selectedIncludeLibraryID).getAliasName());
 												getViewCQLEditor().setText(result.getCqlText());
 												getIncludeView().getOwnerNameTextBox().setText(getOwnerName(result));
 												getIncludeView().getCqlLibraryNameTextBox()
 														.setText(result.getCqlName());
-												getIncludeView().createReadOnlyViewIncludesButtonBar();
 											}
 										}
 
@@ -687,11 +686,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 									getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
 							inclView.setIncludedList(getIncludedList(getIncludeLibraryMap()));
 							inclView.getSelectedObjectList().clear();
-							// inclView.redrawCellTable();
-
-							// selectedList.add(getIncludeLibraryMap().get(selectedIncludeLibraryID));
-							// inclView.setSelectedObjectList(selectedObjectList);
-
 						}
 					}
 					resetMessageDisplay();
@@ -879,9 +873,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		VerticalPanel includesTopPanel = new VerticalPanel();
 		inclView.resetToDefault();
 		// building searchWidget for adding new aliasName
-		inclView.getOwnerTextboxPanel().clear();
-		inclView.createIncludesButtonBar();
-		inclView.buildsearchCellTableWidget();
+		inclView.buildAddNewAliasView();
 
 		includesTopPanel.add(inclView.asWidget());
 

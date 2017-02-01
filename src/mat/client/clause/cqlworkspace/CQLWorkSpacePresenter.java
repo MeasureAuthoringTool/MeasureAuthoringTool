@@ -1402,7 +1402,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 				searchDisplay.buildIncludesView();
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
-						searchDisplay.getIncludeLibraryList(),true);
+						searchDisplay.getIncludeLibraryList(),MatContext.get().getMeasureLockService().checkForEditPermission());
+				setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			}
 		});
 
@@ -2938,9 +2939,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void setIncludesWidgetReadOnly(boolean isEditable) {
 
-		searchDisplay.getAliasNameTxtArea().setEnabled(isEditable);
+		searchDisplay.getIncludeView().getAliasNameTxtArea().setEnabled(isEditable);
 		searchDisplay.getIncludeView().getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
-		searchDisplay.getIncludeView().getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
+		//searchDisplay.getIncludeView().getIncludesButtonBar().getEraseButton().setEnabled(!isEditable);
 	}
 	
 	/**

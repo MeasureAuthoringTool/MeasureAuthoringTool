@@ -228,8 +228,9 @@ public class CQLIncludeLibraryView {
 	/**
 	 * Builds the owner text box widget.
 	 */
-	public void buildOwnerTextBoxWidget(){
+	public void buildIncludesReadOnlyView(){
 		ownerTextboxPanel.clear();
+		searchCellTablePanel.clear();
 		aliasNameTxtBox.setEnabled(false);
 		
 		Label ownerLabel = new Label(LabelType.INFO, "Owner Name");
@@ -256,20 +257,22 @@ public class CQLIncludeLibraryView {
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(ownerNameTextBox);
 		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(cqlLibNameLabel);
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(cqlLibraryNameTextBox);
+		createReadOnlyViewIncludesButtonBar();
 	}
 	
 	
 	/**
 	 * Buildsearch cell table widget.
 	 */
-	public void buildsearchCellTableWidget() {
+	public void buildAddNewAliasView() {
 		
 		searchCellTablePanel.clear();
 		searchWidgetFocusPanel.clear();
-		aliasNameTxtBox.setEnabled(true);
+		ownerTextboxPanel.clear();
 		
 		VerticalPanel searchLibraryVP = new VerticalPanel();
 		Label librariesLabel = new Label(LabelType.INFO, "Library");
@@ -289,7 +292,7 @@ public class CQLIncludeLibraryView {
 		searchCellTablePanel.add(new SpacerWidget());
 		
 		searchCellTablePanel.add(cellTablePanel);
-		
+		createIncludesButtonBar();
 		//return searchCellTablePanel;
 	}
 
@@ -335,7 +338,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the CQL button tool bar
 	 */
-	public CQLButtonToolBar createIncludesButtonBar() {
+	private CQLButtonToolBar createIncludesButtonBar() {
 		includesButtonBar.getSaveButton().setVisible(true);
 		includesButtonBar.getEraseButton().setVisible(true);
 		includesButtonBar.getCloseButton().setVisible(false);
@@ -346,7 +349,7 @@ public class CQLIncludeLibraryView {
 		return includesButtonBar;
 	}
 	
-	public CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
+	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesButtonBar.getDeleteButton().setVisible(true);
 		includesButtonBar.getDeleteButton().setEnabled(false);
 		includesButtonBar.getCloseButton().setVisible(true);;

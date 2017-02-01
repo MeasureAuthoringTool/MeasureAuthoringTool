@@ -208,5 +208,7 @@
         <include file="classpath:/liquibase/deploy_Sprint-111_MAT-8395_ALTER_TABLE_CQL_LIBRARY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-111_MAT-8395_ADD_TABLE_RECENT_CQL_ACTIVITY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-111_MAT-8395_ADD_TABLE_CQL_AUDIT_LOG.xml"/>
+         <include file="classpath:/liquibase/deploy_Sprint-111_MAT-8395_ADD_TABLE_CQL_LIBRARY_SHARE.xml"/>
+        
        
    	</databaseChangeLog>

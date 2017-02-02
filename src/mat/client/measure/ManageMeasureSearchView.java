@@ -4,7 +4,7 @@ import mat.client.ImageResources;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
-import mat.client.shared.CreateMeasureWidget;
+import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -50,7 +50,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	CellTable<ManageMeasureSearchModel.Result> table;
 	
 	/** The create measure widget. */
-	private CreateMeasureWidget createMeasureWidget = new CreateMeasureWidget();
+	private CreateNewItemWidget createMeasureWidget = new CreateNewItemWidget("measureLib");
 	
 	/** The error messages for transfer os. */
 	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
@@ -337,7 +337,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	@Override
 	public HasClickHandlers getCreateButton() {
-		return createMeasureWidget.getCreateMeasure();
+		return createMeasureWidget.getCreateItemButton();
 	}
 	
 	/** Gets the create button.
@@ -352,7 +352,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * 
 	 * @return the createMeasureWidget */
 	@Override
-	public CreateMeasureWidget getCreateMeasureWidget() {
+	public CreateNewItemWidget getCreateMeasureWidget() {
 		return createMeasureWidget;
 	}
 	
@@ -540,7 +540,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	/** Sets the creates the measure widget.
 	 * 
 	 * @param createMeasureWidget the createMeasureWidget to set */
-	public void setCreateMeasureWidget(CreateMeasureWidget createMeasureWidget) {
+	public void setCreateMeasureWidget(CreateNewItemWidget createMeasureWidget) {
 		this.createMeasureWidget = createMeasureWidget;
 	}
 	

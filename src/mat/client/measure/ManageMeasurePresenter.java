@@ -22,7 +22,7 @@ import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CreateMeasureWidget;
+import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -517,7 +517,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		/** Gets the creates the measure widget.
 		 * 
 		 * @return the creates the measure widget */
-		CreateMeasureWidget getCreateMeasureWidget();
+		CreateNewItemWidget getCreateMeasureWidget();
 		
 		/**
 		 * Gets the error measure deletion.

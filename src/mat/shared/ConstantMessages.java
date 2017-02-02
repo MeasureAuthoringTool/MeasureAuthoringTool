@@ -392,6 +392,16 @@ public  class ConstantMessages {
 	/** The Constant CREATE_NEW_VERSION. */
 	public static final String CREATE_NEW_VERSION = "Measure Version of Draft";
 	
+	
+	/** The Constant CREATE_NEW_MEASURE. */
+	public static final String CREATE_NEW_CQL = "New Library";
+	
+	/** The Constant CREATE_NEW_DRAFT. */
+	public static final String CREATE_NEW_CQL_DRAFT = "Draft of Existing Library";
+	
+	/** The Constant CREATE_NEW_VERSION. */
+	public static final String CREATE_NEW_CQL_VERSION = "Library Version of Draft";
+	
 	/** The Constant MAXIMUM_ALLOWED_VERSION. */
 	public static final String MAXIMUM_ALLOWED_VERSION = "999.999";
 	

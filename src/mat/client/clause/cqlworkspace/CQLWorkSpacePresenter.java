@@ -2855,9 +2855,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		//To Do : Uncomment it when Lori will add bug for Modify Value Set in Jira.
-		//isModified = false;
-		//modifyValueSetDTO = null;
+		isModified = false;
+		modifyValueSetDTO = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getMessagePanel().clear();
 		panel.clear();
@@ -4546,11 +4545,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				object.setUserDefinedText(searchDisplay.getQdmView().getUserDefinedInput().getText());
 				object.scrubForMarkUp();
 				QDMInputValidator qdmInputValidator = new QDMInputValidator();
-				qdmInputValidator.validate(object);
-				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
-				modifyWithDTO.setName(searchDisplay.getQdmView().getUserDefinedInput().getText());
-				updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, true);
+				/*qdmInputValidator.validate(object);*/
+				String message = qdmInputValidator.validate(object);
+				if (message.isEmpty()) {
 				
+					CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
+					modifyWithDTO.setName(searchDisplay.getQdmView().getUserDefinedInput().getText());
+					updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, true);
+				} else {
+					searchDisplay.getErrorMessageAlert().createAlert(message);
+				}
 			}
 		} else {
 			searchDisplay.getErrorMessageAlert().createAlert(

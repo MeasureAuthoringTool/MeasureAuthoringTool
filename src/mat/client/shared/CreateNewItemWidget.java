@@ -16,7 +16,7 @@ import mat.shared.ConstantMessages;
 
 /** CreateNewItemWidget.java. */
 public class CreateNewItemWidget extends Composite {
-	/** Search button - {@link PrimaryButton}. */
+	/** createItemButton button . */
 	private Button createItemButton;
 	/** The options. */
 	private ListBox options = new ListBox();
@@ -76,7 +76,7 @@ public class CreateNewItemWidget extends Composite {
 	}
 
 	/**
-	 * Gets the search button - {@link PrimaryButton}.
+	 * Gets the create Item Button .
 	 * 
 	 * @return the createMeasure
 	 */
@@ -110,10 +110,10 @@ public class CreateNewItemWidget extends Composite {
 	}
 
 	/**
-	 * Sets the search button - {@link PrimaryButton}.
+	 * Sets the create Item Button .
 	 * 
-	 * @param createMeasure
-	 *            the createMeasure to set
+	 * @param createItemButton
+	 *            the createItemButton to set
 	 */
 	public void setCreateItemButton(Button createItemButton) {
 		this.createItemButton = createItemButton;

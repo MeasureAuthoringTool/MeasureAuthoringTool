@@ -1,10 +1,5 @@
 package mat.client;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconSize;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;

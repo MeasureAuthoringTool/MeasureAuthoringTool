@@ -1646,12 +1646,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+				
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.setIsDoubleClick(false);
 					searchDisplay.setIsNavBarClick(false);				
 					clearAlias();	
-				}
+			
 			}
 		});
 		
@@ -2205,7 +2205,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		for (int i = 0; i < availableLibraries.size(); i++) {
 			availableLibraries.get(i).setSelected(false);
 		}
-		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries,true);
+		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries, 
+				MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	/**

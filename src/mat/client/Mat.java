@@ -4,6 +4,7 @@ import java.util.Date;
 import mat.client.admin.ManageAdminPresenter;
 import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
+import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
@@ -299,7 +300,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	 */
 	private CqlLibraryPresenter buildCqlLibraryWidget() {
 		CqlLibraryView cqlLibraryView = new CqlLibraryView();
-		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView);
+		CQLLibraryDetailView detailView = new CQLLibraryDetailView();
+		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView);
 		return cqlLibraryPresenter;
 	}
 	/**

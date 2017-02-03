@@ -1,17 +1,34 @@
 package mat.client;
 
+import org.gwtbootstrap3.client.ui.TextArea;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
+import mat.model.cql.CQLModel;
+import mat.shared.ConstantMessages;
 
+/**
+ * @author jnarang
+ *
+ */
+/**
+ * @author jnarang
+ *
+ */
 public class CqlLibraryPresenter implements MatPresenter{
 	
 	/** The panel. */
@@ -24,9 +41,12 @@ public class CqlLibraryPresenter implements MatPresenter{
 	private static FocusableWidget subSkipContentHolder;
 	
 	ViewDisplay cqlLibraryView;
+	DetailDisplay detailDisplay;
 	
 	/** The is create measure widget visible. */
 	boolean isCreateNewItemWidgetVisible = false;
+	
+	private CQLModel cqlModel;
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -42,7 +62,7 @@ public class CqlLibraryPresenter implements MatPresenter{
 		/**
 		 * Generates View for CQLWorkSpace tab.
 		 */
-		void buildView();
+		void buildDefaultView();
 
 		CreateNewItemWidget getCreateNewItemWidget();
 
@@ -52,12 +72,66 @@ public class CqlLibraryPresenter implements MatPresenter{
 
 		Widget asWidget();
 
+		String getSelectedOption();
+
+		MessageAlert getErrorMessageAlert();
+
+		void buildCreateNewView();
+
+		void clearSelections();
+
 	}
 
-	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView) {
+	public static interface DetailDisplay {
+		/**
+		 * Gets the name.
+		 * 
+		 * @return the name
+		 */
+		public HasValue<String> getName();
+		
+		/**
+		 * Gets the save button.
+		 * 
+		 * @return the save button
+		 */
+		public HasClickHandlers getSaveButton();
+		
+		/**
+		 * Gets the cancel button.
+		 * 
+		 * @return the cancel button
+		 */
+		public HasClickHandlers getCancelButton();
+		
+		public void resetAll();
+
+		Widget asWidget();
+
+		TextArea getNameField();
+
+		ErrorMessageAlert getErrorMessage();
+	}
+	
+	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
-		displaySearch();
+		this.detailDisplay = detailDisplay;
 		addCQLLibraryViewHandlers();
+		addDetailDisplayViewHandlers();
+	}
+
+	private void addDetailDisplayViewHandlers() {
+		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				detailDisplay.resetAll();
+				cqlLibraryView.clearSelections();
+				displaySearch();
+				
+			}
+		});
+		
 	}
 
 	private void addCQLLibraryViewHandlers() {
@@ -65,15 +139,62 @@ public class CqlLibraryPresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				cqlLibraryView.getErrorMessageAlert().clearAlert();
 				isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
 				cqlLibraryView.getCreateNewItemWidget().setVisible(isCreateNewItemWidgetVisible);
 				
 			}
 		});
 		
+		cqlLibraryView.getCreateNewItemWidget().getCreateItemButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
+						ConstantMessages.CREATE_NEW_CQL)) {
+					cqlLibraryView.getErrorMessageAlert().clearAlert();
+					createNew();
+				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
+						ConstantMessages.CREATE_NEW_CQL_DRAFT)) {
+					cqlLibraryView.getErrorMessageAlert().clearAlert();
+					//createNew();
+				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
+						ConstantMessages.CREATE_NEW_CQL_VERSION)) {
+					cqlLibraryView.getErrorMessageAlert().clearAlert();
+					//createVersion();
+				} else {
+					cqlLibraryView.getErrorMessageAlert().createAlert("Please select an option from the Create list box.");
+				}
+				
+			}
+
+			
+		});
+		
 	}
 
+	private void createVersion() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void createNew() {
+		
+		cqlModel = new CQLModel();
+		displayDetailForAdd();
+		Mat.focusSkipLists("CQLLibrary");
+		
+	}
+	
+	private void displayDetailForAdd() {
+		panel.getButtonPanel().clear();
+		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
+		panel.setContent(detailDisplay.asWidget());
+	}
+	
 	private void displaySearch() {
+		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
 		panel.setHeading(heading, "CQLLibrary");
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
@@ -107,11 +228,12 @@ public class CqlLibraryPresenter implements MatPresenter{
 	@Override
 	public void beforeClosingDisplay() {
 		// TODO Auto-generated method stub
-		
+		cqlLibraryView.getErrorMessageAlert().clearAlert();
 	}
 
 	@Override
 	public void beforeDisplay() {
+		cqlLibraryView.buildDefaultView();
 		displaySearch();
 		
 	}

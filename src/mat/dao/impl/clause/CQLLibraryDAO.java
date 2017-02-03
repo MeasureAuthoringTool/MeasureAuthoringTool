@@ -70,7 +70,6 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	@Override
 	public List<CQLLibrary> search(String searchText, String searchFrom) {
 		
-		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
@@ -113,8 +112,8 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		for (CQLLibrary cql : librariesResultList) {
 			boolean hasList = false;
 			for (List<CQLLibrary> cqlSubSetList : cqlLibList) {
-				String msetId = cqlSubSetList.get(0).getMeasureSetId().getId();
-				if (cql.getMeasureSetId().getId().equalsIgnoreCase(msetId)) {
+				String msetId = cqlSubSetList.get(0).getMeasureSet().getId();
+				if (cql.getMeasureSet().getId().equalsIgnoreCase(msetId)) {
 					cqlSubSetList.add(cql);
 					hasList = true;
 					break;

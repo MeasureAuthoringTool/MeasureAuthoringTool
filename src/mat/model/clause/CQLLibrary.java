@@ -38,12 +38,12 @@ public class CQLLibrary {
 	/**
 	 * The measure set id
 	 */
-	private MeasureSet measureSetId;
+	private MeasureSet measureSet;
 
 	/**
 	 * The cql set id
 	 */
-	private CQLLibrarySet cqlSetId;
+	private CQLLibrarySet cqlSet;
 
 	/**
 	 * The version
@@ -237,20 +237,20 @@ public class CQLLibrary {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-	public MeasureSet getMeasureSetId() {
-		return measureSetId;
+	public MeasureSet getMeasureSet() {
+		return measureSet;
 	}
 
-	public void setMeasureSetId(MeasureSet measureSetId) {
-		this.measureSetId = measureSetId;
+	public void setMeasureSet(MeasureSet measureSetId) {
+		this.measureSet = measureSetId;
 	}
 
-	public CQLLibrarySet getCqlSetId() {
-		return cqlSetId;
+	public CQLLibrarySet getCqlSet() {
+		return cqlSet;
 	}
 
-	public void setCqlSetId(CQLLibrarySet cqlSetId) {
-		this.cqlSetId = cqlSetId;
+	public void setCqlSet(CQLLibrarySet cqlSet) {
+		this.cqlSet = cqlSet;
 	}
 
 }

@@ -59,7 +59,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		cqlLibrary.setName(libraryName);
 		cqlLibrary.setMeasureId(measureId);
 		cqlLibrary.setOwnerId(owner);
-		cqlLibrary.setMeasureSetId(measureSet);
+		cqlLibrary.setMeasureSet(measureSet);
 		cqlLibrary.setVersion(version);
 		cqlLibrary.setReleaseVersion(releaseVersion);
 		// TODO CQL SET
@@ -115,10 +115,10 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			String data = new String(bdata);
 			cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(data,"");
 			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-			SaveUpdateCQLResult result = cqlService.parseCQLStringForError(cqlFileString);
+			//SaveUpdateCQLResult result = cqlService.parseCQLStringForError(cqlFileString);
 			dataSetObject.setCqlText(cqlFileString);
-			dataSetObject.setCqlModel(cqlModel);
-			dataSetObject.setCqlErrors(result.getCqlErrors());;
+			//dataSetObject.setCqlModel(cqlModel);
+			//dataSetObject.setCqlErrors(result.getCqlErrors());;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

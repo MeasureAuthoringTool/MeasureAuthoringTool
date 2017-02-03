@@ -12,9 +12,9 @@
     <property name="measureId" column="MEASURE_ID" unique="true"/>
     <many-to-one name="ownerId" column="OWNER_ID" 
         class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
-    <many-to-one name="measureSetId" column="MEASURE_SET_ID" 
+    <many-to-one name="measureSet" column="MEASURE_SET_ID" 
         class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
-    <many-to-one name="cqlSetId" column="CQL_SET_ID"  
+    <many-to-one name="cqlSet" column="CQL_SET_ID"  
    		 class="mat.model.clause.CQLLibrarySet" cascade="none" lazy="proxy"/>
     <property name="version" column="VERSION"/>
     <property name="draft" column="DRAFT"/>

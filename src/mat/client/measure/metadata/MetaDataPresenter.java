@@ -1597,8 +1597,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		
 		metaDataDisplay.getCopyright().setValue(currentMeasureDetail.getCopyright());
 		if ((currentMeasureDetail.getEndorseByNQF() != null) && currentMeasureDetail.getEndorseByNQF().equals(true)) {
+			metaDataDisplay.getNotEndorsebyNQF().setValue(false);
 			metaDataDisplay.getEndorsebyNQF().setValue(true);
 		} else {
+			metaDataDisplay.getEndorsebyNQF().setValue(false);
 			metaDataDisplay.getNotEndorsebyNQF().setValue(true);
 		}
 		

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cqlTemplate changeAttribute="id,uuid"
+	changeNodeTextContent="library,version,usingModelVersion">
+	<cqlLookUp>
+		<library>$libraryName</library>
+		<version>$version</version>
+		<usingModel>QDM</usingModel>
+		<usingModelVersion>$modelVersion</usingModelVersion>
+		<cqlContext>Patient</cqlContext>
+		<codeSystems>
+			<codeSystem codeSystem="2.16.840.1.113883.6.1"
+				codeSystemName="LOINC" codeSystemVersion="2.46" id="$id" />
+			<codeSystem codeSystem="2.16.840.1.113883.6.96"
+				codeSystemName="SNOMEDCT" codeSystemVersion="2016-03" id="$id" />
+		</codeSystems>
+		<valuesets>
+			<valueset datatype="Patient Characteristic Expired" id="$id"
+				name="Dead" oid="419099009" suppDataElement="false" taxonomy="SNOMED-CT"
+				uuid="$uuid" version="1.0" />
+			<valueset datatype="Patient Characteristic Sex" id="$id"
+				name="ONC Administrative Sex" oid="2.16.840.1.113762.1.4.1"
+				suppDataElement="true" taxonomy="Administrative Sex" uuid="$uuid"
+				version="1.0" />
+			<valueset datatype="Patient Characteristic Race" id="$id"
+				name="Race" oid="2.16.840.1.114222.4.11.836" suppDataElement="true"
+				taxonomy="CDC" uuid="$uuid" version="1.0" />
+			<valueset datatype="Patient Characteristic Ethnicity" id="$id"
+				name="Ethnicity" oid="2.16.840.1.114222.4.11.837" suppDataElement="true"
+				taxonomy="CDC" uuid="$uuid" version="1.0" />
+			<valueset datatype="Patient Characteristic Payer" id="$id"
+				name="Payer" oid="2.16.840.1.114222.4.11.3591" suppDataElement="true"
+				taxonomy="Source of Payment Typology" uuid="$uuid" version="1.0" />
+		</valuesets>
+		<codes>
+			<code codeName="Birthdate" codeOID="21112-8" codeSystemName="LOINC"
+				codeSystemVersion="2.46" displayName="Birth date" id="$id" />
+			<code codeName="Dead" codeOID="419099009" codeSystemName="SNOMEDCT"
+				codeSystemVersion="2016-03" displayName="Dead" id="$id" />
+		</codes>
+		<parameters>
+			<parameter id="d0fdca2e-8446-435f-b4d2-ea7f84f19fbd" name="Measurement Period"
+				readOnly="true">
+				<logic>Interval&lt;DateTime&gt;</logic>
+			</parameter>
+		</parameters>
+		<definitions>
+			<definition context="Patient" id="98A27F87-B5E2-438F-BBF9-F82674B11A8C"
+				name="SDE Ethnicity" popDefinition="false" supplDataElement="true">
+				<logic>["Patient Characteristic Ethnicity": "Ethnicity"]</logic>
+			</definition>
+			<definition context="Patient" id="541D08FE-2E89-481B-8AFE-71BFB0C06ED3"
+				name="SDE Payer" popDefinition="false" supplDataElement="true">
+				<logic>["Patient Characteristic Payer": "Payer"]</logic>
+			</definition>
+			<definition context="Patient" id="8077B778-A944-4098-8CA7-2F085D4E78E5"
+				name="SDE Race" popDefinition="false" supplDataElement="true">
+				<logic>["Patient Characteristic Race": "Race"]</logic>
+			</definition>
+			<definition context="Patient" id="$id" name="SDE Sex"
+				popDefinition="false" supplDataElement="true">
+				<logic>["Patient Characteristic Sex": "ONC Administrative Sex"]
+				</logic>
+			</definition>
+		</definitions>
+		<functions />
+		<includeLibrarys />
+	</cqlLookUp>
+</cqlTemplate>

@@ -145,7 +145,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				detailDisplay.getErrorMessage().clearAlert();
 				if (detailDisplay.getNameField().getText().isEmpty()) {
-					detailDisplay.getErrorMessage().createAlert("Library Name is required.");
+					detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 				} else {
 					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
 						CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
@@ -153,8 +153,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 						//libraryDataSetObject.setOwnerId(LoggedInUserUtil.getLoggedInLoginId());
 						saveCqlXml(libraryDataSetObject);
 					} else {
-						detailDisplay.getErrorMessage().createAlert(
-								"Invalid Library Name. Can only contain alpha-numeric and/or underscores.  Cannot contain spaces.");
+						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 					}
 				}
 			}
@@ -173,8 +172,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-
+				detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 

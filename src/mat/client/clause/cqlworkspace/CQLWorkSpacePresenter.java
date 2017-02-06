@@ -1728,7 +1728,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										
 									}  else if (result.getFailureReason() == 1) {
 										searchDisplay.getErrorMessageAlert().createAlert(MatContext.get()
-												.getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
+												.getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
 										searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
 									} else if (result.getFailureReason() == 2) {
 										searchDisplay.getErrorMessageAlert().createAlert("Missing includes library tag.");

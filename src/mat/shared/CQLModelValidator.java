@@ -45,12 +45,23 @@ public class CQLModelValidator {
 		boolean bool = false;
 		for (int i = 0; i < identifierName.length(); i++) {
 			char ch = identifierName.charAt(i);
-			if (Character.isDigit(ch) || Character.isLetter(ch) || ch == '_') {
-				bool = true;
-			} else {
-				bool = false;
-				return bool;
+			//if its not the first character
+			if(i != 0){
+				if (Character.isDigit(ch) || Character.isLetter(ch) || ch == '_') {
+					bool = true;
+				} else {
+					bool = false;
+					return bool;
+				}
+			} else{
+				if (Character.isLetter(ch) || ch == '_') {
+					bool = true;
+				} else {
+					bool = false;
+					return bool;
+				}
 			}
+			
 		}
 
 		return bool;

@@ -362,6 +362,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
+		mainPanel.getElement().setId("CQLWorkspaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
 		messagePanel.setStyleName("marginLeft15px");
 		mainPanel.add(messagePanel);

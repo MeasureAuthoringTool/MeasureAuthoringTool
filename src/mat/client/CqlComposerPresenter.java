@@ -146,7 +146,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			//TODO: Get Library name and version from MatContext.
 /*			String heading = MatContext.get().getCurrentLibraryName() + " ";
 			String version = MatContext.get().getCurrentLibraryVersion();*/
-			//when a library is initaly created we need to explictly create the heading
+			//when a library is initialy created we need to explictly create the heading
 			/*if (!version.startsWith("Draft") && !version.startsWith("v")) {
 				version = "Draft based on v" + version;
 				version = LibraryUtility.getVersionText(version, true);
@@ -156,7 +156,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			cqlComposerContent.setHeading(heading, "CqlComposer");*/
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
-			setSubSkipEmbeddedLink("MetaDataView.containerPanel");
+			setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 			fp.add(subSkipContentHolder);
 			fp.add(cqlComposerTabLayout);
 			cqlComposerContent.setContent(fp);
@@ -167,7 +167,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			cqlComposerContent.setContent(emptyWidget);
 			MatContext.get().setVisible(buttonBar, false);
 		//}
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("CqlComposer");
 		buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
 		buttonBar.setPageNamesOnState();
 	}

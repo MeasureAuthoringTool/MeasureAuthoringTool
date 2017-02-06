@@ -112,9 +112,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void buildCreateNewView(){
 		mainPanel.clear();
 		
-		/** The name label. */
-		String nameLabel = "Name";
-		
 	}
 
 	@Override

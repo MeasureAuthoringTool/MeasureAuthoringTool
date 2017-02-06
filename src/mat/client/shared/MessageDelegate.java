@@ -64,6 +64,9 @@ public class MessageDelegate {
 	/** The Constant LOGIN_ID_REQUIRED. */
 	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
 	
+	public static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
+	
+	public static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name.Can only contain alpha-numeric and/or underscores.Cannot contain spaces.";
 	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
 	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
 	/** The Constant EMAIL_ID_REQUIRED. */
@@ -157,7 +160,7 @@ public class MessageDelegate {
 	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
 
 	private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
-
+	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Identifier to Apply to QDM Elements";
 	
@@ -2693,4 +2696,12 @@ public class MessageDelegate {
 		return NO_INCLUDES;
 	}
 
+	public String getLibraryNameRequired() {
+		return LIBRARY_NAME_REQUIRED;
+	}
+
+	public String getCqlStandAloneLibraryNameError() {
+		return CQL_STAND_ALONE_LIBRARY_NAME_ERROR;
+	}
+	
 }

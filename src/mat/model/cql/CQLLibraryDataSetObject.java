@@ -12,7 +12,7 @@ import mat.shared.CQLErrors;
 public class CQLLibraryDataSetObject implements IsSerializable{
 	private String id;
 	private String cqlName;
-	private String version;
+	private String version="0.0";
 	private boolean isDraft;
 	private Timestamp finalizedDate;
 	private String measureSetId;
@@ -27,6 +27,8 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	private String measureId;
 	private boolean isSelected;
 	private CQLModel cqlModel;
+	private String revisionNumber ="000";
+	private String ownerId;
 	/** The cql errors. */
 	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
 	
@@ -138,5 +140,17 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	}
 	public void setCqlErrors(List<CQLErrors> cqlErrors) {
 		this.cqlErrors = cqlErrors;
+	}
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
+	}
+	public String getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 }

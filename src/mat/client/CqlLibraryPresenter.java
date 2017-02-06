@@ -5,6 +5,7 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -16,8 +17,10 @@ import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
+import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
@@ -30,26 +33,27 @@ import mat.shared.ConstantMessages;
  * @author jnarang
  *
  */
-public class CqlLibraryPresenter implements MatPresenter{
-	
+public class CqlLibraryPresenter implements MatPresenter {
+
 	/** The panel. */
-	//private SimplePanel panel = new SimplePanel();
-	
+	// private SimplePanel panel = new SimplePanel();
+
 	/** The panel. */
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
-	
+
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
-	
+
 	ViewDisplay cqlLibraryView;
 	DetailDisplay detailDisplay;
-	
+
 	/** The is create measure widget visible. */
 	boolean isCreateNewItemWidgetVisible = false;
-	
+
 	private CQLModel cqlModel;
-	
+
 	CQLModelValidator validator = new CQLModelValidator();
+
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -92,21 +96,21 @@ public class CqlLibraryPresenter implements MatPresenter{
 		 * @return the name
 		 */
 		public HasValue<String> getName();
-		
+
 		/**
 		 * Gets the save button.
 		 * 
 		 * @return the save button
 		 */
 		public HasClickHandlers getSaveButton();
-		
+
 		/**
 		 * Gets the cancel button.
 		 * 
 		 * @return the cancel button
 		 */
 		public HasClickHandlers getCancelButton();
-		
+
 		public void resetAll();
 
 		Widget asWidget();
@@ -115,7 +119,7 @@ public class CqlLibraryPresenter implements MatPresenter{
 
 		ErrorMessageAlert getErrorMessage();
 	}
-	
+
 	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
 		this.detailDisplay = detailDisplay;
@@ -125,100 +129,114 @@ public class CqlLibraryPresenter implements MatPresenter{
 
 	private void addDetailDisplayViewHandlers() {
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				detailDisplay.resetAll();
 				cqlLibraryView.clearSelections();
 				displaySearch();
-				
+
 			}
 		});
-		
+
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				detailDisplay.getErrorMessage().clearAlert();
-				if(detailDisplay.getNameField().getText().isEmpty()){
-					detailDisplay.getErrorMessage().createAlert("Name is required.");
+				if (detailDisplay.getNameField().getText().isEmpty()) {
+					detailDisplay.getErrorMessage().createAlert("Library Name is required.");
 				} else {
 					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
-					       saveCqlXml();
+						CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
+						libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
+						//libraryDataSetObject.setOwnerId(LoggedInUserUtil.getLoggedInLoginId());
+						saveCqlXml(libraryDataSetObject);
 					} else {
-						detailDisplay.getErrorMessage().createAlert("Invalid Library Name. Can only contain alpha-numeric and/or underscores.  Cannot contain spaces.");
+						detailDisplay.getErrorMessage().createAlert(
+								"Invalid Library Name. Can only contain alpha-numeric and/or underscores.  Cannot contain spaces.");
 					}
 				}
 			}
 		});
-		
+
 	}
 
-	private void saveCqlXml() {
-		// TODO Auto-generated method stub
-		
+	private void saveCqlXml(CQLLibraryDataSetObject libraryDataSetObject) {
+		MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<CQLModel>() {
+
+			@Override
+			public void onSuccess(CQLModel result) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 	}
-	
-	
+
 	private void addCQLLibraryViewHandlers() {
 		cqlLibraryView.getAddNewFolderButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
 				isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
 				cqlLibraryView.getCreateNewItemWidget().setVisible(isCreateNewItemWidgetVisible);
-				
+
 			}
 		});
-		
+
 		cqlLibraryView.getCreateNewItemWidget().getCreateItemButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
-				
-				if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
-						ConstantMessages.CREATE_NEW_CQL)) {
+
+				if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_CQL)) {
 					cqlLibraryView.getErrorMessageAlert().clearAlert();
 					createNew();
-				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
-						ConstantMessages.CREATE_NEW_CQL_DRAFT)) {
+				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_CQL_DRAFT)) {
 					cqlLibraryView.getErrorMessageAlert().clearAlert();
-					//createNew();
-				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(
-						ConstantMessages.CREATE_NEW_CQL_VERSION)) {
+					// createNew();
+				} else if (cqlLibraryView.getSelectedOption()
+						.equalsIgnoreCase(ConstantMessages.CREATE_NEW_CQL_VERSION)) {
 					cqlLibraryView.getErrorMessageAlert().clearAlert();
-					//createVersion();
+					// createVersion();
 				} else {
-					cqlLibraryView.getErrorMessageAlert().createAlert("Please select an option from the Create list box.");
+					cqlLibraryView.getErrorMessageAlert()
+							.createAlert("Please select an option from the Create list box.");
 				}
-				
+
 			}
 
-			
 		});
-		
+
 	}
 
 	private void createVersion() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void createNew() {
-		
+
 		cqlModel = new CQLModel();
 		displayDetailForAdd();
 		Mat.focusSkipLists("CQLLibrary");
-		
+
 	}
-	
+
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
 		panel.setContent(detailDisplay.asWidget());
 	}
-	
+
 	private void displaySearch() {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
@@ -234,11 +252,12 @@ public class CqlLibraryPresenter implements MatPresenter{
 		panel.setContent(fp);
 		Mat.focusSkipLists("CQLLibrary");
 	}
-	
+
 	/**
 	 * Sets the sub skip embedded link.
 	 *
-	 * @param name the new sub skip embedded link
+	 * @param name
+	 *            the new sub skip embedded link
 	 */
 	public static void setSubSkipEmbeddedLink(String name) {
 		if (subSkipContentHolder == null) {
@@ -250,7 +269,7 @@ public class CqlLibraryPresenter implements MatPresenter{
 		subSkipContentHolder.add(w);
 		subSkipContentHolder.setFocus(true);
 	}
-	
+
 	@Override
 	public void beforeClosingDisplay() {
 		// TODO Auto-generated method stub
@@ -262,7 +281,7 @@ public class CqlLibraryPresenter implements MatPresenter{
 		cqlLibraryView.buildDefaultView();
 		cqlLibraryView.clearSelections();
 		displaySearch();
-		
+
 	}
 
 	@Override

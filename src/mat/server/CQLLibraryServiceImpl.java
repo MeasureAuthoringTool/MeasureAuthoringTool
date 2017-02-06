@@ -3,9 +3,8 @@ package mat.server;
 import java.util.List;
 
 import mat.client.measure.service.CQLLibraryService;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLLibraryModel;
+import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
@@ -31,5 +30,9 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return (CQLLibraryServiceInterface) context.getBean("cqlLibraryService");
 	}
 	
+	
+	public CQLModel save(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
+		return this.getCQLLibraryService().save(cqlLibraryDataSetObject);
+	}
 
 }

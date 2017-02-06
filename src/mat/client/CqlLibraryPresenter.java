@@ -19,6 +19,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLModel;
+import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 
 /**
@@ -47,6 +48,8 @@ public class CqlLibraryPresenter implements MatPresenter{
 	boolean isCreateNewItemWidgetVisible = false;
 	
 	private CQLModel cqlModel;
+	
+	CQLModelValidator validator = new CQLModelValidator();
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -132,8 +135,31 @@ public class CqlLibraryPresenter implements MatPresenter{
 			}
 		});
 		
+		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				detailDisplay.getErrorMessage().clearAlert();
+				if(detailDisplay.getNameField().getText().isEmpty()){
+					detailDisplay.getErrorMessage().createAlert("Name is required.");
+				} else {
+					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
+					       saveCqlXml();
+					} else {
+						detailDisplay.getErrorMessage().createAlert("Invalid Library Name. Can only contain alpha-numeric and/or underscores.  Cannot contain spaces.");
+					}
+				}
+			}
+		});
+		
 	}
 
+	private void saveCqlXml() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	private void addCQLLibraryViewHandlers() {
 		cqlLibraryView.getAddNewFolderButton().addClickHandler(new ClickHandler() {
 			
@@ -234,6 +260,7 @@ public class CqlLibraryPresenter implements MatPresenter{
 	@Override
 	public void beforeDisplay() {
 		cqlLibraryView.buildDefaultView();
+		cqlLibraryView.clearSelections();
 		displaySearch();
 		
 	}

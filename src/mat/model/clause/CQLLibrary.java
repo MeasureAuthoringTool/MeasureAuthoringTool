@@ -64,6 +64,8 @@ public class CQLLibrary {
 	 * The release version
 	 */
 	private String releaseVersion;
+	
+	private String revisionNumber;
 
 	/**
 	 * The locked user id
@@ -251,6 +253,14 @@ public class CQLLibrary {
 
 	public void setCqlSet(CQLLibrarySet cqlSet) {
 		this.cqlSet = cqlSet;
+	}
+
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
 	}
 
 }

@@ -1,7 +1,7 @@
 package mat.client;
 
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView;
+import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpaceView;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
@@ -156,7 +156,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			cqlComposerContent.setHeading(heading, "CqlComposer");*/
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
-			setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
+			setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 			fp.add(subSkipContentHolder);
 			fp.add(cqlComposerTabLayout);
 			cqlComposerContent.setContent(fp);
@@ -178,9 +178,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	 * @return the mat presenter
 	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLWorkSpaceView cqlView = new CQLWorkSpaceView();
-		CQLWorkSpacePresenter cqlPresenter =
-				new CQLWorkSpacePresenter(cqlView);
+		CQLStandaloneWorkSpaceView cqlView = new CQLStandaloneWorkSpaceView();
+		CQLStandaloneWorkSpacePresenter cqlPresenter =
+				new CQLStandaloneWorkSpacePresenter(cqlView);
 		cqlPresenter.getWidget();
 		return cqlPresenter;
 	}

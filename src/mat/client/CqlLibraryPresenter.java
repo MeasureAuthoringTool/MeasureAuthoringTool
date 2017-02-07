@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
-import mat.client.event.MeasureEditEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;

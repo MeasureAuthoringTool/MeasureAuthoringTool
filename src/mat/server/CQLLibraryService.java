@@ -45,9 +45,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired
 	private CQLServiceImpl cqlService;
-
+	@Autowired
 	private CQLLibrarySetDAO cqlLibrarySetDAO;
-
+	@Autowired
 	private UserDAO userDAO;
 
 	@Autowired

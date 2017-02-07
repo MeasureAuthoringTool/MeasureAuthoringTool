@@ -125,7 +125,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	
 	
 	public FlowPanel buildCQLLibraryCellTable(){
-		
+		mainPanel.clear();
 		mainPanel.getElement().setId("cqlLibrarySearchView_mainPanel");
 		mainPanel.setStylePrimaryName("measureSearchResultsContainer");
 		mainPanel.add(new SpacerWidget());
@@ -213,7 +213,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		
 		else{
 			Label measureSearchHeader = new Label(getMeasureListLabel());
-			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
+			measureSearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
 			measureSearchHeader.setStyleName("recentSearchHeader");
 			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 			HTML desc = new HTML("<p> No "+ getMeasureListLabel()+".</p>");
@@ -259,7 +259,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return CellTableUtility.getColumnToolTip(object.getVersion() + object.getRevisionNumber());
+				return CellTableUtility.getColumnToolTip(object.getVersion());
 			}
 		};
 		table.addColumn(version, SafeHtmlUtils

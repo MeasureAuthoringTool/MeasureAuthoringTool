@@ -140,7 +140,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			dataSetObject.setCqlSetId(cqlLibrary.getCqlSet().getId());	
 		}
 		
-		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), "", cqlLibrary.isDraft());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), 
+				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
 		dataSetObject.setVersion(formattedVersion);        
 		
 		return dataSetObject;

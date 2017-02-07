@@ -6,10 +6,11 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.model.BaseModel;
 import mat.model.LockedUserInfo;
 import mat.shared.CQLErrors;
 
-public class CQLLibraryDataSetObject implements IsSerializable{
+public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private String id;
 	private String cqlName;
 	private String version="0.0";
@@ -152,5 +153,16 @@ public class CQLLibraryDataSetObject implements IsSerializable{
 	}
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
+	}
+	@Override
+	public void scrubForMarkUp() {
+		String markupRegExp = "<[^>]+>";
+		if(this.getCqlName() != null) {
+			String noMarkupText = this.getCqlName().trim().replaceAll(markupRegExp, "");
+			System.out.println("CQL Library name:"+noMarkupText);
+			if(this.getCqlName().trim().length() > noMarkupText.length()){
+				this.setCqlName(noMarkupText);
+			}
+		}
 	}
 }

@@ -3,10 +3,10 @@ package mat.server.service;
 import java.sql.Timestamp;
 import java.util.List;
 
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.model.User;
 import mat.model.clause.MeasureSet;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLModel;
 
 public interface CQLLibraryServiceInterface {
 	
@@ -16,7 +16,7 @@ public interface CQLLibraryServiceInterface {
 			Timestamp finalizedDate, byte[] cqlByteArray);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
-	public CQLModel save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
+	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 	
 	
 }

@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLModel;
 
 public interface CQLLibraryServiceAsync {
 
@@ -14,7 +12,7 @@ public interface CQLLibraryServiceAsync {
 
 	void findCQLLibraryByID(String cqlLibraryID, AsyncCallback<CQLLibraryDataSetObject> callback);
 
-	void save(CQLLibraryDataSetObject cqlLibraryDataSetObject, AsyncCallback<CQLModel> callback);
+	void save(CQLLibraryDataSetObject cqlModel, AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	
 

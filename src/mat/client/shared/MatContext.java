@@ -25,6 +25,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
+import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.login.LoginModel;
@@ -139,6 +140,8 @@ public class MatContext implements IsSerializable {
 	
 	/** The current measure info. */
 	private MeasureSelectedEvent currentMeasureInfo;
+	
+	private CQLLibrarySelectedEvent currentLibraryInfo;
 	
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted;
@@ -415,6 +418,15 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
 				currentMeasureInfo = event;
+			}
+		});
+		
+		eventBus.addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
+			
+			@Override
+			public void onLibrarySelected(CQLLibrarySelectedEvent event) {
+				currentLibraryInfo = event;
+				
 			}
 		});
 		
@@ -1021,6 +1033,16 @@ public class MatContext implements IsSerializable {
 		return currentMeasureInfo;
 	}
 	
+	public CQLLibrarySelectedEvent getCurrentLibraryInfo() {
+		return currentLibraryInfo;
+	}
+
+
+	public void setCurrentLibraryInfo(CQLLibrarySelectedEvent currentLibraryInfo) {
+		this.currentLibraryInfo = currentLibraryInfo;
+	}
+
+
 	/**
 	 * Sets the current measure info.
 	 * 
@@ -2174,7 +2196,59 @@ public class MatContext implements IsSerializable {
 		this.includes = includes;
 	}
 
-
+	/**
+	 * Gets the current CQL Library id.
+	 * 
+	 * @return the CQL Library id
+	 */
+	public String getCurrentCQLLibraryId() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getCqlLibraryId();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
+	 * Gets the current CQL Library name.
+	 * 
+	 * @return the current CQL Library name
+	 */
+	public String getCurrentCQLLibraryeName() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getLibraryName();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
+	 * Gets the current Library version.
+	 * 
+	 * @return the current Library version
+	 */
+	public String getCurrentCQLLibraryVersion() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getCqlLibraryVersion();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
+	 * Sets the current measure version.
+	 * 
+	 * @param s
+	 *            the new current measure version
+	 */
+	public void setCurrentCQLLibraryVersion(String s) {
+		if(currentLibraryInfo != null) {
+			currentLibraryInfo.setCqlLibraryVersion(s);;
+		}
+	}
 	
 	/*public GlobalCopyPaste getCopyPaste() {
 		return copyPaste;

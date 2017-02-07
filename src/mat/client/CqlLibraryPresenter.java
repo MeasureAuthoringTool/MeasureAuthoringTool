@@ -5,15 +5,18 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.ManageCQLLibrarySearchModel;
-import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -96,6 +99,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		void clearSelections();
 
+		HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool();
+
 	}
 
 	public static interface DetailDisplay {
@@ -134,6 +139,25 @@ public class CqlLibraryPresenter implements MatPresenter {
 		this.detailDisplay = detailDisplay;
 		addCQLLibraryViewHandlers();
 		addDetailDisplayViewHandlers();
+		addCQLLibrarySelectionHandlers();
+	}
+
+	private void addCQLLibrarySelectionHandlers() {
+		
+		cqlLibraryView.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<CQLLibraryDataSetObject>() {
+			
+			@Override
+			public void onSelection(SelectionEvent<CQLLibraryDataSetObject> event) {
+				
+				final String mid = event.getSelectedItem().getId();
+				CQLLibraryDataSetObject result = event.getSelectedItem();
+				
+				fireCQLLibrarySelectedEvent(result.getId(), result.getVersion(), result.getCqlName(), true, false,
+						null);
+				fireCqlLibraryEditEvent();
+				
+			}
+		});
 	}
 
 	private void addDetailDisplayViewHandlers() {

@@ -1,9 +1,7 @@
 package mat.client;
 
-import java.util.List;
-
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -12,8 +10,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.ManageCQLLibrarySearchModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.MeasureSearchView;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -220,4 +216,9 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		return cqlLibrarySearchView;
 	}
 
+	@Override
+	public HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool() {
+		return cqlLibrarySearchView;
+	}
+	
 }

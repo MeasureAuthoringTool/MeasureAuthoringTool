@@ -2,19 +2,13 @@ package mat.client.cql;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -25,12 +19,10 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -41,11 +33,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+
 import mat.client.CustomPager;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.MeasureSearchView;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
@@ -54,7 +43,6 @@ import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
-import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 
@@ -271,7 +259,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return CellTableUtility.getColumnToolTip(object.getVersion());
+				return CellTableUtility.getColumnToolTip(object.getVersion() + object.getRevisionNumber());
 			}
 		};
 		table.addColumn(version, SafeHtmlUtils

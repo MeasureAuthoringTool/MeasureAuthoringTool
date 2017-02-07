@@ -319,7 +319,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					@Override
 					public void onSuccess(ManageCQLLibrarySearchModel result) {
 						//CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
-						cqlLibraryView.getCQLLibrarySearchView().setMeasureListLabel("All CQL Libraries");
+						cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
 						cqlLibraryView.buildCellTable(result, lastSearchText);
 						showSearchingBusy(false);
 					}

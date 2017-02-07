@@ -8,6 +8,7 @@ import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
+import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
@@ -445,6 +446,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				//				currentMeasure.setText(event.getMeasureName());
 				mainTabLayout.selectTab(measureComposer);
 				focusSkipLists("MeasureComposer");
+			}
+		});
+		
+		MatContext.get().getEventBus().addHandler(CQLLibraryEditEvent.TYPE, new CQLLibraryEditEvent.Handler() {
+			@Override
+			final public void onCQLLibraryEdit(CQLLibraryEditEvent event) {
+				//				currentMeasure.setText(event.getMeasureName());
+				mainTabLayout.selectTab(cqlComposer);
+				focusSkipLists("CqlComposer");
 			}
 		});
 		

@@ -11,6 +11,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.cql.CQLLibrarySearchView;
+import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
@@ -81,6 +83,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 		CustomButton getZoomButton();
 
 		Widget asWidget();
+
+		void buildCellTable(ManageCQLLibrarySearchModel searchModel, String searchText);
+
+		CQLLibrarySearchView getCQLLibrarySearchView();
 
 		String getSelectedOption();
 
@@ -270,6 +276,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		fp.getElement().setId("fp_FlowPanel");
 		isCreateNewItemWidgetVisible = false;
 		cqlLibraryView.getCreateNewItemWidget().setVisible(false);
+		search("", "StandAlone", 1, Integer.MAX_VALUE);
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
 		fp.add(cqlLibraryView.asWidget());
@@ -277,6 +284,30 @@ public class CqlLibraryPresenter implements MatPresenter {
 		Mat.focusSkipLists("CQLLibrary");
 	}
 
+	private void search(final String searchText, String searchFrom, int startIndex, int pageSize) {
+		final String lastSearchText = (searchText != null) ? searchText
+				.trim() : null;
+				//pageSize = Integer.MAX_VALUE;
+				pageSize = 25;
+				showSearchingBusy(true);
+				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, startIndex, pageSize, new AsyncCallback<ManageCQLLibrarySearchModel>() {
+					
+					@Override
+					public void onSuccess(ManageCQLLibrarySearchModel result) {
+						//CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
+						cqlLibraryView.getCQLLibrarySearchView().setMeasureListLabel("All CQL Libraries");
+						cqlLibraryView.buildCellTable(result, lastSearchText);
+						showSearchingBusy(false);
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						
+						
+					}
+				});
+	}
+	
 	/**
 	 * Sets the sub skip embedded link.
 	 *
@@ -311,6 +342,20 @@ public class CqlLibraryPresenter implements MatPresenter {
 	@Override
 	public Widget getWidget() {
 		return panel;
+	}
+	
+	/**
+	 * Show searching busy.
+	 * 
+	 * @param busy
+	 *            the busy
+	 */
+	private void showSearchingBusy(boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
 	}
 
 }

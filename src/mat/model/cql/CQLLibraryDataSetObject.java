@@ -28,8 +28,10 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private String measureId;
 	private boolean isSelected;
 	private CQLModel cqlModel;
+	private boolean isSharable;
 	private String revisionNumber ="000";
 	private String ownerId;
+	private String cqlSetId;
 	/** The cql errors. */
 	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
 	
@@ -142,6 +144,12 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	public void setCqlErrors(List<CQLErrors> cqlErrors) {
 		this.cqlErrors = cqlErrors;
 	}
+	public boolean isSharable() {
+		return isSharable;
+	}
+	public void setSharable(boolean isSharable) {
+		this.isSharable = isSharable;
+	}
 	public String getRevisionNumber() {
 		return revisionNumber;
 	}
@@ -154,6 +162,13 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
 	}
+	public String getCqlSetId() {
+		return cqlSetId;
+	}
+	public void setCqlSetId(String cqlSetId) {
+		this.cqlSetId = cqlSetId;
+	}	
+	
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";

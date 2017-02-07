@@ -52,6 +52,7 @@ import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
@@ -1401,8 +1402,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				
 				searchDisplay.buildIncludesView();
+				ManageCQLLibrarySearchModel cqlLibrarySearchModel = new ManageCQLLibrarySearchModel();
+				cqlLibrarySearchModel.setCqlLibraryDataSetObjects(searchDisplay.getIncludeLibraryList());
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
-						searchDisplay.getIncludeLibraryList(),MatContext.get().getMeasureLockService().checkForEditPermission());
+						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
 				setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			}
 		});
@@ -1655,6 +1658,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
+		
+		searchDisplay.getIncludeView().setObserver(new CQLIncludeLibraryView.Observer() {
+			
+			@Override
+			public void onCheckBoxClicked(CQLLibraryDataSetObject result) {
+				MatContext.get().getCQLLibraryService().findCQLLibraryByID(result.getId(), new AsyncCallback<CQLLibraryDataSetObject>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					}
+
+					@Override
+					public void onSuccess(CQLLibraryDataSetObject result) {
+						searchDisplay.getIncludeView().getViewCQLEditor().setText(result.getCqlText());
+					}
+				});
+			}
+		});
 		
 		/*searchDisplay.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
 
@@ -2205,8 +2227,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		for (int i = 0; i < availableLibraries.size(); i++) {
 			availableLibraries.get(i).setSelected(false);
 		}
-		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries, 
-				MatContext.get().getMeasureLockService().checkForEditPermission());
+		/*searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries, 
+				MatContext.get().getMeasureLockService().checkForEditPermission());*/
+		ManageCQLLibrarySearchModel cqlLibrarySearchModel = new ManageCQLLibrarySearchModel();
+		cqlLibrarySearchModel.setCqlLibraryDataSetObjects(searchDisplay.getIncludeLibraryList());
+		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
+				cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	/**
@@ -2902,7 +2928,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getSuccessMessageAlert().clearAlert();
 		searchDisplay.getWarningMessageAlert().clearAlert();
 		searchDisplay.getIncludeView().showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().search(searchText,"measureLib", new AsyncCallback<List<CQLLibraryDataSetObject>>() {
+		int startIndex = 1;
+		int pageSize = Integer.MAX_VALUE;
+		MatContext.get().getCQLLibraryService().search(searchText, "measureLib", 
+				startIndex, pageSize, new AsyncCallback<ManageCQLLibrarySearchModel>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -2911,10 +2940,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(List<CQLLibraryDataSetObject> result) {
+			public void onSuccess(ManageCQLLibrarySearchModel result) {
 				
-				if(result != null && result.size() > 0){
-					searchDisplay.setIncludeLibraryList(result);
+				if(result != null && result.getCqlLibraryDataSetObjects().size() > 0){
+					searchDisplay.setIncludeLibraryList(result.getCqlLibraryDataSetObjects());
 					searchDisplay.buildIncludesView();
 					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission());
 					

@@ -44,6 +44,9 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.Mat;
+import mat.client.cql.ManageCQLLibrarySearchModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -120,6 +123,19 @@ public class CQLIncludeLibraryView {
 	
 	/** The owner textbox panel. */
 	private VerticalPanel ownerTextboxPanel = new VerticalPanel();
+	
+	private Observer observer;
+	
+	public static interface Observer {
+		/**
+		 * On edit clicked.
+		 * @param result
+		 *            the result
+		 */
+		void onCheckBoxClicked(CQLLibraryDataSetObject result);
+		
+	}
+	
 	
 	/**
 	 * Instantiates a new CQL include library view.
@@ -366,10 +382,10 @@ public class CQLIncludeLibraryView {
 	/**
 	 * Builds the include library cell table.
 	 *
-	 * @param cqlLibraryList the cql library list
+	 * @param result the cql library list
 	 * @param isEditable the is editable
 	 */
-	public void buildIncludeLibraryCellTable(List<CQLLibraryDataSetObject> cqlLibraryList, boolean isEditable) {
+	public void buildIncludeLibraryCellTable(ManageCQLLibrarySearchModel result, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -387,8 +403,8 @@ public class CQLIncludeLibraryView {
 		selectedObject = null;
 		//includedList = new ArrayList<String>();
 		
-		if ((cqlLibraryList != null)
-				&& (cqlLibraryList.size() > 0)) {
+		if ((result != null)
+				&& (result.getCqlLibraryDataSetObjects().size() > 0)) {
 			table = new CellTable<CQLLibraryDataSetObject>();
 			//setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -397,7 +413,7 @@ public class CQLIncludeLibraryView {
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
-			listDataProvider.getList().addAll(cqlLibraryList);
+			listDataProvider.getList().addAll(result.getCqlLibraryDataSetObjects());
 			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
@@ -696,7 +712,9 @@ public class CQLIncludeLibraryView {
 								cqlAceEditor.redisplay();
 							} else {
 								successMessageAlert.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());*/
-								cqlAceEditor.setText(object.getCqlText());
+								/*cqlAceEditor.setText(object.getCqlText());*/
+							observer.onCheckBoxClicked(object);
+							
 							//}
 						}
 						else{
@@ -908,6 +926,14 @@ public class CQLIncludeLibraryView {
 
 	public MatTextBox getCqlLibraryNameTextBox() {
 		return cqlLibraryNameTextBox;
+	}
+
+	public Observer getObserver() {
+		return observer;
+	}
+
+	public void setObserver(Observer observer) {
+		this.observer = observer;
 	}
 	
 	

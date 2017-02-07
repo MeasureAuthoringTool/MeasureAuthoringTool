@@ -1,17 +1,25 @@
 package mat.client;
 
+import java.util.List;
+
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.cql.CQLLibrarySearchView;
+import mat.client.cql.ManageCQLLibrarySearchModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.MeasureSearchView;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.model.cql.CQLLibraryDataSetObject;
 
 /**
  * The Class CqlLibraryView.
@@ -35,9 +43,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
 	private VerticalPanel mostRecentVPanel = new VerticalPanel();
 	
+	private CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
+	
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-
+	
 
 	@Override
 	public VerticalPanel getMainPanel() {
@@ -77,6 +87,18 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mostRecentVPanel.add(desc);
 		return mostRecentVPanel;
 	}
+	
+	/*public FlowPanel buildCQLLibraryCellTable(){
+		
+		cellTablePanel.getElement().setId("cqlLibrarySearchView_mainPanel");
+		cellTablePanel.setStylePrimaryName("measureSearchResultsContainer");
+		cellTablePanel.add(new SpacerWidget());
+		cellTablePanel.getElement().setId("cqlCellTablePanel_VerticalPanel");
+		cellTablePanel.add(getCellTablePanel());
+		cellTablePanel.setStyleName("serachView_mainPanel");
+		return cellTablePanel;
+	}*/
+	
 
 	@Override
 	public void buildDefaultView() {
@@ -105,6 +127,9 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainHorizontalPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(mainHorizontalPanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
+		
 
 	}
 	
@@ -112,6 +137,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void buildCreateNewView(){
 		mainPanel.clear();
 		
+	}
+	
+	@Override
+	public void buildCellTable(ManageCQLLibrarySearchModel searchModel, String searchText) {
+		cqlLibrarySearchView.buildCellTable(searchModel, searchText);
 	}
 
 	@Override
@@ -184,4 +214,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void clearSelections() {
 		createNewItemWidget.getOptions().setSelectedIndex(0);
 	}
+	
+	@Override
+	public CQLLibrarySearchView getCQLLibrarySearchView() {
+		return cqlLibrarySearchView;
+	}
+
 }

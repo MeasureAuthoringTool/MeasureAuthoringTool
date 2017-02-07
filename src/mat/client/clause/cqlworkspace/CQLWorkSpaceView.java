@@ -679,7 +679,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 										@Override
 										public void onFailure(Throwable caught) {
-
+											errorMessageAlert.createAlert(
+													MatContext.get().getMessageDelegate().getGenericErrorMessage());
 										}
 									});
 

@@ -12,6 +12,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
+import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
@@ -162,11 +164,16 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	private void saveCqlXml(CQLLibraryDataSetObject libraryDataSetObject) {
-		MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<CQLModel>() {
+		MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
-			public void onSuccess(CQLModel result) {
-				// TODO Auto-generated method stub
+			public void onSuccess(SaveCQLLibraryResult result) {
+				if(result.isSuccess()){
+					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
+									null);
+				} else {
+						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+				}
 
 			}
 
@@ -178,6 +185,15 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
+	
+	private void fireCQLLibrarySelectedEvent(String id, String version,
+			String name, boolean isEditable, boolean isLocked, String lockedUserId) {
+		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId);
+		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		detailDisplay.getErrorMessage().clearAlert();
+		//MatContext.get().getEventBus().fireEvent(evt);
+	}
+	
 	private void addCQLLibraryViewHandlers() {
 		cqlLibraryView.getAddNewFolderButton().addClickHandler(new ClickHandler() {
 

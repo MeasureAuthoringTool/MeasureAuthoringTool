@@ -46,6 +46,10 @@ import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CQLLibrarySearchView.
+ */
 public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryDataSetObject>{
 
 	/** The cell table panel. */
@@ -54,7 +58,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The Constant PAGE_SIZE. */
 	private static final int PAGE_SIZE = 25;
-	/** The selected measure list. */
+	/** The selected libraries list. */
 	private List<CQLLibraryDataSetObject> selectedLibrariesList;
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
@@ -75,8 +79,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	/** The index. */
 	private int index;
 	
-	/** The measure list label. */
-	private String measureListLabel;
+	/** The library list label. */
+	private String cqlLibraryListLabel;
 	/**
 	 * MultiSelectionModel on Cell Table.
 	 */
@@ -85,6 +89,9 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	List<CQLLibraryDataSetObject> selectedList;
 	
 	
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
 		/**
 		 * On edit clicked.
@@ -106,24 +113,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		void onHistoryClicked(CQLLibraryDataSetObject result);
 		
 	}
-	
-	
-	/*public CQLLibrarySearchView(String view) {
-		this();
-	}*/
+
+		
 	/**
-	 * Instantiates a new measure search view.
+	 * Builds the CQL library cell table.
+	 *
+	 * @return the flow panel
 	 */
-//	public CQLLibrarySearchView() {
-//		mainPanel.getElement().setId("cqlLibrarySearchView_mainPanel");
-//		mainPanel.setStylePrimaryName("measureSearchResultsContainer");
-//		mainPanel.add(new SpacerWidget());
-//		cellTablePanel.getElement().setId("cqlCellTablePanel_VerticalPanel");
-//		mainPanel.add(cellTablePanel);
-//		mainPanel.setStyleName("serachView_mainPanel");
-//	}
-	
-	
 	public FlowPanel buildCQLLibraryCellTable(){
 		mainPanel.clear();
 		mainPanel.getElement().setId("cqlLibrarySearchView_mainPanel");
@@ -138,8 +134,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	/**
 	 * Builds the cell table.
 	 *
-	 * @param results the results
-	 * @param filter the filter
+	 * @param result the result
 	 * @param searchText the search text
 	 */
 	public void buildCellTable(ManageCQLLibrarySearchModel result, final String searchText) {
@@ -169,12 +164,12 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		          }
 		          @Override
 		          public void onSuccess(ManageCQLLibrarySearchModel result) {
-		        	  List<CQLLibraryDataSetObject> manageMeasureSearchList = 
+		        	  List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = 
 		        			  new ArrayList<CQLLibraryDataSetObject>();		        	  
-		        	  manageMeasureSearchList.addAll(result.getCqlLibraryDataSetObjects());
-		        	  selectedLibrariesList = manageMeasureSearchList;
+		        	  manageCQLLibrarySearchList.addAll(result.getCqlLibraryDataSetObjects());
+		        	  selectedLibrariesList = manageCQLLibrarySearchList;
 		        	  buildCellTableCssStyle();
-		            updateRowData(start, manageMeasureSearchList);
+		            updateRowData(start, manageCQLLibrarySearchList);
 		          }
 		        };
 		        
@@ -212,12 +207,12 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		}
 		
 		else{
-			Label measureSearchHeader = new Label(getMeasureListLabel());
-			measureSearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-			measureSearchHeader.setStyleName("recentSearchHeader");
-			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No "+ getMeasureListLabel()+".</p>");
-			cellTablePanel.add(measureSearchHeader);
+			Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
+			cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
+			cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
+			cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
+			HTML desc = new HTML("<p> No "+ getCQLlibraryListLabel()+".</p>");
+			cellTablePanel.add(cqlLibrarySearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 			
@@ -226,18 +221,23 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	
 	
 	
+	/**
+	 * Adds the column to table.
+	 *
+	 * @return the cell table
+	 */
 	private CellTable<CQLLibraryDataSetObject> addColumnToTable() {
-		Label measureSearchHeader = new Label(getMeasureListLabel());
-		measureSearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-		measureSearchHeader.setStyleName("recentSearchHeader");
+		Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
+		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
+		cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(measureSearchHeader.getElement());
+		caption.appendChild(cqlLibrarySearchHeader.getElement());
 		selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
 		table.setSelectionModel(selectionModel);
 		
-		//Measure Name Column
+		//CQL Library Name Column
 		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override
@@ -405,10 +405,10 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	
 	
 	/**
-	 * Gets the measure name column tool tip.
+	 * Gets the CQL Library name column tool tip.
 	 *
 	 * @param object the object
-	 * @return the measure name column tool tip
+	 * @return the CQL Library name column tool tip
 	 */
 	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -457,28 +457,54 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	}
 	
 	
-	public String getMeasureListLabel() {
-		return measureListLabel;
+	/**
+	 * Gets the cql Library List Label.
+	 *
+	 * @return the cql Library List Label
+	 */
+	public String getCQLlibraryListLabel() {
+		return cqlLibraryListLabel;
 	}
 	
-	public void setMeasureListLabel(String measureListLabel) {
-		this.measureListLabel = measureListLabel;
+	/**
+	 * Sets the cqlLibrary list label.
+	 *
+	 * @param cqlLibraryListLabel the new cqlLibrary list label
+	 */
+	public void setCQLLibraryListLabel(String cqlLibraryListLabel) {
+		this.cqlLibraryListLabel = cqlLibraryListLabel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);	
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<CQLLibraryDataSetObject> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 	
+	/**
+	 * As widget.
+	 *
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return mainPanel;
 	}
 	
+	/**
+	 * Gets the cell table panel.
+	 *
+	 * @return the cell table panel
+	 */
 	public VerticalPanel getCellTablePanel(){
 		return cellTablePanel;
 	}

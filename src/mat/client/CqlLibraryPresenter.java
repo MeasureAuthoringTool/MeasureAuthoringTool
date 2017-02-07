@@ -152,8 +152,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
 						CQLLibraryDataSetObject libraryDataSetObject = new CQLLibraryDataSetObject();
 						libraryDataSetObject.setCqlName(detailDisplay.getNameField().getText());
-						//libraryDataSetObject.setOwnerId(LoggedInUserUtil.getLoggedInLoginId());
-						saveCqlXml(libraryDataSetObject);
+						saveCqlLibrary(libraryDataSetObject);
 					} else {
 						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 					}
@@ -163,7 +162,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
-	private void saveCqlXml(CQLLibraryDataSetObject libraryDataSetObject) {
+	private void saveCqlLibrary(CQLLibraryDataSetObject libraryDataSetObject) {
 		MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
@@ -191,7 +190,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId);
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		detailDisplay.getErrorMessage().clearAlert();
-		//MatContext.get().getEventBus().fireEvent(evt);
+		MatContext.get().getEventBus().fireEvent(evt);
 	}
 	
 	private void addCQLLibraryViewHandlers() {

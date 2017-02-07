@@ -4,6 +4,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.shared.SpacerWidget;
 
@@ -40,11 +41,13 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		messagePanel.setStyleName("marginLeft15px");
 		mainPanel.add(messagePanel);
 		mainPanel.add(mainFlowPanel);
-
-		mainHPPanel.addStyleName("cqlRightMessage");
-		mainHPPanel.add(rightHandNavPanel);
-		mainHPPanel.add(mainPanel);
 		
+	}
+	@Override
+	public Widget asWidget(){
+		mainPanel.clear();
+		buildView();
+		return mainPanel;
 	}
 
 	@Override

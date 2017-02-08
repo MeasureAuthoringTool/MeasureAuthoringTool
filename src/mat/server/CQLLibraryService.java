@@ -23,7 +23,6 @@ import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
-import mat.server.CQLServiceImpl;
 import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
@@ -37,7 +36,7 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.SaveUpdateCQLResult;
+import mat.shared.CQLModelValidator;
 import mat.shared.UUIDUtilClient;
 
 public class CQLLibraryService implements CQLLibraryServiceInterface {
@@ -234,6 +233,13 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 
 		if ((model.getCqlName() == null) || "".equals(model.getCqlName().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getLibraryNameRequired());
+		} else {
+			CQLModelValidator cqlLibraryModel = new CQLModelValidator();
+			boolean isValid = cqlLibraryModel.validateForAliasNameSpecialChar(model.getCqlName());
+			if(!isValid){
+				message.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			}
+			
 		}
 
 		return message;

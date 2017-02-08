@@ -26,7 +26,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	private VerticalPanel mainPanel = new VerticalPanel();
 
 	/** The create measure widget. */
-	private CreateNewItemWidget createNewItemWidget = new CreateNewItemWidget("cqlLib");
+	private CreateNewItemWidget createNewItemWidget = new CreateNewItemWidget("forCqlLibrary");
 
 	CustomButton addNewFolderButton = (CustomButton) getImage("Create New Item",
 			ImageResources.INSTANCE.createMeasure(), "Create New Item", "createNewItemPlusButton");

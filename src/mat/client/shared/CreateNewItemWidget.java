@@ -53,21 +53,21 @@ public class CreateNewItemWidget extends Composite {
 			 * "CreateCQLWidget");
 			 */
 		}
-
+		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		loadListBoxOptions(forView);
 		horizontalPanel.add(options);
 		horizontalPanel.add(createItemButton);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
-				new Label("CreateWidgetDisplayedSelectOptionsFromComboBox"),
-				"CreateWidgetDisplayedSelectOptionsFromComboBox");
+				new Label("CreateWidgetDisplayedSelectOptionsFromComboBox"+forView),
+				"CreateWidgetDisplayedSelectOptionsFromComboBox"+forView);
 		topPanel.add(invisibleLabel);
 		topPanel.add(horizontalPanel);
 		horizontalPanel.setStylePrimaryName("createNewItemWidget");
 		// All composites must call initWidget() in their constructors.
 		Element element = topPanel.getElement();
 		element.setAttribute("aria-role", "panel");
-		element.setAttribute("aria-labelledby", "CreateWidgetDisplayedSelectOptionsFromComboBox");
+		element.setAttribute("aria-labelledby", "CreateWidgetDisplayedSelectOptionsFromComboBox"+forView);
 		element.setAttribute("aria-live", "assertive");
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");

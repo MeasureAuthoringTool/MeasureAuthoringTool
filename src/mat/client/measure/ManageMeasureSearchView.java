@@ -50,7 +50,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	CellTable<ManageMeasureSearchModel.Result> table;
 	
 	/** The create measure widget. */
-	private CreateNewItemWidget createMeasureWidget = new CreateNewItemWidget("measureLib");
+	private CreateNewItemWidget createMeasureWidget = new CreateNewItemWidget("forMeasureLibrary");
 	
 	/** The error messages for transfer os. */
 	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();

@@ -205,8 +205,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				result.setFailureReason(result.INVALID_USER);
 				return result;
 			}
-			XmlProcessor xmlProcessor = loadCQLXmlTemplateFile();
-			String cqlLookUpString = getCQLLookUpXml(cqlLibraryDataSetObject, xmlProcessor);
+			String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(),library.getVersion()+"."+library.getRevisionNumber());
 			if (cqlLookUpString != null && !cqlLookUpString.isEmpty()) {
 				byte[] cqlByteArray = cqlLookUpString.getBytes();
 				library.setCQLByteArray(cqlByteArray);
@@ -239,11 +238,19 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 
 		return message;
 	}
-
+	@Override
+	public String createCQLLookUpTag(String libraryName, String version){
+		XmlProcessor xmlProcessor = loadCQLXmlTemplateFile();
+		String cqlLookUpString = getCQLLookUpXml(libraryName, version,xmlProcessor);
+		return cqlLookUpString;
+	}
+	
+	
 	/**
 	 * @param cqlLibraryDataSetObject
 	 */
-	private String getCQLLookUpXml(CQLLibraryDataSetObject cqlLibraryDataSetObject, XmlProcessor xmlProcessor) {
+	@Override
+	public String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor) {
 		String cqlLookUp = null;
 		try {
 			Node cqlTemplateNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/cqlTemplate");
@@ -259,14 +266,16 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 						if (changeAttribute.equalsIgnoreCase("id")) {
 							NodeList nodesForId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPath_ID);
 							for (int i = 0; i < nodesForId.getLength(); i++) {
-								nodesForId.item(0).getAttributes().getNamedItem("id")
+								Node node = nodesForId.item(i);
+								node.getAttributes().getNamedItem("id")
 										.setNodeValue(UUIDUtilClient.uuid());
 							}
 						} else if (changeAttribute.equalsIgnoreCase("uuid")) {
 							NodeList nodesForUUId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
 									xPath_UUID);
 							for (int i = 0; i < nodesForUUId.getLength(); i++) {
-								nodesForUUId.item(0).getAttributes().getNamedItem("uuid")
+								Node node = nodesForUUId.item(i);
+								node.getAttributes().getNamedItem("uuid")
 										.setNodeValue(UUIDUtilClient.uuid());
 							}
 						}
@@ -281,13 +290,13 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 							Node libraryNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
 									"//" + nodeTextToChange);
 							if (libraryNode != null) {
-								libraryNode.setTextContent(cqlLibraryDataSetObject.getCqlName());
+								libraryNode.setTextContent(libraryName);
 							}
 						} else if (nodeTextToChange.equalsIgnoreCase("version")) {
 							Node versionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
 									"//" + nodeTextToChange);
 							if (versionNode != null) {
-								versionNode.setTextContent("0.0.000");
+								versionNode.setTextContent(versionText);
 							}
 						} else if (nodeTextToChange.equalsIgnoreCase("usingModelVersion")) {
 							Node usingModelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
@@ -300,8 +309,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				}
 
 			}
-			System.out.println(xmlProcessor.transform(cqlLookUpNode, true));
-			cqlLookUp = xmlProcessor.transform(cqlLookUpNode, true);
+			System.out.println(xmlProcessor.transform(cqlLookUpNode));
+			cqlLookUp = xmlProcessor.transform(cqlLookUpNode);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -310,7 +319,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return cqlLookUp;
 	}
 
-	private XmlProcessor loadCQLXmlTemplateFile() {
+	@Override
+	public  XmlProcessor loadCQLXmlTemplateFile() {
 		String fileName = "CQLXmlTemplate.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
 		File templateFile = null;

@@ -1,14 +1,11 @@
 package mat.server;
 
-import java.util.List;
-
 import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.measure.service.CQLLibraryService;
-import mat.model.clause.CQLLibrary;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
+import mat.server.util.XmlProcessor;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
 	private static final long serialVersionUID = -2412573290030426288L;
@@ -37,5 +34,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject) {
 		return this.getCQLLibraryService().save(cqlLibraryDataSetObject);
 	}
-
+	
+	public String createCQLLookUpTag(String libraryName,String version) {
+		return this.getCQLLibraryService().createCQLLookUpTag(libraryName, version);
+	}
+	
+	public XmlProcessor loadCQLXmlTemplateFile() {
+		return this.getCQLLibraryService().loadCQLXmlTemplateFile();
+	}
 }

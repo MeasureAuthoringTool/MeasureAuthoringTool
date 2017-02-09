@@ -39,7 +39,7 @@ public class CreateNewItemWidget extends Composite {
 		topPanel.getElement().setId("CreateItemWidget_verticalPanel_" + forView);
 		topPanel.getElement().setId("CreateItemeWidget_horizontalPanel_" + forView);
 		// Set Id's based on view.
-		if (forView.equalsIgnoreCase("measureLib")) {
+		if (forView.equalsIgnoreCase("forMeasureLibrary")) {
 			options.setName("Create Measure Options");
 			/*
 			 * DOM.setElementAttribute(options.getElement(), "id",
@@ -96,12 +96,12 @@ public class CreateNewItemWidget extends Composite {
 	/** Load list box options. */
 	private void loadListBoxOptions(String forView) {
 		options.clear();
-		if (forView.equalsIgnoreCase("measureLib")) {
+		if (forView.equalsIgnoreCase("forMeasureLibrary")) {
 			options.addItem(ConstantMessages.DEFAULT_SELECT);
 			options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
 			options.addItem(ConstantMessages.CREATE_NEW_VERSION);
 			options.addItem(ConstantMessages.CREATE_NEW_DRAFT);
-		} else if (forView.equalsIgnoreCase("cqlLib")) {
+		} else if (forView.equalsIgnoreCase("forCqlLibrary")) {
 			options.addItem(ConstantMessages.DEFAULT_SELECT);
 			options.addItem(ConstantMessages.CREATE_NEW_CQL);
 			options.addItem(ConstantMessages.CREATE_NEW_CQL_VERSION);

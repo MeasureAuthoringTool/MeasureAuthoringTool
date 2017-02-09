@@ -60,7 +60,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	public CqlLibraryView() {
 		
-		mainPanel.setWidth("99.5%");
+		mainPanel.setWidth("100%");
 
 	}
 
@@ -107,6 +107,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void buildDefaultView() {
 		
 		mainPanel.clear();
+		widgetVP.clear();
 		errorMessageAlert.clearAlert();
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel_CQL");

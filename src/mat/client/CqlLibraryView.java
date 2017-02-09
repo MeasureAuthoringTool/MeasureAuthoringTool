@@ -2,6 +2,7 @@ package mat.client;
 
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -23,7 +24,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	/** The main panel. */
-	private VerticalPanel mainPanel = new VerticalPanel();
+	private FlowPanel mainPanel = new FlowPanel();
 
 	/** The create measure widget. */
 	private CreateNewItemWidget createNewItemWidget = new CreateNewItemWidget("forCqlLibrary");
@@ -44,16 +45,22 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
+	VerticalPanel widgetVP = new VerticalPanel();
 
 	@Override
-	public VerticalPanel getMainPanel() {
+	public VerticalPanel getWidgetVP() {
+		return widgetVP;
+	}
+
+	@Override
+	public FlowPanel getMainPanel() {
 		// TODO Auto-generated method stub
 		return mainPanel;
 	}
 
 	public CqlLibraryView() {
 		
-		mainPanel.setWidth("98.5%");
+		mainPanel.setWidth("99.5%");
 
 	}
 
@@ -70,11 +77,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	 */
 	public VerticalPanel buildMostRecentWidget() {
 		mostRecentVPanel.clear();
-		mostRecentVPanel.getElement().setId("mostRecentVPanel_VerticalPanel");
+		mostRecentVPanel.getElement().setId("mostRecentVPanel_VerticalPanel_CQL");
 		mostRecentVPanel.setStyleName("recentSearchPanel");
 
 		Label recentActivityHeader = new Label("Recent Activity");
-		recentActivityHeader.getElement().setId("mostRecentVPanelHeader_Label");
+		recentActivityHeader.getElement().setId("mostRecentVPanelHeader_Label_CQL");
 		recentActivityHeader.setStyleName("recentSearchHeader");
 		recentActivityHeader.getElement().setAttribute("tabIndex", "0");
 		HTML desc = new HTML("<p> No Recent Activity</p>");
@@ -102,27 +109,28 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainPanel.clear();
 		errorMessageAlert.clearAlert();
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
-		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
+		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel_CQL");
 		mainPanel.getElement().setId("CQLLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
-		VerticalPanel widgetVP = new VerticalPanel();
+		
 		widgetVP.setWidth("100px");
-		widgetVP.getElement().setId("panel_VP");
-		widgetVP.add(createNewItemWidget);
+		widgetVP.getElement().setId("panel_VP_CQL");
+		//widgetVP.add(createNewItemWidget);
 		// measureFilterVP.add(measureSearchFilterWidget);
 		// buildMostRecentWidget();
 		// mostRecentVerticalPanel.setWidth("80%");
 		mostRecentVerticalPanel.clear();
 		mostRecentVerticalPanel.add(buildMostRecentWidget());
 		
-		mainHorizontalPanel.add(new SpacerWidget());
+	//	mainHorizontalPanel.add(new SpacerWidget());
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(widgetVP);
+		/*mainHorizontalPanel.add(new SpacerWidget());
 		mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(new SpacerWidget());
-		mainPanel.add(errorMessageAlert);
+		mainHorizontalPanel.add(new SpacerWidget());*/
 		mainPanel.add(mainHorizontalPanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 		
@@ -149,7 +157,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		this.createNewItemWidget = CreateNewItemWidget;
 	}
 
-	public void setMainPanel(VerticalPanel mainPanel) {
+	public void setMainPanel(FlowPanel mainPanel) {
 		this.mainPanel = mainPanel;
 	}
 

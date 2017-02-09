@@ -36,8 +36,7 @@ public class CreateNewItemWidget extends Composite {
 		options.setHeight("32px");
 		createItemButton.getElement().setId("createItem_Button_" + forView);
 		options.setId("CreateItemWidget_" + forView);
-		topPanel.getElement().setId("CreateItemWidget_verticalPanel_" + forView);
-		topPanel.getElement().setId("CreateItemeWidget_horizontalPanel_" + forView);
+		topPanel.getElement().setId("CreateItemWidget_verticalPanel" + forView);
 		// Set Id's based on view.
 		if (forView.equalsIgnoreCase("forMeasureLibrary")) {
 			options.setName("Create Measure Options");
@@ -55,6 +54,8 @@ public class CreateNewItemWidget extends Composite {
 		}
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.getElement().setId("CreateItemeWidget_horizontalPanel" + forView);
+		
 		loadListBoxOptions(forView);
 		horizontalPanel.add(options);
 		horizontalPanel.add(createItemButton);

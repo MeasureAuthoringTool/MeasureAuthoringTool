@@ -1,5 +1,6 @@
 package mat.client;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -71,7 +72,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		 * 
 		 * @return HorizontalPanel
 		 */
-		VerticalPanel getMainPanel();
+		FlowPanel getMainPanel();
 
 		/**
 		 * Generates View for CQLWorkSpace tab.
@@ -99,6 +100,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		void clearSelections();
 
 		HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool();
+
+		VerticalPanel getWidgetVP();
 
 	}
 
@@ -240,7 +243,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
 				isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
-				cqlLibraryView.getCreateNewItemWidget().setVisible(isCreateNewItemWidgetVisible);
+			
+				//cqlLibraryView.getCreateNewItemWidget().setVisible(isCreateNewItemWidgetVisible);
+				if(isCreateNewItemWidgetVisible){
+					cqlLibraryView.getWidgetVP().add(cqlLibraryView.getCreateNewItemWidget());
+				} else {
+					cqlLibraryView.getWidgetVP().clear();
+				}
 
 			}
 		});
@@ -296,9 +305,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		panel.setHeading(heading, "CQLLibrary");
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
 		FlowPanel fp = new FlowPanel();
-		fp.getElement().setId("fp_FlowPanel");
+		fp.getElement().setId("fp_FlowPanel_CQL");
 		isCreateNewItemWidgetVisible = false;
-		cqlLibraryView.getCreateNewItemWidget().setVisible(false);
+		//cqlLibraryView.getCreateNewItemWidget().setVisible(false);
 		search("", "StandAlone", 1, Integer.MAX_VALUE);
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
@@ -356,6 +365,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	@Override
 	public void beforeDisplay() {
+		
 		cqlLibraryView.buildDefaultView();
 		cqlLibraryView.clearSelections();
 		displaySearch();

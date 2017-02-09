@@ -9,6 +9,6 @@ import mat.model.cql.CQLLibraryModel;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	
-		public List<CQLLibrary> search(String searchText, String searchFrom, int startIndex, int pageSize);
+		public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize);
 
 }

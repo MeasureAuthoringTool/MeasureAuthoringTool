@@ -169,9 +169,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	private ListBox parameterNameListBox;
 
-	/** The view alias list. */
-	// private List<CQLLibraryModel> viewAliasList = new
-	// ArrayList<CQLLibraryModel>();
 
 	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();

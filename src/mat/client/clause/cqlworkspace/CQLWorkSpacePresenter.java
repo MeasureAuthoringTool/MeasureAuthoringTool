@@ -52,7 +52,7 @@ import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.cql.ManageCQLLibrarySearchModel;
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
@@ -1402,7 +1402,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				
 				searchDisplay.buildIncludesView();
-				ManageCQLLibrarySearchModel cqlLibrarySearchModel = new ManageCQLLibrarySearchModel();
+				SaveCQLLibraryResult cqlLibrarySearchModel = new SaveCQLLibraryResult();
 				cqlLibrarySearchModel.setCqlLibraryDataSetObjects(searchDisplay.getIncludeLibraryList());
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -2229,10 +2229,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		/*searchDisplay.getIncludeView().buildIncludeLibraryCellTable(availableLibraries, 
 				MatContext.get().getMeasureLockService().checkForEditPermission());*/
-		ManageCQLLibrarySearchModel cqlLibrarySearchModel = new ManageCQLLibrarySearchModel();
-		cqlLibrarySearchModel.setCqlLibraryDataSetObjects(searchDisplay.getIncludeLibraryList());
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		result.setCqlLibraryDataSetObjects(searchDisplay.getIncludeLibraryList());
 		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
-				cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
+				result,MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	/**
@@ -2931,7 +2931,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		int startIndex = 1;
 		int pageSize = Integer.MAX_VALUE;
 		MatContext.get().getCQLLibraryService().search(searchText, "measureLib", 
-				startIndex, pageSize, new AsyncCallback<ManageCQLLibrarySearchModel>() {
+				startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -2940,7 +2940,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(ManageCQLLibrarySearchModel result) {
+			public void onSuccess(SaveCQLLibraryResult result) {
 				
 				if(result != null && result.getCqlLibraryDataSetObjects().size() > 0){
 					searchDisplay.setIncludeLibraryList(result.getCqlLibraryDataSetObjects());

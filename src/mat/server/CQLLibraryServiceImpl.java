@@ -1,6 +1,5 @@
 package mat.server;
 
-import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -11,7 +10,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override
-	public ManageCQLLibrarySearchModel search(String searchText,String searchFrom, int startIndex, int pageSize) {
+	public SaveCQLLibraryResult search(String searchText,String searchFrom, int startIndex, int pageSize) {
 		return this.getCQLLibraryService().search(searchText,searchFrom, startIndex, pageSize);
 	}
 	

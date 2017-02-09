@@ -68,8 +68,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	
 
 	@Override
-	public List<CQLLibrary> search(String searchText, String searchFrom, 
-			int startIndex, int pageSize ) {
+	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize ) {
 		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
@@ -87,7 +86,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 			.addOrder(Order.desc("draft"))
 			.addOrder(Order.desc("version"));
 		}
-		cCriteria.setFirstResult(startIndex);
+		cCriteria.setFirstResult(0);
 		
 		List<CQLLibrary> libraryResultList = cCriteria.list();
 		List<CQLLibrary> orderedCQlLibList = null;

@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.cql.CQLLibrarySearchView;
-import mat.client.cql.ManageCQLLibrarySearchModel;
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -136,8 +136,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	}
 	
 	@Override
-	public void buildCellTable(ManageCQLLibrarySearchModel searchModel, String searchText) {
-		cqlLibrarySearchView.buildCellTable(searchModel, searchText);
+	public void buildCellTable(SaveCQLLibraryResult result, String searchText) {
+		cqlLibrarySearchView.buildCellTable(result, searchText);
 	}
 
 	@Override

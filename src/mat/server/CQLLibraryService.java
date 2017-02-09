@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
@@ -55,11 +54,11 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
-	public ManageCQLLibrarySearchModel search(String searchText, String searchFrom, int startIndex, int pageSize) {
+	public SaveCQLLibraryResult search(String searchText, String searchFrom, int startIndex, int pageSize) {
 	//	List<CQLLibraryModel> cqlLibraries = new ArrayList<CQLLibraryModel>();
-		ManageCQLLibrarySearchModel searchModel = new ManageCQLLibrarySearchModel();
+		SaveCQLLibraryResult searchModel = new SaveCQLLibraryResult();
 		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,searchFrom, 0, Integer.MAX_VALUE);
+		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,searchFrom, Integer.MAX_VALUE);
 		
 		searchModel.setResultsTotal(list.size());
 		

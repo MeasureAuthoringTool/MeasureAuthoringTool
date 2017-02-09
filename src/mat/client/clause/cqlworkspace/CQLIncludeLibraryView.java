@@ -44,9 +44,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.Mat;
-import mat.client.cql.ManageCQLLibrarySearchModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -385,7 +383,7 @@ public class CQLIncludeLibraryView {
 	 * @param result the cql library list
 	 * @param isEditable the is editable
 	 */
-	public void buildIncludeLibraryCellTable(ManageCQLLibrarySearchModel result, boolean isEditable) {
+	public void buildIncludeLibraryCellTable(SaveCQLLibraryResult result, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -567,10 +565,10 @@ public class CQLIncludeLibraryView {
 			}, "Select");
 			
 			
-			table.setColumnWidth(0, 35.0, Unit.PCT);
-			table.setColumnWidth(1, 35.0, Unit.PCT);
-			table.setColumnWidth(2, 14.0, Unit.PCT);
-			table.setColumnWidth(3, 14.0, Unit.PCT);
+			table.setColumnWidth(0, 70.0, Unit.PCT);
+			table.setColumnWidth(1, 10.0, Unit.PCT);
+			table.setColumnWidth(2, 15.0, Unit.PCT);
+			table.setColumnWidth(3,  5.0, Unit.PCT);
 			
 		}
 		table.setWidth("100%");

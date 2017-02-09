@@ -35,6 +35,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
@@ -137,7 +138,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @param result the result
 	 * @param searchText the search text
 	 */
-	public void buildCellTable(ManageCQLLibrarySearchModel result, final String searchText) {
+	public void buildCellTable(SaveCQLLibraryResult result, final String searchText) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if((result!=null) && (result.getCqlLibraryDataSetObjects().size() > 0)){
@@ -157,13 +158,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		      protected void onRangeChanged(HasData<CQLLibraryDataSetObject> display) {
 		        final int start = display.getVisibleRange().getStart();
 		        index = start;
-		        AsyncCallback<ManageCQLLibrarySearchModel> callback = new AsyncCallback<ManageCQLLibrarySearchModel>() {
+		        AsyncCallback<SaveCQLLibraryResult> callback = new AsyncCallback<SaveCQLLibraryResult>() {
 		          @Override
 		          public void onFailure(Throwable caught) {
 		        	  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		          }
 		          @Override
-		          public void onSuccess(ManageCQLLibrarySearchModel result) {
+		          public void onSuccess(SaveCQLLibraryResult result) {
 		        	  List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = 
 		        			  new ArrayList<CQLLibraryDataSetObject>();		        	  
 		        	  manageCQLLibrarySearchList.addAll(result.getCqlLibraryDataSetObjects());
@@ -267,7 +268,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 						+ "</span>"));
 		
 		//Finalized Date
-		Column<CQLLibraryDataSetObject, SafeHtml> finalizedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
+		Column<CQLLibraryDataSetObject, SafeHtml> versionedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
@@ -277,8 +278,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				return null;
 			}
 		};
-		table.addColumn(finalizedDate, SafeHtmlUtils
-				.fromSafeConstant("<span title='Finalized Date'>" + "Finalized Date"
+		table.addColumn(versionedDate, SafeHtmlUtils
+				.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date"
 						+ "</span>"));
 		
 		//History

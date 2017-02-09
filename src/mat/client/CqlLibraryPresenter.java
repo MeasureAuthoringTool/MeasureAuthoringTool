@@ -16,7 +16,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.cql.CQLLibrarySearchView;
-import mat.client.cql.ManageCQLLibrarySearchModel;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -87,7 +86,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		Widget asWidget();
 
-		void buildCellTable(ManageCQLLibrarySearchModel searchModel, String searchText);
+		void buildCellTable(SaveCQLLibraryResult searchModel, String searchText);
 
 		CQLLibrarySearchView getCQLLibrarySearchView();
 
@@ -314,10 +313,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 				//pageSize = Integer.MAX_VALUE;
 				pageSize = 25;
 				showSearchingBusy(true);
-				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, startIndex, pageSize, new AsyncCallback<ManageCQLLibrarySearchModel>() {
+				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 					
 					@Override
-					public void onSuccess(ManageCQLLibrarySearchModel result) {
+					public void onSuccess(SaveCQLLibraryResult result) {
 						//CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
 						cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
 						cqlLibraryView.buildCellTable(result, lastSearchText);

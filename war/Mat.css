@@ -1458,10 +1458,12 @@ padding: 2px;
 .contentWithHeadingHeader {
      position: relative;
      width: 840px;
+    
 }
 .contentWithHeadingHeader h1 {
 	font-size:1.2em;
     font-weight:bold;
+    word-wrap: break-word;
 }
 .contentWithHeadingPanel {
     -moz-box-sizing:border-box;

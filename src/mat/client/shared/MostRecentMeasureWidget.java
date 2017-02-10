@@ -77,11 +77,10 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" title=\" " + object.getName()
-							+ "\">");
-					sb.appendEscaped(object.getName());
-					sb.appendHtmlConstant("</a>");
+					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
+							+ "style=\"text-decoration:none\" tabindex=\"-1\">");
+					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+					sb.appendHtmlConstant("</a></div>");
 					return sb.toSafeHtml();
 				}
 			};

@@ -571,12 +571,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 						title = title.append("Name : ").append(value);
 					
 					title.append("");
-					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" tabindex=\"-1\">");
-					sb.appendHtmlConstant("<span id='div2' title=\" " + title.toString() + "\" tabindex=\"0\">" + value.toString() + "</span>");
-					sb.appendHtmlConstant("</a></div>");
-					return sb.toSafeHtml();
+					
+					return CellTableUtility.getNameColumnToolTip(value.toString(), title.toString());
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils

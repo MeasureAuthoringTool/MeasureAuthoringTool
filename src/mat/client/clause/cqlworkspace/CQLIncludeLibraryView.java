@@ -513,12 +513,7 @@ public class CQLIncludeLibraryView {
 					new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLLibraryDataSetObject object) {
-					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" tabindex=\"-1\">");
-					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">" + object.getCqlName() + "</span>");
-					sb.appendHtmlConstant("</a></div>");
-					return sb.toSafeHtml();
+					return CellTableUtility.getNameColumnToolTip(object.getCqlName(), object.getCqlName());
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils

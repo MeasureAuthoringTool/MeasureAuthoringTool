@@ -30,6 +30,22 @@ public class CellTableUtility {
 	
 	
 	/**
+	 * Gets the name column tool tip.
+	 *
+	 * @param columnText the column text
+	 * @param title the title
+	 * @return the name column tool tip
+	 */
+	public static SafeHtml getNameColumnToolTip(String columnText, String title) {
+		String htmlConstant = "<div id='container' tabindex=\"-1\">" +
+	                           "<span id='div2' title=\" " + escapeHtml(title) + "\" tabindex=\"0\">" + 
+	                           escapeHtml(columnText) + "</span>" + "</div>";
+		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+	}
+	
+	
+	
+	/**
 	 * Escape html  method to escape special characters like 
 	 * "&", "<", ">", "/", "\", "'" inside Html tag.
 	 *

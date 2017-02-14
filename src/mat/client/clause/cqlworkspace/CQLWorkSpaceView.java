@@ -20,14 +20,12 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,7 +41,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
@@ -53,8 +50,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.DeleteConfirmationMessageAlert;
@@ -147,8 +142,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 
-	/** The cql ace editor. */
-	private AceEditor cqlAceEditor = new AceEditor();
+	/** The cql ace editor. *//*
+	private AceEditor cqlAceEditor = new AceEditor();*/
 
 	/**
 	 * SuggestBox searchSuggestTextBox.
@@ -322,8 +317,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private CQLGeneralInformationView generalInformationView;
 	private CQLParametersView cqlParametersView;
 	private CQlDefinitionsView cqlDefinitionsView;
-
 	private CQLFunctionsView cqlFunctionsView;
+	private CQLViewCQLView cqlViewCQLView;
 	// private AnchorListItem includeLibrary;
 
 	/**
@@ -336,7 +331,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlFunctionsView = new CQLFunctionsView();
 		qdmView = new CQLQDMAppliedView();
 		inclView = new CQLIncludeLibraryView();
-		cqlAceEditor.startEditor();
+		cqlViewCQLView = new CQLViewCQLView();
 		resetAll();
 	}
 
@@ -386,38 +381,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildCQLFileView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-
-		VerticalPanel cqlViewVP = new VerticalPanel();
-		SimplePanel cqlViewFP = new SimplePanel();
-
-		cqlAceEditor.setMode(AceEditorMode.CQL);
-		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-
-		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		cqlAceEditor.setSize("675px", "500px");
-		cqlAceEditor.setAutocompleteEnabled(true);
-		cqlAceEditor.setReadOnly(true);
-		cqlAceEditor.setUseWrapMode(true);
-		cqlAceEditor.clearAnnotations();
-		cqlAceEditor.redisplay();
-		Label viewCQlFileLabel = new Label(LabelType.INFO);
-		viewCQlFileLabel.setText("View CQL file here");
-		viewCQlFileLabel.setTitle("View CQL file here");
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(new SpacerWidget());
-		// cqlViewVP.add(warningConfirmationMessageAlert);
-		// cqlViewVP.add(new SpacerWidget());
-		// cqlViewVP.add(successMessageAlert);
-		// cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(viewCQlFileLabel);
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(cqlAceEditor);
-		cqlViewFP.add(cqlViewVP);
-		cqlViewFP.setStyleName("cqlRightContainer");
-		cqlViewFP.setWidth("700px");
-		cqlViewFP.setStyleName("marginLeft15px");
-		mainFlowPanel.add(cqlViewFP);
+		mainFlowPanel.add(cqlViewCQLView.buildView());
 
 	}
 
@@ -1624,8 +1588,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.clear();
 		getIncludeView().setAliasNameTxtArea("");
 		System.out.println(" in resetAll doing setText");
-		cqlAceEditor.setText("");
-
+		
 		viewIncludeLibrarys.clear();
 		viewParameterList.clear();
 		viewDefinitions.clear();
@@ -1647,6 +1610,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlParametersView.resetAll();
 		cqlDefinitionsView.resetAll();
 		cqlFunctionsView.resetAll();
+		cqlViewCQLView.resetAll();
 		setIsPageDirty(false);
 		resetMessageDisplay();
 	}
@@ -2320,7 +2284,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public AceEditor getCqlAceEditor() {
-		return cqlAceEditor;
+		return cqlViewCQLView.getCqlAceEditor();
 	}
 
 	/**

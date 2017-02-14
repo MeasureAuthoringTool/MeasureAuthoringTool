@@ -3005,7 +3005,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
+		((org.gwtbootstrap3.client.ui.Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 		

@@ -85,7 +85,7 @@ public class AddEditComponentMeasuresView implements
 
 	/** The measure search filter widget. */
 	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget(
-			"measureLibrarySearchWidget", "measureLibraryFilterDisclosurePanel");
+			"searchFilter", "measureLibraryFilterDisclosurePanel","forMeasure");
 
 	/** The search widget. */
 	private SearchWidget searchWidget = new SearchWidget("Search", 

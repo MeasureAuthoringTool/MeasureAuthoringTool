@@ -82,8 +82,8 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The measure search filter widget. */
-	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget("measureLibrarySearchWidget",
-			"measureLibraryFilterDisclosurePanel");
+	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget("searchFilter",
+			"measureLibraryFilterDisclosurePanel","forMeasure");
 	
 	/** The most recent measure widget. */
 	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();

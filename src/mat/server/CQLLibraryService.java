@@ -116,6 +116,11 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		dataSetObject.setCqlName(cqlLibrary.getName());
 		dataSetObject.setDraft(cqlLibrary.isDraft());
 		dataSetObject.setReleaseVersion(cqlLibrary.getReleaseVersion());
+		if(cqlLibrary.getRevisionNumber() == null){
+			dataSetObject.setRevisionNumber("000");
+		} else {
+			dataSetObject.setRevisionNumber(cqlLibrary.getRevisionNumber());
+		}
 		dataSetObject.setFinalizedDate(cqlLibrary.getFinalizedDate());
 		dataSetObject.setMeasureId(cqlLibrary.getMeasureId());
 		boolean isLocked =isLocked(cqlLibrary.getLockedOutDate());

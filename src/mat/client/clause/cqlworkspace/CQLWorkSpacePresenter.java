@@ -1711,7 +1711,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
 				incLibrary.setAliasName(aliasName);
 				incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
-				incLibrary.setVersion(cqlLibraryDataSetObject.getVersion().replace("v", ""));
+				String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", "")+"."+cqlLibraryDataSetObject.getRevisionNumber();
+				incLibrary.setVersion(versionValue);
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 				
 				if (searchDisplay.getCurrentSelectedIncLibraryObjId() == null) {

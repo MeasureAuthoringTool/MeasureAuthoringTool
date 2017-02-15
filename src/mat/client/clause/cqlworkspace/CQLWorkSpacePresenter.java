@@ -2930,7 +2930,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().showSearchingBusy(true);
 		int startIndex = 1;
 		int pageSize = Integer.MAX_VALUE;
-		MatContext.get().getCQLLibraryService().search(searchText, "measureLib", 
+		MatContext.get().getCQLLibraryService().search(searchText, "measureLib", 1,
 				startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
@@ -3013,7 +3013,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @return the CQL data
 	 */
 	private void getCQLData() {
-		MatContext.get().getMeasureService().getCQLData(MatContext.get().getCurrentMeasureId(),
+		MatContext.get().getMeasureService().getMeasureCQLData(MatContext.get().getCurrentMeasureId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
@@ -3421,7 +3421,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void buildCQLView() {
 		searchDisplay.getCqlAceEditor().setText("");
-		MatContext.get().getMeasureService().getCQLFileData(MatContext.get().getCurrentMeasureId(),
+		MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {

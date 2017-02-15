@@ -371,11 +371,11 @@ public class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLStringFromMeasureXML(String measureXML,String measureId){
+	public static CQLModel getCQLStringFromXML(String xmlString){
 		
 		CQLModel cqlModel = new CQLModel();
-		System.out.println("XML:"+measureXML);
-		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
+		System.out.println("XML:"+xmlString);
+		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
 		
 		if(StringUtils.isNotBlank(cqlLookUpXMLString)){

@@ -138,7 +138,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @param result the result
 	 * @param searchText the search text
 	 */
-	public void buildCellTable(SaveCQLLibraryResult result, final String searchText) {
+	public void buildCellTable(SaveCQLLibraryResult result, final String searchText, final int filter) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if((result!=null) && (result.getCqlLibraryDataSetObjects().size() > 0)){
@@ -174,7 +174,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		          }
 		        };
 		        
-		        MatContext.get().getCQLLibraryService().search(searchText, "StandAlone", 
+		        MatContext.get().getCQLLibraryService().search(searchText, "StandAlone",filter, 
 		        		index+1, index + PAGE_SIZE,callback);
 		      }
 		    };

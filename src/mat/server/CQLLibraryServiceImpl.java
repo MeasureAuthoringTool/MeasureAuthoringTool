@@ -5,13 +5,14 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
+import mat.shared.SaveUpdateCQLResult;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override
-	public SaveCQLLibraryResult search(String searchText,String searchFrom, int startIndex, int pageSize) {
-		return this.getCQLLibraryService().search(searchText,searchFrom, startIndex, pageSize);
+	public SaveCQLLibraryResult search(String searchText,String searchFrom, int filter, int startIndex, int pageSize) {
+		return this.getCQLLibraryService().search(searchText,searchFrom, filter,startIndex, pageSize);
 	}
 	
 	@Override
@@ -40,5 +41,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	
 	public XmlProcessor loadCQLXmlTemplateFile() {
 		return this.getCQLLibraryService().loadCQLXmlTemplateFile();
+	}
+	public SaveUpdateCQLResult getCQLData(String id) {
+		return this.getCQLLibraryService().getCQLData(id);
 	}
 }

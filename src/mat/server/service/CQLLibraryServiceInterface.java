@@ -7,10 +7,11 @@ import mat.model.User;
 import mat.model.clause.MeasureSet;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.util.XmlProcessor;
+import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceInterface {
 	
-	SaveCQLLibraryResult search(String searchText, String searchFrom, int startIndex, int pageSize);
+	SaveCQLLibraryResult search(String searchText, String searchFrom, int filter,int startIndex, int pageSize);
 	
 	void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
 			Timestamp finalizedDate, byte[] cqlByteArray);
@@ -23,6 +24,8 @@ public interface CQLLibraryServiceInterface {
 	String createCQLLookUpTag(String libraryName,String version);
 
 	XmlProcessor loadCQLXmlTemplateFile();
+	
+	public SaveUpdateCQLResult getCQLData(String id);
 	
 	
 }

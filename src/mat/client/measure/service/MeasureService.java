@@ -560,7 +560,9 @@ public interface MeasureService extends RemoteService {
 	 * @param measureId the measure id
 	 * @return the CQL data
 	 */
-	SaveUpdateCQLResult getCQLData(String measureId);
+//	SaveUpdateCQLResult getCQLData(String measureId, String fromTable);
+	
+	SaveUpdateCQLResult getMeasureCQLData(String measureId);
 	
 	/**
 	 * Gets the CQL file data.
@@ -568,7 +570,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureId the measure id
 	 * @return the CQL file data
 	 */
-	SaveUpdateCQLResult getCQLFileData(String measureId);
+//	SaveUpdateCQLResult getCQLFileData(String measureId);
 	
 	/**
 	 * Save and modify definitions.
@@ -682,4 +684,6 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+
+	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 }

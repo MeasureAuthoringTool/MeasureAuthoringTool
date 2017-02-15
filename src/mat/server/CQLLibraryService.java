@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
@@ -36,29 +37,31 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLModelValidator;
+import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 
 public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired
-	private CQLServiceImpl cqlService;
-	@Autowired
 	private CQLLibrarySetDAO cqlLibrarySetDAO;
 	@Autowired
 	private UserDAO userDAO;
 
+	@Autowired
+	private CQLService cqlService;
 	@Autowired
 	private ApplicationContext context;
 
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
-	public SaveCQLLibraryResult search(String searchText, String searchFrom, int startIndex, int pageSize) {
+	public SaveCQLLibraryResult search(String searchText, String searchFrom, int filter,int startIndex, int pageSize) {
 	//	List<CQLLibraryModel> cqlLibraries = new ArrayList<CQLLibraryModel>();
 		SaveCQLLibraryResult searchModel = new SaveCQLLibraryResult();
 		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,searchFrom, Integer.MAX_VALUE);
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,searchFrom, Integer.MAX_VALUE,user,filter);
 		
 		searchModel.setResultsTotal(list.size());
 		
@@ -346,7 +349,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		try {
 			bdata = cqlLibrary.getCqlXML().getBytes(1, (int) cqlLibrary.getCqlXML().length());
 			String data = new String(bdata);
-			cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(data,"");
+			cqlModel = CQLUtilityClass.getCQLStringFromXML(data);
 			cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 			//SaveUpdateCQLResult result = cqlService.parseCQLStringForError(cqlFileString);
 			//dataSetObject.setCqlModel(cqlModel);
@@ -356,6 +359,15 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			e.printStackTrace();
 		}
 		return cqlFileString;
+	}
+
+	@Override
+	public SaveUpdateCQLResult getCQLData(String id) {
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
+		//cqlResult = cqlService.getCQLData(id, fromTable);
+		return cqlResult;
+		
 	}
 
 }

@@ -66,17 +66,8 @@ public interface MeasureServiceAsync {
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
-	/**
-	 * Creates the and save element look up.
-	 * @param uuid 
-	 *
-	 * @param list            the list
-	 * @param measureID            the measure id
-	 * @param expProfileToAllQDM the exp profile to all qdm
-	 * @param callback            the callback
-	 */
-	void createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list,
-			String measureID, String expProfileToAllQDM, AsyncCallback<SaveUpdateCQLResult> callback);
+	void createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list, String measureID,
+			String expProfileToAllQDM, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
 	 * Creates the and save cql look up.
@@ -630,7 +621,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 * @return the CQL data
 	 */
-	void getCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+	//void getCQLData(String measureId, String fromTable,AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
 	 * Save and modify definitions.
@@ -667,14 +658,6 @@ public interface MeasureServiceAsync {
 	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
-	/**
-	 * Gets the CQL file data.
-	 *
-	 * @param measureId the measure id
-	 * @param asyncCallback the async callback
-	 * @return the CQL file data
-	 */
-	void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	/**
 	 * Save and modify functions.
@@ -753,4 +736,12 @@ public interface MeasureServiceAsync {
 
 	void saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void getMeasureCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	//void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void getMeasureCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	
 }

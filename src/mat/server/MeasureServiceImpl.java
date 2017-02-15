@@ -534,18 +534,18 @@ MeasureService {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
 	 */
-	@Override
-	public SaveUpdateCQLResult getCQLData(String measureId) {
-		return this.getMeasureLibraryService().getCQLData(measureId);
-	}
+	/*@Override
+	public SaveUpdateCQLResult getCQLData(String measureId,String fromTable) {
+		return this.getMeasureLibraryService().getCQLData(measureId,fromTable);
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
 	 */
-	@Override
+	/*@Override
 	public SaveUpdateCQLResult getCQLFileData(String measureId) {
 		return this.getMeasureLibraryService().getCQLFileData(measureId);
-	}
+	}*/
 	
 	
 	/* (non-Javadoc)
@@ -607,7 +607,7 @@ MeasureService {
 	public SaveUpdateCQLResult parseCQLForErrors(String measureId) {
 		
 		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId),"").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()),"").toString();
 		
 		return parseCQLStringForError(cqlFileString);
 	}
@@ -679,4 +679,14 @@ MeasureService {
 		return this.getMeasureLibraryService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLData(String measureId) {
+		// TODO Auto-generated method stub
+		return this.getMeasureLibraryService().getMeasureCQLData(measureId);
+	}
+@Override
+public
+	SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
+		return this.getMeasureLibraryService().getMeasureCQLFileData(measureId);
+	}
 }

@@ -80,6 +80,9 @@ public class MessageDelegate {
 	/** The Constant NO_MEASURES. */
 	public static final String NO_MEASURES = "No measures returned. Please search again.";
 	
+	/** The Constant NO_MEASURES. */
+	public static final String NO_LIBRARUES = "No libraries returned. Please search again.";
+	
 	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
 	
 	
@@ -2702,6 +2705,10 @@ public class MessageDelegate {
 
 	public String getCqlStandAloneLibraryNameError() {
 		return CQL_STAND_ALONE_LIBRARY_NAME_ERROR;
+	}
+
+	public static String getNoLibrarues() {
+		return NO_LIBRARUES;
 	}
 	
 }

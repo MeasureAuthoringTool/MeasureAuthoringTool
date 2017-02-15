@@ -52,7 +52,7 @@ public interface CQLService {
 	 * @param measureId the measure id
 	 * @return the CQL data
 	 */
-	SaveUpdateCQLResult getCQLData(String measureId);
+	SaveUpdateCQLResult getCQLData(String xmlString);
 
 	/**
 	 * Save and modify cql general info.
@@ -149,7 +149,7 @@ public interface CQLService {
 	 * @param measureId the measure id
 	 * @return the CQL file data
 	 */
-	SaveUpdateCQLResult getCQLFileData(String measureId);
+	SaveUpdateCQLResult getCQLFileData(String xmlString);
 
 	String createParametersXML(CQLParameter parameter);
 

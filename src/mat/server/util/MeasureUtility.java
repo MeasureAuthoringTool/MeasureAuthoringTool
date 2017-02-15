@@ -184,5 +184,31 @@ public class MeasureUtility {
 		return stream;
 	}
 	
+	/**
+	 * This method will take a String and remove all non-alphabet/non-numeric characters 
+	 * except underscore ("_") characters.
+	 * @param originalString
+	 * @return cleanedString
+	 */
+	public static String cleanString(String originalString) {
+		originalString = originalString.replaceAll(" ", "");
+		
+		String cleanedString = "";	
+		for(int i=0;i<originalString.length();i++){
+			char c = originalString.charAt(i);
+			int intc = (int)c;
+			
+			if(c == '_' || (intc >= 48 && intc <= 57) || (intc >= 65 && intc <= 90) || (intc >= 97 && intc <= 122)){
+				
+				if(!(cleanedString.isEmpty() && Character.isDigit(c))){
+					cleanedString = cleanedString + "" + c;
+				}
+				
+			} 
+
+		}
+		
+		return cleanedString;
+	}
 	
 }

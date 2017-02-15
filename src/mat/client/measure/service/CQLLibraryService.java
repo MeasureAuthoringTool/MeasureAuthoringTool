@@ -3,12 +3,14 @@ package mat.client.measure.service;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.SaveUpdateCQLResult;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
-	SaveCQLLibraryResult search(String searchText, String searchFrom, int startIndex, int pageSize);
+	SaveCQLLibraryResult search(String searchText, String searchFrom, int filter, int startIndex, int pageSize);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
 	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);
+	public SaveUpdateCQLResult getCQLData(String id);
 
 }

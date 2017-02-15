@@ -313,7 +313,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML); 
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName); 
 		
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(simpleXML, measureId),"").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(simpleXML),"").toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;
@@ -337,7 +337,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 //		String measureXML = measureXml.getMeasureXMLAsString();
 		
 		String measureSimpleXML = measureExport.getSimpleXML();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureSimpleXML, measureId),"").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureSimpleXML),"").toString();
 		ExportResult result = new ExportResult();
 		
 		String elmString = ""; 

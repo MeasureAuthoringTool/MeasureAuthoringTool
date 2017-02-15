@@ -2,6 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -12,8 +13,8 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.event.CQLLibrarySelectedEvent;
-import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
+import mat.shared.SaveUpdateCQLResult;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
@@ -28,6 +29,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	/** The is measure details loaded. */
 	private boolean isCQLWorkSpaceLoaded = false;
+	
+	
 	
 	/**
 	 * The Interface ViewDisplay.
@@ -87,7 +90,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onLibrarySelected(CQLLibrarySelectedEvent event) {
-				isCQLWorkSpaceLoaded = true;
+				isCQLWorkSpaceLoaded = false;
 				beforeDisplay();
 			}
 			
@@ -108,10 +111,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			displayEmpty();
 		} else {
 			panel.clear();
-			
 			panel.add(searchDisplay.asWidget());
 			if (!isCQLWorkSpaceLoaded) { // this check is made so that when CQL is clicked from CQL library, its not called twice.
-				//getCQLData()
+				getCQLData();
+				isCQLWorkSpaceLoaded = true;
 			} else {
 				isCQLWorkSpaceLoaded = false;
 			}
@@ -120,6 +123,28 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 		
+	}
+	
+	private void getCQLData(){
+		
+		MatContext.get().getCQLLibraryService().getCQLData(MatContext.get().getCurrentCQLLibraryId(),  new AsyncCallback<SaveUpdateCQLResult>() {
+			
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				if(result.isSuccess()){
+					if(result.getCqlModel() != null){
+						System.out.println("I got the model");
+					}
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	/**

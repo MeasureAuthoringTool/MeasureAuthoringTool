@@ -3,20 +3,24 @@ package mat.dao.impl.clause;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
+import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.shared.StringUtility;
 
 public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
 	
 	
-class CQlLibraryComparator implements Comparator<CQLLibrary> {
+class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -68,7 +72,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 	
 
 	@Override
-	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize ) {
+	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
 		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
@@ -77,11 +81,15 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		//cCriteria.setFirstResult(startIndex);
 		if(!searchFrom.equalsIgnoreCase("StandAlone")){
 			cCriteria.add(Restrictions.eq("draft", false));
+			
 			cCriteria.addOrder(Order.desc("measureSet.id"))
 			.addOrder(Order.desc("version"));
 		} else{
-			
+			if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
+				cCriteria.add(Restrictions.eq("ownerId.id", user.getId()));
+			}
 			cCriteria.add(Restrictions.isNotNull("cqlSet.id"))
+			
 			.addOrder(Order.desc("cqlSet.id"))
 			.addOrder(Order.desc("draft"))
 			.addOrder(Order.desc("version"));
@@ -89,6 +97,11 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		cCriteria.setFirstResult(0);
 		
 		List<CQLLibrary> libraryResultList = cCriteria.list();
+		if(searchFrom.equalsIgnoreCase("StandAlone")) {
+			if (!user.getSecurityRole().getId().equals("2")) {
+				libraryResultList = getAllLibrariesInSet(libraryResultList);
+			}
+		}
 		List<CQLLibrary> orderedCQlLibList = null;
 		if(libraryResultList != null){
 			orderedCQlLibList = sortLibraryList(libraryResultList, searchFrom);
@@ -107,6 +120,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 			}
 		}
 		
+		
 		if (pageSize < orderedList.size()) {
 			return orderedList.subList(0, pageSize);
 		} else {
@@ -114,6 +128,64 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		}
 		
 	}
+	
+	public List<CQLLibrary> getAllLibrariesInSet(List<CQLLibrary> libraries) {
+		if (!libraries.isEmpty()) {
+			Set<String> cqlLibSetIds = new HashSet<String>();
+			for (CQLLibrary m : libraries) {
+				cqlLibSetIds.add(m.getCqlSet().getId());
+			}
+			
+			Criteria setCriteria = getSessionFactory().getCurrentSession()
+					.createCriteria(CQLLibrary.class);
+			setCriteria.add(Restrictions.in("cqlSet.id", cqlLibSetIds));
+			libraries = setCriteria.list();
+		}
+		return sortLibraryList(libraries);
+	}
+	
+	
+	
+	private List<CQLLibrary> sortLibraryList(List<CQLLibrary> libraryResultList) {
+		// generate sortable lists
+		List<List<CQLLibrary>> libraryList = new ArrayList<List<CQLLibrary>>();
+		for (CQLLibrary cqlLib : libraryResultList) {
+			boolean hasList = false;
+			for (List<CQLLibrary> list : libraryList) {
+				String cqlsetId = list.get(0).getCqlSet().getId();
+				if (cqlLib.getMeasureSet().getId().equalsIgnoreCase(cqlsetId)) {
+					list.add(cqlLib);
+					hasList = true;
+					break;
+				}
+			}
+			// }
+			if (!hasList) {
+				List<CQLLibrary> cqllist = new ArrayList<CQLLibrary>();
+				// Check if Measure is softDeleted then dont include that into
+				// list.
+				// if(m.getDeleted()==null){
+				cqllist.add(cqlLib);
+				libraryList.add(cqllist);
+				// }
+			}
+		}
+		// sort
+		for (List<CQLLibrary> list : libraryList) {
+			Collections.sort(list, new CQLLibraryComparator());
+		}
+		Collections.sort(libraryList, new CQLLibraryListComparator());
+		// compile list
+		List<CQLLibrary> retList = new ArrayList<CQLLibrary>();
+		for (List<CQLLibrary> mlist : libraryList) {
+			for (CQLLibrary m : mlist) {
+				retList.add(m);
+			}
+		}
+		return retList;
+	}
+	
+	
 	/**
 	 * Sort Library list by measure set Id.
 	 * @param librariesResultList
@@ -149,7 +221,7 @@ class CQlLibraryComparator implements Comparator<CQLLibrary> {
 		}
 		// sort
 		for (List<CQLLibrary> mlist : cqlLibList) {
-			Collections.sort(mlist, new CQlLibraryComparator());
+			Collections.sort(mlist, new CQLLibraryComparator());
 		}
 		Collections.sort(cqlLibList, new CQLLibraryListComparator());
 		// compile list

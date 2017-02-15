@@ -47,13 +47,8 @@ import mat.client.measure.service.CQLService;
 import mat.client.shared.QDMInputValidator;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
-import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
-import mat.model.DataType;
 import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -105,6 +100,9 @@ public class CQLServiceImpl implements CQLService {
 	/** The cql library association DAO. */
 	@Autowired
 	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
+	
+	@Autowired
+	private CQLLibraryService cqlLibraryService;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
@@ -1155,13 +1153,20 @@ public class CQLServiceImpl implements CQLService {
 	 * @see mat.client.measure.service.CQLService#getCQLData(java.lang.String)
 	 */
 	@Override
-	public SaveUpdateCQLResult getCQLData(String measureId) {
+	public SaveUpdateCQLResult getCQLData(String xmlString) {
 		
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
-				measureId);
+		
+		/*if(fromTable.equalsIgnoreCase("MeasureXml")) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
+					id);
+			xmlString = xmlModel.getXml();
+		} else {
+			CQLLibraryDataSetObject object = cqlLibraryService.findCQLLibraryByID(id);
+			xmlString = object.getCqlText();
+		}*/
 		CQLModel cqlModel = new CQLModel();
-		cqlModel = CQLUtilityClass.getCQLStringFromMeasureXML(xmlModel.getXml(),measureId);
+		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		SaveUpdateCQLResult parsedCQL = parseCQLStringForError(cqlFileString);
@@ -1496,11 +1501,11 @@ public class CQLServiceImpl implements CQLService {
 	 * mat.client.measure.service.CQLService#getCQLFileData(java.lang.String)
 	 */
 	@Override
-	public SaveUpdateCQLResult getCQLFileData(String measureId) {
+	public SaveUpdateCQLResult getCQLFileData(String xmlString) {
 		
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		SaveUpdateCQLResult allCqlData = getCQLData(measureId);
-		StringBuilder cqlString = getCqlString(allCqlData.getCqlModel());
+		result = getCQLData(xmlString);
+		StringBuilder cqlString = getCqlString(result.getCqlModel());
 		if (cqlString != null) {
 			result.setSuccess(true);
 		} else {
@@ -1980,7 +1985,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		List<String> Errors = new ArrayList<String>();
 		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml(),measureId), name).toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()), name).toString();
 	
 		result.getCqlModel().setLines(countLines(cqlFileString));
 		
@@ -2105,7 +2110,7 @@ public class CQLServiceImpl implements CQLService {
 		System.out.println("GETTING CQL ARTIFACTS");
 		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
 		XmlProcessor processor = new XmlProcessor(measureXML.getXml());
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromMeasureXML(measureXML.getXml() ,measureId), "").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()), "").toString();
 		System.out.println(cqlFileString);
 		
 		
@@ -2651,8 +2656,10 @@ public class CQLServiceImpl implements CQLService {
 		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
 			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
 		}
-		
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(measureId).getCqlModel().getAllValueSetList());
+		MeasureXmlModel model = getService().getMeasureXmlForMeasure(
+				measureId);
+		String xmlString = model.getXml();
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetList());
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		
 		return cqlQualityDataModelWrapper;

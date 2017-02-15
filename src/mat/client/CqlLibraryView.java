@@ -16,7 +16,7 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -34,7 +34,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	
 	
 	/** The measure search filter widget. */
-	private MeasureSearchFilterWidget searchFilterWidget = new MeasureSearchFilterWidget("searchFilter",
+	private SearchWidgetWithFilter searchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forCqlLibrary");
 	
 
@@ -242,7 +242,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		return cqlLibrarySearchView;
 	}
 	@Override
-	public MeasureSearchFilterWidget getSearchFilterWidget() {
+	public SearchWidgetWithFilter getSearchFilterWidget() {
 		return searchFilterWidget;
 	}
 	

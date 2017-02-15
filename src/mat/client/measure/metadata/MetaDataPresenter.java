@@ -26,7 +26,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
@@ -854,7 +854,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the measure search filter widget
 		 */
-		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
+		SearchWidgetWithFilter getMeasureSearchFilterWidget();
 		
 		/**
 		 * Gets the selected filter.

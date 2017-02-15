@@ -14,7 +14,7 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
@@ -84,7 +84,7 @@ public class AddEditComponentMeasuresView implements
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 
 	/** The measure search filter widget. */
-	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget(
+	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter(
 			"searchFilter", "measureLibraryFilterDisclosurePanel","forMeasure");
 
 	/** The search widget. */
@@ -503,7 +503,7 @@ public class AddEditComponentMeasuresView implements
 	 * #getMeasureSearchFilterWidget()
 	 */
 	@Override
-	public MeasureSearchFilterWidget getMeasureSearchFilterWidget() {
+	public SearchWidgetWithFilter getMeasureSearchFilterWidget() {
 		return measureSearchFilterWidget;
 	}
 

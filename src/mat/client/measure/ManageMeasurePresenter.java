@@ -30,7 +30,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
-import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
@@ -559,7 +559,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the measure search filter widget
 		 */
-		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
+		SearchWidgetWithFilter getMeasureSearchFilterWidget();
 		
 		/** Gets the most recent measure widget.
 		 * 

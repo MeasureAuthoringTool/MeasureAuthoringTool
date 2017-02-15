@@ -1,22 +1,5 @@
 package mat.client.measure;
 
-import mat.client.ImageResources;
-import mat.client.measure.MeasureSearchView.AdminObserver;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.metadata.Grid508;
-import mat.client.shared.CreateNewItemWidget;
-import mat.client.shared.CustomButton;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.MeasureSearchFilterWidget;
-import mat.client.shared.MostRecentMeasureWidget;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.util.ClientConstants;
-
-import com.google.gwt.aria.client.SelectedValue;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -30,6 +13,22 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.ImageResources;
+import mat.client.measure.MeasureSearchView.AdminObserver;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.metadata.Grid508;
+import mat.client.shared.CreateNewItemWidget;
+import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MatContext;
+import mat.client.shared.MostRecentMeasureWidget;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SearchWidgetWithFilter;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.util.ClientConstants;
 
 
 // TODO: Auto-generated Javadoc
@@ -82,7 +81,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The measure search filter widget. */
-	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget("searchFilter",
+	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forMeasure");
 	
 	/** The most recent measure widget. */
@@ -437,7 +436,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	
 	@Override
-	public MeasureSearchFilterWidget getMeasureSearchFilterWidget() {
+	public SearchWidgetWithFilter getMeasureSearchFilterWidget() {
 		return measureSearchFilterWidget;
 	}
 	
@@ -557,7 +556,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	/** Sets the measure search filter widget.
 	 * 
 	 * @param measureSearchFilterWidget the measureSearchFilterWidget to set */
-	public void setMeasureSearchFilterWidget(MeasureSearchFilterWidget measureSearchFilterWidget) {
+	public void setMeasureSearchFilterWidget(SearchWidgetWithFilter measureSearchFilterWidget) {
 		this.measureSearchFilterWidget = measureSearchFilterWidget;
 	}
 	

@@ -30,7 +30,7 @@ import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
-import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -106,7 +106,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		VerticalPanel getWidgetVP();
 
-		MeasureSearchFilterWidget getSearchFilterWidget();
+		SearchWidgetWithFilter getSearchFilterWidget();
 
 		int getSelectedFilter();
 

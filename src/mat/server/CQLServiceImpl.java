@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
@@ -12,34 +13,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -47,9 +30,11 @@ import mat.client.measure.service.CQLService;
 import mat.client.shared.QDMInputValidator;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctions;
@@ -79,9 +64,30 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -92,6 +98,10 @@ public class CQLServiceImpl implements CQLService {
 	/** The cql dao. */
 	@Autowired
 	private CQLDAO cqlDAO;
+	
+	/** The cql library dao. */
+	@Autowired
+	private CQLLibraryDAO cqlLibraryDAO;
 	
 	/** The context. */
 	@Autowired
@@ -1156,28 +1166,125 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult getCQLData(String xmlString) {
 		
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		
-		/*if(fromTable.equalsIgnoreCase("MeasureXml")) {
-			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
-					id);
-			xmlString = xmlModel.getXml();
-		} else {
-			CQLLibraryDataSetObject object = cqlLibraryService.findCQLLibraryByID(id);
-			xmlString = object.getCqlText();
-		}*/
+				
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-		SaveUpdateCQLResult parsedCQL = parseCQLStringForError(cqlFileString);
+		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
+						
+		if(cqlModel.getCqlIncludeLibrarys() == null ||  cqlModel.getCqlIncludeLibrarys().size() == 0){
+			parsedCQL = parseCQLStringForError(cqlFileString);
+		}else {
+			parsedCQL = parseCQLLibraryForErrors(cqlModel);
+		}
+		
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			modifyQDMStatus(cqlModel);	
 		}else{
 			findUsedValuesets(cqlFileString, cqlModel);		
 		}
-		result.setCqlErrors(parsedCQL.getCqlErrors());
 		result.setCqlModel(cqlModel);
+		result.setCqlErrors(parsedCQL.getCqlErrors());
 		return result;
+	}
+	
+private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
+		
+		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
+		
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+		
+		Map<String, String> cqlLibNameMap = new HashMap<String, String>();
+		
+		getCQLIncludeLibMap(cqlModel, cqlLibNameMap);
+		
+		validateCQLWithIncludes(cqlFileString, cqlLibNameMap, parsedCQL);
+		
+		return parsedCQL;
+	}
+
+	public void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, String> cqlLibNameMap) {
+				
+		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
+		if(cqlIncludeLibraries == null){
+			return;
+		}
+		
+		for(CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries){
+			System.out.println("-----------------------------------------------------------------------------------------");
+			System.out.println(cqlIncludeLibrary.getAliasName());
+			System.out.println(cqlIncludeLibrary.getCqlLibraryName());		
+			System.out.println(cqlIncludeLibrary.getCqlLibraryId());
+			System.out.println("-----------------------------------------------------------------------------------------");
+			
+			CQLLibrary cqlLibrary = getCqlLibraryDAO().find(cqlIncludeLibrary.getCqlLibraryId());
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+			
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
+			String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
+			
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName(), cqlString);
+			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap);
+		}
+	
+	}
+
+	private void validateCQLWithIncludes(String cqlFileString,
+			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL) {
+		
+		List<File> fileList = new ArrayList<File>();
+		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
+		
+		try{
+			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
+			File tempDir = test.getParentFile();
+			//File folder = new File(tempDir.getAbsolutePath()+File.pathSeparator+UUIDUtilClient.uuid());
+			File folder = new File(tempDir.getAbsolutePath()+"\\"+UUIDUtilClient.uuid());
+			folder.mkdir();
+			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
+			fileList.add(mainCQLFile);
+			
+			for(String cqlLibName:cqlLibNameMap.keySet()){
+				File cqlIncludedFile = createCQLTempFile(cqlLibNameMap.get(cqlLibName), cqlLibName, folder);
+				fileList.add(cqlIncludedFile);
+			}
+			
+			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
+			cqlToElm.doTranslation(true, false, false);
+			
+			cqlTranslatorExceptions = cqlToElm.getErrors();
+			
+			fileList.add(test);
+			fileList.add(folder);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			for(File file:fileList){
+				file.delete();
+			}
+		}
+		
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		
+		for(CqlTranslatorException cte : cqlTranslatorExceptions){
+			CQLErrors cqlErrors = new CQLErrors();
+			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+			cqlErrors.setErrorMessage(cte.getMessage());
+			System.out.println("\t"+cte.getMessage());
+			errors.add(cqlErrors);
+		}
+		
+		parsedCQL.setCqlErrors(errors);
+	}
+
+	public File createCQLTempFile(String cqlFileString, String name, File parentFolder) throws IOException {
+		File cqlFile = new File(parentFolder, name+".cql");
+		FileWriter fw = new FileWriter(cqlFile);
+		fw.write(cqlFileString);
+		fw.close();
+		return cqlFile;
 	}
 	
 	/**
@@ -2014,7 +2121,12 @@ public class CQLServiceImpl implements CQLService {
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		if(!StringUtils.isBlank(cqlFileString)){
 			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
-			cqlToElm.doTranslation(true, false, false);
+			try {
+				cqlToElm.doTranslation(true, false, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			if(cqlToElm.getErrors() != null) {
 				cqlErrorsList.addAll(cqlToElm.getErrors()); 
@@ -2215,7 +2327,12 @@ public class CQLServiceImpl implements CQLService {
 		if(!StringUtils.isBlank(cqlFileString)){
 			
 			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
-			cqlToElm.doTranslation(true, false, false);
+			try {
+				cqlToElm.doTranslation(true, false, false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			if(cqlToElm.getErrors() != null) {
 				cqlErrorsList.addAll(cqlToElm.getErrors());
@@ -2664,5 +2781,13 @@ public class CQLServiceImpl implements CQLService {
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		
 		return cqlQualityDataModelWrapper;
+	}
+	
+	public CQLLibraryDAO getCqlLibraryDAO() {
+		return cqlLibraryDAO;
+	}
+
+	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
+		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
 }

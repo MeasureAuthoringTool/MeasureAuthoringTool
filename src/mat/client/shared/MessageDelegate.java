@@ -66,7 +66,7 @@ public class MessageDelegate {
 	
 	public static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
 	
-	public static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name.Can only contain alpha-numeric and/or underscores.Cannot contain spaces.";
+	public static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name. Must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
 	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
 	/** The Constant EMAIL_ID_REQUIRED. */
@@ -232,7 +232,7 @@ public class MessageDelegate {
 			"Duplicate name or use of restricted character(s).";
 	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
 			"Duplicate name or use of restricted character(s).";
-	public final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR  = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s).";
+	public final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR  = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	
 	public final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
 	

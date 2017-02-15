@@ -1175,6 +1175,7 @@ public class CQLServiceImpl implements CQLService {
 		}else{
 			findUsedValuesets(cqlFileString, cqlModel);		
 		}
+		result.setCqlErrors(parsedCQL.getCqlErrors());
 		result.setCqlModel(cqlModel);
 		return result;
 	}

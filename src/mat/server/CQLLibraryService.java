@@ -83,10 +83,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	}
 	
 	@Override
-	public void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
-			Timestamp finalizedDate, byte[] cqlByteArray) {
+	public void save(CQLLibrary library) {
 		
-		CQLLibrary cqlLibrary = new CQLLibrary(); 
+		/*CQLLibrary cqlLibrary = new CQLLibrary(); 
 		if(libraryName.length() >200){
 			libraryName = libraryName.substring(0, 199);
 		}
@@ -100,9 +99,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		// cqlLibrary.setCqlSetId(cqlSetId);
 		cqlLibrary.setDraft(false);
 		cqlLibrary.setFinalizedDate(finalizedDate);
-		cqlLibrary.setCQLByteArray(cqlByteArray);
+		cqlLibrary.setCQLByteArray(cqlByteArray);*/
 		
-		this.cqlLibraryDAO.save(cqlLibrary);
+		this.cqlLibraryDAO.save(library);
 	}
 	
 	/**

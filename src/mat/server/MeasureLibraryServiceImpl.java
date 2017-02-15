@@ -2671,6 +2671,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// get simple xml for cql
 		String cqlLibraryName = "";
 		byte[] cqlByteArray = null;
+		CQLLibrary cqlLibrary = new CQLLibrary();
 		if (!xmlModel.getXml().isEmpty()) {
 			String xPathForCQLLookup = "//cqlLookUp";
 			String xPathForCQLLibraryName = "//cqlLookUp/library";
@@ -2678,10 +2679,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			Document document = xmlProcessor.getOriginalDoc();
 			Node cqlLookUpNode = null;
+			
 			try {
 				cqlLookUpNode = xmlProcessor.findNode(document, xPathForCQLLookup);
 				Node cqlLibraryNode = xmlProcessor.findNode(document, xPathForCQLLibraryName);
 				cqlLibraryName = cqlLibraryNode.getTextContent();
+				if(cqlLibraryName.length() >200){
+					cqlLibraryName = cqlLibraryName.substring(0, 199);
+				}
+				cqlLibrary.setName(cqlLibraryName);
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
@@ -2691,13 +2697,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				cqlByteArray = cqlXML.getBytes();
 			}
 		}
-
-		String measureId = mDetail.getId();
-		User owner = measure.getOwner();
-		MeasureSet measureSet = measure.getMeasureSet();
-		String version = mDetail.getVersionNumber();
-		String releaseVersion = measure.getReleaseVersion();
-
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
 		Date date = null;
 		try {
@@ -2708,8 +2707,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		long time = date.getTime();
 		Timestamp timestamp = new Timestamp(time);
 
-		this.cqlLibraryService.save(cqlLibraryName, measureId, owner, measureSet, version, releaseVersion, timestamp,
-				cqlByteArray);
+		cqlLibrary.setMeasureId(mDetail.getId());
+		cqlLibrary.setOwnerId(measure.getOwner());
+		cqlLibrary.setMeasureSet(measure.getMeasureSet());
+		cqlLibrary.setVersion(mDetail.getVersionNumber());
+		cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
+		cqlLibrary.setFinalizedDate(timestamp);
+		cqlLibrary.setDraft(false);
+		cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());
+		cqlLibrary.setCQLByteArray(cqlByteArray);
+		this.cqlLibraryService.save(cqlLibrary);
 	}
 
 	/*

@@ -1,10 +1,7 @@
 package mat.server.service;
 
-import java.sql.Timestamp;
-
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.model.User;
-import mat.model.clause.MeasureSet;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.util.XmlProcessor;
 import mat.shared.SaveUpdateCQLResult;
@@ -13,8 +10,7 @@ public interface CQLLibraryServiceInterface {
 	
 	SaveCQLLibraryResult search(String searchText, String searchFrom, int filter,int startIndex, int pageSize);
 	
-	void save(String libraryName, String measureId, User owner, MeasureSet measureSet, String version, String releaseVersion, 
-			Timestamp finalizedDate, byte[] cqlByteArray);
+	void save(CQLLibrary cqlLibrary);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);

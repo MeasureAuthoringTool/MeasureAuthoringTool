@@ -1,9 +1,11 @@
 package mat.client;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -14,6 +16,7 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -28,6 +31,12 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	/** The create measure widget. */
 	private CreateNewItemWidget createNewItemWidget = new CreateNewItemWidget("forCqlLibrary");
+	
+	
+	/** The measure search filter widget. */
+	private MeasureSearchFilterWidget searchFilterWidget = new MeasureSearchFilterWidget("searchFilter",
+			"measureLibraryFilterDisclosurePanel","forCqlLibrary");
+	
 
 	CustomButton addNewFolderButton = (CustomButton) getImage("Create New Item",
 			ImageResources.INSTANCE.createMeasure(), "Create New Item", "createNewItemPlusButton");
@@ -117,7 +126,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		widgetVP.setWidth("100px");
 		widgetVP.getElement().setId("panel_VP_CQL");
 		//widgetVP.add(createNewItemWidget);
-		// measureFilterVP.add(measureSearchFilterWidget);
+		//widgetVP.add(searchFilterWidget);
 		// buildMostRecentWidget();
 		// mostRecentVerticalPanel.setWidth("80%");
 		mostRecentVerticalPanel.clear();
@@ -145,8 +154,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	}
 	
 	@Override
-	public void buildCellTable(SaveCQLLibraryResult result, String searchText) {
-		cqlLibrarySearchView.buildCellTable(result, searchText);
+	public void buildCellTable(SaveCQLLibraryResult result, String searchText,int filter) {
+		cqlLibrarySearchView.buildCellTable(result, searchText,filter);
 	}
 
 	@Override
@@ -199,6 +208,9 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	@Override
 	public Widget asWidget() {
+		widgetVP.clear();
+		widgetVP.add(searchFilterWidget);
+		getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 		return mainPanel;
 	}
 	
@@ -229,5 +241,26 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool() {
 		return cqlLibrarySearchView;
 	}
+	@Override
+	public MeasureSearchFilterWidget getSearchFilterWidget() {
+		return searchFilterWidget;
+	}
 	
+	@Override
+	public int getSelectedFilter() {
+		return searchFilterWidget.getSelectedFilter();
+		
+	}
+	
+	@Override
+	public HasValue<String> getSearchString() {
+		return searchFilterWidget.getSearchInput();
+		
+	}
+	
+	@Override
+	public HasClickHandlers getSearchButton() {
+		return searchFilterWidget.getSearchButton();
+		
+	}
 }

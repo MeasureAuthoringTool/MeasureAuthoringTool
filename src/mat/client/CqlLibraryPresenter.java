@@ -1,17 +1,21 @@
 package mat.client;
 
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,17 +30,13 @@ import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
+import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
-
-/**
- * @author jnarang
- *
- */
 /**
  * @author jnarang
  *
@@ -57,6 +57,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	/** The is create measure widget visible. */
 	boolean isCreateNewItemWidgetVisible = false;
+	
+	/** The is measure search filter visible. */
+	boolean isSearchFilterVisible = true;
 
 	private CQLModel cqlModel;
 
@@ -87,7 +90,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		Widget asWidget();
 
-		void buildCellTable(SaveCQLLibraryResult searchModel, String searchText);
+		void buildCellTable(SaveCQLLibraryResult searchModel, String searchText,int filter);
 
 		CQLLibrarySearchView getCQLLibrarySearchView();
 
@@ -102,6 +105,14 @@ public class CqlLibraryPresenter implements MatPresenter {
 		HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool();
 
 		VerticalPanel getWidgetVP();
+
+		MeasureSearchFilterWidget getSearchFilterWidget();
+
+		int getSelectedFilter();
+
+		HasValue<String> getSearchString();
+
+		HasClickHandlers getSearchButton();
 
 	}
 
@@ -242,15 +253,41 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 				isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
-			
-				//cqlLibraryView.getCreateNewItemWidget().setVisible(isCreateNewItemWidgetVisible);
+				
+				if(isSearchFilterVisible){
+					isSearchFilterVisible = !isSearchFilterVisible;
+					cqlLibraryView.getWidgetVP().clear();
+				}
+				
 				if(isCreateNewItemWidgetVisible){
 					cqlLibraryView.getWidgetVP().add(cqlLibraryView.getCreateNewItemWidget());
 				} else {
 					cqlLibraryView.getWidgetVP().clear();
 				}
 
+			}
+		});
+		
+		cqlLibraryView.getZoomButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
+				if (isCreateNewItemWidgetVisible) {
+					isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
+					cqlLibraryView.getWidgetVP().clear();
+				}
+				isSearchFilterVisible = !isSearchFilterVisible;
+				
+				if(isSearchFilterVisible){
+					cqlLibraryView.getWidgetVP().add(cqlLibraryView.getSearchFilterWidget());
+				} else {
+					cqlLibraryView.getWidgetVP().clear();
+				}
+				
 			}
 		});
 
@@ -276,6 +313,30 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			}
 
+		});
+		
+		
+		TextBox searchWidget = (TextBox) (cqlLibraryView.getSearchString());
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) cqlLibraryView.getSearchButton()).click();
+				}
+			}
+		});
+		
+		
+		cqlLibraryView.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				int startIndex = 1;
+				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				int filter = cqlLibraryView.getSelectedFilter();
+				search(cqlLibraryView.getSearchString().getValue(),"StandAlone", filter,startIndex,
+						Integer.MAX_VALUE);
+			}
 		});
 
 	}
@@ -308,27 +369,40 @@ public class CqlLibraryPresenter implements MatPresenter {
 		fp.getElement().setId("fp_FlowPanel_CQL");
 		isCreateNewItemWidgetVisible = false;
 		//cqlLibraryView.getCreateNewItemWidget().setVisible(false);
-		search("", "StandAlone", 1, Integer.MAX_VALUE);
+		int filter = cqlLibraryView.getSelectedFilter();
+		search(cqlLibraryView.getSearchString().getValue(), "StandAlone", filter,1, Integer.MAX_VALUE);
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
 		fp.add(cqlLibraryView.asWidget());
+		isSearchFilterVisible = true;
 		panel.setContent(fp);
 		Mat.focusSkipLists("CQLLibrary");
 	}
 
-	private void search(final String searchText, String searchFrom, int startIndex, int pageSize) {
+	private void search(final String searchText, String searchFrom, final int filter,int startIndex, int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText
 				.trim() : null;
 				//pageSize = Integer.MAX_VALUE;
 				pageSize = 25;
 				showSearchingBusy(true);
-				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
+				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, filter,startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 					
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
-						//CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
-						cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
-						cqlLibraryView.buildCellTable(result, lastSearchText);
+						if(cqlLibraryView.getSearchFilterWidget().
+								getSelectedFilter()!=0){
+							cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("All CQL Libraries");
+						}else{
+							cqlLibraryView.getCQLLibrarySearchView().setCQLLibraryListLabel("My CQL Libraries");
+						}
+						
+						if ((result.getResultsTotal() == 0)
+								&& !lastSearchText.isEmpty()) {
+							cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
+						} 
+						
+						cqlLibraryView.buildCellTable(result, lastSearchText,filter);
 						showSearchingBusy(false);
 					}
 					

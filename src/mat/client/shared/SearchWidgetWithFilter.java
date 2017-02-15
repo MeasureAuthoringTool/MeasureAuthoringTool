@@ -232,16 +232,16 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 			widgetPanel.add(new SpacerWidget());
 			mainPanel.add(widgetPanel);
 		} else {
-			Label myMeasuresText = (Label) LabelBuilder.buildLabel("My Libraries", "My Libraries");
-			myMeasuresText.setStylePrimaryName("searchWidgetLabel");
-			myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-			myMeasurePanel.add(myMeasuresText);
+			Label myLibLabel = (Label) LabelBuilder.buildLabel("My Libraries", "My Libraries");
+			myLibLabel.setStylePrimaryName("searchWidgetLabel");
+			myLibrariesCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+			myMeasurePanel.add(myLibLabel);
 			myMeasurePanel.add(myLibrariesCheckBox);
 			
-			Label allMeasuresText = (Label) LabelBuilder.buildLabel("All Libraries", "All Libraries");
-			allMeasuresText.setStylePrimaryName("searchWidgetLabel");
-			allMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-			allMeasurePanel.add(allMeasuresText);
+			Label allLibLabel = (Label) LabelBuilder.buildLabel("All Libraries", "All Libraries");
+			allLibLabel.setStylePrimaryName("searchWidgetLabel");
+			allLibrariesCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+			allMeasurePanel.add(allLibLabel);
 			allMeasurePanel.add(allLibrariesCheckBox);
 			contentWidget.add(myMeasurePanel);
 			contentWidget.add(new SpacerWidget());

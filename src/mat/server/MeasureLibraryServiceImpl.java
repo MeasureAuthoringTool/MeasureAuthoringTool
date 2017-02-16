@@ -1233,40 +1233,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * Method to create XML from CQLQualityDataModelWrapper object.
-	 * 
-	 * @param qualityDataSetDTO
-	 *            - {@link CQLQualityDataModelWrapper}.
-	 * @return {@link ByteArrayOutputStream}.
-	 */
-	private ByteArrayOutputStream createQDMXML(final CQLQualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLValueSetsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			logger.info("Marshalling of CQLQualityDataSetDTO is successful..");
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLValueSetsMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				logger.info("Other Exception" + e);
-			}
-		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
-		return stream;
-	}
-
-	/**
 	 * Creates the xml.
 	 * 
 	 * @param measureDetailModel
@@ -2394,26 +2360,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		recentMSRActivityLogDAO.recordRecentMeasureActivity(measureId, userId);
 	}
 
-	/**
-	 * Removes the pattern from xml string.
-	 * 
-	 * @param xmlString
-	 *            the xml string
-	 * @param patternStart
-	 *            the pattern start
-	 * @param replaceWith
-	 *            the replace with
-	 * @return the string
-	 */
-	private String removePatternFromXMLString(final String xmlString, final String patternStart,
-			final String replaceWith) {
-		String newString = xmlString;
-		if (patternStart != null) {
-			newString = newString.replaceAll(patternStart, replaceWith);
-		}
-		return newString;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -3344,21 +3290,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * Sets the org id in author.
-	 * 
-	 * @param authors
-	 *            the new org id in author
-	 */
-	private void setOrgIdInAuthor(final List<Author> authors) {
-		if (CollectionUtils.isNotEmpty(authors)) {
-			for (Author author : authors) {
-				String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
-				author.setOrgId((oid != null) && !oid.equals("") ? oid : UUID.randomUUID().toString());
-			}
-		}
-	}
-
-	/**
 	 * Sets the scoring abbreviation.
 	 * 
 	 * @param measScoring
@@ -4019,69 +3950,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp End :  ");
 	}
 
-	/**
-	 * This method updates MeasureXML - ElementRef's under Population and
-	 * Stratification Node
-	 * 
-	 * *.
-	 * 
-	 * @param processor
-	 *            the processor
-	 * @param modifyWithDTO
-	 *            the modify with dto
-	 * @param modifyDTO
-	 *            the modify dto
-	 */
-	private void updatePopulationAndStratification(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
-			final QualityDataSetDTO modifyDTO) {
-
-		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification Start :  ");
-		// XPath to find All elementRef's under clause element nodes for to be
-		// modified QDM.
-		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//subTreeLookUp//elementRef[@id='" + modifyDTO.getUuid()
-				+ "']";
-		try {
-			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_CLAUSE_ELEMENTREF,
-					processor.getOriginalDoc(), XPathConstants.NODESET);
-			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>) getAllDataTypeAttributes(
-					modifyWithDTO.getDataType());
-			for (int i = 0; i < nodesClauseWorkSpace.getLength(); i++) {
-				Node newNode = nodesClauseWorkSpace.item(i);
-				String displayName = new String();
-				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
-					displayName = displayName.concat(modifyWithDTO.getOccurrenceText() + " of ");
-				}
-				displayName = displayName.concat(modifyWithDTO.getCodeListName() + " : " + modifyWithDTO.getDataType());
-
-				newNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
-				if (newNode.getChildNodes() != null) {
-					NodeList childList = newNode.getChildNodes();
-					for (int j = 0; j < childList.getLength(); j++) {
-						Node childNode = childList.item(j);
-						if (childNode.getAttributes().getNamedItem("qdmUUID") != null) {
-							String childNodeAttrName = childNode.getAttributes().getNamedItem("name").getNodeValue();
-							boolean isRemovable = true;
-							for (QDSAttributes attributes : attr) {
-								if (attributes.getName().equalsIgnoreCase(childNodeAttrName)) {
-									isRemovable = false;
-									break;
-								}
-							}
-							if (isRemovable) {
-								Node parentNode = childNode.getParentNode();
-								parentNode.removeChild(childNode);
-							}
-						}
-					}
-				}
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-
-		}
-		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification End :  ");
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -4390,8 +4258,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			String elmSting = cqlToElm.getElmString();
+			
 			if (cqlToElm.getErrors() != null && cqlToElm.getErrors().size() > 0) {
 				isInvalid = true;
 			}
@@ -5377,24 +5244,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	}
 
-	/**
-	 * Validate date and time operators nodes.
-	 *
-	 * @param dateTimeDiffChildNode
-	 *            the date time diff child node
-	 * @param flag
-	 *            the flag
-	 * @return true, if successful
-	 */
-	private boolean validateDateTimeDiffNode(Node dateTimeDiffChildNode, boolean flag) {
-		int dateTimeChildCount = dateTimeDiffChildNode.getChildNodes().getLength();
-		if (dateTimeChildCount < 2) {
-			flag = true;
-		}
-		return flag;
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -5472,24 +5321,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * Update node.
-	 *
-	 * @param nodeXPath
-	 *            the node x path
-	 * @param originalDoc
-	 *            the original doc
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
-	 */
-	private void updateNode(String nodeXPath, Document originalDoc) throws XPathExpressionException {
-		Node node = (Node) xPath.evaluate(nodeXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
-		if (node != null) {
-			Node parentNode = node.getParentNode();
-			parentNode.removeChild(node);
-		}
-	}
-
-	/**
 	 * Gets the all measure types.
 	 *
 	 * @return the all measure types
@@ -5544,7 +5375,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {
 		logger.info("In MeasureLibraryServiceImpl.getUsedStewardAndDevelopersList() method..");
 		logger.info("Loading Measure for MeasueId: " + measureId);
-		Measure measure = getService().getById(measureId);
 		MeasureDetailResult usedStewardAndAuthorList = new MeasureDetailResult();
 		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
 		usedStewardAndAuthorList.setUsedAuthorList(getAuthorsList(xml));
@@ -5847,29 +5677,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * Scrub for mark up.
-	 *
-	 * @param model
-	 *            the model
-	 */
-	private void scrubForMarkUp(ManageMeasureDetailModel model) {
-		String markupRegExp = "<[^>]+>";
-
-		String noMarkupText = model.getName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure name:" + noMarkupText);
-		if (model.getName().trim().length() > noMarkupText.length()) {
-			model.setName(noMarkupText);
-		}
-
-		noMarkupText = model.getShortName().trim().replaceAll(markupRegExp, "");
-		System.out.println("measure short-name:" + noMarkupText);
-		if (model.getShortName().trim().length() > noMarkupText.length()) {
-			model.setShortName(noMarkupText);
-		}
-
-	}
-
-	/**
 	 * Validate stratum for atleast one clause. This validation is performed at
 	 * the time of Measure Package Creation where if the a stratification is
 	 * part of grouping then we need to check if stratum has atleast one clause.
@@ -5942,22 +5749,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public void setCurrentReleaseVersion(String releaseVersion) {
 		currentReleaseVersion = releaseVersion;
-	}
-
-	/**
-	 * Checks if is measure owner.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @return true, if is measure owner
-	 */
-	private boolean isMeasureOwner(String userId) {
-		SecurityContext sc = SecurityContextHolder.getContext();
-		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
-		if (details.getId().equalsIgnoreCase(userId)) {
-			return true;
-		}
-		return false;
 	}
 
 	/**

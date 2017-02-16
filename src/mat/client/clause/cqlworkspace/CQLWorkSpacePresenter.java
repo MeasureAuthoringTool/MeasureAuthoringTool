@@ -2331,36 +2331,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
 	
-	/**
-	 * Clear include library.
-	 */
-	//this is for clear functionality
-	/*private void clearIncludeLibrary() {
-		searchDisplay.setCurrentSelectedIncLibraryObjId(null);
-		searchDisplay.setIsPageDirty(false);
-		if ((searchDisplay.getAliasNameTxtArea() != null)) {
-			searchDisplay.getAliasNameTxtArea().setText("");
-		}
-		
-		// Below lines are to clear search suggestion textbox and listbox
-		// selection after erase.
-		searchDisplay.getSearchSuggestIncludeTextBox().setText("");
-		if (searchDisplay.getIncludesNameListBox().getSelectedIndex() >= 0) {
-			searchDisplay.getIncludesNameListBox()
-					.setItemSelected(searchDisplay.getIncludesNameListBox().getSelectedIndex(), false);
-		}
 
-		searchDisplay.getIncludeView().getSelectedObjectList().clear();
-		searchDisplay.getIncludeView().setSelectedObject(null);
-		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getIncludedList(searchDisplay.getIncludeLibraryMap()));
-		searchDisplay.getIncludeView().redrawCellTable();
-	
-		// include library when erased.
-		searchDisplay.getAliasNameTxtArea().setEnabled(true);
-		searchDisplay.getIncludeView().getSaveButton().setEnabled(true);
-		searchDisplay.getIncludeView().getEraseButton().setEnabled(true);
-	}
-*/
 	/**
 	 * Adds and modify function.
 	 */
@@ -3575,58 +3546,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	public ViewDisplay getSearchDisplay() {
 		return searchDisplay;
-	}
-
-	/**
-	 * Validate CQL file on View CQL and show warning or success message
-	 * accordingly.
-	 *
-	 * @param cqlText the cql text
-	 */
-	private void validateViewCQLFile(final String cqlText) {
-		MatContext.get().getMeasureService().parseCQLStringForError(cqlText, new AsyncCallback<SaveUpdateCQLResult>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				searchDisplay.getCqlAceEditor().setText(cqlText);
-			}
-
-			@Override
-			public void onSuccess(SaveUpdateCQLResult result) {
-				searchDisplay.getCqlAceEditor().clearAnnotations();
-				searchDisplay.getCqlAceEditor().removeAllMarkers();
-				searchDisplay.getCqlAceEditor().redisplay();
-				searchDisplay.getSuccessMessageAlert().clear();
-				searchDisplay.getWarningMessageAlert().clear();
-				searchDisplay.getWarningConfirmationMessageAlert().clear();
-
-				if (!result.getCqlErrors().isEmpty()) {
-					searchDisplay.getWarningMessageAlert().createAlert(
-							MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
-					for (CQLErrors error : result.getCqlErrors()) {
-						String errorMessage = new String();
-						errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine() + " at Offset :"
-								+ error.getErrorAtOffeset());
-						int line = error.getErrorInLine();
-						int column = error.getErrorAtOffeset();
-						searchDisplay.getCqlAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(),
-								AceAnnotationType.WARNING);
-					}
-					searchDisplay.getCqlAceEditor().setText(cqlText);
-					searchDisplay.getCqlAceEditor().setAnnotations();
-					searchDisplay.getCqlAceEditor().redisplay();
-				} else {
-					searchDisplay.getSuccessMessageAlert().setVisible(true);
-					searchDisplay.getSuccessMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
-					searchDisplay.getCqlAceEditor().setText(cqlText);
-				}
-
-			}
-		});
-
 	}
 
 	/**

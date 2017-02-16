@@ -162,6 +162,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		addCQLLibraryViewHandlers();
 		addDetailDisplayViewHandlers();
 		addCQLLibrarySelectionHandlers();
+		addMostRecentWidgetSelectionHandler();
 	}
 
 	private void addCQLLibrarySelectionHandlers() {
@@ -170,16 +171,37 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onSelection(SelectionEvent<CQLLibraryDataSetObject> event) {
-				
 				final String mid = event.getSelectedItem().getId();
-				CQLLibraryDataSetObject result = event.getSelectedItem();
-				
-				fireCQLLibrarySelectedEvent(result.getId(), result.getVersion(), result.getCqlName(), true, false,
-						null);
-				fireCqlLibraryEditEvent();
+				isLibrarySelected(event.getSelectedItem());
+			}
+
+			
+		});
+	}
+	
+	private void addMostRecentWidgetSelectionHandler(){
+		
+		cqlLibraryView.getMostRecentLibraryWidget().addSelectionHandler(new SelectionHandler<CQLLibraryDataSetObject>() {
+
+			@Override
+			public void onSelection(SelectionEvent<CQLLibraryDataSetObject> event) {
+				String cqlId = event.getSelectedItem().getId();
+				isLibrarySelected(event.getSelectedItem());
 				
 			}
 		});
+		
+	}
+	
+	/**
+	 * @param event
+	 */
+	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
+		
+		
+		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), true, false,
+				null);
+		fireCqlLibraryEditEvent();
 	}
 
 	private void addDetailDisplayViewHandlers() {

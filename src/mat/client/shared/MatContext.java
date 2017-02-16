@@ -78,6 +78,9 @@ public class MatContext implements IsSerializable {
 	/** The is umls logged in. */
 	private boolean isUMLSLoggedIn = false;
 	
+	/** The do library lock updates. */
+	private boolean doLibraryLockUpdates = false;
+
 	/** The do measure lock updates. */
 	private boolean doMeasureLockUpdates = false;
 	
@@ -889,6 +892,20 @@ public class MatContext implements IsSerializable {
 			return false;
 		}
 	}
+
+	/**
+	 * Checks if is current library editable.
+	 * 
+	 * @return true, if is current library editable
+	 */
+	public boolean isCurrentLibraryEditable() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.isEditable();
+		}
+		else {
+			return false;
+		}
+	}
 	
 	/**
 	 * Checks if is current measure locked.
@@ -898,6 +915,20 @@ public class MatContext implements IsSerializable {
 	public boolean isCurrentMeasureLocked(){
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.isLocked();
+		}
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if is current library locked.
+	 * 
+	 * @return true, if is current library locked
+	 */
+	public boolean isCurrentLibraryLocked(){
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.isLocked();
 		}
 		else {
 			return false;
@@ -1069,6 +1100,18 @@ public class MatContext implements IsSerializable {
 		return measureLockService;
 	}
 	
+	/** The library lock service. */
+	private LibraryLockService libraryLockService = new LibraryLockService();
+	
+	/**
+	 * Gets the library lock service.
+	 * 
+	 * @return the library lock service
+	 */
+	public LibraryLockService getLibraryLockService(){
+		return libraryLockService;
+	}
+	
 	/*
 	 * Loading queue
 	 * used to track loading behavior in the MAT
@@ -1160,6 +1203,34 @@ public class MatContext implements IsSerializable {
 	 */
 	public void stopMeasureLockUpdate(){
 		doMeasureLockUpdates = false;
+	}
+	
+	/**
+	 * run a repeating process that updates the current library lock while flag doLibraryLockUpdates returns true.
+	 */
+	public void startLibraryLockUpdate(){
+		if (!doLibraryLockUpdates) {
+			doLibraryLockUpdates = true;
+			Timer t = new Timer() {
+				@Override
+				public void run() {
+					if (doLibraryLockUpdates) {
+						getLibraryLockService().setLibraryLock();
+					} else {
+						//terminate job
+						this.cancel();
+					}
+					
+				}
+			};
+			t.scheduleRepeating(lockUpdateTime);
+		}
+	}
+	/**
+	 * set flag doLibraryLockUpdates to false the repeating process will verify based on its value.
+	 */
+	public void stopLibraryLockUpdate(){
+		doLibraryLockUpdates = false;
 	}
 	
 	/**
@@ -2249,7 +2320,14 @@ public class MatContext implements IsSerializable {
 			currentLibraryInfo.setCqlLibraryVersion(s);;
 		}
 	}
-	
+
+	public CQLLibraryServiceAsync getLibraryService() {
+		if(cqlLibraryService == null){
+			cqlLibraryService = (CQLLibraryServiceAsync) GWT.create(CQLLibraryService.class);
+		}
+		return cqlLibraryService;
+	}
+
 	/*public GlobalCopyPaste getCopyPaste() {
 		return copyPaste;
 	}

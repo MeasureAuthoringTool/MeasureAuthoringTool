@@ -1,14 +1,18 @@
 package mat.dao.impl.clause;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import mat.client.measure.MeasureSearchFilterPanel;
@@ -69,7 +73,9 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		}
 	}
 	
-	
+	/** The lock threshold. */
+	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
+
 
 	@Override
 	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
@@ -263,4 +269,60 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		return matchesSearch;
 	}
 	
+	@Override
+	public boolean isLibraryLocked(String cqlLibraryId) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria libCriteria = session.createCriteria(CQLLibrary.class);
+		libCriteria.setProjection(Projections.property("lockedOutDate"));
+		libCriteria.add(Restrictions.eq("id", cqlLibraryId));
+		CQLLibrary libResults = (CQLLibrary) libCriteria.uniqueResult();
+		Timestamp lockedOutDate = null;
+		if (libResults != null) {
+			lockedOutDate = libResults.getLockedOutDate();
+		}
+		boolean locked = isLocked(lockedOutDate);
+		session.close();
+		return locked;
+	}
+	
+	/**
+	 * Checks if is locked.
+	 * 
+	 * @param lockedOutDate
+	 *            the locked out date
+	 * @return false if current time - lockedOutDate < the lock threshold
+	 */
+	private boolean isLocked(Date lockedOutDate) {
+		
+		boolean locked = false;
+		if (lockedOutDate == null) {
+			return locked;
+		}
+		
+		long currentTime = System.currentTimeMillis();
+		long lockedOutTime = lockedOutDate.getTime();
+		long timeDiff = currentTime - lockedOutTime;
+		locked = timeDiff < lockThreshold;
+		
+		return locked;
+	}
+	
+	@Override
+	public void updateLockedOutDate(CQLLibrary existingLibrary) {
+
+		Session session = getSessionFactory().openSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+		try {
+			CQLLibrary cqlLibrary = (CQLLibrary) session.load(CQLLibrary.class, existingLibrary.getId());
+			cqlLibrary.setId(existingLibrary.getId());
+			cqlLibrary.setLockedOutDate(null);
+			cqlLibrary.setLockedUserId(null);
+			session.update(cqlLibrary);
+			tx.commit();
+			session.close();
+		} finally {
+			rollbackUncommitted(tx);
+			closeSession(session);
+		}
+	}
 }

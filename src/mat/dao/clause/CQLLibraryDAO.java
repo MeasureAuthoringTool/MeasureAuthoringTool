@@ -10,4 +10,7 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	
 		public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize, User user, int filter);
 
+		public boolean isLibraryLocked(String id);
+
+		public void updateLockedOutDate(CQLLibrary existingLibrary);
 }

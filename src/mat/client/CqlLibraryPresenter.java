@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -23,6 +24,8 @@ import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;
@@ -32,6 +35,8 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MostRecentCQLLibraryWidget;
+import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
@@ -113,6 +118,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 		HasValue<String> getSearchString();
 
 		HasClickHandlers getSearchButton();
+
+		MostRecentCQLLibraryWidget getMostRecentLibraryWidget();
+
+		void buildMostRecentWidget();
 
 	}
 
@@ -371,8 +380,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 		//cqlLibraryView.getCreateNewItemWidget().setVisible(false);
 		int filter = cqlLibraryView.getSelectedFilter();
 		search(cqlLibraryView.getSearchString().getValue(), "StandAlone", filter,1, Integer.MAX_VALUE);
+		searchRecentLibraries();
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
+		
 		fp.add(cqlLibraryView.asWidget());
 		isSearchFilterVisible = true;
 		panel.setContent(fp);
@@ -413,6 +424,24 @@ public class CqlLibraryPresenter implements MatPresenter {
 					}
 				});
 	}
+	
+	
+	private void searchRecentLibraries() {
+		MatContext.get().getCQLLibraryService().getAllRecentCQLLibrariesForUser(MatContext.get().getLoggedinUserId(),
+				new AsyncCallback<SaveCQLLibraryResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+			@Override
+			public void onSuccess(SaveCQLLibraryResult result) {
+				cqlLibraryView.getMostRecentLibraryWidget().setResult(result);
+				cqlLibraryView.buildMostRecentWidget();;
+			}
+		});
+	}
+	
+	
 	
 	/**
 	 * Sets the sub skip embedded link.

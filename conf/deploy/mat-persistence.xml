@@ -302,6 +302,11 @@
 			class="mat.dao.impl.RecentMSRActivityLogDAO" parent="baseDAO">
 	</bean>
 	
+	
+	 <bean id="recentCQLActivityLogDAO"
+			class="mat.dao.impl.RecentCQLActivityLogDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="organizationDAO"
             class="mat.dao.impl.OrganizationDAO" parent="baseDAO">
     </bean>
@@ -366,6 +371,7 @@
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
 		<property name="measureNotesDAO" ref="measureNotesDAO"/>
+		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
 		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
 		<property name="organizationDAO" ref="organizationDAO"/>
 		<property name="cqlDAO" ref="cqlDAO"/>

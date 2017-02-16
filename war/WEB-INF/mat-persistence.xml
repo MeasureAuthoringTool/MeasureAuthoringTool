@@ -48,8 +48,10 @@
        
        
         <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_APP2"/>
-         <property name="username" value="rtadepally"/>
-        <property name="password" value="***REMOVED***"/>  
+        <!--  <property name="username" value="rtadepally"/>
+        <property name="password" value="***REMOVED***"/> -->  
+         <property name="username" value="jnarang"/>
+        <property name="password" value="***REMOVED***"/>
         
        <!--  <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_Stage_Copy"/>
          <property name="username" value="cbajikar"/>
@@ -334,6 +336,10 @@
 			class="mat.dao.impl.RecentMSRActivityLogDAO" parent="baseDAO">
 	</bean>
 	
+	 <bean id="recentCQLActivityLogDAO"
+			class="mat.dao.impl.RecentCQLActivityLogDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="organizationDAO"
             class="mat.dao.impl.OrganizationDAO" parent="baseDAO">
     </bean>
@@ -397,6 +403,7 @@
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
 		<property name="measureNotesDAO" ref="measureNotesDAO"/>
 		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
+		<property name="recentCQLActivityLogDAO" ref="recentCQLActivityLogDAO"/>
 		<property name="organizationDAO" ref="organizationDAO"/>
 		<property name="userPasswordHistoryDAO" ref="userPasswordHistoryDAO"/>
 		<property name="cqlDAO" ref="cqlDAO"/>

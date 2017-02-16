@@ -46,7 +46,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public Widget asWidget(){
 		mainPanel.clear();
-		buildView();
+		//buildView();
 		return mainPanel;
 	}
 

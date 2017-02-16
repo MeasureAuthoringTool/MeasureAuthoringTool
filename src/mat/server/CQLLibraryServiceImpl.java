@@ -2,6 +2,9 @@ package mat.server;
 
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.LockedUserInfo;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
@@ -61,4 +64,14 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().updateLockedDate(currentLibraryId, userId);
 	}
 
+	@Override
+	public SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId) {
+		// TODO Auto-generated method stub
+		return this.getCQLLibraryService().getAllRecentCQLLibrariesForUser(userId);
+	}
+	
+	@Override
+	public void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId){
+		this.getCQLLibraryService().isLibraryAvailableAndLogRecentActivity(libraryid, userId);
+	}
 }

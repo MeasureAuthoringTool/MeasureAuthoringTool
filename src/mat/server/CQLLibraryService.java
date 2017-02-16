@@ -20,14 +20,15 @@ import org.w3c.dom.NodeList;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
+import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
 import mat.model.LockedUserInfo;
+import mat.model.RecentCQLActivityLog;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibrarySet;
-import mat.model.clause.MeasureSet;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
 import mat.server.service.CQLLibraryServiceInterface;
@@ -53,6 +54,10 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Autowired
 	private ApplicationContext context;
 
+	@Autowired
+	private RecentCQLActivityLogDAO recentCQLActivityLogDAO;
+
+	
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
@@ -373,7 +378,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return cqlResult;
 		
 	}
-
+	
 	@Override
 	public boolean isLibraryLocked(String id) {
 		boolean isLocked = cqlLibraryDAO.isLibraryLocked(id);
@@ -426,4 +431,31 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		result.setId(existingmeasure.getId());
 		return result;
 	}
+	
+	
+	@Override
+	public SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId) {
+		
+		ArrayList<RecentCQLActivityLog> recentLibActivityList = (ArrayList<RecentCQLActivityLog>) recentCQLActivityLogDAO.getRecentCQLLibraryActivityLog(userId);
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		List<CQLLibraryDataSetObject> cqlLibraryDataSetObjects = new ArrayList<CQLLibraryDataSetObject> ();
+		for (RecentCQLActivityLog activityLog : recentLibActivityList) {
+			CQLLibrary library = cqlLibraryDAO.find(activityLog.getCqlId());
+			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(library);
+			cqlLibraryDataSetObjects.add(object);
+		}
+		result.setCqlLibraryDataSetObjects(cqlLibraryDataSetObjects);
+		result.setResultsTotal(cqlLibraryDataSetObjects.size());
+		
+		return result;
+	}
+	@Override
+	public void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId){
+		CQLLibraryDataSetObject library = this.findCQLLibraryByID(libraryid);
+		if(library != null){
+			recentCQLActivityLogDAO.recordRecentCQLLibraryActivity(libraryid, userId);
+		}
+	}
+	
+	
 }

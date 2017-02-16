@@ -18,6 +18,7 @@ import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MostRecentCQLLibraryWidget;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLLibraryDataSetObject;
 
@@ -47,7 +48,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
-	private VerticalPanel mostRecentVPanel = new VerticalPanel();
+	//private VerticalPanel mostRecentVPanel = new VerticalPanel();
 	
 	private CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
 	
@@ -55,6 +56,9 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
 	VerticalPanel widgetVP = new VerticalPanel();
+	
+	
+	private MostRecentCQLLibraryWidget mostRecentLibraryWidget = new MostRecentCQLLibraryWidget();
 
 	@Override
 	public VerticalPanel getWidgetVP() {
@@ -84,7 +88,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	 * 
 	 * @return VerticalPanel.
 	 */
-	public VerticalPanel buildMostRecentWidget() {
+	/*public VerticalPanel buildMostRecentWidget() {
 		mostRecentVPanel.clear();
 		mostRecentVPanel.getElement().setId("mostRecentVPanel_VerticalPanel_CQL");
 		mostRecentVPanel.setStyleName("recentSearchPanel");
@@ -98,7 +102,16 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mostRecentVPanel.add(new SpacerWidget());
 		mostRecentVPanel.add(desc);
 		return mostRecentVPanel;
+	}*/
+	
+	
+	@Override
+	public void buildMostRecentWidget() {
+		mostRecentVerticalPanel.clear();
+		mostRecentVerticalPanel.add(mostRecentLibraryWidget.buildMostRecentWidget());
 	}
+	
+	
 	
 	/*public FlowPanel buildCQLLibraryCellTable(){
 		
@@ -130,7 +143,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		// buildMostRecentWidget();
 		// mostRecentVerticalPanel.setWidth("80%");
 		mostRecentVerticalPanel.clear();
-		mostRecentVerticalPanel.add(buildMostRecentWidget());
+		buildMostRecentWidget();
 		
 	//	mainHorizontalPanel.add(new SpacerWidget());
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
@@ -262,5 +275,13 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public HasClickHandlers getSearchButton() {
 		return searchFilterWidget.getSearchButton();
 		
+	}
+	@Override
+	public MostRecentCQLLibraryWidget getMostRecentLibraryWidget() {
+		return mostRecentLibraryWidget;
+	}
+
+	public void setMostRecentLibraryWidget(MostRecentCQLLibraryWidget mostRecentLibraryWidget) {
+		this.mostRecentLibraryWidget = mostRecentLibraryWidget;
 	}
 }

@@ -91,13 +91,52 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onLibrarySelected(CQLLibrarySelectedEvent event) {
 				isCQLWorkSpaceLoaded = false;
-				beforeDisplay();
+				if (event.getCqlLibraryId() != null) {
+					isCQLWorkSpaceLoaded = true;
+					//getMeasureDetail();
+					logRecentActivity();
+				} else {
+					displayEmpty();
+				}
+				
+				
+				//beforeDisplay();
 			}
+
+			
 			
 		});
 		
 	}
 
+	private void logRecentActivity() {
+		MatContext.get().getCQLLibraryService().isLibraryAvailableAndLogRecentActivity(MatContext.get().getCurrentCQLLibraryId(), 
+				MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+					//	getCQLData();
+						displayCQLView();
+						
+					}
+				});
+		
+	}
+	
+	private void displayCQLView(){
+		panel.clear();
+		searchDisplay.buildView();
+		panel.add(searchDisplay.asWidget());
+	}
+	
+	
+	
 	@Override
 	public void beforeClosingDisplay() {
 		// TODO Auto-generated method stub
@@ -113,7 +152,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			panel.clear();
 			panel.add(searchDisplay.asWidget());
 			if (!isCQLWorkSpaceLoaded) { // this check is made so that when CQL is clicked from CQL library, its not called twice.
-				getCQLData();
+				//getCQLData();
 				isCQLWorkSpaceLoaded = true;
 			} else {
 				isCQLWorkSpaceLoaded = false;

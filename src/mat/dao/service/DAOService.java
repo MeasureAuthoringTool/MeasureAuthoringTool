@@ -17,6 +17,7 @@ import mat.dao.MeasureValidationLogDAO;
 import mat.dao.ObjectStatusDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.QualityDataSetDAO;
+import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
@@ -142,6 +143,7 @@ public class DAOService {
 	
 	/** The recent msr activity log dao. */
 	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
+	private RecentCQLActivityLogDAO recentCQLActivityLogDAO;
 	
 	/** The security role dao. */
 	private SecurityRoleDAO securityRoleDAO;
@@ -978,6 +980,15 @@ public class DAOService {
 
 	public void setCqlLibrarySetDAO(CQLLibrarySetDAO cqlLibrarySetDAO) {
 		this.cqlLibrarySetDAO = cqlLibrarySetDAO;
+	}
+	
+
+	public RecentCQLActivityLogDAO getRecentCQLActivityLogDAO() {
+		return recentCQLActivityLogDAO;
+	}
+
+	public void setRecentCQLActivityLogDAO(RecentCQLActivityLogDAO recentCQLActivityLogDAO) {
+		this.recentCQLActivityLogDAO = recentCQLActivityLogDAO;
 	}
 	
 }

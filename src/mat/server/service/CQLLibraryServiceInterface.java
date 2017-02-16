@@ -22,11 +22,16 @@ public interface CQLLibraryServiceInterface {
 	XmlProcessor loadCQLXmlTemplateFile();
 	
 	public SaveUpdateCQLResult getCQLData(String id);
-	
+
 	public boolean isLibraryLocked(String id);
 
 	public SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
 
-	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);	
+	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
+	
+	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
+
+	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
+	
 	
 }

@@ -2,6 +2,7 @@ package mat.client.measure.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import mat.model.User;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -16,12 +17,18 @@ public interface CQLLibraryServiceAsync {
 
 
 	void getCQLData(String id, AsyncCallback<SaveUpdateCQLResult> callback);
-	
+
 	void isLibraryLocked(String id, AsyncCallback<Boolean> isLocked);
 	
 	void resetLockedDate(String measureId,String userId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void updateLockedDate(String currentLibraryId, String loggedinUserId,AsyncCallback<SaveCQLLibraryResult> asyncCallback);
+
+	
+	void getAllRecentCQLLibrariesForUser(String userId, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId, AsyncCallback<Void> callback);
+	
 	
 
 }

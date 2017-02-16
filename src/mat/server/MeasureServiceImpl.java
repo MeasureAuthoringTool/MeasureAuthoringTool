@@ -515,12 +515,28 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTOList,
+			String measureId, String expansionProfile) {
+		this.getMeasureLibraryService().updateCQLMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionProfile);
+	}
+	
+	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getDefaultSDEFromMeasureXml(java.lang.String)
 	 */
 	@Override
 	public QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId) {
-		// TODO Auto-generated method stub
 		return this.getMeasureLibraryService().getDefaultSDEFromMeasureXml(measureId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getDefaultCQLSDEFromMeasureXml(java.lang.String)
+	 */
+	@Override
+	public CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId) {
+		return this.getMeasureLibraryService().getDefaultCQLSDEFromMeasureXml(measureId);
 	}
 	
 	/* (non-Javadoc)

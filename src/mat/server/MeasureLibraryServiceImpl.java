@@ -3862,6 +3862,47 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		// }
 	}
+	
+	/**
+	 * Update measure xml for qdm.
+	 *
+	 * @param modifyWithDTO
+	 *            the modify with dto
+	 * @param xmlprocessor
+	 *            the xmlprocessor
+	 * @param expansionIdentifier
+	 *            the expansion identifier
+	 */
+	private void updateCQLMeasureXmlForQDM(final CQLQualityDataSetDTO modifyWithDTO, XmlProcessor xmlprocessor,
+			String expansionIdentifier) {
+		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/cqlLookUp/valuesets/valueset[@uuid='" + modifyWithDTO.getUuid() + "']";
+		NodeList nodesElementLookUp;
+		try {
+			nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP,
+					xmlprocessor.getOriginalDoc(), XPathConstants.NODESET);
+
+			for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
+				Node newNode = nodesElementLookUp.item(i);
+				newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
+				if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
+						newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(expansionIdentifier);
+					} else {
+						newNode.getAttributes().removeNamedItem("expansionIdentifier");
+					}
+				} else {
+					if (!StringUtils.isEmpty(expansionIdentifier)) {
+						Attr expansionIdentifierAttr = xmlprocessor.getOriginalDoc()
+								.createAttribute("expansionIdentifier");
+						expansionIdentifierAttr.setNodeValue(expansionIdentifier);
+						newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -3901,6 +3942,55 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				for (QualityDataSetDTO dto : modifyWithDTOList) {
 					updateMeasureXmlForQDM(dto, processor, expansionIdentifier);
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+
+			model.setXml(processor.transform(processor.getOriginalDoc()));
+			getService().saveMeasureXml(model);
+		}
+
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.server.service.MeasureLibraryService#
+	 * updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	public void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTOList, String measureId,
+			String expansionIdentifier) {
+		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXMLForExpansionIdentifier Start : Measure Id :: "
+				+ measureId);
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		if (model != null) {
+			XmlProcessor processor = new XmlProcessor(model.getXml());
+			String XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR = "/measure/cqlLookUp/valuesets";
+			try {
+				Node nodesElementLookUp = (Node) xPath.evaluate(XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR,
+						processor.getOriginalDoc(), XPathConstants.NODE);
+				if (nodesElementLookUp != null) {
+					if (nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
+						if (!StringUtils.isBlank(expansionIdentifier)) {
+							nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier")
+									.setNodeValue(expansionIdentifier);
+						} else {
+							nodesElementLookUp.getAttributes().removeNamedItem("vsacExpIdentifier");
+						}
+					} else {
+						if (!StringUtils.isEmpty(expansionIdentifier)) {
+							Attr vsacExpIdentifierAttr = processor.getOriginalDoc()
+									.createAttribute("vsacExpIdentifier");
+							vsacExpIdentifierAttr.setNodeValue(expansionIdentifier);
+							nodesElementLookUp.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+						}
+					}
+				}
+				for (CQLQualityDataSetDTO dto : modifyWithDTOList) {
+					updateCQLMeasureXmlForQDM(dto, processor, expansionIdentifier);
 				}
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();

@@ -15,6 +15,7 @@ import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.DeleteConfirmationMessageAlert;
@@ -107,6 +108,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/** The search display. */
 	private ViewDisplay searchDisplay;
 
+	/** The service. */
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
 	/** The modify value set dto. */
 	private CQLQualityDataSetDTO modifyValueSetDTO;
 
@@ -4179,20 +4183,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						return;
 					}
 					searchDisplay.getQdmView().getSearchHeader().setText("Search");
-					// String selectedValue =
-					// searchDisplay.getQdmView().getExpValue(searchDisplay.getQdmView().getVSACExpansionIdentifierListBox());
-					/*
-					 * if(!selectedValue.equalsIgnoreCase("--Select--")){
-					 * expIdentifierToAllQDM = selectedValue;
-					 * //updateAllQDMsWithExpProfile(appliedQDMList); } else
-					 * if(!searchDisplay.getQdmView().getDefaultExpIdentifierSel
-					 * ().getValue()){ expIdentifierToAllQDM = "";
-					 * //updateAllQDMsWithExpProfile(appliedQDMList); } else {
-					 * searchDisplay.getQdmView().getErrorMessageDisplay().
-					 * setMessage(MatContext.get()
-					 * .getMessageDelegate().getVsacExpansionIdentifierSelection
-					 * ()); }
-					 */
+					int selectedindex = searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getSelectedIndex();
+					String selectedValue =
+							searchDisplay.getQdmView().getVSACExpansionIdentifierListBox().getItemText(selectedindex);
+
+					if(!selectedValue.equalsIgnoreCase("--Select--")){
+						expIdentifierToAllQDM = selectedValue;
+						updateAllQDMsWithExpProfile(appliedValueSetTableList); } 
+					else if(!searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()){ 
+						expIdentifierToAllQDM = "";
+						updateAllQDMsWithExpProfile(appliedValueSetTableList); } else {
+							searchDisplay.getErrorMessageAlert()
+							.createAlert(MatContext.get()
+									.getMessageDelegate().getVsacExpansionIdentifierSelection
+									());}
 				}
 			}
 		});
@@ -4222,7 +4226,84 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				});
 
 	}
-
+	
+	/**
+	 * Update all applied QDM Elements with default Expansion Identifier.
+	 *
+	 * @param list the list
+	 */
+	private void updateAllQDMsWithExpProfile(List<CQLQualityDataSetDTO> list) {
+		List<CQLQualityDataSetDTO> modifiedCqlQDMList = new ArrayList<CQLQualityDataSetDTO>();
+		for (CQLQualityDataSetDTO cqlQualityDataSetDTO : list) {
+			if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
+				cqlQualityDataSetDTO.setVersion("1.0");
+				if (!expIdentifierToAllQDM.isEmpty()) {
+					cqlQualityDataSetDTO.setExpansionIdentifier(expIdentifierToAllQDM);
+				}
+				if (searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()) {
+					modifiedCqlQDMList.add(cqlQualityDataSetDTO);
+				}
+			}
+		}
+		//Updating all SDE
+		updateAllSuppleDataElementsWithExpIdentifier(modifiedCqlQDMList);
+	}
+	
+	/**
+	 * Update Expansion Identifier in Default Four SDE's.
+	 */
+	protected void updateAllSuppleDataElementsWithExpIdentifier(final List<CQLQualityDataSetDTO> modifiedCqlQDMList) {
+		String measureId =  MatContext.get().getCurrentMeasureId();
+		service.getDefaultCQLSDEFromMeasureXml(measureId, new AsyncCallback<CQLQualityDataModelWrapper>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+			@Override
+			public void onSuccess(CQLQualityDataModelWrapper result) {
+				for (CQLQualityDataSetDTO cqlQualityDataSetDTO : result.getQualityDataDTO()) {
+					if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
+						cqlQualityDataSetDTO.setVersion("1.0");
+						cqlQualityDataSetDTO.setExpansionIdentifier(expIdentifierToAllQDM);
+						modifiedCqlQDMList.add(cqlQualityDataSetDTO);
+					}
+				}
+				updateAllInMeasureXml(modifiedCqlQDMList);
+			}
+		});
+	}
+	
+	/**
+	 * Update all in measure xml.
+	 *
+	 * @param modifiedQDMList the modified qdm list
+	 */
+	private void updateAllInMeasureXml(List<CQLQualityDataSetDTO> modifiedCqlQDMList) {
+		String measureId =  MatContext.get().getCurrentMeasureId();
+		service.updateCQLMeasureXMLForExpansionIdentifier(modifiedCqlQDMList, measureId, expIdentifierToAllQDM,
+				new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				getAppliedQDMList();
+				if (!searchDisplay.getQdmView().getDefaultExpIdentifierSel().getValue()) {
+					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+							.getMessageDelegate().getDefaultExpansionIdRemovedMessage());
+					
+				} else {
+					searchDisplay.getSuccessMessageAlert().createAlert(MatContext.get()
+							.getMessageDelegate().getVsacProfileAppliedToQdmElements());
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				
+			}
+		});
+	}
+	
 	/**
 	 * Search value set in vsac.
 	 *

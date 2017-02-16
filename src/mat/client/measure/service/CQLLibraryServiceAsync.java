@@ -17,6 +17,11 @@ public interface CQLLibraryServiceAsync {
 
 	void getCQLData(String id, AsyncCallback<SaveUpdateCQLResult> callback);
 	
+	void isLibraryLocked(String id, AsyncCallback<Boolean> isLocked);
+	
+	void resetLockedDate(String measureId,String userId, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void updateLockedDate(String currentLibraryId, String loggedinUserId,AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 	
 
 }

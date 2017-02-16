@@ -537,12 +537,29 @@ public interface MeasureService extends RemoteService {
 	void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
 	
 	/**
+	 * Update measure xml for expansion identifier.
+	 *
+	 * @param modifyWithDTO the modify with dto
+	 * @param measureId the measure id
+	 * @param expansionProfile the expansion profile
+	 */
+	void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
+	
+	/**
 	 * Method to Get Default 4 Supplemental Data Elements for give Measure.
 	 *
 	 * @param measureId the measure id
 	 * @return QualityDataModelWrapper
 	 */
 	QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId);
+	
+	/**
+	 * Method to Get Default 4 Supplemental Data Elements for give Measure.
+	 *
+	 * @param measureId the measure id
+	 * @return CQLQualityDataModelWrapper
+	 */
+	CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId);
 	
 	/**
 	 * Parses the cql.

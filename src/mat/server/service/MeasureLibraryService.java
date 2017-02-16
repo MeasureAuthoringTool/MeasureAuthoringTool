@@ -760,4 +760,7 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 
+	void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTOList, String measureId,
+			String expansionProfile);
+
 }

@@ -598,6 +598,17 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	
 	/**
+	 * Update CQL measure xml for expansion identifier.
+	 *
+	 * @param list the list
+	 * @param measureId the measure id
+	 * @param expansionProfile the expansion profile
+	 * @param callback the callback
+	 */
+	void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> list, String measureId, String expansionProfile,
+			AsyncCallback<Void> callback);
+	
+	/**
 	 * Gets the default sde from measure xml.
 	 *
 	 * @param measureId the measure id
@@ -605,6 +616,15 @@ public interface MeasureServiceAsync {
 	 * @return the default sde from measure xml
 	 */
 	void getDefaultSDEFromMeasureXml(String measureId, AsyncCallback<QualityDataModelWrapper> callback);
+	
+	/**
+	 * Gets the default sde from measure xml.
+	 *
+	 * @param measureId the measure id
+	 * @param callback the callback
+	 * @return the default sde from measure xml
+	 */
+	void getDefaultCQLSDEFromMeasureXml(String measureId, AsyncCallback<CQLQualityDataModelWrapper> callback);
 	
 	/**
 	 * Parses the cql.

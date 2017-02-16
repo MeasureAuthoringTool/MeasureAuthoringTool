@@ -455,7 +455,7 @@ public class CQLIncludeLibraryView {
 			cellTablePanel.add(cellTablePanelBody);
 			
 		} else {
-			HTML desc = new HTML("<p> No libraries available.</p>");
+			HTML desc = new HTML("<p> No available libraries.</p>");
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}

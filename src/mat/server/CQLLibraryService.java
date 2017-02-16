@@ -413,7 +413,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Override
 	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId) {
 		CQLLibrary existingmeasure = null;
-		LockedUserInfo lockedUserInfo = null;
+		LockedUserInfo lockedUserInfo = new LockedUserInfo();
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		if ((currentLibraryId != null) && (userId != null)) {
 			existingmeasure = cqlLibraryDAO.find(currentLibraryId);

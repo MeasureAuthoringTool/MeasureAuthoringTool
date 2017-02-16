@@ -74,6 +74,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 *            the css style disclosure panel
 	 */
 	public SearchWidgetWithFilter(String cssStyleTopPanel, String cssStyleDisclosurePanel, String forView) {
+		mainFocusPanel = new FocusPanel();
 		searchButton = new Button("Search");
 		searchButton.setType(ButtonType.PRIMARY);
 		searchButton.setTitle("Search");
@@ -92,7 +93,12 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		fp.getElement().setId("SearchFilterWidget_HorizontalPanel_" + forView);
 		createDisclosurePanel(horizontalPanel, forView);
-		horizontalPanel.add(searchInput);
+		HorizontalPanel searchInputHPanel = new HorizontalPanel();
+		searchInputHPanel.getElement().setId("SearchFilterWidget_SearchInputHPanel_" + forView);
+		searchInputHPanel.add(searchInput);
+		
+		mainFocusPanel.add(searchInputHPanel);
+		horizontalPanel.add(mainFocusPanel);
 		horizontalPanel.add(searchButton);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed_" + forView),
 				"SearchWidgetDisplayed_" + forView);
@@ -111,11 +117,11 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");
 		element.setAttribute("role", "alert");
-		mainFocusPanel = new FocusPanel();
-		mainFocusPanel.add(topPanel);
-		mainFocusPanel.setStyleName("margin-left");
+		
+		//mainFocusPanel.add(topPanel);
+	//	mainFocusPanel.setStyleName("margin-left");
 		// All composites must call initWidget() in their constructors.
-		initWidget(mainFocusPanel);
+		initWidget(topPanel);
 	}
 
 	/**

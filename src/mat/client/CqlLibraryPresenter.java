@@ -24,8 +24,6 @@ import mat.client.clause.cqlworkspace.CQLLibraryDetailView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;
@@ -33,10 +31,9 @@ import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
-import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentCQLLibraryWidget;
-import mat.client.shared.MostRecentMeasureWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLModel;
@@ -347,13 +344,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 		
 		
-		TextBox searchWidget = (TextBox) (cqlLibraryView.getSearchString());
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+		//TextBox searchWidget = (TextBox) (cqlLibraryView.getSearchString());
+		cqlLibraryView.getSearchFilterWidget().getMainFocusPanel().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) cqlLibraryView.getSearchButton()).click();
+					cqlLibraryView.getSearchFilterWidget().getSearchButton().click();
 				}
 			}
 		});

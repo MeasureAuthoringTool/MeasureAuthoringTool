@@ -2670,7 +2670,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
+	/*	TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -2679,7 +2679,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 					((Button) searchDisplay.getSearchButton()).click();
 				}
 			}
+		});*/
+		
+		searchDisplay.getMeasureSearchFilterWidget().getMainFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					searchDisplay.getMeasureSearchFilterWidget().getSearchButton().click();
+				}
+			}
 		});
+		
 		//added by hari
 		searchDisplay.getAdminSearchButton().addClickHandler(
 				new ClickHandler() {

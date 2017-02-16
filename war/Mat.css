@@ -1971,9 +1971,13 @@ padding: 2px;
     padding-bottom: 8px;
     padding-top: 8px;
     font-size:.8em;
-    margin-left:85px; 
+   /*  margin-left:85px; */ 
     margin-right:auto;
     margin-top:8px;
+}
+
+.margin-left{
+	margin-left:85px;
 }
 
 .createNewItemWidget{

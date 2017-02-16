@@ -12,6 +12,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -62,6 +63,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 * Selected filter value - {@link Integer}.
 	 */
 	private int selectedFilter;
+	private FocusPanel mainFocusPanel ;
 
 	/**
 	 * Default Constructor.
@@ -109,8 +111,11 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");
 		element.setAttribute("role", "alert");
+		mainFocusPanel = new FocusPanel();
+		mainFocusPanel.add(topPanel);
+		mainFocusPanel.setStyleName("margin-left");
 		// All composites must call initWidget() in their constructors.
-		initWidget(topPanel);
+		initWidget(mainFocusPanel);
 	}
 
 	/**
@@ -370,5 +375,9 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 */
 	public final void setSelectedFilter(int selectedFilter) {
 		this.selectedFilter = selectedFilter;
+	}
+
+	public FocusPanel getMainFocusPanel() {
+		return mainFocusPanel;
 	}
 }

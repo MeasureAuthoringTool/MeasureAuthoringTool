@@ -159,7 +159,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 			boolean hasList = false;
 			for (List<CQLLibrary> list : libraryList) {
 				String cqlsetId = list.get(0).getCqlSet().getId();
-				if (cqlLib.getMeasureSet().getId().equalsIgnoreCase(cqlsetId)) {
+				if (cqlLib.getCqlSet().getId().equalsIgnoreCase(cqlsetId)) {
 					list.add(cqlLib);
 					hasList = true;
 					break;

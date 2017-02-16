@@ -849,12 +849,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public static interface AddEditComponentMeasuresDisplay {
 		
-		/**
-		 * Gets the measure search filter widget.
-		 *
-		 * @return the measure search filter widget
-		 */
-		SearchWidgetWithFilter getMeasureSearchFilterWidget();
+		
 		
 		/**
 		 * Gets the selected filter.

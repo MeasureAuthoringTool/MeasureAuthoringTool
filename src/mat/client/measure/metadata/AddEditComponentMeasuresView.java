@@ -83,10 +83,6 @@ public class AddEditComponentMeasuresView implements
 	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 
-	/** The measure search filter widget. */
-	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter(
-			"searchFilter", "measureLibraryFilterDisclosurePanel","forMeasure");
-
 	/** The search widget. */
 	private SearchWidget searchWidget = new SearchWidget("Search", 
             "Search", "searchWidget");
@@ -495,17 +491,7 @@ public class AddEditComponentMeasuresView implements
 		return successMessages;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #getMeasureSearchFilterWidget()
-	 */
-	@Override
-	public SearchWidgetWithFilter getMeasureSearchFilterWidget() {
-		return measureSearchFilterWidget;
-	}
+	
 
 	/*
 	 * (non-Javadoc)

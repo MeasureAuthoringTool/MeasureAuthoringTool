@@ -219,7 +219,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlLeftNavBarPanelView.unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		cqlLeftNavBarPanelView.resetMessageDisplay();
-
 		VerticalPanel includesTopPanel = new VerticalPanel();
 		inclView.resetToDefault();
 		// building searchWidget for adding new aliasName
@@ -233,6 +232,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		includesTopPanel.setWidth("700px");
 		includesTopPanel.setStyleName("marginLeft15px");
 		vp.add(includesTopPanel);
+		cqlLeftNavBarPanelView.addIncludeLibraryHandlers();
 		mainFlowPanel.add(vp);
 	}
 
@@ -250,6 +250,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildParameterLibraryView() {
 		cqlLeftNavBarPanelView.unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
+		cqlLeftNavBarPanelView.addParameterEventHandler();
 		mainFlowPanel.add(cqlParametersView.getView());
 
 	}
@@ -268,6 +269,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildDefinitionLibraryView() {
 		cqlLeftNavBarPanelView.unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
+		cqlLeftNavBarPanelView.addDefineEventHandlers();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
 	}
 
@@ -285,6 +287,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildFunctionLibraryView() {
 		cqlLeftNavBarPanelView.unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
+		cqlLeftNavBarPanelView.addFuncEventHandlers();
 		mainFlowPanel.add(cqlFunctionsView.getView());
 	}
 

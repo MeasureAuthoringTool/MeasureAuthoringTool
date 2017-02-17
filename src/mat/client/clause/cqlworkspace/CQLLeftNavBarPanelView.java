@@ -316,15 +316,29 @@ public class CQLLeftNavBarPanelView {
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
 		functionCollapse = createFunctionCollapsablePanel();
-		buildLeftHandNavNar();
+		buildLeftHandNavBar();
 		return rightHandNavPanel;
 	}
 	
+
+	/**
+	 * Builds the measure lib CQL view.
+	 *
+	 * @return the vertical panel
+	 *//*
+	public VerticalPanel buildCQLStandCQLView(){
+		includesCollapse = createIncludesCollapsablePanel();
+		paramCollapse = createParameterCollapsablePanel();
+		defineCollapse = createDefineCollapsablePanel();
+		functionCollapse = createFunctionCollapsablePanel();
+		buildLeftHandNavBar();
+		return rightHandNavPanel;
+	}*/
 	
 	/**
 	 * Builds the left hand nav nar.
 	 */
-	private void buildLeftHandNavNar() {
+	private void buildLeftHandNavBar() {
 		
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
@@ -708,7 +722,7 @@ public class CQLLeftNavBarPanelView {
 	/**
 	 * Adds the parameter event handler.
 	 */
-	private void addParameterEventHandler() {
+	public void addParameterEventHandler() {
 
 		getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
@@ -777,7 +791,7 @@ public class CQLLeftNavBarPanelView {
 	/**
 	 * Adds the define event handlers.
 	 */
-	private void addDefineEventHandlers() {
+	public void addDefineEventHandlers() {
 		getDefineNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -848,7 +862,7 @@ public class CQLLeftNavBarPanelView {
 	/**
 	 * Adds the Function event handlers.
 	 */
-	private void addFuncEventHandlers() {
+	public void addFuncEventHandlers() {
 		getFuncNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -921,7 +935,7 @@ public class CQLLeftNavBarPanelView {
 	/**
 	 * Adds the include library handlers.
 	 */
-	private void addIncludeLibraryHandlers() {
+	public void addIncludeLibraryHandlers() {
 
 		getIncludesNameListbox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override

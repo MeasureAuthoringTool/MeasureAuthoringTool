@@ -1220,7 +1220,7 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 		try{
 			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
 			File tempDir = test.getParentFile();
-			File folder = new File(tempDir.getAbsolutePath()+"\\"+UUIDUtilClient.uuid());
+			File folder = new File(tempDir.getAbsolutePath()+"//"+UUIDUtilClient.uuid());
 			folder.mkdir();
 			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
 			fileList.add(mainCQLFile);

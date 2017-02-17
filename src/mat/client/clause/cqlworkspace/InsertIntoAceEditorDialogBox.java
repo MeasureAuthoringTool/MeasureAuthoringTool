@@ -765,8 +765,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewParameterList().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewParameterList().get(i)
+						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList().size(); i++) {
+							listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList().get(i)
 									.getParameterName());
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
@@ -777,8 +777,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewFunctions().size(); i++) {
-							CQLFunctions functions = searchDisplay.getViewFunctions().get(i);
+						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions().size(); i++) {
+							CQLFunctions functions = searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions().get(i);
 							String funcArg = getFunctionArgumentValueBuilder(functions);
 							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
 							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
@@ -791,8 +791,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getViewDefinitions().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getViewDefinitions().get(i)
+						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions().size(); i++) {
+							listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions().get(i)
 									.getDefinitionName());
 						}
 					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
@@ -823,7 +823,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getAppliedQdmList().size(); i++) {
+						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmList().size(); i++) {
 							/*if(!searchDisplay.getAppliedQdmList().get(i)
 									.getDataType().equalsIgnoreCase("attribute")){
 								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
@@ -838,7 +838,7 @@ public class InsertIntoAceEditorDialogBox {
 								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
 									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
 								} else {*/
-									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName());
+									listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmList().get(i).getCodeListName());
 								//}
 								
 							//}
@@ -861,9 +861,9 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						searchDisplay.resetMessageDisplay();
+						searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
 						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
-						searchDisplay.setIsPageDirty(true);
+						searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 					}else {
 						listAllItemNames.clear();
 						availableDatatypes.clear();

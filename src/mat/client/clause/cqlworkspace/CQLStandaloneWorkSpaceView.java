@@ -28,25 +28,80 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	/** The message panel. */
 	private HorizontalPanel messagePanel = new HorizontalPanel();
 	
-	@Override
-	public VerticalPanel getMainPanel() {
-		return mainPanel;
+	
+	/** The qdm view. */
+	private CQLQDMAppliedView qdmView;
+
+	/** The incl view. */
+	private CQLIncludeLibraryView inclView;
+
+	/** The general information view. */
+	private CQLGeneralInformationView generalInformationView;
+	
+	/** The cql parameters view. */
+	private CQLParametersView cqlParametersView;
+	
+	/** The cql definitions view. */
+	private CQlDefinitionsView cqlDefinitionsView;
+	
+	/** The cql functions view. */
+	private CQLFunctionsView cqlFunctionsView;
+	
+	/** The cql view CQL view. */
+	private CQLViewCQLView cqlViewCQLView;
+	
+	/** The cql left nav bar panel view. */
+	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
+	
+	/** The clicked menu. */
+	public String clickedMenu = "general";
+
+	/** The clicked menu. */
+	public String nextClickedMenu = "general";
+	
+	
+	public CQLStandaloneWorkSpaceView() {
+		generalInformationView = new CQLGeneralInformationView();
+		cqlParametersView = new CQLParametersView();
+		cqlDefinitionsView = new CQlDefinitionsView();
+		cqlFunctionsView = new CQLFunctionsView();
+		qdmView = new CQLQDMAppliedView();
+		inclView = new CQLIncludeLibraryView();
+		cqlViewCQLView = new CQLViewCQLView();
+		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView(inclView, cqlParametersView, 
+				cqlDefinitionsView, cqlFunctionsView, cqlViewCQLView);
+		
+		resetAll();
 	}
+	
 
 	@Override
 	public void buildView() {
+		resetAll();
+		cqlLeftNavBarPanelView.unsetEachSectionSelectedObject();
+		
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLStandaloneWorkSpaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
-		messagePanel.setStyleName("marginLeft15px");
-		mainPanel.add(messagePanel);
+		
+		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
+
+		cqlLeftNavBarPanelView.resetMessageDisplay();
+
+		mainHPPanel.addStyleName("cqlRightMessage");
+		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
+		mainHPPanel.add(mainPanel);
 		
 	}
 	@Override
 	public Widget asWidget(){
 		mainPanel.clear();
-		//buildView();
+		return mainPanel;
+	}
+	
+	@Override
+	public VerticalPanel getMainPanel() {
 		return mainPanel;
 	}
 
@@ -63,6 +118,39 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public FlowPanel getMainFlowPanel() {
 		return mainFlowPanel;
+	}
+	
+	private void resetAll() {
+		mainFlowPanel.clear();
+		cqlLeftNavBarPanelView.resetAll();
+		cqlLeftNavBarPanelView.setIsPageDirty(false);
+		cqlLeftNavBarPanelView.resetMessageDisplay();
+	}
+
+
+	@Override
+	public String getClickedMenu() {
+		return clickedMenu;
+	}
+
+    @Override
+	public void setClickedMenu(String clickedMenu) {
+		this.clickedMenu = clickedMenu;
+	}
+
+    @Override
+	public String getNextClickedMenu() {
+		return nextClickedMenu;
+	}
+
+    @Override
+	public void setNextClickedMenu(String nextClickedMenu) {
+		this.nextClickedMenu = nextClickedMenu;
+	}
+
+    @Override
+	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView() {
+		return cqlLeftNavBarPanelView;
 	}
 
 }

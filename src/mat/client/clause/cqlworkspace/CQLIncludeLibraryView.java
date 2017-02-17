@@ -927,6 +927,16 @@ public class CQLIncludeLibraryView {
 		this.observer = observer;
 	}
 	
+	/**
+	 * Sets the widget read only.
+	 *
+	 * @param isEditable the new widget read only
+	 */
+	public void setWidgetReadOnly(boolean isEditable) {
+
+		getAliasNameTxtArea().setEnabled(isEditable);
+		getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
+	}
 	
 	
 }

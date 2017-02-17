@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
+import mat.client.shared.MatContext;
 import mat.client.shared.QDMInputValidator;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
@@ -283,6 +284,10 @@ public class CQLServiceImpl implements CQLService {
 			CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
 		
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+			return null;
+		}
+		
 		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(
 				measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -343,7 +348,7 @@ public class CQLServiceImpl implements CQLService {
 									.getOriginalDoc()));
 							getService().saveMeasureXml(measureXMLModel);
 							String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
-							parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getFunctionLogic());
+							parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getFunctionLogic());
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj,
 									currentObj, functionsList);
 							result.setSuccess(true);
@@ -410,7 +415,7 @@ public class CQLServiceImpl implements CQLService {
 								measureXMLModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(measureXMLModel);
 								String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
-								parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getFunctionLogic());
+								parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getFunctionLogic());
 								functionsList.add(currentObj);
 								wrapper.setCqlFunctionsList(functionsList);
 								result.setSuccess(true);
@@ -456,7 +461,8 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId,
 			CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
-		if(currentObj.isReadOnly()){
+		
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 			return null;
 		}
 		
@@ -472,6 +478,10 @@ public class CQLServiceImpl implements CQLService {
 			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
 			if (toBeModifiedObj != null) {
+				
+				if(toBeModifiedObj.isReadOnly()){
+					return null;
+				}
 				currentObj.setId(toBeModifiedObj.getId());
 				if (!toBeModifiedObj.getParameterName().equalsIgnoreCase(
 						currentObj.getParameterName())) {
@@ -511,7 +521,7 @@ public class CQLServiceImpl implements CQLService {
 									.getOriginalDoc()));
 							getService().saveMeasureXml(measureXMLModel);
 							String name = "parameter" + " \"" + currentObj.getParameterName() + "\""; 
-							parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getParameterLogic());
+							parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getParameterLogic());
 							wrapper = modfiyCQLParameterList(toBeModifiedObj,
 									currentObj, parameterList);
 							result.setSuccess(true);
@@ -566,7 +576,7 @@ public class CQLServiceImpl implements CQLService {
 								getService().saveMeasureXml(measureXMLModel);
 								String name = "parameter" + " \"" + currentObj.getParameterName() + "\""; 
 								
-								parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getParameterLogic());
+								parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getParameterLogic());
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
 								result.setSuccess(true);
@@ -612,7 +622,9 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
 			CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList) {
-		
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+			return null;
+		}
 		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(
 				measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -625,6 +637,10 @@ public class CQLServiceImpl implements CQLService {
 			
 			XmlProcessor processor = new XmlProcessor(measureXMLModel.getXml());
 			if (toBeModifiedObj != null) {
+				
+				if(toBeModifiedObj.isSupplDataElement()){
+					return null;
+				}
 				currentObj.setId(toBeModifiedObj.getId());
 				// if the modified Name and current Name are not same
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(
@@ -668,7 +684,7 @@ public class CQLServiceImpl implements CQLService {
 									.getOriginalDoc()));
 							getService().saveMeasureXml(measureXMLModel);
 							String name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
-							parseCQLDefForErrors(result, measureXMLModel,name, currentObj.getDefinitionLogic());
+							parseCQLExpressionForErrors(result, measureXMLModel,name, currentObj.getDefinitionLogic());
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj,
 									currentObj, definitionList);
 							result.setSuccess(true);
@@ -689,7 +705,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				currentObj.setId(UUID.randomUUID().toString());
 				String name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
-				parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getDefinitionLogic());
+				parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getDefinitionLogic());
 				isDuplicate = validator.validateForSpecialChar(currentObj
 						.getDefinitionName());
 				if (isDuplicate) {
@@ -716,7 +732,7 @@ public class CQLServiceImpl implements CQLService {
 								measureXMLModel.setXml(processor.getOriginalXml());
 								getService().saveMeasureXml(measureXMLModel);
 								name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
-								parseCQLDefForErrors(result, measureXMLModel, name, currentObj.getDefinitionLogic());
+								parseCQLExpressionForErrors(result, measureXMLModel, name, currentObj.getDefinitionLogic());
 								result.setSuccess(true);
 								result.setDefinition(currentObj);
 								definitionList.add(currentObj);
@@ -762,6 +778,10 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList) {
+		
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+			return null;
+		}
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
 				measureId);
@@ -1973,7 +1993,7 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 	
 	
 	/**
-	 * Parses the CQL def for errors.
+	 * Parses the CQL Expression for errors.
 	 *
 	 * @param result the result
 	 * @param measureId the measure id
@@ -1981,7 +2001,7 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 	 * @param logic the logic
 	 * @return the save update CQL result
 	 */
-	private SaveUpdateCQLResult parseCQLDefForErrors(SaveUpdateCQLResult result, MeasureXmlModel measureXMLModel, String name, String logic) {
+	private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, MeasureXmlModel measureXMLModel, String name, String logic) {
 		
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXMLModel.getXml());
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, name).toString();

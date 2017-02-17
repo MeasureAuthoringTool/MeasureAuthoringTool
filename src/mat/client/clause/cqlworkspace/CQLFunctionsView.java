@@ -56,9 +56,11 @@ import mat.client.util.MatTextBox;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.ClickableSafeHtmlCell;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author jnarang
+ * The Class CQLFunctionsView.
  *
+ * @author jnarang
  */
 public class CQLFunctionsView {
 	/**
@@ -84,11 +86,19 @@ public class CQLFunctionsView {
 		 */
 		void onDeleteClicked(CQLFunctionArgument result, int index);
 	}
+	
+	/** The observer. */
 	private Observer observer;
+	
+	/** The main function vertical panel. */
 	private VerticalPanel mainFunctionVerticalPanel = new VerticalPanel();
+	
+	/** The func name txt area. */
 	private MatTextBox funcNameTxtArea = new MatTextBox();
 	/** The Function Body ace editor. */
 	private AceEditor functionBodyAceEditor = new AceEditor();
+	
+	/** The add new argument. */
 	private Button addNewArgument = new Button();
 
 	/** The function button bar. */
@@ -104,6 +114,7 @@ public class CQLFunctionsView {
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
 	
 	
+	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
 	/** Cell Table Row Count. */
@@ -118,16 +129,25 @@ public class CQLFunctionsView {
 	/** The spager. */
 	private MatSimplePager spager;
 	
+	/** The function arg name map. */
 	private Map<String, CQLFunctionArgument> functionArgNameMap = new  HashMap<String, CQLFunctionArgument>();
+	
+	/** The is editable. */
 	boolean isEditable = false;
 	
 
+	/**
+	 * Instantiates a new CQL functions view.
+	 */
 	public CQLFunctionsView() {
 		// TODO Auto-generated constructor stub
 		mainFunctionVerticalPanel.clear();
 		functionBodyAceEditor.startEditor();
 	}
 
+	/**
+	 * Builds the view.
+	 */
 	@SuppressWarnings("static-access")
 	private void buildView() {
 		VerticalPanel funcVP = new VerticalPanel();
@@ -219,6 +239,11 @@ public class CQLFunctionsView {
 	}
 	
 	
+	/**
+	 * Gets the view.
+	 *
+	 * @return the view
+	 */
 	public VerticalPanel getView() {
 		mainFunctionVerticalPanel.clear();
 		resetAll();
@@ -226,11 +251,19 @@ public class CQLFunctionsView {
 		return mainFunctionVerticalPanel;
 	}
 	
+	/**
+	 * Reset all.
+	 */
 	public void resetAll() {
 		getFuncNameTxtArea().setText("");
 		getFunctionBodyAceEditor().setText("");
 	}
 	
+	/**
+	 * Creates the add argument view for functions.
+	 *
+	 * @param argumentList the argument list
+	 */
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -285,6 +318,11 @@ public class CQLFunctionsView {
 		
 	}
 	
+	/**
+	 * Update function argument name map.
+	 *
+	 * @param argumentList the argument list
+	 */
 	private void updateFunctionArgumentNameMap(List<CQLFunctionArgument> argumentList) {
 		functionArgNameMap.clear();
 		if (argumentList != null) {
@@ -295,6 +333,13 @@ public class CQLFunctionsView {
 		
 	}
 	
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param table the table
+	 * @param sortHandler the sort handler
+	 * @return the cell table
+	 */
 	private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
 			ListHandler<CQLFunctionArgument> sortHandler) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT) {
@@ -369,6 +414,11 @@ public class CQLFunctionsView {
 		return table;
 	}
 	
+	/**
+	 * Gets the composite cell for func argu modify and delete.
+	 *
+	 * @return the composite cell for func argu modify and delete
+	 */
 	private CompositeCell<CQLFunctionArgument> getCompositeCellForFuncArguModifyAndDelete() {
 		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
 		if (isEditable) {
@@ -532,95 +582,226 @@ public class CQLFunctionsView {
 		return hasCell;
 	}
 
+	/**
+	 * Gets the observer.
+	 *
+	 * @return the observer
+	 */
 	public Observer getObserver() {
 		return observer;
 	}
 
+	/**
+	 * Sets the observer.
+	 *
+	 * @param observer the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
 
+	/**
+	 * Gets the main function vertical panel.
+	 *
+	 * @return the main function vertical panel
+	 */
 	public VerticalPanel getMainFunctionVerticalPanel() {
 		return mainFunctionVerticalPanel;
 	}
 
+	/**
+	 * Sets the main function vertical panel.
+	 *
+	 * @param mainFunctionVerticalPanel the new main function vertical panel
+	 */
 	public void setMainFunctionVerticalPanel(VerticalPanel mainFunctionVerticalPanel) {
 		this.mainFunctionVerticalPanel = mainFunctionVerticalPanel;
 	}
 
+	/**
+	 * Gets the func name txt area.
+	 *
+	 * @return the func name txt area
+	 */
 	public MatTextBox getFuncNameTxtArea() {
 		return funcNameTxtArea;
 	}
 
+	/**
+	 * Sets the func name txt area.
+	 *
+	 * @param funcNameTxtArea the new func name txt area
+	 */
 	public void setFuncNameTxtArea(MatTextBox funcNameTxtArea) {
 		this.funcNameTxtArea = funcNameTxtArea;
 	}
 
+	/**
+	 * Gets the function body ace editor.
+	 *
+	 * @return the function body ace editor
+	 */
 	public AceEditor getFunctionBodyAceEditor() {
 		return functionBodyAceEditor;
 	}
 
+	/**
+	 * Sets the function body ace editor.
+	 *
+	 * @param functionBodyAceEditor the new function body ace editor
+	 */
 	public void setFunctionBodyAceEditor(AceEditor functionBodyAceEditor) {
 		this.functionBodyAceEditor = functionBodyAceEditor;
 	}
 
+	/**
+	 * Gets the adds the new argument.
+	 *
+	 * @return the adds the new argument
+	 */
 	public Button getAddNewArgument() {
 		return addNewArgument;
 	}
 
+	/**
+	 * Sets the adds the new argument.
+	 *
+	 * @param addNewArgument the new adds the new argument
+	 */
 	public void setAddNewArgument(Button addNewArgument) {
 		this.addNewArgument = addNewArgument;
 	}
 
+	/**
+	 * Gets the function button bar.
+	 *
+	 * @return the function button bar
+	 */
 	public CQLButtonToolBar getFunctionButtonBar() {
 		return functionButtonBar;
 	}
 
+	/**
+	 * Sets the function button bar.
+	 *
+	 * @param functionButtonBar the new function button bar
+	 */
 	public void setFunctionButtonBar(CQLButtonToolBar functionButtonBar) {
 		this.functionButtonBar = functionButtonBar;
 	}
 
+	/**
+	 * Gets the context func PAT radio btn.
+	 *
+	 * @return the context func PAT radio btn
+	 */
 	public InlineRadio getContextFuncPATRadioBtn() {
 		return contextFuncPATRadioBtn;
 	}
 
+	/**
+	 * Sets the context func PAT radio btn.
+	 *
+	 * @param contextFuncPATRadioBtn the new context func PAT radio btn
+	 */
 	public void setContextFuncPATRadioBtn(InlineRadio contextFuncPATRadioBtn) {
 		this.contextFuncPATRadioBtn = contextFuncPATRadioBtn;
 	}
 
+	/**
+	 * Gets the context func POP radio btn.
+	 *
+	 * @return the context func POP radio btn
+	 */
 	public InlineRadio getContextFuncPOPRadioBtn() {
 		return contextFuncPOPRadioBtn;
 	}
 
+	/**
+	 * Sets the context func POP radio btn.
+	 *
+	 * @param contextFuncPOPRadioBtn the new context func POP radio btn
+	 */
 	public void setContextFuncPOPRadioBtn(InlineRadio contextFuncPOPRadioBtn) {
 		this.contextFuncPOPRadioBtn = contextFuncPOPRadioBtn;
 	}
 
+	/**
+	 * Gets the function argument list.
+	 *
+	 * @return the function argument list
+	 */
 	public List<CQLFunctionArgument> getFunctionArgumentList() {
 		return functionArgumentList;
 	}
 
+	/**
+	 * Sets the function argument list.
+	 *
+	 * @param functionArgumentList the new function argument list
+	 */
 	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
 		this.functionArgumentList = functionArgumentList;
 	}
 
+	/**
+	 * Gets the function arg name map.
+	 *
+	 * @return the function arg name map
+	 */
 	public Map<String, CQLFunctionArgument> getFunctionArgNameMap() {
 		return functionArgNameMap;
 	}
 
+	/**
+	 * Sets the function arg name map.
+	 *
+	 * @param functionArgNameMap the function arg name map
+	 */
 	public void setFunctionArgNameMap(Map<String, CQLFunctionArgument> functionArgNameMap) {
 		this.functionArgNameMap = functionArgNameMap;
 	}
 
+	/**
+	 * Checks if is editable.
+	 *
+	 * @return true, if is editable
+	 */
 	public boolean isEditable() {
 		return isEditable;
 	}
 
+	/**
+	 * Sets the editable.
+	 *
+	 * @param isEditable the new editable
+	 */
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
 	
+	/**
+	 * Hide ace editor auto complete pop up.
+	 */
 	public void hideAceEditorAutoCompletePopUp() {
 		getFunctionBodyAceEditor().detach();
+	}
+	
+	
+	/**
+	 * Sets the widget read only.
+	 *
+	 * @param isEditable the new widget read only
+	 */
+	public void setWidgetReadOnly(boolean isEditable) {
+
+		getFuncNameTxtArea().setEnabled(isEditable);
+		getFunctionBodyAceEditor().setReadOnly(!isEditable);
+		getFunctionButtonBar().setEnabled(isEditable);
+		getAddNewArgument().setEnabled(isEditable);
+		getContextFuncPATRadioBtn().setEnabled(isEditable);
+		getContextFuncPOPRadioBtn().setEnabled(isEditable);
+		getFunctionButtonBar().getDeleteButton().setTitle("Delete");
+
 	}
 }

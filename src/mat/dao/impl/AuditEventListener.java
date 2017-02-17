@@ -3,11 +3,13 @@ package mat.dao.impl;
 import java.util.Date;
 
 import mat.model.AuditLog;
+import mat.model.CQLAuditLog;
 import mat.model.CodeListAuditLog;
 import mat.model.CodeSystem;
 import mat.model.ListObject;
 import mat.model.MeasureAuditLog;
 import mat.model.QualityDataSet;
+import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.LoggedInUserUtil;
@@ -83,7 +85,7 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
 			return obj instanceof Measure ||  
-				obj instanceof QualityDataSet || obj instanceof ListObject || obj instanceof MeasureExport;
+				obj instanceof QualityDataSet || obj instanceof CQLLibrary || obj instanceof MeasureExport;
 		}else{
 			//Production Error fix subsequent measurePackaging update information is not logged.
 			return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
@@ -125,7 +127,16 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
 			}
 			returnObject = measureAuditLog;
-		}else if(obj instanceof ListObject) {
+		} if(obj instanceof CQLLibrary) {
+			CQLAuditLog measureAuditLog = new CQLAuditLog();
+			measureAuditLog.setTime(new Date());				
+			measureAuditLog.setUserId(emailAddress);
+			if(obj instanceof CQLLibrary){
+				measureAuditLog.setActivityType("CQL Library Created");
+				measureAuditLog.setCqlLibrary((CQLLibrary)obj);
+			}
+			returnObject = measureAuditLog;
+		}/*else if(obj instanceof ListObject) {
 			CodeSystem codeSystem = ((ListObject) obj).getCodeSystem();
 			Boolean draft = ((ListObject) obj).isDraft();
 			String descCodeSystem = null;
@@ -144,7 +155,7 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 			codeListAuditLog.setCodeList(((ListObject)obj));
 			codeListAuditLog.setUserId(emailAddress);
 			returnObject = codeListAuditLog;
-		}else{
+		}*/else{
 			AuditLog auditLog = new AuditLog();
 			auditLog.setActivityType(activity);
 			auditLog.setUpdateDate(new Date());

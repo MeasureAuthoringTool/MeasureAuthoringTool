@@ -58,6 +58,9 @@
     <bean id="measureAuditService" class="mat.server.service.impl.MeasureAuditServiceImpl">
     </bean>
     
+    <bean id="cqlLibraryAuditService" class="mat.server.service.impl.CQLLibraryAuditServiceImpl">
+    </bean>
+    
     <bean id="userAuditService" class="mat.server.service.impl.UserAuditServiceImpl">
     </bean>
     <bean id="codeListAuditService" class="mat.server.service.impl.CodeListAuditServiceImpl">
@@ -82,7 +85,8 @@
     
     </bean>
     
-    <bean id="cqlLibraryService" class="mat.server.CQLLibraryService"/>
+    <bean id="cqlLibraryService" class="mat.server.CQLLibraryService">
+    </bean>
    
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>

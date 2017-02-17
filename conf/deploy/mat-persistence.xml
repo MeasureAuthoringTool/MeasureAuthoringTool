@@ -181,6 +181,9 @@
 			class="mat.dao.impl.MeasureAuditLogDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="cqlLibraryAuditLogDAO"
+			class="mat.dao.impl.CQLLibraryAuditLogDAO" parent="baseDAO">
+	</bean>
 	<bean id="userAuditLogDAO"
 			class="mat.dao.impl.UserAuditLogDAO" parent="baseDAO">
 	</bean>
@@ -377,6 +380,7 @@
 		<property name="cqlLibraryDAO" ref="cqlLibraryDAO"/>
 		<property name="cqlLibraryAssociationDAO" ref="cqlLibraryAssociationDAO"/>
 		<property name="cqlLibrarySetDAO" ref="cqlLibrarySetDAO"/>
+		<property name="cqlLibraryAuditLogDAO" ref="cqlLibraryAuditLogDAO"/>
 	</bean>
      
 </beans>

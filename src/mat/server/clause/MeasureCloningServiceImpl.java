@@ -182,7 +182,7 @@ implements MeasureCloningService {
 		cqlService = (CQLService) context.getBean("cqlService");
 		measureLibraryService = (MeasureLibraryService) context.getBean("measureLibraryService");
 		
-		boolean isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId());
+		boolean isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, userDAO, currentDetails.getId());
 		if(!isMeasureClonable){
 			Exception e = new Exception("Cannot access this measure.");
 			log(e.getMessage(), e);

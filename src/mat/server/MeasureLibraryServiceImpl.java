@@ -6163,4 +6163,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return result;
 	}
+
+	@Override
+	public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
+			CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
+		
+		return getCqlService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+		
+	}
 }

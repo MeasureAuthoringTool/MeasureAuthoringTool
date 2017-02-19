@@ -8,7 +8,6 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -31,6 +30,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -762,6 +762,12 @@ public interface MeasureServiceAsync {
 	//void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteInclude(String currentMeasureId,
+			CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
 	
 }

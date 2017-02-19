@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.shared.GenericResult;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.parser.CQLDefinitionModelObject;
-import mat.model.cql.parser.CQLFunctionModelObject;
-import mat.model.cql.parser.CQLParameterModelObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -18,11 +11,19 @@ import mat.model.cql.parser.CQLParameterModelObject;
  */
 public class GetUsedCQLArtifactsResult extends GenericResult{
 	
-	private List<String> usedCQLDefinitions; 
+	private List<String> usedCQLDefinitions = new ArrayList<String>(); 
 	
-	private List<String> usedCQLFunctionss; 
+	private List<String> usedCQLFunctions = new ArrayList<String>();
 	
-	private List<String> usedCQLParameters;
+	private List<String> usedCQLParameters = new ArrayList<String>();
+	
+	private List<String> usedCQLValueSets = new ArrayList<String>();
+	
+	private List<String> usedCQLcodeSystems = new ArrayList<String>();
+	
+	private List<String> usedCQLcodes = new ArrayList<String>();
+	
+	private List<String> usedCQLLibraries = new ArrayList<String>();
 
 	public List<String> getUsedCQLDefinitions() {
 		return usedCQLDefinitions;
@@ -32,12 +33,12 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 		this.usedCQLDefinitions = usedCQLDefinitions;
 	}
 
-	public List<String> getUsedCQLFunctionss() {
-		return usedCQLFunctionss;
+	public List<String> getUsedCQLFunctions() {
+		return usedCQLFunctions;
 	}
 
-	public void setUsedCQLFunctionss(List<String> usedCQLFunctionss) {
-		this.usedCQLFunctionss = usedCQLFunctionss;
+	public void setUsedCQLFunctions(List<String> usedCQLFunctionss) {
+		this.usedCQLFunctions = usedCQLFunctionss;
 	}
 
 	public List<String> getUsedCQLParameters() {
@@ -46,6 +47,38 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setUsedCQLParameters(List<String> usedCQLParameters) {
 		this.usedCQLParameters = usedCQLParameters;
+	}
+
+	public List<String> getUsedCQLValueSets() {
+		return usedCQLValueSets;
+	}
+
+	public void setUsedCQLValueSets(List<String> usedCQLValueSets) {
+		this.usedCQLValueSets = usedCQLValueSets;
+	}
+
+	public List<String> getUsedCQLcodeSystems() {
+		return usedCQLcodeSystems;
+	}
+
+	public void setUsedCQLcodeSystems(List<String> usedCQLcodeSystems) {
+		this.usedCQLcodeSystems = usedCQLcodeSystems;
+	}
+
+	public List<String> getUsedCQLcodes() {
+		return usedCQLcodes;
+	}
+
+	public void setUsedCQLcodes(List<String> usedCQLcodes) {
+		this.usedCQLcodes = usedCQLcodes;
+	}
+
+	public List<String> getUsedCQLLibraries() {
+		return usedCQLLibraries;
+	}
+
+	public void setUsedCQLLibraries(List<String> usedCQLLibraries) {
+		this.usedCQLLibraries = usedCQLLibraries;
 	} 
 	
 	

@@ -18,16 +18,10 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
 import mat.client.shared.QDMInputValidator;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
@@ -50,11 +44,8 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.core.client.GWT;
@@ -68,13 +59,12 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -864,9 +854,37 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							@Override
 							public void onSuccess(GetUsedCQLArtifactsResult result) {
 								String selectedFuncName = searchDisplay.getFuncNameTxtArea().getText();
-								if (!result.getUsedCQLFunctionss().contains(selectedFuncName)) {
+								if (!result.getUsedCQLFunctions().contains(selectedFuncName)) {
 									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
 											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION());
+								}
+							}
+
+						});
+			}
+
+		});
+		
+		searchDisplay.getIncludeView().getDeleteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// load most recent used cql artifacts
+				MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(),
+						new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							}
+
+							@Override
+							public void onSuccess(GetUsedCQLArtifactsResult result) {
+								String selectedAliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
+								String selectedLibName = searchDisplay.getIncludeView().getCqlLibraryNameTextBox().getText();
+								if (!result.getUsedCQLLibraries().contains(selectedLibName + "." + selectedAliasName)) {
+									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE());
 								}
 							}
 
@@ -888,18 +906,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (searchDisplay.getDefineNameTxtArea().getText() != null) {
+				if (searchDisplay.getDefineNameTxtArea().getText() != null && searchDisplay.getDefineNameTxtArea().getText().length() > 0) {
 					deleteDefinition();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				}
-
-				if (searchDisplay.getFuncNameTxtArea().getText() != null) {
+				} else if (searchDisplay.getFuncNameTxtArea().getText() != null && searchDisplay.getFuncNameTxtArea().getText().length() > 0) {
 					deleteFunction();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				}
-
-				if (searchDisplay.getParameterNameTxtArea().getText() != null) {
+				} else if (searchDisplay.getParameterNameTxtArea().getText() != null && searchDisplay.getParameterNameTxtArea().getText().length() > 0) {
 					deleteParameter();
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
+				} else if(searchDisplay.getIncludeView().getAliasNameTxtArea().getText() != null &&  searchDisplay.getIncludeView().getAliasNameTxtArea().getText().length() > 0){
+					deleteInclude();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
 				}
 			}
@@ -2936,6 +2953,86 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a parameter to delete.");
 			searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+		}
+	}
+	
+	protected void deleteInclude() {
+
+		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
+		String includeLibName = searchDisplay.getIncludeView().getCqlLibraryNameTextBox().getText();
+
+		if (!aliasName.isEmpty()) {
+			CQLIncludeLibrary cqlLibObject = new CQLIncludeLibrary();
+			cqlLibObject.setCqlLibraryName(includeLibName);
+			cqlLibObject.setAliasName(aliasName);
+			if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() != null) {
+				CQLIncludeLibrary toBeModifiedIncludeObj = searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()
+						.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId());
+				MatContext.get().getMeasureService().deleteInclude(MatContext.get().getCurrentMeasureId(),
+						toBeModifiedIncludeObj, cqlLibObject, searchDisplay.getCqlLeftNavBarPanelView().getViewIncludeLibrarys(),
+						new AsyncCallback<SaveUpdateCQLResult>() {
+
+							@Override
+							public void onFailure(Throwable caught) {
+								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+										.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							}
+
+							@Override
+							public void onSuccess(SaveUpdateCQLResult result) {
+								if (result.isSuccess()) {
+									searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+									
+									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
+									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+
+									searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText("");
+									searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+									searchDisplay.getIncludeView().getCqlLibraryNameTextBox().setText("");
+									searchDisplay.getIncludeView().getOwnerNameTextBox().setText("");
+									searchDisplay.getIncludeView().getViewCQLEditor().setText("");
+									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(null);
+									searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+									searchDisplay.getIncludeView().getViewCQLEditor().clearAnnotations();
+									searchDisplay.getIncludeView().getViewCQLEditor().removeAllMarkers();
+									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
+									searchDisplay.getIncludeView().getViewCQLEditor().setAnnotations();
+									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
+									searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+											.createAlert("This Included Library has been deleted successfully.");
+									
+									searchDisplay.getIncludeView().getCloseButton().fireEvent(new GwtEvent<ClickHandler>() {
+								        @Override
+								        public com.google.gwt.event.shared.GwtEvent.Type<ClickHandler> getAssociatedType() {
+								        return ClickEvent.getType();
+								        }
+								        @Override
+								        protected void dispatch(ClickHandler handler) {
+								            handler.onClick(null);
+								        }
+								   });
+									
+								} else if (result.getFailureReason() == 2) {
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+									searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
+								}
+							}
+						});
+			} else {
+				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select an alias to delete.");
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
+			}
+		} else {
+			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select an alias to delete.");
+			searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
 		}
 	}
 

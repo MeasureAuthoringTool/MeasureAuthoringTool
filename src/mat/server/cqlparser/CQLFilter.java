@@ -1,9 +1,54 @@
 package mat.server.cqlparser;
 
-import org.hl7.elm.r1.*;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.hl7.elm.r1.AggregateExpression;
+import org.hl7.elm.r1.AliasedQuerySource;
+import org.hl7.elm.r1.BinaryExpression;
+import org.hl7.elm.r1.Case;
+import org.hl7.elm.r1.CaseItem;
+import org.hl7.elm.r1.CodeRef;
+import org.hl7.elm.r1.CodeSystemRef;
+import org.hl7.elm.r1.Combine;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.ExpressionRef;
+import org.hl7.elm.r1.Filter;
+import org.hl7.elm.r1.First;
+import org.hl7.elm.r1.ForEach;
+import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.If;
+import org.hl7.elm.r1.InCodeSystem;
+import org.hl7.elm.r1.InValueSet;
+import org.hl7.elm.r1.IncludeDef;
+import org.hl7.elm.r1.IndexOf;
+import org.hl7.elm.r1.Instance;
+import org.hl7.elm.r1.InstanceElement;
+import org.hl7.elm.r1.Interval;
+import org.hl7.elm.r1.Last;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Literal;
+import org.hl7.elm.r1.NaryExpression;
+import org.hl7.elm.r1.ParameterRef;
+import org.hl7.elm.r1.PositionOf;
+import org.hl7.elm.r1.Property;
+import org.hl7.elm.r1.Query;
+import org.hl7.elm.r1.RelationshipClause;
+import org.hl7.elm.r1.Retrieve;
+import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.Sort;
+import org.hl7.elm.r1.TernaryExpression;
+import org.hl7.elm.r1.Tuple;
+import org.hl7.elm.r1.TupleElement;
+import org.hl7.elm.r1.UnaryExpression;
+import org.hl7.elm.r1.ValueSetRef;
 
 /**
  *
@@ -23,43 +68,62 @@ public class CQLFilter {
     /**
      * The used expressions list
      */
-    private List<String> usedExpressions;
+    private List<String> usedExpressions = new ArrayList<String>();
 
     /**
      * The used functions list
      */
-    private List<String> usedFunctions;
+    private List<String> usedFunctions = new ArrayList<String>();;
 
     /**
      * The used cql valuesets
      */
-    private List<String> usedValuesets;
+    private List<String> usedValuesets = new ArrayList<String>();;
 
     /**
      * THe used parameters list
      */
-    private List<String> usedParameters;
+    private List<String> usedParameters = new ArrayList<String>();;
 
+    
     /**
      * The used code systems list
      */
-    private List<String> usedCodeSystems;
+    private List<String> usedCodeSystems = new ArrayList<String>();;
+    
+    /**
+     * The used codes list
+     */
+    private List<String> usedCodes = new ArrayList<String>();;
 
-
+    /**
+     * Map for included Library objects
+     */
+    private Map<String, LibraryHolder> includedLibraries;
+    
+    private LibraryHolder currentLibraryHolder;
+    
+    private String cqlFolderPath = "";
+    
     /**
      * The cql filter
      * @param library the library of the CQL
      * @param populationList the lists of populations that are included in MAT
      */
-    public CQLFilter(Library library, List<String> populationList) {
-        this.library = library;
+    public CQLFilter(Library library, List<String> populationList, String parentFolderPath) {
+    	
+        this.cqlFolderPath = parentFolderPath;
+    	this.library = library;
+        this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
         this.populationList = populationList;
 
-        this.usedExpressions = new ArrayList<>();
-        this.usedFunctions = new ArrayList<>();
-        this.usedValuesets = new ArrayList<>();
-        this.usedParameters = new ArrayList<>();
-        this.usedCodeSystems = new ArrayList<>();
+        this.usedExpressions = new ArrayList<String>();
+        this.usedFunctions = new ArrayList<String>();
+        this.usedValuesets = new ArrayList<String>();
+        this.usedParameters = new ArrayList<String>();
+        this.usedCodeSystems = new ArrayList<String>();
+        this.usedCodes = new ArrayList<String>();
+        this.includedLibraries = new HashMap<String, LibraryHolder>();
     }
 
     /**
@@ -71,10 +135,31 @@ public class CQLFilter {
         this.usedExpressions.addAll(this.populationList);
 
         for(String expressionName : this.populationList) {
-            checkForUsedStatements(expressionName);
+            //assuming that definitions/functions attached to populations will always come from the primary CQL library
+        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
+        	
+        	checkForUsedStatements(expressionName);
         }
 
+        System.out.println(this.includedLibraries);
+    }
+    
+    /**
+     * This is similar to the filter() method except that it does not add 
+     * populations List to used expressions.
+     * It can be used by CQL Workspace UI classes which need to find If a specific expression 
+     * is being used.
+     */
+    public void findUsedExpressions() {
 
+        for(String expressionName : this.populationList) {
+            //assuming that definitions/functions attached to populations will always come from the primary CQL library
+        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
+        	
+        	checkForUsedStatements(expressionName);
+        }
+
+        System.out.println(this.includedLibraries);
     }
 
     /**
@@ -86,12 +171,16 @@ public class CQLFilter {
     private void checkForUsedStatements(String expressionName) {
 
         System.out.println("<<<<<Getting expressions for "  + expressionName + ">>>>>");
-
-
+        
         Expression expression = findExpressionByName(expressionName);
 
         if(expression == null) {
-            System.err.println(String.format("Expression %s not found.", expressionName));
+//            System.err.println(String.format("Expression %s not found.", expressionName));
+//            try{
+//            throw new Exception("hiiiii");
+//            }catch(Exception e){
+//            	e.printStackTrace();
+//            }
             return;
         }
 
@@ -106,8 +195,8 @@ public class CQLFilter {
 
 
         // TODO Determine if there is any unecessary checks below
-    	// TODO Determine if there is any missing checks below
-    	// TODO Testing to make sure it is completely functioning 
+        // TODO Determine if there is any missing checks below
+        // TODO Testing to make sure it is completely functioning
 
         if(expression == null) {
             return;
@@ -149,6 +238,10 @@ public class CQLFilter {
         // check for code system ref
         else if(expression.getClass().equals(CodeSystemRef.class)) {
             checkForCodeSystemRef(expression);
+        }
+        
+        else if(expression.getClass().equals(CodeRef.class)) {
+        	checkForCodeRef(expression);
         }
 
         // check for property references
@@ -266,6 +359,11 @@ public class CQLFilter {
         else if(expression.getClass().equals(Query.class)) {
             checkForQueryExpression(expression);
         }
+        
+        //check for Literal expressions
+        else if(expression.getClass().equals(Literal.class)) {
+            
+        }
 
         else {
             System.err.println("Not Found: " + expression.getClass());
@@ -280,21 +378,70 @@ public class CQLFilter {
      * @param expression the expression
      */
     private void checkforExpressionRef(Expression expression) {
-        ExpressionRef expressionRef = (ExpressionRef) expression;
-        this.addUsedExpression(expressionRef.getName());
-
+        ExpressionRef expressionRef = (ExpressionRef) expression;        
+        
         // since we found an expression ref, we want to get the details of it.
         // so we will recursively call get used statements on the expresson ref
-        checkForUsedStatements(expressionRef.getName());
+        String includedLibraryAlias = expressionRef.getLibraryName();
+        System.out.println("Expresion name:"+expressionRef.getName());
+        System.out.println("Included library:"+includedLibraryAlias+":");
+        
+        String expressionName = expressionRef.getName();
+        
+        LibraryHolder existingLibrary = null;
+    	
+        if(includedLibraryAlias != null){
+	        LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
+	        System.out.println(this.includedLibraries);
+	        includedLibraryAlias = includedLibrary.getLibraryName() + "." + includedLibraryAlias;
+	      	existingLibrary = this.currentLibraryHolder; 
+	    	this.currentLibraryHolder = includedLibrary;
+	    	this.addUsedExpression(includedLibraryAlias + "." + expressionRef.getName());
+    	}else{
+    		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + expressionRef.getName());
+    		}else{
+    			this.addUsedExpression(expressionRef.getName());
+    		}
+    	}
+    	
+        checkForUsedStatements(expressionName);
+        
+        if(existingLibrary != null){
+        	this.currentLibraryHolder = existingLibrary;
+        }
     }
 
     private void checkForFunctionRef(Expression expression) {
         FunctionRef functionRef = (FunctionRef) expression;
-        this.addUsedFunction(functionRef.getName());
-
+       
         // since we found a function ref, we want to get the details of it.
         // so we will recursively call get used statements on the function ref.
-        checkForUsedStatements(functionRef.getName());
+        String includedLibraryAlias = functionRef.getLibraryName();
+        System.out.println("Included library:"+includedLibraryAlias+":");
+        
+        String expressionName = functionRef.getName();
+        
+        LibraryHolder existingLibrary = null;
+    	if(includedLibraryAlias != null){
+    		LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
+    		includedLibraryAlias = includedLibrary.getLibraryName() + "." + includedLibraryAlias;
+	      	existingLibrary = this.currentLibraryHolder;
+	    	this.currentLibraryHolder = includedLibrary;
+	    	this.addUsedFunction(includedLibraryAlias + "." + functionRef.getName());
+    	}else{
+    		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+    			this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.libraryAlias + functionRef.getName());
+    		}else{
+    			this.addUsedFunction(functionRef.getName());
+    		}
+    	}
+        
+        checkForUsedStatements(expressionName);
+        
+        if(existingLibrary != null){
+        	this.currentLibraryHolder = existingLibrary;
+        }
     }
 
     /**
@@ -303,7 +450,14 @@ public class CQLFilter {
      */
     private void checkForParameterRef(Expression expression) {
         ParameterRef parameterRef = (ParameterRef) expression;
-        this.addUsedParameter(parameterRef.getName());
+        String name = parameterRef.getName();
+        
+        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name; 
+        }
+        
+        this.addUsedParameter(name);
     }
 
     /**
@@ -314,7 +468,14 @@ public class CQLFilter {
     private void checkForInValuesets(Expression expression) {
         InValueSet inValueSet = (InValueSet) expression;
         System.out.println("\t" + inValueSet.getValueset().getName());
-        this.addUsedValueset(inValueSet.getValueset().getName());
+        String name = inValueSet.getValueset().getName();
+        
+        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        }
+        
+        this.addUsedValueset(name);
     }
 
     /**
@@ -324,10 +485,32 @@ public class CQLFilter {
     private void checkForValuesetRef(Expression expression) {
         ValueSetRef valueSetRef = (ValueSetRef) expression;
         System.out.println("\t" + valueSetRef.getName());
-        this.addUsedValueset(valueSetRef.getName());
+        String name = valueSetRef.getName();
+        System.out.println("aliasalias:"+this.currentLibraryHolder.getLibraryAlias());
+        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        }
+        
+        this.addUsedValueset(name);
     }
 
-    /**
+    private String getLibraryAliasWithName(String libraryAlias) {
+		
+    	List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
+    	
+    	for(IncludeDef includeDef: includeDefs){
+    		System.out.println("Include alias:"+includeDef.getLocalIdentifier());
+    		System.out.println("Include library name:"+includeDef.getPath());
+    		
+    		if(includeDef.getLocalIdentifier().equals(libraryAlias)){
+    			return includeDef.getPath() + "." + libraryAlias;
+    		}
+    	}
+    	return "";
+	}
+
+	/**
      * Checks for code system reference. Adds the codesystem to the used codesystem list
      * @param expression the expression
      */
@@ -335,6 +518,19 @@ public class CQLFilter {
         CodeSystemRef codeSystemRef = (CodeSystemRef) expression;
         System.out.println("\t" + codeSystemRef.getName());
         this.addUsedCodeSystem(codeSystemRef.getName());
+    }
+    
+    private void checkForCodeRef(Expression expression) {
+        CodeRef codeRef = (CodeRef) expression;
+        System.out.println("\t" + codeRef.getName());
+        String name = codeRef.getName();
+        
+        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        }
+        
+        this.addUsedCode(name);
     }
 
     /**
@@ -583,6 +779,7 @@ public class CQLFilter {
     private void checkForRetrieveExpression(Expression expression) {
         Retrieve retrieve = (Retrieve) expression;
         checkForUsedStatements(retrieve.getCodes());
+        
         checkForUsedStatements(retrieve.getDateRange());
     }
 
@@ -615,19 +812,79 @@ public class CQLFilter {
      * @return the expression assoicated with the given name, null if none are found
      */
     private Expression findExpressionByName(String expressionName) {
-        List<ExpressionDef> expressionDefs = this.library.getStatements().getDef();
-
-        for(ExpressionDef expressionDef : expressionDefs) {
-            if(expressionDef.getName().equals(expressionName)) {
-                return expressionDef.getExpression();
-            }
-        }
-
-        return null;
+        
+    	Expression expression = findExpression(expressionName, this.currentLibraryHolder);
+        
+//        String s = this.library.getIncludes().getDef().get(0).getLocalIdentifier();
+//        System.out.println("sssssssss:"+s);
+//        this.library.getIncludes().getDef().get(0).
+            
+        
+        return expression;
 
     }
 
-    /**
+	public Expression findExpression(String expressionName, LibraryHolder libraryHolder) {
+		if(libraryHolder.getLibrary() != null){
+			List<ExpressionDef> expressionDefs = libraryHolder.getLibrary().getStatements().getDef();
+	        
+	        for(ExpressionDef expressionDef : expressionDefs) {
+	        	//System.out.println(expressionDef.getName());
+	            if(expressionDef.getName().equals(expressionName)) {
+	                return expressionDef.getExpression();
+	            }
+	        }
+		}
+        return null;
+	}
+
+    private LibraryHolder getIncludedLibrary(String libraryAliasName) {
+		
+    	LibraryHolder includedLibrary = null;
+    	
+    	List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
+    	
+    	for(IncludeDef includeDef: includeDefs){
+    		System.out.println("Include alias:"+includeDef.getLocalIdentifier());
+    		System.out.println("Include library name:"+includeDef.getPath());
+    		
+    		if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
+    			//System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
+    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "." +libraryAliasName);
+    			
+    			if(includedLibrary == null){
+    				String libraryPathName = includeDef.getPath();
+    				System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
+    				try {
+    					
+    					libraryPathName = this.cqlFolderPath + File.separator + libraryPathName + ".cql";						
+						System.out.println("Searching for:"+libraryPathName);
+    					File includedLibraryFile = new File(libraryPathName);
+						
+    					CQLtoELM includedCQLtoELM = new CQLtoELM(includedLibraryFile);
+						includedCQLtoELM.doTranslation(true, false, false);
+						
+						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath());
+						this.includedLibraries.put(includeDef.getPath() + "." +libraryAliasName  , includedLibrary);
+						
+    				} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    			}else{
+    				System.out.println("includedLibraryName:"+includedLibrary.library.getLocalId());
+    			}
+    			
+    			break;
+    		}
+    		
+    	}
+    	
+    	return includedLibrary;
+		
+	}
+
+	/**
      * Add a used expression to the used expression list
      * @param expressionName the expression name to add
      */
@@ -676,6 +933,17 @@ public class CQLFilter {
             this.usedCodeSystems.add(codeSystemName);
         }
     }
+    
+    /**
+     * Add a used code to the used code list
+     * @param codeName the code name to add
+     */
+    public void addUsedCode(String codeName) {
+        if(!this.usedCodes.contains(codeName)) {
+            this.usedCodes.add(codeName);
+        }
+    }
+
 
     /**
      * Gets used expressions
@@ -716,4 +984,140 @@ public class CQLFilter {
     public List<String> getUsedCodeSystems() {
         return usedCodeSystems;
     }
+    
+    public List<String> getUsedCodes() {
+		return usedCodes;
+	}
+    
+    public List<String> getUsedLibraries(){
+    	return new ArrayList<String>(this.includedLibraries.keySet());
+    }
+    
+    private class LibraryHolder{
+    	private Library library;
+    	private String libraryAlias;
+    	private String libraryName;
+    	
+    	public LibraryHolder(Library library, String alias, String libraryName) {
+			this.setLibrary(library);
+			this.setLibraryAlias(alias);
+			this.setLibraryName(libraryName);
+		}
+
+		public Library getLibrary() {
+			return library;
+		}
+
+		public void setLibrary(Library library) {
+			this.library = library;
+		}
+
+		public String getLibraryAlias() {
+			return libraryAlias;
+		}
+
+		public void setLibraryAlias(String libraryAlias) {
+			this.libraryAlias = libraryAlias;
+		}
+
+		public String getLibraryName() {
+			return libraryName;
+		}
+
+		public void setLibraryName(String libraryName) {
+			this.libraryName = libraryName;
+		}
+    }
+    
+    public static void main(String[] args) {
+    	try {
+			File f = File.createTempFile("test", ".cql");
+			FileWriter fw = new FileWriter(f);
+			fw.write(getCQL());
+			fw.close();
+			
+			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			cqlToElm.doTranslation(true, false, true);
+	    	List<String> defList = new ArrayList<String>();
+	    	defList.add("testInclude");
+	    	defList.add("test1");
+	    	defList.add("birthdateDefn");
+//	    	defList.add("test1");
+//	    	defList.add("SDE Ethnicity");
+	    		    	
+	    	if(cqlToElm.getErrors().size() == 0){
+	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+	    		cqlFilter.filter();
+	    		
+	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+	    	}else{
+	    		System.out.println(cqlToElm.getErrors());
+	    	}	    	
+	    	
+	    	f.delete();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+    	
+    	
+    	
+	}
+    
+    
+
+	public static String getCQL(){
+    	String s = "" 
+    			+ "library birthdate_Dead version '0.0.000' "
+
+				+ "using QDM version '5.0' "
+				
+				//+ "include Sprint94TMMAT7204P2 version '0.1.000' called t1 "
+				
+				+ "codesystem \"LOINC:2.46\": 'urn:oid:2.16.840.1.113883.6.1' version 'urn:hl7:version:2.46' "
+				
+				+ "codesystem \"SNOMEDCT:2016-03\": 'urn:oid:2.16.840.1.113883.6.96' version 'urn:hl7:version:2016-03' "
+				
+				+ "valueset \"ONC Administrative Sex\": 'urn:oid:2.16.840.1.113762.1.4.1'  "
+				
+				+ "valueset \"Race\": 'urn:oid:2.16.840.1.114222.4.11.836' " 
+				
+				+ "valueset \"Ethnicity\": 'urn:oid:2.16.840.1.114222.4.11.837' " 
+				
+				+ "valueset \"Payer\": 'urn:oid:2.16.840.1.114222.4.11.3591' " 
+				
+				+ "code \"Birthdate\": '21112-8' from \"LOINC:2.46\" display 'Birthdate' "
+				
+				+ "code \"Dead\": '419099009' from \"SNOMEDCT:2016-03\" display 'Dead' "
+				
+				+ "parameter \"Measurement Period\" Interval<DateTime> "
+				
+				+ "context Patient "
+				
+				+ "define \"SDE Ethnicity\": [\"Patient Characteristic Ethnicity\": \"Ethnicity\"] "
+				
+				+ " define \"SDE Payer\": [\"Patient Characteristic Payer\": \"Payer\"] "
+				
+				+ " define \"SDE Race\": [\"Patient Characteristic Race\": \"Race\"] "
+				
+				+ " define \"SDE Sex\": [\"Patient Characteristic Sex\": \"ONC Administrative Sex\"] "
+				
+				+ " define \"birthdateDefn\": [\"Patient Characteristic Birthdate\": \"Birthdate\"] b where b.code in \"Race\""
+				
+				+ " define \"test\": \"birthdateDefn\" "
+				
+				+ " define \"test1.teq\": (([\"Medication, Not Dispensed\"] b where b.recorder in \"Payer\")) "
+    		
+    			+ " define \"test1\": \"test1.teq\" ";
+    	
+    			//+ " define \"testInclude\": t1.tp ";
+    	
+    	return s;
+    }
+
 }

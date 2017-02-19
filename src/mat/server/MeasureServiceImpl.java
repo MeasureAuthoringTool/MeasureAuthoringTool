@@ -1,19 +1,13 @@
 package mat.server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
 
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -40,7 +34,6 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
-import mat.shared.CQLErrors;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -705,4 +698,12 @@ public
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
 		return this.getMeasureLibraryService().getMeasureCQLFileData(measureId);
 	}
+
+@Override
+public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
+		CQLIncludeLibrary toBeModifiedIncludeObj,
+		CQLIncludeLibrary cqlLibObject,
+		List<CQLIncludeLibrary> viewIncludeLibrarys) {
+	return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+}
 }

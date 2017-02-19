@@ -1,5 +1,6 @@
 package mat.model.cql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Auto-generated Javadoc
@@ -9,7 +10,7 @@ import java.util.List;
 public class CQLIncludeLibraryWrapper {
 
 	/** The cql include library. */
-	private List<CQLIncludeLibrary> cqlIncludeLibrary;
+	private List<CQLIncludeLibrary> cqlIncludeLibrary = new ArrayList<CQLIncludeLibrary>();
 
 	/**
 	 * Gets the cql include library.

@@ -14,11 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -48,10 +46,8 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.model.cql.parser.CQLDefinitionModelObject;
 import mat.model.cql.parser.CQLFileObject;
-import mat.model.cql.parser.CQLFunctionModelObject;
-import mat.model.cql.parser.CQLParameterModelObject;
+import mat.server.cqlparser.CQLFilter;
 import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.cqlparser.MATCQLParser;
 import mat.server.service.MeasurePackageService;
@@ -1180,7 +1176,7 @@ public class CQLServiceImpl implements CQLService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
-		if(cqlModel.getCqlIncludeLibrarys() == null ||  cqlModel.getCqlIncludeLibrarys().size() == 0){
+		if(cqlModel.getCqlIncludeLibrarys().size() == 0){
 			parsedCQL = parseCQLStringForError(cqlFileString);
 		}else {
 			parsedCQL = parseCQLLibraryForErrors(cqlModel);
@@ -1196,17 +1192,21 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
-private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
+	private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
+		return parseCQLLibraryForErrors(cqlModel, false);
+	}
+	
+	private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, boolean isFindUsedCQLExpressionsFlag) {
 		
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
-		
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		
 		Map<String, String> cqlLibNameMap = new HashMap<String, String>();
 		
 		getCQLIncludeLibMap(cqlModel, cqlLibNameMap);
 		
-		validateCQLWithIncludes(cqlFileString, cqlLibNameMap, parsedCQL);
+		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, isFindUsedCQLExpressionsFlag);
+		
+		
 		
 		return parsedCQL;
 	}
@@ -1231,17 +1231,17 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 	
 	}
 
-	private void validateCQLWithIncludes(String cqlFileString,
-			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL) {
+	private void validateCQLWithIncludes(CQLModel cqlModel,
+			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL, boolean isFindUsedCQLExpressionsFlag) {
 		
 		List<File> fileList = new ArrayList<File>();
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
-		
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+				
 		try{
 			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
 			File tempDir = test.getParentFile();
-			
-			System.out.println("separator:"+File.separator);
+						
 			File folder = new File(tempDir.getAbsolutePath() + File.separator + UUIDUtilClient.uuid());
 			folder.mkdir();
 			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
@@ -1259,6 +1259,46 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 			
 			fileList.add(test);
 			fileList.add(folder);
+			
+			if(isFindUsedCQLExpressionsFlag){
+				if(cqlToElm != null){
+					
+					List<String> exprList = new ArrayList<String>();
+					
+					for(CQLDefinition cqlDefinition:cqlModel.getDefinitionList()){
+						System.out.println("name:"+cqlDefinition.getDefinitionName());
+						exprList.add(cqlDefinition.getDefinitionName());
+					}
+					
+					for(CQLFunctions cqlFunction:cqlModel.getCqlFunctions()){
+						System.out.println("name:"+cqlFunction.getFunctionName());
+						exprList.add(cqlFunction.getFunctionName());
+					}
+					
+					CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, folder.getAbsolutePath());
+		    		cqlFilter.findUsedExpressions();
+		    		
+		    		GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
+		    		usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
+		    		usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
+		    		usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
+		    		usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
+		    		usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
+		    		usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
+		    		usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
+		    		
+		    		parsedCQL.setUsedCQLArtifacts(usedArtifacts);
+		    		
+		    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+		        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+		        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+		        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+		        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+		        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+		        	System.out.println("Used libraries:"+cqlFilter.getUsedLibraries());
+				}
+			}
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -1993,7 +2033,7 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 	
 	
 	/**
-	 * Parses the CQL Expression for errors.
+	 * Parses the CQL def for errors.
 	 *
 	 * @param result the result
 	 * @param measureId the measure id
@@ -2079,17 +2119,20 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 	 */
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId) {
-		GetUsedCQLArtifactsResult result = new GetUsedCQLArtifactsResult(); 
+		//GetUsedCQLArtifactsResult result = new GetUsedCQLArtifactsResult(); 
 		
 		System.out.println("GETTING CQL ARTIFACTS");
 		MeasureXmlModel measureXML = getService().getMeasureXmlForMeasure(measureId);
-		XmlProcessor processor = new XmlProcessor(measureXML.getXml());
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()), "").toString();
+		//XmlProcessor processor = new XmlProcessor(measureXML.getXml());
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML.getXml());
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		System.out.println(cqlFileString);
 		
+		SaveUpdateCQLResult cqlResult = parseCQLLibraryForErrors(cqlModel, true);
 		
+		return cqlResult.getUsedCQLArtifacts();
 		
-		MATCQLParser matcqlParser = new MATCQLParser();
+		/**		 
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		
 		List<CQLDefinitionModelObject> cqlDefinitionObjects = new ArrayList<CQLDefinitionModelObject>(cqlFileObject.getDefinitionsMap().values());
@@ -2138,11 +2181,12 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 		System.out.println("PARAM LIST: " + usedCQLParameter); 
 		
 		result.setUsedCQLDefinitions(new ArrayList<String>(usedCQLDefinition));
-		result.setUsedCQLFunctionss(new ArrayList<String>(usedCQLFunction));
+		result.setUsedCQLFunctions(new ArrayList<String>(usedCQLFunction));
 		result.setUsedCQLParameters(new ArrayList<String>(usedCQLParameter));
 		
 		
 		return result; 
+		*/
 	}
 	
 	/**
@@ -2655,5 +2699,64 @@ private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 
 	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
 		this.cqlLibraryDAO = cqlLibraryDAO;
+	}
+
+	@Override
+	public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
+			CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
+		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
+		System.out.println("DELETE Include CLICK " + cqlLibObject.getAliasName());
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
+		CQLModel cqlModel = new CQLModel();
+		result.setCqlModel(cqlModel);
+		XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+
+		if(xmlModel != null) {
+			String XPATH_EXPRESSION_CQLLOOKUP_INCLUDE = "//cqlLookUp//includeLibrary[@id='"+ toBeModifiedIncludeObj.getId() + "']";
+			System.out.println("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
+			try {
+				Node includeNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
+				
+				if(includeNode != null) {
+					System.out.println("FOUND NODE");
+					
+					// remove from xml
+					Node deletedNode = includeNode.getParentNode().removeChild(includeNode);
+					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
+					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+					xmlModel.setXml(processor.getOriginalXml());
+					getService().saveMeasureXml(xmlModel);		
+					
+					
+					// remove from parameter list
+					viewIncludeLibrarys.remove(toBeModifiedIncludeObj); 
+					wrapper.setCqlIncludeLibrary(viewIncludeLibrarys);
+					result.setSuccess(true);
+					result.setIncludeLibrary(toBeModifiedIncludeObj);
+				}
+				
+				else {
+					System.out.println("NOT FOUND NODE");
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+				}
+				
+			} catch (XPathExpressionException e) {
+				result.setSuccess(false);
+				e.printStackTrace();
+			}
+		}
+		
+		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
+			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+			System.out.println(xmlModel.getXml());
+			System.out.println(result.isSuccess());
+		}
+		
+		return result;
 	}
 }

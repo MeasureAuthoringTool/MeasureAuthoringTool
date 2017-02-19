@@ -8,7 +8,6 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -703,4 +702,9 @@ public interface MeasureService extends RemoteService {
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
+
+	SaveUpdateCQLResult deleteInclude(String currentMeasureId,
+			CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys);
 }

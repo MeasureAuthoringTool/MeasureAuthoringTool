@@ -1,7 +1,11 @@
 package mat.server.service.impl;
 
+import java.util.List;
+
+import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
+import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
@@ -57,25 +61,25 @@ public class MatContextServiceUtil {
 	 * Checks if is current measure is clonable/draftable.
 	 *
 	 * @param measureDAO the measure dao
+	 * @param userDAO 
 	 * @param measureId the measure id
 	 * @return true, if is current measure editable
 	 */
 	public boolean isCurrentMeasureClonable(MeasureDAO measureDAO,
-			String measureId) {
-
-		Measure measure = measureDAO.find(measureId);
+			UserDAO userDAO, String measureId) {
+		
+		boolean isClonable = false;
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-		MeasureShareDTO dto = measureDAO.extractDTOFromMeasure(measure);
-		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
-		ShareLevel shareLevel = measureDAO.findShareLevelForUser(measureId,
-				currentUserId);
-		boolean isSharedToEdit = false;
-		if (shareLevel != null) {
-			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
+		User user = userDAO.find(currentUserId);
+		List<MeasureShareDTO> measureDTO = measureDAO.getMeasuresForDraft("", user);
+		
+		for(MeasureShareDTO measureShareDTO: measureDTO){
+			if(measureShareDTO.getMeasureId().equals(measureId)){
+				isClonable = true;
+				break;
+			}
 		}
-		boolean isClonable = (isOwner || isSuperUser || isSharedToEdit);
+		
 		return isClonable;
 	}
 

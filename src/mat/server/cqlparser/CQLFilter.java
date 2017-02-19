@@ -1036,7 +1036,7 @@ public class CQLFilter {
 			fw.write(getCQL());
 			fw.close();
 			
-			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			CQLtoELM cqlToElm = new CQLtoELM(f);
 			cqlToElm.doTranslation(true, false, true);
 	    	List<String> defList = new ArrayList<String>();
 	    	defList.add("testInclude");

@@ -58,14 +58,14 @@ public class MatContextServiceUtil {
 	}
 	
 	/**
-	 * Checks if is current measure is clonable/draftable.
+	 * Checks if is current measure is draftable.
 	 *
 	 * @param measureDAO the measure dao
 	 * @param userDAO 
 	 * @param measureId the measure id
 	 * @return true, if is current measure editable
 	 */
-	public boolean isCurrentMeasureClonable(MeasureDAO measureDAO,
+	public boolean isCurrentMeasureDraftable(MeasureDAO measureDAO,
 			UserDAO userDAO, String measureId) {
 		
 		boolean isClonable = false;

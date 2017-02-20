@@ -82,5 +82,31 @@ public class MatContextServiceUtil {
 		
 		return isClonable;
 	}
+	
+	/**
+	 * Checks if is current measure is clonable.
+	 *
+	 * @param measureDAO the measure dao
+	 * @param measureId the measure id
+	 * @return true, if is current measure editable
+	 */
+	public boolean isCurrentMeasureClonable(MeasureDAO measureDAO,
+			String measureId) {
+
+		Measure measure = measureDAO.find(measureId);
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		MeasureShareDTO dto = measureDAO.extractDTOFromMeasure(measure);
+		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
+		ShareLevel shareLevel = measureDAO.findShareLevelForUser(measureId,
+				currentUserId);
+		boolean isSharedToEdit = false;
+		if (shareLevel != null) {
+			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
+		}
+		boolean isClonable = (isOwner || isSuperUser || isSharedToEdit);
+		return isClonable;
+	}
 
 }

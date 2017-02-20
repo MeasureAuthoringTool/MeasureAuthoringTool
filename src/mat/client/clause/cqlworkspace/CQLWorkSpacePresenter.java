@@ -693,6 +693,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.buildIncludesView();
 				SaveCQLLibraryResult cqlLibrarySearchModel = new SaveCQLLibraryResult();
 				cqlLibrarySearchModel.setCqlLibraryDataSetObjects(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryList());
+				searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
+						.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getCqlLeftNavBarPanelView().setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -1691,6 +1693,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 											MatContext.get()
 													.setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+											searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(result.getFunction().getId());
 											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 											searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -1795,6 +1798,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
 											MatContext.get().setParameters(
 													getParamaterList(result.getCqlModel().getCqlParameters()));
+											searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(result.getParameter().getId());
 											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 											searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -1898,6 +1902,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
 											MatContext.get().setDefinitions(
 													getDefinitionList(result.getCqlModel().getDefinitionList()));
+											searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(result.getDefinition().getId());
 											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
 											searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
 											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();

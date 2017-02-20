@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACExpansionIdentifier;
+import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.cql.CQLQualityDataSetDTO;
 
@@ -42,7 +42,7 @@ public class VsacApiResult implements IsSerializable {
 	/** The vsac response. */
 	private List<MatValueSet> vsacResponse;
 	
-	private List<VSACExpansionIdentifier> vsacExpIdentifierResp;
+	private List<VSACExpansionProfile> vsacExpProfileResp;
 	
 	private List<VSACVersion> vsacVersionResp;
 	
@@ -142,15 +142,15 @@ public class VsacApiResult implements IsSerializable {
 	/**
 	 * @return the vsacProfileResp
 	 */
-	public List<VSACExpansionIdentifier> getVsacExpIdentifierResp() {
-		return vsacExpIdentifierResp;
+	public List<VSACExpansionProfile> getVsacExpProfileResp() {
+		return vsacExpProfileResp;
 	}
 
 	/**
 	 * @param vsacProfileResp the vsacProfileResp to set
 	 */
-	public void setVsacExpIdentifierResp(List<VSACExpansionIdentifier> vsacExpIdentifierResp) {
-		this.vsacExpIdentifierResp = vsacExpIdentifierResp;
+	public void setVsacExpProfileResp(List<VSACExpansionProfile> vsacExpProfileResp) {
+		this.vsacExpProfileResp = vsacExpProfileResp;
 	}
 
 	public List<VSACVersion> getVsacVersionResp() {

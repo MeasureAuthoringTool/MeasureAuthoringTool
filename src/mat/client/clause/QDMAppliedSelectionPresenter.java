@@ -4,6 +4,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.gwtbootstrap3.client.ui.CheckBox;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
@@ -31,26 +50,9 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACExpansionIdentifier;
+import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -522,7 +524,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						if(result.getVsacExpIdentifier()!=null){
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(true);
 							searchDisplay.setExpIdentifierList(MatContext.get()
-									.getExpIdentifierList());
+									.getExpProfileList());
 							searchDisplay.setDefaultExpansionIdentifierListBox();
 							for(int i = 0; i < searchDisplay.getVSACExpansionIdentifierListBox().getItemCount(); i++){
 								if(searchDisplay.getVSACExpansionIdentifierListBox().getItemText(i)
@@ -722,7 +724,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								expIdentifierToAllQDM);
 					} else {
 						searchDisplay.setQDMExpIdentifierListBox(getProfileList(
-								MatContext.get().getVsacExpIdentifierList()));
+								MatContext.get().getVsacExpProfileList()));
 						getVSACVersionListByOID(oid);
 						searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
 						searchDisplay.getVersionListBox().setEnabled(true);
@@ -778,7 +780,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 * @param list the list
 	 * @return the profile list
 	 */
-	private List<? extends HasListBox> getProfileList(List<VSACExpansionIdentifier> list){
+	private List<? extends HasListBox> getProfileList(List<VSACExpansionProfile> list){
 		return list;
 	}
 	
@@ -1185,7 +1187,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						updateAllQDMsWithExpProfile(appliedQDMList);
 					} else {
 						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-								.getMessageDelegate().getVsacExpansionIdentifierSelection());
+								.getMessageDelegate().getVsacExpansionProfileSelection());
 					}
 				}
 			}
@@ -1243,7 +1245,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
 									true);
 							searchDisplay.setExpIdentifierList(MatContext.get()
-									.getExpIdentifierList());
+									.getExpProfileList());
 							searchDisplay.setDefaultExpansionIdentifierListBox();
 						} else if (event.getValue().toString().equals("false")) {
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(

@@ -511,7 +511,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTOList,
+	public void updateCQLMeasureXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTOList,
 			String measureId, String expansionProfile) {
 		this.getMeasureLibraryService().updateCQLMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionProfile);
 	}

@@ -77,7 +77,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 * @return the all profile list
 	 */
 	@Override
-	public final VsacApiResult getAllExpIdentifierList() {
+	public final VsacApiResult getAllExpProfileList() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.getVsacApiService().getAllExpIdentifierList(sessionId);
 	}

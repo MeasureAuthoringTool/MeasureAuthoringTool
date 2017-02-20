@@ -8,6 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.Widget;
+// TODO: Auto-generated Javadoc
+//import mat.client.measure.AdminManageMeasureSearchView;
+
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -49,25 +62,10 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
-import mat.model.VSACExpansionIdentifier;
+import mat.model.VSACExpansionProfile;
 import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
-import mat.shared.GetUsedCQLArtifactsResult;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//import mat.client.measure.AdminManageMeasureSearchView;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -240,10 +238,10 @@ public class MatContext implements IsSerializable {
 	private List<String> qdmDataTypeList = new ArrayList<String>();
 		
 	/** The profile list. */
-	private List<String> expIdentifierList = new ArrayList<String>();
+	private List<String> expProfileList = new ArrayList<String>();
 	
-	/** The vsac exp identifier list. */
-	private List<VSACExpansionIdentifier> vsacExpIdentifierList = new ArrayList<VSACExpansionIdentifier>();
+	/** The vsac exp Profile list. */
+	private List<VSACExpansionProfile> vsacExpProfileList = new ArrayList<VSACExpansionProfile>();
 	
 	/** The global copy paste. */
 	private GlobalCopyPasteObject globalCopyPaste;
@@ -1821,7 +1819,7 @@ public class MatContext implements IsSerializable {
 			
 			@Override
 			public void onSuccess(VsacApiResult result) {
-				if (result.getVsacExpIdentifierResp() != null) {
+				if (result.getVsacExpProfileResp() != null) {
 					
 				}
 				
@@ -1877,16 +1875,16 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the all profile list
 	 */
-	public void getAllExpIdentifierList(){
+	public void getAllExpProfileList(){
 		vsacapiServiceAsync
-		.getAllExpIdentifierList(new AsyncCallback<VsacApiResult>() {
+		.getAllExpProfileList(new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onSuccess(
 					VsacApiResult result) {
-				if (result.getVsacExpIdentifierResp() != null) {
-					vsacExpIdentifierList = result.getVsacExpIdentifierResp();
-					expIdentifierList = getExpIdentifierList(result.getVsacExpIdentifierResp());
+				if (result.getVsacExpProfileResp() != null) {
+					vsacExpProfileList = result.getVsacExpProfileResp();
+					expProfileList = getExpProfileList(result.getVsacExpProfileResp());
 				}
 			}
 			
@@ -1898,12 +1896,12 @@ public class MatContext implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the vsac exp identifier list.
+	 * Gets the vsac exp Profile list.
 	 *
-	 * @return the vsac exp identifier list
+	 * @return the vsac exp Profile list
 	 */
-	public List<VSACExpansionIdentifier> getVsacExpIdentifierList() {
-		return vsacExpIdentifierList;
+	public List<VSACExpansionProfile> getVsacExpProfileList() {
+		return vsacExpProfileList;
 	}
 	
 	
@@ -2015,12 +2013,12 @@ public class MatContext implements IsSerializable {
 	 * public void setCopiedNode(CellTreeNode copiedNode) {
 		this.copiedNode = copiedNode;
 	}*/
-	private List<String> getExpIdentifierList(List<VSACExpansionIdentifier> list) {
-		List<String> expIdentifier = new ArrayList<String>();
+	private List<String> getExpProfileList(List<VSACExpansionProfile> list) {
+		List<String> expProfile = new ArrayList<String>();
 		for (int i = 0; i < list.size(); i++) {
-			expIdentifier.add(list.get(i).getName());
+			expProfile.add(list.get(i).getName());
 		}
-		return expIdentifier;
+		return expProfile;
 	}
 	
 	
@@ -2029,8 +2027,8 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the profile list
 	 */
-	public List<String> getExpIdentifierList() {
-		return expIdentifierList;
+	public List<String> getExpProfileList() {
+		return expProfileList;
 	}
 	
 	
@@ -2039,8 +2037,8 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param profileList the new profile list
 	 */
-	public void setExpIdentifierList(List<String> profileList) {
-		expIdentifierList = profileList;
+	public void setExpProfileList(List<String> profileList) {
+		expProfileList = profileList;
 	}
 	
 	/**

@@ -605,7 +605,7 @@ public interface MeasureServiceAsync {
 	 * @param expansionProfile the expansion profile
 	 * @param callback the callback
 	 */
-	void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> list, String measureId, String expansionProfile,
+	void updateCQLMeasureXMLForExpansionProfile(List<CQLQualityDataSetDTO> list, String measureId, String expansionProfile,
 			AsyncCallback<Void> callback);
 	
 	/**

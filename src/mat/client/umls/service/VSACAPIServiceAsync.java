@@ -85,7 +85,7 @@ public interface VSACAPIServiceAsync {
 	void validateVsacUser(String userName, String password,
 			AsyncCallback<Boolean> callback);
 	
-	void getAllExpIdentifierList(AsyncCallback<VsacApiResult> callback);
+	void getAllExpProfileList(AsyncCallback<VsacApiResult> callback);
 	
 	void getAllVersionListByOID(String oid, AsyncCallback<VsacApiResult> callback);
 	

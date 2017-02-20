@@ -14,7 +14,7 @@ import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACExpansionIdentifierWrapper;
+import mat.model.VSACExpansionProfileWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.model.VSACVersionWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
@@ -143,9 +143,9 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @param xmlPayLoad the xml pay load
 	 * @return the VSAC profile wrapper
 	 */
-	private VSACExpansionIdentifierWrapper convertXmlToProfileList(final String xmlPayLoad){
+	private VSACExpansionProfileWrapper convertXmlToProfileList(final String xmlPayLoad){
 		LOGGER.info("Start VSACAPIServiceImpl convertXmlToProfileList");
-		VSACExpansionIdentifierWrapper profileDetails = null;
+		VSACExpansionProfileWrapper profileDetails = null;
 		String xml = xmlPayLoad;
 		if ((xml != null) && StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveVSACProfileListResponse tag is not null ");
@@ -154,11 +154,11 @@ public class VSACApiServImpl implements VSACApiService{
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACExpIdentifierMapping.xml"));
 			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(VSACExpansionIdentifierWrapper.class);
+			unmar.setClass(VSACExpansionProfileWrapper.class);
 			unmar.setWhitespacePreserve(true);
-			profileDetails = (VSACExpansionIdentifierWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			profileDetails = (VSACExpansionProfileWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
 			LOGGER.info("unmarshalling complete..RetrieveVSACProfileListResponse"
-					+ profileDetails.getExpIdentifierList().get(0).getName());
+					+ profileDetails.getExpProfileList().get(0).getName());
 			
 		} catch (Exception e) {
 			if (e instanceof IOException) {
@@ -408,8 +408,8 @@ public class VSACApiServImpl implements VSACApiService{
 				if ((vsacResponseResult.getXmlPayLoad() != null)
 						&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
 					// Caster conversion here.
-					VSACExpansionIdentifierWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
-					result.setVsacExpIdentifierResp(wrapper.getExpIdentifierList());
+					VSACExpansionProfileWrapper wrapper = convertXmlToProfileList(vsacResponseResult.getXmlPayLoad());
+					result.setVsacExpProfileResp(wrapper.getExpProfileList());
 					return result;
 				}
 			}

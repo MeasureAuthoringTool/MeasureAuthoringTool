@@ -542,7 +542,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureId the measure id
 	 * @param expansionProfile the expansion profile
 	 */
-	void updateCQLMeasureXMLForExpansionIdentifier(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
+	void updateCQLMeasureXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
 	
 	/**
 	 * Method to Get Default 4 Supplemental Data Elements for give Measure.

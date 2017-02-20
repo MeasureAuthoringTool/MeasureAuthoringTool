@@ -1174,7 +1174,7 @@ public class CQLServiceImpl implements CQLService {
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-		
+				
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 		if(cqlModel.getCqlIncludeLibrarys().size() == 0){
 			parsedCQL = parseCQLStringForError(cqlFileString);
@@ -1220,6 +1220,12 @@ public class CQLServiceImpl implements CQLService {
 		
 		for(CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries){
 			CQLLibrary cqlLibrary = getCqlLibraryDAO().find(cqlIncludeLibrary.getCqlLibraryId());
+			
+			if(cqlLibrary == null){
+				logger.info("Could not find included library:"+cqlIncludeLibrary.getAliasName());
+				continue;
+			}
+			
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 			
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
@@ -2257,7 +2263,7 @@ public class CQLServiceImpl implements CQLService {
 			
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
-			
+			System.out.println(cte.getMessage());
 			
 		}
 
@@ -2729,10 +2735,9 @@ public class CQLServiceImpl implements CQLService {
 					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
 					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 					xmlModel.setXml(processor.getOriginalXml());
-					getService().saveMeasureXml(xmlModel);		
+					getService().saveMeasureXml(xmlModel);							
 					
-					
-					// remove from parameter list
+					// remove from library list
 					viewIncludeLibrarys.remove(toBeModifiedIncludeObj); 
 					wrapper.setCqlIncludeLibrary(viewIncludeLibrarys);
 					result.setSuccess(true);

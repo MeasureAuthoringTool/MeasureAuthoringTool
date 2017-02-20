@@ -186,7 +186,7 @@ implements MeasureCloningService {
 		if(creatingDraft){
 			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId());
 		}else{
-			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentDetails.getId());
+			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureClonable(measureDAO, currentDetails.getId());
 		}
 		
 		if(!isMeasureClonable){

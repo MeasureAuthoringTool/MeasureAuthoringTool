@@ -258,92 +258,24 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Override
 	public String createCQLLookUpTag(String libraryName, String version){
 		XmlProcessor xmlProcessor = loadCQLXmlTemplateFile();
-		String cqlLookUpString = getCQLLookUpXmlForStandAlone(libraryName, version,xmlProcessor);
+		String cqlLookUpString = getCQLLookUpXml(libraryName, version,xmlProcessor,"//standAlone");
 		return cqlLookUpString;
 	}
 	
-	private String getCQLLookUpXmlForStandAlone(String libraryName,String version , XmlProcessor xmlProcessor){
-		String cqlLookUp = null;
-		try {
-			Node cqlTemplateNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/cqlTemplate");
-			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//standAlone/cqlLookUp");
-			String xPath_ID = "//standAlone/cqlLookUp/child::node()/*[@id]";
-			String xPath_UUID = "//standAlone/cqlLookUp/child::node()/*[@uuid]";
-			if (cqlTemplateNode != null) {
-				
-				if (cqlTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
-					String[] attributeToBeModified = cqlTemplateNode.getAttributes().getNamedItem("changeAttribute")
-							.getNodeValue().split(",");
-					for (String changeAttribute : attributeToBeModified) {
-						if (changeAttribute.equalsIgnoreCase("id")) {
-							NodeList nodesForId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPath_ID);
-							for (int i = 0; i < nodesForId.getLength(); i++) {
-								Node node = nodesForId.item(i);
-								node.getAttributes().getNamedItem("id")
-										.setNodeValue(UUIDUtilClient.uuid());
-							}
-						} else if (changeAttribute.equalsIgnoreCase("uuid")) {
-							NodeList nodesForUUId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
-									xPath_UUID);
-							for (int i = 0; i < nodesForUUId.getLength(); i++) {
-								Node node = nodesForUUId.item(i);
-								node.getAttributes().getNamedItem("uuid")
-										.setNodeValue(UUIDUtilClient.uuid());
-							}
-						}
-					}
-				}
-
-				
-				
-				if (cqlTemplateNode.getAttributes().getNamedItem("changeNodeTextContent") != null) {
-					String[] nodeTextToBeModified = cqlTemplateNode.getAttributes()
-							.getNamedItem("changeNodeTextContent").getNodeValue().split(",");
-					for (String nodeTextToChange : nodeTextToBeModified) {
-						if (nodeTextToChange.equalsIgnoreCase("library")) {
-							Node libraryNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//standAlone//" + nodeTextToChange);
-							if (libraryNode != null) {
-								libraryNode.setTextContent(libraryName);
-							}
-						} else if (nodeTextToChange.equalsIgnoreCase("version")) {
-							Node versionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//standAlone//" + nodeTextToChange);
-							if (versionNode != null) {
-								versionNode.setTextContent(version);
-							}
-						} else if (nodeTextToChange.equalsIgnoreCase("usingModelVersion")) {
-							Node usingModelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//standAlone//" + nodeTextToChange);
-							if (usingModelVersionNode != null) {
-								usingModelVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
-							}
-						}
-					}
-				}
-				System.out.println(xmlProcessor.transform(cqlLookUpNode));
-				cqlLookUp = xmlProcessor.transform(cqlLookUpNode);
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return cqlLookUp;
-	}
+	
 	
 	
 	/**
 	 * @param cqlLibraryDataSetObject
 	 */
 	@Override
-	public String getCQLLookUpXmlForMeasure(String libraryName, String versionText, XmlProcessor xmlProcessor) {
+	public String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor,String mainXPath) {
 		String cqlLookUp = null;
 		try {
 			Node cqlTemplateNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/cqlTemplate");
-			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//measure/cqlLookUp");
-			String xPath_ID = "//measure/cqlLookUp/child::node()/*[@id]";
-			String xPath_UUID = "//measure/cqlLookUp/child::node()/*[@uuid]";
+			Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), mainXPath+"/cqlLookUp");
+			String xPath_ID = mainXPath+"/cqlLookUp/child::node()/*[@id]";
+			String xPath_UUID = mainXPath+"/cqlLookUp/child::node()/*[@uuid]";
 			if (cqlTemplateNode != null) {
 
 				if (cqlTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
@@ -375,19 +307,19 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 					for (String nodeTextToChange : nodeTextToBeModified) {
 						if (nodeTextToChange.equalsIgnoreCase("library")) {
 							Node libraryNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//measure//" + nodeTextToChange);
+									mainXPath+"//" + nodeTextToChange);
 							if (libraryNode != null) {
 								libraryNode.setTextContent(libraryName);
 							}
 						} else if (nodeTextToChange.equalsIgnoreCase("version")) {
 							Node versionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//measure//" + nodeTextToChange);
+									mainXPath+"//" + nodeTextToChange);
 							if (versionNode != null) {
 								versionNode.setTextContent(versionText);
 							}
 						} else if (nodeTextToChange.equalsIgnoreCase("usingModelVersion")) {
 							Node usingModelVersionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-									"//measure//" + nodeTextToChange);
+									mainXPath+"//" + nodeTextToChange);
 							if (usingModelVersionNode != null) {
 								usingModelVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
 							}

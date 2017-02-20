@@ -15,8 +15,6 @@ public interface CQLLibraryServiceInterface {
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
-	String getCQLLookUpXmlForMeasure(String libraryName, String version,XmlProcessor xmlProcessor);
-
 	String createCQLLookUpTag(String libraryName,String version);
 
 	XmlProcessor loadCQLXmlTemplateFile();
@@ -32,6 +30,8 @@ public interface CQLLibraryServiceInterface {
 	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
+
+	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
 	
 	
 }

@@ -99,13 +99,8 @@ public class MatContextServiceUtil {
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		MeasureShareDTO dto = measureDAO.extractDTOFromMeasure(measure);
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
-		ShareLevel shareLevel = measureDAO.findShareLevelForUser(measureId,
-				currentUserId);
-		boolean isSharedToEdit = false;
-		if (shareLevel != null) {
-			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
-		}
-		boolean isClonable = (isOwner || isSuperUser || isSharedToEdit);
+		
+		boolean isClonable = (isOwner || isSuperUser);
 		return isClonable;
 	}
 

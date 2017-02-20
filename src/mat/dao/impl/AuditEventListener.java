@@ -128,14 +128,14 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 			}
 			returnObject = measureAuditLog;
 		} if(obj instanceof CQLLibrary) {
-			CQLAuditLog measureAuditLog = new CQLAuditLog();
-			measureAuditLog.setTime(new Date());				
-			measureAuditLog.setUserId(emailAddress);
+			CQLAuditLog cqlAuditLog = new CQLAuditLog();
+			cqlAuditLog.setTime(new Date());				
+			cqlAuditLog.setUserId(emailAddress);
 			if(obj instanceof CQLLibrary){
-				measureAuditLog.setActivityType("CQL Library Created");
-				measureAuditLog.setCqlLibrary((CQLLibrary)obj);
+				cqlAuditLog.setActivityType("CQL Library Created");
+				cqlAuditLog.setCqlLibrary((CQLLibrary)obj);
 			}
-			returnObject = measureAuditLog;
+			returnObject = cqlAuditLog;
 		}/*else if(obj instanceof ListObject) {
 			CodeSystem codeSystem = ((ListObject) obj).getCodeSystem();
 			Boolean draft = ((ListObject) obj).isDraft();

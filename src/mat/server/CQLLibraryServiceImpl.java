@@ -2,9 +2,6 @@ package mat.server;
 
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.model.LockedUserInfo;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;

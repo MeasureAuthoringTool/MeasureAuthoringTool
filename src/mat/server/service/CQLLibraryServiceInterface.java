@@ -15,7 +15,7 @@ public interface CQLLibraryServiceInterface {
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryId);
 	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject);
 
-	String getCQLLookUpXml(String libraryName, String version,XmlProcessor xmlProcessor);
+	String getCQLLookUpXmlForMeasure(String libraryName, String version,XmlProcessor xmlProcessor);
 
 	String createCQLLookUpTag(String libraryName,String version);
 

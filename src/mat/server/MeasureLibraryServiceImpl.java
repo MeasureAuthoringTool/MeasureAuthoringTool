@@ -2802,7 +2802,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						processor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 				
 				XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
-				String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),version,cqlXmlProcessor);
+				String cqlLookUpTag = cqlLibraryService.getCQLLookUpXmlForMeasure((MeasureUtility.cleanString(libraryName)),version,cqlXmlProcessor);
 				if(cqlLookUpTag!=null && StringUtils.isNotEmpty(cqlLookUpTag) && StringUtils.isNotBlank(cqlLookUpTag)){
 					processor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");
 					

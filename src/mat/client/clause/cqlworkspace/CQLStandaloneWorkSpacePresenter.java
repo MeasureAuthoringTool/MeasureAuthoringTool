@@ -1,10 +1,12 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -17,6 +19,11 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.shared.MatContext;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.SaveUpdateCQLResult;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
@@ -37,7 +44,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	/** The next clicked menu. */
 	private String nextSection = "general";
 	
-	
+	/** The applied QDM list. */
+	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -121,14 +129,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				isCQLWorkSpaceLoaded = false;
 				if (event.getCqlLibraryId() != null) {
 					isCQLWorkSpaceLoaded = true;
-					//getMeasureDetail();
 					logRecentActivity();
 				} else {
 					displayEmpty();
 				}
-				
-				
-				//beforeDisplay();
 			}
 
 			
@@ -149,7 +153,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 					@Override
 					public void onSuccess(Void result) {
-					//	getCQLData();
 						isCQLWorkSpaceLoaded = true;
 						displayCQLView();
 					}
@@ -159,6 +162,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	private void displayCQLView(){
 		panel.clear();
+		 getCQLData();
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
@@ -187,7 +191,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 											// is
 											// clicked from CQL library, its not
 											// called twice.
-				 getCQLData();
+				
 				displayCQLView();
 				
 			} else {
@@ -208,7 +212,70 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if(result.isSuccess()){
 					if(result.getCqlModel() != null){
-						System.out.println("I got the model");
+						//System.out.println("I got the model");
+						if (result.getCqlModel() != null) {
+							List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
+							List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()
+									.getAllValueSetList();
+							
+							for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
+								if (dto.isSuppDataElement())
+									continue;
+								appliedAllValueSetList.add(dto);
+							}
+							
+							MatContext.get().setValuesets(appliedAllValueSetList);
+							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(appliedAllValueSetList);
+							appliedValueSetTableList.clear();
+							for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
+								if (dto.isSuppDataElement())
+									continue;
+								appliedValueSetTableList.add(dto);
+							}
+							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
+
+							if ((result.getCqlModel().getDefinitionList() != null)
+									&& (result.getCqlModel().getDefinitionList().size() > 0)) {
+								searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
+								searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
+								searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
+								MatContext.get()
+										.setDefinitions(getDefinitionList(result.getCqlModel().getDefinitionList()));
+							} else {
+								searchDisplay.getCqlLeftNavBarPanelView().getDefineBadge().setText("00");
+							}
+							if ((result.getCqlModel().getCqlParameters() != null)
+									&& (result.getCqlModel().getCqlParameters().size() > 0)) {
+								searchDisplay.getCqlLeftNavBarPanelView().setViewParameterList(result.getCqlModel().getCqlParameters());
+								searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
+								searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
+								MatContext.get()
+										.setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
+							} else {
+								searchDisplay.getCqlLeftNavBarPanelView().getParamBadge().setText("00");
+							}
+							if ((result.getCqlModel().getCqlFunctions() != null)
+									&& (result.getCqlModel().getCqlFunctions().size() > 0)) {
+								searchDisplay.getCqlLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
+								searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
+								searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
+								MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+							} else {
+								searchDisplay.getCqlLeftNavBarPanelView().getFunctionBadge().setText("00");
+							}
+							if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
+									&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
+								searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+								searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
+								searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+								MatContext.get()
+										.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+							} else {
+								searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
+								searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
+							}
+
+						}
 					}
 				}
 				
@@ -536,7 +603,72 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		}
 	}
 	
+	/**
+	 * Gets the definition list.
+	 *
+	 * @param definitionList
+	 *            the definition list
+	 * @return the definition list
+	 */
+	private List<String> getDefinitionList(List<CQLDefinition> definitionList) {
+
+		List<String> defineList = new ArrayList<String>();
+
+		for (int i = 0; i < definitionList.size(); i++) {
+			defineList.add(definitionList.get(i).getDefinitionName());
+		}
+		return defineList;
+	}
 	
+	/**
+	 * Gets the paramater list.
+	 *
+	 * @param parameterList
+	 *            the parameter list
+	 * @return the paramater list
+	 */
+	private List<String> getParamaterList(List<CQLParameter> parameterList) {
+
+		List<String> paramList = new ArrayList<String>();
+
+		for (int i = 0; i < parameterList.size(); i++) {
+			paramList.add(parameterList.get(i).getParameterName());
+		}
+		return paramList;
+	}
+
+	/**
+	 * Gets the function list.
+	 *
+	 * @param functionList
+	 *            the function list
+	 * @return the function list
+	 */
+	private List<String> getFunctionList(List<CQLFunctions> functionList) {
+
+		List<String> funcList = new ArrayList<String>();
+
+		for (int i = 0; i < functionList.size(); i++) {
+			funcList.add(functionList.get(i).getFunctionName());
+		}
+		return funcList;
+	}
+	
+	/**
+	 * Gets the includes list.
+	 *
+	 * @param includesList the includes list
+	 * @return the includes list
+	 */
+	private List<String> getIncludesList(List<CQLIncludeLibrary> includesList) {
+
+		List<String> incLibList = new ArrayList<String>();
+
+		for (int i = 0; i < includesList.size(); i++) {
+			incLibList.add(includesList.get(i).getAliasName());
+		}
+		return incLibList;
+	}
 	/**
 	 * Display empty.
 	 */

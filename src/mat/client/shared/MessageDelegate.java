@@ -742,7 +742,7 @@ public class MessageDelegate {
 	
 	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
 	
-	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Included Library?";
+	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
 	
 	public String getONLY_ONE_CHILD_REQUIRED() {

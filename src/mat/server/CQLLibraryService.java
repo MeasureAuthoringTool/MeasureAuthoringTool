@@ -376,7 +376,19 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult getCQLData(String id) {
 		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
-		//cqlResult = cqlService.getCQLData(id, fromTable);
+		/*try {
+			String str = new String(cqlLibrary.getCqlXML().getBytes(1l, (int) cqlLibrary.getCqlXML().length()));
+			cqlResult = cqlService.getCQLData(str);
+			if(cqlResult.getCqlErrors().size() ==0){
+				cqlResult.setSuccess(true);
+			} else {
+				cqlResult.setSuccess(false);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
 		return cqlResult;
 		
 	}
@@ -453,7 +465,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	}
 	@Override
 	public void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId){
-		CQLLibraryDataSetObject library = this.findCQLLibraryByID(libraryid);
+		CQLLibrary library = cqlLibraryDAO.find(libraryid);
 		if(library != null){
 			recentCQLActivityLogDAO.recordRecentCQLLibraryActivity(libraryid, userId);
 		}

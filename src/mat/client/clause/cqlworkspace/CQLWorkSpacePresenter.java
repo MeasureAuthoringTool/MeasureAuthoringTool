@@ -27,7 +27,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
-import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
@@ -914,16 +913,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if (searchDisplay.getDefineNameTxtArea().getText() != null && searchDisplay.getDefineNameTxtArea().getText().length() > 0) {
+				if (searchDisplay.getDefineNameTxtArea().getText() != null && !searchDisplay.getDefineNameTxtArea().getText().isEmpty()) {
 					deleteDefinition();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				} else if (searchDisplay.getFuncNameTxtArea().getText() != null && searchDisplay.getFuncNameTxtArea().getText().length() > 0) {
+				} else if (searchDisplay.getFuncNameTxtArea().getText() != null && !searchDisplay.getFuncNameTxtArea().getText().isEmpty()) {
 					deleteFunction();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				} else if (searchDisplay.getParameterNameTxtArea().getText() != null && searchDisplay.getParameterNameTxtArea().getText().length() > 0) {
+				} else if (searchDisplay.getParameterNameTxtArea().getText() != null && !searchDisplay.getParameterNameTxtArea().getText().isEmpty()) {
 					deleteParameter();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				} else if(searchDisplay.getIncludeView().getAliasNameTxtArea().getText() != null &&  searchDisplay.getIncludeView().getAliasNameTxtArea().getText().length() > 0){
+				} else if(searchDisplay.getIncludeView().getAliasNameTxtArea().getText() != null 
+								&& !searchDisplay.getIncludeView().getAliasNameTxtArea().getText().isEmpty()){
 					deleteInclude();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
 				}

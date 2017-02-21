@@ -861,7 +861,7 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+						searchDisplay.resetMessageDisplay();
 						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
 						searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 					}else {

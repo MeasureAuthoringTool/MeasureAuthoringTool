@@ -89,6 +89,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 		CQLLeftNavBarPanelView getCqlLeftNavBarPanelView();
 
+		void resetMessageDisplay();
+
+		void hideAceEditorAutoCompletePopUp();
+
+		CQLParametersView getCQLParametersView();
+
+		CQlDefinitionsView getCQLDefinitionsView();
+
+		CQLFunctionsView getCQLFunctionsView();
+
+		CQLIncludeLibraryView getCqlIncludeLibraryView();
+
 	}
 	
 	/**
@@ -150,7 +162,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		panel.add(searchDisplay.getMainHPanel());
 	}
 	
@@ -175,7 +187,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 											// is
 											// clicked from CQL library, its not
 											// called twice.
-				// getCQLData();
+				 getCQLData();
 				displayCQLView();
 				
 			} else {
@@ -401,7 +413,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 		//searchDisplay.buildParameterLibraryView();
 
-		searchDisplay.getCqlLeftNavBarPanelView().setParameterWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCQLParametersView().setWidgetReadOnly(
+				MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		//searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 		//searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
@@ -422,7 +435,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		//		.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 	
-		searchDisplay.getCqlLeftNavBarPanelView().setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCqlIncludeLibraryView().setWidgetReadOnly(
+				MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
 	/**
@@ -437,7 +451,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 		//searchDisplay.buildDefinitionLibraryView();
 		
-		searchDisplay.getCqlLeftNavBarPanelView().setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(
+				MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		//searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 		//searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
@@ -453,7 +468,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		//searchDisplay.buildFunctionLibraryView();
-		searchDisplay.getCqlLeftNavBarPanelView().setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCQLFunctionsView().setWidgetReadOnly(
+				MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		//searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		//searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
@@ -481,7 +497,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(false);
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {

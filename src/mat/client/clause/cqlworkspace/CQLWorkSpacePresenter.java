@@ -530,6 +530,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		CQLLeftNavBarPanelView getCqlLeftNavBarPanelView();
 
+		CQLParametersView getCQLParametersView();
+
+		CQlDefinitionsView getCQlDefinitionsView();
+
+		void resetMessageDisplay();
+
 	}
 
 	/**
@@ -552,7 +558,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Build Insert Pop up.
 	 */
 	private void buildInsertPopUp() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay, currentSection);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
@@ -620,7 +626,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
@@ -635,7 +641,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
@@ -650,7 +656,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
@@ -697,7 +703,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
-				searchDisplay.getCqlLeftNavBarPanelView().setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+				searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			}
 		});
 
@@ -752,7 +758,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget) event.getSource());
 
 			}
@@ -762,7 +768,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget) event.getSource());
 
 			}
@@ -772,7 +778,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.buildInfoPanel((Widget) event.getSource());
 
 			}
@@ -899,7 +905,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
 			}
 		});
@@ -968,7 +974,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);				
 				clearAlias();	
@@ -1017,7 +1023,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the include library in CQL look up.
 	 */
 	private void addIncludeLibraryInCQLLookUp() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 		
 		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size()>0) {
@@ -1049,7 +1055,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								public void onSuccess(SaveUpdateCQLResult result) {
 									if(result != null){
 										if (result.isSuccess()) {
-											searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+											searchDisplay.resetMessageDisplay();
 											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 											searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 											MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
@@ -1160,7 +1166,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (!searchDisplay.getDefineAceEditor().isReadOnly()) {
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 				}
 			}
@@ -1171,7 +1177,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (!searchDisplay.getParameterAceEditor().isReadOnly()) {
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 				}
 			}
@@ -1182,7 +1188,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (!searchDisplay.getFunctionBodyAceEditor().isReadOnly()) {
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 				}
 			}
@@ -1326,7 +1332,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onModifyClicked(CQLFunctionArgument result) {
 				// TODO Auto-generated method stub
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
@@ -1356,7 +1362,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().setObserver(new CQLQDMAppliedView.Observer() {
 			@Override
 			public void onModifyClicked(CQLQualityDataSetDTO result) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				resetCQLValuesetearchPanel();
 				isModified = true;
 				modifyValueSetDTO = result;
@@ -1377,7 +1383,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onDeleteClicked(CQLQualityDataSetDTO result, final int index) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				resetCQLValuesetearchPanel();
 				if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 					isModified = false;
@@ -1566,7 +1572,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			searchDisplay.getCqlLeftNavBarPanelView().setParameterWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+			searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -1650,7 +1656,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds and modify function.
 	 */
 	protected void addAndModifyFunction() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
 		String funcContext = "";
@@ -1764,7 +1770,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the and modify parameters.
 	 */
 	private void addAndModifyParameters() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getParameterAceEditor().getText();
 		if (!parameterName.isEmpty()) {
@@ -1861,7 +1867,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * 
 	 */
 	private void addAndModifyDefintions() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
 		String defineContext = "";
@@ -1974,7 +1980,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement().setClassName("panel-collapse collapse");
@@ -2006,7 +2012,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		//getAllIncludeLibraryList("");
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		MatContext.get().getAllUnits();
 		// getAppliedQDMList(true);
@@ -2379,7 +2385,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
 		searchDisplay.buildParameterLibraryView();
 
-		searchDisplay.getCqlLeftNavBarPanelView().setParameterWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
@@ -2400,7 +2406,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 	
-		searchDisplay.getCqlLeftNavBarPanelView().setIncludesWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
 	/**
@@ -2415,7 +2421,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 		searchDisplay.buildDefinitionLibraryView();
 		
-		searchDisplay.getCqlLeftNavBarPanelView().setDefinitionWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
@@ -2431,7 +2437,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		searchDisplay.buildFunctionLibraryView();
-		searchDisplay.getCqlLeftNavBarPanelView().setFunctionWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCqlFunctionsView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
@@ -2466,7 +2472,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(false);
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
@@ -2771,7 +2777,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Delete definition.
 	 */
 	protected void deleteDefinition() {
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getDefineAceEditor().getText();
 		String defineContext = "";
@@ -2838,7 +2844,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								}
 							});
 				} else {
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a definition to delete.");
 					searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 				}
@@ -2849,7 +2855,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a definition to delete.");
 			searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 		}
@@ -2860,7 +2866,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	protected void deleteFunction() {
 
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String functionName = searchDisplay.getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getFunctionBodyAceEditor().getText();
 		String funcContext = "";
@@ -2923,12 +2929,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						});
 			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a function to delete.");
 				searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 			}
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a function to delete.");
 			searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 		}
@@ -2939,7 +2945,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	protected void deleteParameter() {
 
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String parameterName = searchDisplay.getParameterNameTxtArea().getText();
 		String parameterBody = searchDisplay.getParameterAceEditor().getText();
 
@@ -2992,12 +2998,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						});
 			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select parameter to delete.");
 				searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 			}
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a parameter to delete.");
 			searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 		}
@@ -3005,7 +3011,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	protected void deleteInclude() {
 
-		searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+		searchDisplay.resetMessageDisplay();
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 		String includeLibName = searchDisplay.getIncludeView().getCqlLibraryNameTextBox().getText();
 
@@ -3072,12 +3078,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						});
 			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select an alias to delete.");
 				searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
 			}
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+			searchDisplay.resetMessageDisplay();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select an alias to delete.");
 			searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
 		}
@@ -3196,7 +3202,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				isModified = false;
 				resetCQLValuesetearchPanel();
 			}
@@ -3205,7 +3211,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				updateVSACValueSets();
 			}
 		});
@@ -3220,7 +3226,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					String version = null;
 					String expansionProfile = null;
 					searchValueSetInVsac(version, expansionProfile);
@@ -3239,7 +3245,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					MatContext.get().clearDVIMessages();
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					
 					if (isModified && (modifyValueSetDTO != null)) {
 						 modifyQDM(isUserDefined);
@@ -3259,7 +3265,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				validateUserDefinedInput();
 			}
 		});
@@ -3273,7 +3279,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				validateOIDInput();
 			}
 		});
@@ -3287,7 +3293,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				// TODO Auto-generated method stub
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (!searchDisplay.getQdmView()
 						.getExpansionProfileValue(searchDisplay.getQdmView().getQDMExpProfileListBox())
 						.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
@@ -3303,7 +3309,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+				searchDisplay.resetMessageDisplay();
 				if (!searchDisplay.getQdmView().getVersionValue(searchDisplay.getQdmView().getVersionListBox())
 						.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 					searchDisplay.getQdmView().getQDMExpProfileListBox().setSelectedIndex(0);
@@ -3365,7 +3371,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					// code for adding profile to List to applied QDM
-					searchDisplay.getCqlLeftNavBarPanelView().resetMessageDisplay();
+					searchDisplay.resetMessageDisplay();
 					if (!MatContext.get().isUMLSLoggedIn()) { // UMLS
 						// Login
 						// Validation

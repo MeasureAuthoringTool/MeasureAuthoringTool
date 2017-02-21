@@ -2195,6 +2195,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(CQLQualityDataModelWrapper result) {
+						String ExpIdentifier = null;
 						appliedValueSetTableList.clear();
 						List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();
 						if(result != null){
@@ -2202,20 +2203,60 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								if (dto.isSuppDataElement())
 									continue;
 								allValuesets.add(dto);
+								if(dto.getExpansionIdentifier() != null){
+									if(!dto.getExpansionIdentifier().isEmpty() && !dto.getExpansionIdentifier().equalsIgnoreCase("")){
+										ExpIdentifier = dto.getExpansionIdentifier();
+									}
+								}
 							}
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(allValuesets);
 							for(CQLQualityDataSetDTO valueset : allValuesets){
 								//filtering out codes from valuesets list
 								if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8"))
 									continue;
-									
+		
 								appliedValueSetTableList.add(valueset);		
 							}
-							
+
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 						}
 						searchDisplay.hideAceEditorAutoCompletePopUp();
 						appliedQDMEvent();
+
+						//if UMLS is not logged in
+						if (!MatContext.get().isUMLSLoggedIn()) {
+							if(ExpIdentifier !=null){
+								searchDisplay.getQdmView().getVSACExpansionProfileListBox().setEnabled(false);
+								searchDisplay.getQdmView().getVSACExpansionProfileListBox().clear();
+								searchDisplay.getQdmView().getVSACExpansionProfileListBox().addItem(ExpIdentifier);
+								searchDisplay.getQdmView().getDefaultExpProfileSel().setValue(true);
+								searchDisplay.getQdmView().getDefaultExpProfileSel().setEnabled(false);
+								isExpansionProfile = true;
+								expProfileToAllQDM = ExpIdentifier;
+							} else {
+								expProfileToAllQDM = "";
+								isExpansionProfile = false;
+							}
+						} else {
+							if(ExpIdentifier != null){
+								isExpansionProfile = true;
+								searchDisplay.getQdmView().getVSACExpansionProfileListBox().setEnabled(true);
+								searchDisplay.getQdmView().setExpProfileList(MatContext.get()
+										.getExpProfileList());
+								searchDisplay.getQdmView().setDefaultExpansionProfileListBox();
+								for(int j = 0; j < searchDisplay.getQdmView().getVSACExpansionProfileListBox().getItemCount(); j++){
+									if(searchDisplay.getQdmView().getVSACExpansionProfileListBox().getItemText(j)
+											.equalsIgnoreCase(ExpIdentifier)) {
+										searchDisplay.getQdmView().getVSACExpansionProfileListBox().setItemSelected(j, true);
+										searchDisplay.getQdmView().getVSACExpansionProfileListBox().setSelectedIndex(j);
+										searchDisplay.getQdmView().getDefaultExpProfileSel().setValue(true);
+										break;
+									}
+								}
+							} else{
+								isExpansionProfile = false;
+							}
+						}
 					}
 				});
 			}
@@ -3333,16 +3374,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 						return;
 					}
-					searchDisplay.getQdmView().getSearchHeader().setText("Search");
 					int selectedindex = searchDisplay.getQdmView().getVSACExpansionProfileListBox().getSelectedIndex();
 					String selectedValue =
 							searchDisplay.getQdmView().getVSACExpansionProfileListBox().getItemText(selectedindex);
 
 					if(!selectedValue.equalsIgnoreCase("--Select--")){
 						expProfileToAllQDM = selectedValue;
+						isExpansionProfile = true;
+						expProfileToAllQDM = selectedValue;
 						updateAllQDMsWithExpProfile(appliedValueSetTableList); } 
 					else if(!searchDisplay.getQdmView().getDefaultExpProfileSel().getValue()){ 
+						isExpansionProfile = false;
 						expProfileToAllQDM = "";
+						searchDisplay.getQdmView().getDefaultExpProfileSel().setValue(true);
 						updateAllQDMsWithExpProfile(appliedValueSetTableList); } else {
 							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 							.createAlert(MatContext.get()
@@ -3482,7 +3526,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 		searchDisplay.getQdmView().showSearchingBusyOnQDM(true);
-
+		expProfileToAllQDM = getExpProfileValue();
 		if (expProfileToAllQDM.isEmpty()) {
 			expansionProfile = null;
 		} else {
@@ -3561,8 +3605,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
 		String expProfile = matValueSetTransferObject.getMatValueSet().getExpansionProfile();
 		String version = matValueSetTransferObject.getMatValueSet().getVersion();
-		if (expProfile == null) {
-			expProfile = "";
+		expProfileToAllQDM = getExpProfileValue();
+		if(!expProfileToAllQDM.equalsIgnoreCase("")){
+			expProfile = expProfileToAllQDM;
+		}
+		if(expProfile == null){
+				expProfile = "";
 		}
 		if (version == null) {
 			version = "";
@@ -3718,8 +3766,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if(version == null){
 				version = "";
 			}
+			expProfileToAllQDM = getExpProfileValue();
 			if(modifyValueSetDTO.getExpansionIdentifier() == null){
-				modifyValueSetDTO.setExpansionIdentifier("");
+				if(expProfileToAllQDM.equalsIgnoreCase("")){
+					modifyValueSetDTO.setExpansionIdentifier("");
+				} else {
+					modifyValueSetDTO.setExpansionIdentifier(expProfileToAllQDM);
+				}
 			}
 			if(modifyValueSetDTO.getVersion() == null){
 				modifyValueSetDTO.setVersion("");
@@ -3737,6 +3790,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 	
 	
+	private String getExpProfileValue() {
+	int selectedindex =	searchDisplay.getQdmView().getVSACExpansionProfileListBox().getSelectedIndex();
+	String result = searchDisplay.getQdmView().getVSACExpansionProfileListBox().getValue(selectedindex);
+	if (!result.equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+		return result;
+	}else{
+		return "";
+	}
+	}
+
 	/**
 	 * Modify QDM with out value set.
 	 */

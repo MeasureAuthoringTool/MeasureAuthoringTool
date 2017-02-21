@@ -376,18 +376,14 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult getCQLData(String id) {
 		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
-		/*try {
+		try {
 			String str = new String(cqlLibrary.getCqlXML().getBytes(1l, (int) cqlLibrary.getCqlXML().length()));
 			cqlResult = cqlService.getCQLData(str);
-			if(cqlResult.getCqlErrors().size() ==0){
-				cqlResult.setSuccess(true);
-			} else {
-				cqlResult.setSuccess(false);
-			}
+			cqlResult.setSuccess(true);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		
 		return cqlResult;
 		

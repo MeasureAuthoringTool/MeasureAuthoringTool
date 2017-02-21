@@ -201,8 +201,13 @@ public class CQLUtilityClass {
 		}
 
 		// Definitions and Functions by Context
-		cqlStr = getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
-				cqlModel.getCqlFunctions(), cqlStr, toBeInserted);
+		if(cqlModel.getDefinitionList().size() > 0 || cqlModel.getCqlFunctions().size() > 0){
+			cqlStr = getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
+					cqlModel.getCqlFunctions(), cqlStr, toBeInserted);
+		} else {
+			cqlStr = cqlStr.append("context").append(" " + PATIENT).append("\n\n");
+		}
+		
 		//cqlModel.setLines(countLines(cqlStr.toString()));
 		
 		/*if(!toBeInsertedAtEnd.toString().isEmpty()){
@@ -395,6 +400,7 @@ public class CQLUtilityClass {
 			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
 			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
 			getCQLFunctionsInfo(cqlModel, cqlLookUpXMLString);
+			
 		}
 		
 		return cqlModel;

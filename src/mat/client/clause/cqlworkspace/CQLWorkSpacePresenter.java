@@ -27,6 +27,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
+import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
@@ -3382,17 +3383,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					int selectedindex = searchDisplay.getQdmView().getVSACExpansionProfileListBox().getSelectedIndex();
 					String selectedValue =
-							searchDisplay.getQdmView().getVSACExpansionProfileListBox().getItemText(selectedindex);
+							searchDisplay.getQdmView().getVSACExpansionProfileListBox().getValue(selectedindex);
 
 					if(!selectedValue.equalsIgnoreCase("--Select--")){
-						expProfileToAllQDM = selectedValue;
 						isExpansionProfile = true;
 						expProfileToAllQDM = selectedValue;
 						updateAllQDMsWithExpProfile(appliedValueSetTableList); } 
 					else if(!searchDisplay.getQdmView().getDefaultExpProfileSel().getValue()){ 
 						isExpansionProfile = false;
 						expProfileToAllQDM = "";
-						searchDisplay.getQdmView().getDefaultExpProfileSel().setValue(true);
 						updateAllQDMsWithExpProfile(appliedValueSetTableList); } else {
 							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 							.createAlert(MatContext.get()
@@ -3534,8 +3533,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().showSearchingBusyOnQDM(true);
 		expProfileToAllQDM = getExpProfileValue();
 		if (expProfileToAllQDM.isEmpty()) {
+			isExpansionProfile = false;
 			expansionProfile = null;
 		} else {
+			isExpansionProfile = true;
 			expansionProfile = expProfileToAllQDM;
 		}
 
@@ -4200,10 +4201,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().getUserDefinedInput().setTitle(result.getCodeListName());
 		
 		searchDisplay.getQdmView().getQDMExpProfileListBox().clear();
+		searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(result.getExpansionIdentifier(),result.getExpansionIdentifier());
 		searchDisplay.getQdmView().getQDMExpProfileListBox().setEnabled(false);
 		
 		searchDisplay.getQdmView().getVersionListBox().clear();
 		searchDisplay.getQdmView().getVersionListBox().setEnabled(false);
+		
+		expProfileToAllQDM = getExpProfileValue();
 		
 		if(!expProfileToAllQDM.isEmpty()){
 			searchDisplay.getQdmView().getQDMExpProfileListBox().clear();

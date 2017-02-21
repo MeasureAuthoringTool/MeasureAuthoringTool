@@ -2553,7 +2553,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure m = getService().getById(measureId);
 		logger.info("Measure Loaded for: " + measureId);
 
-		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureId);
+		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureVersionable(getMeasureDAO(), getUserService(), measureId);
 		if (!isMeasureVersionable) {
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);

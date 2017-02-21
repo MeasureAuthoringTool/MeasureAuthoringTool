@@ -10,6 +10,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
+import mat.server.service.UserService;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,6 +58,31 @@ public class MatContextServiceUtil {
 		return isEditable;
 	}
 	
+	/**
+	 * 
+	 * @param measureDAO
+	 * @param measureId
+	 * @return
+	 */
+	public boolean isCurrentMeasureVersionable(MeasureDAO measureDAO,
+			UserService userService, String measureId) {
+
+		boolean isVersionable = false;
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		User user = userService.getById(currentUserId);
+		List<MeasureShareDTO> measureDTO = measureDAO.getMeasuresForVersion("", user);
+		
+		for(MeasureShareDTO measureShareDTO: measureDTO){
+			if(measureShareDTO.getMeasureId().equals(measureId)){
+				isVersionable = true;
+				break;
+			}
+		}
+		
+		return isVersionable;
+	}
+	
+		
 	/**
 	 * Checks if is current measure is draftable.
 	 *

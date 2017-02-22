@@ -5750,7 +5750,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (model != null) {
 			XmlProcessor processor = new XmlProcessor(model.getXml());
 
-			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//elementLookUp/@vsacExpIdentifier";
+			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//cqlLookUp/valuesets/@vsacExpIdentifier";
 
 			try {
 				Node vsacExpIdAttr = (Node) xPath.evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(),

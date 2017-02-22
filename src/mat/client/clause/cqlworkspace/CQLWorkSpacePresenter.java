@@ -1221,7 +1221,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	
 	
-
 	/**
 	 * Adds the include CQL library handlers.
 	 */
@@ -2495,9 +2494,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								if (dto.isSuppDataElement())
 									continue;
 								allValuesets.add(dto);
-								if(dto.getExpansionIdentifier() != null){
-									if(!dto.getExpansionIdentifier().isEmpty() && !dto.getExpansionIdentifier().equalsIgnoreCase("")){
-										ExpIdentifier = dto.getExpansionIdentifier();
+								if(result.getVsacExpIdentifier() != null){
+									if(!result.getVsacExpIdentifier().isEmpty() && !result.getVsacExpIdentifier().equalsIgnoreCase("")){
+										ExpIdentifier = result.getVsacExpIdentifier();
 									}
 								}
 							}
@@ -4489,7 +4488,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().getUserDefinedInput().setTitle(result.getCodeListName());
 		
 		searchDisplay.getQdmView().getQDMExpProfileListBox().clear();
-		searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(result.getExpansionIdentifier(),result.getExpansionIdentifier());
+		if(result.getExpansionIdentifier() != null){
+			searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(result.getExpansionIdentifier(),result.getExpansionIdentifier());
+		}
 		searchDisplay.getQdmView().getQDMExpProfileListBox().setEnabled(false);
 		
 		searchDisplay.getQdmView().getVersionListBox().clear();

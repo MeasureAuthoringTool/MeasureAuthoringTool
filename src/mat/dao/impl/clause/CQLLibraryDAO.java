@@ -19,6 +19,7 @@ import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
 public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
@@ -87,7 +88,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		//cCriteria.setFirstResult(startIndex);
 		if(!searchFrom.equalsIgnoreCase("StandAlone")){
 			cCriteria.add(Restrictions.eq("draft", false));
-			
+			cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 			cCriteria.addOrder(Order.desc("measureSet.id"))
 			.addOrder(Order.desc("version"));
 		} else{

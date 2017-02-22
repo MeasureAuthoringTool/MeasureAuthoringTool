@@ -205,6 +205,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 
 			library.setCqlSet(cqlLibrarySet);
 			library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+			library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			library.setRevisionNumber("000");
 			library.setVersion("0.0");
 			if (LoggedInUserUtil.getLoggedInUser() != null) {

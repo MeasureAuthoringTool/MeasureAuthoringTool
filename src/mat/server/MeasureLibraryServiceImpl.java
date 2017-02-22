@@ -2610,11 +2610,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		// get simple xml for cql
 		String cqlLibraryName = "";
+		String cqlQdmVersion = "";
 		byte[] cqlByteArray = null;
 		CQLLibrary cqlLibrary = new CQLLibrary();
 		if (!xmlModel.getXml().isEmpty()) {
 			String xPathForCQLLookup = "//cqlLookUp";
 			String xPathForCQLLibraryName = "//cqlLookUp/library";
+			String xPathForCQLQdmVersion = "//cqlLookUp/usingModelVersion";
 
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			Document document = xmlProcessor.getOriginalDoc();
@@ -2623,7 +2625,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			try {
 				cqlLookUpNode = xmlProcessor.findNode(document, xPathForCQLLookup);
 				Node cqlLibraryNode = xmlProcessor.findNode(document, xPathForCQLLibraryName);
+				Node cqlQdmVersionNode = xmlProcessor.findNode(document, xPathForCQLQdmVersion);
 				cqlLibraryName = cqlLibraryNode.getTextContent();
+				cqlQdmVersion = cqlQdmVersionNode.getTextContent();
 				if(cqlLibraryName.length() >200){
 					cqlLibraryName = cqlLibraryName.substring(0, 199);
 				}
@@ -2652,6 +2656,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		cqlLibrary.setMeasureSet(measure.getMeasureSet());
 		cqlLibrary.setVersion(mDetail.getVersionNumber());
 		cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
+		cqlLibrary.setQdmVersion(cqlQdmVersion);
 		cqlLibrary.setFinalizedDate(timestamp);
 		cqlLibrary.setDraft(false);
 		cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());

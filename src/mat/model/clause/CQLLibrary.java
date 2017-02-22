@@ -66,6 +66,11 @@ public class CQLLibrary {
 	private String releaseVersion;
 	
 	private String revisionNumber;
+	
+	/**
+	 * The qdm version
+	 */
+	private String qdmVersion;
 
 	/**
 	 * The locked user id
@@ -120,6 +125,14 @@ public class CQLLibrary {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	}
 
 	public boolean isDraft() {

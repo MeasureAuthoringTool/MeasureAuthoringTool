@@ -22,6 +22,7 @@
     <property name="cqlXML" column="CQL_XML" type="blob"/>
     <property name="releaseVersion" column="RELEASE_VERSION"/>
     <property name="revisionNumber" column="REVISION_NUMBER"></property>
+    <property name="qdmVersion" column="QDM_VERSION"></property>
     <many-to-one name="lockedUserId" column="LOCKED_USER" 
         class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
     <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>

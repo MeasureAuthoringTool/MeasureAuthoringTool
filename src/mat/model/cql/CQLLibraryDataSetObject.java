@@ -22,6 +22,7 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private String ownerEmailAddress;
 	private boolean isFamily;
 	private String releaseVersion;
+	private String qdmVersion;
 	private String ownerFirstName;
 	private String ownerLastName;
 	private String cqlText;
@@ -59,6 +60,12 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	}
 	public void setReleaseVersion(String releaseVersion) {
 		this.releaseVersion = releaseVersion;
+	}
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	}
 	public String getOwnerFirstName() {
 		return ownerFirstName;

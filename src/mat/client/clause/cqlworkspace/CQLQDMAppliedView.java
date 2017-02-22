@@ -73,6 +73,7 @@ import mat.shared.ConstantMessages;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
@@ -194,6 +195,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/** The search header. */
 	private PanelHeader searchHeader = new PanelHeader();
 	
+	/** The cell table main panel. */
+	SimplePanel cellTableMainPanel = new SimplePanel();
+	
 	
 	/**
 	 * Instantiates a new VSAC profile selection view.
@@ -216,34 +220,12 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		verticalPanel.add(new SpacerWidget());
 		
-		HorizontalPanel bottomButtonLayOut = new HorizontalPanel();
-		
-		bottomButtonLayOut.setStyleName("continueButton");
-		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.getElement().setId("hPanel_HorizontalPanel");
-		hPanel.setWidth("690px");
-		updateVSACButton.setType(ButtonType.PRIMARY);
-		
-		updateVSACButton.setMarginTop(10);
-		updateVSACButton.setTitle("Update From VSAC");
-		updateVSACButton.setText("Update From VSAC");
-		updateVSACButton.setIcon(IconType.REFRESH);
-		updateVSACButton.setIconSize(IconSize.LARGE);
-		updateVSACButton.setPull(Pull.RIGHT);
-		
-		hPanel.add(updateVSACButton);
-		hPanel.add(bottomButtonLayOut);
-		
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hp);
 		verticalPanel.add(new SpacerWidget());
-		updateVSACButton.setTitle("Retrieve the most recent versions of value sets from VSAC");
-		updateVSACButton.getElement().setId("updateVsacButton_Button");
-
-		verticalPanel.add(hPanel);
+		
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(cellTablePanel);
 		verticalPanel.add(new SpacerWidget());
 		
 		
@@ -252,6 +234,37 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 				"subQDMAPPliedListContainerPanel");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("cqlqdsContentPanel");
+	}
+	
+	/**
+	 * Builds the cell table widget.
+	 *
+	 * @return the simple panel
+	 */
+	public SimplePanel buildCellTableWidget(){
+		cellTableMainPanel.clear();
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setStyleName("cqlqdsContentPanel");
+		vPanel.getElement().setId("hPanel_HorizontalPanel");
+		vPanel.setWidth("100%");
+		updateVSACButton.setType(ButtonType.PRIMARY);
+		updateVSACButton.setTitle("Retrieve the most recent versions of value sets from VSAC");
+		updateVSACButton.getElement().setId("updateVsacButton_Button");
+
+		updateVSACButton.setMarginTop(10);
+		updateVSACButton.setMarginRight(2);
+		updateVSACButton.setTitle("Update From VSAC");
+		updateVSACButton.setText("Update From VSAC");
+		updateVSACButton.setIcon(IconType.REFRESH);
+		updateVSACButton.setIconSize(IconSize.LARGE);
+		updateVSACButton.setPull(Pull.RIGHT);
+		vPanel.add(updateVSACButton);
+		vPanel.add(new SpacerWidget());
+		vPanel.add(new SpacerWidget());
+		vPanel.add(cellTablePanel);
+
+		cellTableMainPanel.add(vPanel);
+		return cellTableMainPanel;
 	}
 	
 	/**
@@ -278,7 +291,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		defaultExpProfileListBox.setWidth("250px");
 		defaultExpProfileListBox.getElement().setId("DefaultExpansionProfile_ListBox");
 		defaultExpProfileListBox.getElement().setTitle("Expansion Profile Selection List");
-		applyDefaultExpansionIdButton.setTitle("Apply Expansion Profile to all the value sets.");
+		applyDefaultExpansionIdButton.setTitle("Apply Expansion Profile to all the Value Set(s).");
 		applyDefaultExpansionIdButton.setType(ButtonType.PRIMARY);
 		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpProfileListBox.addItem("--Select--");
@@ -295,7 +308,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		expProfileHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>Apply Expansion Profile</strong>");
-		expProfileHeader.setTitle("Apply VSAC Expansion Profile to Measure.");
+		expProfileHeader.setTitle("Apply VSAC Expansion Profile to Measure");
 		expProfileHeader.add(searchHeaderText);
 		
 		searchPanel.add(expProfileHeader);
@@ -315,7 +328,9 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		InlineLabel defaultExpProfileLabel = new InlineLabel("Add Default Expansion Profile");
 		
 		defaultExpProfileLabel.setStyleName("qdmLabel");
+		defaultExpProfileLabel.setTitle("Add Default Expansion Profile");
 		defaultExpProfileSel.setStyleName("gwt-CheckBox");
+		defaultExpProfileSel.getElement().setTitle("Select an Expansion Profile");
 		qdmHorizontalPanel.add(defaultExpProfileLabel);
 		qdmHorizontalPanel.add(defaultExpProfileSel);
 		qdmHorizontalPanel.setStyleName("horizontalPanel");
@@ -1379,7 +1394,8 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/**
 	 * This method enable/disable's reterive and updateFromVsac button
 	 * and hide/show loading please wait message.
-	 * @param busy
+	 *
+	 * @param busy the busy
 	 */
 	public void showSearchingBusyOnQDM(final boolean busy) {
 		if (busy) {
@@ -1389,5 +1405,21 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		}
 		getUpdateFromVSACButton().setEnabled(!busy);
 		getRetrieveFromVSACButton().setEnabled(!busy);
+	}
+	
+	/**
+	 * Gets the cell table main panel.
+	 *
+	 * @return the cell table main panel
+	 */
+	public SimplePanel getCellTableMainPanel(){
+		return cellTableMainPanel;
+	}
+	
+	/**
+	 * Clear cell table main panel.
+	 */
+	public void clearCellTableMainPanel(){
+		cellTableMainPanel.clear();
 	}
 }

@@ -101,12 +101,14 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
 		mainHPPanel.add(mainPanel);
+		mainVPanel.add(mainHPPanel);
+        mainVPanel.add(qdmView.getCellTableMainPanel());
 		
 	}
 	
 	
 	/**
-	 * Unset each section selected object.
+	 * Unset each section selected object and clear Value sets CellTable Panel.
 	 */
 	public void unsetEachSectionSelectedObject() {
 		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
@@ -117,6 +119,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
+		qdmView.clearCellTableMainPanel();
 	}
 	
 	
@@ -147,15 +150,6 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	
 	
 	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#asWidget()
-	 */
-	@Override
-	public Widget asWidget(){
-		mainPanel.clear();
-		return mainPanel;
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getMainPanel()
 	 */
 	@Override
@@ -167,7 +161,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getMainVPanel()
 	 */
 	@Override
-	public VerticalPanel getMainVPanel() {
+	public Widget asWidget() {
 		return mainVPanel;
 	}
 

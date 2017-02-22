@@ -64,7 +64,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		 *
 		 * @return the main v panel
 		 */
-		VerticalPanel getMainVPanel();
+		Widget asWidget();
 		
 		/**
 		 * Gets the main h panel.
@@ -84,8 +84,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		 * Generates View for CQLWorkSpace tab.
 		 */
 		void buildView();
-
-		Widget asWidget();
 
 		String getClickedMenu();
 
@@ -167,7 +165,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		searchDisplay.resetMessageDisplay();
-		panel.add(searchDisplay.getMainHPanel());
+		panel.add(searchDisplay.asWidget());
 	}
 	
 	
@@ -186,7 +184,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			displayEmpty();
 		} else {
 			panel.clear();
-			panel.add(searchDisplay.getMainHPanel());
+			panel.add(searchDisplay.asWidget());
 			if (!isCQLWorkSpaceLoaded) { // this check is made so that when CQL
 											// is
 											// clicked from CQL library, its not

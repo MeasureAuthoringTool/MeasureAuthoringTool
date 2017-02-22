@@ -1,26 +1,16 @@
 package mat.client.clause.cqlworkspace;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gwtbootstrap3.client.ui.AnchorListItem;
-import org.gwtbootstrap3.client.ui.Badge;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,24 +18,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
 import mat.client.util.MatTextBox;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.GetUsedCQLArtifactsResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -144,7 +119,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
 		mainHPPanel.add(mainPanel);
-
+		
+		mainVPanel.add(mainHPPanel);
+        mainVPanel.add(qdmView.getCellTableMainPanel());
+        
 	}
 
 	/*
@@ -189,6 +167,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 */
 	@Override
 	public void buildAppliedQDM() {
+		mainFlowPanel.clear();
 		qdmView.resetVSACValueSetWidget();
 		qdmView.setWidgetToDefault();
 		resetMessageDisplay();
@@ -197,15 +176,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
 
 		appliedQDMTopPanel.add(qdmView.asWidget());
-
+		qdmView.buildCellTableWidget();
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
 		vp.setWidth("700px");
 		appliedQDMTopPanel.setWidth("700px");
 		appliedQDMTopPanel.setStyleName("marginLeft15px");
 		vp.add(appliedQDMTopPanel);
-
-		mainFlowPanel.clear();
+		
 		mainFlowPanel.add(vp);
 
 	}
@@ -375,7 +353,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the main v panel
 	 */
 	@Override
-	public VerticalPanel getMainVPanel() {
+	public Widget asWidget() {
 		return mainVPanel;
 	}
 	
@@ -894,7 +872,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 	/**
-	 * Unset each section selected object.
+	 * Unset each section selected object and clear Value sets CellTable Panel.
 	 */
 	public void unsetEachSectionSelectedObject() {
 		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
@@ -905,6 +883,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
+		qdmView.clearCellTableMainPanel();
 	}
 	
 	

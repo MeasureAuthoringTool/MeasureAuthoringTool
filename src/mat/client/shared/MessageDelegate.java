@@ -168,10 +168,10 @@ public class MessageDelegate {
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to value sets.";
 	
 	/** The vsac expansion profile selection. */
-	public final String DEFAULT_EXPANSION_PROFILE_REMOVED = "Successfully removed the default VSAC Expansion Profile from the Applied Value Sets list.";
+	public final String DEFAULT_EXPANSION_PROFILE_REMOVED = "Successfully removed VSAC Expansion Profile from value sets.";
 	
 	/** The vsac profile applied to qdm elements. */
-	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully Applied VSAC Expansion Profile to value sets.";
+	public final String VSAC_PROFILE_APPLIED_TO_QDM_ELEMENTS = "Successfully applied VSAC Expansion Profile to value sets.";
 	
 	/** The successful oid retreival from vsac. */
 	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Value set successfully retrieved from VSAC.";

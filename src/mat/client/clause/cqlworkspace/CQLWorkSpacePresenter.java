@@ -3386,13 +3386,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.getQdmView().getVSACExpansionProfileListBox().getValue(selectedindex);
 
 					if(!selectedValue.equalsIgnoreCase("--Select--")){
+						updateAllQDMsWithExpProfile(appliedValueSetTableList);
 						isExpansionProfile = true;
-						expProfileToAllQDM = selectedValue;
-						updateAllQDMsWithExpProfile(appliedValueSetTableList); } 
+						expProfileToAllQDM = selectedValue;} 
 					else if(!searchDisplay.getQdmView().getDefaultExpProfileSel().getValue()){ 
+						updateAllQDMsWithExpProfile(appliedValueSetTableList); 
 						isExpansionProfile = false;
-						expProfileToAllQDM = "";
-						updateAllQDMsWithExpProfile(appliedValueSetTableList); } else {
+						expProfileToAllQDM = "";} else {
 							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 							.createAlert(MatContext.get()
 									.getMessageDelegate().getVsacExpansionProfileSelection
@@ -3615,9 +3615,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		expProfileToAllQDM = getExpProfileValue();
 		if(!expProfileToAllQDM.equalsIgnoreCase("")){
 			expProfile = expProfileToAllQDM;
+			matValueSetTransferObject.getMatValueSet().setExpansionProfile(expProfile);
 		}
 		if(expProfile == null){
-				expProfile = "";
+			expProfile = "";
+			matValueSetTransferObject.getMatValueSet().setExpansionProfile(expProfile);
 		}
 		if (version == null) {
 			version = "";
@@ -4044,6 +4046,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		String expansionProfile = searchDisplay.getQdmView().getExpansionProfileValue(
 				searchDisplay.getQdmView().getQDMExpProfileListBox());
 		int expIdSelectionIndex = searchDisplay.getQdmView().getQDMExpProfileListBox().getSelectedIndex();
+		int versionSelectionIndex = searchDisplay.getQdmView().getVersionListBox().getSelectedIndex();
 		
 		CQLValueSetTransferObject matValueSetTransferObject = new CQLValueSetTransferObject();
 		matValueSetTransferObject.setMeasureId(measureID);
@@ -4063,7 +4066,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					&& !version.equalsIgnoreCase("")){
 				matValueSetTransferObject.setVersion(true);
 				matValueSetTransferObject.setExpansionProfile(false);
-				currentMatValueSet.setVersion(searchDisplay.getQdmView().getVersionListBox().getValue(expIdSelectionIndex));
+				currentMatValueSet.setVersion(searchDisplay.getQdmView().getVersionListBox().getValue(versionSelectionIndex));
 			}
 		}
 		

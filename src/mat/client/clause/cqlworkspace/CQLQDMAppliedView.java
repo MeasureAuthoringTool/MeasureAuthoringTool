@@ -278,7 +278,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		defaultExpProfileListBox.setWidth("250px");
 		defaultExpProfileListBox.getElement().setId("DefaultExpansionProfile_ListBox");
 		defaultExpProfileListBox.getElement().setTitle("Expansion Profile Selection List");
-		applyDefaultExpansionIdButton.setTitle("Apply Expansion Profile to all the QDM Element(s).");
+		applyDefaultExpansionIdButton.setTitle("Apply Expansion Profile to all the value sets.");
 		applyDefaultExpansionIdButton.setType(ButtonType.PRIMARY);
 		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
 		defaultExpProfileListBox.addItem("--Select--");
@@ -501,7 +501,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 								"In the Following Applied Value Sets/Codes table Name in First Column"
 										+ "OID in Second Column, TableCaptionElement in Third Column, Version in Fourth Column,"
 										+ "And Modify in Fifth Column where the user can Edit and Delete "
-										+ "the existing QDM. The Applied Value Sets/Codes are listed alphabetically in a table.");
+										+ "the existing Value set. The Applied Value Sets/Codes are listed alphabetically in a table.");
 				
 				
 			} else {

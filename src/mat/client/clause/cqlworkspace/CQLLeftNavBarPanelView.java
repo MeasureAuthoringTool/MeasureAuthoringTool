@@ -176,17 +176,17 @@ public class CQLLeftNavBarPanelView {
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
 
 	/** The includes name listbox. */
-	private ListBox includesNameListbox;
+	private ListBox includesNameListbox = new ListBox();
 
 	/**
 	 * ListBox defineNameListBox.
 	 */
-	private ListBox defineNameListBox;
+	private ListBox defineNameListBox = new ListBox();
 
 	/**
 	 * ListBox funcNameListBox.
 	 */
-	private ListBox funcNameListBox;
+	private ListBox funcNameListBox = new ListBox();
 
 	/**
 	 * SuggestBox searchSuggestDefineTextBox.
@@ -221,7 +221,7 @@ public class CQLLeftNavBarPanelView {
 	/**
 	 * ListBox parameterNameListBox.
 	 */
-	private ListBox parameterNameListBox;
+	private ListBox parameterNameListBox = new ListBox();
 	
 	/** The message panel. */
 	private HorizontalPanel messagePanel = new HorizontalPanel();
@@ -487,7 +487,7 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 
-		includesNameListbox = new ListBox();
+		includesNameListbox.clear();
 		includesNameListbox.setWidth("180px");
 		includesNameListbox.setVisibleItemCount(10);
 		includesNameListbox.getElement().setAttribute("id", "includesListBox");
@@ -544,8 +544,8 @@ public class CQLLeftNavBarPanelView {
 				}
 			}
 		});
-
-		parameterNameListBox = new ListBox();
+		
+		parameterNameListBox.clear();
 		parameterNameListBox.setWidth("180px");
 		parameterNameListBox.setVisibleItemCount(10);
 		parameterNameListBox.getElement().setAttribute("id", "paramListBox");
@@ -604,7 +604,7 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 
-		defineNameListBox = new ListBox();
+		defineNameListBox.clear();
 		defineNameListBox.setWidth("180px");
 		defineNameListBox.setVisibleItemCount(10);
 		defineNameListBox.getElement().setAttribute("id", "defineListBox");
@@ -662,7 +662,7 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 
-		funcNameListBox = new ListBox();
+		funcNameListBox.clear();
 		funcNameListBox.setWidth("180px");
 		funcNameListBox.setVisibleItemCount(10);
 		funcNameListBox.getElement().setAttribute("id", "funcListBox");
@@ -2110,10 +2110,17 @@ public class CQLLeftNavBarPanelView {
 		getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
-	public void clearMessageAlert(){
-		successMessageAlert.clearAlert();
-		errorMessageAlert.clearAlert();
-		warningMessageAlert.clearAlert();
+	
+	/**
+	 * Gets the owner name.
+	 *
+	 * @param cqlLibrary the cql library
+	 * @return the owner name
+	 */
+	public String getOwnerName(CQLLibraryDataSetObject cqlLibrary) {
+		StringBuilder owner = new StringBuilder();
+		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
+		return owner.toString();
 	}
 
 	/**

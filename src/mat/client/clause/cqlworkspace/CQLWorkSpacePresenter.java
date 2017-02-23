@@ -2650,11 +2650,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
 			searchDisplay.buildAppliedQDM();
+			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
 			searchDisplay.getQdmView().buildAppliedQDMCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(),
-					MatContext.get().getMeasureLockService().checkForEditPermission());
-			searchDisplay.getQdmView()
-					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-			resetCQLValuesetearchPanel();
+					isEditable);
+			if(isEditable){
+				resetCQLValuesetearchPanel();
+			} else {
+				searchDisplay.getQdmView()
+				.setWidgetsReadOnly(isEditable);
+			}
 		}
 
 	}

@@ -224,11 +224,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(hp);
 		verticalPanel.add(new SpacerWidget());
-		
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(new SpacerWidget());
-		
-		
+			
 		mainPanel.add(verticalPanel);
 		containerPanel.getElement().setAttribute("id",
 				"subQDMAPPliedListContainerPanel");
@@ -259,7 +255,6 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		updateVSACButton.setIconSize(IconSize.LARGE);
 		updateVSACButton.setPull(Pull.RIGHT);
 		vPanel.add(updateVSACButton);
-		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		vPanel.add(cellTablePanel);
 
@@ -674,23 +669,21 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
 			
-			String colName = "Modify";
 			
-			if(!isEditable){
-				colName = "Select";
+			
+			if(isEditable){
+				// Modify by Delete Column
+				String colName = "Modify";
+				table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+						getCompositeCellForQDMModifyAndDelete(isEditable)) {
+					
+					@Override
+					public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+						return object;
+					}
+				}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+						+ colName + "</span>"));
 			}
-			
-			// Modify by Delete Column
-			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
-					getCompositeCellForQDMModifyAndDelete(isEditable)) {
-				
-				@Override
-				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));
-			
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);

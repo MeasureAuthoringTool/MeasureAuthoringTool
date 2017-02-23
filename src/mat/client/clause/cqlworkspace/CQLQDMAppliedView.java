@@ -1367,9 +1367,11 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 		
 		getCancelQDMButton().setEnabled(editable);
 		getRetrieveFromVSACButton().setEnabled(editable);
-		getSaveButton().setEnabled(editable);
 		getUpdateFromVSACButton().setEnabled(editable);
 		getDefaultExpProfileSel().setEnabled(editable);
+		getSaveButton().setEnabled(false);
+		getQDMExpProfileListBox().setEnabled(false);
+		getVersionListBox().setEnabled(false);
 		
 	}
 	

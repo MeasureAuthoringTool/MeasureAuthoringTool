@@ -2653,12 +2653,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
 			searchDisplay.getQdmView().buildAppliedQDMCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(),
 					isEditable);
-			if(isEditable){
 				resetCQLValuesetearchPanel();
-			} else {
-				searchDisplay.getQdmView()
-				.setWidgetsReadOnly(isEditable);
-			}
+				searchDisplay.getQdmView().setWidgetsReadOnly(isEditable);
+			
 		}
 
 	}
@@ -4467,6 +4464,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().getVersionListBox().setEnabled(false);
 		
 		searchDisplay.getQdmView().getSaveButton().setEnabled(false);
+		
+		searchDisplay.getQdmView().getApplyDefaultExpansionIdButton().setEnabled(true);
+		searchDisplay.getQdmView().getUpdateFromVSACButton().setEnabled(true);
 	}
 	
 

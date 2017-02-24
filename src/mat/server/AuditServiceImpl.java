@@ -6,6 +6,7 @@ import mat.DTO.SearchHistoryDTO;
 import mat.DTO.UserAuditLogDTO;
 import mat.client.audit.service.AuditService;
 import mat.model.UserAuditLog;
+import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CodeListAuditService;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.TransactionAuditService;
@@ -42,6 +43,18 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	 */
 	private CodeListAuditService getCodeListAuditService(){
 		return (CodeListAuditService)context.getBean("codeListAuditService");
+	}
+	
+	private CQLLibraryAuditService getCQLAuditService(){
+		return (CQLLibraryAuditService)context.getBean("cqlLibraryAuditService");
+	}
+	@Override
+	public boolean recordCQLLibraryEvent(String cqlId, String event, String additionalInfo, boolean isChildLogRequired) {
+		return getCQLAuditService().recordCQLLibraryEvent(cqlId, event, additionalInfo, isChildLogRequired);
+	}
+	@Override
+	public SearchHistoryDTO executeSearch(String cqlId, int startIndex, int numberOfRows,List<String> filterList){
+		return getCQLAuditService().executeSearch(cqlId, startIndex, numberOfRows, filterList);
 	}
 	
 	/* Records an measure event

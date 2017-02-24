@@ -124,4 +124,10 @@ public interface AuditServiceAsync extends AsynchronousService {
 	
 	
 	void executeUserLogSearch(String userId, AsyncCallback<List<UserAuditLogDTO>> callback);
+
+	void recordCQLLibraryEvent(String cqlId, String event, String additionalInfo, boolean isChildLogRequired,
+			AsyncCallback<Boolean> callback);
+
+	void executeSearch(String cqlId, int startIndex, int numberOfRows, List<String> filterList,
+			AsyncCallback<SearchHistoryDTO> callback);
 }

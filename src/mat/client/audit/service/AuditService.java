@@ -113,4 +113,8 @@ public interface AuditService extends RemoteService {
 			boolean isChildLogRequired);
 
 	List<UserAuditLogDTO> executeUserLogSearch(String userId);
+
+	public boolean recordCQLLibraryEvent(String cqlId, String event, String additionalInfo, boolean isChildLogRequired);
+
+	SearchHistoryDTO executeSearch(String cqlId, int startIndex, int numberOfRows, List<String> filterList);
 }

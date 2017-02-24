@@ -125,7 +125,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * 
 		 * @return the adds the new qdm button
 		 */
-		Button getCancelQDMButton();
+		//Button getCancelQDMButton();
 		
 		/**
 		 * Sets the profile list.
@@ -161,7 +161,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the save button
 		 */
-		Button getSaveButton();
+		//Button getSaveButton();
 		
 		/**
 		 * Gets the data types list box.
@@ -714,7 +714,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchDisplay.getVersionListBox().setEnabled(true);
 					searchDisplay.getDataTypesListBox().setEnabled(true);
 					
-					searchDisplay.getSaveButton().setEnabled(true);
+					//searchDisplay.getSaveButton().setEnabled(true);
 					
 					if(isExpansionIdentifier){
 						searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
@@ -1012,7 +1012,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		/**
 		 * this functionality is to clear the content on the Search Panel.
 		 * */
-		searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getCancelQDMButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1035,7 +1035,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				
 			}
 		});
-		
+		*/
 		/**
 		 * this functionality is to retrieve the value set from VSAC with latest information which
 		 * consists of Expansion Identifier list and Version List.
@@ -1059,7 +1059,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * QDM elements tab and this is to add new value set or user Defined QDM to the
 		 * Applied QDM list.
 		 * */
-		searchDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1075,7 +1075,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 
 				}
 			}
-		});
+		});*/
 		
 		
 		/**
@@ -1117,9 +1117,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				resetQDSMsgPanel();
 				if(searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
-					searchDisplay.getSaveButton().setEnabled(false);
+					//searchDisplay.getSaveButton().setEnabled(false);
 				} else {
-					searchDisplay.getSaveButton().setEnabled(true);
+					//searchDisplay.getSaveButton().setEnabled(true);
 				}
 			}
 		});
@@ -1375,7 +1375,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
 			//searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
-			searchDisplay.getSaveButton().setEnabled(true);
+		//	searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			isUserDefined = false;
 			searchDisplay.getUserDefinedInput().setTitle("Enter Name");
@@ -1383,7 +1383,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
 		//	searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
-			searchDisplay.getSaveButton().setEnabled(false);
+			//searchDisplay.getSaveButton().setEnabled(false);
 		}
 	}
 	
@@ -1397,7 +1397,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if (searchDisplay.getOIDInput().getValue().length()>0) {
 			isUserDefined = false;
 			searchDisplay.getUserDefinedInput().setEnabled(false);
-			searchDisplay.getSaveButton().setEnabled(false);
+			//searchDisplay.getSaveButton().setEnabled(false);
 			//searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		} else if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUserDefined = true;
@@ -1406,7 +1406,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getUserDefinedInput().setEnabled(true);
 			if(!searchDisplay.getDataTypeText(
 					searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
-				searchDisplay.getSaveButton().setEnabled(true);
+				//searchDisplay.getSaveButton().setEnabled(true);
 			}
 		} else {
 			searchDisplay.getUserDefinedInput().setEnabled(true);
@@ -2152,7 +2152,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getUserDefinedInput().setValue("");
-		searchDisplay.getSaveButton().setEnabled(false);
+		//searchDisplay.getSaveButton().setEnabled(false);
 	}
 	
 	/**
@@ -2201,9 +2201,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getApplyDefaultExpansionIdButton().setEnabled(editable);
 		
-		searchDisplay.getCancelQDMButton().setEnabled(editable);
+		//searchDisplay.getCancelQDMButton().setEnabled(editable);
 		//searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
-		searchDisplay.getSaveButton().setEnabled(editable);
+		//searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);
 		//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
 		//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
@@ -2344,7 +2344,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getVersionListBox().setEnabled(false);
 		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 	//	searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
-		searchDisplay.getSaveButton().setEnabled(true);
+		//searchDisplay.getSaveButton().setEnabled(true);
 		searchDisplay.getOIDInput().setEnabled(true);
 		searchDisplay.getOIDInput().setValue("");
 		searchDisplay.getVersionListBox().clear();
@@ -2366,7 +2366,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setEnabled(true);
 		searchDisplay.getOIDInput().setValue(result.getOid());
 		searchDisplay.getOIDInput().setTitle(result.getOid());
-		searchDisplay.getSaveButton().setEnabled(false);
+	//	searchDisplay.getSaveButton().setEnabled(false);
 		searchDisplay.getDataTypesListBox().setEnabled(false);
 	//	searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		searchDisplay.getVersionListBox().clear();

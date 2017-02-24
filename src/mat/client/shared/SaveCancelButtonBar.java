@@ -1,7 +1,11 @@
 package mat.client.shared;
 
 
-import com.google.gwt.user.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
@@ -11,16 +15,16 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class SaveCancelButtonBar extends Composite {
 
 	/** The save button. */
-	private Button saveButton = new PrimaryButton("Save","primaryButton");
+	private Button saveButton = new Button();
 	
 	/** The cancel button. */
-	private Button cancelButton = new SecondaryButton("Cancel");
+	private Button cancelButton = new Button();
 	
 	/**
 	 * Instantiates a new save cancel button bar.
 	 */
 	public SaveCancelButtonBar() {
-		HorizontalPanel buttonLayout = new HorizontalPanel();
+		/*HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		saveButton.getElement().setId("saveButton_Button");
@@ -28,9 +32,20 @@ public class SaveCancelButtonBar extends Composite {
 		saveButton.setTitle("Save");
 		cancelButton.setTitle("Cancel");
 		buttonLayout.add(saveButton);
-		buttonLayout.add(cancelButton);
+		buttonLayout.add(cancelButton);*/
 		
-		initWidget(buttonLayout);
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		saveButton.setType(ButtonType.PRIMARY);
+		saveButton.setTitle("Save and Continue");
+		saveButton.setText("Save and Continue");
+		cancelButton.setType(ButtonType.DANGER);
+		cancelButton.setTitle("Cancel");
+		cancelButton.setText("Cancel");
+		buttonToolBar.add(saveButton);
+		buttonToolBar.add(cancelButton);
+		
+		
+		initWidget(buttonToolBar);
 	}
 	
 	/**

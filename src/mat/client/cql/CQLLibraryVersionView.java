@@ -36,6 +36,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.RadioButtonCell;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -68,10 +69,12 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
 	
-	private Button saveButton = new Button("Save and Continue");
-	private Button cancelButton = new Button("Cancel");
+	//private Button saveButton = new Button("Save and Continue");
+	//private Button cancelButton = new Button("Cancel");
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
+	
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
 	public CQLLibraryVersionView(){
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
@@ -101,15 +104,15 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 		mainPanel.add(radioPanel);
 		mainPanel.add(new SpacerWidget());
-		
+		/*
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		saveButton.setType(ButtonType.PRIMARY);
 		saveButton.setTitle("Save and Continue");
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		buttonToolBar.add(saveButton);
-		buttonToolBar.add(cancelButton);
-		mainPanel.add(buttonToolBar);
+		buttonToolBar.add(cancelButton);*/
+		mainPanel.add(buttonBar);
 	}
 	
 	/** Adds the column to table.
@@ -260,19 +263,13 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	}
 	@Override
 	public Button getSaveButton() {
-		return saveButton;
+		return buttonBar.getSaveButton();
 	}
 
-	public void setSaveButton(Button saveButton) {
-		this.saveButton = saveButton;
-	}
+	
 	@Override
 	public Button getCancelButton() {
-		return cancelButton;
-	}
-
-	public void setCancelButton(Button cancelButton) {
-		this.cancelButton = cancelButton;
+		return buttonBar.getCancelButton();
 	}
 	
 	@Override

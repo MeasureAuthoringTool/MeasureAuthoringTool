@@ -1423,7 +1423,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		((Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
+		((org.gwtbootstrap3.client.ui.Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
 		((Button) addEditComponentMeasuresDisplay.getReturnButton()).setEnabled(!busy);
 		addEditComponentMeasuresDisplay.getApplytoComponentMeasuresBtn().setEnabled(!busy);

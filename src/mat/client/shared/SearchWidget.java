@@ -52,7 +52,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 		searchButton.addClickHandler(this);
 		searchButton.getElement().setId("searchButton_Button"+UUIDUtilClient.uuid(4));
 		
-		searchButton.setHeight("30px");
+		searchButton.setHeight("32px");
 		searchButton.setMarginLeft(5.0);
 		searchButton.setPaddingBottom(5.0);
 		searchInput.setWidth("150px");

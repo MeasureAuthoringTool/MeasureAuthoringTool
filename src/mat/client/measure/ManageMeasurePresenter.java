@@ -1244,7 +1244,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				// O&M 17
-				((Button) draftDisplay.getSaveButton())
+				((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton())
 				.setEnabled(true);
 				
 				Mat.hideLoadingMessage();
@@ -1288,7 +1288,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onFailure(
 										Throwable caught) {
 									// O&M 17
-									((Button) draftDisplay
+									((org.gwtbootstrap3.client.ui.Button) draftDisplay
 											.getSaveButton())
 											.setEnabled(true);
 								}
@@ -1297,7 +1297,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onSuccess(
 										Boolean result) {
 									// O&M 17
-									((Button) draftDisplay
+									((org.gwtbootstrap3.client.ui.Button) draftDisplay
 											.getSaveButton())
 											.setEnabled(true);
 								}
@@ -1592,7 +1592,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) draftDisplay.getSearchButton()).click();
+					((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSearchButton()).click();
 				}
 			}
 		});
@@ -1621,7 +1621,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				// O&M 17
-				((Button) draftDisplay.getSaveButton()).setEnabled(false);
+				((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(false);
 				
 				ManageMeasureSearchModel.Result selectedMeasure = draftDisplay.getSelectedMeasure();
 				if ((selectedMeasure != null) && (selectedMeasure.getId() != null)) {
@@ -1630,7 +1630,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						@Override
 						public void onFailure(Throwable caught) {
 							// O&M 17
-							((Button) draftDisplay.getSaveButton()).setEnabled(true);
+							((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
 							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
 									.getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null,	null,
@@ -1646,7 +1646,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					});
 				} else {
 					// O&M 17
-					((Button) draftDisplay.getSaveButton()).setEnabled(true);
+					((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay()
 					.setMessage("Please select a Measure Version to create a Draft.");
 				}
@@ -3284,7 +3284,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) versionDisplay.getSearchButton()).click();
+					((org.gwtbootstrap3.client.ui.Button) versionDisplay.getSearchButton()).click();
 				}
 			}
 		});

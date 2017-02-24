@@ -154,7 +154,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 *
 		 * @return the retrieve from vsac button
 		 */
-		PrimaryButton getRetrieveFromVSACButton();
+		//PrimaryButton getRetrieveFromVSACButton();
 		
 		/**
 		 * Gets the save button.
@@ -1040,7 +1040,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		 * this functionality is to retrieve the value set from VSAC with latest information which
 		 * consists of Expansion Identifier list and Version List.
 		 * */
-		searchDisplay.getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1051,7 +1051,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					searchValueSetInVsac(version, expansionProfile);
 				}
 			}
-		});
+		});*/
 		
 		
 		/**
@@ -1374,7 +1374,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
-			searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
+			//searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
 			searchDisplay.getSaveButton().setEnabled(true);
 		} else {
 			isUserDefined = false;
@@ -1382,7 +1382,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
+		//	searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 			searchDisplay.getSaveButton().setEnabled(false);
 		}
 	}
@@ -1398,7 +1398,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			isUserDefined = false;
 			searchDisplay.getUserDefinedInput().setEnabled(false);
 			searchDisplay.getSaveButton().setEnabled(false);
-			searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
+			//searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		} else if(searchDisplay.getUserDefinedInput().getValue().length()>0){
 			isUserDefined = true;
 			searchDisplay.getQDMExpIdentifierListBox().clear();
@@ -2202,7 +2202,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getApplyDefaultExpansionIdButton().setEnabled(editable);
 		
 		searchDisplay.getCancelQDMButton().setEnabled(editable);
-		searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
+		//searchDisplay.getRetrieveFromVSACButton().setEnabled(editable);
 		searchDisplay.getSaveButton().setEnabled(editable);
 		searchDisplay.getUpdateFromVSACButton().setEnabled(editable);
 		//CustomBootStrapCheckBox chkBox = (CustomBootStrapCheckBox)searchDisplay.getDefaultExpIDInput();
@@ -2264,7 +2264,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			Mat.hideLoadingMessage();
 		}
 		searchDisplay.getUpdateFromVSACButton().setEnabled(!busy);
-		searchDisplay.getRetrieveFromVSACButton().setEnabled(!busy);
+		//searchDisplay.getRetrieveFromVSACButton().setEnabled(!busy);
 	}
 	
 	
@@ -2343,7 +2343,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getUserDefinedInput().setEnabled(true);
 		searchDisplay.getVersionListBox().setEnabled(false);
 		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
-		searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
+	//	searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
 		searchDisplay.getSaveButton().setEnabled(true);
 		searchDisplay.getOIDInput().setEnabled(true);
 		searchDisplay.getOIDInput().setValue("");
@@ -2368,7 +2368,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getOIDInput().setTitle(result.getOid());
 		searchDisplay.getSaveButton().setEnabled(false);
 		searchDisplay.getDataTypesListBox().setEnabled(false);
-		searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
+	//	searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		searchDisplay.getVersionListBox().clear();
 		searchDisplay.getQDMExpIdentifierListBox().clear();
 		searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);

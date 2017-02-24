@@ -77,32 +77,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	}
 
-	/*
-	 * public void buildMostRecentWidget() { mostRecentVerticalPanel.clear();
-	 * mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget
-	 * ()); }
-	 */
 
-	/**
-	 * Builds the most recent widget.
-	 * 
-	 * @return VerticalPanel.
-	 */
-	/*public VerticalPanel buildMostRecentWidget() {
-		mostRecentVPanel.clear();
-		mostRecentVPanel.getElement().setId("mostRecentVPanel_VerticalPanel_CQL");
-		mostRecentVPanel.setStyleName("recentSearchPanel");
-
-		Label recentActivityHeader = new Label("Recent Activity");
-		recentActivityHeader.getElement().setId("mostRecentVPanelHeader_Label_CQL");
-		recentActivityHeader.setStyleName("recentSearchHeader");
-		recentActivityHeader.getElement().setAttribute("tabIndex", "0");
-		HTML desc = new HTML("<p> No Recent Activity</p>");
-		mostRecentVPanel.add(recentActivityHeader);
-		mostRecentVPanel.add(new SpacerWidget());
-		mostRecentVPanel.add(desc);
-		return mostRecentVPanel;
-	}*/
 	
 	
 	@Override
@@ -111,18 +86,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mostRecentVerticalPanel.add(mostRecentLibraryWidget.buildMostRecentWidget());
 	}
 	
-	
-	
-	/*public FlowPanel buildCQLLibraryCellTable(){
-		
-		cellTablePanel.getElement().setId("cqlLibrarySearchView_mainPanel");
-		cellTablePanel.setStylePrimaryName("measureSearchResultsContainer");
-		cellTablePanel.add(new SpacerWidget());
-		cellTablePanel.getElement().setId("cqlCellTablePanel_VerticalPanel");
-		cellTablePanel.add(getCellTablePanel());
-		cellTablePanel.setStyleName("serachView_mainPanel");
-		return cellTablePanel;
-	}*/
 	
 
 	@Override
@@ -138,19 +101,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		
 		widgetVP.setWidth("100px");
 		widgetVP.getElement().setId("panel_VP_CQL");
-		//widgetVP.add(createNewItemWidget);
-		//widgetVP.add(searchFilterWidget);
-		// buildMostRecentWidget();
-		// mostRecentVerticalPanel.setWidth("80%");
 		mostRecentVerticalPanel.clear();
 		buildMostRecentWidget();
-		
-	//	mainHorizontalPanel.add(new SpacerWidget());
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(widgetVP);
-		/*mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(new SpacerWidget());*/
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessageAlert);

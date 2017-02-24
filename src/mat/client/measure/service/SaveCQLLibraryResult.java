@@ -19,6 +19,15 @@ public class SaveCQLLibraryResult extends GenericResult {
 	public static final int INVALID_USER = 1;
 	public static final int INVALID_CQL = 2;
 	
+	/** The Constant REACHED_MAXIMUM_VERSION. */
+	public static final int REACHED_MAXIMUM_VERSION = ConstantMessages.REACHED_MAXIMUM_VERSION;
+	
+	/** The Constant REACHED_MAXIMUM_MAJOR_VERSION. */
+	public static final int REACHED_MAXIMUM_MAJOR_VERSION = ConstantMessages.REACHED_MAXIMUM_MAJOR_VERSION;
+	
+	/** The Constant REACHED_MAXIMUM_MINOR_VERSION. */
+	public static final int REACHED_MAXIMUM_MINOR_VERSION = ConstantMessages.REACHED_MAXIMUM_MINOR_VERSION;
+	
 	private List<CQLLibraryDataSetObject> cqlLibraryDataSetObjects;
 	
 	/** The results total. */

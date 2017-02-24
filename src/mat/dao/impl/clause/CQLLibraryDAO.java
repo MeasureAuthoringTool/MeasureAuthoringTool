@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -23,6 +26,9 @@ import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
 public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
+	
+	/** The Constant logger. */
+	private static final Log logger = LogFactory.getLog(CQLLibraryDAO.class);
 	
 	
 class CQLLibraryComparator implements Comparator<CQLLibrary> {
@@ -242,6 +248,9 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	}
 	
 	
+
+	
+	
 	
 	
 	
@@ -326,4 +335,66 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 			closeSession(session);
 		}
 	}
+	
+	
+	@Override
+	public String findMaxVersion(String setId) {
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		mCriteria.add(Restrictions.eq("cqlSet.id", setId));
+		// add check to filter Draft's version number when finding max version
+		// number.
+		mCriteria.add(Restrictions.ne("draft", true));
+		mCriteria.setProjection(Projections.max("version"));
+		String maxVersion = (String) mCriteria.list().get(0);
+		return maxVersion;
+	}
+	
+	@Override
+	public String findMaxOfMinVersion(String setId, String version) {
+		logger.info("In CQLLibraryDAO.findMaxOfMinVersion()");
+		String maxOfMinVersion = version;
+		double minVal = 0;
+		double maxVal = 0;
+		if (StringUtils.isNotBlank(version)) {
+			int decimalIndex = version.indexOf('.');
+			minVal = Integer.valueOf(version.substring(0, decimalIndex))
+					.intValue();
+			logger.info("Min value: " + minVal);
+			maxVal = minVal + 1;
+			logger.info("Max value: " + maxVal);
+		}
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		
+		mCriteria.add(Restrictions.eq("cqlSet.id", setId));
+		mCriteria.add(Restrictions.ne("draft", true));
+		mCriteria.addOrder(Order.asc("version"));
+		List<CQLLibrary> cqlList = mCriteria.list();
+		double tempVersion = 0;
+		if ((cqlList != null) && (cqlList.size() > 0)) {
+			logger.info("Finding max of min version from the Library List. Size:"
+					+ cqlList.size());
+			for (CQLLibrary library : cqlList) {
+				logger.info("Looping through Lib Id: " + library.getId()
+					+ " Version: " + library.getVersion());
+				if ((library.getVersionNumber() > minVal)
+						&& (library.getVersionNumber() < maxVal)) {
+					if (tempVersion < library.getVersionNumber()) {
+						logger.info(tempVersion + "<"
+								+ library.getVersionNumber() + "="
+								+ (tempVersion < library.getVersionNumber()));
+						maxOfMinVersion = library.getVersion();
+						logger.info("maxOfMinVersion: " + maxOfMinVersion);
+					}
+					tempVersion = library.getVersionNumber();
+					logger.info("tempVersion: " + tempVersion);
+				}
+			}
+		}
+		logger.info("Returned maxOfMinVersion: " + maxOfMinVersion);
+		return maxOfMinVersion;
+	}
+	
+	
 }

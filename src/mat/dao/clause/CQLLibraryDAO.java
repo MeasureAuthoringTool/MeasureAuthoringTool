@@ -13,4 +13,8 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 		public boolean isLibraryLocked(String id);
 
 		public void updateLockedOutDate(CQLLibrary existingLibrary);
+
+		public String findMaxVersion(String setId);
+
+		public String findMaxOfMinVersion(String setId, String version);
 }

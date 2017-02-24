@@ -1527,10 +1527,10 @@ HasSelectionHandlers<Boolean> {
 	 *
 	 * @return the retrieve from vsac button
 	 */
-	@Override
-	public PrimaryButton getRetrieveFromVSACButton(){
+	//@Override
+	/*public Button getRetrieveFromVSACButton(){
 		return searchWidget.getSearchButton();
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSaveButton()
@@ -1924,6 +1924,9 @@ HasSelectionHandlers<Boolean> {
 	public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
 		this.qdmSelectedList = qdmSelectedList;
 	}
+
+
+	
 	
 	
 }

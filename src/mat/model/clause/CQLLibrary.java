@@ -276,4 +276,12 @@ public class CQLLibrary {
 		this.revisionNumber = revisionNumber;
 	}
 
+	public double getVersionNumber(){
+		double versionNumber = 0;
+		if ((version != null) && !version.isEmpty()) {
+			versionNumber = Double.valueOf(version).doubleValue();
+		}
+		return versionNumber;
+	}
+	
 }

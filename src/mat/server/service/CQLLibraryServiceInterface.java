@@ -32,6 +32,10 @@ public interface CQLLibraryServiceInterface {
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
 	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
+
+	SaveCQLLibraryResult searchForVersion(String searchText);
+
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
 	
 	
 }

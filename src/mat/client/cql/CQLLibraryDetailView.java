@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.cql;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;

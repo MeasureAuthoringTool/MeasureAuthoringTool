@@ -28,6 +28,11 @@ public interface CQLLibraryServiceAsync {
 	void getAllRecentCQLLibrariesForUser(String userId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId, AsyncCallback<Void> callback);
+
+	void searchForVersion(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void saveFinalizedVersion(String libraryId, boolean isMajor, String version,
+			AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	
 

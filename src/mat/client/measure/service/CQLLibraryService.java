@@ -3,7 +3,6 @@ package mat.client.measure.service;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import mat.model.User;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -21,5 +20,9 @@ public interface CQLLibraryService extends RemoteService {
 	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
+
+	SaveCQLLibraryResult searchForVersion(String searchText);
+
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
 
 }

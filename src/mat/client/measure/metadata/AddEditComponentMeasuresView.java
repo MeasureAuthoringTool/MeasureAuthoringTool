@@ -4,25 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.MeasureSearchView.Observer;
-import mat.client.resource.CellTableResource;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSafeHTMLCell;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SearchWidgetWithFilter;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SearchWidget;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -53,6 +34,24 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+
+import mat.client.CustomPager;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.MeasureSearchView.Observer;
+import mat.client.resource.CellTableResource;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSafeHTMLCell;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SearchWidget;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -138,7 +137,7 @@ public class AddEditComponentMeasuresView implements
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
-		searchWidget.getSearchInput().setHeight("20px");
+		//searchWidget.getSearchInput().setHeight("20px");
 		measureFilterVP.add(searchWidget);
 		mainHorizontalPanel.add(measureFilterVP);
 		mainPanel.add(mainHorizontalPanel);

@@ -1,67 +1,37 @@
 package mat.client.shared;
 
-import mat.client.util.MatTextBox;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.util.MatTextBox;
+import mat.shared.UUIDUtilClient;
+
 // TODO: Auto-generated Javadoc
 /** MeasureSearchFilterWidget.java. */
 public class SearchWidget extends Composite implements ClickHandler {
 	/** Search Button Left Margin Value. */
-	private static final int SEARCH_BTN_MRGN_LEFT = 5;
+//	private static final int SEARCH_BTN_MRGN_LEFT = 5;
 	/** Text Box height Value. */
-	private static final int TEXT_BOX_HT = 20;
-	/** Search button - {@link PrimaryButton}. */
-	private PrimaryButton searchButton;
+//	private static final int TEXT_BOX_HT = 20;
+	/** Search button - {@link Button}. */
+	private Button searchButton;
 	
-	/** The search input. {@link WatermarkedTextBox}. */
-	private TextBox searchInput = new TextBox();
+	/** The search input. {@link MatTextBox}. */
+	private MatTextBox searchInput = new MatTextBox();
+	
+	private FocusPanel searchInputFocusPanel = new FocusPanel();
 	
 	/** Default Constructor. */
-//	public SearchWidget() {
-//		// searchInput.setWatermark("Search");
-//		searchButton = new PrimaryButton("Search", "primaryButton");
-//		searchButton.addClickHandler(this);
-//		searchButton.getElement().setId("searchButton_PrimaryButton");
-//		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
-//		searchInput.getElement().getStyle().setMarginLeft(10, Unit.PX);
-//		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
-//		searchInput.getElement().getStyle().setMarginBottom(7, Unit.PX);
-//		searchInput.getElement().setPropertyString("placeholder", "Search");
-//		
-//		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
-//		VerticalPanel topPanel = new VerticalPanel();
-//		topPanel.getElement().setId("SearchFilterWidget_verticalPanel");
-//		HorizontalPanel horizontalPanel = new HorizontalPanel();
-//		
-//		horizontalPanel.add(searchInput);
-//		searchInput.getElement().setId("searchInput_TextBox");
-//		horizontalPanel.add(searchButton);
-//		searchButton.getElement().setId("searchButton_PrimaryButton");
-//		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed"),
-//				"SearchWidgetDisplayed");
-//		topPanel.add(invisibleLabel);
-//		topPanel.add(horizontalPanel);
-//		
-//		horizontalPanel.setStylePrimaryName("searchWidget");
-//		Element element = topPanel.getElement();
-//		element.setAttribute("aria-role", "panel");
-//		element.setAttribute("aria-labelledby", "SearchWidgetDisplayed");
-//		element.setAttribute("aria-live", "assertive");
-//		element.setAttribute("aria-atomic", "true");
-//		element.setAttribute("aria-relevant", "all");
-//		element.setAttribute("role", "alert");
-//		// All composites must call initWidget() in their constructors.
-//		initWidget(topPanel);
-//	}
 	
 	/**
 	 * Instantiates a new search widget.
@@ -75,23 +45,29 @@ public class SearchWidget extends Composite implements ClickHandler {
 	 */
 	public SearchWidget(String btnLabel, String placeHolder, String style) {
 		// searchInput.setWatermark("Search");
-		searchButton = new PrimaryButton(btnLabel, "primaryButton");
+		searchButton = new Button();
+		searchButton.setType(ButtonType.PRIMARY);
+		searchButton.setText(btnLabel);
+		searchButton.setTitle(btnLabel);
 		searchButton.addClickHandler(this);
-		searchButton.getElement().setId("searchButton_PrimaryButton");
-		searchInput.getElement().getStyle().setMarginLeft(10, Unit.PX);
-		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
-		searchInput.getElement().getStyle().setMarginBottom(7, Unit.PX);
-		searchInput.getElement().setPropertyString("placeholder", placeHolder);
+		searchButton.getElement().setId("searchButton_Button"+UUIDUtilClient.uuid(4));
 		
-		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
+		searchButton.setHeight("30px");
+		searchButton.setMarginLeft(5.0);
+		searchButton.setPaddingBottom(5.0);
+		searchInput.setWidth("150px");
+		searchInput.setHeight("32px");
+		//searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
 		VerticalPanel topPanel = new VerticalPanel();
-		topPanel.getElement().setId("SearchFilterWidget_verticalPanel");
+		topPanel.getElement().setId("SearchFilterWidget_verticalPanel"+UUIDUtilClient.uuid(4));
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
-		horizontalPanel.add(searchInput);
-		searchInput.getElement().setId("searchInput_TextBox");
+		searchInputFocusPanel.getElement().setId("SearchFilterWidget_SearchInputFP"+UUIDUtilClient.uuid(4));
+		searchInputFocusPanel.add(searchInput);
+		horizontalPanel.add(searchInputFocusPanel);
+		searchInput.getElement().setId("searchInput_TextBox"+UUIDUtilClient.uuid(4));
 		horizontalPanel.add(searchButton);
-		searchButton.getElement().setId("searchButton_PrimaryButton");
+		
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed"),
 				"SearchWidgetDisplayed");
 		topPanel.add(invisibleLabel);
@@ -113,7 +89,7 @@ public class SearchWidget extends Composite implements ClickHandler {
 	/** Gets the search button - {@link PrimaryButton}.
 	 * 
 	 * @return the button - {@link Button}. */
-	public final PrimaryButton getSearchButton() {
+	public final Button getSearchButton() {
 		return searchButton;
 	}
 	
@@ -133,8 +109,13 @@ public class SearchWidget extends Composite implements ClickHandler {
 	}
 	/** Sets the search button - {@link PrimaryButton}.
 	 * @param searchButton the searchButton to set. */
-	public final void setSearchButton(PrimaryButton searchButton) {
+	public final void setSearchButton(Button searchButton) {
 		this.searchButton = searchButton;
+	}
+
+
+	public FocusPanel getSearchInputFocusPanel() {
+		return searchInputFocusPanel;
 	}
 	
 	

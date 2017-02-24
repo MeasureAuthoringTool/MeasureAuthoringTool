@@ -89,7 +89,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		zoomButton.getElement().setId("zoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
-		searchWidget.getSearchInput().setHeight("20px");
+		//searchWidget.getSearchInput().setHeight("20px");
 		mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		

@@ -69,7 +69,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
-		searchWidget.getSearchInput().setHeight("20px");
+		//searchWidget.getSearchInput().setHeight("20px");
 		mainPanel.add(searchWidget);
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("99%");

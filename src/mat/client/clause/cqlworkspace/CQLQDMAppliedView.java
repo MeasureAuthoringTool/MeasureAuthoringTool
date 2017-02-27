@@ -644,7 +644,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 					String version = null;
 					if (!object.getOid().equalsIgnoreCase(
 							ConstantMessages.USER_DEFINED_QDM_OID) ) {
-						if(object.getExpansionIdentifier()==null){
+						if(object.getExpansionIdentifier()==null || object.getExpansionIdentifier().isEmpty()){
 							if ((object.getVersion()!=null)  &&
 									(object.getVersion().equalsIgnoreCase("1.0")
 											|| object.getVersion().equalsIgnoreCase("1"))) {

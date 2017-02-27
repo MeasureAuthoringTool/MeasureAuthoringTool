@@ -412,12 +412,12 @@ implements MeasureCloningService {
 					cqlValuesetsNode.appendChild(clonedqdmNode);
 				}
 			}
+			for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
+				cqlValuesetsNodeList.add(cqlValuesetsNode.getChildNodes().item(i));
+			}
 		}
 		
-		for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
-			cqlValuesetsNodeList.add(cqlValuesetsNode.getChildNodes().item(i));
-		}
-		
+				
 		//Remove all duplicate value sets for new Value Sets workspace.
 		if(cqlValuesetsNodeList != null && cqlValuesetsNodeList.size() >0){
 			List<String> cqlVSACValueSets = new ArrayList<String>();

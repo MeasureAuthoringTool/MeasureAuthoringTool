@@ -93,6 +93,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		//cCriteria.setFirstResult(startIndex);
 		if(!searchFrom.equalsIgnoreCase("StandAlone")){
+			cCriteria.add(Restrictions.isNotNull("measureSet.id"));
 			cCriteria.add(Restrictions.eq("draft", false));
 			cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 			cCriteria.addOrder(Order.desc("measureSet.id"))

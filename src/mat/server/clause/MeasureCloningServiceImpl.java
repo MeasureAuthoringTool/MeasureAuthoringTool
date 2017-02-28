@@ -34,6 +34,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLParameter;
+import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureLibraryService;
@@ -46,6 +47,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.ElementImpl;
@@ -68,7 +70,8 @@ implements MeasureCloningService {
 	private static final String QDM_EXPIRED_NON_DEFAULT = "expired";
 	/** Constant for QDM Birth date Name String**/
 	private static final String QDM_BIRTHDATE_NON_DEFAULT = "birthdate";
-
+	@Autowired
+	private CQLLibraryService cqlLibraryService;
 	/** The measure dao. */
 	@Autowired
 	private MeasureDAO measureDAO;
@@ -181,6 +184,7 @@ implements MeasureCloningService {
 		userDAO = (UserDAO) context.getBean("userDAO");
 		cqlService = (CQLService) context.getBean("cqlService");
 		measureLibraryService = (MeasureLibraryService) context.getBean("measureLibraryService");
+		cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
 		
 		boolean isMeasureClonable = false;
 		if(creatingDraft){
@@ -356,6 +360,35 @@ implements MeasureCloningService {
 				.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
 		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesService.get().getQmdVersion());
+		
+		// This section generates CQL Look Up tag from CQLXmlTemplate.xml
+
+		XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		String libraryName = (String) xPath.evaluate(
+				"/measure/measureDetails/title/text()",
+				xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+		
+		String version = (String) xPath.evaluate(
+				"/measure/measureDetails/version/text()",
+				xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+		
+		
+		String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
+				version, cqlXmlProcessor, "//measure");
+		if (cqlLookUpTag != null && StringUtils.isNotEmpty(cqlLookUpTag)
+				&& StringUtils.isNotBlank(cqlLookUpTag)) {
+			try {
+				xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets
@@ -496,6 +529,18 @@ implements MeasureCloningService {
 		
 		if (defaultCQLDefNodeList != null && defaultCQLDefNodeList.getLength() == 4) {
 			logger.info("All Default definition elements present in the measure while cloning.");
+			logger.info("Check if SupplementalDataElement present in the measure while cloning.");
+			// This checks if SDE holds child elements ,if not then append it.
+			String defaultSDE = "/measure/supplementalDataElements";
+			try {
+				Node sdeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), defaultSDE);
+				if(sdeNode != null && !sdeNode.hasChildNodes()){
+					appendSupplementalDefinitions(xmlProcessor, true);
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return;
 		}
 		

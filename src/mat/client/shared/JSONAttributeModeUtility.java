@@ -164,7 +164,10 @@ public class JSONAttributeModeUtility {
 					mName = mName.replace("\"", "");
 					if (modeName.equalsIgnoreCase(mName)) {
 						if(modeName.equalsIgnoreCase("Value Sets")){
-							modeDetailsList = createQdmList();
+							for(String valSets : MatContext.get().getValuesets()){
+								if(!valSets.equalsIgnoreCase("Birthdate") && !valSets.equalsIgnoreCase("Dead"))
+									modeDetailsList.add(valSets);
+							}
 						}
 						else{
 							if (attrJSONObject.get("details").isArray() != null) {

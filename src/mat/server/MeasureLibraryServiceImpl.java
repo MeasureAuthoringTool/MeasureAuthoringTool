@@ -5933,7 +5933,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if (result != null && result.isSuccess()) {
+		if (measureXMLModel != null) {
 			result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
 					definitionList);
 			if (result.isSuccess()) {
@@ -6243,6 +6243,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					toBeModifiedObj, currentObj, incLibraryList);
 
 			if (result.isSuccess()) {
+				xmlModel.setXml(result.getXml());
 				getService().saveMeasureXml(xmlModel);
 				getCqlService().saveCQLAssociation(currentObj, measureId);
 			}

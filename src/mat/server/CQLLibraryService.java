@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -106,6 +107,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 		ArrayList<CQLLibraryDataSetObject> cqList = new ArrayList<CQLLibraryDataSetObject>();
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		// To reuse existing search, filter is passed as -1 which otherwise has value 0 or 1
 		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,"StandAlone", Integer.MAX_VALUE,user,-1);
 		for(CQLLibrary library : list){
 			CQLLibraryDataSetObject cqlLibraryDataSetObject = extractCQLLibraryDataObject(library);
@@ -121,7 +123,13 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 						if(user.getSecurityRole().getDescription().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
 							canVersion = true;
 						} else {
-							canVersion = false;
+							if(library.getOwnerId().getId()
+									.equalsIgnoreCase(
+											user.getId())){
+								canVersion = true;
+							} else {
+								canVersion = false;
+							}
 						}
 					}
 				}
@@ -136,7 +144,59 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 	}
 	
-	
+/*	@Override
+	public SaveCQLLibraryResult searchForDraft(String searchText) {
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+
+		ArrayList<CQLLibraryDataSetObject> cqList = new ArrayList<CQLLibraryDataSetObject>();
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		// To reuse existing search, filter is passed as -1 which otherwise has value 0 or 1
+		List<CQLLibrary> list = cqlLibraryDAO.search(searchText, "StandAlone", Integer.MAX_VALUE, user, -1);
+		HashSet<String> hasDraft = new HashSet<String>();
+		for (CQLLibrary library : list) {
+			if (library.isDraft()) {
+				String setId = library.getCqlSet().getId();
+				hasDraft.add(setId);
+			}
+		}
+		
+		for (CQLLibrary library : list) {
+			CQLLibraryDataSetObject cqlLibraryDataSetObject = extractCQLLibraryDataObject(library);
+
+			if (cqlLibraryDataSetObject != null) {
+				boolean canDraft = false;
+				if (cqlLibraryDataSetObject.isDraft()) {
+					canDraft = false;
+				} else {
+						if(hasDraft.contains(library.getCqlSet().getId())){
+							canDraft = false;
+						} else {
+							if (cqlLibraryDataSetObject.isLocked()) {
+								canDraft = false;
+							} else {
+								if (user.getSecurityRole().getDescription()
+									.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
+									canDraft = true;
+								} else {
+									if (library.getOwnerId().getId().equalsIgnoreCase(user.getId())) {
+										canDraft = true;
+									} else {
+										canDraft = false;
+									}
+								}
+							}
+						}
+					}
+				if (canDraft) {
+					cqList.add(cqlLibraryDataSetObject);
+				}
+			}
+		}
+		result.setResultsTotal(cqList.size());
+		result.setCqlLibraryDataSetObjects(cqList);
+		return result;
+	}
+	*/
 	
 	
 	@Override
@@ -418,7 +478,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 							for (int i = 0; i < nodesForId.getLength(); i++) {
 								Node node = nodesForId.item(i);
 								node.getAttributes().getNamedItem("id")
-										.setNodeValue(UUIDUtilClient.uuid());
+										.setNodeValue(UUID.randomUUID().toString());
 							}
 						} else if (changeAttribute.equalsIgnoreCase("uuid")) {
 							NodeList nodesForUUId = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
@@ -426,7 +486,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 							for (int i = 0; i < nodesForUUId.getLength(); i++) {
 								Node node = nodesForUUId.item(i);
 								node.getAttributes().getNamedItem("uuid")
-										.setNodeValue(UUIDUtilClient.uuid());
+										.setNodeValue(UUID.randomUUID().toString());
 							}
 						}
 					}

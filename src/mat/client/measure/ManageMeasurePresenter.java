@@ -1586,8 +1586,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void draftDisplayHandlers(final DraftDisplay draftDisplay) {
 		
-		TextBox searchWidget = (draftDisplay.getSearchWidget().getSearchInput());
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+		draftDisplay.getSearchWidget().getSearchInputFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					draftDisplay.getSearchWidget().getSearchButton().click();
+				}
+			}
+		});
+		
+		
+		/*TextBox searchWidget = (draftDisplay.getSearchWidget().getSearchInput());
+		 * searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -1595,7 +1606,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSearchButton()).click();
 				}
 			}
-		});
+		});*/
 		
 		draftDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -2790,6 +2801,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param searchText the search text */
 	private void searchMeasuresForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().searchMeasuresForDraft(lastSearchText,
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
@@ -2798,6 +2810,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				showSearchingBusy(false);
 			}
 			
 			@Override
@@ -2805,6 +2818,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				draftMeasureResults = new ManageDraftMeasureModel();
 				draftMeasureResults.setData(result);
 				draftDisplay.buildDataTable(draftMeasureResults);
+				showSearchingBusy(false);
 			}
 		});
 		
@@ -2818,6 +2832,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void searchMeasuresForVersion(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService()
 		.searchMeasuresForVersion(lastSearchText, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
@@ -2826,6 +2841,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				showSearchingBusy(false);
 			}
 			
 			@Override
@@ -2833,6 +2849,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					ManageMeasureSearchModel result) {
 				versionMeasureResults = new ManageVersionMeasureModel(result.getData());
 				versionDisplay.buildDataTable(versionMeasureResults);
+				showSearchingBusy(false);
 			}
 		});
 		
@@ -3279,7 +3296,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the version display
 	 */
 	private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
-		TextBox searchWidget = (versionDisplay.getSearchWidget().getSearchInput());
+		/*TextBox searchWidget = (versionDisplay.getSearchWidget().getSearchInput());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -3287,7 +3304,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 					((org.gwtbootstrap3.client.ui.Button) versionDisplay.getSearchButton()).click();
 				}
 			}
+		});*/
+		
+		
+		versionDisplay.getSearchWidget().getSearchInputFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					versionDisplay.getSearchWidget().getSearchButton().click();
+				}
+			}
 		});
+		
 		
 		versionDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override

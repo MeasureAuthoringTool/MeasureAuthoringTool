@@ -161,6 +161,7 @@ public abstract class MainLayout {
 	 */
 	public static void showLoadingMessage(){
 		getLoadingPanel().clear();
+		alertImage.getElement().setId("LoadingImage");
 		getLoadingPanel().add(alertImage);
 		loadingWidget.getElement().setAttribute("id", "LoadingPanel");
 		getLoadingPanel().add(loadingWidget);

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -29,7 +27,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
 import mat.client.ImageResources;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -78,14 +75,14 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	public CQLLibraryVersionView(){
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
-		zoomButton.getElement().setId("zoomButton_CustomButton");
+		zoomButton.getElement().setId("CqlzoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		
 		mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		
-		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
+		cellTablePanel.getElement().setId("cqlcellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("99%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.add(new SpacerWidget());
@@ -98,20 +95,13 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		radioPanel.add(new Label("Select Version Type"));
 		radioPanel.add(new SpacerWidget());
 		radioPanel.add(majorRadio);
-		majorRadio.getElement().setId("majorRadio_RadioButton");
+		majorRadio.getElement().setId("cqlmajorRadio_RadioButton");
 		radioPanel.add(minorRadio);
-		minorRadio.getElement().setId("minorRadio_RadioButton");
+		minorRadio.getElement().setId("cqlminorRadio_RadioButton");
 	
 		mainPanel.add(radioPanel);
 		mainPanel.add(new SpacerWidget());
-		/*
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		saveButton.setType(ButtonType.PRIMARY);
-		saveButton.setTitle("Save and Continue");
-		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle("Cancel");
-		buttonToolBar.add(saveButton);
-		buttonToolBar.add(cancelButton);*/
+		
 		mainPanel.add(buttonBar);
 	}
 	
@@ -159,7 +149,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
-		image.getElement().setAttribute("id", "MeasureSearchButton");
+		image.getElement().setAttribute("id", "CQLLibVersionViewSearchButton");
 		return image;
 	}
 	@Override

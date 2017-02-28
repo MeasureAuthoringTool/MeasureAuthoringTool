@@ -33,12 +33,14 @@ public class SaveCancelButtonBar extends Composite {
 		buttonLayout.add(cancelButton);*/
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		saveButton.setId("ButtonPanel_SaveAndContinueButton");
 		saveButton.setType(ButtonType.PRIMARY);
 		saveButton.setTitle("Save and Continue");
 		saveButton.setText("Save and Continue");
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		cancelButton.setText("Cancel");
+		saveButton.setId("ButtonPanel_CancelButton");
 		buttonToolBar.add(saveButton);
 		buttonToolBar.add(cancelButton);
 		

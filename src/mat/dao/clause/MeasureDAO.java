@@ -325,7 +325,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *
 	 * @param measureId the measure id
 	 * @param userID the user id
+	 * @param string 
 	 * @return the share level
 	 */
-	ShareLevel findShareLevelForUser(String measureId, String userID);
+	ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId);
 }

@@ -1331,15 +1331,17 @@ mat.dao.clause.MeasureDAO {
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#findShareLevelForUser(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	 public ShareLevel findShareLevelForUser(String measureId, String userID){
+	 public ShareLevel findShareLevelForUser(String measureId, String userID, 
+			 String measureSetId){
 	  
 	  ShareLevel shareLevel = null;
-	  
+	  List<String> measureIds = getMeasureSetForSharedMeasure(measureId, measureSetId);
 	  Criteria shareCriteria = getSessionFactory().getCurrentSession()
 	    .createCriteria(MeasureShare.class);
-	  shareCriteria.add(Restrictions.eq("measure.id", measureId));
 	  shareCriteria.add(Restrictions.eq("shareUser.id",userID));
+	  shareCriteria.add(Restrictions.in("measure.id", measureIds));
 	  List<MeasureShare> shareList = shareCriteria.list();
 	  if(!shareList.isEmpty()){
 	   shareLevel = shareList.get(0).getShareLevel();
@@ -1347,5 +1349,21 @@ mat.dao.clause.MeasureDAO {
 	  
 	  return shareLevel;
 	 }
+	
+	@SuppressWarnings("unchecked")
+	private List<String> getMeasureSetForSharedMeasure(String measureId, 
+			String measureSetId){
+		
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(Measure.class);
+		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
+		List<String> measureIds = new ArrayList<String>();
+		List<Measure> measureList = mCriteria.list();
+ 		for(Measure measure : measureList){
+ 			measureIds.add(measure.getId());
+		}
+		
+		return measureIds;
+	}
 	
 }

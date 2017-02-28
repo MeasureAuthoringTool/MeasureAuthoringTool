@@ -359,8 +359,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 							selectedLibrary.getVersion());
 				} else {
 					versionDisplay
-					.getErrorMessages().createAlert(
-							"Please select a Library Name to version and select a version type of Major or Minor.");
+					.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
 				}
 				
 			}

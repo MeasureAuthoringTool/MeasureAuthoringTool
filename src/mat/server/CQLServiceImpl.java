@@ -2297,8 +2297,6 @@ private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resu
 		if (valueSetTransferObject.isExpansionProfile()) {
 			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet()
 					.getExpansionProfile());
-		}else{
-			qds.setExpansionIdentifier("");
 		}
 
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject

@@ -217,7 +217,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		addCQLLibrarySelectionHandlers();
 		addMostRecentWidgetSelectionHandler();
 		addVersionDisplayViewHandlers();
-		addDraftDisplayViewHandlers();
+		//addDraftDisplayViewHandlers();
 	}
 
 	private void addDraftDisplayViewHandlers() {

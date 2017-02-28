@@ -310,6 +310,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.clearSelections();
+				versionDisplay.getErrorMessages().clearAlert();
 				displaySearch();
 				
 			}
@@ -348,6 +349,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				versionDisplay.getErrorMessages().clearAlert();
 				CQLLibraryDataSetObject selectedLibrary = versionDisplay.getSelectedLibrary();
 				if (((selectedLibrary !=null) && (selectedLibrary.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
@@ -369,6 +371,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	
 	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
 		Mat.showLoadingMessage();
+		versionDisplay.getErrorMessages().clearAlert();
 		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
@@ -615,6 +618,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	
 	private void searchLibrariesForVersion(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().searchForVersion(lastSearchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
@@ -627,6 +631,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				
+				if ((result.getResultsTotal() == 0)
+						&& !lastSearchText.isEmpty()) {
+					versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
+				} 
 				versionDisplay.buildDataTable(result);
 				showSearchingBusy(false);
 				

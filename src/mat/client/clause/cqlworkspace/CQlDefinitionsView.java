@@ -189,6 +189,7 @@ public class CQlDefinitionsView {
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
+		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 
 }

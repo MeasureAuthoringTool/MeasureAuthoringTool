@@ -139,6 +139,7 @@ public class CQLParametersView {
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);
+		getParameterButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 
 	public void hideAceEditorAutoCompletePopUp() {

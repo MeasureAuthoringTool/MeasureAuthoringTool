@@ -936,6 +936,7 @@ public class CQLIncludeLibraryView {
 
 		getAliasNameTxtArea().setEnabled(isEditable);
 		getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
+		getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 	
 	

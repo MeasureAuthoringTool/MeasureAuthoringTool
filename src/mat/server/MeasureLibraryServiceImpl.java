@@ -6280,6 +6280,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, cqlLibObject,
 					viewIncludeLibrarys);
 			if (result.isSuccess()) {
+				xmlModel.setXml(result.getXml());
 				getService().saveMeasureXml(xmlModel);
 			}
 		}

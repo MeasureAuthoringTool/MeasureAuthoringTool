@@ -744,6 +744,8 @@ public class MessageDelegate {
 	
 	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
+	private final String ERROR_LIBRARY_VERSION ="Please select a Library Name to version and select a version type of Major or Minor.";
+	
 	
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
@@ -2715,6 +2717,10 @@ public class MessageDelegate {
 
 	public static String getNoLibrarues() {
 		return NO_LIBRARUES;
+	}
+
+	public String getERROR_LIBRARY_VERSION() {
+		return ERROR_LIBRARY_VERSION;
 	}
 	
 }

@@ -16,6 +16,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -159,44 +160,52 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		Label cellTablePanelHeader = new Label("Select a Draft to create a Library Version.");
 		cellTablePanelHeader.getElement().setId("cellTablePanelHeader_Label");
 		cellTablePanelHeader.setStyleName("recentSearchHeader");
-		CellTable<CQLLibraryDataSetObject> cellTable = new CellTable<CQLLibraryDataSetObject>();
-		ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<CQLLibraryDataSetObject>();
-		List<CQLLibraryDataSetObject> measureList = new ArrayList<CQLLibraryDataSetObject>();
-		measureList.addAll(result.getCqlLibraryDataSetObjects());
-		cellTable.setPageSize(PAGE_SIZE);
-		cellTable.redraw();
-		cellTable.setRowCount(measureList.size(), true);
-		cellTable.setSelectionModel(getSelectionModelWithHandler());
-		sortProvider.refresh();
-		sortProvider.getList().addAll(result.getCqlLibraryDataSetObjects());
-		cellTable = addColumnToTable(cellTable);
-		sortProvider.addDataDisplay(cellTable);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-		spager.setPageStart(0);
-		spager.setDisplay(cellTable);
-		spager.setPageSize(PAGE_SIZE);
-		/* spager.setToolTipAndTabIndex(spager); */
-		cellTable.setWidth("100%");
-		cellTable.setColumnWidth(0, 15.0, Unit.PCT);
-		cellTable.setColumnWidth(1, 63.0, Unit.PCT);
-		cellTable.setColumnWidth(2, 22.0, Unit.PCT);
-		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(cellTablePanelHeader.getElement());
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"libraryVersionSummary",
-						"In the following CQL Library version of draft table, a radio button is positioned to the left "
-								+ "of the table with a select column header followed by Library name in "
-								+ "second column and version in the third column. The draft CQL Library "
-								+ "are listed alphabetically in a table.");
-		cellTable.getElement().setAttribute("id", "libraryVersionFromDraftCellTable");
-		cellTable.getElement().setAttribute("aria-describedby", "libraryVersionSummary");
-		cellTablePanel.add(invisibleLabel);
-		cellTablePanel.add(cellTable);
-		cellTablePanel.add(new SpacerWidget());
-		cellTablePanel.add(spager);
+		if(result.getCqlLibraryDataSetObjects() != null && result.getCqlLibraryDataSetObjects().size() >0) {
+			CellTable<CQLLibraryDataSetObject> cellTable = new CellTable<CQLLibraryDataSetObject>();
+			ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<CQLLibraryDataSetObject>();
+			List<CQLLibraryDataSetObject> measureList = new ArrayList<CQLLibraryDataSetObject>();
+			measureList.addAll(result.getCqlLibraryDataSetObjects());
+			cellTable.setPageSize(PAGE_SIZE);
+			cellTable.redraw();
+			cellTable.setRowCount(measureList.size(), true);
+			cellTable.setSelectionModel(getSelectionModelWithHandler());
+			sortProvider.refresh();
+			sortProvider.getList().addAll(result.getCqlLibraryDataSetObjects());
+			cellTable = addColumnToTable(cellTable);
+			sortProvider.addDataDisplay(cellTable);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			spager.setDisplay(cellTable);
+			spager.setPageSize(PAGE_SIZE);
+			/* spager.setToolTipAndTabIndex(spager); */
+			cellTable.setWidth("100%");
+			cellTable.setColumnWidth(0, 15.0, Unit.PCT);
+			cellTable.setColumnWidth(1, 63.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 22.0, Unit.PCT);
+			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(cellTablePanelHeader.getElement());
+			Label invisibleLabel = (Label) LabelBuilder
+					.buildInvisibleLabel(
+							"libraryVersionSummary",
+							"In the following CQL Library version of draft table, a radio button is positioned to the left "
+									+ "of the table with a select column header followed by Library name in "
+									+ "second column and version in the third column. The draft CQL Library "
+									+ "are listed alphabetically in a table.");
+			cellTable.getElement().setAttribute("id", "libraryVersionFromDraftCellTable");
+			cellTable.getElement().setAttribute("aria-describedby", "libraryVersionSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(cellTable);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
+		} else {
+			HTML desc = new HTML("<p> No available libraries.</p>");
+			cellTablePanel.add(cellTablePanelHeader);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(desc);
+		}
+		
 	}
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> getSelectionModelWithHandler() {

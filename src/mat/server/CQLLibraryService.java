@@ -246,6 +246,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		dataSetObject.setOwnerFirstName(user.getFirstName());
 		dataSetObject.setOwnerLastName(user.getLastName());
 		dataSetObject.setOwnerEmailAddress(user.getEmailAddress());
+		dataSetObject.setOwnerId(user.getId());
 		if(cqlLibrary.getCqlSet()!=null){
 			dataSetObject.setCqlSetId(cqlLibrary.getCqlSet().getId());	
 		}
@@ -302,7 +303,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			result.setSuccess(true);
 			result.setId(newLibraryObject.getId());
 			result.setCqlLibraryName(newLibraryObject.getName());
-			result.setVersionStr(newLibraryObject.getVersion()+"."+newLibraryObject.getRevisionNumber());
+			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
+					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
+			result.setVersionStr(formattedVersion);
 			
 		} else {
 			result.setSuccess(false);

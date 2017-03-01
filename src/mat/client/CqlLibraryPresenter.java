@@ -1,5 +1,6 @@
 package mat.client;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -284,16 +285,25 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
 		draftDisplay.getErrorMessages().clearAlert();
+		draftDisplay.getZoomButton().setEnabled(false);
+		((Button)draftDisplay.getSaveButton()).setEnabled(false);
+		((Button)draftDisplay.getCancelButton()).setEnabled(false);
 		MatContext.get().getCQLLibraryService().saveDraftFromVersion(selectedLibrary.getId(), new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				draftDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				draftDisplay.getZoomButton().setEnabled(true);
+				((Button)draftDisplay.getSaveButton()).setEnabled(true);
+				((Button)draftDisplay.getCancelButton()).setEnabled(true);
 				
 			}
 
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				draftDisplay.getZoomButton().setEnabled(true);
+				((Button)draftDisplay.getSaveButton()).setEnabled(true);
+				((Button)draftDisplay.getCancelButton()).setEnabled(true);
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
 							null);
@@ -321,6 +331,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 									
 								}
 							});
+				} else {
+					draftDisplay.getErrorMessages().createAlert("Invalid data");
 				}
 				
 			}
@@ -449,6 +461,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
 		Mat.showLoadingMessage();
 		versionDisplay.getErrorMessages().clearAlert();
+		versionDisplay.getZoomButton().setEnabled(false);
+		((Button)versionDisplay.getSaveButton()).setEnabled(false);
+		((Button)versionDisplay.getCancelButton()).setEnabled(false);
 		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
@@ -456,11 +471,17 @@ public class CqlLibraryPresenter implements MatPresenter {
 						// TODO Auto-generated method stub
 						Mat.hideLoadingMessage();
 						versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						versionDisplay.getZoomButton().setEnabled(true);
+						((Button)versionDisplay.getSaveButton()).setEnabled(true);
+						((Button)versionDisplay.getCancelButton()).setEnabled(true);
 					}
 
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
 						Mat.hideLoadingMessage();
+						versionDisplay.getZoomButton().setEnabled(true);
+						((Button)versionDisplay.getSaveButton()).setEnabled(true);
+						((Button)versionDisplay.getCancelButton()).setEnabled(true);
 						if(result.isSuccess()){
 							cqlLibraryView.clearSelections();
 							displaySearch();
@@ -719,12 +740,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
+		versionDisplay.getZoomButton().setEnabled(false);
+		((Button)versionDisplay.getSaveButton()).setEnabled(false);
+		((Button)versionDisplay.getCancelButton()).setEnabled(false);
 		MatContext.get().getCQLLibraryService().searchForVersion(lastSearchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				showSearchingBusy(false);
+				versionDisplay.getZoomButton().setEnabled(true);
+				((Button)versionDisplay.getSaveButton()).setEnabled(true);
+				((Button)versionDisplay.getCancelButton()).setEnabled(true);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
@@ -736,6 +763,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 					versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 				} 
 				versionDisplay.buildDataTable(result);
+				versionDisplay.getZoomButton().setEnabled(true);
+				((Button)versionDisplay.getSaveButton()).setEnabled(true);
+				((Button)versionDisplay.getCancelButton()).setEnabled(true);
 				showSearchingBusy(false);
 				
 			}
@@ -746,20 +776,32 @@ public class CqlLibraryPresenter implements MatPresenter {
 	
 	private void searchLibrariesForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		draftDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
+		draftDisplay.getZoomButton().setEnabled(false);
+		((Button)draftDisplay.getSaveButton()).setEnabled(false);
+		((Button)draftDisplay.getCancelButton()).setEnabled(false);
 		MatContext.get().getCQLLibraryService().searchForDraft(lastSearchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
 				showSearchingBusy(false);
+				draftDisplay.getZoomButton().setEnabled(true);
+				((Button)draftDisplay.getSaveButton()).setEnabled(true);
+				((Button)draftDisplay.getCancelButton()).setEnabled(true);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
-				// TODO Auto-generated method stub
+				if ((result.getResultsTotal() == 0)
+						&& !lastSearchText.isEmpty()) {
+					draftDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
+				} 
 				draftDisplay.buildDataTable(result);
+				draftDisplay.getZoomButton().setEnabled(true);
+				((Button)draftDisplay.getSaveButton()).setEnabled(true);
+				((Button)draftDisplay.getCancelButton()).setEnabled(true);
 				showSearchingBusy(false);
 			}
 		});

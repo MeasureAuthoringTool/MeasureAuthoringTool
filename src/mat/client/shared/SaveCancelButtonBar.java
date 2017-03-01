@@ -40,7 +40,7 @@ public class SaveCancelButtonBar extends Composite {
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		cancelButton.setText("Cancel");
-		saveButton.setId("ButtonPanel_CancelButton");
+		cancelButton.setId("ButtonPanel_CancelButton");
 		buttonToolBar.add(saveButton);
 		buttonToolBar.add(cancelButton);
 		

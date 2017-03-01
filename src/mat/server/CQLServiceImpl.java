@@ -61,6 +61,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryAssociation;
+import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
@@ -231,7 +232,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
-			String xml, String context) {
+			String xml, String libraryName) {
 		
 		/*MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(
 				currentMeasureId);*/
@@ -242,13 +243,13 @@ public class CQLServiceImpl implements CQLService {
 		if (xml != null) {
 			
 			XmlProcessor processor = new XmlProcessor(xml);
-			String XPATH_EXPRESSION_CQLLOOKUP_CONTEXT = "//cqlLookUp/cqlContext";
+			String XPATH_EXPRESSION_CQLLOOKUP_LIBRARY = "//cqlLookUp/library";
 			try {
-				Node nodeCQLContext = processor.findNode(
+				Node libraryNode = processor.findNode(
 						processor.getOriginalDoc(),
-						XPATH_EXPRESSION_CQLLOOKUP_CONTEXT);
-				if (nodeCQLContext != null) {
-					nodeCQLContext.setTextContent(context);
+						XPATH_EXPRESSION_CQLLOOKUP_LIBRARY);
+				if (libraryNode != null) {
+					libraryNode.setTextContent(libraryName);
 					/*xmlModel.setXml(processor.transform(processor
 							.getOriginalDoc()));
 					getService().saveMeasureXml(xmlModel);*/
@@ -262,7 +263,9 @@ public class CQLServiceImpl implements CQLService {
 			}
 			
 			result.setSuccess(true);
-			result.getCqlModel().setContext(context);
+			CQLLibraryModel cqlLibraryModel = new CQLLibraryModel();
+			cqlLibraryModel.setLibraryName(libraryName);
+			result.getCqlModel().setLibrary(cqlLibraryModel);
 		} else {
 			result.setSuccess(false);
 		}
@@ -2093,7 +2096,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
-private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml, String name, String logic) {
+public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml, String name, String logic) {
 		
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, name).toString();

@@ -83,6 +83,16 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId){
 		this.getCQLLibraryService().isLibraryAvailableAndLogRecentActivity(libraryid, userId);
 	}
+	
+	@Override
+	public SaveUpdateCQLResult getLibraryCQLFileData(String libraryId){
+	   return this.getCQLLibraryService().getLibraryCQLFileData(libraryId);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue){
+		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue);
+	}
 
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId) {

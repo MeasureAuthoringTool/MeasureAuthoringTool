@@ -536,6 +536,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void resetMessageDisplay();
 
+		CQLGeneralInformationView getCqlGeneralInformationView();
+
 	}
 
 	/**
@@ -2272,7 +2274,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
-		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().getElement().setClassName("panel-collapse collapse");
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
@@ -2372,6 +2373,27 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result.getCqlModel() != null) {
+							
+							if(result.getCqlModel().getLibrary()!=null){
+								String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
+										.createCQLLibraryName(MatContext.get().getCurrentMeasureName());
+								searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
+								.setText(cqlLibraryName);
+								
+								String measureVersion = MatContext.get().getCurrentMeasureVersion();
+								
+								measureVersion = measureVersion.replaceAll("Draft ", "").trim();
+								if(measureVersion.startsWith("v")){
+									measureVersion = measureVersion.substring(1);
+								}
+								
+								searchDisplay.getCqlGeneralInformationView().getLibraryVersionValue().setText(measureVersion);
+								
+								searchDisplay.getCqlGeneralInformationView().getUsingModelValue().setText("QDM");
+								
+								searchDisplay.getCqlGeneralInformationView().getModelVersionValue().setText("5.0.2");
+							}
+							
 
 							List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
 							List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()

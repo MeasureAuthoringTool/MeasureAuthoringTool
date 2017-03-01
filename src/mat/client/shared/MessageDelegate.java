@@ -241,6 +241,8 @@ public class MessageDelegate {
 	
 	public final String SAVE_INCLUDE_LIBRARY_VALIATION_ERROR = "Alias name and CQL Library selection are required.";
 	
+	public final String MODIFY_CQL_LIBRARY_NAME = "Successfully modified CQL Library Name.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2723,6 +2725,10 @@ public class MessageDelegate {
 
 	public String getERROR_LIBRARY_VERSION() {
 		return ERROR_LIBRARY_VERSION;
+	}
+
+	public String getMODIFY_CQL_LIBRARY_NAME() {
+		return MODIFY_CQL_LIBRARY_NAME;
 	}
 
 	public String getERROR_LIBRARY_DRAFT() {

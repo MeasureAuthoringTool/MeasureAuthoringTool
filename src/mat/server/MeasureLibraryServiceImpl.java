@@ -1322,8 +1322,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setClonable(isOwner || isSuperUser);
 		}
 
-		detail.setEditable(
-				(isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());
+		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
+		/*detail.setEditable(
+				(isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());*/
+		
 		detail.setExportable(dto.isPackaged());
 		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
 		detail.setSharable(isOwner || isSuperUser);
@@ -5890,7 +5892,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			return null;
 		}
 
@@ -5920,7 +5922,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList) {
 
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			return null;
 		}
 
@@ -5953,7 +5955,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
 
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			return null;
 		}
 
@@ -5998,6 +6000,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
+		
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			return null;
+		}
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(xmlModel != null){
@@ -6013,6 +6019,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			return null;
+		}
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(xmlModel != null){
@@ -6028,7 +6037,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
-		
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			return null;
+		}
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if(xmlModel != null){
@@ -6137,6 +6148,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, valueSetTransferObject.getMeasureId())) {
+			return null;
+		}
 		SaveUpdateCQLResult result = getCqlService().saveCQLValueset(valueSetTransferObject);
 		saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
 		return result;
@@ -6152,6 +6166,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, 
+				matValueSetTransferObject.getMeasureId())) {
+			return null;
+		}
 		SaveUpdateCQLResult result = getCqlService().saveCQLUserDefinedValueset(matValueSetTransferObject);
 		saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
 		return result;
@@ -6166,7 +6184,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
-
+		
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, 
+				matValueSetTransferObject.getMeasureId())) {
+			return null;
+		}
 		SaveUpdateCQLResult result = getCqlService().updateCQLValueSets(matValueSetTransferObject);
 		updateValueSetsInCQLLookUp(result.getCqlQualityDataSetDTO(),
 				matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
@@ -6196,7 +6218,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			return null;
 		}
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -6234,7 +6256,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
 			return null;
 		}
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();

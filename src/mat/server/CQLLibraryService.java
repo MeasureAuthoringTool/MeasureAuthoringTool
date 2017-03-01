@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
 			allLibraries.add(object);
 		}
+		
+		updateCQLLibraryFamily(allLibraries);
 		searchModel.setCqlLibraryDataSetObjects(allLibraries);
 		
 		return searchModel;
@@ -796,6 +799,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 	}
 	
+	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context) {
 		 
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
@@ -927,6 +931,48 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(library);
 		return cqlService.getUsedCQlArtifacts(cqlXml);
+	}
+	
+	
+	@Override
+	public SaveUpdateCQLResult getLibraryCQLFileData(String libraryId){
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlXml = getCQLLibraryXml(cqlLibrary);
+		
+		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
+			result = cqlService.getCQLFileData(cqlXml);
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * Update CQL Library family.
+	 *
+	 * @param detailModelList
+	 *            the detail model list
+	 */
+	public void updateCQLLibraryFamily(List<CQLLibraryDataSetObject> detailModelList) {
+		boolean isFamily = false;
+		if ((detailModelList != null) & (detailModelList.size() > 0)) {
+			for (int i = 0; i < detailModelList.size(); i++) {
+				if (i > 0) {
+					if (detailModelList.get(i).getCqlSetId()
+							.equalsIgnoreCase(detailModelList.get(i - 1).getCqlSetId())) {
+						detailModelList.get(i).setFamily(!isFamily);
+					} else {
+						detailModelList.get(i).setFamily(isFamily);
+					}
+				} else {
+					detailModelList.get(i).setFamily(isFamily);
+				}
+			}
+		}
 	}
 	
 }

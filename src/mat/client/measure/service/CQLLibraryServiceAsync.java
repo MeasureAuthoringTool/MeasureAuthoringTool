@@ -38,6 +38,9 @@ public interface CQLLibraryServiceAsync {
 
 	void saveDraftFromVersion(String libraryId, AsyncCallback<SaveCQLLibraryResult> callback);
 	
-	
+	void getLibraryCQLFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue,
+			AsyncCallback<SaveUpdateCQLResult> callback);
 
 }

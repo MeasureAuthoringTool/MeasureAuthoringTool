@@ -7,6 +7,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -14,6 +15,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -24,6 +27,8 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLErrors;
+import mat.shared.CQLModelValidator;
 import mat.shared.SaveUpdateCQLResult;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
@@ -46,6 +51,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
+	
+	CQLModelValidator validator = new CQLModelValidator();
+	
+	private String cqlLibraryName;
+	
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -107,6 +117,14 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 		CQLIncludeLibraryView getCqlIncludeLibraryView();
 
+		void buildCQLFileView();
+
+		AceEditor getCqlAceEditor();
+
+		void buildGeneralInformation();
+
+		CQLGeneralInformationView getCqlGeneralInformationView();
+
 	}
 	
 	/**
@@ -133,8 +151,67 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				}
 			}
 
+		});
+		
+		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(new ClickHandler() {
 			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				if(searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().isEmpty()){
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+							MatContext.get().getMessageDelegate().getLibraryNameRequired());
+				} else {
+					
+					if (validator.validateForAliasNameSpecialChar(searchDisplay
+							.getCqlGeneralInformationView().getLibraryNameValue().getText().trim())) {
+						saveCQLGeneralInformation();
+					} else {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+								MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+					}
+					
+				}
+			}
+		});
+		
+		
+		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(new ClickHandler() {
 			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
+				.setText(cqlLibraryName);
+			}
+		});
+		
+	}
+
+	private void saveCQLGeneralInformation() {
+		
+		String libraryId = MatContext.get().getCurrentCQLLibraryId();
+		String libraryValue = searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().trim();
+		
+		MatContext.get().getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, 
+				new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+								MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						if(result != null) {
+							cqlLibraryName = result.getCqlModel().getLibrary().getLibraryName().trim();
+							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
+							.setText(cqlLibraryName);
+							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+							.createAlert(MatContext.get().getMessageDelegate().getMODIFY_CQL_LIBRARY_NAME());
+						}
+					}
 		});
 		
 	}
@@ -160,7 +237,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	private void displayCQLView(){
 		panel.clear();
-		 getCQLData();
+		getCQLData();
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
@@ -172,7 +249,26 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+		/*searchDisplay.getFunctionArgNameMap().clear();
+searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+		searchDisplay.resetMessageDisplay();
+		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement().setClassName("panel-collapse collapse");
+		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement().setClassName("panel-collapse collapse");
+		searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement().setClassName("panel-collapse collapse");
+		searchDisplay.getCqlLeftNavBarPanelView().getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
+		/*if (searchDisplay.getFunctionArgumentList().size() > 0) {
+			searchDisplay.getFunctionArgumentList().clear();
+		}
+		isModified = false;
+		modifyValueSetDTO = null;*/
+		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
+		panel.clear();
+		searchDisplay.getMainPanel().clear();
 		
 	}
 
@@ -211,7 +307,27 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				if(result.isSuccess()){
 					if(result.getCqlModel() != null){
 						//System.out.println("I got the model");
-						if (result.getCqlModel() != null) {
+						
+						if(result.getCqlModel().getLibrary()!=null){
+							cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
+									.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
+							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
+							.setText(cqlLibraryName);
+							
+							String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+							
+							libraryVersion = libraryVersion.replaceAll("Draft ", "").trim();
+							if(libraryVersion.startsWith("v")){
+								libraryVersion = libraryVersion.substring(1);
+							}
+							
+							searchDisplay.getCqlGeneralInformationView().getLibraryVersionValue().setText(libraryVersion);
+							
+							searchDisplay.getCqlGeneralInformationView().getUsingModelValue().setText("QDM");
+							
+							searchDisplay.getCqlGeneralInformationView().getModelVersionValue().setText("5.0.2");
+						}
+						
 							List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
 							List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()
 									.getAllValueSetList();
@@ -273,7 +389,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
 							}
 
-						}
 					}
 				}
 				
@@ -416,7 +531,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-//				/searchDisplay.hideAceEditorAutoCompletePopUp();
+				searchDisplay.hideAceEditorAutoCompletePopUp();
 				viewCqlEvent();
 			}
 		});
@@ -438,7 +553,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-			//searchDisplay.buildGeneralInformation();
+		    searchDisplay.buildGeneralInformation();
 		}
 
 	}
@@ -554,11 +669,69 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-			//searchDisplay.buildCQLFileView();
-			//buildCQLView();
+			searchDisplay.buildCQLFileView();
+			buildCQLView();
 		}
 
 	}
+	
+	
+	
+	/**
+	 * Method to build View for Anchor List item View CQL.
+	 */
+	private void buildCQLView() {
+		searchDisplay.getCqlAceEditor().setText("");
+		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(),
+				new AsyncCallback<SaveUpdateCQLResult>() {
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						if (result.isSuccess()) {
+							if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
+								//validateViewCQLFile(result.getCqlString());
+								// searchDisplay.getCqlAceEditor().setText(result.getCqlString());
+								
+								searchDisplay.getCqlAceEditor().clearAnnotations();
+								searchDisplay.getCqlAceEditor().removeAllMarkers();
+								searchDisplay.getCqlAceEditor().redisplay();
+								searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
+								searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clear();
+								searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clear();
+
+								if (!result.getCqlErrors().isEmpty()) {
+									searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(
+											MatContext.get().getMessageDelegate().getVIEW_CQL_ERROR_MESSAGE());
+									for (CQLErrors error : result.getCqlErrors()) {
+										String errorMessage = new String();
+										errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine() + " at Offset :"
+												+ error.getErrorAtOffeset());
+										int line = error.getErrorInLine();
+										int column = error.getErrorAtOffeset();
+										searchDisplay.getCqlAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(),
+												AceAnnotationType.WARNING);
+									}
+									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
+									searchDisplay.getCqlAceEditor().setAnnotations();
+									searchDisplay.getCqlAceEditor().redisplay();
+								} else {
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+											.createAlert(MatContext.get().getMessageDelegate().getVIEW_CQL_NO_ERRORS_MESSAGE());
+									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
+								}
+							}
+
+						}
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					}
+				});
+
+	}
+
 	
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {

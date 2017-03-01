@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.SpacerWidget;
 
 // TODO: Auto-generated Javadoc
@@ -25,13 +26,6 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 
 	/** The main flow panel. */
 	private FlowPanel mainFlowPanel = new FlowPanel();
-	
-	/** The right hand nav panel. */
-	private VerticalPanel rightHandNavPanel = new VerticalPanel();
-
-	/** The message panel. */
-	private HorizontalPanel messagePanel = new HorizontalPanel();
-	
 	
 	/** The qdm view. */
 	private CQLQDMAppliedView qdmView;
@@ -89,6 +83,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		resetAll();
 		unsetEachSectionSelectedObject();
 		
+		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLStandaloneWorkSpaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
@@ -104,6 +99,27 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainVPanel.add(mainHPPanel);
         mainVPanel.add(qdmView.getCellTableMainPanel());
 		
+	}
+	
+	
+	@Override
+	public void buildGeneralInformation() {
+		unsetEachSectionSelectedObject();
+		mainFlowPanel.clear();
+		mainFlowPanel.add(generalInformationView.getCQLView());
+
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#buildCQLFileView()
+	 */
+	@Override
+	public void buildCQLFileView() {
+		unsetEachSectionSelectedObject();
+		mainFlowPanel.clear();
+		mainFlowPanel.add(cqlViewCQLView.buildView());
+
 	}
 	
 	
@@ -257,24 +273,46 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		return cqlLeftNavBarPanelView;
 	}
     
+    /* (non-Javadoc)
+     * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getCQLParametersView()
+     */
     @Override
     public CQLParametersView getCQLParametersView(){
     	return cqlParametersView; 
     }
     
+    /* (non-Javadoc)
+     * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getCQLDefinitionsView()
+     */
     @Override
     public CQlDefinitionsView getCQLDefinitionsView(){
     	return cqlDefinitionsView;
     }
     
+    /* (non-Javadoc)
+     * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getCQLFunctionsView()
+     */
     @Override
     public CQLFunctionsView getCQLFunctionsView(){
     	return cqlFunctionsView;
     }
     
+    /* (non-Javadoc)
+     * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getCqlIncludeLibraryView()
+     */
     @Override
     public CQLIncludeLibraryView getCqlIncludeLibraryView(){
     	return inclView;
+    }
+    
+    @Override
+	public AceEditor getCqlAceEditor() {
+		return cqlViewCQLView.getCqlAceEditor();
+	}
+    
+    @Override
+    public CQLGeneralInformationView getCqlGeneralInformationView(){
+    	return generalInformationView;
     }
 
 }

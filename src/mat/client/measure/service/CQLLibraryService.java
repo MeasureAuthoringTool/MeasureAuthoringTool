@@ -27,5 +27,8 @@ public interface CQLLibraryService extends RemoteService {
 
 	SaveCQLLibraryResult searchForDraft(String searchText);
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+	
+	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue);
 }

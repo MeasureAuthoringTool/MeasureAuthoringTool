@@ -989,5 +989,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public CQlDefinitionsView getCQlDefinitionsView(){
 		return cqlDefinitionsView;
 	}
+	
+	@Override
+	public CQLGeneralInformationView getCqlGeneralInformationView(){
+		return generalInformationView;
+	}
 
 }

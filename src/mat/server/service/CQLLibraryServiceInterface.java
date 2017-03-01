@@ -40,8 +40,9 @@ public interface CQLLibraryServiceInterface {
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 
 	SaveCQLLibraryResult searchForDraft(String searchText);
-	
-	
-	
+
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context);
+
+	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 	
 }

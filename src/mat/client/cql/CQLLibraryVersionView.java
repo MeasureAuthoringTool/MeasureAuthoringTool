@@ -275,4 +275,9 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public CQLLibraryDataSetObject getSelectedLibrary() {
 		return selectionModel.getSelectedObject();
 	}
+	@Override
+	public void clearRadioButtonSelection() {
+		getMajorRadioButton().setValue(false);
+		getMinorRadio().setValue(false);
+	}
 }

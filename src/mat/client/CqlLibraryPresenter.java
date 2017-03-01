@@ -171,6 +171,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		org.gwtbootstrap3.client.ui.Button getCancelButton();
 
 		CQLLibraryDataSetObject getSelectedLibrary();
+
+		void clearRadioButtonSelection();
 		
 	}
 	
@@ -220,6 +222,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		//addDraftDisplayViewHandlers();
 	}
 
+	/**
+	 * Draft event Handlers are added here.
+	 */
 	private void addDraftDisplayViewHandlers() {
 		draftDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -264,6 +269,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 	}
 
+	/**
+	 * This method is invoked when CQL Library is selected from My/All Libraries Table.
+	 */
 	private void addCQLLibrarySelectionHandlers() {
 		
 		cqlLibraryView.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<CQLLibraryDataSetObject>() {
@@ -278,6 +286,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 	
+	/**
+	 * This method is invoked when CQL Library is selected from Recent Activity Table.
+	 */
 	private void addMostRecentWidgetSelectionHandler(){
 		
 		cqlLibraryView.getMostRecentLibraryWidget().addSelectionHandler(new SelectionHandler<CQLLibraryDataSetObject>() {
@@ -304,6 +315,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	
+	/**
+	 * Version Event Handlers are added here.
+	 */
 	private void addVersionDisplayViewHandlers(){
 		versionDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			
@@ -368,6 +382,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 	}
 	
+	/**
+	 * Method to Save Version of a Draft.
+	 * @param libraryId
+	 * @param isMajor
+	 * @param version
+	 */
 	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
 		Mat.showLoadingMessage();
 		versionDisplay.getErrorMessages().clearAlert();
@@ -419,6 +439,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 	}
 
+	/**
+	 * Detail View Event Handlers.
+	 */
 	private void addDetailDisplayViewHandlers() {
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 
@@ -476,6 +499,15 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	
+	/**
+	 * CQLLibrary Selected Event is fired from this method.
+	 * @param id
+	 * @param version
+	 * @param name
+	 * @param isEditable
+	 * @param isLocked
+	 * @param lockedUserId
+	 */
 	private void fireCQLLibrarySelectedEvent(String id, String version,
 			String name, boolean isEditable, boolean isLocked, String lockedUserId) {
 		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId);
@@ -493,6 +525,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * CQL Library View Event Handlers are added here.
+	 */
 	private void addCQLLibraryViewHandlers() {
 		cqlLibraryView.getAddNewFolderButton().addClickHandler(new ClickHandler() {
 
@@ -561,8 +596,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		});
 		
-		
-		//TextBox searchWidget = (TextBox) (cqlLibraryView.getSearchString());
 		cqlLibraryView.getSearchFilterWidget().getMainFocusPanel().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -587,6 +620,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Method is invoked When Option to Create Library Version of Draft is selected from CreateNewItemWidget.
+	 */
 	private void createVersion() {
 		searchLibrariesForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue());
 		versionDisplay.getErrorMessages().clearAlert();
@@ -598,10 +634,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 		panel.setHeading("My CQL Library > Create CQL Library Version of Draft", "CQLLibrary");
 		panel.setContent(versionDisplay.asWidget());
 		Mat.focusSkipLists("CQLLibrary");
-		clearRadioButtonSelection();
+		versionDisplay.clearRadioButtonSelection();
 
 	}
-
+	/**
+	 * Method is invoked When Option to Create Library Draft of Existing version is selected from CreateNewItemWidget.
+	 */
 	private void createDraft() {
 		//searchLibrariesForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 		draftDisplay.getErrorMessages().clearAlert();
@@ -615,6 +653,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 		Mat.focusSkipLists("CQLLibrary");
 	}
 	
+	/**
+	 * This method returns all libraries available for versioning.
+	 * @param searchText
+	 */
 	private void searchLibrariesForVersion(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		versionDisplay.getErrorMessages().clearAlert();
@@ -667,25 +709,27 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}*/
 	
 	
-	private void clearRadioButtonSelection() {
-		versionDisplay.getMajorRadioButton().setValue(false);
-		versionDisplay.getMinorRadio().setValue(false);
-	}
-	
+	/**
+	 * This method is called when New Library Option is selected from CreateNewItemWidget. 
+	 */
 	private void createNew() {
-
 		cqlModel = new CQLModel();
-		displayDetailForAdd();
+		panel.getButtonPanel().clear();
+		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
+		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("CQLLibrary");
 
 	}
 
-	private void displayDetailForAdd() {
+	/*private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
 		panel.setContent(detailDisplay.asWidget());
-	}
-
+	}*/
+	
+	/**
+	 * This method is called from beforeDisplay and this becomes main method for CQL Library View. 
+	 */
 	private void displaySearch() {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
@@ -706,7 +750,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		panel.setContent(fp);
 		Mat.focusSkipLists("CQLLibrary");
 	}
-
+	/**
+	 * This method reterives all Libraries in CQL Library tab based on Selected filters and Search Input.
+	 */
 	private void search(final String searchText, String searchFrom, final int filter,int startIndex, int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText
 				.trim() : null;
@@ -742,7 +788,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 				});
 	}
 	
-	
+	/**
+	 * This method reterives Two recent Libraries in CQL Library.
+	 */
 	private void searchRecentLibraries() {
 		MatContext.get().getCQLLibraryService().getAllRecentCQLLibrariesForUser(MatContext.get().getLoggedinUserId(),
 				new AsyncCallback<SaveCQLLibraryResult>() {

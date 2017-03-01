@@ -12,7 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +72,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 
 	@Autowired
 	private RecentCQLActivityLogDAO recentCQLActivityLogDAO;
-
+	
+	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
@@ -342,8 +345,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return result;
 	}
 
-	private SaveCQLLibraryResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,
-			final CQLLibrary library) {
+	private SaveCQLLibraryResult incrementVersionNumberAndSave(String maximumVersionNumber, String incrementBy,
+			 CQLLibrary library) {
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
 		mVersion = mVersion.add(new BigDecimal(incrementBy));
 		library.setVersion(mVersion.toString());
@@ -353,7 +356,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		library.setFinalizedDate(timestamp);
 		library.setDraft(false);
 		
-		cqlLibraryDAO.save(library);
 		String versionStr = mVersion.toString();
 		// Divide the number by 1 and check for a remainder.
 		// Any whole number should always have a remainder of 0 when divided by
@@ -366,6 +368,12 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		if (mVersion.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0) {
 			versionStr = versionStr.concat(".0");
 		}
+		// method to update version node to newly requested version value.
+		XmlProcessor xmlProcessor = new XmlProcessor(getCQLLibraryXml(library));
+		updateCQLVersion(xmlProcessor, library.getRevisionNumber(),versionStr);
+		library.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
+		cqlLibraryDAO.save(library);
+		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setSuccess(true);
 		result.setId(library.getId());
@@ -374,6 +382,22 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		logger.info("Result passed for Version Number " + versionStr);
 		return result;
 	}
+	
+	
+	private void updateCQLVersion(XmlProcessor processor,String revisionNumber ,String version) {
+		String cqlVersionXPath = "//cqlLookUp/version";
+		try {
+			Node node = (Node) xPath.evaluate(cqlVersionXPath, processor.getOriginalDoc().getDocumentElement(),
+					XPathConstants.NODE);
+			if (node != null) {
+				node.setTextContent(MeasureUtility.formatVersionText(revisionNumber, version));
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+
+	}
+	
 	
 	@Override
 	public SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlLibraryDataSetObject) {

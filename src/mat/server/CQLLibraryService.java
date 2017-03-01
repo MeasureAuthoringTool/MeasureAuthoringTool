@@ -285,6 +285,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Override
 	public SaveCQLLibraryResult saveFinalizedVersion (String libraryId,  boolean isMajor,
 			 String version){
+		logger.info("Inside saveFinalizedVersion: Start");
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
@@ -311,40 +312,48 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				String[] versionArr = versionNumber.split("\\.");
 				if (isMajor) {
 					if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
+						logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
 						return incrementVersionNumberAndSave(majorVersionNumber, "1", library);
 					} else {
-						return returnFailureReason(result, SaveCQLLibraryResult.REACHED_MAXIMUM_MAJOR_VERSION);
+						logger.info("Inside saveFinalizedVersion: returnFailureReason  isMajor Start");
+						result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MAJOR_VERSION);
+						result.setSuccess(false);
+						return result;
 					}
 
 				} else {
 					if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
 						versionNumber = versionArr[0] + "." + versionArr[1];
+						logger.info("Inside saveFinalizedVersion: incrementVersionNumberAndSave Start");
 						return incrementVersionNumberAndSave(versionNumber, "0.001", library);
 					} else {
-						return returnFailureReason(result, SaveCQLLibraryResult.REACHED_MAXIMUM_MINOR_VERSION);
+						logger.info("Inside saveFinalizedVersion: returnFailureReason NOT isMajor Start");
+						result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_MINOR_VERSION);
+						result.setSuccess(false);
+						return result;
 					}
 				}
 
 			} else {
-				return returnFailureReason(result, SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
+				logger.info("Inside saveFinalizedVersion: returnFailureReason MAX Major Minor Reached");
+				result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
+				result.setSuccess(false);
+				return result;
+				
 			}
 			
 			
 		} else {
-			return returnFailureReason(result, SaveCQLLibraryResult.INVALID_DATA);
+			
+			result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
+			result.setSuccess(false);
+			return result;
 		}
 		
 		
 	}
 	
 	
-	private SaveCQLLibraryResult returnFailureReason(SaveCQLLibraryResult result, int failureReason) {
-
-		result.setFailureReason(failureReason);
-		result.setSuccess(false);
-		return result;
-	}
-
 	private SaveCQLLibraryResult incrementVersionNumberAndSave(String maximumVersionNumber, String incrementBy,
 			 CQLLibrary library) {
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);

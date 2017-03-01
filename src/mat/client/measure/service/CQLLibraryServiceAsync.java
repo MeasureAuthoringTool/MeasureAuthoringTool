@@ -34,7 +34,9 @@ public interface CQLLibraryServiceAsync {
 	void saveFinalizedVersion(String libraryId, boolean isMajor, String version,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	//void searchForDraft(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForDraft(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void saveDraftFromVersion(String libraryId, AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	
 

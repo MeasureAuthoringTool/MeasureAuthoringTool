@@ -37,7 +37,11 @@ public interface CQLLibraryServiceInterface {
 
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
 
-	//SaveCQLLibraryResult searchForDraft(String searchText);
+	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+
+	SaveCQLLibraryResult searchForDraft(String searchText);
+	
+	
 	
 	
 }

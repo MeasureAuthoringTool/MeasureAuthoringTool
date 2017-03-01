@@ -208,18 +208,17 @@ public class CqlLibraryPresenter implements MatPresenter {
 		ErrorMessageAlert getErrorMessage();
 	}
 
-	//public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay) {
-	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay) {
+	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
 		this.detailDisplay = detailDisplay;
 		this.versionDisplay = versionDisplay;
-		//this.draftDisplay = draftDisplay;
+		this.draftDisplay = draftDisplay;
 		addCQLLibraryViewHandlers();
 		addDetailDisplayViewHandlers();
 		addCQLLibrarySelectionHandlers();
 		addMostRecentWidgetSelectionHandler();
 		addVersionDisplayViewHandlers();
-		//addDraftDisplayViewHandlers();
+		addDraftDisplayViewHandlers();
 	}
 
 	/**
@@ -250,7 +249,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		draftDisplay.getSearchWidget().getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//searchLibrariesForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
+				searchLibrariesForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 			}
 		});
 		
@@ -265,7 +264,66 @@ public class CqlLibraryPresenter implements MatPresenter {
 			}
 		});
 		
+		draftDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				draftDisplay.getErrorMessages().clearAlert();
+				CQLLibraryDataSetObject selectedLibrary = draftDisplay.getSelectedLibrary();
+				if (((selectedLibrary !=null) && (selectedLibrary.getId() != null))) {
+					saveDraftFromVersion(selectedLibrary);
+				} else {
+					draftDisplay
+					.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_DRAFT());
+				}
+				
+			}
+		});
 		
+	}
+
+	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
+		draftDisplay.getErrorMessages().clearAlert();
+		MatContext.get().getCQLLibraryService().saveDraftFromVersion(selectedLibrary.getId(), new AsyncCallback<SaveCQLLibraryResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				draftDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				
+			}
+
+			@Override
+			public void onSuccess(SaveCQLLibraryResult result) {
+				if(result.isSuccess()){
+					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
+							null);
+					MatContext
+					.get()
+					.getAuditService()
+					.recordCQLLibraryEvent(
+							result.getId(),
+							"Draft Created",
+							"Draft created based on Version "
+									+ result.getVersionStr(),
+									false,
+									new AsyncCallback<Boolean>() {
+								
+								@Override
+								public void onFailure(
+										Throwable caught) {
+									
+								}
+								
+								@Override
+								public void onSuccess(
+										Boolean result) {
+									
+								}
+							});
+				}
+				
+			}
+		});
 		
 	}
 
@@ -582,7 +640,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					createNew();
 				} else if (cqlLibraryView.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_CQL_DRAFT)) {
 					cqlLibraryView.getErrorMessageAlert().clearAlert();
-					//createDraft();
+					createDraft();
 				} else if (cqlLibraryView.getSelectedOption()
 						.equalsIgnoreCase(ConstantMessages.CREATE_NEW_CQL_VERSION)) {
 					cqlLibraryView.getErrorMessageAlert().clearAlert();
@@ -641,7 +699,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * Method is invoked When Option to Create Library Draft of Existing version is selected from CreateNewItemWidget.
 	 */
 	private void createDraft() {
-		//searchLibrariesForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
+		searchLibrariesForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 		draftDisplay.getErrorMessages().clearAlert();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		panel.getButtonPanel().clear();
@@ -686,7 +744,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	
-	/*private void searchLibrariesForDraft(String searchText) {
+	private void searchLibrariesForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().searchForDraft(lastSearchText, new AsyncCallback<SaveCQLLibraryResult>() {
@@ -706,7 +764,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			}
 		});
 		
-	}*/
+	}
 	
 	
 	/**
@@ -721,11 +779,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
-	/*private void displayDetailForAdd() {
-		panel.getButtonPanel().clear();
-		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
-		panel.setContent(detailDisplay.asWidget());
-	}*/
 	
 	/**
 	 * This method is called from beforeDisplay and this becomes main method for CQL Library View. 

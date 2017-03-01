@@ -306,8 +306,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		CQLLibraryDetailView detailView = new CQLLibraryDetailView();
 		CQLLibraryVersionView versionView = new CQLLibraryVersionView();
 		CQLLibraryDraftView draftView = new CQLLibraryDraftView();
-		//CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,versionView,draftView);
-		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,versionView);
+		CqlLibraryPresenter cqlLibraryPresenter = new CqlLibraryPresenter(cqlLibraryView, detailView,versionView,draftView);
 		return cqlLibraryPresenter;
 	}
 	/**

@@ -12,6 +12,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -79,7 +80,8 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		zoomButton.getElement().setId("CqlzoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
-		
+		majorRadio.getElement().setId("CQL_MajorRadioButton");
+		minorRadio.getElement().setId("CQL_MinorRadioButton");
 		mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		
@@ -115,6 +117,8 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 			public Boolean getValue(CQLLibraryDataSetObject result) {
 				return cellTable.getSelectionModel().isSelected(result);
 			}
+			
+			
 		};
 		radioButtonColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
 			@Override
@@ -122,6 +126,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 				cellTable.getSelectionModel().setSelected(object, true);
 			}
 		});
+		
 		cellTable.addColumn(radioButtonColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Select\">"
 				+ "Select" + "</span>"));
 		Column<CQLLibraryDataSetObject, SafeHtml> libraryNameColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(new SafeHtmlCell()) {

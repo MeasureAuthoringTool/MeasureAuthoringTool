@@ -53,7 +53,6 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
-import mat.shared.UUIDUtilClient;
 
 public class CQLLibraryService implements CQLLibraryServiceInterface {
 	/** The Constant logger. */
@@ -147,7 +146,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 	}
 	
-/*	@Override
+	@Override
 	public SaveCQLLibraryResult searchForDraft(String searchText) {
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 
@@ -199,7 +198,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		result.setCqlLibraryDataSetObjects(cqList);
 		return result;
 	}
-	*/
+	
 	
 	
 	@Override
@@ -281,7 +280,35 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		cqlLibraryDataSetObject.setCqlText(getCQLLibraryData(cqlLibrary));
 		return cqlLibraryDataSetObject; 
 	}
-
+	@Override
+	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
+		if(existingLibrary != null){
+			CQLLibrary newLibraryObject = new CQLLibrary();
+			newLibraryObject.setDraft(true);
+			newLibraryObject.setName(existingLibrary.getName());
+			newLibraryObject.setCqlSet(existingLibrary.getCqlSet());
+			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
+			newLibraryObject.setReleaseVersion(existingLibrary.getReleaseVersion());
+			newLibraryObject.setQdmVersion(existingLibrary.getQdmVersion());
+			newLibraryObject.setCQLByteArray(existingLibrary.getCQLByteArray());
+			newLibraryObject.setVersion(existingLibrary.getVersion());
+			newLibraryObject.setRevisionNumber("000");
+			save(newLibraryObject);
+			result.setSuccess(true);
+			result.setId(newLibraryObject.getId());
+			result.setCqlLibraryName(newLibraryObject.getName());
+			result.setVersionStr(newLibraryObject.getVersion()+"."+newLibraryObject.getRevisionNumber());
+			
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
+		}
+		return result;
+	}
+	
+	
 	@Override
 	public SaveCQLLibraryResult saveFinalizedVersion (String libraryId,  boolean isMajor,
 			 String version){

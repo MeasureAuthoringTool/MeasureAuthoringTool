@@ -297,6 +297,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
 							null);
+					fireCqlLibraryEditEvent();
 					MatContext
 					.get()
 					.getAuditService()
@@ -365,7 +366,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param event
 	 */
 	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
-		
 		
 		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), true, false,
 				null);

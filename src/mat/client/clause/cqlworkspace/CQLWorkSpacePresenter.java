@@ -1692,14 +1692,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									while (iterator.hasNext()) {
 										CQLQualityDataSetDTO dataSetDTO = iterator
 												.next();
-										if (dataSetDTO
-												.getUuid()
-												.equals(searchDisplay.getQdmView()
-														.getSelectedElementToRemove()
-														.getUuid())) {
-											if(!dataSetDTO.isUsed()){
-												deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
-												iterator.remove();
+										if(dataSetDTO
+												.getUuid() != null){
+											if (dataSetDTO
+													.getUuid()
+													.equals(searchDisplay.getQdmView()
+															.getSelectedElementToRemove()
+															.getUuid())) {
+												if(!dataSetDTO.isUsed()){
+													deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
+													iterator.remove();
+												}
 											}
 										}
 									}
@@ -4492,7 +4495,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		searchDisplay.getQdmView().getQDMExpProfileListBox().clear();
 		if(result.getExpansionIdentifier() != null){
-			searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(result.getExpansionIdentifier(),result.getExpansionIdentifier());
+			if(!isUserDefined)
+				searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(result.getExpansionIdentifier(),result.getExpansionIdentifier());
 		}
 		searchDisplay.getQdmView().getQDMExpProfileListBox().setEnabled(false);
 		
@@ -4503,8 +4507,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		if(!expProfileToAllQDM.isEmpty()){
 			searchDisplay.getQdmView().getQDMExpProfileListBox().clear();
-			searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(expProfileToAllQDM,
-					expProfileToAllQDM);
+			if(!isUserDefined)
+				searchDisplay.getQdmView().getQDMExpProfileListBox().addItem(expProfileToAllQDM,
+						expProfileToAllQDM);
 		}
 		
 		searchDisplay.getQdmView().getSaveButton().setEnabled(isUserDefined);

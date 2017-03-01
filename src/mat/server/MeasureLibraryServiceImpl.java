@@ -1716,44 +1716,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(final String measureId,
 			final boolean checkForSupplementData) {
-		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
-		CQLQualityDataModelWrapper details = convertXmltoCQLQualityDataDTOModel(measureXmlModel);
-		// add expansion Profile if existing
-		String expProfilestr = getDefaultExpansionIdentifier(measureId);
-		if (expProfilestr != null) {
-			details.setVsacExpIdentifier(expProfilestr);
-		}
-		ArrayList<CQLQualityDataSetDTO> finalList = new ArrayList<CQLQualityDataSetDTO>();
-		if (details != null) {
-			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
-				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
-				for (CQLQualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-					if (dataSetDTO.getCodeListName() != null) {
-						if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
-							continue;
-						} else {
-							// if(!dataSetDTO.getDataType().equalsIgnoreCase("Patient
-							// Characteristic Birthdate") &&
-							// !dataSetDTO.getDataType().equalsIgnoreCase("Patient
-							// Characteristic Expired")) {
-							finalList.add(dataSetDTO);
-							// }
-						}
-					}
-				}
-			}
-			Collections.sort(finalList, new Comparator<CQLQualityDataSetDTO>() {
-				@Override
-				public int compare(final CQLQualityDataSetDTO o1, final CQLQualityDataSetDTO o2) {
-					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
-				}
-			});
-		}
-
-		details.setQualityDataDTO(finalList);
-		logger.info("finalList()of CQLQualityDataSetDTO ::" + finalList.size());
-		return details;
-
+		return getCqlService().getCQLValusets(measureId, new CQLQualityDataModelWrapper());
 	}
 
 	@Override

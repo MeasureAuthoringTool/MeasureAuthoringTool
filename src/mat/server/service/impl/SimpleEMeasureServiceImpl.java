@@ -240,7 +240,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			e.printStackTrace();
 		}
 		//_logger.info("Document object to ByteArray transformation complete");
-		System.out.println(arrayOutputStream.toString());
 		return arrayOutputStream.toString();
 	}
 

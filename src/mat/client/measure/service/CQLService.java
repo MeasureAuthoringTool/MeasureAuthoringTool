@@ -185,6 +185,8 @@ public interface CQLService {
 
 	void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
 
+	void deleteCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
+
 
 
 

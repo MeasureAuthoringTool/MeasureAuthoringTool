@@ -100,7 +100,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			allLibraries.add(object);
 		}
 		
-		updateCQLLibraryFamily(allLibraries);
+		if(searchFrom.equalsIgnoreCase("StandAlone")) {
+			updateCQLLibraryFamily(allLibraries);
+		}
 		searchModel.setCqlLibraryDataSetObjects(allLibraries);
 		
 		return searchModel;

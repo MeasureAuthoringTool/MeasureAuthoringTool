@@ -4,7 +4,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLButtonToolBar;
@@ -19,7 +19,7 @@ import mat.client.util.MatTextBox;
 public class CQLGeneralInformationView {
 	
 	/** The general info main V panel. */
-	private VerticalPanel generalInfoMainVPanel = new VerticalPanel();
+	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
 	
 	/** The library name value. */
 	private MatTextBox libraryNameValue = new MatTextBox();
@@ -40,7 +40,7 @@ public class CQLGeneralInformationView {
 	 * Instantiates a new CQL general information view.
 	 */
 	public CQLGeneralInformationView(){
-		generalInfoMainVPanel.clear();
+		generalInfoMainHPanel.clear();
 	}
 
 	/**
@@ -53,49 +53,41 @@ public class CQLGeneralInformationView {
 		
 		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryNameLabel.setWidth("150px");
-		
+		libraryNameLabel.getElement().setId("libraryNameLabel_Label");
 		
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
 		//libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
-		
+		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
 		Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
 		
 		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
 		libraryVersionLabel.setWidth("150px");
-		
+		libraryVersionLabel.getElement().setId("libraryVersionLabel_Label");
 		
 		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		/*
-		String measureVersion = MatContext.get().getCurrentMeasureVersion();
-		
-		measureVersion = measureVersion.replaceAll("Draft ", "").trim();
-		if(measureVersion.startsWith("v")){
-			measureVersion = measureVersion.substring(1);
-		}*/
-		
-		//libraryVersionValue.setText(measureVersion);
+		libraryVersionValue.getElement().setId("libraryVersionValue_TextBox");
 		libraryVersionValue.setReadOnly(true);
 		
 		Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
 		
 		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
+		usingModeLabel.getElement().setId("usingModeLabel_Label");
 		usingModeLabel.setWidth("150px");
 		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		//usingModelValue.setText("QDM");
+		usingModelValue.getElement().setId("usingModelValue_TextBox");
 		usingModelValue.setReadOnly(true);
 		
 		Label modelVersionLabel = new Label(LabelType.INFO, "Version");
 		
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;background-color:#0964A2;");
+		modelVersionLabel.getElement().setId("modelVersionLabel_Label");
 		modelVersionLabel.setWidth("150px");
 		
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:25px;");
-		//modelVersionValue.setText("5.0");
+		modelVersionValue.getElement().setId("modelVersionValue_TextBox");
 		modelVersionValue.setReadOnly(true);
-		//modelVersionValue.setText("5.0.2");
 		
 		generalInfoTopPanel.add(new SpacerWidget());
-		// messagePanel.add(successMessageAlert);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
 		generalInfoTopPanel.add(libraryNameLabel);
@@ -118,12 +110,11 @@ public class CQLGeneralInformationView {
 		generalInfoTopPanel.add(modelVersionValue);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-	
-		generalInfoMainVPanel.setStyleName("cqlRightContainer");
-		generalInfoMainVPanel.setWidth("715px");
-		generalInfoTopPanel.setWidth("700px");
+		generalInfoMainHPanel.setStyleName("cqlRightContainer");
+		generalInfoMainHPanel.getElement().setId("generalInfoMainHPanel_HPanel");
+		generalInfoMainHPanel.setWidth("715px");
 		generalInfoTopPanel.setStyleName("marginLeft15px");
-		generalInfoMainVPanel.add(generalInfoTopPanel);
+		generalInfoMainHPanel.add(generalInfoTopPanel);
 	}
 	
 	
@@ -132,7 +123,7 @@ public class CQLGeneralInformationView {
 	 * Builds the button layout panel.
 	 */
 	public void buildButtonLayoutPanel(){
-		SimplePanel panel = new SimplePanel();
+		
 		saveAndDeleteBtn.getSaveButton().setVisible(true);
 		saveAndDeleteBtn.getCloseButton().setVisible(true);
 		saveAndDeleteBtn.getEraseButton().removeFromParent();
@@ -140,10 +131,8 @@ public class CQLGeneralInformationView {
 		saveAndDeleteBtn.getInfoButton().removeFromParent();
 		saveAndDeleteBtn.getInsertButton().removeFromParent();
 		saveAndDeleteBtn.getTimingExpButton().removeFromParent();
-		panel.setStylePrimaryName("rightAlignMessageWidget");
-		panel.add(saveAndDeleteBtn);
-		generalInfoMainVPanel.add(new SpacerWidget());
-		generalInfoMainVPanel.add(panel);
+		saveAndDeleteBtn.setStylePrimaryName("floatLeft");
+		generalInfoMainHPanel.add(saveAndDeleteBtn);
 	}
 	
 	
@@ -180,10 +169,11 @@ public class CQLGeneralInformationView {
 	 *
 	 * @return the view
 	 */
-	public VerticalPanel getView(){
-		generalInfoMainVPanel.clear();
+	public HorizontalPanel getView(){
+		generalInfoMainHPanel.clear();
 		buildView();
-		return generalInfoMainVPanel;
+		setWidgetReadOnly(false);
+		return generalInfoMainHPanel;
 	}
 	
 	/**
@@ -191,12 +181,12 @@ public class CQLGeneralInformationView {
 	 *
 	 * @return the CQL view
 	 */
-	public VerticalPanel getCQLView(){
-		generalInfoMainVPanel.clear();
+	public HorizontalPanel getCQLView(){
+		generalInfoMainHPanel.clear();
+		buildView();	
 		buildButtonLayoutPanel();
-		buildView();
 		setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-		return generalInfoMainVPanel;
+		return generalInfoMainHPanel;
 	}
 
 	/**

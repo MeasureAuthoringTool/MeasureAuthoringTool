@@ -323,6 +323,7 @@ public class CQLLeftNavBarPanelView {
 		generalInformation.setText("General Information");
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
+		generalInformation.setId("generatalInformation_Anchor");
 
 		includesLibrary.setIcon(IconType.PENCIL);
 		includesLibrary.setTitle("Includes");
@@ -337,20 +338,23 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 		includesLabel.setStyleName("transparentLabel");
+		includesLabel.setId("includesLabel_Label");
 		includesAnchor.add(includesLabel);
 		includesBadge.setPull(Pull.RIGHT);
 		includesBadge.setMarginLeft(52);
+		includesBadge.setId("includesBadge_Badge");
 		includesAnchor.add(includesBadge);
 		includesAnchor.setDataParent("#navGroup");
 		includesLibrary.setDataToggle(Toggle.COLLAPSE);
 		includesLibrary.setHref("#collapseIncludes");
-
+		includesLibrary.setId("includesLibrary_Anchor");
 		includesLibrary.add(includesCollapse);
 
 		appliedQDM.setIcon(IconType.PENCIL);
 		appliedQDM.setText("Value Sets/Codes");
 		appliedQDM.setTitle("Value Sets/Codes");
 		appliedQDM.setActive(false);
+		appliedQDM.setId("CQLValuesets_Anchor");
 
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -365,18 +369,21 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 		paramLabel.setStyleName("transparentLabel");
+		paramLabel.setId("paramLabel_Label");
 		paramAnchor.add(paramLabel);
 		paramBadge.setPull(Pull.RIGHT);
+		paramBadge.setId("paramBadge_Badge");
 		// paramBadge.setMarginLeft(45);
 		paramAnchor.add(paramBadge);
 		paramAnchor.setDataParent("#navGroup");
 		paramAnchor.setDataToggle(Toggle.COLLAPSE);
 		parameterLibrary.setHref("#collapseParameter");
-
+		parameterLibrary.setId("parameterLibrary_Anchor");
 		parameterLibrary.add(paramCollapse);
 
 		definitionLibrary.setIcon(IconType.PENCIL);
 		definitionLibrary.setTitle("Define");
+		definitionLibrary.setId("definitionLibrary_Anchor");
 		defineBadge.setText("" + viewDefinitions.size());
 		Anchor defineAnchor = (Anchor) (definitionLibrary.getWidget(0));
 		// Double Click causing issues.So Event is not propogated
@@ -388,10 +395,12 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 		defineLabel.setStyleName("transparentLabel");
+		defineLabel.setId("defineLabel_Label");
 		defineAnchor.add(defineLabel);
 		defineBadge.setPull(Pull.RIGHT);
 		// defineBadge.setMarginLeft(52);
 		defineAnchor.add(defineBadge);
+		defineBadge.setId("defineBadge_Badge");
 		defineAnchor.setDataParent("#navGroup");
 		definitionLibrary.setDataToggle(Toggle.COLLAPSE);
 		definitionLibrary.setHref("#collapseDefine");
@@ -399,7 +408,7 @@ public class CQLLeftNavBarPanelView {
 		definitionLibrary.add(defineCollapse);
 
 		functionLibrary.setIcon(IconType.PENCIL);
-		/* functionLibrary.setText("Functions"); */
+		functionLibrary.setId("functionLibrary_Anchor");
 		functionLibrary.setTitle("Functions");
 
 		functionBadge.setText("" + viewFunctions.size());
@@ -413,11 +422,13 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 		functionLibLabel.setStyleName("transparentLabel");
+		functionLibLabel.setId("functionLibLabel_label");
 		funcAnchor.add(functionLibLabel);
 		functionBadge.setPull(Pull.RIGHT);
 
 		// functionBadge.setMarginLeft(57);
 		funcAnchor.add(functionBadge);
+		functionBadge.setId("functionBadge_Badge");
 		funcAnchor.setDataParent("#navGroup");
 		functionLibrary.setDataToggle(Toggle.COLLAPSE);
 		functionLibrary.setHref("#collapseFunction");
@@ -427,7 +438,7 @@ public class CQLLeftNavBarPanelView {
 		viewCQL.setIcon(IconType.BOOK);
 		viewCQL.setText("View CQL");
 		viewCQL.setTitle("View CQL");
-
+		viewCQL.setId("viewCQL_Anchor");
 		navPills.add(generalInformation);
 		navPills.add(includesLibrary);
 		navPills.add(appliedQDM);
@@ -563,7 +574,6 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.setCellHorizontalAlignment(paramLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
 		parameterFP.add(rightVerticalPanel);
 		parameterCollapseBody.add(parameterFP);
-
 		paramCollapse.add(parameterCollapseBody);
 		return paramCollapse;
 

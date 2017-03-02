@@ -15,6 +15,10 @@ public class SaveCQLLibraryResult extends GenericResult {
 	/** The version str. */
 	private String versionStr;
 	
+	private boolean isEditable;
+	
+	private boolean isLocked;
+	
 	public static final int INVALID_DATA = ConstantMessages.INVALID_DATA;
 	public static final int INVALID_USER = 1;
 	public static final int INVALID_CQL = 2;
@@ -71,6 +75,14 @@ public class SaveCQLLibraryResult extends GenericResult {
 
 	public void setResultsTotal(int resultsTotal) {
 		this.resultsTotal = resultsTotal;
+	}
+
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
 	}
 	
 	

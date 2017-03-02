@@ -131,7 +131,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 							if(library.getOwnerId().getId()
 									.equalsIgnoreCase(
 											user.getId())){
-								canVersion = true;
+								canVersion = true; // Add another else for sharing.
 							} else {
 								canVersion = false;
 							}
@@ -184,7 +184,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 									canDraft = true;
 								} else {
 									if (library.getOwnerId().getId().equalsIgnoreCase(user.getId())) {
-										canDraft = true;
+										canDraft = true; // Add another else for sharing.
 									} else {
 										canDraft = false;
 									}
@@ -255,6 +255,16 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
 		dataSetObject.setVersion(formattedVersion);        
 		
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		
+		boolean isOwner = currentUserId.equals(dataSetObject.getOwnerId());
+		
+		dataSetObject.setEditable(
+				(isOwner || isSuperUser) && dataSetObject.isDraft());
+		
+		
 		return dataSetObject;
 		
 	}
@@ -306,6 +316,15 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
 					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
 			result.setVersionStr(formattedVersion);
+			
+			String currentUserId = LoggedInUserUtil.getLoggedInUser();
+			String userRole = LoggedInUserUtil.getLoggedInUserRole();
+			boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+			
+			boolean isOwner = currentUserId.equals(newLibraryObject.getOwnerId());
+			result.setEditable(
+					(isOwner || isSuperUser) && newLibraryObject.isDraft());
+			
 			
 		} else {
 			result.setSuccess(false);
@@ -481,6 +500,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				result.setId(library.getId());
 				result.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 				result.setVersionStr(library.getVersion()+"."+library.getRevisionNumber());
+				result.setEditable(cqlLibraryDataSetObject.isEditable());
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(result.INVALID_CQL);

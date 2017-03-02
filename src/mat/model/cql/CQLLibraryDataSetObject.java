@@ -33,6 +33,8 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private String revisionNumber ="000";
 	private String ownerId;
 	private String cqlSetId;
+	private boolean isEditable;
+	
 	/** The cql errors. */
 	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
 	
@@ -186,5 +188,11 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 				this.setCqlName(noMarkupText);
 			}
 		}
+	}
+	public boolean isEditable() {
+		return isEditable;
+	}
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
 	}
 }

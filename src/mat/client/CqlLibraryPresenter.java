@@ -305,7 +305,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				((Button)draftDisplay.getSaveButton()).setEnabled(true);
 				((Button)draftDisplay.getCancelButton()).setEnabled(true);
 				if(result.isSuccess()){
-					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
+					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
 							null);
 					fireCqlLibraryEditEvent();
 					MatContext
@@ -379,7 +379,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
 		
-		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), true, false,
+		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), false,
 				null);
 		fireCqlLibraryEditEvent();
 	}
@@ -560,7 +560,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
 				if(result.isSuccess()){
-					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), true, false,
+					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
 									null);
 					fireCqlLibraryEditEvent();
 				} else {

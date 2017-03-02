@@ -39,7 +39,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.QDMInputValidator;
+import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -1438,7 +1438,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			QDMInputValidator qdmInputValidator = new QDMInputValidator();
+			ValueSetNameInputValidator qdmInputValidator = new ValueSetNameInputValidator();
 			List<String> messList = new ArrayList<String>(); 
 			//qdmInputValidator.validate(matValueSetTransferObject);
 			if (messList.size() == 0) {
@@ -1791,7 +1791,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				MatValueSetTransferObject object = new MatValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 				object.scrubForMarkUp();
-				QDMInputValidator qdmInputValidator = new QDMInputValidator();
+				ValueSetNameInputValidator qdmInputValidator = new ValueSetNameInputValidator();
 				List<String> meStrings = new ArrayList<String>();
 				//qdmInputValidator.validate(object);
 				if (meStrings.size() == 0) {

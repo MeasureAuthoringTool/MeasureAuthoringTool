@@ -28,7 +28,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	private FlowPanel mainFlowPanel = new FlowPanel();
 	
 	/** The qdm view. */
-	private CQLQDMAppliedView qdmView;
+	private CQLAppliedValueSetView qdmView;
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
@@ -66,7 +66,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
-		qdmView = new CQLQDMAppliedView();
+		qdmView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();

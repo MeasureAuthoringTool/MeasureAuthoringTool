@@ -2,7 +2,7 @@ package mat.client.shared;
 
 import mat.model.CQLValueSetTransferObject;
 
-public class QDMInputValidator {
+public class ValueSetNameInputValidator {
 	public String validate(CQLValueSetTransferObject matValueSetTransferObject){
 		String message = "";
 		if(matValueSetTransferObject.getUserDefinedText() != null) {

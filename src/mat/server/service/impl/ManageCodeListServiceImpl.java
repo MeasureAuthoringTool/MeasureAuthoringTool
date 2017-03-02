@@ -22,7 +22,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.shared.QDMInputValidator;
+import mat.client.shared.ValueSetNameInputValidator;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeDAO;
@@ -1733,7 +1733,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
-		QDMInputValidator validator = new QDMInputValidator();
+		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> errorMessages = new ArrayList<String>();
 		//errorMessages = validator.validate(matValueSetTransferObject);
 		if (errorMessages.size() == 0) {
@@ -2126,7 +2126,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			MatValueSetTransferObject matValueSetTransferObject) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		QDMInputValidator validator = new QDMInputValidator();
+		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> messageList = new ArrayList<String>();
 		//validator.validate(matValueSetTransferObject);
 		if (messageList.size() == 0) {

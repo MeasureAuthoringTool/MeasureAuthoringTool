@@ -77,7 +77,7 @@ import mat.shared.ConstantMessages;
 /**
  * The Class QDMAppliedSelectionView.
  */
-public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
+public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	/** The Constant GROUPING_QDM. */
 	static final String GROUPING_QDM = " (G)";
@@ -202,7 +202,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	/**
 	 * Instantiates a new VSAC profile selection view.
 	 */
-	public CQLQDMAppliedView() {
+	public CQLAppliedValueSetView() {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		HorizontalPanel mainPanel = new HorizontalPanel();
@@ -469,7 +469,7 @@ public class CQLQDMAppliedView implements HasSelectionHandlers<Boolean>{
 	 * @param appliedValueSetList the applied value set list
 	 * @param isEditable the is editable
 	 */
-	public void buildAppliedQDMCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
+	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");

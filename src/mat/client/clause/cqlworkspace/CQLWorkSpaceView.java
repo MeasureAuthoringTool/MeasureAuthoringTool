@@ -54,7 +54,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	VerticalPanel vp = new VerticalPanel();
 
 	/** The qdm view. */
-	private CQLQDMAppliedView qdmView;
+	private CQLAppliedValueSetView qdmView;
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
@@ -85,7 +85,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
-		qdmView = new CQLQDMAppliedView();
+		qdmView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
@@ -959,7 +959,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getQdmView()
 	 */
 	@Override
-	public CQLQDMAppliedView getQdmView() {
+	public CQLAppliedValueSetView getQdmView() {
 		return qdmView;
 	}
 	

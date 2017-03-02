@@ -24,7 +24,7 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
-import mat.client.shared.QDMInputValidator;
+import mat.client.shared.ValueSetNameInputValidator;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -2353,7 +2353,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
-		QDMInputValidator validator = new QDMInputValidator();
+		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		String errorMessage = validator.validate(matValueSetTransferObject);
 		if (errorMessage.isEmpty()) {
 			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
@@ -2535,7 +2535,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		QDMInputValidator validator = new QDMInputValidator();
+		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> messageList = new ArrayList<String>();
 		validator.validate(matValueSetTransferObject);
 		if (messageList.size() == 0) {

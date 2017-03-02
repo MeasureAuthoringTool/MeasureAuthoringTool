@@ -169,7 +169,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			fp.add(cqlComposerTabLayout);
 			cqlComposerContent.setContent(fp);
 		//	MatContext.get().setVisible(buttonBar, true);
-			MatContext.get().getZoomFactorService().resetFactorArr();
+		//	MatContext.get().getZoomFactorService().resetFactorArr();
 			cqlComposerTabLayout.selectTab(cqlStandaloneWorkSpacePresenter);
 			cqlStandaloneWorkSpacePresenter.beforeDisplay();
 		} else {

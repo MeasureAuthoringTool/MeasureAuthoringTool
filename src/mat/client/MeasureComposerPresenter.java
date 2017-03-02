@@ -301,7 +301,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			fp.add(measureComposerTabLayout);
 			measureComposerContent.setContent(fp);
 			MatContext.get().setVisible(buttonBar, true);
-			MatContext.get().getZoomFactorService().resetFactorArr();
+			//MatContext.get().getZoomFactorService().resetFactorArr();
 			measureComposerTabLayout.selectTab(metaDataPresenter); //This for some reason not calling the metaDataPresenter.beforeDisplay. So explicitly calling that
 			metaDataPresenter.beforeDisplay();
 		} else {

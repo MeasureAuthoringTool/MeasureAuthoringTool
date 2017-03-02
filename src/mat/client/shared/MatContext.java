@@ -167,7 +167,7 @@ public class MatContext implements IsSerializable {
 	
 	
 	/** The zoom factor service. */
-	private ZoomFactorService zoomFactorService = new ZoomFactorService();
+//	private ZoomFactorService zoomFactorService = new ZoomFactorService();
 	
 	
 	/** The qds view. */
@@ -1049,9 +1049,9 @@ public class MatContext implements IsSerializable {
 	 * 
 	 * @return the zoom factor service
 	 */
-	public ZoomFactorService getZoomFactorService(){
+	/*public ZoomFactorService getZoomFactorService(){
 		return zoomFactorService;
-	}
+	}*/
 	
 	/**
 	 * Gets the current measure info.

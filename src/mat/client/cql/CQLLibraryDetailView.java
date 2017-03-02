@@ -18,17 +18,20 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	
-	private Button saveButton = new Button("Save and Continue");
-	private Button cancelButton = new Button("Cancel");
+/*	private Button saveButton = new Button("Save and Continue");
+	private Button cancelButton = new Button("Cancel");*/
 	private TextArea nameField = new TextArea();
 	private ErrorMessageAlert errorMessage = new ErrorMessageAlert();
 	private SuccessMessageAlert successMessage = new SuccessMessageAlert();
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
+	
+	SaveCancelButtonBar buttonToolBar = new SaveCancelButtonBar();
 	
 	public CQLLibraryDetailView(){
 		resetAll();
@@ -53,19 +56,10 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		nameLabel.setShowRequiredIndicator(true);
 		nameLabel.setMarginTop(5);
 		nameLabel.setId("cqlLibraryName_Label");
-		
+		nameField.setId("CQLLibraryName_Input");
 		nameField.setMaxLength(500);
 		nameField.setWidth("400px");
 		nameField.setHeight("50px");
-		
-		
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		saveButton.setType(ButtonType.PRIMARY);
-		saveButton.setTitle("Save and Continue");
-		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle("Cancel");
-		buttonToolBar.add(saveButton);
-		buttonToolBar.add(cancelButton);
 		
 		
 		nameGroup.add(nameLabel);
@@ -105,12 +99,12 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 
 	@Override
 	public HasClickHandlers getSaveButton() {
-		return saveButton;
+		return buttonToolBar.getSaveButton();
 	}
 
 	@Override
 	public HasClickHandlers getCancelButton() {
-		return cancelButton;
+		return buttonToolBar.getCancelButton();
 	}
 
 	@Override
@@ -144,12 +138,6 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		this.successMessage = successMessage;
 	}
 	
-	public void setSaveButton(Button saveButton) {
-		this.saveButton = saveButton;
-	}
-
-	public void setCancelButton(Button cancelButton) {
-		this.cancelButton = cancelButton;
-	}
+	
 
 }

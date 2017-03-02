@@ -255,20 +255,22 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
 		dataSetObject.setVersion(formattedVersion);        
 		
-		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-		
-		boolean isOwner = currentUserId.equals(dataSetObject.getOwnerId());
-		
-		dataSetObject.setEditable(
-				(isOwner || isSuperUser) && dataSetObject.isDraft());
-		
+		dataSetObject.setEditable(isEditable(dataSetObject.getOwnerId(), dataSetObject.isDraft()));
 		
 		return dataSetObject;
 		
 	}
 
+	private boolean isEditable(String ownerId, boolean isDraft){
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		
+		boolean isOwner = currentUserId.equals(ownerId);
+		
+		return ((isOwner || isSuperUser) && isDraft);
+	}
+	
 	private boolean isLocked(Date lockedOutDate) {
 			
 			boolean locked = false;
@@ -316,14 +318,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
 					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
 			result.setVersionStr(formattedVersion);
-			
-			String currentUserId = LoggedInUserUtil.getLoggedInUser();
-			String userRole = LoggedInUserUtil.getLoggedInUserRole();
-			boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-			
-			boolean isOwner = currentUserId.equals(newLibraryObject.getOwnerId());
-			result.setEditable(
-					(isOwner || isSuperUser) && newLibraryObject.isDraft());
+			result.setEditable(isEditable(newLibraryObject.getOwnerId().getId(), newLibraryObject.isDraft()));
 			
 			
 		} else {
@@ -500,7 +495,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				result.setId(library.getId());
 				result.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 				result.setVersionStr(library.getVersion()+"."+library.getRevisionNumber());
-				result.setEditable(cqlLibraryDataSetObject.isEditable());
+				result.setEditable(isEditable(library.getOwnerId().getId(),library.isDraft()));
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(result.INVALID_CQL);

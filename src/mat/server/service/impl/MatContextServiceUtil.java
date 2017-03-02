@@ -1,16 +1,12 @@
 package mat.server.service.impl;
 
-import java.util.List;
-
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
-import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
-import mat.server.service.UserService;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,6 +27,11 @@ public class MatContextServiceUtil {
 	}
 
 	
+	public boolean isCurrentMeasureEditable(MeasureDAO measureDAO,
+			String measureId) {
+		return isCurrentMeasureEditable(measureDAO, measureId, true);
+	}
+	
 	/**
 	 * Checks if is current measure editable.
 	 *
@@ -39,7 +40,7 @@ public class MatContextServiceUtil {
 	 * @return true, if is current measure editable
 	 */
 	public boolean isCurrentMeasureEditable(MeasureDAO measureDAO,
-			String measureId) {
+			String measureId, boolean checkForDraft) {
 
 		Measure measure = measureDAO.find(measureId);
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
@@ -53,36 +54,15 @@ public class MatContextServiceUtil {
 		if (shareLevel != null) {
 			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
 		}
-		boolean isEditable = (isOwner || isSuperUser || isSharedToEdit)
-				&& dto.isDraft();
+		boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+		
+		if(checkForDraft){
+			isEditable = isEditable && dto.isDraft();
+		}
+		
 		return isEditable;
 	}
 	
-	/**
-	 * 
-	 * @param measureDAO
-	 * @param measureId
-	 * @return
-	 */
-	public boolean isCurrentMeasureVersionable(MeasureDAO measureDAO,
-			UserService userService, String measureId) {
-
-		boolean isVersionable = false;
-		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		User user = userService.getById(currentUserId);
-		List<MeasureShareDTO> measureDTO = measureDAO.getMeasuresForVersion("", user);
-		
-		for(MeasureShareDTO measureShareDTO: measureDTO){
-			if(measureShareDTO.getMeasureId().equals(measureId)){
-				isVersionable = true;
-				break;
-			}
-		}
-		
-		return isVersionable;
-	}
-	
-		
 	/**
 	 * Checks if is current measure is draftable.
 	 *
@@ -94,19 +74,7 @@ public class MatContextServiceUtil {
 	public boolean isCurrentMeasureDraftable(MeasureDAO measureDAO,
 			UserDAO userDAO, String measureId) {
 		
-		boolean isClonable = false;
-		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		User user = userDAO.find(currentUserId);
-		List<MeasureShareDTO> measureDTO = measureDAO.getMeasuresForDraft("", user);
-		
-		for(MeasureShareDTO measureShareDTO: measureDTO){
-			if(measureShareDTO.getMeasureId().equals(measureId)){
-				isClonable = true;
-				break;
-			}
-		}
-		
-		return isClonable;
+		return isCurrentMeasureEditable(measureDAO, measureId, false);
 	}
 	
 	/**

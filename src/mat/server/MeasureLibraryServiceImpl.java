@@ -25,32 +25,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -137,6 +111,30 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1299,7 +1297,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - {@link Boolean}
 	 * @param dto
 	 *            - {@link MeasureShareDTO}.
-	 * @return {@link Result}.
+	 * @return {@link ManageMeasureSearchModel.Result}.
 	 */
 	private ManageMeasureSearchModel.Result extractMeasureSearchModelDetail(final String currentUserId,
 			final boolean isSuperUser, final MeasureShareDTO dto) {
@@ -2520,8 +2518,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure m = getService().getById(measureId);
 		logger.info("Measure Loaded for: " + measureId);
 
-		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureVersionable(getMeasureDAO(),
-				getUserService(), measureId);
+		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureId);
 		if (!isMeasureVersionable) {
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
@@ -3229,7 +3226,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Sets the dt oto model.
 	 * 
 	 * @param detailModelList
-	 *            - {@link Result}.
+	 *            - {@link ManageMeasureSearchModel.Result}.
 	 * @param dto
 	 *            - {@link MeasureShareDTO}.
 	 * @param currentUserId
@@ -6267,6 +6264,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (result.isSuccess()) {
 				xmlModel.setXml(result.getXml());
 				getService().saveMeasureXml(xmlModel);
+				
+				//delete cql associations
+				getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
 			}
 		}
 		return result;

@@ -1703,7 +1703,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 															.getSelectedElementToRemove()
 															.getUuid())) {
 												if(!dataSetDTO.isUsed()){
-													deleteAndSaveMeasureXML(dataSetDTO.getId(),appliedValueSetTableList, index);
+													deleteAndSaveMeasureXML(dataSetDTO.getId());
 													iterator.remove();
 												}
 											}
@@ -1730,13 +1730,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Save measure xml.
 	 *
-	 * @param Id the id
-	 * @param list            the list
-	 * @param indexOf            the index of
+	 * @param toBeDeletedValueSetId the to Be Deleted Value Set Id
+	
 	 */
-	private void deleteAndSaveMeasureXML(String Id, final List<CQLQualityDataSetDTO> list , final int indexOf) {
-		MatContext.get().getMeasureService().createAndSaveCQLElementLookUp(Id, list, MatContext.get()
-				.getCurrentMeasureId(), expProfileToAllValueSet, new AsyncCallback<SaveUpdateCQLResult>() {
+	private void deleteAndSaveMeasureXML(String toBeDeletedValueSetId) {
+		MatContext.get().getMeasureService().deleteValueSet(toBeDeletedValueSetId,  MatContext.get()
+				.getCurrentMeasureId(),  new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -1748,7 +1747,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onSuccess(final SaveUpdateCQLResult result) {
 				if(result.getCqlErrors().isEmpty()){
 					modifyValueSetDTO = null;
-					searchDisplay.getQdmView().getCelltable().setVisibleRangeAndClearData(searchDisplay
+					// This code snapet is not required.Commenting it out till it is regressed and fully tested.
+					/*searchDisplay.getQdmView().getCelltable().setVisibleRangeAndClearData(searchDisplay
 							.getQdmView().getCelltable().getVisibleRange(), true);
 					searchDisplay.getQdmView().getListDataProvider().getList().remove(indexOf);
 					if(searchDisplay.getQdmView().getListDataProvider().getList().size()>0){
@@ -1757,8 +1757,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getQdmView().getListDataProvider().getList().size());
 					} else {
 						searchDisplay.getQdmView().buildAppliedValueSetCellTable(list, isModified);
-					}
-					searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(list);
+					}*/
+					//searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(list);
 					//The below call will update the Applied QDM drop down list in insert popup.
 					getAppliedValueSetList();
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(

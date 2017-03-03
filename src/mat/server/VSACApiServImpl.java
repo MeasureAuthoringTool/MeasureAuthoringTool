@@ -259,7 +259,7 @@ public class VSACApiServImpl implements VSACApiService{
 		while (it.hasNext()) {
 			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
 			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
-			getMeasureLibraryService().updateValueSetsInCQLLookUp(entrySet.getKey(),
+			getMeasureLibraryService().updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(),
 					entrySet.getValue(), measureId);
 			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
 		}

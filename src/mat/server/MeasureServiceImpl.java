@@ -654,9 +654,8 @@ MeasureService {
 	}
 	
 	@Override
-	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Uuid, List<CQLQualityDataSetDTO> list, String measureID,
-			String expProfileToAllQDM) {
-		return this.getMeasureLibraryService().createAndSaveCQLElementLookUp(Uuid, list, measureID, expProfileToAllQDM);
+	public SaveUpdateCQLResult deleteValueSet(String toBeDeletedValueSetId, String measureID) {
+		return this.getMeasureLibraryService().deleteValueSet(toBeDeletedValueSetId,  measureID);
 		
 	}
 
@@ -678,7 +677,7 @@ MeasureService {
 	@Override
 	public SaveUpdateCQLResult updateCQLValuesetsToMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		return this.getMeasureLibraryService().updateCQLValueSetstoMeasure(matValueSetTransferObject);
+		return this.getMeasureLibraryService().modifyCQLValueSetstoMeasure(matValueSetTransferObject);
 	}
 	
 	@Override

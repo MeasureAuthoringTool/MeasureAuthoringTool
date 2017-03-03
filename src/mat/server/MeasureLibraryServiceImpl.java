@@ -25,6 +25,30 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -111,30 +135,6 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -2570,10 +2570,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
+	/**
+	 * This method exports cql when measure is versioned. Entry in CQL_Library table is made.
+	 * @param measure
+	 * @param mDetail
+	 * @param xmlModel
+	 */
 	private void exportCQLibraryFromMeasure(Measure measure, ManageMeasureDetailModel mDetail,
 			MeasureXmlModel xmlModel) {
-
-		// get simple xml for cql
+		logger.info("exportCQLibraryFromMeasure method :: Start");
+		
 		String cqlLibraryName = "";
 		String cqlQdmVersion = "";
 		byte[] cqlByteArray = null;
@@ -2589,44 +2595,50 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 			try {
 				cqlLookUpNode = xmlProcessor.findNode(document, xPathForCQLLookup);
-				Node cqlLibraryNode = xmlProcessor.findNode(document, xPathForCQLLibraryName);
-				Node cqlQdmVersionNode = xmlProcessor.findNode(document, xPathForCQLQdmVersion);
-				cqlLibraryName = cqlLibraryNode.getTextContent();
-				cqlQdmVersion = cqlQdmVersionNode.getTextContent();
-				if(cqlLibraryName.length() >200){
-					cqlLibraryName = cqlLibraryName.substring(0, 199);
+				if(cqlLookUpNode != null){
+					Node cqlLibraryNode = xmlProcessor.findNode(document, xPathForCQLLibraryName);
+					Node cqlQdmVersionNode = xmlProcessor.findNode(document, xPathForCQLQdmVersion);
+					cqlLibraryName = cqlLibraryNode.getTextContent();
+					cqlQdmVersion = cqlQdmVersionNode.getTextContent();
+					if(cqlLibraryName.length() >200){
+						cqlLibraryName = cqlLibraryName.substring(0, 199);
+					}
+					cqlLibrary.setName(cqlLibraryName);
+					
+					String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
+					cqlByteArray = cqlXML.getBytes();
+					
+					SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
+					Date date = null;
+					try {
+						date = dateFormat.parse(mDetail.getFinalizedDate());
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					long time = date.getTime();
+					Timestamp timestamp = new Timestamp(time);
+
+					cqlLibrary.setMeasureId(mDetail.getId());
+					cqlLibrary.setOwnerId(measure.getOwner());
+					cqlLibrary.setMeasureSet(measure.getMeasureSet());
+					cqlLibrary.setVersion(mDetail.getVersionNumber());
+					cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
+					cqlLibrary.setQdmVersion(cqlQdmVersion);
+					cqlLibrary.setFinalizedDate(timestamp);
+					cqlLibrary.setDraft(false);
+					cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());
+					cqlLibrary.setCQLByteArray(cqlByteArray);
+					this.cqlLibraryService.save(cqlLibrary);
+					logger.info("Versioned CQL successfull.");
+				} else {
+					logger.info("Versioning of cql failed as no cqlLookUpNode available");
 				}
-				cqlLibrary.setName(cqlLibraryName);
+				
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-
-			if (cqlLookUpNode != null) {
-				String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
-				cqlByteArray = cqlXML.getBytes();
-			}
 		}
-		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:ss");
-		Date date = null;
-		try {
-			date = dateFormat.parse(mDetail.getFinalizedDate());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		long time = date.getTime();
-		Timestamp timestamp = new Timestamp(time);
-
-		cqlLibrary.setMeasureId(mDetail.getId());
-		cqlLibrary.setOwnerId(measure.getOwner());
-		cqlLibrary.setMeasureSet(measure.getMeasureSet());
-		cqlLibrary.setVersion(mDetail.getVersionNumber());
-		cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
-		cqlLibrary.setQdmVersion(cqlQdmVersion);
-		cqlLibrary.setFinalizedDate(timestamp);
-		cqlLibrary.setDraft(false);
-		cqlLibrary.setRevisionNumber(mDetail.getRevisionNumber());
-		cqlLibrary.setCQLByteArray(cqlByteArray);
-		this.cqlLibraryService.save(cqlLibrary);
+		logger.info("exportCQLibraryFromMeasure method :: END");
 	}
 
 	/*
@@ -3495,90 +3507,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public void updateValueSetsInCQLLookUp(final CQLQualityDataSetDTO modifyWithDTO,
+	public void updateCQLLookUpTagWithModifiedValueSet(final CQLQualityDataSetDTO modifyWithDTO,
 			final CQLQualityDataSetDTO modifyDTO, final String measureId) {
-
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-
-		logger.debug(" MeasureLibraryServiceImpl: updateValueSetsInCQLLookUp Start :  ");
+		logger.debug(" MeasureLibraryServiceImpl: updateCQLLookUpTagWithModifiedValueSet Start :  ");
 
 		if (model != null) {
-			XmlProcessor processor = new XmlProcessor(model.getXml());
-
-			// XPath Expression to find all elementRefs in elementLookUp for to
-			// be modified QDM.
-			String XPATH_EXPRESSION_VALUESETS = "/measure/cqlLookUp/valuesets/valueset[@uuid='" + modifyDTO.getUuid()
-					+ "']";
-			try {
-				NodeList nodesValuesets = (NodeList) xPath.evaluate(XPATH_EXPRESSION_VALUESETS,
-						processor.getOriginalDoc(), XPathConstants.NODESET);
-				if (nodesValuesets.getLength() > 1) {
-					Node parentNode = nodesValuesets.item(0).getParentNode();
-					if (parentNode.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
-						if (!StringUtils.isBlank(modifyWithDTO.getVsacExpIdentifier())) {
-							parentNode.getAttributes().getNamedItem("vsacExpIdentifier")
-									.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-						} else {
-							parentNode.getAttributes().removeNamedItem("vsacExpIdentifier");
-						}
-					} else {
-						if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
-							Attr vsacExpIdentifierAttr = processor.getOriginalDoc()
-									.createAttribute("vsacExpIdentifier");
-							vsacExpIdentifierAttr.setNodeValue(modifyWithDTO.getVsacExpIdentifier());
-							parentNode.getAttributes().setNamedItem(vsacExpIdentifierAttr);
-						}
-					}
-				}
-				for (int i = 0; i < nodesValuesets.getLength(); i++) {
-					Node newNode = nodesValuesets.item(i);
-					newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
-					newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
-					if ((newNode.getAttributes().getNamedItem("codeSystemName") == null)
-							&& (modifyWithDTO.getCodeSystemName() != null)) {
-						Attr attrNode = processor.getOriginalDoc().createAttribute("codeSystemName");
-						attrNode.setNodeValue(modifyWithDTO.getCodeSystemName());
-						newNode.getAttributes().setNamedItem(attrNode);
-					} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
-							&& (modifyWithDTO.getCodeSystemName() == null)) {
-						newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(null);
-					} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
-							&& (modifyWithDTO.getCodeSystemName() != null)) {
-						newNode.getAttributes().getNamedItem("codeSystemName")
-								.setNodeValue(modifyWithDTO.getCodeSystemName());
-					}
-					newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
-					newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
-					newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
-					if (modifyWithDTO.isSuppDataElement()) {
-						newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
-					} else {
-						newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
-					}
-
-					if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-						if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
-							newNode.getAttributes().getNamedItem("expansionIdentifier")
-									.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-						} else {
-							newNode.getAttributes().removeNamedItem("expansionIdentifier");
-						}
-					} else {
-						if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
-							Attr expansionIdentifierAttr = processor.getOriginalDoc()
-									.createAttribute("expansionIdentifier");
-							expansionIdentifierAttr.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-							newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
-						}
-					}
-				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
+			SaveUpdateCQLResult result = cqlService.updateCQLLookUpTag(model.getXml(), modifyWithDTO, modifyDTO);
+			if(result != null && result.isSuccess()){
+				model.setXml(result.getXml());
+				getService().saveMeasureXml(model);
 			}
-			model.setXml(processor.transform(processor.getOriginalDoc()));
-			getService().saveMeasureXml(model);
 		}
-		logger.debug(" MeasureLibraryServiceImpl: updateValueSetsInCQLLookUp End :  ");
+		logger.debug(" MeasureLibraryServiceImpl: updateCQLLookUpTagWithModifiedValueSet End :  ");
 	}
 
 	/*
@@ -6077,40 +6018,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult createAndSaveCQLElementLookUp(String toBeDelValueSetId, List<CQLQualityDataSetDTO> list,
-			String measureID, String expProfileToAllQDM) {
+	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String measureID) {
 		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureID);
-		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-
+		
 		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureID);
-
-		SaveUpdateCQLResult CQLFileData = getMeasureCQLFileData(model.getMeasureId());
-		if (CQLFileData.isSuccess()) {
-			if ((CQLFileData.getCqlString() != null) && !CQLFileData.getCqlString().isEmpty()) {
-				SaveUpdateCQLResult ParseCQLFileData = parseCQLStringForError(CQLFileData.getCqlString());
-				if (ParseCQLFileData.getCqlErrors().isEmpty()) {
-					try {
-						String xpathforValueSet = "/measure/cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
-						Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
-						if (valueSetElements != null) {
-							Node parentNode = valueSetElements.getParentNode();
-							parentNode.removeChild(valueSetElements);
-							exportModal.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-							exportModal.setMeasureId(measureID);
-							getService().saveMeasureXml(exportModal);
-						} else {
-							logger.info("Unable to find the selected valueset element wit id : " + toBeDelValueSetId);
-						}
-					} catch (XPathExpressionException e) {
-						logger.info("Error in method createAndSaveCQLElementLookUp: " + e.getMessage());
-					}
-				} else {
-					cqlResult.setCqlErrors(ParseCQLFileData.getCqlErrors());
-				}
+		
+		if(model != null && model.getXml() != null){
+			SaveUpdateCQLResult result = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
+			if(result != null && result.isSuccess()){
+				model.setXml(result.getXml());
+				getService().saveMeasureXml(model);
 			}
 		}
+		
 		return cqlResult;
 	}
 
@@ -6149,7 +6069,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return null;
 		}
 		SaveUpdateCQLResult result = getCqlService().saveCQLValueset(valueSetTransferObject);
-		saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+		if(result != null && result.isSuccess()) {
+			saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+		}
 		return result;
 	}
 
@@ -6168,7 +6090,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return null;
 		}
 		SaveUpdateCQLResult result = getCqlService().saveCQLUserDefinedValueset(matValueSetTransferObject);
-		saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
+		if(result != null && result.isSuccess()) {
+			saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
+		}
+		
 		return result;
 	}
 
@@ -6180,15 +6105,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * CQLValueSetTransferObject)
 	 */
 	@Override
-	public SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
+	public SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, 
 				matValueSetTransferObject.getMeasureId())) {
 			return null;
 		}
-		SaveUpdateCQLResult result = getCqlService().updateCQLValueSets(matValueSetTransferObject);
-		updateValueSetsInCQLLookUp(result.getCqlQualityDataSetDTO(),
-				matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
+		SaveUpdateCQLResult result = getCqlService().modifyCQLValueSets(matValueSetTransferObject);
+		if(result != null && result.isSuccess()){
+			updateCQLLookUpTagWithModifiedValueSet(result.getCqlQualityDataSetDTO(),
+					matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
+		}
+		
 		return result;
 	}
 
@@ -6264,9 +6192,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (result.isSuccess()) {
 				xmlModel.setXml(result.getXml());
 				getService().saveMeasureXml(xmlModel);
-				
-				//delete cql associations
-				getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
 			}
 		}
 		return result;

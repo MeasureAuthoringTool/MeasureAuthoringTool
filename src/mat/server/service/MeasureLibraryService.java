@@ -737,7 +737,7 @@ public interface MeasureLibraryService {
 
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String measureId);
 	
-	SaveUpdateCQLResult createAndSaveCQLElementLookUp(String Uuid, List<CQLQualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
+	SaveUpdateCQLResult deleteValueSet(String toBeDeletedValueSetId, String measureID);
 
 	CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId, boolean checkForSupplementData);
 
@@ -751,9 +751,9 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult updateCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	void updateValueSetsInCQLLookUp(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
+	void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
 			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,

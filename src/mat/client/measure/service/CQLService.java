@@ -11,6 +11,7 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -173,7 +174,7 @@ public interface CQLService {
 
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult updateCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
+	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
@@ -186,6 +187,11 @@ public interface CQLService {
 	void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
 
 	void deleteCQLAssociation(CQLIncludeLibrary currentObj, String measureId);
+
+	SaveUpdateCQLResult updateCQLLookUpTag(String xml, CQLQualityDataSetDTO modifyWithDTO,
+			CQLQualityDataSetDTO modifyDTO);
+
+	SaveUpdateCQLResult deleteValueSet(String xml, String toBeDelValueSetId);
 
 
 

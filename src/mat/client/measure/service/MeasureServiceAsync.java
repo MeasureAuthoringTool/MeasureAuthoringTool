@@ -66,8 +66,8 @@ public interface MeasureServiceAsync {
 	 */
 	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM, AsyncCallback<Void> callback);
-	void createAndSaveCQLElementLookUp(String Id, List<CQLQualityDataSetDTO> list, String measureID,
-			String expProfileToAllQDM, AsyncCallback<SaveUpdateCQLResult> callback);
+	void deleteValueSet(String toBeDeletedValueSetId, String measureID,
+			 AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
 	 * Creates the and save cql look up.

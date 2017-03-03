@@ -21,6 +21,27 @@ import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
@@ -64,26 +85,6 @@ import mat.shared.UUIDUtilClient;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
-
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1011,6 +1012,43 @@ public class CQLServiceImpl implements CQLService {
 		}
 		
 		return result;
+	}
+	@Override
+	public SaveUpdateCQLResult deleteValueSet(String xml,String toBeDelValueSetId){
+		logger.info("Start deleteValueSet : ");
+		SaveUpdateCQLResult CQLFileData = new SaveUpdateCQLResult();
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
+		CQLFileData = getCQLFileData(xml);
+		if (CQLFileData != null && CQLFileData.isSuccess()) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			if (CQLFileData.getCqlErrors().isEmpty()) {
+				try {
+					String xpathforValueSet = "//cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
+					Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
+					if (valueSetElements != null) {
+						Node parentNode = valueSetElements.getParentNode();
+						parentNode.removeChild(valueSetElements);
+						result.setSuccess(true);
+						result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+					} else {
+						logger.info("Unable to find the selected valueset element with id in deleteValueSet : " + toBeDelValueSetId);
+						result.setSuccess(false);
+					}
+				} catch (XPathExpressionException e) {
+					result.setSuccess(false);
+					logger.info("Error in method deleteValueSet: " + e.getMessage());
+				}
+			} else{
+				result.setCqlErrors(CQLFileData.getCqlErrors());
+				result.setSuccess(false);
+			}
+			
+		} else {
+			result.setSuccess(false);
+		}
+		logger.info("END deleteValueSet : ");
+		return result;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -2437,14 +2475,14 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	 * @see mat.client.measure.service.CQLService#updateQDStoMeasure(mat.model.CQLValueSetTransferObject)
 	 */
 	@Override
-	public final SaveUpdateCQLResult updateCQLValueSets(
+	public final SaveUpdateCQLResult modifyCQLValueSets(
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCQLResult result = null;
 		matValueSetTransferObject.scrubForMarkUp();
 		if (matValueSetTransferObject.getMatValueSet() != null) {
-			result = updateVSACValueSetInCQLLookUp(matValueSetTransferObject);
+			result = modifyVSACValueSetInCQLLookUp(matValueSetTransferObject);
 		} else if (matValueSetTransferObject.getCodeListSearchDTO() != null) {
-			result = updateUserDefineValuesetInCQLLookUp(matValueSetTransferObject);
+			result = modifyUserDefineValuesetInCQLLookUp(matValueSetTransferObject);
 		}
 		return result;
 	}
@@ -2455,7 +2493,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	private SaveUpdateCQLResult updateVSACValueSetInCQLLookUp(
+	private SaveUpdateCQLResult modifyVSACValueSetInCQLLookUp(
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataSetDTO oldQdm = new CQLQualityDataSetDTO();
@@ -2524,6 +2562,87 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 			}
 		return result;
 	}
+	@Override
+	public SaveUpdateCQLResult updateCQLLookUpTag(String xml,CQLQualityDataSetDTO modifyWithDTO,
+			final CQLQualityDataSetDTO modifyDTO){
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		XmlProcessor processor = new XmlProcessor(xml);
+
+		// XPath Expression to find all elementRefs in elementLookUp for to
+		// be modified QDM.
+		String XPATH_EXPRESSION_VALUESETS = "//cqlLookUp/valuesets/valueset[@uuid='" + modifyDTO.getUuid()
+				+ "']";
+		try {
+			NodeList nodesValuesets = (NodeList)processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_VALUESETS);
+			if (nodesValuesets.getLength() > 1) {
+				Node parentNode = nodesValuesets.item(0).getParentNode();
+				if (parentNode.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
+					if (!StringUtils.isBlank(modifyWithDTO.getVsacExpIdentifier())) {
+						parentNode.getAttributes().getNamedItem("vsacExpIdentifier")
+								.setNodeValue(modifyWithDTO.getExpansionIdentifier());
+					} else {
+						parentNode.getAttributes().removeNamedItem("vsacExpIdentifier");
+					}
+				} else {
+					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
+						Attr vsacExpIdentifierAttr = processor.getOriginalDoc()
+								.createAttribute("vsacExpIdentifier");
+						vsacExpIdentifierAttr.setNodeValue(modifyWithDTO.getVsacExpIdentifier());
+						parentNode.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+					}
+				}
+			}
+			for (int i = 0; i < nodesValuesets.getLength(); i++) {
+				Node newNode = nodesValuesets.item(i);
+				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
+				newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
+				if ((newNode.getAttributes().getNamedItem("codeSystemName") == null)
+						&& (modifyWithDTO.getCodeSystemName() != null)) {
+					Attr attrNode = processor.getOriginalDoc().createAttribute("codeSystemName");
+					attrNode.setNodeValue(modifyWithDTO.getCodeSystemName());
+					newNode.getAttributes().setNamedItem(attrNode);
+				} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
+						&& (modifyWithDTO.getCodeSystemName() == null)) {
+					newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(null);
+				} else if ((newNode.getAttributes().getNamedItem("codeSystemName") != null)
+						&& (modifyWithDTO.getCodeSystemName() != null)) {
+					newNode.getAttributes().getNamedItem("codeSystemName")
+							.setNodeValue(modifyWithDTO.getCodeSystemName());
+				}
+				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
+				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
+				newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
+				if (modifyWithDTO.isSuppDataElement()) {
+					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+				} else {
+					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
+				}
+
+				if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
+						newNode.getAttributes().getNamedItem("expansionIdentifier")
+								.setNodeValue(modifyWithDTO.getExpansionIdentifier());
+					} else {
+						newNode.getAttributes().removeNamedItem("expansionIdentifier");
+					}
+				} else {
+					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
+						Attr expansionIdentifierAttr = processor.getOriginalDoc()
+								.createAttribute("expansionIdentifier");
+						expansionIdentifierAttr.setNodeValue(modifyWithDTO.getExpansionIdentifier());
+						newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
+					}
+				}
+			}
+			result.setSuccess(true);
+			result.setXml(processor.transform(processor.getOriginalDoc()));
+		} catch (XPathExpressionException e) {
+			result.setSuccess(false);
+			e.printStackTrace();
+		}
+		return result;
+		
+	}
 	
 	/**
 	 * Update user define QDM in element look up.
@@ -2531,7 +2650,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update code list result
 	 */
-	private SaveUpdateCQLResult updateUserDefineValuesetInCQLLookUp(
+	private SaveUpdateCQLResult modifyUserDefineValuesetInCQLLookUp(
 			CQLValueSetTransferObject matValueSetTransferObject) {
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();

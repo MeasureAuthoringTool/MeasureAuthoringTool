@@ -1037,6 +1037,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(!isReadOnly);
+								searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getEraseButton().setEnabled(true);
 							}
 
 							// load most recent used cql artifacts

@@ -1,6 +1,7 @@
 package mat.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -31,6 +33,7 @@ import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.LockedUserInfo;
 import mat.model.RecentCQLActivityLog;
 import mat.model.SecurityRole;
@@ -116,6 +119,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		// To reuse existing search, filter is passed as -1 which otherwise has value 0 or 1
 		List<CQLLibrary> list = cqlLibraryDAO.search(searchText,"StandAlone", Integer.MAX_VALUE,user,-1);
+		
 		for(CQLLibrary library : list){
 			CQLLibraryDataSetObject cqlLibraryDataSetObject = extractCQLLibraryDataObject(library);
 			
@@ -300,6 +304,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	}
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
+		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
 		if(existingLibrary != null){
@@ -822,9 +827,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context) {
 		 
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -842,9 +844,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
+		
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -864,9 +864,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -885,9 +882,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
 		
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -905,9 +899,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
 		
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -925,9 +916,6 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			return null;
-		}
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -937,7 +925,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			if (result != null && result.isSuccess()) {
 				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 				cqlLibraryDAO.save(cqlLibrary);
-				//deleteFromAssociationTable.
+				
+				cqlService.deleteCQLAssociation(toBeModifiedIncludeObj, cqlLibrary.getId());
 			}
 		}
 		return result;
@@ -995,4 +984,96 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		}
 	}
 	
+	public SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
+		
+		SaveUpdateCQLResult result = null;
+		CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
+		if(library != null) {
+			result = cqlService.saveCQLValueset(valueSetTransferObject);
+			if(result != null && result.isSuccess()) {
+				String nodeName = "valueset";
+				String parentNode = "//cqlLookUp/valuesets";
+				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+			}
+		}
+		
+		return result;
+	}
+	
+	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
+		
+		SaveUpdateCQLResult result = null;
+		CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
+		if(library != null) {
+			result = cqlService.saveCQLUserDefinedValueset(matValueSetTransferObject);
+			if(result != null && result.isSuccess()) {
+				String nodeName = "valueset";
+				String parentNode = "//cqlLookUp/valuesets";
+				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+			}
+		}
+		return result;
+	}
+	
+	
+	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
+		
+		SaveUpdateCQLResult result = null;
+		CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
+		if(library != null) {
+			result = cqlService.modifyCQLValueSets(matValueSetTransferObject);
+			if(result != null && result.isSuccess()) {
+				 result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(),
+							matValueSetTransferObject.getCqlQualityDataSetDTO());
+				if(result != null && result.isSuccess()){
+					library.setCQLByteArray(result.getXml().getBytes());
+					save(library);
+				}
+			}
+		}
+		return result;
+	}
+	
+	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId) {
+		
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		
+		CQLLibrary library = cqlLibraryDAO.find(libraryId);
+		if(library != null) {
+			cqlResult = cqlService.deleteValueSet(getCQLLibraryXml(library), toBeDelValueSetId);
+			if(cqlResult != null && cqlResult.isSuccess()){
+				library.setCQLByteArray(cqlResult.getXml().getBytes());
+				save(library);
+			}
+		}
+		return cqlResult;
+	}
+	
+	public final void appendAndSaveNode(CQLLibrary library, final String nodeName, String newXml, String parentNode) {
+		
+		if ((library != null && !StringUtils.isEmpty(getCQLLibraryXml(library)))
+				&& (nodeName != null && StringUtils.isNotBlank(nodeName))) {
+			String result = callAppendNode(getCQLLibraryXml(library), newXml, nodeName,
+					parentNode);
+			library.setCQLByteArray(result.getBytes());
+			save(library);
+		}
+
+	}
+	
+	
+	private String callAppendNode(String xml, String newXml, String nodeName,
+			String parentNodeName) {
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		String result = null;
+		try {
+			result = xmlProcessor.appendNode(newXml, nodeName, parentNodeName);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }

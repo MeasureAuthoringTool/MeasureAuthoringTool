@@ -6133,8 +6133,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		xmlModal.setParentNode("/measure/cqlLookUp/valuesets");
 		xmlModal.setToReplaceNode(nodeName);
 
-		System.out.println("NEW XML " + result.getCqlString());
-		xmlModal.setXml(result.getCqlString());
+		System.out.println("NEW XML " + result.getXml());
+		xmlModal.setXml(result.getXml());
 
 		appendAndSaveNode(xmlModal, nodeName);
 	}
@@ -6192,6 +6192,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (result.isSuccess()) {
 				xmlModel.setXml(result.getXml());
 				getService().saveMeasureXml(xmlModel);
+				getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
 			}
 		}
 		return result;

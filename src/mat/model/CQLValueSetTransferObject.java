@@ -24,6 +24,8 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	/** The measure id. */
 	String measureId;
 	
+	String cqlLibraryId;
+	
 	/** The quality data set dto. */
 	CQLQualityDataSetDTO cqlQualityDataSetDTO;
 	
@@ -212,6 +214,14 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 				this.getCodeListSearchDTO().setName(noMarkupText);
 			}
 		}
+	}
+
+	public String getCqlLibraryId() {
+		return cqlLibraryId;
+	}
+
+	public void setCqlLibraryId(String cqlLibraryId) {
+		this.cqlLibraryId = cqlLibraryId;
 	}
 	
 

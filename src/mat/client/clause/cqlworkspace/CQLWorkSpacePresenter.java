@@ -4022,7 +4022,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								@Override
 								public void onSuccess(final SaveUpdateCQLResult result) {
 									if (result.isSuccess()) {
-										if (result.getCqlString() != null) {
+										if (result.getXml() != null) {
 											
 											String message = MatContext.get().getMessageDelegate()
 													.getValuesetSuccessMessage(userDefinedInput);

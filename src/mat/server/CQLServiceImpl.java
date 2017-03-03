@@ -2350,7 +2350,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 				result.setSuccess(true);
 				qualityDataSetDTOs.add(qds);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
-				result.setCqlString(xmlString);
+				result.setXml(xmlString);
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
@@ -2422,7 +2422,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
-				result.setCqlString(qdmXMLString);
+				result.setXml(qdmXMLString);
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
@@ -2677,7 +2677,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
-				result.setCqlString(qdmXMLString);
+				result.setXml(qdmXMLString);
 				result.setCqlQualityDataSetDTO(qds);
 			} else {
 				result.setSuccess(false);

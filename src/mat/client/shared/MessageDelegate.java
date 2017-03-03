@@ -187,7 +187,7 @@ public class MessageDelegate {
 	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied QDM element to copy.";
 	
 	/** The successful qdm remove msg. */
-	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected QDM element has been removed successfully.";
+	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected value set has been removed successfully.";
 	
 	/** The warning measure package creation generic. */
 	public final String WARNING_MEASURE_PACKAGE_CREATION_GENERIC = "Unable to create measure package. " +

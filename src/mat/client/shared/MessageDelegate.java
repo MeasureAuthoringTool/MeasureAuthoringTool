@@ -163,6 +163,8 @@ public class MessageDelegate {
 	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
 
 	private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
+
+	private static final String CQL_LIBRARY_LIMIT_WARNING = "You have reached the maximum number of selected CQL Libraries (10).";
 	
 	/** The vsac expansion profile selection. */
 	public final String VSAC_EXPANSION_PROFILE_SELECTION = "Please Select VSAC Expansion Profile to Apply to value sets.";
@@ -2733,6 +2735,10 @@ public class MessageDelegate {
 
 	public String getERROR_LIBRARY_DRAFT() {
 		return ERROR_LIBRARY_DRAFT;
+	}
+
+	public String getCqlLimitWarningMessage() {
+		return CQL_LIBRARY_LIMIT_WARNING;
 	}
 	
 }

@@ -1312,6 +1312,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addIncludeLibraryInCQLLookUp() {
 		searchDisplay.resetMessageDisplay();
+		if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= 10){
+			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+		} else{
+			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+		}	
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 		
 		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size()>0) {
@@ -2351,6 +2356,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 				
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= 10){
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+				} else{
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+				}
 			}
 		});
 		
@@ -3522,8 +3532,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getQdmView().getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				updateVSACValueSets();
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					searchDisplay.resetMessageDisplay();
+					updateVSACValueSets();	
+				}
 			}
 		});
 	

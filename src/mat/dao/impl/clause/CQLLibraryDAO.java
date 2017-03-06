@@ -83,6 +83,45 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	/** The lock threshold. */
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
+	@Override
+	public List<CQLLibrary> searchForIncludes(String searchText){
+		
+		String searchString = searchText.toLowerCase().trim();
+		Criteria cCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		cCriteria.add(Restrictions.eq("draft", false));
+		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
+		cCriteria.addOrder(Order.desc("set_id"))
+		.addOrder(Order.desc("version"));
+		cCriteria.setFirstResult(0);
+		
+		List<CQLLibrary> libraryResultList = cCriteria.list();
+		
+		List<CQLLibrary> orderedCQlLibList = null;
+		if(libraryResultList != null){
+			orderedCQlLibList = sortLibraryList(libraryResultList);
+		} else {
+			orderedCQlLibList = new ArrayList<CQLLibrary>();
+		}
+		
+		StringUtility su = new StringUtility();
+		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
+		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
+			
+			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su,
+					cqlLibrary);
+			if (matchesSearch) {
+				orderedList.add(cqlLibrary);
+			}
+		}
+		
+		return orderedList;
+		
+	}
+	
+	
+	
 
 	@Override
 	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
@@ -93,18 +132,17 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		//cCriteria.setFirstResult(startIndex);
 		if(!searchFrom.equalsIgnoreCase("StandAlone")){
-			cCriteria.add(Restrictions.isNotNull("measureSet.id"));
+			cCriteria.add(Restrictions.isNotNull("measureId"));
 			cCriteria.add(Restrictions.eq("draft", false));
 			cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
-			cCriteria.addOrder(Order.desc("measureSet.id"))
+			cCriteria.addOrder(Order.desc("set_id"))
 			.addOrder(Order.desc("version"));
 		} else{
 			if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
 				cCriteria.add(Restrictions.eq("ownerId.id", user.getId()));
 			}
-			cCriteria.add(Restrictions.isNotNull("cqlSet.id"))
-			
-			.addOrder(Order.desc("cqlSet.id"))
+			cCriteria.add(Restrictions.isNull("measureId"))
+			.addOrder(Order.desc("set_id"))
 			.addOrder(Order.desc("draft"))
 			.addOrder(Order.desc("version"));
 		}
@@ -147,12 +185,12 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		if (!libraries.isEmpty()) {
 			Set<String> cqlLibSetIds = new HashSet<String>();
 			for (CQLLibrary m : libraries) {
-				cqlLibSetIds.add(m.getCqlSet().getId());
+				cqlLibSetIds.add(m.getSet_id());
 			}
 			
 			Criteria setCriteria = getSessionFactory().getCurrentSession()
 					.createCriteria(CQLLibrary.class);
-			setCriteria.add(Restrictions.in("cqlSet.id", cqlLibSetIds));
+			setCriteria.add(Restrictions.in("set_id", cqlLibSetIds));
 			libraries = setCriteria.list();
 		}
 		return sortLibraryList(libraries);
@@ -166,8 +204,8 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		for (CQLLibrary cqlLib : libraryResultList) {
 			boolean hasList = false;
 			for (List<CQLLibrary> list : libraryList) {
-				String cqlsetId = list.get(0).getCqlSet().getId();
-				if (cqlLib.getCqlSet().getId().equalsIgnoreCase(cqlsetId)) {
+				String cqlsetId = list.get(0).getSet_id();
+				if (cqlLib.getSet_id().equalsIgnoreCase(cqlsetId)) {
 					list.add(cqlLib);
 					hasList = true;
 					break;
@@ -214,11 +252,11 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 				String setId = "";
 				String listSetId = "";
 				if(searchFrom.equalsIgnoreCase("StandAlone")){
-					setId = cqlSubSetList.get(0).getCqlSet().getId();
-					listSetId = cql.getCqlSet().getId();
+					setId = cqlSubSetList.get(0).getSet_id();
+					listSetId = cql.getSet_id();
 				} else {
-					setId = cqlSubSetList.get(0).getMeasureSet().getId();
-					listSetId = cql.getMeasureSet().getId();
+					setId = cqlSubSetList.get(0).getSet_id();
+					listSetId = cql.getSet_id();
 				}
 				
 				if (listSetId.equalsIgnoreCase(setId)) {
@@ -342,7 +380,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	public String findMaxVersion(String setId) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
-		mCriteria.add(Restrictions.eq("cqlSet.id", setId));
+		mCriteria.add(Restrictions.eq("set_id", setId));
 		// add check to filter Draft's version number when finding max version
 		// number.
 		mCriteria.add(Restrictions.ne("draft", true));
@@ -368,7 +406,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
 		
-		mCriteria.add(Restrictions.eq("cqlSet.id", setId));
+		mCriteria.add(Restrictions.eq("set_id", setId));
 		mCriteria.add(Restrictions.ne("draft", true));
 		mCriteria.addOrder(Order.asc("version"));
 		List<CQLLibrary> cqlList = mCriteria.list();

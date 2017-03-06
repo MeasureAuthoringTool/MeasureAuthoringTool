@@ -44,5 +44,7 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context);
 
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
+
+	SaveCQLLibraryResult searchForIncludes(String searchText);
 	
 }

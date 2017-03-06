@@ -2620,7 +2620,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 					cqlLibrary.setMeasureId(mDetail.getId());
 					cqlLibrary.setOwnerId(measure.getOwner());
-					cqlLibrary.setMeasureSet(measure.getMeasureSet());
+					//cqlLibrary.setMeasureSet(measure.getMeasureSet());
+					cqlLibrary.setSet_id(measure.getMeasureSet().getId());
 					cqlLibrary.setVersion(mDetail.getVersionNumber());
 					cqlLibrary.setReleaseVersion(measure.getReleaseVersion());
 					cqlLibrary.setQdmVersion(cqlQdmVersion);

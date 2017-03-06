@@ -17,4 +17,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 		public String findMaxVersion(String setId);
 
 		public String findMaxOfMinVersion(String setId, String version);
+
+		List<CQLLibrary> searchForIncludes(String searchText);
 }

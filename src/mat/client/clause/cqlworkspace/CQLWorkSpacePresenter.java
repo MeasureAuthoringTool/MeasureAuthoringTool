@@ -2325,10 +2325,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		searchDisplay.getIncludeView().showSearchingBusy(true);
-		int startIndex = 1;
-		int pageSize = Integer.MAX_VALUE;
-		MatContext.get().getCQLLibraryService().search(searchText, "measureLib", 1,
-				startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
+		//int startIndex = 1;
+		//int pageSize = Integer.MAX_VALUE;
+		MatContext.get().getCQLLibraryService().searchForIncludes(searchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

@@ -79,6 +79,26 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
+	
+	
+	@Override
+	public SaveCQLLibraryResult searchForIncludes(String searchText){
+		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
+		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
+		List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
+		
+		saveCQLLibraryResult.setResultsTotal(list.size());
+		
+		for(CQLLibrary cqlLibrary : list){
+			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
+			allLibraries.add(object);
+		}
+		
+		saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
+		return saveCQLLibraryResult;
+	}
+	
+	
 
 	@Override
 	public SaveCQLLibraryResult search(String searchText, String searchFrom, int filter,int startIndex, int pageSize) {
@@ -166,7 +186,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		HashSet<String> hasDraft = new HashSet<String>();
 		for (CQLLibrary library : list) {
 			if (library.isDraft()) {
-				String setId = library.getCqlSet().getId();
+				String setId = library.getSet_id();
 				hasDraft.add(setId);
 			}
 		}
@@ -179,7 +199,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				if (cqlLibraryDataSetObject.isDraft()) {
 					canDraft = false;
 				} else {
-						if(hasDraft.contains(library.getCqlSet().getId())){
+						if(hasDraft.contains(library.getSet_id())){
 							canDraft = false;
 						} else {
 							if (cqlLibraryDataSetObject.isLocked()) {
@@ -253,10 +273,12 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		dataSetObject.setOwnerLastName(user.getLastName());
 		dataSetObject.setOwnerEmailAddress(user.getEmailAddress());
 		dataSetObject.setOwnerId(user.getId());
-		if(cqlLibrary.getCqlSet()!=null){
+		/*if(cqlLibrary.getCqlSet()!=null){
 			dataSetObject.setCqlSetId(cqlLibrary.getCqlSet().getId());	
+		}*/
+		if(cqlLibrary.getMeasureId()==null){
+			dataSetObject.setCqlSetId(cqlLibrary.getSet_id());
 		}
-		
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(cqlLibrary.getVersion(), 
 				cqlLibrary.getRevisionNumber(), cqlLibrary.isDraft());
 		dataSetObject.setVersion(formattedVersion);        
@@ -311,7 +333,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			CQLLibrary newLibraryObject = new CQLLibrary();
 			newLibraryObject.setDraft(true);
 			newLibraryObject.setName(existingLibrary.getName());
-			newLibraryObject.setCqlSet(existingLibrary.getCqlSet());
+			newLibraryObject.setSet_id(existingLibrary.getSet_id());;
 			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
 			newLibraryObject.setReleaseVersion(existingLibrary.getReleaseVersion());
 			newLibraryObject.setQdmVersion(existingLibrary.getQdmVersion());
@@ -346,7 +368,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		if(library != null){
 			String versionNumber = null;
 			if (isMajor) {
-				versionNumber = cqlLibraryDAO.findMaxVersion(library.getCqlSet().getId());
+				versionNumber = cqlLibraryDAO.findMaxVersion(library.getSet_id());
 				if (versionNumber == null) {
 					versionNumber = "0.000";
 				}
@@ -356,7 +378,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				logger.info("Min Version number passed from Page Model: " + versionIndex);
 				String selectedVersion = version.substring(versionIndex + 1);
 				logger.info("Min Version number after trim: " + selectedVersion);
-				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getCqlSet().getId(), selectedVersion);
+				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSet_id(), selectedVersion);
 
 			}
 			
@@ -480,7 +502,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			cqlLibrarySet.setId(UUID.randomUUID().toString());
 			cqlLibrarySetDAO.save(cqlLibrarySet);
 
-			library.setCqlSet(cqlLibrarySet);
+			library.setSet_id(cqlLibrarySet.getId());;
 			library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			library.setRevisionNumber("000");

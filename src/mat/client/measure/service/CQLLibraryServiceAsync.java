@@ -43,4 +43,6 @@ public interface CQLLibraryServiceAsync {
 	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void searchForIncludes(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+
 }

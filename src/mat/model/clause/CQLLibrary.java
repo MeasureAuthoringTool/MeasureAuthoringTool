@@ -44,6 +44,8 @@ public class CQLLibrary {
 	 * The cql set id
 	 */
 	private CQLLibrarySet cqlSet;
+	
+	private String set_id;
 
 	/**
 	 * The version
@@ -282,6 +284,14 @@ public class CQLLibrary {
 			versionNumber = Double.valueOf(version).doubleValue();
 		}
 		return versionNumber;
+	}
+
+	public String getSet_id() {
+		return set_id;
+	}
+
+	public void setSet_id(String set_id) {
+		this.set_id = set_id;
 	}
 	
 }

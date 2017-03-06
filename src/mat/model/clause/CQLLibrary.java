@@ -38,12 +38,11 @@ public class CQLLibrary {
 	/**
 	 * The measure set id
 	 */
-	private MeasureSet measureSet;
+	/*private MeasureSet measureSet;
 
-	/**
 	 * The cql set id
-	 */
-	private CQLLibrarySet cqlSet;
+	 *//*
+	private CQLLibrarySet cqlSet;*/
 	
 	private String set_id;
 
@@ -254,7 +253,7 @@ public class CQLLibrary {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-	public MeasureSet getMeasureSet() {
+	/*public MeasureSet getMeasureSet() {
 		return measureSet;
 	}
 
@@ -268,7 +267,7 @@ public class CQLLibrary {
 
 	public void setCqlSet(CQLLibrarySet cqlSet) {
 		this.cqlSet = cqlSet;
-	}
+	}*/
 
 	public String getRevisionNumber() {
 		return revisionNumber;

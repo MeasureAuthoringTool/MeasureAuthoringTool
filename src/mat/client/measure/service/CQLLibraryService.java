@@ -1,9 +1,13 @@
 package mat.client.measure.service;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 @RemoteServiceRelativePath("cqlLibrary")
@@ -33,4 +37,12 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue);
 
 	SaveCQLLibraryResult searchForIncludes(String searchText);
+
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+
+	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys);
+
+	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 }

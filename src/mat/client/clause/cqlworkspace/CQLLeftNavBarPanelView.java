@@ -9,23 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.DeleteConfirmationMessageAlert;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLLibraryDataSetObject;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.GetUsedCQLArtifactsResult;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
@@ -49,8 +32,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
@@ -58,6 +39,21 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.DeleteConfirmationMessageAlert;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -827,16 +827,16 @@ public class CQLServiceImpl implements CQLService {
 				
 				if (!isDuplicate) {
 					String cqlString = createIncludeLibraryXML(currentObj);
-					String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/includeLibrarys";
+					String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
 					try {
-						Node nodeDefinitions = processor.findNode(
+						Node nodeIncludes = processor.findNode(
 								processor.getOriginalDoc(),
-								XPATH_EXPRESSION_DEFINTIONS);
+								XPATH_EXPRESSION_INCLUDES);
 						
-						if (nodeDefinitions != null) {
+						if (nodeIncludes != null) {
 							
 							processor.appendNode(cqlString, "includeLibrary",
-									XPATH_EXPRESSION_DEFINTIONS);
+									XPATH_EXPRESSION_INCLUDES);
 							processor.setOriginalXml(processor
 									.transform(processor.getOriginalDoc()));
 							
@@ -892,6 +892,10 @@ public class CQLServiceImpl implements CQLService {
 		cqlLibraryAssociation.setCqlLibraryId(currentObj.getCqlLibraryId());
 		cqlLibraryAssociation.setAssociationId(measureId);
 		cqlLibraryAssociationDAO.save(cqlLibraryAssociation);
+	}
+	@Override
+	public int countNumberOfAssociation(String associatedWithId){
+		return cqlLibraryAssociationDAO.findAssociationCount(associatedWithId);
 	}
 
 	/**
@@ -2882,13 +2886,13 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	 * Delete CQL Association.
 	 * 
 	 * @param currentObj the current obj
-	 * @param measureId the measure id
+	 * @param associatedWithId the measure id
 	 */
 	@Override
-	public void deleteCQLAssociation(CQLIncludeLibrary currentObj, String measureId) {
+	public void deleteCQLAssociation(CQLIncludeLibrary currentObj, String associatedWithId) {
 		CQLLibraryAssociation cqlLibraryAssociation = new CQLLibraryAssociation();
 		cqlLibraryAssociation.setCqlLibraryId(currentObj.getCqlLibraryId());
-		cqlLibraryAssociation.setAssociationId(measureId);
+		cqlLibraryAssociation.setAssociationId(associatedWithId);
 		cqlLibraryAssociationDAO.deleteAssociation(cqlLibraryAssociation);
 	}
 }

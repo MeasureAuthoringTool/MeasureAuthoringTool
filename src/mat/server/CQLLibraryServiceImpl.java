@@ -1,10 +1,14 @@
 package mat.server;
 
+import java.util.List;
+
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
@@ -103,6 +107,19 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().saveDraftFromVersion(libraryId);
 	}
-
+	@Override
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+		return this.getCQLLibraryService().saveIncludeLibrayInCQLLookUp(libraryId, toBeModifiedObj, currentObj, incLibraryList);
+	}
+	@Override
+	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
+		return this.getCQLLibraryService().deleteInclude(libraryId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+	}
+	@Override
+	public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId) {
+		return this.getCQLLibraryService().getUsedCqlArtifacts(libraryId);
+	}
 	
 }

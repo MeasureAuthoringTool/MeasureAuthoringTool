@@ -13,6 +13,8 @@ public class CQLWorkSpaceConstants {
 	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";
 	public static String CQL_PRIMARY_TIMING_WITHIN ="within";
 	
+	public static int VALID_INCLUDE_COUNT =10;
+	
 	private static final ArrayList<String> AVAILABLE_ITEM_TO_INSERT = new ArrayList<String>();
 	
 	private static final ArrayList<String> PRIMARY_TIMINGS = new ArrayList<String>();

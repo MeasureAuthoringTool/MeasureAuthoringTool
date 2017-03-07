@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
@@ -862,23 +863,29 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return result;
 	}
 	
-	
+	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
-		
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
-		if (cqlXml != null) {
-			result = cqlService.saveIncludeLibrayInCQLLookUp(cqlXml,
-					toBeModifiedObj, currentObj, incLibraryList);
-			if (result != null && result.isSuccess()) {
-				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-				cqlLibraryDAO.save(cqlLibrary);
-				cqlService.saveCQLAssociation(currentObj, libraryId);
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		if (cqlLibrary != null) {
+			int associationCount = cqlService.countNumberOfAssociation(libraryId);
+			//System.out.println("============== "+associationCount + "=============");
+			if(associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+				String cqlXml = getCQLLibraryXml(cqlLibrary);
+				if (cqlXml != null) {
+					result = cqlService.saveIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj, incLibraryList);
+					if (result != null && result.isSuccess()) {
+						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+						cqlLibraryDAO.save(cqlLibrary);
+						cqlService.saveCQLAssociation(currentObj, libraryId);
+					}
+				}
 			}
+			
 		}
+
 		return result;
 	}
 	
@@ -934,10 +941,10 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return result;
 	}
 	
-	
+	@Override
 	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
-
+		
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
@@ -957,7 +964,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public CQLKeywords getCQLKeywordsLists() {
 		return cqlService.getCQLKeyWords();
 	}
-	
+	@Override
 	public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId) {
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(library);

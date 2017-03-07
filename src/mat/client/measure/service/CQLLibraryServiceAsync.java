@@ -1,9 +1,12 @@
 package mat.client.measure.service;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.model.User;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceAsync {
@@ -44,5 +47,13 @@ public interface CQLLibraryServiceAsync {
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void searchForIncludes(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
+			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj, CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void getUsedCqlArtifacts(String libraryId, AsyncCallback<GetUsedCQLArtifactsResult> callback);
 
 }

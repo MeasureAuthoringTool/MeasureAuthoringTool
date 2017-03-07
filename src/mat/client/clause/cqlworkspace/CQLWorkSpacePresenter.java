@@ -1314,6 +1314,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= 10){
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+			return;
+			
 		} else{
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		}	

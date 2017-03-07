@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -108,6 +109,27 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainFlowPanel.clear();
 		mainFlowPanel.add(generalInformationView.getCQLView());
 
+	}
+	
+	@Override
+	public void buildIncludesView() {
+		unsetEachSectionSelectedObject();
+		mainFlowPanel.clear();
+		resetMessageDisplay();
+		VerticalPanel includesTopPanel = new VerticalPanel();
+		inclView.resetToDefault();
+		// building searchWidget for adding new aliasName
+		inclView.buildAddNewAliasView();
+
+		includesTopPanel.add(inclView.asWidget());
+
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		includesTopPanel.setWidth("700px");
+		includesTopPanel.setStyleName("marginLeft15px");
+		vp.add(includesTopPanel);
+		mainFlowPanel.add(vp);
 	}
 	
 	
@@ -314,5 +336,35 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
     public CQLGeneralInformationView getCqlGeneralInformationView(){
     	return generalInformationView;
     }
+    @Override
+    public CQLIncludeLibraryView getIncludeView() {
+		return inclView;
+	}
+    
+    /**
+	 * Gets the alias name txt area.
+	 *
+	 * @return the alias name txt area
+	 */
+	@Override
+	public TextBox getAliasNameTxtArea() {
+		return getIncludeView().getAliasNameTxtArea();
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getViewCQLEditor()
+	 */
+	@Override
+	public AceEditor getViewCQLEditor() {
+		return getIncludeView().getViewCQLEditor();
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getOwnerNameTextBox()
+	 */
+	@Override
+	public TextBox getOwnerNameTextBox() {
+		return getIncludeView().getOwnerNameTextBox();
+	}
 
 }

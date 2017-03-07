@@ -842,7 +842,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 		HTML html1 = new HTML("Ctrl-Alt-v  : Value Sets");
 		HTML html2 = new HTML("Ctrl-Alt-y  : Datatypes");
-		HTML html3 = new HTML("CTRL-Alt-t  : Timings");
+		HTML html3 = new HTML("Ctrl-Alt-t  : Timings");
 		HTML html4 = new HTML("Ctrl-Alt-f  : Functions");
 		HTML html5 = new HTML("Ctrl-Alt-d  : Definitions");
 		HTML html6 = new HTML("Ctrl-Alt-p  : Parameters");

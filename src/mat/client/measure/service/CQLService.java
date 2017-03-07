@@ -193,6 +193,8 @@ public interface CQLService {
 
 	SaveUpdateCQLResult deleteValueSet(String xml, String toBeDelValueSetId);
 
+	int countNumberOfAssociation(String associatedWithId);
+
 
 
 

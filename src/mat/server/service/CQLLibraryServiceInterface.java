@@ -1,9 +1,13 @@
 package mat.server.service;
 
+import java.util.List;
+
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.server.util.XmlProcessor;
+import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceInterface {
@@ -46,5 +50,13 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
 	SaveCQLLibraryResult searchForIncludes(String searchText);
+
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+
+	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys);
+
+	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 	
 }

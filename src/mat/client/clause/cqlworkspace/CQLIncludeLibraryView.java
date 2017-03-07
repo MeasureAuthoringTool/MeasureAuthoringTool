@@ -592,7 +592,7 @@ public class CQLIncludeLibraryView {
 					SafeHtmlBuilder sb, HasCell<CQLLibraryDataSetObject, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 
-				if(isEditable && includedList.size() < 10){
+				if(isEditable && includedList.size() < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
 					/*if (selectedObject != null && object.getId().equals(selectedObject)){
 						sb.appendHtmlConstant("<td class='emptySpaces'>");
 					}  else if(includedList != null && includedList.contains(object.getId())){

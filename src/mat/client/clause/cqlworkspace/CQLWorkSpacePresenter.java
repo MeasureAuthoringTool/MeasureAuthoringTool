@@ -41,6 +41,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -2318,11 +2319,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
-		getCQLData();
+		
 		//getAllIncludeLibraryList("");
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		searchDisplay.resetMessageDisplay();
+		panel.add(searchDisplay.asWidget());
+		getCQLData();
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		MatContext.get().getAllUnits();
 		// getAppliedQDMList(true);
@@ -2330,7 +2333,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		panel.add(searchDisplay.asWidget());
+		
 	}
 
 	/**
@@ -2387,18 +2390,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @return the CQL data
 	 */
 	private void getCQLData() {
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().getMeasureCQLData(MatContext.get().getCurrentMeasureId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						showSearchingBusy(false);
 
 					}
 
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
-						if (result.getCqlModel() != null) {
+						if (result!= null && result.getCqlModel() != null) {
 							
 							if(result.getCqlModel().getLibrary()!=null){
 								String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
@@ -2482,7 +2487,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
 							}
 
+						} else {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
+						showSearchingBusy(false);
 
 					}
 				});
@@ -4566,81 +4574,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 	
 	
-	/**
-	 * Adds the include library handlers.
-	 *
-	 * @param list the list
-	 * @return the version list
-	 */
-	/*private void addIncludeLibraryHandlers() {
-
-		searchDisplay.getIncludesNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-
-				searchDisplay.setIsDoubleClick(true);
-				searchDisplay.setIsNavBarClick(false);
-				searchDisplay.getIncludeView().getSearchCellTablePanel().clear();
-				searchDisplay.getIncludeView().buildOwnerTextBoxWidget();
-				if (searchDisplay.getIsPageDirty()) {
-					searchDisplay.showUnsavedChangesWarning();
-				} else {
-					int selectedIndex = searchDisplay.getIncludesNameListBox().getSelectedIndex();
-					if (selectedIndex != -1) {
-						final String selectedIncludeLibraryID = searchDisplay.getIncludesNameListBox()
-								.getValue(selectedIndex);
-						searchDisplay.setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
-						if (searchDisplay.getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
-
-							MatContext.get().getCQLLibraryService()
-									.findCQLLibraryByID(searchDisplay.getIncludeLibraryMap()
-											.get(selectedIncludeLibraryID).getCqlLibraryId(),
-											new AsyncCallback<CQLLibraryDataSetObject>() {
-
-												@Override
-												public void onSuccess(CQLLibraryDataSetObject result) {
-													if (result != null) {
-
-														searchDisplay.getAliasNameTxtArea().setText(searchDisplay.getIncludeLibraryMap()
-																.get(selectedIncludeLibraryID).getAliasName());
-														searchDisplay.getViewCQLEditor().setText(result.getCqlText());
-														searchDisplay.getIncludeView().getOwnerNameTextBox()
-																.setText(getOwnerName(result));
-														searchDisplay.getIncludeView().createReadOnlyViewIncludesButtonBar();
-													}
-												}
-
-												@Override
-												public void onFailure(Throwable caught) {
-													Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-												}
-											});
-
-							searchDisplay.getIncludeView().setSelectedObject(
-									searchDisplay.getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId());
-							
-							searchDisplay.getIncludeView().getSelectedObjectList().clear();
-						}
-					}
-					searchDisplay.resetMessageDisplay();
-				}
-
-			}
-		});
+	public void showSearchingBusy(final boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getIncludesLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getDefinitionLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+			searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+		}
+		
+		
 	}
-	
-	*//**
-	 * Gets the owner name.
-	 *
-	 * @param cqlLibrary the cql library
-	 * @return the owner name
-	 *//*
-	private String getOwnerName(CQLLibraryDataSetObject cqlLibrary){
-		StringBuilder owner = new StringBuilder();
-		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
-		return owner.toString();
-	}
-*/
 	/**
 	 * Gets the version list.
 	 *

@@ -574,11 +574,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	private void displayCQLView(){
 		panel.clear();
-		getCQLData();
+		
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
 		searchDisplay.resetMessageDisplay();
+		getCQLData();
 		panel.add(searchDisplay.asWidget());
 	}
 	
@@ -636,7 +637,7 @@ searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
 	}
 	
 	private void getCQLData(){
-		
+		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().getCQLData(MatContext.get().getCurrentCQLLibraryId(),  new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
@@ -727,6 +728,7 @@ searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
 							}
 
 					}
+					showSearchingBusy(false);
 				}
 				
 			}
@@ -734,7 +736,7 @@ searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+				showSearchingBusy(false);
 			}
 		});
 	}
@@ -1241,6 +1243,27 @@ searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
 		});
 		
 	}
+	
+	public void showSearchingBusy(final boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getIncludesLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getDefinitionLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
+		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+		}
+		
+		
+	}
+	
 	
 	/**
 	 * This method Clears alias view on Erase Button click when isPageDirty

@@ -133,7 +133,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
 				String title = "Library Name " + object.getCqlName();
-				return CellTableUtility.getColumnToolTip(object.getCqlName(), title);
+				return CellTableUtility.getNameColumnToolTip(object.getCqlName(), title);
 			}
 		};
 		cellTable.addColumn(libraryNameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Library Name\">"

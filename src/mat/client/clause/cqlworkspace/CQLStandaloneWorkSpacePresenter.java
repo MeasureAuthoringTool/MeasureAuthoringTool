@@ -255,6 +255,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						cqlLibrarySearchModel,MatContext.get().getLibraryLockService().checkForEditPermission());
 				searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+				} else{
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+				}
 			}
 		});
 		
@@ -320,7 +325,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);				
 				clearAlias();	
-			
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+				} else{
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+				}
 			}
 		});
 		
@@ -399,6 +408,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
 											clearAlias();
+											if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+											} else{
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+											}
 										
 											
 										}  else if (result.getFailureReason() == 1) {

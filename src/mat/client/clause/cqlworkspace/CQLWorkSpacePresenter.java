@@ -706,6 +706,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
 						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+				
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+				} else{
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+				}
 			}
 		});
 
@@ -1266,7 +1272,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);				
 				clearAlias();	
-			
+				
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+				} else{
+					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+				}
 			}
 		});
 		
@@ -1312,13 +1323,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addIncludeLibraryInCQLLookUp() {
 		searchDisplay.resetMessageDisplay();
-		if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= 10){
+		if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
 			return;
-			
 		} else{
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
-		}	
+		}
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 		
 		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size()>0) {
@@ -1361,8 +1371,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
 											clearAlias();
-										
-											
+											if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+											} else{
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
+											}
 										}  else if (result.getFailureReason() == 1) {
 											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
@@ -2358,7 +2371,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				searchDisplay.getIncludeView().showSearchingBusy(false);
 				
-				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= 10){
+				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
 					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
 				} else{
 					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();

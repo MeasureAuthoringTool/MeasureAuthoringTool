@@ -88,6 +88,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		horizontalPanel.add(cqLLibnNameLabel);
+		/* Private CQL Library Functionality is not implemented as a part of MAT-8475*/
 		/*InlineLabel privateCheckLabel = new InlineLabel("Private CQL Library");
 		privateCheck.setStyleName("gwt-CheckBox");
 		privateCheckLabel.setStyleName("privateCheckLabel");
@@ -96,8 +97,8 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		//horizontalPanel.add(searchWidget);
 		horizontalPanel.setStyleName("horizontalPanel");
 		mainPanel.add(searchWidget);
-		mainPanel.add(horizontalPanel);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(horizontalPanel);
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");

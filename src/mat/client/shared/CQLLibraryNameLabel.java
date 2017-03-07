@@ -19,8 +19,8 @@ public class CQLLibraryNameLabel extends Composite {
 		cqlLibraryNamePanel.getElement().setId("cqlLibraryNamePanel_FlowPanel");
 		HTML cqlLibraryLabel = new HTML("CQL Library:&nbsp");
 		cqlLibraryLabel.addStyleName("bold");
-		cqlLibraryLabel.addStyleName("cqlLibraryLabel");
-		cqlLibraryName.addStyleName("cqlLibraryName");
+		cqlLibraryLabel.addStyleName("measureLabel");
+		cqlLibraryName.addStyleName("measureName");
 		cqlLibraryNamePanel.add(cqlLibraryLabel);
 		cqlLibraryNamePanel.add(cqlLibraryName);
 		SimplePanel clearBoth = new SimplePanel();
@@ -40,8 +40,8 @@ public class CQLLibraryNameLabel extends Composite {
 	 */
 	public void setCQLLibraryName(String text) {
 		cqlLibraryName.setTitle(text);
-		if(text.length()>100){
-			text = text.substring(0, 100);
+		if(text.length()>45){
+			text = text.substring(0, 45);
 		} 
 		cqlLibraryName.setText(text);
 	}

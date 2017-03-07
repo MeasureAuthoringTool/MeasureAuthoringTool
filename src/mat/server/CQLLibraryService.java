@@ -431,8 +431,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
 					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
 			result.setVersionStr(formattedVersion);
-			result.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId));
-			
+			result.setEditable(isDraftable);
 			
 		} else {
 			result.setSuccess(false);
@@ -1423,7 +1422,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	private CQLLibraryDataSetObject extractCQLLibraryDataObjectFromShareDTO(final User user, final CQLLibraryShareDTO dto) {
 		
 		boolean isOwner = user.getId().equals(dto.getOwnerUserId());
-		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(user.getSecurityRole());
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(user.getSecurityRole().getDescription());
 		
 		CQLLibraryDataSetObject dataObject = new CQLLibraryDataSetObject();
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(dto.getVersion(),

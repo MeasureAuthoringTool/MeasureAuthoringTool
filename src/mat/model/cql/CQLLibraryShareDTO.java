@@ -60,7 +60,7 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	private String cqlLibrarySetId;
 	
 	/** The is private measure. */
-	private boolean isPrivateMeasure;
+	private boolean isPrivateCQLLibrary;
 
 	
 	/**
@@ -317,8 +317,8 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	 * 
 	 * @return the isPrivateMeasure
 	 */
-	public boolean isPrivateMeasure() {
-		return isPrivateMeasure;
+	public boolean isPrivateCQLLibrary() {
+		return isPrivateCQLLibrary;
 	}
 	
 	/**
@@ -327,8 +327,8 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	 * @param isPrivateMeasure
 	 *            the isPrivateMeasure to set
 	 */
-	public void setPrivateMeasure(boolean isPrivateMeasure) {
-		this.isPrivateMeasure = isPrivateMeasure;
+	public void setPrivateCQLLibrary(boolean isPrivateCQLLibrary) {
+		this.isPrivateCQLLibrary = isPrivateCQLLibrary;
 	}
 	
 	/**

@@ -151,11 +151,10 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		cCriteria.setFirstResult(0);
 		
 		List<CQLLibrary> libraryResultList = cCriteria.list();
-		if(searchFrom.equalsIgnoreCase("StandAlone")) {
-			if (!user.getSecurityRole().getId().equals("2")) {
-				libraryResultList = getAllLibrariesInSet(libraryResultList);
-			}
+		if (!user.getSecurityRole().getId().equals("2")) {
+			libraryResultList = getAllLibrariesInSet(libraryResultList);
 		}
+			
 		List<CQLLibrary> orderedCQlLibList = null;
 		if(libraryResultList != null){
 			orderedCQlLibList = sortLibraryList(libraryResultList, searchFrom);
@@ -166,7 +165,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		StringUtility su = new StringUtility();
 		List<CQLLibraryShareDTO> orderedList = new ArrayList<CQLLibraryShareDTO>();
 		Map<String, CQLLibraryShareDTO> cqlLibIdDTOMap = new HashMap<String, CQLLibraryShareDTO>();
-		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
+		boolean isNormalUserAndAllCQLLib = user.getSecurityRole().getId()
 				.equals("3")
 				&& (filter == MeasureSearchFilterPanel.ALL_MEASURES);
 		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
@@ -205,8 +204,8 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 				CQLLibraryShareDTO dto = iterator.next();
 				String msid = dto.getCqlLibrarySetId();
 				String shareLevel = measureSetIdToShareLevel.get(msid);
-				if (isNormalUserAndAllMeasures
-						&& dto.isPrivateMeasure()
+				if (isNormalUserAndAllCQLLib
+						&& dto.isPrivateCQLLibrary()
 						&& !dto.getOwnerUserId().equals(user.getId())
 						&& ((shareLevel == null) || !shareLevel
 								.equals(ShareLevel.MODIFY_ID))) {
@@ -625,8 +624,8 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 			user.getFirstName().toLowerCase().contains(searchTextLC) ? true : 
 				// User Last Name
 						user.getLastName().toLowerCase().contains(searchTextLC) ? true :
-							// Owner email address
-								user.getEmailAddress().toLowerCase().contains(searchTextLC) ? true:
+							/*// Owner email address
+								user.getEmailAddress().toLowerCase().contains(searchTextLC) ? true:*/
 									false;
 		return matchesSearch;
 	}

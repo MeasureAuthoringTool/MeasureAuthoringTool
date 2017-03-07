@@ -211,5 +211,5 @@
         <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8267_8279_02022017_CQL_Add_All_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-112_MAT-8463_ALTER_TABLE_CQL_LIBRARY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-113_MAT-8468_ALTER_TABLE_CQL_LIBRARY.xml"/>
-       
+        <include file="classpath:/liquibase/deploy_Sprint-113_MAT-8468_ALTER_TABLE_CQL_LIBRARY_ASSOCIATION.xml"/>
    	</databaseChangeLog>

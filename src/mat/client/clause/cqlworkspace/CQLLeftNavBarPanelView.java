@@ -220,7 +220,7 @@ public class CQLLeftNavBarPanelView {
 	private ListBox parameterNameListBox = new ListBox();
 	
 	/** The message panel. */
-	private HorizontalPanel messagePanel = new HorizontalPanel();
+	private VerticalPanel messagePanel = new VerticalPanel();
 	
 	/** The CQL success message. */
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
@@ -1829,7 +1829,7 @@ public class CQLLeftNavBarPanelView {
 	 *
 	 * @return the message panel
 	 */
-	public HorizontalPanel getMessagePanel() {
+	public VerticalPanel getMessagePanel() {
 		return messagePanel;
 	}
 
@@ -1839,7 +1839,7 @@ public class CQLLeftNavBarPanelView {
 	 *
 	 * @param messagePanel the new message panel
 	 */
-	public void setMessagePanel(HorizontalPanel messagePanel) {
+	public void setMessagePanel(VerticalPanel messagePanel) {
 		this.messagePanel = messagePanel;
 	}
 

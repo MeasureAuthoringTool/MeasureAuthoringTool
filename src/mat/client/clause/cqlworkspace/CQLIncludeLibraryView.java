@@ -94,9 +94,9 @@ public class CQLIncludeLibraryView {
 	/** The s widget. */
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	
-	private MessageAlert warningMessageAlert = new WarningMessageAlert();
+	//private MessageAlert warningMessageAlert = new WarningMessageAlert();
 	
-	private MessageAlert successMessageAlert = new SuccessMessageAlert();
+	//private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	/**
 	 * Textbox aliasNameTxtArea.
 	 */
@@ -202,10 +202,10 @@ public class CQLIncludeLibraryView {
 		VerticalPanel viewCQLVP = new VerticalPanel();
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(new SpacerWidget());
-		viewCQLVP.add(warningMessageAlert);
-		viewCQLVP.add(successMessageAlert);
-		viewCQLVP.add(new SpacerWidget());
-		viewCQLVP.add(new SpacerWidget());
+		//viewCQLVP.add(warningMessageAlert);
+		//viewCQLVP.add(successMessageAlert);
+		//viewCQLVP.add(new SpacerWidget());
+		//viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(viewCQlFileLabel);
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(cqlAceEditor);
@@ -234,10 +234,10 @@ public class CQLIncludeLibraryView {
 		
 	}
 	
-	public MessageAlert getWarningMessageAlert() {
+	/*public MessageAlert getWarningMessageAlert() {
 		warningMessageAlert.getElement().setAttribute("bg-color", "#ff3232");
 		return warningMessageAlert; 
-	}
+	}*/
 	
 	/**
 	 * Builds the owner text box widget.
@@ -675,8 +675,8 @@ public class CQLIncludeLibraryView {
 					@Override
 					public void update(int index, CQLLibraryDataSetObject object,
 							Boolean isCBChecked) {
-						getWarningMessageAlert().clearAlert();
-						successMessageAlert.clearAlert();
+						//getWarningMessageAlert().clearAlert();
+						//successMessageAlert.clearAlert();
 						if(isCBChecked) {
 							for (int i = 0; i < selectedList.size(); i++) {
 								selectionModel.setSelected(selectedList.get(i), false);
@@ -739,8 +739,8 @@ public class CQLIncludeLibraryView {
 		cellTablePanel.clear();
 		aliasNameTxtBox.setText("");
 		resetAceEditor();
-		successMessageAlert.clearAlert();
-		warningMessageAlert.clearAlert();
+	//	successMessageAlert.clearAlert();
+		//warningMessageAlert.clearAlert();
 	}
 
 	private void resetAceEditor() {

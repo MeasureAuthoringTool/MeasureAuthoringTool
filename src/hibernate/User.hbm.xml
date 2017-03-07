@@ -56,5 +56,14 @@
         <key column="MEASURE_OWNER_USER_ID" not-null="true" update="false"/>
         <one-to-many class="mat.model.clause.MeasureShare" />
     </set>
+    
+    <set name="cqlLibraryShares" table="CQL_LIBRARY_SHARE" cascade="all-delete-orphan" inverse="true" >
+        <key column="SHARE_USER_ID" not-null="true" update="false"/>
+        <one-to-many class="mat.model.cql.CQLLibraryShare" />
+    </set>
+    <set name="ownedCQLLibraryShares" table="CQL_LIBRARY_SHARE" cascade="all-delete-orphan" inverse="true">
+        <key column="CQL_LIBRARY_OWNER_USER_ID" not-null="true" update="false"/>
+        <one-to-many class="mat.model.cql.CQLLibraryShare" />
+    </set>
   </class>
 </hibernate-mapping>

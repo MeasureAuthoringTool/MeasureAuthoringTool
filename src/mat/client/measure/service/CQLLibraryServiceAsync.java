@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -46,7 +47,12 @@ public interface CQLLibraryServiceAsync {
 	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void getUserShareInfo(String cqlId, String searchText,
+			AsyncCallback<SaveCQLLibraryResult> callback);
+
 	void searchForIncludes(String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+
+	void updateUsersShare(SaveCQLLibraryResult result, AsyncCallback<Void> callback);
 
 	void saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);

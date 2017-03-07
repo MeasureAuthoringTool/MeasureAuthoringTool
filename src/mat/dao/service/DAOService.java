@@ -38,6 +38,7 @@ import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
+import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
@@ -187,6 +188,8 @@ public class DAOService {
 	private CQLLibraryDAO cqlLibraryDAO;
 	
 	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
+	
+	private CQLLibraryShareDAO cqlLibraryShareDAO;
 	
 	/**
 	 * Gets the attribute details dao.
@@ -1001,6 +1004,14 @@ public class DAOService {
 
 	public void setCqlLibraryAuditLogDAO(CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO) {
 		this.cqlLibraryAuditLogDAO = cqlLibraryAuditLogDAO;
+	}
+
+	public CQLLibraryShareDAO getCqlLibraryShareDAO() {
+		return cqlLibraryShareDAO;
+	}
+
+	public void setCqlLibraryShareDAO(CQLLibraryShareDAO cqlLibraryShareDAO) {
+		this.cqlLibraryShareDAO = cqlLibraryShareDAO;
 	}
 	
 }

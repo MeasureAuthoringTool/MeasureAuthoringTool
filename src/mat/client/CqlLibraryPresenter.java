@@ -1,5 +1,7 @@
 package mat.client;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextArea;
 
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryDraftView;
 import mat.client.cql.CQLLibrarySearchView;
+import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
@@ -39,6 +42,7 @@ import mat.client.shared.SearchWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
@@ -61,6 +65,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	DetailDisplay detailDisplay;
 	VersionDisplay versionDisplay;
 	DraftDisplay draftDisplay;
+	ShareDisplay shareDisplay;
 
 	/** The is create new Item widget visible. */
 	boolean isCreateNewItemWidgetVisible = false;
@@ -76,7 +81,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private CQLModel cqlModel;
 
 	CQLModelValidator validator = new CQLModelValidator();
-
+	
+	CQLLibraryDataSetObject cqlSharedDataSetObject;
+	
+	SaveCQLLibraryResult saveCQLLibraryResult;
+	
 	public static interface DraftDisplay {
 
 		void buildDataTable(SaveCQLLibraryResult result);
@@ -208,18 +217,145 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		ErrorMessageAlert getErrorMessage();
 	}
+	
+	
+	public static interface ShareDisplay {
 
-	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay) {
+		Widget asWidget();
+
+		void buildCQLLibraryShareTable(List<CQLLibraryShareDTO> data);
+
+		HasClickHandlers getCancelButton();
+
+		ErrorMessageAlert getErrorMessageDisplay();
+
+		HasClickHandlers getSaveButton();
+
+		//HasValueChangeHandlers<Boolean> privateCheckbox();
+
+		void setCQLibraryName(String name);
+
+		CustomButton getZoomButton();
+
+		SearchWidget getSearchWidget();
+
+		//void setPrivate(boolean isPrivate);
+		
+	}
+
+	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay, CQLLibraryShareView shareDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
 		this.detailDisplay = detailDisplay;
 		this.versionDisplay = versionDisplay;
 		this.draftDisplay = draftDisplay;
+		this.shareDisplay = shareDisplay;
 		addCQLLibraryViewHandlers();
 		addDetailDisplayViewHandlers();
 		addCQLLibrarySelectionHandlers();
 		addMostRecentWidgetSelectionHandler();
 		addVersionDisplayViewHandlers();
 		addDraftDisplayViewHandlers();
+		addShareDisplayViewHandlers();
+		addObserverHandlers();
+	}
+
+	private void addObserverHandlers() {
+		cqlLibraryView.getCQLLibrarySearchView().setObserver(new CQLLibrarySearchView.Observer() {
+			
+			@Override
+			public void onShareClicked(CQLLibraryDataSetObject result) {
+				cqlSharedDataSetObject = result;
+				displayShare();
+			}
+			
+			@Override
+			public void onHistoryClicked(CQLLibraryDataSetObject result) {
+				//TODO 
+			}
+			
+		});
+		
+	}
+
+	private void addShareDisplayViewHandlers() {
+		shareDisplay.getZoomButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				shareDisplay.getErrorMessageDisplay().clearAlert();
+				isSearchVisibleOnVersion = !isSearchVisibleOnVersion;
+				shareDisplay.getSearchWidget().setVisible(isSearchVisibleOnVersion);
+			}
+		});
+		
+		
+		shareDisplay.getSearchWidget().getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchUsersForSharing();
+			}
+		});
+		
+		
+		shareDisplay.getSearchWidget().getSearchInputFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					shareDisplay.getSearchWidget().getSearchButton().click();
+				}
+			}
+		});
+		
+		shareDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				/*cqlSharedDataSetObject = null;*/
+				MatContext.get().getCQLLibraryService().updateUsersShare(saveCQLLibraryResult, new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						shareDisplay
+						.getErrorMessageDisplay()
+						.createAlert(
+								MatContext
+								.get()
+								.getMessageDelegate()
+								.getGenericErrorMessage());
+						MatContext
+						.get()
+						.recordTransactionEvent(
+								null,
+								null,
+								null,
+								"Unhandled Exception: "
+										+ caught.getLocalizedMessage(),
+										0);
+					
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						displaySearch();
+					}
+				});
+				
+			}
+		});
+		
+		
+		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				cqlLibraryView.clearSelections();
+				/*cqlSharedDataSetObject = null;*/
+				displaySearch();
+			}
+		});
+		
 	}
 
 	/**
@@ -282,6 +418,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 		
 	}
+
 
 	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
 		draftDisplay.getErrorMessages().clearAlert();
@@ -732,6 +869,19 @@ public class CqlLibraryPresenter implements MatPresenter {
 		Mat.focusSkipLists("CQLLibrary");
 	}
 	
+	private void displayShare() {
+		searchUsersForSharing();
+		shareDisplay.setCQLibraryName(cqlSharedDataSetObject.getCqlName());
+		panel.getButtonPanel().clear();
+		panel.setButtonPanel(null, shareDisplay.getZoomButton());
+		shareDisplay.getSearchWidget().setVisible(false);
+		isSearchVisibleOnVersion = false;
+		panel.setHeading("My CQL Libraries > CQL Library Sharing", "CQLLibrary");
+		panel.setContent(shareDisplay.asWidget());
+		Mat.focusSkipLists("CQLLibrary");
+	}
+
+	
 	/**
 	 * This method returns all libraries available for versioning.
 	 * @param searchText
@@ -785,6 +935,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
 				showSearchingBusy(false);
 				draftDisplay.getZoomButton().setEnabled(true);
 				((Button)draftDisplay.getSaveButton()).setEnabled(true);
@@ -805,6 +956,48 @@ public class CqlLibraryPresenter implements MatPresenter {
 				showSearchingBusy(false);
 			}
 		});
+		
+	}
+	
+	
+	private void searchUsersForSharing(){
+		String searchText = shareDisplay.getSearchWidget().getSearchInput().getText();
+	    final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+		shareDisplay.getErrorMessageDisplay().clearAlert();
+		showSearchingBusy(true);
+		shareDisplay.getZoomButton().setEnabled(false);
+		((Button)shareDisplay.getSaveButton()).setEnabled(false);
+		((Button)shareDisplay.getCancelButton()).setEnabled(false);
+		
+		MatContext.get().getCQLLibraryService().getUserShareInfo(cqlSharedDataSetObject.getId(),
+				lastSearchText, new AsyncCallback<SaveCQLLibraryResult>() {
+			
+			@Override
+			public void onSuccess(SaveCQLLibraryResult result) {
+				
+				if ((result.getResultsTotal() == 0)
+						&& !lastSearchText.isEmpty()) {
+					shareDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoUsersReturned());
+				} 
+				saveCQLLibraryResult = result;
+				shareDisplay.buildCQLLibraryShareTable(result.getCqlLibraryShareDTOs());
+				shareDisplay.getZoomButton().setEnabled(true);
+				((Button)shareDisplay.getSaveButton()).setEnabled(true);
+				((Button)shareDisplay.getCancelButton()).setEnabled(true);
+				showSearchingBusy(false);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				showSearchingBusy(false);
+				shareDisplay.getZoomButton().setEnabled(true);
+				((Button)shareDisplay.getSaveButton()).setEnabled(true);
+				((Button)shareDisplay.getCancelButton()).setEnabled(true);
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				
+			}
+		});
+		
 		
 	}
 	

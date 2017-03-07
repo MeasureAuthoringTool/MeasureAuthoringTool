@@ -245,6 +245,9 @@ public class MessageDelegate {
 	
 	public final String MODIFY_CQL_LIBRARY_NAME = "Successfully modified CQL Library Name.";
 	
+	
+	public static final String NO_USERS_RETURNED = "No Users returned. Please search again.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2739,6 +2742,10 @@ public class MessageDelegate {
 
 	public String getCqlLimitWarningMessage() {
 		return CQL_LIBRARY_LIMIT_WARNING;
+	}
+
+	public static String getNoUsersReturned() {
+		return NO_USERS_RETURNED;
 	}
 	
 }

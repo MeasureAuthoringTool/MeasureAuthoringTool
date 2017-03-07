@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import mat.model.clause.MeasureShare;
+import mat.model.cql.CQLLibraryShare;
 
 
 /**
@@ -80,6 +81,12 @@ public class User  {
 	
 	/** The owned measure shares. */
 	private Set<MeasureShare> ownedMeasureShares = new HashSet<MeasureShare>();
+	
+	/** The cqlLibrary shares. */
+	private Set<CQLLibraryShare> cqlLibraryShares = new HashSet<CQLLibraryShare>();
+	
+	/** The owned cqlLibrary shares. */
+	private Set<CQLLibraryShare> ownedCQLLibraryShares = new HashSet<CQLLibraryShare>();
 	
 	/** The login id. */
 	private String loginId;
@@ -574,6 +581,22 @@ public class User  {
 	 */
 	public void setPasswordHistory(Set<UserPasswordHistory> passwordHistory) {
 		this.passwordHistory = passwordHistory;
+	}
+
+	public Set<CQLLibraryShare> getCqlLibraryShares() {
+		return cqlLibraryShares;
+	}
+
+	public void setCqlLibraryShares(Set<CQLLibraryShare> cqlLibraryShares) {
+		this.cqlLibraryShares = cqlLibraryShares;
+	}
+
+	public Set<CQLLibraryShare> getOwnedCQLLibraryShares() {
+		return ownedCQLLibraryShares;
+	}
+
+	public void setOwnedCQLLibraryShares(Set<CQLLibraryShare> ownedCQLLibraryShares) {
+		this.ownedCQLLibraryShares = ownedCQLLibraryShares;
 	}
 
 }

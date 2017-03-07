@@ -1,11 +1,14 @@
 package mat.server.service.impl;
 
 import mat.dao.UserDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.SecurityRole;
+import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 
 // TODO: Auto-generated Javadoc
@@ -27,6 +30,13 @@ public class MatContextServiceUtil {
 	}
 
 	
+	/**
+	 * Checks if is current measure editable.
+	 *
+	 * @param measureDAO the measure DAO
+	 * @param measureId the measure id
+	 * @return true, if is current measure editable
+	 */
 	public boolean isCurrentMeasureEditable(MeasureDAO measureDAO,
 			String measureId) {
 		return isCurrentMeasureEditable(measureDAO, measureId, true);
@@ -37,6 +47,7 @@ public class MatContextServiceUtil {
 	 *
 	 * @param measureDAO the measure dao
 	 * @param measureId the measure id
+	 * @param checkForDraft the check for draft
 	 * @return true, if is current measure editable
 	 */
 	public boolean isCurrentMeasureEditable(MeasureDAO measureDAO,
@@ -67,7 +78,7 @@ public class MatContextServiceUtil {
 	 * Checks if is current measure is draftable.
 	 *
 	 * @param measureDAO the measure dao
-	 * @param userDAO 
+	 * @param userDAO the user DAO
 	 * @param measureId the measure id
 	 * @return true, if is current measure editable
 	 */
@@ -96,6 +107,62 @@ public class MatContextServiceUtil {
 		
 		boolean isClonable = (isOwner || isSuperUser);
 		return isClonable;
+	}
+	
+	/**
+	 * Checks if is current measure editable.
+	 *
+	 * @param cqlLibraryDAO the cql library DAO
+	 * @param measureId the measure id
+	 * @param checkForDraft the check for draft
+	 * @return true, if is current measure editable
+	 */
+	public boolean isCurrentCQLLibraryEditable(CQLLibraryDAO cqlLibraryDAO,
+			String measureId, boolean checkForDraft) {
+
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(measureId);
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		CQLLibraryShareDTO dto = cqlLibraryDAO.extractDTOFromCQLLibrary(cqlLibrary);
+		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
+		ShareLevel shareLevel = cqlLibraryDAO.findShareLevelForUser(measureId,
+				currentUserId, dto.getCqlLibrarySetId());
+		boolean isSharedToEdit = false;
+		if (shareLevel != null) {
+			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
+		}
+		boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+		
+		if(checkForDraft){
+			isEditable = isEditable && dto.isDraft();
+		}
+		
+		return isEditable;
+	}
+	
+	/**
+	 * Checks if is current CQL library editable.
+	 *
+	 * @param cqlLibraryDAO the cql library DAO
+	 * @param measureId the measure id
+	 * @return true, if is current CQL library editable
+	 */
+	public boolean isCurrentCQLLibraryEditable(CQLLibraryDAO cqlLibraryDAO,
+			String measureId){
+		return isCurrentCQLLibraryEditable(cqlLibraryDAO, measureId, true);
+	}
+	
+	/**
+	 * Checks if is current CQL library draftable.
+	 *
+	 * @param cqlLibraryDAO the cql library DAO
+	 * @param measureId the measure id
+	 * @return true, if is current CQL library draftable
+	 */
+	public boolean isCurrentCQLLibraryDraftable(CQLLibraryDAO cqlLibraryDAO,
+			String measureId){
+		return isCurrentCQLLibraryEditable(cqlLibraryDAO, measureId, false);
 	}
 
 }

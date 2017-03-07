@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,8 +23,13 @@ import org.hibernate.criterion.Restrictions;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
+import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryShare;
+import mat.model.cql.CQLLibraryShareDTO;
+import mat.server.LoggedInUserUtil;
 import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
@@ -124,28 +132,22 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	
 
 	@Override
-	public List<CQLLibrary> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
+	public List<CQLLibraryShareDTO> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
 		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		//cCriteria.setFirstResult(startIndex);
-		if(!searchFrom.equalsIgnoreCase("StandAlone")){
-			cCriteria.add(Restrictions.isNotNull("measureId"));
-			cCriteria.add(Restrictions.eq("draft", false));
-			cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
-			cCriteria.addOrder(Order.desc("set_id"))
-			.addOrder(Order.desc("version"));
-		} else{
 			if (filter == MeasureSearchFilterPanel.MY_MEASURES) {
-				cCriteria.add(Restrictions.eq("ownerId.id", user.getId()));
+				cCriteria.add(Restrictions.or(
+						Restrictions.eq("ownerId.id", user.getId()),
+						Restrictions.eq("share.shareUser.id", user.getId())));
+				cCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
 			}
 			cCriteria.add(Restrictions.isNull("measureId"))
 			.addOrder(Order.desc("set_id"))
 			.addOrder(Order.desc("draft"))
 			.addOrder(Order.desc("version"));
-		}
 		cCriteria.setFirstResult(0);
 		
 		List<CQLLibrary> libraryResultList = cCriteria.list();
@@ -162,13 +164,58 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		}
 		
 		StringUtility su = new StringUtility();
-		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
+		List<CQLLibraryShareDTO> orderedList = new ArrayList<CQLLibraryShareDTO>();
+		Map<String, CQLLibraryShareDTO> cqlLibIdDTOMap = new HashMap<String, CQLLibraryShareDTO>();
+		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
+				.equals("3")
+				&& (filter == MeasureSearchFilterPanel.ALL_MEASURES);
 		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
 			
 			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su,
 					cqlLibrary);
 			if (matchesSearch) {
-				orderedList.add(cqlLibrary);
+				CQLLibraryShareDTO dto = extractDTOFromCQLLibrary(cqlLibrary);
+				cqlLibIdDTOMap.put(cqlLibrary.getId(), dto);
+				orderedList.add(dto);
+			}
+		}
+		
+		if (orderedList.size() > 0) {
+			Criteria shareCriteria = getSessionFactory().getCurrentSession()
+					.createCriteria(CQLLibraryShare.class);
+			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
+			shareCriteria.add(Restrictions.in("cqlLibrary.id",
+					cqlLibIdDTOMap.keySet()));
+			List<CQLLibraryShare> shareList = shareCriteria.list();
+			// get share level for each measure set and set it on each dto
+			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
+			for (CQLLibraryShare share : shareList) {
+				String msid = share.getCqlLibrary().getSet_id();
+				String shareLevel = share.getShareLevel().getId();
+				
+				String existingShareLevel = measureSetIdToShareLevel.get(msid);
+				if ((existingShareLevel == null)
+						|| ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)) {
+					measureSetIdToShareLevel.put(msid, shareLevel);
+				}
+			}
+			
+			for (Iterator<CQLLibraryShareDTO> iterator = orderedList.iterator(); iterator
+					.hasNext();) {
+				CQLLibraryShareDTO dto = iterator.next();
+				String msid = dto.getCqlLibrarySetId();
+				String shareLevel = measureSetIdToShareLevel.get(msid);
+				if (isNormalUserAndAllMeasures
+						&& dto.isPrivateMeasure()
+						&& !dto.getOwnerUserId().equals(user.getId())
+						&& ((shareLevel == null) || !shareLevel
+								.equals(ShareLevel.MODIFY_ID))) {
+					iterator.remove();
+					continue;
+				}
+				if (shareLevel != null) {
+					dto.setShareLevel(shareLevel);
+				}
 			}
 		}
 		
@@ -435,5 +482,153 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		return maxOfMinVersion;
 	}
 	
+	
+	
+	/**
+	 * This method returns a List of CQLLibraryShareDTO objects which have
+	 * userId,firstname,lastname and sharelevel for the given measureId.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @return the measure share info for measure
+	 */
+	@Override
+	public List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(
+			String cqlId, String searchText) {
+		String searchString = searchText.toLowerCase().trim();
+		Criteria userCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(User.class);
+		int pageSize = Integer.MAX_VALUE;
+		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
+		//Added restriction for Active user's for User story MAT:2900.
+		userCriteria.add(Restrictions.eq("status.id", "1"));
+		userCriteria.add(Restrictions.ne("id",
+				LoggedInUserUtil.getLoggedInUser()));
+		userCriteria.setFirstResult(0);
+		// userCriteria.setMaxResults(pageSize);
+		userCriteria.addOrder(Order.asc("lastName"));
+		
+		List<User> userResults = userCriteria.list();
+		HashMap<String, CQLLibraryShareDTO> userIdDTOMap = new HashMap<String, CQLLibraryShareDTO>();
+		ArrayList<CQLLibraryShareDTO> orderedDTOList = new ArrayList<CQLLibraryShareDTO>();
+		List<CQLLibraryShareDTO> dtoList = new ArrayList<CQLLibraryShareDTO>();
+		StringUtility stringUtility = new StringUtility();
+		for (User user : userResults) {
+			if(searchResultsForSharedUsers(searchString, stringUtility, user)){
+				CQLLibraryShareDTO dto = new CQLLibraryShareDTO();
+				dtoList.add(dto);
+				dto.setUserId(user.getId());
+				dto.setFirstName(user.getFirstName());
+				dto.setLastName(user.getLastName());
+				dto.setOrganizationName(user.getOrganizationName());
+				userIdDTOMap.put(user.getId(), dto);
+				orderedDTOList.add(dto);
+			}
+		}
+		
+		if (dtoList.size() > 0) {
+			Criteria shareCriteria = getSessionFactory().getCurrentSession()
+					.createCriteria(CQLLibraryShare.class);
+			shareCriteria.add(Restrictions.in("shareUser.id",
+					userIdDTOMap.keySet()));
+			shareCriteria.add(Restrictions.eq("cqlLibrary.id", cqlId));
+			List<CQLLibraryShare> shareList = shareCriteria.list();
+			for (CQLLibraryShare share : shareList) {
+				User shareUser = share.getShareUser();
+				CQLLibraryShareDTO dto = userIdDTOMap.get(shareUser.getId());
+				dto.setShareLevel(share.getShareLevel().getId());
+			}
+		}
+		if (pageSize < orderedDTOList.size()) {
+			return orderedDTOList.subList(0, pageSize);
+		} else {
+			return orderedDTOList;
+		}
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#findShareLevelForUser(java.lang.String, java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	 public ShareLevel findShareLevelForUser(String cqlLibraryId, String userID, 
+			 String cqlLibrarySetId){
+	  
+	  ShareLevel shareLevel = null;
+	  List<String> cqlLibIds = getCQLLibrarySetForSharedLibrary(cqlLibraryId, cqlLibrarySetId);
+	  Criteria shareCriteria = getSessionFactory().getCurrentSession()
+	    .createCriteria(CQLLibraryShare.class);
+	  shareCriteria.add(Restrictions.eq("shareUser.id",userID));
+	  shareCriteria.add(Restrictions.in("cqlLibrary.id", cqlLibIds));
+	  List<CQLLibraryShare> shareList = shareCriteria.list();
+	  if(!shareList.isEmpty()){
+	   shareLevel = shareList.get(0).getShareLevel();
+	  }
+	  
+	  return shareLevel;
+	 }
+	
+	@SuppressWarnings("unchecked")
+	private List<String> getCQLLibrarySetForSharedLibrary(String cqlLibraryId, 
+			String cqlLibrarySetId){
+		
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		mCriteria.add(Restrictions.eq("set_id", cqlLibrarySetId));
+		List<String> cqlLibIds = new ArrayList<String>();
+		List<CQLLibrary> cqlLibList = mCriteria.list();
+ 		for(CQLLibrary cqlLibrary : cqlLibList){
+ 			cqlLibIds.add(cqlLibrary.getId());
+		}
+		
+		return cqlLibIds;
+	}
+	
+	@Override
+	public CQLLibraryShareDTO extractDTOFromCQLLibrary(CQLLibrary cqlLibrary) {
+		CQLLibraryShareDTO dto = new CQLLibraryShareDTO();
+		
+		dto.setCqlLibraryId(cqlLibrary.getId());
+		dto.setCqlLibraryName(cqlLibrary.getName());
+		dto.setOwnerUserId(cqlLibrary.getOwnerId().getId());
+		dto.setDraft(cqlLibrary.isDraft());
+		dto.setVersion(cqlLibrary.getVersion());
+		dto.setFinalizedDate(cqlLibrary.getFinalizedDate());
+		dto.setCqlLibrarySetId(cqlLibrary.getSet_id());
+		/*dto.setPrivateMeasure(cqlLibrary.getIsPrivate());*/
+		dto.setRevisionNumber(cqlLibrary.getRevisionNumber());
+		boolean isLocked = isLocked(cqlLibrary.getLockedOutDate());
+		dto.setLocked(isLocked);
+		if (isLocked && (cqlLibrary.getLockedUserId() != null)) {
+			LockedUserInfo lockedUserInfo = new LockedUserInfo();
+			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getUserId());
+			lockedUserInfo.setEmailAddress(cqlLibrary.getLockedUserId()
+					.getEmailAddress());
+			lockedUserInfo.setFirstName(cqlLibrary.getLockedUserId().getFirstName());
+			lockedUserInfo.setLastName(cqlLibrary.getLockedUserId().getLastName());
+			dto.setLockedUserInfo(lockedUserInfo);
+		}
+		return dto;
+	}
+	
+	
+	private boolean searchResultsForSharedUsers(String searchTextLC,
+			StringUtility stringUtility, User user) {
+		
+		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true :
+		// User First Name
+			user.getFirstName().toLowerCase().contains(searchTextLC) ? true : 
+				// User Last Name
+						user.getLastName().toLowerCase().contains(searchTextLC) ? true :
+							// Owner email address
+								user.getEmailAddress().toLowerCase().contains(searchTextLC) ? true:
+									false;
+		return matchesSearch;
+	}
 	
 }

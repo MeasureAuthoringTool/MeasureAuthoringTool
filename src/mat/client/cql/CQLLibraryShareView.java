@@ -1,23 +1,10 @@
-package mat.client.measure;
+package mat.client.cql;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ShareLevel;
-
 import org.gwtbootstrap3.client.ui.CheckBox;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -26,6 +13,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -41,83 +29,91 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-/**
- * The Class ManageMeasureShareView.
- */
-public class ManageMeasureShareView implements ShareDisplay {
-	
+import mat.client.CqlLibraryPresenter;
+import mat.client.CustomPager;
+import mat.client.ImageResources;
+import mat.client.shared.CQLLibraryNameLabel;
+import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SearchWidget;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryShareDTO;
+
+public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
+
 	private static final int PAGE_SIZE = 25;
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	/** The content. */
-	private FlowPanel content = new FlowPanel();
+	private FlowPanel mainPanel = new FlowPanel();
 	
-	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The measure name label. */
-	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
+	private CQLLibraryNameLabel cqLLibnNameLabel = new CQLLibraryNameLabel();
 	
-	/** The private check. */
+	/** The private check. *//*
 	private CheckBox privateCheck = new CheckBox();
-//	private ToggleSwitch privateCheck = new ToggleSwitch();
-//	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
-//			+ "a Measure Private.", "Private Measure", true);
-//	/** The search view. */
-//	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
-	/** The selection model. */
-	/*
-	 * private SingleSelectionModel<MeasureShareDTO> selectionModel;
-	 */
+	*/
+	
+	/** The measure search filter widget. */
+	private SearchWidget searchWidget = new SearchWidget("Search", 
+            "Search", "searchWidget");
+	
+	/** Zoom Button for Showing Search Widget. */
+	private CustomButton zoomButton = (CustomButton) getImage("Search",
+			ImageResources.INSTANCE.search_zoom(), "Search");
+
 	/**
 	 * Instantiates a new manage measure share view.
 	 */
-	public ManageMeasureShareView() {
-		content.setStylePrimaryName("contentPanel");
-		content.addStyleName("leftAligned");
+	public CQLLibraryShareView() {
+		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
+		zoomButton.getElement().setId("CqlzoomButton_CustomButton");
+		mainPanel.setStylePrimaryName("contentPanel");
+		mainPanel.addStyleName("leftAligned");
+		mainPanel.add(new SpacerWidget());
 		buttonBar.getSaveButton().setText("Save and Continue");
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		horizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
-		horizontalPanel.add(measureNameLabel);
-		InlineLabel privateCheckLabel = new InlineLabel("Private Measure");
+		horizontalPanel.add(cqLLibnNameLabel);
+		/*InlineLabel privateCheckLabel = new InlineLabel("Private CQL Library");
 		privateCheck.setStyleName("gwt-CheckBox");
-		privateCheckLabel.setStyleName("qdmLabel");
+		privateCheckLabel.setStyleName("privateCheckLabel");
 		horizontalPanel.add(privateCheck);
-		horizontalPanel.add(privateCheckLabel);
+		horizontalPanel.add(privateCheckLabel);*/
+		//horizontalPanel.add(searchWidget);
 		horizontalPanel.setStyleName("horizontalPanel");
-		// content.add(measureNameLabel);
-		content.add(horizontalPanel);
-		
-		// content.add(new Label("Select users with whom you wish to share modify access:"));
-		content.add(new SpacerWidget());
+		mainPanel.add(searchWidget);
+		mainPanel.add(horizontalPanel);
+		mainPanel.add(new SpacerWidget());
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
-		/*
-		 * Widget searchViewWidget = searchView.asWidget(); searchViewWidget.setWidth("60%"); content.add(searchViewWidget);
-		 */
-		content.add(cellTablePanel);
-		content.add(new SpacerWidget());
-		content.add(buttonBar);
+		mainPanel.add(cellTablePanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(buttonBar);
 		
 	}
 	/** Adds the column to table.
 	 * @param cellTable the cell table
 	 * @return the cell table */
-	private CellTable<MeasureShareDTO> addColumnToTable(final CellTable<MeasureShareDTO> cellTable) {
-		Label searchHeader = new Label("Select users with whom you wish to share modify access.");
-		searchHeader.getElement().setId("measureShareTableHeader_Label");
-		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
-		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(searchHeader.getElement());
-		Column<MeasureShareDTO, SafeHtml> userNameColumn = new Column<MeasureShareDTO, SafeHtml>(new SafeHtmlCell()) {
+	private CellTable<CQLLibraryShareDTO> addColumnToTable(final CellTable<CQLLibraryShareDTO> cellTable) {
+		
+		Column<CQLLibraryShareDTO, SafeHtml> userNameColumn = new Column<CQLLibraryShareDTO, SafeHtml>(new SafeHtmlCell()) {
 			@Override
-			public SafeHtml getValue(MeasureShareDTO object) {
+			public SafeHtml getValue(CQLLibraryShareDTO object) {
 				String title = "User Name :" + object.getFirstName() + " " + object.getLastName();
 				String name = object.getFirstName() + " " + object.getLastName();
 				return CellTableUtility.getColumnToolTip(name, title);
@@ -125,9 +121,9 @@ public class ManageMeasureShareView implements ShareDisplay {
 		};
 		cellTable.addColumn(userNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='User Name'>"
 				+ "User Name" + "</span>"));
-		Column<MeasureShareDTO, SafeHtml> organizationColumn = new Column<MeasureShareDTO, SafeHtml>(new SafeHtmlCell()) {
+		Column<CQLLibraryShareDTO, SafeHtml> organizationColumn = new Column<CQLLibraryShareDTO, SafeHtml>(new SafeHtmlCell()) {
 			@Override
-			public SafeHtml getValue(MeasureShareDTO object) {
+			public SafeHtml getValue(CQLLibraryShareDTO object) {
 				String title = "Organization :" + object.getOrganizationName();
 				String name = object.getOrganizationName();
 				return CellTableUtility.getColumnToolTip(name, title);
@@ -136,9 +132,9 @@ public class ManageMeasureShareView implements ShareDisplay {
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant("<span title='Organization'>"
 				+ "Organization" + "</span>"));
 		Cell<Boolean> shareTransferCB = new MatCheckBoxCell();
-		Column<MeasureShareDTO, Boolean> shareColumn = new Column<MeasureShareDTO, Boolean>(shareTransferCB) {
+		Column<CQLLibraryShareDTO, Boolean> shareColumn = new Column<CQLLibraryShareDTO, Boolean>(shareTransferCB) {
 			@Override
-			public Boolean getValue(MeasureShareDTO object) {
+			public Boolean getValue(CQLLibraryShareDTO object) {
 				String currentShare = object.getShareLevel();
 				Boolean shareValue = false;
 				if (ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {
@@ -149,14 +145,14 @@ public class ManageMeasureShareView implements ShareDisplay {
 				return shareValue;
 			}
 			/*
-			 * @Override public void render(com.google.gwt.cell.client.Cell.Context context, MeasureShareDTO data, SafeHtmlBuilder sb) {
+			 * @Override public void render(com.google.gwt.cell.client.Cell.Context context, CQLLibraryShareDTO data, SafeHtmlBuilder sb) {
 			 * String title = "<div title=\"Select User " + data.getFirstName() + " " + data.getLastName() + " to Share Measure." +
 			 * "\"></div>"; sb.appendHtmlConstant(title).toSafeHtml(); super.render(context, data, sb); }
 			 */
 		};
-		shareColumn.setFieldUpdater(new FieldUpdater<MeasureShareDTO, Boolean>() {
+		shareColumn.setFieldUpdater(new FieldUpdater<CQLLibraryShareDTO, Boolean>() {
 			@Override
-			public void update(int index, MeasureShareDTO object, Boolean value) {
+			public void update(int index, CQLLibraryShareDTO object, Boolean value) {
 				if (value) {
 					object.setShareLevel(ShareLevel.MODIFY_ID);
 				} else {
@@ -174,7 +170,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	 */
 	@Override
 	public Widget asWidget() {
-		return content;
+		return mainPanel;
 	}
 	/*
 	 * (non-Javadoc)
@@ -182,19 +178,21 @@ public class ManageMeasureShareView implements ShareDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(UserShareInfoAdapter adapter) {
-		// searchView.buildDataTable(results);
+	public void buildCQLLibraryShareTable(List<CQLLibraryShareDTO> data) {
+
 		cellTablePanel.clear();
-		cellTablePanel.setStyleName("QdmAppliedListSearchPanel");
-		/*
-		 * cellTablePanel.add(searchHeader); cellTablePanel.add(new SpacerWidget());
-		 */
-		if ((adapter.getData().getData() != null)
-				&& (adapter.getData().getData().size() > 0)) {
-			CellTable<MeasureShareDTO> cellTable = new CellTable<MeasureShareDTO>();
-			ListDataProvider<MeasureShareDTO> sortProvider = new ListDataProvider<MeasureShareDTO>();
-			List<MeasureShareDTO> measureShareList = new ArrayList<MeasureShareDTO>();
-			measureShareList.addAll(adapter.getData().getData());
+		cellTablePanel.setStyleName("cellTablePanel");
+		Label cellTableHeader = new Label("Select users with whom you wish to share modify access.");
+		cellTableHeader.getElement().setId("CQLLibraryShareTableHeader_Label");
+		cellTableHeader.setStyleName("recentSearchHeader");
+		cellTableHeader.getElement().setAttribute("tabIndex", "0");
+		
+		if ((data != null)
+				&& (data.size() > 0)) {
+			CellTable<CQLLibraryShareDTO> cellTable = new CellTable<CQLLibraryShareDTO>();
+			ListDataProvider<CQLLibraryShareDTO> sortProvider = new ListDataProvider<CQLLibraryShareDTO>();
+			List<CQLLibraryShareDTO> measureShareList = new ArrayList<CQLLibraryShareDTO>();
+			measureShareList.addAll(data);
 			cellTable.setPageSize(PAGE_SIZE);
 			cellTable.redraw();
 			cellTable.setRowCount(measureShareList.size(), true);
@@ -203,12 +201,14 @@ public class ManageMeasureShareView implements ShareDisplay {
 			sortProvider.getList().addAll(measureShareList);
 			cellTable = addColumnToTable(cellTable);
 			sortProvider.addDataDisplay(cellTable);
+			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(cellTableHeader.getElement());
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
 			spager.setPageStart(0);
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);
-			/* spager.setToolTipAndTabIndex(spager); */
 			cellTable.setWidth("100%");
 			cellTable.setColumnWidth(0, 40.0, Unit.PCT);
 			cellTable.setColumnWidth(1, 40.0, Unit.PCT);
@@ -224,15 +224,10 @@ public class ManageMeasureShareView implements ShareDisplay {
 			cellTablePanel.add(cellTable);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
-			/*
-			 * cellTable.addCellPreviewHandler(new Handler<MeasureShareDTO>() {
-			 * 
-			 * @Override public void onCellPreview(CellPreviewEvent<MeasureShareDTO> event) { if
-			 * ("mouseover".equals(event.getNativeEvent().getType())) { Element cellElement =
-			 * event.getNativeEvent().getEventTarget().cast(); cellElement.setTitle("cell contents go here."); } } });
-			 */
 		} else {
 			HTML desc = new HTML("<p> No Users available for sharing.</p>");
+			cellTablePanel.add(cellTableHeader);
+			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 		}
 		
@@ -247,87 +242,66 @@ public class ManageMeasureShareView implements ShareDisplay {
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
-	/** Gets the column value with tool tip.
-	 * 
-	 * @param columnName the column name
-	 * @param columnValue the column value
-	 * @return the column value with tool tip */
-	private SafeHtml getColumnValueWithToolTip(String columnName, String columnValue) {
-		String htmlConstant = "<span tabindex=\"0\" title='" + columnName + ": " + columnValue + "'>" + columnValue + "</span>";
-		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public ErrorMessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSelectionTool()
-	 */
-//	@Override
-//	public HasPageSelectionHandler getPageSelectionTool() {
-//		return searchView;
-//	}
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSize()
-//	 */
-//	@Override
-//	public int getPageSize() {
-//		return searchView.getPageSize();
-//	}
-//	/* (non-Javadoc)
-//	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSizeSelectionTool()
-//	 */
-//	@Override
-//	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-//		return searchView;
-//	}
-	/** Gets the selection model with handler.
-	 * 
-	 * @return the selection model with handler */
-	/*
-	 * private SingleSelectionModel<MeasureShareDTO> getSelectionModelWithHandler() { selectionModel = new
-	 * SingleSelectionModel<MeasureShareDTO>(); selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-	 * 
-	 * @Override public void onSelectionChange(SelectionChangeEvent event) { getErrorMessageDisplay().clear(); } }); return selectionModel;
-	 * }
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getShareButton()
 	 */
 	@Override
-	public HasClickHandlers getShareButton() {
+	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#privateCheckbox()
 	 */
-	@Override
+	/*@Override
 	public HasValueChangeHandlers<Boolean> privateCheckbox() {
 		return privateCheck;
-	}
+	}*/
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#setMeasureName(java.lang.String)
 	 */
 	@Override
-	public void setMeasureName(String name) {
-		measureNameLabel.setMeasureName(name);
+	public void setCQLibraryName(String name) {
+		cqLLibnNameLabel.setCQLLibraryName(name);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#setPrivate(boolean)
 	 */
-	@Override
+	/*@Override
 	public void setPrivate(boolean isPrivate) {
 		privateCheck.setValue(isPrivate);
+	}*/
+	
+	private Widget getImage(String action, ImageResource url, String key) {
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
+		image.setTitle(action);
+		image.setResource(url, action);
+		image.getElement().setAttribute("id", "CQLLibVersionViewSearchButton");
+		return image;
+	}
+	
+	@Override
+	public CustomButton getZoomButton() {
+		return zoomButton;
+	}
+	
+	@Override
+	public SearchWidget getSearchWidget() {
+		return searchWidget;
 	}
 }

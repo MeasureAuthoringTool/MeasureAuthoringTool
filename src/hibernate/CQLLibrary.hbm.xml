@@ -27,6 +27,9 @@
     <many-to-one name="lockedUserId" column="LOCKED_USER" 
         class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
     <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>
-            
+    <set name="shares" cascade="all" lazy="true" inverse="true">
+	      <key column="CQL_LIBRARY_ID"/>
+           <one-to-many class="mat.model.cql.CQLLibraryShare"/>
+    </set>
    </class>
 </hibernate-mapping>

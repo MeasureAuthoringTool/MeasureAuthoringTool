@@ -49,7 +49,11 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
+	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
+
 	SaveCQLLibraryResult searchForIncludes(String searchText);
+
+	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);

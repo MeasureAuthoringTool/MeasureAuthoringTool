@@ -107,6 +107,15 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().saveDraftFromVersion(libraryId);
 	}
+	
+	@Override
+	public SaveCQLLibraryResult getUserShareInfo(String cqlId, final String searchText){
+		return this.getCQLLibraryService().getUserShareInfo(cqlId, searchText);
+	}
+	@Override
+	public void updateUsersShare(SaveCQLLibraryResult result) {
+		this.getCQLLibraryService().updateUsersShare(result);
+	} 
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {

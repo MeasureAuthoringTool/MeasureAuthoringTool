@@ -78,7 +78,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	private SimplePanel emptyWidget = new SimplePanel();
 	
 	/** The measure composer content. */
-	private ContentWithHeadingWidget cqlComposerContent = new ContentWithHeadingWidget();
+	private static ContentWithHeadingWidget cqlComposerContent = new ContentWithHeadingWidget();
 	
 	/** The cql composer tab. */
 	private String cqlComposerTab;
@@ -154,14 +154,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 				MatContext.get().getLibraryLockService().setLibraryLock();
 			}*/
 			//TODO: Get Library name and version from MatContext.
-			String heading = MatContext.get().getCurrentCQLLibraryeName() + " ";
-			String version = MatContext.get().getCurrentCQLLibraryVersion();
-			//when a library is initialy created we need to explictly create the heading
-			if (!version.startsWith("Draft") && !version.startsWith("v")) {
-				version = "Draft based on v" + version;
-			}
-			heading = heading + version;
-			cqlComposerContent.setHeading(heading, "CqlComposer");
+			setContentHeading();
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
 			setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
@@ -180,6 +173,20 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		Mat.focusSkipLists("CqlComposer");
 		//buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
 		//buttonBar.setPageNamesOnState();
+	}
+
+	/**
+	 * 
+	 */
+	public static void setContentHeading() {
+		String heading = MatContext.get().getCurrentCQLLibraryeName() + " ";
+		String version = MatContext.get().getCurrentCQLLibraryVersion();
+		//when a library is initialy created we need to explictly create the heading
+		if (!version.startsWith("Draft") && !version.startsWith("v")) {
+			version = "Draft based on v" + version;
+		}
+		heading = heading + version;
+		cqlComposerContent.setHeading(heading, "CqlComposer");
 	}
 	
 	/**

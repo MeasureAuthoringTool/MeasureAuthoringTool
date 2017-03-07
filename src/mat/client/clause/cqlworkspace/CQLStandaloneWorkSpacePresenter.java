@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -547,6 +548,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 							.setText(cqlLibraryName);
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getMODIFY_CQL_LIBRARY_NAME());
+							MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
+							CqlComposerPresenter.setContentHeading();
 						}
 					}
 		});
@@ -631,7 +634,7 @@ searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
 			}
 		}
 		
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
+		CqlComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 		
 	}

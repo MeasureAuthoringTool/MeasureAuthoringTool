@@ -279,7 +279,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/**
 	 * Reset All components to default state.
 	 */
-	private void resetAll() {
+	@Override
+	public void resetAll() {
 		mainFlowPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		inclView.setAliasNameTxtArea("");
@@ -303,6 +304,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		if (cqlLeftNavBarPanelView.getFunctionCollapse() != null) {
 			cqlLeftNavBarPanelView.getFunctionCollapse().clear();
 		}
+		generalInformationView.resetAll();
 		cqlParametersView.resetAll();
 		cqlDefinitionsView.resetAll();
 		cqlFunctionsView.resetAll();

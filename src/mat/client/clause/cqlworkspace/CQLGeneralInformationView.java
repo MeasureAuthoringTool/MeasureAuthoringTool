@@ -291,5 +291,15 @@ public class CQLGeneralInformationView {
 		getCancelButton().setEnabled(isEditable);
 
 	}
+	
+	/**
+	 * Reset all.
+	 */
+	public void resetAll(){
+		getLibraryNameValue().setText("");
+		getLibraryVersionValue().setText("");
+		getUsingModelValue().setText("");
+		getModelVersionValue().setText("");
+	}
 
 }

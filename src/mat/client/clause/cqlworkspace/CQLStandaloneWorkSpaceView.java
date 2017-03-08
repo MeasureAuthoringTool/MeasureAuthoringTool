@@ -222,7 +222,8 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	/**
 	 * Reset all.
 	 */
-	private void resetAll() {
+	@Override
+	public void resetAll() {
 		mainFlowPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		inclView.setAliasNameTxtArea("");
@@ -246,6 +247,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		if (cqlLeftNavBarPanelView.getFunctionCollapse() != null) {
 			cqlLeftNavBarPanelView.getFunctionCollapse().clear();
 		}
+		generalInformationView.resetAll();
 		cqlParametersView.resetAll();
 		cqlDefinitionsView.resetAll();
 		cqlFunctionsView.resetAll();

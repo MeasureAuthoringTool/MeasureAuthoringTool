@@ -47,10 +47,7 @@ public class CQLGeneralInformationView {
 	 * Builds the view.
 	 */
 	private void buildView() {
-		libraryNameValue.setText("");
-		libraryVersionValue.setText("");
-		usingModelValue.setText("");
-		modelVersionValue.setText("");
+		
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");

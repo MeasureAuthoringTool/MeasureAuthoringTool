@@ -238,7 +238,7 @@ public class CQLLeftNavBarPanelView {
 	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 
 	/** The CQL warning message. */
-	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
 	
 	/** The delete confirmation messge alert. */
 	private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
@@ -275,6 +275,7 @@ public class CQLLeftNavBarPanelView {
 	 * @return the vertical panel
 	 */
 	public VerticalPanel buildMeasureLibCQLView(){
+		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();

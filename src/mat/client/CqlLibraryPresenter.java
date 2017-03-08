@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -41,6 +42,7 @@ import mat.client.shared.MostRecentCQLLibraryWidget;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.search.SearchResultUpdate;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
@@ -377,6 +379,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.clearSelections();
+				draftDisplay.getSearchWidget().getSearchInput().setText("");
 				displaySearch();
 				
 			}
@@ -441,6 +444,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				draftDisplay.getZoomButton().setEnabled(true);
 				((Button)draftDisplay.getSaveButton()).setEnabled(true);
 				((Button)draftDisplay.getCancelButton()).setEnabled(true);
+				draftDisplay.getSearchWidget().getSearchInput().setText("");
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
 							null);
@@ -532,6 +536,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.clearSelections();
 				versionDisplay.getErrorMessages().clearAlert();
+				versionDisplay.getSearchWidget().getSearchInput().setText("");
 				displaySearch();
 				
 			}
@@ -619,6 +624,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 						versionDisplay.getZoomButton().setEnabled(true);
 						((Button)versionDisplay.getSaveButton()).setEnabled(true);
 						((Button)versionDisplay.getCancelButton()).setEnabled(true);
+						versionDisplay.getSearchWidget().getSearchInput().setText("");
 						if(result.isSuccess()){
 							cqlLibraryView.clearSelections();
 							displaySearch();
@@ -912,6 +918,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 						&& !lastSearchText.isEmpty()) {
 					versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 				} 
+				SearchResultUpdate sru = new SearchResultUpdate();
+				sru.update(result, versionDisplay.getSearchWidget().getSearchInput(), lastSearchText);
 				versionDisplay.buildDataTable(result);
 				versionDisplay.getZoomButton().setEnabled(true);
 				((Button)versionDisplay.getSaveButton()).setEnabled(true);
@@ -949,6 +957,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 						&& !lastSearchText.isEmpty()) {
 					draftDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 				} 
+				SearchResultUpdate sru = new SearchResultUpdate();
+				sru.update(result, draftDisplay.getSearchWidget().getSearchInput(), lastSearchText);
 				draftDisplay.buildDataTable(result);
 				draftDisplay.getZoomButton().setEnabled(true);
 				((Button)draftDisplay.getSaveButton()).setEnabled(true);
@@ -1063,7 +1073,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 								&& !lastSearchText.isEmpty()) {
 							cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 						} 
-						
+						SearchResultUpdate sru = new SearchResultUpdate();
+						sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
 						cqlLibraryView.buildCellTable(result, lastSearchText,filter);
 						showSearchingBusy(false);
 					}

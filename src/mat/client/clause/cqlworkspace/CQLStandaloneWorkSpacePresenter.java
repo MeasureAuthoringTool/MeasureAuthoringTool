@@ -154,7 +154,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 */
 	public CQLStandaloneWorkSpacePresenter(final ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
-		emptyWidget.add(new Label("No CQL Librart Selected"));
+		emptyWidget.add(new Label("No CQL Library Selected"));
 		addEventHandlers();
 	}
 	
@@ -608,6 +608,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		modifyValueSetDTO = null;*/
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getLibraryVersionValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getUsingModelValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getModelVersionValue().setText("");
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 		

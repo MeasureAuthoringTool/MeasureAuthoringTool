@@ -753,7 +753,7 @@ public class MessageDelegate {
 	
 	private final String ERROR_LIBRARY_VERSION ="Please select a Library Name to version and select a version type of Major or Minor.";
 	
-	private final String ERROR_LIBRARY_DRAFT ="Please select a Library Name to draft.";
+	private final String ERROR_LIBRARY_DRAFT = "Please select a Library Version to create a draft.";
 	
 	
 	public String getONLY_ONE_CHILD_REQUIRED() {

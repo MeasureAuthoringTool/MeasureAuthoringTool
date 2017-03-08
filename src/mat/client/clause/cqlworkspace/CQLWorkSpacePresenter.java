@@ -2304,6 +2304,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		modifyValueSetDTO = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getLibraryVersionValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getUsingModelValue().setText("");
+		searchDisplay.getCqlGeneralInformationView().getModelVersionValue().setText("");
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
 	}

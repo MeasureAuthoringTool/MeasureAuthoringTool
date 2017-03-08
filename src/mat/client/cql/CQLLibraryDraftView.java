@@ -229,7 +229,11 @@ public class CQLLibraryDraftView implements CqlLibraryPresenter.DraftDisplay{
 	}
 	@Override
 	public CQLLibraryDataSetObject getSelectedLibrary() {
-		return selectionModel.getSelectedObject();
+		if (selectionModel != null) {
+			return selectionModel.getSelectedObject();
+		} else {
+			return null;
+		}
 	}
 	@Override
 	public ErrorMessageAlert getErrorMessages() {

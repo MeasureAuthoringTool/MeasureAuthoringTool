@@ -27,7 +27,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
+
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
@@ -593,8 +593,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
-		/*searchDisplay.getFunctionArgNameMap().clear();
-searchDisplay.getIncludeView().getSearchTextBox().setText("");*/
+		/*searchDisplay.getFunctionArgNameMap().clear();*/
+		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement().setClassName("panel-collapse collapse");

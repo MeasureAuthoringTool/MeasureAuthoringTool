@@ -576,8 +576,16 @@ public class CQLIncludeLibraryView {
 	 * @return the check box cell for table
 	 */
 	private CompositeCell<CQLLibraryDataSetObject> getCheckBoxCellForTable(final boolean isEditable){
+		//checks to determine libraries selection validation limit.
+		boolean isUsed = false;
+		if(isEditable){
+			isUsed = includedList.size() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT;
+		} else {
+			isUsed = true;
+		}
+		
 		final List<HasCell<CQLLibraryDataSetObject, ?>> cells = new LinkedList<HasCell<CQLLibraryDataSetObject, ?>>();
-		cells.add(getCheckBoxCell());
+		cells.add(getCheckBoxCell(isUsed));
 		CompositeCell<CQLLibraryDataSetObject> cell = new CompositeCell<CQLLibraryDataSetObject>(cells) {
 			@Override
 			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
@@ -591,18 +599,7 @@ public class CQLIncludeLibraryView {
 			protected <X> void render(Context context, CQLLibraryDataSetObject object,
 					SafeHtmlBuilder sb, HasCell<CQLLibraryDataSetObject, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
-
-				if(isEditable && includedList.size() < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
-					/*if (selectedObject != null && object.getId().equals(selectedObject)){
-						sb.appendHtmlConstant("<td class='emptySpaces'>");
-					}  else if(includedList != null && includedList.contains(object.getId())){
-						sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\" checked>");
-					}  else {*/
-						sb.appendHtmlConstant("<td class='emptySpaces'>");
-					//}
-				} else {
-					sb.appendHtmlConstant("<td class='emptySpaces' disabled=\"disabled\">");
-				}
+				sb.appendHtmlConstant("<td class='emptySpaces'>");
 				
 				if ((object != null)) {
 					if(includedList != null && includedList.contains(object.getId())){
@@ -634,10 +631,10 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the check box cell
 	 */
-	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(){
+	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed){
 		HasCell<CQLLibraryDataSetObject, Boolean> hasCell = new HasCell<CQLLibraryDataSetObject, Boolean>() {
 			
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true, isUsed);
 			
 			@Override
 			public Cell<Boolean> getCell() {

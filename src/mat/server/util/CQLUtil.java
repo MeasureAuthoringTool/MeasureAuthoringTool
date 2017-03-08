@@ -10,10 +10,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
@@ -22,6 +18,10 @@ import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public class CQLUtil {
 	
 	/** The Constant xPath. */
@@ -29,7 +29,7 @@ public class CQLUtil {
 
 	public static CQLArtifactHolder getUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject) throws XPathExpressionException {
 					
-		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(originalDoc, cqlFileObject);
+		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(originalDoc);
 		CQLUtil cqlUtil = new CQLUtil();
 		CQLArtifactHolder usedCQLArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
@@ -194,7 +194,7 @@ public class CQLUtil {
 	 * @param cqlFileObject
 	 * @return
 	 */
-	public static CQLArtifactHolder getCQLArtifactsReferredByPoplns(Document originalDoc, CQLFileObject cqlFileObject) {
+	public static CQLArtifactHolder getCQLArtifactsReferredByPoplns(Document originalDoc) {
 		CQLUtil cqlUtil = new CQLUtil();
 		CQLUtil.CQLArtifactHolder cqlArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
@@ -230,8 +230,7 @@ public class CQLUtil {
 				String identifier = cqlFuncIdentifiers.item(i).getNodeValue();
 				cqlArtifactHolder.addFunctionIdentifier(identifier.replaceAll("\"", ""));
 			}
-			
-			
+						
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -534,6 +533,7 @@ public class CQLUtil {
 		public void setCqlFuncFromPopSet(Set<String> cqlFuncFromPopSet) {
 			this.cqlFuncFromPopSet = cqlFuncFromPopSet;
 		}
-	}	
+	}
+
 }
 

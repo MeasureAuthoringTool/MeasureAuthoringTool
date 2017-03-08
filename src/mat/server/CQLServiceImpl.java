@@ -1276,8 +1276,8 @@ public class CQLServiceImpl implements CQLService {
 			
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
 			String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
-			
-			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName(), cqlString);
+			System.out.println("Include lib version for "+cqlIncludeLibrary.getCqlLibraryName()+" is:"+cqlIncludeLibrary.getVersion());
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), cqlString);
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap);
 		}
 	
@@ -2215,7 +2215,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	 */
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
-		System.out.println("GETTING CQL ARTIFACTS");
+		logger.info("GETTING CQL ARTIFACTS");
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
 		SaveUpdateCQLResult cqlResult = parseCQLLibraryForErrors(cqlModel, true);
 		
@@ -2224,13 +2224,11 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 		cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 		cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
 		
-		return cqlResult.getUsedCQLArtifacts();
-		
-		
+		return cqlResult.getUsedCQLArtifacts();		
 	}
 	
 	/**
-	 * Find used valuesets.
+	 * Find used value-sets.
 	 *
 	 * @param cqlFileString the cql file string
 	 * @param cqlModel the cql model

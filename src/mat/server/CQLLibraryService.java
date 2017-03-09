@@ -1073,22 +1073,26 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
 		SaveUpdateCQLResult result = null;
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-		if (cqlLibrary != null) {
-			int associationCount = cqlService.countNumberOfAssociation(libraryId);
-			//System.out.println("============== "+associationCount + "=============");
-			if(associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
-				String cqlXml = getCQLLibraryXml(cqlLibrary);
-				if (cqlXml != null) {
-					result = cqlService.saveIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj, incLibraryList);
-					if (result != null && result.isSuccess()) {
-						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-						cqlLibraryDAO.save(cqlLibrary);
-						cqlService.saveCQLAssociation(currentObj, libraryId);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			if (cqlLibrary != null) {
+				int associationCount = cqlService.countNumberOfAssociation(libraryId);
+				// System.out.println("============== "+associationCount +
+				// "=============");
+				if (associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
+					String cqlXml = getCQLLibraryXml(cqlLibrary);
+					if (cqlXml != null) {
+						result = cqlService.saveIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
+								incLibraryList);
+						if (result != null && result.isSuccess()) {
+							cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+							cqlLibraryDAO.save(cqlLibrary);
+							cqlService.saveCQLAssociation(currentObj, libraryId);
+						}
 					}
 				}
+
 			}
-			
 		}
 
 		return result;
@@ -1110,15 +1114,18 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 */
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
-		
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
-		if (cqlXml != null) {
-			result = cqlService.deleteDefinition(cqlXml, toBeDeletedObj, currentObj, definitionList);
-			if (result != null && result.isSuccess()) {
-				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-				cqlLibraryDAO.save(cqlLibrary);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+
+			if (cqlXml != null) {
+				result = cqlService.deleteDefinition(cqlXml, toBeDeletedObj, currentObj, definitionList);
+				if (result != null && result.isSuccess()) {
+					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(cqlLibrary);
+				}
 			}
 		}
 		return result;
@@ -1138,14 +1145,18 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
 		
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
-		if (cqlXml != null) {
-			result = cqlService.deleteFunctions(cqlXml, toBeDeletedObj, currentObj, functionsList);
-			if (result != null && result.isSuccess()) {
-				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-				cqlLibraryDAO.save(cqlLibrary);
+		
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+
+			if (cqlXml != null) {
+				result = cqlService.deleteFunctions(cqlXml, toBeDeletedObj, currentObj, functionsList);
+				if (result != null && result.isSuccess()) {
+					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(cqlLibrary);
+				}
 			}
 		}
 		return result;
@@ -1163,15 +1174,17 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 */
 	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
-		
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
-		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		SaveUpdateCQLResult result = null;
-		if (cqlXml != null) {
-			result = cqlService.deleteParameter(cqlXml, toBeDeletedObj, currentObj, parameterList);
-			if (result != null && result.isSuccess()) {
-				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-				cqlLibraryDAO.save(cqlLibrary);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+
+			if (cqlXml != null) {
+				result = cqlService.deleteParameter(cqlXml, toBeDeletedObj, currentObj, parameterList);
+				if (result != null && result.isSuccess()) {
+					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(cqlLibrary);
+				}
 			}
 		}
 		return result;
@@ -1190,18 +1203,18 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
     @Override 
 	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
-		
+    	SaveUpdateCQLResult result = null;
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
-		SaveUpdateCQLResult result = null;
-		if (cqlXml != null) {
-			result = cqlService.deleteInclude(cqlXml, toBeModifiedIncludeObj, cqlLibObject,
-					viewIncludeLibrarys);
-			if (result != null && result.isSuccess()) {
-				cqlLibrary.setCQLByteArray(result.getXml().getBytes());
-				cqlLibraryDAO.save(cqlLibrary);
-				
-				cqlService.deleteCQLAssociation(toBeModifiedIncludeObj, cqlLibrary.getId());
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			if (cqlXml != null) {
+				result = cqlService.deleteInclude(cqlXml, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+				if (result != null && result.isSuccess()) {
+					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+					cqlLibraryDAO.save(cqlLibrary);
+
+					cqlService.deleteCQLAssociation(toBeModifiedIncludeObj, cqlLibrary.getId());
+				}
 			}
 		}
 		return result;
@@ -1299,16 +1312,17 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
-		CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
-		if(library != null) {
-			result = cqlService.saveCQLValueset(valueSetTransferObject);
-			if(result != null && result.isSuccess()) {
-				String nodeName = "valueset";
-				String parentNode = "//cqlLookUp/valuesets";
-				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, valueSetTransferObject.getCqlLibraryId())) {
+			CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
+			if (library != null) {
+				result = cqlService.saveCQLValueset(valueSetTransferObject);
+				if (result != null && result.isSuccess()) {
+					String nodeName = "valueset";
+					String parentNode = "//cqlLookUp/valuesets";
+					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+				}
 			}
 		}
-		
 		return result;
 	}
 	
@@ -1321,13 +1335,16 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
-		CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-		if(library != null) {
-			result = cqlService.saveCQLUserDefinedValueset(matValueSetTransferObject);
-			if(result != null && result.isSuccess()) {
-				String nodeName = "valueset";
-				String parentNode = "//cqlLookUp/valuesets";
-				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
+				matValueSetTransferObject.getCqlLibraryId())) {
+			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
+			if (library != null) {
+				result = cqlService.saveCQLUserDefinedValueset(matValueSetTransferObject);
+				if (result != null && result.isSuccess()) {
+					String nodeName = "valueset";
+					String parentNode = "//cqlLookUp/valuesets";
+					appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+				}
 			}
 		}
 		return result;
@@ -1343,15 +1360,18 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
-		CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
-		if(library != null) {
-			result = cqlService.modifyCQLValueSets(matValueSetTransferObject);
-			if(result != null && result.isSuccess()) {
-				 result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(),
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,
+				matValueSetTransferObject.getCqlLibraryId())) {
+			CQLLibrary library = cqlLibraryDAO.find(matValueSetTransferObject.getCqlLibraryId());
+			if (library != null) {
+				result = cqlService.modifyCQLValueSets(matValueSetTransferObject);
+				if (result != null && result.isSuccess()) {
+					result = cqlService.updateCQLLookUpTag(getCQLLibraryXml(library), result.getCqlQualityDataSetDTO(),
 							matValueSetTransferObject.getCqlQualityDataSetDTO());
-				if(result != null && result.isSuccess()){
-					library.setCQLByteArray(result.getXml().getBytes());
-					save(library);
+					if (result != null && result.isSuccess()) {
+						library.setCQLByteArray(result.getXml().getBytes());
+						save(library);
+					}
 				}
 			}
 		}
@@ -1368,13 +1388,14 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId) {
 		
 		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
-		
-		CQLLibrary library = cqlLibraryDAO.find(libraryId);
-		if(library != null) {
-			cqlResult = cqlService.deleteValueSet(getCQLLibraryXml(library), toBeDelValueSetId);
-			if(cqlResult != null && cqlResult.isSuccess()){
-				library.setCQLByteArray(cqlResult.getXml().getBytes());
-				save(library);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary library = cqlLibraryDAO.find(libraryId);
+			if (library != null) {
+				cqlResult = cqlService.deleteValueSet(getCQLLibraryXml(library), toBeDelValueSetId);
+				if (cqlResult != null && cqlResult.isSuccess()) {
+					library.setCQLByteArray(cqlResult.getXml().getBytes());
+					save(library);
+				}
 			}
 		}
 		return cqlResult;

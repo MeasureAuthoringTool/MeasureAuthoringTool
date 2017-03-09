@@ -1029,7 +1029,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				} 
 				saveCQLLibraryResult = result;
 				SearchResultUpdate sru = new SearchResultUpdate();
-				sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
+				sru.update(result, shareDisplay.getSearchWidget().getSearchInput(), lastSearchText);
 				shareDisplay.buildCQLLibraryShareTable(result.getCqlLibraryShareDTOs());
 				shareDisplay.getZoomButton().setEnabled(true);
 				((Button)shareDisplay.getSaveButton()).setEnabled(true);

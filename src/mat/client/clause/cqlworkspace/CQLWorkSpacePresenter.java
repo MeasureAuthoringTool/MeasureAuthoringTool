@@ -2336,7 +2336,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
 		MatContext.get().getAllUnits();
 		// getAppliedQDMList(true);
-		loadElementLookUpNode();
+		//loadElementLookUpNode();
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
@@ -3163,34 +3163,36 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 								@Override
 								public void onSuccess(SaveUpdateCQLResult result) {
-									if (result.isSuccess()) {
-										searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
-										MatContext.get().setDefinitions(
-												getDefinitionList(result.getCqlModel().getDefinitionList()));
-										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
-										searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+									if(result != null){
+										if (result.isSuccess()) {
+											searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
+											MatContext.get().setDefinitions(
+													getDefinitionList(result.getCqlModel().getDefinitionList()));
+											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
+											searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
-										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
-										searchDisplay.getDefineNameTxtArea().setText("");
-										searchDisplay.getDefineAceEditor().setText("");
-										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-										searchDisplay.getDefineAceEditor().clearAnnotations();
-										searchDisplay.getDefineAceEditor().removeAllMarkers();
-										searchDisplay.getDefineAceEditor().redisplay();
-										searchDisplay.getDefineAceEditor().setAnnotations();
-										searchDisplay.getDefineAceEditor().redisplay();
-										searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-												.createAlert("This Definition has been deleted successfully.");
+											searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
+											searchDisplay.getDefineNameTxtArea().setText("");
+											searchDisplay.getDefineAceEditor().setText("");
+											searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+											searchDisplay.getDefineAceEditor().clearAnnotations();
+											searchDisplay.getDefineAceEditor().removeAllMarkers();
+											searchDisplay.getDefineAceEditor().redisplay();
+											searchDisplay.getDefineAceEditor().setAnnotations();
+											searchDisplay.getDefineAceEditor().redisplay();
+											searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+													.createAlert("This Definition has been deleted successfully.");
 
-									} else if (result.getFailureReason() == 2) {
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-												.createAlert("Unable to find Node to modify.");
-										searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+										} else if (result.getFailureReason() == 2) {
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+													.createAlert("Unable to find Node to modify.");
+											searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+										}
 									}
 								}
 							});
@@ -3247,35 +3249,38 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							@Override
 							public void onSuccess(SaveUpdateCQLResult result) {
-								if (result.isSuccess()) {
-									searchDisplay.getCqlLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
-									MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
-									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
-									searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+								if(result != null){
+									if (result.isSuccess()) {
+										searchDisplay.getCqlLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
+										MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
+										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
+										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 
-									searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
-									searchDisplay.getFuncNameTxtArea().setText("");
-									searchDisplay.getFunctionBodyAceEditor().setText("");
-									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
-									searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-									searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
-									searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
-									searchDisplay.getFunctionBodyAceEditor().redisplay();
-									searchDisplay.getFunctionBodyAceEditor().setAnnotations();
-									searchDisplay.getFunctionBodyAceEditor().redisplay();
-									searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-											.createAlert("This Function has been deleted successfully.");
-								} else if (result.getFailureReason() == 2) {
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
-									searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
-								}
-								if (result.getFunction() != null) {
-									searchDisplay
-											.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
+										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+										searchDisplay.getFuncNameTxtArea().setText("");
+										searchDisplay.getFunctionBodyAceEditor().setText("");
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+										searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
+										searchDisplay.getFunctionBodyAceEditor().removeAllMarkers();
+										searchDisplay.getFunctionBodyAceEditor().redisplay();
+										searchDisplay.getFunctionBodyAceEditor().setAnnotations();
+										searchDisplay.getFunctionBodyAceEditor().redisplay();
+										searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+												.createAlert("This Function has been deleted successfully.");
+									} else if (result.getFailureReason() == 2) {
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+										searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
+									}
+									
+									if (result.getFunction() != null) {
+										searchDisplay
+												.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
+									}
 								}
 							}
 						});
@@ -3319,32 +3324,34 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							@Override
 							public void onSuccess(SaveUpdateCQLResult result) {
-								if (result.isSuccess()) {
-									searchDisplay.getCqlLeftNavBarPanelView().setViewParameterList((result.getCqlModel().getCqlParameters()));
-									MatContext.get()
-											.setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
-									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
-									searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+								if(result != null){
+									if (result.isSuccess()) {
+										searchDisplay.getCqlLeftNavBarPanelView().setViewParameterList((result.getCqlModel().getCqlParameters()));
+										MatContext.get()
+												.setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
+										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
+										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
-									searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox().setText("");
-									searchDisplay.getParameterNameTxtArea().setText("");
-									searchDisplay.getParameterAceEditor().setText("");
-									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
-									searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-									searchDisplay.getParameterAceEditor().clearAnnotations();
-									searchDisplay.getParameterAceEditor().removeAllMarkers();
-									searchDisplay.getParameterAceEditor().redisplay();
-									searchDisplay.getParameterAceEditor().setAnnotations();
-									searchDisplay.getParameterAceEditor().redisplay();
-									searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-											.createAlert("This Parameter has been deleted successfully.");
-								} else if (result.getFailureReason() == 2) {
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
-									searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox().setText("");
+										searchDisplay.getParameterNameTxtArea().setText("");
+										searchDisplay.getParameterAceEditor().setText("");
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+										searchDisplay.getParameterAceEditor().clearAnnotations();
+										searchDisplay.getParameterAceEditor().removeAllMarkers();
+										searchDisplay.getParameterAceEditor().redisplay();
+										searchDisplay.getParameterAceEditor().setAnnotations();
+										searchDisplay.getParameterAceEditor().redisplay();
+										searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+												.createAlert("This Parameter has been deleted successfully.");
+									} else if (result.getFailureReason() == 2) {
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+										searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+									}
 								}
 							}
 						});
@@ -3385,46 +3392,48 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							@Override
 							public void onSuccess(SaveUpdateCQLResult result) {
-								if (result.isSuccess()) {
-									searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
-									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-									
-									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
-									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+								if(result != null){
+									if (result.isSuccess()) {
+										searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+										MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+										
+										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
+										searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
-									searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText("");
-									searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
-									searchDisplay.getIncludeView().getCqlLibraryNameTextBox().setText("");
-									searchDisplay.getIncludeView().getOwnerNameTextBox().setText("");
-									searchDisplay.getIncludeView().getViewCQLEditor().setText("");
-									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(null);
-									searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-									searchDisplay.getIncludeView().getViewCQLEditor().clearAnnotations();
-									searchDisplay.getIncludeView().getViewCQLEditor().removeAllMarkers();
-									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
-									searchDisplay.getIncludeView().getViewCQLEditor().setAnnotations();
-									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
-									searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-											.createAlert("This Included Library has been deleted successfully.");
-									
-									searchDisplay.getIncludeView().getCloseButton().fireEvent(new GwtEvent<ClickHandler>() {
-								        @Override
-								        public com.google.gwt.event.shared.GwtEvent.Type<ClickHandler> getAssociatedType() {
-								        return ClickEvent.getType();
-								        }
-								        @Override
-								        protected void dispatch(ClickHandler handler) {
-								            handler.onClick(null);
-								        }
-								   });
-									
-								} else if (result.getFailureReason() == 2) {
-									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
-									searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
+										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText("");
+										searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+										searchDisplay.getIncludeView().getCqlLibraryNameTextBox().setText("");
+										searchDisplay.getIncludeView().getOwnerNameTextBox().setText("");
+										searchDisplay.getIncludeView().getViewCQLEditor().setText("");
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+										searchDisplay.getIncludeView().getViewCQLEditor().clearAnnotations();
+										searchDisplay.getIncludeView().getViewCQLEditor().removeAllMarkers();
+										searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
+										searchDisplay.getIncludeView().getViewCQLEditor().setAnnotations();
+										searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
+										searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+												.createAlert("This Included Library has been deleted successfully.");
+										
+										searchDisplay.getIncludeView().getCloseButton().fireEvent(new GwtEvent<ClickHandler>() {
+									        @Override
+									        public com.google.gwt.event.shared.GwtEvent.Type<ClickHandler> getAssociatedType() {
+									        return ClickEvent.getType();
+									        }
+									        @Override
+									        protected void dispatch(ClickHandler handler) {
+									            handler.onClick(null);
+									        }
+									   });
+										
+									} else if (result.getFailureReason() == 2) {
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to find Node to modify.");
+										searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
+									}
 								}
 							}
 						});
@@ -3442,7 +3451,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/**
 	 * Load element look up node.
-	 */
+	 *//*
 	private void loadElementLookUpNode() {
 
 		MatContext.get().getMeasureService().getMeasureXmlForMeasure(MatContext.get().getCurrentMeasureId(),
@@ -3461,7 +3470,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 					}
 				});
-	}
+	}*/
 
 	/**
 	 * Sets the qdm elements map. Also finds SubTree Node and corresponding Node
@@ -3470,7 +3479,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 *
 	 * @param xml            the new qdm elements map
 	 */
-	private void setMeasureElementsMap(String xml) {
+	/*private void setMeasureElementsMap(String xml) {
 
 		CQLWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		CQLWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
@@ -3495,7 +3504,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				CQLWorkSpaceConstants.setDatatypeMap(datatypeMap);
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Sets the up element lookup QDM nodes.

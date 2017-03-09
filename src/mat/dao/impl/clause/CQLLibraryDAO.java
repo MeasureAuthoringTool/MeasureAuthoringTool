@@ -132,7 +132,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	
 
 	@Override
-	public List<CQLLibraryShareDTO> search(String searchText, String searchFrom, int pageSize, User user, int filter ) {
+	public List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter ) {
 		
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
@@ -157,7 +157,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 			
 		List<CQLLibrary> orderedCQlLibList = null;
 		if(libraryResultList != null){
-			orderedCQlLibList = sortLibraryList(libraryResultList, searchFrom);
+			orderedCQlLibList = sortLibraryList(libraryResultList);
 		} else {
 			orderedCQlLibList = new ArrayList<CQLLibrary>();
 		}
@@ -282,61 +282,6 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		}
 		return retList;
 	}
-	
-	
-	/**
-	 * Sort Library list by measure set Id.
-	 * @param librariesResultList
-	 * @return
-	 */
-	private List<CQLLibrary> sortLibraryList(List<CQLLibrary> librariesResultList, String searchFrom) {
-		// generate sortable lists
-		List<List<CQLLibrary>> cqlLibList = new ArrayList<List<CQLLibrary>>();
-		for (CQLLibrary cql : librariesResultList) {
-			boolean hasList = false;
-			for (List<CQLLibrary> cqlSubSetList : cqlLibList) {
-				String setId = "";
-				String listSetId = "";
-				if(searchFrom.equalsIgnoreCase("StandAlone")){
-					setId = cqlSubSetList.get(0).getSet_id();
-					listSetId = cql.getSet_id();
-				} else {
-					setId = cqlSubSetList.get(0).getSet_id();
-					listSetId = cql.getSet_id();
-				}
-				
-				if (listSetId.equalsIgnoreCase(setId)) {
-					cqlSubSetList.add(cql);
-					hasList = true;
-					break;
-				}
-			}
-			if (!hasList) {
-				List<CQLLibrary> finalList = new ArrayList<CQLLibrary>();
-				finalList.add(cql);
-				cqlLibList.add(finalList);
-			}
-		}
-		// sort
-		for (List<CQLLibrary> mlist : cqlLibList) {
-			Collections.sort(mlist, new CQLLibraryComparator());
-		}
-		Collections.sort(cqlLibList, new CQLLibraryListComparator());
-		// compile list
-		List<CQLLibrary> retList = new ArrayList<CQLLibrary>();
-		for (List<CQLLibrary> mlist : cqlLibList) {
-			for (CQLLibrary m : mlist) {
-				retList.add(m);
-			}
-		}
-		return retList;
-	}
-	
-	
-
-	
-	
-	
 	
 	
 	/**

@@ -5830,22 +5830,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
-
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-
-		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if (measureXMLModel != null) {
-			result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-					definitionList);
-			if (result.isSuccess()) {
-				measureXMLModel.setXml(result.getXml());
-				getService().saveMeasureXml(measureXMLModel);
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
+			if (measureXMLModel != null) {
+				result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
+						definitionList);
+				if (result.isSuccess()) {
+					measureXMLModel.setXml(result.getXml());
+					getService().saveMeasureXml(measureXMLModel);
+				}
 			}
 		}
-
 		return result;
 	}
 
@@ -5861,24 +5858,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList) {
 
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-
-		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if(measureXMLModel != null){
-			result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj,
-					currentObj, parameterList);
-			if (result.isSuccess()) {
-				measureXMLModel.setXml(result.getXml());
-				getService().saveMeasureXml(measureXMLModel);
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
+			if (measureXMLModel != null) {
+				result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
+						parameterList);
+				if (result.isSuccess()) {
+					measureXMLModel.setXml(result.getXml());
+					getService().saveMeasureXml(measureXMLModel);
+				}
 			}
 		}
-		
-		
 
-		
 		return result;
 	}
 
@@ -5893,19 +5885,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
-
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-
-		MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if (measureXMLModel != null) {
-			result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj,
-					currentObj, functionsList);
-			if (result.isSuccess()) {
-				measureXMLModel.setXml(result.getXml());
-				getService().saveMeasureXml(measureXMLModel);
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
+			if (measureXMLModel != null) {
+				result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj,
+						currentObj, functionsList);
+				if (result.isSuccess()) {
+					measureXMLModel.setXml(result.getXml());
+					getService().saveMeasureXml(measureXMLModel);
+				}
 			}
 		}
 		return result;
@@ -5940,16 +5930,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if(xmlModel != null){
-			result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, currentObj, definitionList);
-			if(result.isSuccess()){
-				xmlModel.setXml(result.getXml());
-				getService().saveMeasureXml(xmlModel);
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+			if(xmlModel != null){
+				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, currentObj, definitionList);
+				if(result.isSuccess()){
+					xmlModel.setXml(result.getXml());
+					getService().saveMeasureXml(xmlModel);
+				}
 			}
 		}
 		return result;
@@ -5958,16 +5947,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if(xmlModel != null){
-			result = getCqlService().deleteFunctions(xmlModel.getXml(), toBeDeletedObj, currentObj, functionsList);
-			if(result.isSuccess()){
-				xmlModel.setXml(result.getXml());
-				getService().saveMeasureXml(xmlModel);
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+			
+			if(xmlModel != null){
+				result = getCqlService().deleteFunctions(xmlModel.getXml(), toBeDeletedObj, currentObj, functionsList);
+				if(result.isSuccess()){
+					xmlModel.setXml(result.getXml());
+					getService().saveMeasureXml(xmlModel);
+				}
 			}
 		}
 		return result;
@@ -5976,19 +5966,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		if(xmlModel != null){
-			result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj, currentObj, parameterList);
-			if(result.isSuccess()){
-				xmlModel.setXml(result.getXml());
-				getService().saveMeasureXml(xmlModel);
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+			
+			if(xmlModel != null){
+				result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj, currentObj, parameterList);
+				if(result.isSuccess()){
+					xmlModel.setXml(result.getXml());
+					getService().saveMeasureXml(xmlModel);
+				}
 			}
 		}
-		
 		return result;
 	}
 
@@ -6020,18 +6010,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String measureID) {
-		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
 		
-		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureID);
-		
-		if(model != null && model.getXml() != null){
-			SaveUpdateCQLResult result = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
-			if(result != null && result.isSuccess()){
-				model.setXml(result.getXml());
-				getService().saveMeasureXml(model);
+		SaveUpdateCQLResult cqlResult = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
+			MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureID);
+			if(model != null && model.getXml() != null){
+				SaveUpdateCQLResult result = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
+				if(result != null && result.isSuccess()){
+					model.setXml(result.getXml());
+					getService().saveMeasureXml(model);
+				}
 			}
 		}
-		
 		return cqlResult;
 	}
 
@@ -6066,12 +6056,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveCQLValuesettoMeasure(CQLValueSetTransferObject valueSetTransferObject) {
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, valueSetTransferObject.getMeasureId())) {
-			return null;
-		}
-		SaveUpdateCQLResult result = getCqlService().saveCQLValueset(valueSetTransferObject);
-		if(result != null && result.isSuccess()) {
-			saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, valueSetTransferObject.getMeasureId())) {
+			result = getCqlService().saveCQLValueset(valueSetTransferObject);
+			if(result != null && result.isSuccess()) {
+				saveCQLValuesetInMeasureXml(result, valueSetTransferObject.getMeasureId());
+			}
 		}
 		return result;
 	}
@@ -6086,15 +6077,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(
 			CQLValueSetTransferObject matValueSetTransferObject) {
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, 
-				matValueSetTransferObject.getMeasureId())) {
-			return null;
-		}
-		SaveUpdateCQLResult result = getCqlService().saveCQLUserDefinedValueset(matValueSetTransferObject);
-		if(result != null && result.isSuccess()) {
-			saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
-		}
 		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
+				matValueSetTransferObject.getMeasureId())) {
+			result = getCqlService().saveCQLUserDefinedValueset(matValueSetTransferObject);
+			if (result != null && result.isSuccess()) {
+				saveCQLValuesetInMeasureXml(result, matValueSetTransferObject.getMeasureId());
+			}
+		}
 		return result;
 	}
 
@@ -6108,16 +6099,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
 		
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, 
+		SaveUpdateCQLResult result = null;
+		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
 				matValueSetTransferObject.getMeasureId())) {
-			return null;
+			result = getCqlService().modifyCQLValueSets(matValueSetTransferObject);
+			if (result != null && result.isSuccess()) {
+				updateCQLLookUpTagWithModifiedValueSet(result.getCqlQualityDataSetDTO(),
+						matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
+			}
 		}
-		SaveUpdateCQLResult result = getCqlService().modifyCQLValueSets(matValueSetTransferObject);
-		if(result != null && result.isSuccess()){
-			updateCQLLookUpTagWithModifiedValueSet(result.getCqlQualityDataSetDTO(),
-					matValueSetTransferObject.getCqlQualityDataSetDTO(), matValueSetTransferObject.getMeasureId());
-		}
-		
 		return result;
 	}
 
@@ -6143,27 +6133,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
-			return null;
-		}
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		if (xmlModel != null) {
-			int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
-			if(numberOfAssociations < 10) {
-				 result = getCqlService().saveIncludeLibrayInCQLLookUp(xmlModel.getXml(),
-							toBeModifiedObj, currentObj, incLibraryList);
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+			if (xmlModel != null) {
+				int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
+				if (numberOfAssociations < 10) {
+					result = getCqlService().saveIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj,
+							currentObj, incLibraryList);
 
 					if (result.isSuccess()) {
 						xmlModel.setXml(result.getXml());
 						getService().saveMeasureXml(xmlModel);
 						getCqlService().saveCQLAssociation(currentObj, measureId);
 					}
-			} else {
-				logger.info("Already 10 associations exists for this measure.");
+				} else {
+					logger.info("Already 10 associations exists for this measure.");
+				}
+
 			}
-			
 		}
 		return result;
 	}
@@ -6188,18 +6178,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 
+		SaveUpdateCQLResult result = null;
 		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
-			return null;
-		}
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
-		if (xmlModel != null) {
-			result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, cqlLibObject,
-					viewIncludeLibrarys);
-			if (result.isSuccess()) {
-				xmlModel.setXml(result.getXml());
-				getService().saveMeasureXml(xmlModel);
-				getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
+
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
+			if (xmlModel != null) {
+				result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, cqlLibObject,
+						viewIncludeLibrarys);
+				if (result.isSuccess()) {
+					xmlModel.setXml(result.getXml());
+					getService().saveMeasureXml(xmlModel);
+					getCqlService().deleteCQLAssociation(toBeModifiedIncludeObj, currentMeasureId);
+				}
 			}
 		}
 		return result;

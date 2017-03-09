@@ -23,8 +23,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.AuditLogDTO;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryDraftView;
+import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
@@ -87,6 +89,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	CQLLibraryDataSetObject cqlSharedDataSetObject;
 	
 	SaveCQLLibraryResult saveCQLLibraryResult;
+
+	CQLLibraryHistoryView historyDisplay;
 	
 	public static interface DraftDisplay {
 
@@ -244,13 +248,33 @@ public class CqlLibraryPresenter implements MatPresenter {
 		//void setPrivate(boolean isPrivate);
 		
 	}
+	
+	public interface HistoryDisplay {
 
-	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay, CQLLibraryShareView shareDisplay) {
+		void buildCellTable(List<AuditLogDTO> results);
+
+		void setCQLLibraryName(String name);
+
+		void setCQLLibraryId(String id);
+
+		String getCQLLibraryId();
+
+		String getCQLLibraryName();
+
+		HasClickHandlers getReturnToLink();
+
+		void setReturnToLinkText(String s);
+		
+	}
+
+	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, 
+			CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay, CQLLibraryShareView shareDisplay, CQLLibraryHistoryView historyDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
 		this.detailDisplay = detailDisplay;
 		this.versionDisplay = versionDisplay;
 		this.draftDisplay = draftDisplay;
 		this.shareDisplay = shareDisplay;
+		this.historyDisplay = historyDisplay;
 		addCQLLibraryViewHandlers();
 		addDetailDisplayViewHandlers();
 		addCQLLibrarySelectionHandlers();
@@ -258,7 +282,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 		addVersionDisplayViewHandlers();
 		addDraftDisplayViewHandlers();
 		addShareDisplayViewHandlers();
+		addHistoryDisplayHandlers();
 		addObserverHandlers();
+	}
+
+	private void addHistoryDisplayHandlers() {
+		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				displaySearch();
+				
+			}
+		});
 	}
 
 	private void addObserverHandlers() {
@@ -272,7 +307,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 			
 			@Override
 			public void onHistoryClicked(CQLLibraryDataSetObject result) {
-				//TODO 
+				historyDisplay
+				.setReturnToLinkText("<< Return to CQL Library");
+				/*displayHistory(
+						result.getId(),
+						result.getName());*/
 			}
 			
 		});
@@ -835,8 +874,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				int startIndex = 1;
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
 				int filter = cqlLibraryView.getSelectedFilter();
-				search(cqlLibraryView.getSearchString().getValue(),"StandAlone", filter,startIndex,
-						Integer.MAX_VALUE);
+				search(cqlLibraryView.getSearchString().getValue(),filter, startIndex,Integer.MAX_VALUE);
 			}
 		});
 
@@ -990,6 +1028,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 					shareDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoUsersReturned());
 				} 
 				saveCQLLibraryResult = result;
+				SearchResultUpdate sru = new SearchResultUpdate();
+				sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
 				shareDisplay.buildCQLLibraryShareTable(result.getCqlLibraryShareDTOs());
 				shareDisplay.getZoomButton().setEnabled(true);
 				((Button)shareDisplay.getSaveButton()).setEnabled(true);
@@ -1038,7 +1078,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		isCreateNewItemWidgetVisible = false;
 		//cqlLibraryView.getCreateNewItemWidget().setVisible(false);
 		int filter = cqlLibraryView.getSelectedFilter();
-		search(cqlLibraryView.getSearchString().getValue(), "StandAlone", filter,1, Integer.MAX_VALUE);
+		search(cqlLibraryView.getSearchString().getValue(), filter, 1,Integer.MAX_VALUE);
 		searchRecentLibraries();
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
@@ -1051,14 +1091,14 @@ public class CqlLibraryPresenter implements MatPresenter {
 	/**
 	 * This method reterives all Libraries in CQL Library tab based on Selected filters and Search Input.
 	 */
-	private void search(final String searchText, String searchFrom, final int filter,int startIndex, int pageSize) {
+	private void search(final String searchText, final int filter, int startIndex,int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText
 				.trim() : null;
 				//pageSize = Integer.MAX_VALUE;
 				pageSize = 25;
 				showSearchingBusy(true);
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
-				MatContext.get().getCQLLibraryService().search(lastSearchText, searchFrom, filter,startIndex, pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
+				MatContext.get().getCQLLibraryService().search(lastSearchText, filter, startIndex,pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 					
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {

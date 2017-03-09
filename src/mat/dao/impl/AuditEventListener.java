@@ -107,6 +107,7 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		Object returnObject = null;
 		String user = LoggedInUserUtil.getLoggedInUser();
 		String emailAddress = LoggedInUserUtil.getLoggedInUserEmailAddress();
+		String userName = LoggedInUserUtil.getLoggedUserName();
 
 		//JUNIT tests doesn't use any user
 		if(user == null){
@@ -130,7 +131,7 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		} else if(obj instanceof CQLLibrary) {
 			CQLAuditLog cqlAuditLog = new CQLAuditLog();
 			cqlAuditLog.setTime(new Date());				
-			cqlAuditLog.setUserId(emailAddress);
+			cqlAuditLog.setUserId(userName);
 			if(obj instanceof CQLLibrary){
 				cqlAuditLog.setActivityType("CQL Library Created");
 				cqlAuditLog.setCqlLibrary((CQLLibrary)obj);

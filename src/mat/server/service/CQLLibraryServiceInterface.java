@@ -12,7 +12,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceInterface {
 	
-	SaveCQLLibraryResult search(String searchText, String searchFrom, int filter,int startIndex, int pageSize);
+	SaveCQLLibraryResult search(String searchText, int filter, int startIndex,int pageSize);
 	
 	void save(CQLLibrary cqlLibrary);
 

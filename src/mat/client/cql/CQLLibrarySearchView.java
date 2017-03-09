@@ -169,8 +169,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		          }
 		        };
 		        
-		        MatContext.get().getCQLLibraryService().search(searchText, "StandAlone",filter, 
-		        		index+1, index + PAGE_SIZE,callback);
+		        MatContext.get().getCQLLibraryService().search(searchText, filter,index+1, 
+		        		index + PAGE_SIZE, callback);
 		      }
 		    };
 		   

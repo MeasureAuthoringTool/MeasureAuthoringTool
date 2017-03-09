@@ -12,7 +12,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
-	SaveCQLLibraryResult search(String searchText, String searchFrom, int filter, int startIndex, int pageSize);
+	SaveCQLLibraryResult search(String searchText, int filter, int startIndex, int pageSize);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
 	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);

@@ -27,6 +27,9 @@ public class LoggedInUserUtil {
 	/** The logged in login id. */
 	private static String loggedInLoginId;
 	
+	/** The logged in username */
+	private static String loggedInUserName;
+	
 	/**
 	 * Gets the token.
 	 * 
@@ -151,5 +154,26 @@ public class LoggedInUserUtil {
 			}
 		}
 		return role;
+	}
+
+	public static void setLoggedInUserName(String e) {
+	      loggedInUserName = e;
+	}
+	
+	
+	public static String getLoggedUserName() {
+		if(loggedInUserName != null) {
+			return loggedInUserName;
+		}
+		else {
+			UsernamePasswordAuthenticationToken token = getToken();
+			String firstName = null;
+			String lastName = null;
+			if(token != null) {
+				firstName = ((MatUserDetails) token.getDetails()).getUsername();
+				lastName = ((MatUserDetails) token.getDetails()).getUserLastName();
+			}
+			return firstName + " " + lastName;
+		}
 	}
 }

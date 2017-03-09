@@ -12,8 +12,7 @@ import mat.shared.SaveUpdateCQLResult;
 
 public interface CQLLibraryServiceAsync {
 
-	void search(String searchText, String searchFrom, int filter,int startIndex, int pageSize,
-			AsyncCallback<SaveCQLLibraryResult> callback);
+	void search(String searchText, int filter, int startIndex,int pageSize, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void findCQLLibraryByID(String cqlLibraryID, AsyncCallback<CQLLibraryDataSetObject> callback);
 

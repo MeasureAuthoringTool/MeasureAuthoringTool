@@ -12,7 +12,6 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -165,6 +164,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		Label cellTablePanelHeader = new Label("Select a Draft to create a Library Version.");
 		cellTablePanelHeader.getElement().setId("cellTablePanelHeader_Label");
 		cellTablePanelHeader.setStyleName("recentSearchHeader");
+		selectionModel = null;
 		if(result.getCqlLibraryDataSetObjects() != null && result.getCqlLibraryDataSetObjects().size() >0) {
 			CellTable<CQLLibraryDataSetObject> cellTable = new CellTable<CQLLibraryDataSetObject>();
 			ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<CQLLibraryDataSetObject>();

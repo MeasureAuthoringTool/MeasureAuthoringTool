@@ -146,6 +146,7 @@ public class CQLLibraryDraftView implements CqlLibraryPresenter.DraftDisplay{
 		Label cellTablePanelHeader = new Label("Select a CQL Library Version to create a Draft.");
 		cellTablePanelHeader.getElement().setId("cellTablePanelHeader_Label");
 		cellTablePanelHeader.setStyleName("recentSearchHeader");
+		selectionModel = null;
 		if (result.getCqlLibraryDataSetObjects() != null && result.getCqlLibraryDataSetObjects().size() > 0) {
 			CellTable<CQLLibraryDataSetObject> cellTable = new CellTable<CQLLibraryDataSetObject>();
 			ListDataProvider<CQLLibraryDataSetObject> sortProvider = new ListDataProvider<CQLLibraryDataSetObject>();

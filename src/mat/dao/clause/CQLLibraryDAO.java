@@ -10,7 +10,7 @@ import mat.model.cql.CQLLibraryShareDTO;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 	
-		public List<CQLLibraryShareDTO> search(String searchText, String searchFrom, int pageSize, User user, int filter);
+		public List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter);
 
 		public boolean isLibraryLocked(String id);
 

@@ -15,8 +15,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override
-	public SaveCQLLibraryResult search(String searchText,String searchFrom, int filter, int startIndex, int pageSize) {
-		return this.getCQLLibraryService().search(searchText,searchFrom, filter,startIndex, pageSize);
+	public SaveCQLLibraryResult search(String searchText,int filter, int startIndex, int pageSize) {
+		return this.getCQLLibraryService().search(searchText,filter, startIndex,pageSize);
 	}
 	@Override
 	public SaveCQLLibraryResult searchForIncludes(String searchText){

@@ -33,7 +33,7 @@ public class CQLLibraryAuditLogDAO extends GenericDAO<CQLAuditLog, String> imple
 			cqlAuditLog.setActivityType(event);
 			cqlAuditLog.setTime(new Date());
 			cqlAuditLog.setCqlLibrary(cqlLibrary);
-			cqlAuditLog.setUserId(LoggedInUserUtil.getLoggedInUserEmailAddress());
+			cqlAuditLog.setUserId(LoggedInUserUtil.getLoggedUserName());
 			cqlAuditLog.setAdditionalInfo(additionalInfo);
 			session = getSessionFactory().getCurrentSession();
 			session.saveOrUpdate(cqlAuditLog);			

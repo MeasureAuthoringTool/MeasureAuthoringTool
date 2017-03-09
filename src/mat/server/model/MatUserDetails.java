@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MatUserDetails.
  */
@@ -71,6 +72,9 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     
     /** The login id. */
     private String loginId;
+    
+    /** The user last name. */
+    private String userLastName;
     
     /**
 	 * Instantiates a new mat user details.
@@ -452,8 +456,25 @@ public Collection<GrantedAuthority> getAuthorities() {
 	}
 
 
+	
+	/**
+	 * Gets the user last name.
+	 *
+	 * @return the user last name
+	 */
+	public String getUserLastName() {
+		return userLastName;
+	}
 
 
+	/**
+	 * Sets the user last name.
+	 *
+	 * @param userLastName the new user last name
+	 */
+	public void setUserLastName(String userLastName) {
+		this.userLastName = userLastName;
+	}
 
 
 }

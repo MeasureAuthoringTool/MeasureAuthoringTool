@@ -62,5 +62,7 @@ public interface CQLLibraryServiceInterface {
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys);
 
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
-	
+
+	int countNumberOfAssociation(String id);
+
 }

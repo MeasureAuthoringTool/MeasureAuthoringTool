@@ -130,5 +130,9 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId) {
 		return this.getCQLLibraryService().getUsedCqlArtifacts(libraryId);
 	}
+	@Override
+	public int countNumberOfAssociation(String Id) {
+		return this.getCQLLibraryService().countNumberOfAssociation(Id);
+	}
 	
 }

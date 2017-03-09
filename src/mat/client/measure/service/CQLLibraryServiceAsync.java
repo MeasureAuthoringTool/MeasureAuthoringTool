@@ -62,4 +62,5 @@ public interface CQLLibraryServiceAsync {
 
 	void getUsedCqlArtifacts(String libraryId, AsyncCallback<GetUsedCQLArtifactsResult> callback);
 
+	void countNumberOfAssociation(String Id, AsyncCallback<Integer> callback);
 }

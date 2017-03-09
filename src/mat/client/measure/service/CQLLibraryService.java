@@ -49,4 +49,6 @@ public interface CQLLibraryService extends RemoteService {
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys);
 
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
+
+	int countNumberOfAssociation(String Id);
 }

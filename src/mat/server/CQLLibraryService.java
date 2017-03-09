@@ -124,13 +124,22 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 		for(CQLLibrary cqlLibrary : list){
 			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
-			allLibraries.add(object);
+			if(object.getMeasureId() != null){
+				if(countNumberOfAssociation(object.getMeasureId()) == 0){
+					allLibraries.add(object);
+				}
+			}else{
+				if(object.getId() != null){
+					if(countNumberOfAssociation(object.getId()) == 0){
+						allLibraries.add(object);
+					}
+				}
+			}
 		}
 		
 		saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
 		return saveCQLLibraryResult;
 	}
-	
 	
 
 	/* (non-Javadoc)
@@ -1085,6 +1094,10 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return result;
 	}
 	
+	@Override
+	public int countNumberOfAssociation(String Id){
+		return cqlService.countNumberOfAssociation(Id);
+	}
 	
 	/**
 	 * Delete definition.

@@ -2603,7 +2603,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					if(cqlLibraryName.length() >200){
 						cqlLibraryName = cqlLibraryName.substring(0, 199);
 					}
-					cqlLibrary.setName(cqlLibraryName);
+					cqlLibrary.setName(MeasureUtility.cleanString(cqlLibraryName));
 					
 					String cqlXML = xmlProcessor.transform(cqlLookUpNode, true);
 					cqlByteArray = cqlXML.getBytes();

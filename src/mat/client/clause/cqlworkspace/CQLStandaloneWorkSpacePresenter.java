@@ -27,7 +27,6 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
@@ -545,6 +544,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if(result != null) {
+							//cqlLibraryName = result.getCqlModel().getLibraryName().trim();
 							cqlLibraryName = result.getCqlModel().getLibrary().getLibraryName().trim();
 							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
 							.setText(cqlLibraryName);
@@ -652,6 +652,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 					if(result.getCqlModel() != null){
 						//System.out.println("I got the model");
 						
+						//if(result.getCqlModel().getLibraryName()!=null){
 						if(result.getCqlModel().getLibrary()!=null){
 							cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 									.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
@@ -1041,7 +1042,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 				.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
-	
+		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getCqlIncludeLibraryView().setWidgetReadOnly(
 				MatContext.get().getLibraryLockService().checkForEditPermission());
 	}
@@ -1397,6 +1398,15 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	public Widget getWidget() {
 		panel.setStyleName("contentPanel");
 		return panel;
+	}
+	
+	/**
+	 * returns the searchDisplay.
+	 * 
+	 * @return ViewDisplay.
+	 */
+	public ViewDisplay getSearchDisplay() {
+		return searchDisplay;
 	}
 
 }

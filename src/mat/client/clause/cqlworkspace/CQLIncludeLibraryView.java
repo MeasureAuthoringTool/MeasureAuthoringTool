@@ -170,20 +170,7 @@ public class CQLIncludeLibraryView {
 		aliasLabelHP.add(includesButtonBar);
 		aliasNameVP.add(aliasLabelHP);
 		
-		/*VerticalPanel searchLibraryVP = new VerticalPanel();
-		Label librariesLabel = new Label(LabelType.INFO, "Library");
-		librariesLabel.setMarginTop(5);
-		librariesLabel.setId("search_Lib_Lbl");
-		librariesLabel.setTitle("Library Search");
 		
-		searchLibraryVP.add(new SpacerWidget());
-		//searchLibraryVP.add(librariesLabel);
-		//searchLibraryVP.add(new SpacerWidget());
-		sWidget.getSearchBox().setWidth("590px");
-		searchLibraryVP.add(sWidget.getSearchWidget());
-		searchLibraryVP.add(new SpacerWidget());
-		
-		searchWidgetFocusPanel.add(searchLibraryVP);*/
 		cqlAceEditor.startEditor();
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
@@ -202,10 +189,7 @@ public class CQLIncludeLibraryView {
 		VerticalPanel viewCQLVP = new VerticalPanel();
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(new SpacerWidget());
-		//viewCQLVP.add(warningMessageAlert);
-		//viewCQLVP.add(successMessageAlert);
-		//viewCQLVP.add(new SpacerWidget());
-		//viewCQLVP.add(new SpacerWidget());
+		
 		viewCQLVP.add(viewCQlFileLabel);
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(cqlAceEditor);
@@ -216,11 +200,6 @@ public class CQLIncludeLibraryView {
 		verticalPanel.add(ownerTextboxPanel);
 		verticalPanel.add(searchCellTablePanel);
 		
-		/*verticalPanel.add(searchWidgetFocusPanel);
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(cellTablePanel);
-		verticalPanel.add(new SpacerWidget());
-		*/
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(viewCQLVP);
 		verticalPanel.add(new SpacerWidget());
@@ -234,10 +213,6 @@ public class CQLIncludeLibraryView {
 		
 	}
 	
-	/*public MessageAlert getWarningMessageAlert() {
-		warningMessageAlert.getElement().setAttribute("bg-color", "#ff3232");
-		return warningMessageAlert; 
-	}*/
 	
 	/**
 	 * Builds the owner text box widget.
@@ -734,7 +709,7 @@ public class CQLIncludeLibraryView {
 	
 	public void resetToDefault(){
 		cellTablePanel.clear();
-		aliasNameTxtBox.setText("");
+		//aliasNameTxtBox.setText("");
 		resetAceEditor();
 	//	successMessageAlert.clearAlert();
 		//warningMessageAlert.clearAlert();

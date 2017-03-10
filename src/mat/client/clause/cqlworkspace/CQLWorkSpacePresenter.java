@@ -7,6 +7,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+//import org.gwtbootstrap3.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.NamedNodeMap;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
@@ -44,41 +78,6 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-//import org.gwtbootstrap3.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.XMLParser;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1111,7 +1110,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlFunctionsView().setWidgetReadOnly(true);
 								searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 							}
-							
 
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
@@ -2413,6 +2411,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result!= null && result.getCqlModel() != null) {
 							
+							//if(result.getCqlModel().getLibraryName()!=null){
 							if(result.getCqlModel().getLibrary()!=null){
 								String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 										.createCQLLibraryName(MatContext.get().getCurrentMeasureName());
@@ -2757,7 +2756,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 				.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
-	
+		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
@@ -3461,7 +3460,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(MeasureXmlModel result) {
 						String xml = result != null ? result.getXml() : null;
-						setMeasureElementsMap(xml);
+						//setMeasureElementsMap(xml);
 
 					}
 

@@ -6179,7 +6179,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 
 		SaveUpdateCQLResult result = null;
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
 
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
 			if (xmlModel != null) {

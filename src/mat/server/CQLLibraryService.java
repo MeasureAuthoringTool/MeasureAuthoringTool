@@ -198,25 +198,11 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 					if(cqlLibraryDataSetObject.isLocked()){
 						canVersion = false;
 					} else {
-						if(user.getSecurityRole().getDescription().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
+						if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(
+								cqlLibraryDAO, cqlLibraryDataSetObject.getId())){
 							canVersion = true;
 						} else {
-							if(shareDTO.getOwnerUserId()
-									.equalsIgnoreCase(
-											user.getId())){
-								canVersion = true; 
-							} else {
-								if(shareDTO.getShareLevel() == null){
-									canVersion = false;
-								} else {
-									if(shareDTO.getShareLevel().equalsIgnoreCase(ShareLevel.MODIFY_ID)){
-										canVersion = true;
-									} else {
-										canVersion = false;
-									}
-								}
-								
-							}
+							canVersion = false;
 						}
 					}
 				}
@@ -264,26 +250,11 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 							if (cqlLibraryDataSetObject.isLocked()) {
 								canDraft = false;
 							} else {
-								if (user.getSecurityRole().getDescription()
-									.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
+								if(MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(
+										cqlLibraryDAO, cqlLibraryDataSetObject.getId())){
 									canDraft = true;
 								} else {
-									if(shareDTO.getOwnerUserId()
-											.equalsIgnoreCase(
-													user.getId())){
-										canDraft = true; 
-									} else {
-										if(shareDTO.getShareLevel() == null){
-											canDraft = false;
-										} else {
-											if(shareDTO.getShareLevel().equalsIgnoreCase(ShareLevel.MODIFY_ID)){
-												canDraft = true;
-											} else {
-												canDraft = false;
-											}
-										}
-										
-									}
+									canDraft = false;
 								}
 							}
 						}

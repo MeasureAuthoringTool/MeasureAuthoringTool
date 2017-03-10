@@ -6100,7 +6100,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult modifyCQLValueSetstoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
-		if (!MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO,
 				matValueSetTransferObject.getMeasureId())) {
 			result = getCqlService().modifyCQLValueSets(matValueSetTransferObject);
 			if (result != null && result.isSuccess()) {

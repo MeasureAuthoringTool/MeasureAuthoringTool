@@ -6015,9 +6015,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureID)) {
 			MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureID);
 			if(model != null && model.getXml() != null){
-				SaveUpdateCQLResult result = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
-				if(result != null && result.isSuccess()){
-					model.setXml(result.getXml());
+				cqlResult = getCqlService().deleteValueSet(model.getXml(), toBeDelValueSetId);
+				if(cqlResult != null && cqlResult.isSuccess()){
+					model.setXml(cqlResult.getXml());
 					getService().saveMeasureXml(model);
 				}
 			}

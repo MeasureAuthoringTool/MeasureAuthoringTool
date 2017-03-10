@@ -1772,7 +1772,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(final SaveUpdateCQLResult result) {
-				if(result.getCqlErrors().isEmpty()){
+				if(result != null && result.getCqlErrors().isEmpty()){
 					modifyValueSetDTO = null;
 					// This code snapet is not required.Commenting it out till it is regressed and fully tested.
 					/*searchDisplay.getQdmView().getCelltable().setVisibleRangeAndClearData(searchDisplay
@@ -4001,20 +4001,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						@Override
 						public void onSuccess(SaveUpdateCQLResult result) {
 							String message = "";
-							if (result.isSuccess()) {
-								
-								message = MatContext.get().getMessageDelegate().getValuesetSuccessMessage(codeListName);
-								MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeListName));
-								resetCQLValuesetearchPanel();
-								searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
-								getAppliedValueSetList();
-							} else {
-								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-											MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+							if(result != null){
+								if (result.isSuccess()) {
+									
+									message = MatContext.get().getMessageDelegate().getValuesetSuccessMessage(codeListName);
+									MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeListName));
+									resetCQLValuesetearchPanel();
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
+									getAppliedValueSetList();
+								} else {
+									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+												MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+									}
 								}
 							}
-
 						}
 					});
 		}
@@ -4071,22 +4072,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								@SuppressWarnings("static-access")
 								@Override
 								public void onSuccess(final SaveUpdateCQLResult result) {
-									if (result.isSuccess()) {
-										if (result.getXml() != null) {
-											
-											String message = MatContext.get().getMessageDelegate()
-													.getValuesetSuccessMessage(userDefinedInput);
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
-											MatContext.get().setValuesets(result.getCqlAppliedQDMList());
-											resetCQLValuesetearchPanel();
-											getAppliedValueSetList();
-										}
-									} else {
-										if (result.getFailureReason() == result.ALREADY_EXISTS) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-													MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
-										} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Invalid input data.");
+									if(result != null){
+										if (result.isSuccess()) {
+											if (result.getXml() != null) {
+												
+												String message = MatContext.get().getMessageDelegate()
+														.getValuesetSuccessMessage(userDefinedInput);
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
+												MatContext.get().setValuesets(result.getCqlAppliedQDMList());
+												resetCQLValuesetearchPanel();
+												getAppliedValueSetList();
+											}
+										} else {
+											if (result.getFailureReason() == result.ALREADY_EXISTS) {
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+														MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+											} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Invalid input data.");
+											}
 										}
 									}
 								}
@@ -4267,22 +4270,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			@Override
 			public void onSuccess(final SaveUpdateCQLResult result) {
-				
-				if(result.isSuccess()){
-					isModified = false;
-					resetCQLValuesetearchPanel();
-					modifyValueSetDTO = result.getCqlQualityDataSetDTO();
-					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-					.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
-					getAppliedValueSetList();
-				} else{
-					
-					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-									MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
-					
-					} else if (result.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
-						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Invalid Input data.");
+				if(result != null){
+					if(result.isSuccess()){
+						isModified = false;
+						resetCQLValuesetearchPanel();
+						modifyValueSetDTO = result.getCqlQualityDataSetDTO();
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
+						getAppliedValueSetList();
+					} else{
+						
+						if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+										MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+						
+						} else if (result.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Invalid Input data.");
+						}
 					}
 				}
 			}

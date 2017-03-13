@@ -379,6 +379,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(Void result) {
+						shareDisplay.getSearchWidget().getSearchInput().setText(""); 
 						displaySearch();
 					}
 				});
@@ -393,6 +394,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.clearSelections();
 				/*cqlSharedDataSetObject = null;*/
+				shareDisplay.getSearchWidget().getSearchInput().setText(""); 
 				displaySearch();
 			}
 		});

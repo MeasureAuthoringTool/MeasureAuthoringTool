@@ -944,7 +944,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param parameterList the parameter list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList) {
 
@@ -973,7 +973,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param definitionList the definition list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 
@@ -1004,7 +1004,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param functionsList the functions list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
 		
@@ -1100,7 +1100,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param definitionList the definition list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		SaveUpdateCQLResult result = null;
@@ -1131,7 +1131,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param functionsList the functions list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
 		
@@ -1162,7 +1162,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param parameterList the parameter list
 	 * @return the save update CQL result
 	 */
-	//@Override
+	@Override
 	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
 		SaveUpdateCQLResult result = null;

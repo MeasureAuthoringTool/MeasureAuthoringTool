@@ -376,7 +376,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @param argumentList
 		 *            the argument list
 		 */
-		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
+		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList,boolean isEditable);
 
 
 		/**
@@ -760,7 +760,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.hideAceEditorAutoCompletePopUp();
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 			}
 		});
@@ -1145,7 +1145,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						}
 					}
 				}
-				searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(searchDisplay.getCqlFunctionsView().getFunctionArgumentList());
+				searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(searchDisplay.getCqlFunctionsView().getFunctionArgumentList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.resetMessageDisplay();
 			}
 		});
@@ -1650,7 +1650,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
-					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay);
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
 				}
 				
 			}
@@ -1665,7 +1665,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					if (cqlFunArgument.getId().equals(result.getId())) {
 
 						iterator.remove();
-						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 						break;
 					}
 				}
@@ -1817,7 +1817,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(List<QDSAttributes> result) {
 						searchDisplay.getCqlLeftNavBarPanelView().setAvailableQDSAttributeList(result);
-						AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay);
+						AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
 
 					}
 
@@ -1947,7 +1947,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getFunctionArgumentList().clear();
 		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.getFunctionBodyAceEditor().clearAnnotations();
-		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
+		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(),MatContext.get().getMeasureLockService().checkForEditPermission());
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		if ((searchDisplay.getFunctionBodyAceEditor().getText() != null)) {
 			searchDisplay.getFunctionBodyAceEditor().setText("");
@@ -2061,7 +2061,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 											if (result.getFunction() != null) {
 												searchDisplay.createAddArgumentViewForFunctions(
-														result.getFunction().getArgumentList());
+														result.getFunction().getArgumentList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 											}
 										}
 
@@ -2411,8 +2411,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result!= null && result.getCqlModel() != null) {
 							
-							//if(result.getCqlModel().getLibraryName()!=null){
-							if(result.getCqlModel().getLibrary()!=null){
+							if(result.getCqlModel().getLibraryName()!=null){
+						//	if(result.getCqlModel().getLibrary()!=null){
 								String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 										.createCQLLibraryName(MatContext.get().getCurrentMeasureName());
 								searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
@@ -3279,7 +3279,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									
 									if (result.getFunction() != null) {
 										searchDisplay
-												.createAddArgumentViewForFunctions(result.getFunction().getArgumentList());
+												.createAddArgumentViewForFunctions(result.getFunction().getArgumentList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 									}
 								}
 							}

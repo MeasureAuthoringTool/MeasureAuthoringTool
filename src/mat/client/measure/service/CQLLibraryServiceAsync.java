@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLParameter;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -62,4 +64,22 @@ public interface CQLLibraryServiceAsync {
 	void getUsedCqlArtifacts(String libraryId, AsyncCallback<GetUsedCQLArtifactsResult> callback);
 
 	void countNumberOfAssociation(String Id, AsyncCallback<Integer> callback);
+
+	void saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
 }

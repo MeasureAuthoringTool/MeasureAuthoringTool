@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLFunctionArgument;
@@ -261,7 +262,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildFunctionLibraryView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		mainFlowPanel.add(cqlFunctionsView.getView());
+		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
 	}
 	
 	
@@ -272,8 +273,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 *            the argument list
 	 */
 	@Override
-	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
-		cqlFunctionsView.createAddArgumentViewForFunctions(argumentList);
+	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList,boolean isEditable) {
+		cqlFunctionsView.createAddArgumentViewForFunctions(argumentList,isEditable);
 	}
 
 	/**

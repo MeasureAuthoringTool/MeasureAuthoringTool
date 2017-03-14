@@ -149,7 +149,7 @@ public class CQLFunctionsView {
 	 * Builds the view.
 	 */
 	@SuppressWarnings("static-access")
-	private void buildView() {
+	private void buildView(boolean isEditable) {
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 
@@ -217,7 +217,7 @@ public class CQLFunctionsView {
 		funcVP.add(funcConextPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
-		createAddArgumentViewForFunctions(functionArgumentList);
+		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
 		funcVP.add(new SpacerWidget());
@@ -244,10 +244,10 @@ public class CQLFunctionsView {
 	 *
 	 * @return the view
 	 */
-	public VerticalPanel getView() {
+	public VerticalPanel getView(boolean isEditable) {
 		mainFunctionVerticalPanel.clear();
 		resetAll();
-		buildView();
+		buildView(isEditable);
 		return mainFunctionVerticalPanel;
 	}
 	
@@ -264,10 +264,10 @@ public class CQLFunctionsView {
 	 *
 	 * @param argumentList the argument list
 	 */
-	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList) {
+	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		this.isEditable = isEditable;
 		
 		if ((argumentList != null) && (argumentList.size() > 0)) {
 			updateFunctionArgumentNameMap(argumentList);

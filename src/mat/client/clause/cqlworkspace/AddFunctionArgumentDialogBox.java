@@ -80,7 +80,7 @@ public class AddFunctionArgumentDialogBox {
 	 * @param searchDisplay - {@link CQLWorkSpaceView}
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final ViewDisplay searchDisplay) {
+			final boolean isEdit, final ViewDisplay searchDisplay, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlGrammarDataType().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getDataTypeList();
 		//final ListBox attributeListBox = new ListBox(false);
@@ -439,7 +439,7 @@ public class AddFunctionArgumentDialogBox {
 										currentFunctionArgument.getArgumentName());
 								searchDisplay.getFunctionArgumentList().remove(i);
 								searchDisplay.getFunctionArgumentList().add(argument);
-								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),isEditable);
 								searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
 								break;
 							}
@@ -452,7 +452,7 @@ public class AddFunctionArgumentDialogBox {
 						functionArg.setQdmDataType(qdmDataType);
 						functionArg.setOtherType(otherType);
 						searchDisplay.getFunctionArgumentList().add(functionArg);
-						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList());
+						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),isEditable);
 						searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
 					}
 					dialogModal.hide();

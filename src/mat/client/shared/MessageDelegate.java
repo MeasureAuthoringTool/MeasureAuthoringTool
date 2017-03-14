@@ -248,6 +248,8 @@ public class MessageDelegate {
 	
 	public static final String NO_USERS_RETURNED = "No Users returned. Please search again.";
 	
+	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -2746,6 +2748,10 @@ public class MessageDelegate {
 
 	public static String getNoUsersReturned() {
 		return NO_USERS_RETURNED;
+	}
+
+	public String getNoVersionCreated() {
+		return NO_VERSION_CREATED;
 	}
 	
 }

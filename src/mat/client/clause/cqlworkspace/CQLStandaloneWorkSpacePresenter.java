@@ -1,11 +1,14 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -30,10 +33,14 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
+import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -70,6 +77,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	CQLModelValidator validator = new CQLModelValidator();
 	
 	private String cqlLibraryName;
+	
+	/** QDSAttributesServiceAsync instance. */
+	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+			.create(QDSAttributesService.class);
 	
 	/**
 	 * The Interface ViewDisplay.
@@ -189,6 +200,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		TextBox getParameterNameTxtArea();
 
 		AceEditor getParameterAceEditor();
+
+		Map<String, CQLFunctionArgument> getFunctionArgNameMap();
+
+		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable);
 
 	}
 	
@@ -660,7 +675,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				searchDisplay.hideAceEditorAutoCompletePopUp();
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				//AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay);
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay.getCQLFunctionsView(),
+						MatContext.get().getLibraryLockService().checkForEditPermission());
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 			}
 		});
@@ -713,6 +729,41 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			}
 
 		});
+		
+		
+		searchDisplay.getCQLFunctionsView().setObserver( new Observer() {
+			
+			@Override
+			public void onModifyClicked(CQLFunctionArgument result) {
+				// TODO Auto-generated method stub
+				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				searchDisplay.resetMessageDisplay();
+				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
+					getAttributesForDataType(result);
+				} else {
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay.getCQLFunctionsView(),MatContext.get().getLibraryLockService().checkForEditPermission());
+				}
+				
+			}
+			
+			@Override
+			public void onDeleteClicked(CQLFunctionArgument result, int index) {
+				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				Iterator<CQLFunctionArgument> iterator = searchDisplay.getFunctionArgumentList().iterator();
+				searchDisplay.getFunctionArgNameMap().remove(result.getArgumentName().toLowerCase());
+				while (iterator.hasNext()) {
+					CQLFunctionArgument cqlFunArgument = iterator.next();
+					if (cqlFunArgument.getId().equals(result.getId())) {
+
+						iterator.remove();
+						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),MatContext.get().getLibraryLockService().checkForEditPermission());
+						break;
+					}
+				}
+				
+			}
+		});
+		
 	}
 	private void addWarningAlertHandlers() {
 		
@@ -2058,7 +2109,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
-		/*searchDisplay.getFunctionArgNameMap().clear();*/
+		searchDisplay.getFunctionArgNameMap().clear();
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
@@ -2066,10 +2117,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionCollapse().getElement().setClassName("panel-collapse collapse");
-		/*if (searchDisplay.getFunctionArgumentList().size() > 0) {
+		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		isModified = false;
+		/*isModified = false;
 		modifyValueSetDTO = null;*/
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
@@ -2904,7 +2955,33 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		}
 	}
 
-	
+	/**
+	 * Get Attributed for Selected Function Argument - QDM Data Type from db.
+	 *
+	 * @param functionArg
+	 *            - CQLFunctionArgument.
+	 * @return the attributes for data type
+	 */
+	private void getAttributesForDataType(final CQLFunctionArgument functionArg) {
+		attributeService.getAllAttributesByDataType(functionArg.getQdmDataType(),
+				new AsyncCallback<List<QDSAttributes>>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
+						System.out.println("Error retrieving data type attributes. " + caught.getMessage());
+
+					}
+
+					@Override
+					public void onSuccess(List<QDSAttributes> result) {
+						searchDisplay.getCqlLeftNavBarPanelView().setAvailableQDSAttributeList(result);
+						AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay.getCQLFunctionsView(),MatContext.get().getLibraryLockService().checkForEditPermission());
+
+					}
+
+				});
+	}
 	
 	/**
 	 * Gets the definition list.

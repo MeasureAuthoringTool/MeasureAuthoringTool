@@ -1,13 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.List;
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.util.MatTextBox;
-import mat.model.cql.CQLFunctionArgument;
-import mat.shared.CQLModelValidator;
-import mat.shared.UUIDUtilClient;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -26,11 +20,18 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.TextBox;
+
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.util.MatTextBox;
+import mat.model.cql.CQLFunctionArgument;
+import mat.shared.CQLModelValidator;
+import mat.shared.UUIDUtilClient;
 
 
 
@@ -80,7 +81,7 @@ public class AddFunctionArgumentDialogBox {
 	 * @param searchDisplay - {@link CQLWorkSpaceView}
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final ViewDisplay searchDisplay, final boolean isEditable) {
+			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlGrammarDataType().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getDataTypeList();
 		//final ListBox attributeListBox = new ListBox(false);
@@ -91,14 +92,7 @@ public class AddFunctionArgumentDialogBox {
 		if (isEdit) {
 			saveButtonText = "Apply";
 			modalText = "Edit Argument: " + functionArg.getArgumentName();
-			/*if (functionArg.getArgumentType().equalsIgnoreCase(
-					CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
-				attributeListBox.clear();
-				attributeListBox.addItem(MatContext.get().PLEASE_SELECT);
-				for (int i = 0; i < searchDisplay.getAvailableQDSAttributeList().size(); i++) {
-					attributeListBox.addItem(searchDisplay.getAvailableQDSAttributeList().get(i).getName());
-				}
-			}*/
+			
 			if (functionArg.getArgumentType().equalsIgnoreCase(
 					CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
 				otherTypeTextArea.setText(functionArg.getOtherType());
@@ -178,19 +172,6 @@ public class AddFunctionArgumentDialogBox {
 		listSelectItem.setEnabled(false);
 		selectFormGroup.add(selectFormLabel);
 		selectFormGroup.add(listSelectItem);
-		// Attribute Drop down Form group
-		/*final FormGroup selectAttributeFormGroup = new FormGroup();
-		FormLabel selectAttributeFormGroupLabel = new FormLabel();
-		selectAttributeFormGroupLabel.setText("Select Attribute");
-		selectAttributeFormGroupLabel.setTitle("Select Attribute");
-		selectAttributeFormGroupLabel.setFor("qdmAttributeDialog_attributeListBox");
-		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
-		attributeListBox.setVisibleItemCount(1);
-		attributeListBox.setWidth("290px");
-		attributeListBox.addItem("");
-		attributeListBox.setEnabled(false);*/
-		/*selectAttributeFormGroup.add(selectAttributeFormGroupLabel);
-		selectAttributeFormGroup.add(attributeListBox);*/
 		// Main form field Set
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(messageFormgroup);
@@ -242,15 +223,6 @@ public class AddFunctionArgumentDialogBox {
 						break;
 					}
 				}
-				/*if (functionArg.getAttributeName() != null) {
-					for (int j = 0; j < attributeListBox.getItemCount(); j++) {
-						if (attributeListBox.getItemText(j).equalsIgnoreCase(
-								functionArg.getAttributeName())) {
-							attributeListBox.setSelectedIndex(j);
-							break;
-						}
-					}
-				}*/
 			} else if (selectedDataType.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)) {
 				listSelectItem.clear();
 				listSelectItem.setEnabled(false);
@@ -393,9 +365,9 @@ public class AddFunctionArgumentDialogBox {
 				}
 				// Argument Name Validation Check
 				if (isValid) {
-					boolean checkIfDuplicate = searchDisplay.getFunctionArgNameMap().containsKey(argumentName.toLowerCase());
+					boolean checkIfDuplicate = cqlFunctionsView.getFunctionArgNameMap().containsKey(argumentName.toLowerCase());
 					if (checkIfDuplicate && isEdit) {
-						CQLFunctionArgument tempArgObj = searchDisplay.getFunctionArgNameMap().get(argumentName.toLowerCase());
+						CQLFunctionArgument tempArgObj = cqlFunctionsView.getFunctionArgNameMap().get(argumentName.toLowerCase());
 						if (tempArgObj.getId().equalsIgnoreCase(functionArg.getId())) {
 							// this means same object is modified.
 							checkIfDuplicate = false;
@@ -424,8 +396,8 @@ public class AddFunctionArgumentDialogBox {
 				// Add or Modify Argument if valid.
 				if (isValid && (argumentName != null) && (argumentDataType != null)) {
 					if (isEdit) { // Existing Function Argument.
-						for (int i = searchDisplay.getFunctionArgumentList().size()-1; i >= 0; i--) {
-							CQLFunctionArgument currentFunctionArgument = searchDisplay.
+						for (int i = cqlFunctionsView.getFunctionArgumentList().size()-1; i >= 0; i--) {
+							CQLFunctionArgument currentFunctionArgument = cqlFunctionsView.
 									getFunctionArgumentList().get(i);
 							if (currentFunctionArgument.getId().equalsIgnoreCase(
 									functionArg.getId())) {
@@ -435,12 +407,12 @@ public class AddFunctionArgumentDialogBox {
 								argument.setAttributeName(attributeName);
 								argument.setQdmDataType(qdmDataType);
 								argument.setOtherType(otherType);
-								searchDisplay.getFunctionArgNameMap().remove(
+								cqlFunctionsView.getFunctionArgNameMap().remove(
 										currentFunctionArgument.getArgumentName());
-								searchDisplay.getFunctionArgumentList().remove(i);
-								searchDisplay.getFunctionArgumentList().add(argument);
-								searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),isEditable);
-								searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
+								cqlFunctionsView.getFunctionArgumentList().remove(i);
+								cqlFunctionsView.getFunctionArgumentList().add(argument);
+								cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
+								cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
 								break;
 							}
 						}
@@ -451,9 +423,9 @@ public class AddFunctionArgumentDialogBox {
 						functionArg.setAttributeName(attributeName);
 						functionArg.setQdmDataType(qdmDataType);
 						functionArg.setOtherType(otherType);
-						searchDisplay.getFunctionArgumentList().add(functionArg);
-						searchDisplay.createAddArgumentViewForFunctions(searchDisplay.getFunctionArgumentList(),isEditable);
-						searchDisplay.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
+						cqlFunctionsView.getFunctionArgumentList().add(functionArg);
+						cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
+						cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
 					}
 					dialogModal.hide();
 				}
@@ -472,32 +444,5 @@ public class AddFunctionArgumentDialogBox {
 			listDataType.addItem(dataType);
 		}
 	}
-	/**
-	 * Get All Attributes for selected datatype. This is for Non Edit flow.
-	 * @param dataType - Selected Data type
-	 * @param attributeListBox - Attribute ListBox
-	 * */
-	/*private static void getAttributesForDataType(String dataType, final ListBox attributeListBox) {
-		attributeService.getAllAttributesByDataType(dataType,
-				new AsyncCallback<List<QDSAttributes>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-				System.out
-				.println("Error retrieving data type attributes. "
-						+ caught.getMessage());
-			}
-			@Override
-			public void onSuccess(List<QDSAttributes> result) {
-				attributeList.clear();
-				for (QDSAttributes qdsAttributes : result) {
-					attributeList.add(qdsAttributes.getName());
-				}
-				attributeListBox.addItem(MatContext.get().PLEASE_SELECT);
-				for (String attribName : attributeList) {
-					attributeListBox.addItem(attribName);
-				}
-			}
-		});
-	}*/
+	
 }

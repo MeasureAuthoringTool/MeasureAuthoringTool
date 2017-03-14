@@ -760,7 +760,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.hideAceEditorAutoCompletePopUp();
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
+				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay.getCqlFunctionsView(),MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 			}
 		});
@@ -1653,7 +1653,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
 					getAttributesForDataType(result);
 				} else {
-					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
+					AddFunctionArgumentDialogBox.showArgumentDialogBox(result, true, searchDisplay.getCqlFunctionsView(),MatContext.get().getMeasureLockService().checkForEditPermission());
 				}
 				
 			}
@@ -1825,7 +1825,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(List<QDSAttributes> result) {
 						searchDisplay.getCqlLeftNavBarPanelView().setAvailableQDSAttributeList(result);
-						AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay,MatContext.get().getMeasureLockService().checkForEditPermission());
+						AddFunctionArgumentDialogBox.showArgumentDialogBox(functionArg, true, searchDisplay.getCqlFunctionsView(),MatContext.get().getMeasureLockService().checkForEditPermission());
 
 					}
 
@@ -4043,7 +4043,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									}
 								}
 							}
-							showSearchingBusy(true);
+							showSearchingBusy(false);
 						}
 					});
 		}

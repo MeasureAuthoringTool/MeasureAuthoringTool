@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -585,6 +586,22 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public AceEditor getParameterAceEditor() {
 		return cqlParametersView.getParameterAceEditor();
+	}
+
+	@Override
+	public Map<String, CQLFunctionArgument> getFunctionArgNameMap() {
+		return cqlFunctionsView.getFunctionArgNameMap();
+	}
+	
+	/**
+	 * Creates the add argument view for functions.
+	 *
+	 * @param argumentList
+	 *            the argument list
+	 */
+	@Override
+	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList,boolean isEditable) {
+		cqlFunctionsView.createAddArgumentViewForFunctions(argumentList,isEditable);
 	}
 
 }

@@ -2077,6 +2077,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 									
 								}
 							});
+				} else {
+					if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
+						versionDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoVersionCreated());
+					}
 				}
 			}
 		});
@@ -3342,6 +3346,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
+				versionDisplay.getErrorMessageDisplay().clear();
 				if (((selectedMeasure !=null) && (selectedMeasure.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
 								.getMinorRadioButton().getValue())) {

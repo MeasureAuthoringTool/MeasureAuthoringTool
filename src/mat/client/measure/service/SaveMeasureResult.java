@@ -29,6 +29,9 @@ public class SaveMeasureResult extends GenericResult {
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_DATA = ConstantMessages.INVALID_DATA;
 	
+	/** The Constant INVALID_VALUE_SET_DATE. */
+	public static final int INVALID_CQL_DATA = ConstantMessages.INVALID_CQL_DATA;
+	
 	/** The id. */
 	private String id;
 	

@@ -854,7 +854,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @param busy the busy
 	 */
-	public void showSearchingBusy(final boolean busy) {
+	/*public void showSearchingBusy(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {
@@ -863,7 +863,7 @@ public class CQLIncludeLibraryView {
 		getSearchButton().setEnabled(!busy);
 		
 	}
-
+*/
 
 	/**
 	 * Gets the search cell table panel.

@@ -1323,7 +1323,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update CQL result
 	 */
-	public SaveUpdateCQLResult saveCQLUserDefinedValuesettoMeasure(CQLValueSetTransferObject matValueSetTransferObject) {
+	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO,

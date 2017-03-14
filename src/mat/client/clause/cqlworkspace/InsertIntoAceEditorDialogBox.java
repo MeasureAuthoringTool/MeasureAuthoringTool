@@ -348,7 +348,7 @@ public class InsertIntoAceEditorDialogBox {
 									} else if(itemTypeName.equalsIgnoreCase("functions")) {
 										StringBuilder sb = new StringBuilder(); 
 										sb = sb.append("\""); 
-										itemNameToBeInserted = itemNameToBeInserted.replace("()", "");
+										itemNameToBeInserted = itemNameToBeInserted.substring(0, itemNameToBeInserted.indexOf("("));
 										sb = sb.append(itemNameToBeInserted); 
 										sb = sb.append("\"()");
 										itemNameToBeInserted = sb.toString(); 

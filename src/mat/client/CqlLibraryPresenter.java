@@ -647,58 +647,53 @@ public class CqlLibraryPresenter implements MatPresenter {
 		versionDisplay.getZoomButton().setEnabled(false);
 		((Button)versionDisplay.getSaveButton()).setEnabled(false);
 		((Button)versionDisplay.getCancelButton()).setEnabled(false);
-		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, new AsyncCallback<SaveCQLLibraryResult>() {
+		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version,
+				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
 						Mat.hideLoadingMessage();
-						versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						versionDisplay.getErrorMessages()
+								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						versionDisplay.getZoomButton().setEnabled(true);
-						((Button)versionDisplay.getSaveButton()).setEnabled(true);
-						((Button)versionDisplay.getCancelButton()).setEnabled(true);
+						((Button) versionDisplay.getSaveButton()).setEnabled(true);
+						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 					}
 
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
 						Mat.hideLoadingMessage();
 						versionDisplay.getZoomButton().setEnabled(true);
-						((Button)versionDisplay.getSaveButton()).setEnabled(true);
-						((Button)versionDisplay.getCancelButton()).setEnabled(true);
+						((Button) versionDisplay.getSaveButton()).setEnabled(true);
+						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 						versionDisplay.getSearchWidget().getSearchInput().setText("");
-						if(result.isSuccess()){
+						if (result.isSuccess()) {
 							cqlLibraryView.clearSelections();
 							displaySearch();
 							String versionStr = result.getVersionStr();
-							MatContext
-							.get()
-							.getAuditService()
-							.recordCQLLibraryEvent(
-									libraryId,
-									"CQL Library Versioned",
-									"CQL Library Version "
-											+ versionStr
-											+ " created",
-											false,
-											new AsyncCallback<Boolean>() {
-										
+							MatContext.get().getAuditService().recordCQLLibraryEvent(libraryId, "CQL Library Versioned",
+									"CQL Library Version " + versionStr + " created", false,
+									new AsyncCallback<Boolean>() {
+
 										@Override
-										public void onFailure(
-												Throwable caught) {
-											
+										public void onFailure(Throwable caught) {
+
 										}
-										
+
 										@Override
-										public void onSuccess(
-												Boolean result) {
-											
+										public void onSuccess(Boolean result) {
+
 										}
 									});
+						} else {
+							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
+								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+							}
 						}
-						}
-	
-	
-		});
+					}
+
+				});
 		
 	}
 

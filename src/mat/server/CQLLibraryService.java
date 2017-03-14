@@ -430,6 +430,22 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		logger.info("Inside saveFinalizedVersion: Start");
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		
+		boolean isVersionable = MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId);
+		
+		if(!isVersionable){
+			result.setSuccess(false);
+			result.setFailureReason(ConstantMessages.INVALID_DATA);
+			return result;
+		}
+		
+		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
+		if(cqlResult.getCqlErrors().size() >0){
+			result.setSuccess(false);
+			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
+			return result;
+		}
+		
+		
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
 		if(library != null){
 			String versionNumber = null;
@@ -928,11 +944,12 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param parameterList the parameter list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList) {
 
 		SaveUpdateCQLResult result = null;
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
@@ -956,11 +973,12 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param definitionList the definition list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 
 		SaveUpdateCQLResult result = null;
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
@@ -986,11 +1004,12 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param functionsList the functions list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
 		
 		SaveUpdateCQLResult result = null;
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
@@ -1081,6 +1100,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param definitionList the definition list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		SaveUpdateCQLResult result = null;
@@ -1111,6 +1131,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param functionsList the functions list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList) {
 		
@@ -1141,6 +1162,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param parameterList the parameter list
 	 * @return the save update CQL result
 	 */
+	//@Override
 	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
 		SaveUpdateCQLResult result = null;

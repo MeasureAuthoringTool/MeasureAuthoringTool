@@ -22,7 +22,6 @@ import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLCodeWrapper;
-import mat.model.cql.CQLDataModel;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctionArgument;
@@ -30,7 +29,6 @@ import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLFunctionsWrapper;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLIncludeLibraryWrapper;
-import mat.model.cql.CQLLibraryModel;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLParametersWrapper;
@@ -64,11 +62,11 @@ public class CQLUtilityClass {
 		StringBuilder cqlStr = new StringBuilder();
 		toBeInsertedAtEnd = new  StringBuilder();
 		// library Name and Using 
-		if (cqlModel.getLibrary() != null) {
+		if (cqlModel.getLibraryName() != null) {
 			cqlStr = cqlStr.append("library "
-					+ cqlModel.getLibrary().getLibraryName());
+					+ cqlModel.getLibraryName());
 			cqlStr = cqlStr.append(" version "
-					+ "'" + cqlModel.getLibrary().getVersionUsed());
+					+ "'" + cqlModel.getVersionUsed());
 			cqlStr = cqlStr.append("'");
 			
 			cqlStr = cqlStr.append("\n\n");
@@ -77,7 +75,7 @@ public class CQLUtilityClass {
 			
 			cqlStr = cqlStr.append(" version ");
 			cqlStr = cqlStr.append("'");
-			cqlStr = cqlStr.append(cqlModel.getUsedModel().getQdmVersion());
+			cqlStr = cqlStr.append(cqlModel.getQdmVersion());
 			cqlStr = cqlStr.append("'");
 			cqlStr = cqlStr.append("\n\n");
 		}
@@ -376,36 +374,58 @@ public class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLStringFromXML(String xmlString){
-		
+	public static CQLModel getCQLStringFromXML(String xmlString) {
+		long currentTime = System.currentTimeMillis();
+		//System.out.println("Start time getCQLStringFromXML " + currentTime);
 		CQLModel cqlModel = new CQLModel();
-		System.out.println("XML:"+xmlString);
+		// System.out.println("XML:"+xmlString);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
-		
-		if(StringUtils.isNotBlank(cqlLookUpXMLString)){
-			getCQLGeneralInfo(cqlModel, measureXMLProcessor);
-			getCQLIncludeLibrarysInfo(cqlModel, cqlLookUpXMLString);
-			getCodeSystems(cqlModel, cqlLookUpXMLString);
-			getValueSet(cqlModel, cqlLookUpXMLString);
+
+		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
+			// getCQLGeneralInfo(cqlModel, measureXMLProcessor);
+			// getCQLIncludeLibrarysInfo(cqlModel, cqlLookUpXMLString);
+			// getCodeSystems(cqlModel, cqlLookUpXMLString);
+			// getValueSet(cqlModel, cqlLookUpXMLString);
 			// Combine Codes and Valuesets in this list for UI
-			if(!cqlModel.getValueSetList().isEmpty()){
-				List<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
-				valueSetsList.addAll(cqlModel.getValueSetList());
-				//sorting out CQL all Value sets and codes
-				sortCQLQualityDataSetDto(valueSetsList);
-				cqlModel.setAllValueSetList(valueSetsList);
+			try {
+				Mapping mapping = new Mapping();
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLModelMapping.xml"));
+				Unmarshaller unmarshaller = new Unmarshaller(mapping);
+				unmarshaller.setClass(CQLModel.class);
+				unmarshaller.setWhitespacePreserve(true);
+				unmarshaller.setValidation(false);
+				cqlModel = (CQLModel) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
+			} catch (Exception e) {
+				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
-			getCodes(cqlModel, cqlLookUpXMLString);
-			getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
-			getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
-			getCQLFunctionsInfo(cqlModel, cqlLookUpXMLString);
-			
+
+			// getCodes(cqlModel, cqlLookUpXMLString);
+			// getCQLDefinitionsInfo(cqlModel, cqlLookUpXMLString);
+			// getCQLParametersInfo(cqlModel,cqlLookUpXMLString);
+			// getCQLFunctionsInfo(cqlModel, cqlLookUpXMLString);
+
+		}
+		if(!cqlModel.getValueSetList().isEmpty()){
+			List<CQLQualityDataSetDTO> filterVS  = filterValuesets(cqlModel.getValueSetList());
+			cqlModel.setValueSetList(filterVS);
+			ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
+			valueSetsList.addAll(cqlModel.getValueSetList());
+			// sorting out CQL all Value sets and codes
+			sortCQLQualityDataSetDto(valueSetsList);
+			cqlModel.setAllValueSetList(valueSetsList);
 		}
 		
+		if(!cqlModel.getCodeList().isEmpty()){
+			//Combine Codes and Value sets in allValueSetList for UI
+			List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(cqlModel.getCodeList());
+			if(!dtoList.isEmpty()){
+				cqlModel.getAllValueSetList().addAll(dtoList);
+			}
+		}
+		//System.out.println("End time getCQLStringFromXML " + (System.currentTimeMillis() - currentTime));
 		return cqlModel;
-	}
-	
+	}	
 
 	private static void getCodeSystems(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLCodeSystemWrapper codeSystemWrapper;
@@ -416,7 +436,7 @@ public class CQLUtilityClass {
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLCodeSystemWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
-
+			unmarshaller.setValidation(false);
 			codeSystemWrapper = (CQLCodeSystemWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!codeSystemWrapper.getCqlCodeSystemList().isEmpty()){
 				cqlModel.setCodeSystemList(codeSystemWrapper.getCqlCodeSystemList());
@@ -436,7 +456,7 @@ public class CQLUtilityClass {
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLCodeWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
-
+			unmarshaller.setValidation(false);
 			codeWrapper = (CQLCodeWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!codeWrapper.getCqlCodeList().isEmpty()){
 				cqlModel.setCodeList(codeWrapper.getCqlCodeList());
@@ -461,7 +481,7 @@ public class CQLUtilityClass {
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLQualityDataModelWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
-
+			unmarshaller.setValidation(false);
 			valuesetWrapper = (CQLQualityDataModelWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			if(!valuesetWrapper.getQualityDataDTO().isEmpty()){
 				cqlModel.setValueSetList(filterValuesets(valuesetWrapper.getQualityDataDTO()));
@@ -479,8 +499,8 @@ public class CQLUtilityClass {
 		String usingModelStr = "";
 		String usingModelVer = "";
 		String versionStr = "";
-		CQLLibraryModel libraryModel = new CQLLibraryModel();
-		CQLDataModel usingModel = new CQLDataModel();
+		//CQLLibraryModel libraryModel = new CQLLibraryModel();
+		//CQLDataModel usingModel = new CQLDataModel();
 		
 		
 		if (measureXMLProcessor != null) {
@@ -507,22 +527,22 @@ public class CQLUtilityClass {
 				
 				if (nodeCQLLibrary != null) {
 					libraryNameStr = nodeCQLLibrary.getTextContent();
-					libraryModel.setLibraryName(libraryNameStr);
+					cqlModel.setLibraryName(libraryNameStr);
 				}
 				
 				if (nodeCQLUsingModel != null) {
 					usingModelStr = nodeCQLUsingModel.getTextContent();
-					usingModel.setName(usingModelStr);
+					cqlModel.setName(usingModelStr);
 				}
 				
 				if (nodeCQLUsingModelVersion != null) {
 					usingModelVer = nodeCQLUsingModelVersion.getTextContent();
-					usingModel.setQdmVersion(usingModelVer);
+					cqlModel.setQdmVersion(usingModelVer);
 				}
 				
 				if (nodeCQLVersion != null) {
 					versionStr = nodeCQLVersion.getTextContent();
-					libraryModel.setVersionUsed(versionStr);
+					cqlModel.setVersionUsed(versionStr);
 				}
 				
 			} catch (XPathExpressionException e) {
@@ -531,8 +551,8 @@ public class CQLUtilityClass {
 			
 		}
 		
-		cqlModel.setLibrary(libraryModel);
-		cqlModel.setUsedModel(usingModel);
+		//cqlModel.setLibrary(libraryModel);
+		//cqlModel.setUsedModel(usingModel);
 		
 	}
 	
@@ -546,7 +566,7 @@ public class CQLUtilityClass {
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLDefinitionsWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
-			
+			unmarshaller.setValidation(false);
 			details = (CQLDefinitionsWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			cqlModel.setDefinitionList(details.getCqlDefinitions());
 			
@@ -565,7 +585,7 @@ public class CQLUtilityClass {
 				Unmarshaller unmarshaller = new Unmarshaller(mapping);
 				unmarshaller.setClass(CQLParametersWrapper.class);
 				unmarshaller.setWhitespacePreserve(true);
-			
+				unmarshaller.setValidation(false);
 				details = (CQLParametersWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 				cqlModel.setCqlParameters(details.getCqlParameterList());
 		} catch (Exception e) {
@@ -579,10 +599,13 @@ public class CQLUtilityClass {
 		CQLFunctionsWrapper details = null;
 		try {
 			Mapping mapping = new Mapping();
+			
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLFunctionModelMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLFunctionsWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
+			
+			unmarshaller.setValidation(false);
 			details = (CQLFunctionsWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			cqlModel.setCqlFunctions(details.getCqlFunctionsList());
 		} catch (Exception e) {
@@ -642,6 +665,7 @@ public class CQLUtilityClass {
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLIncludeLibrayMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLIncludeLibraryWrapper.class);
+			unmarshaller.setValidation(false);
 			unmarshaller.setWhitespacePreserve(true);
 			
 			details = (CQLIncludeLibraryWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));

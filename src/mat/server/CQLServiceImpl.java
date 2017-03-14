@@ -263,9 +263,9 @@ public class CQLServiceImpl implements CQLService {
 			}
 			
 			result.setSuccess(true);
-			CQLLibraryModel cqlLibraryModel = new CQLLibraryModel();
-			cqlLibraryModel.setLibraryName(libraryName);
-			result.getCqlModel().setLibrary(cqlLibraryModel);
+			//CQLLibraryModel cqlLibraryModel = new CQLLibraryModel();
+			result.getCqlModel().setLibraryName(libraryName);
+			/*result.getCqlModel().setLibrary(cqlLibraryModel);*/
 		} else {
 			result.setSuccess(false);
 		}
@@ -1243,7 +1243,8 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, boolean isFindUsedCQLExpressionsFlag) {
-		
+		//long currentTime = System.currentTimeMillis();
+		//System.out.println("Start time parseCQLLibraryForErrors " + currentTime);
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 		
 		Map<String, String> cqlLibNameMap = new HashMap<String, String>();
@@ -1252,13 +1253,14 @@ public class CQLServiceImpl implements CQLService {
 		
 		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, isFindUsedCQLExpressionsFlag);
 		
-		
+		//System.out.println("End time parseCQLLibraryForErrors " + (System.currentTimeMillis()- currentTime));
 		
 		return parsedCQL;
 	}
 
 	public void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, String> cqlLibNameMap) {
-				
+		//long currentTime = System.currentTimeMillis();
+		//System.out.println("Start time getCQLIncludeLibMap " + currentTime);		
 		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
 		if(cqlIncludeLibraries == null){
 			return;
@@ -1279,13 +1281,15 @@ public class CQLServiceImpl implements CQLService {
 			System.out.println("Include lib version for "+cqlIncludeLibrary.getCqlLibraryName()+" is:"+cqlIncludeLibrary.getVersion());
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), cqlString);
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap);
+			
 		}
-	
+		//System.out.println("End time getCQLIncludeLibMap " + (System.currentTimeMillis()-currentTime));		
 	}
 
 	private void validateCQLWithIncludes(CQLModel cqlModel,
 			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL, boolean isFindUsedCQLExpressionsFlag) {
-		
+		//long currentTime = System.currentTimeMillis();
+		//System.out.println("Start time validateCQLWithIncludes " + currentTime);	
 		List<File> fileList = new ArrayList<File>();
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
@@ -1377,6 +1381,7 @@ public class CQLServiceImpl implements CQLService {
 		}
 		
 		parsedCQL.setCqlErrors(errors);
+		//System.out.println("End time validateCQLWithIncludes " + (System.currentTimeMillis()-currentTime));
 	}
 
 	public File createCQLTempFile(String cqlFileString, String name, File parentFolder) throws IOException {
@@ -2216,6 +2221,8 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
 		logger.info("GETTING CQL ARTIFACTS");
+		//long currentTime = System.currentTimeMillis();
+		//System.out.println("Start time getUsedCQlArtifacts " + currentTime);
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
 		SaveUpdateCQLResult cqlResult = parseCQLLibraryForErrors(cqlModel, true);
 		
@@ -2223,6 +2230,8 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
 		cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 		cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
+		
+		//System.out.println("End time getUsedCQlArtifacts " + (System.currentTimeMillis()-currentTime));
 		
 		return cqlResult.getUsedCQLArtifacts();		
 	}

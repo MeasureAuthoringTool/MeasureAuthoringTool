@@ -2524,6 +2524,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
 		}
 
+		SaveUpdateCQLResult cqlResult =  getMeasureCQLFileData(measureId);
+		if(cqlResult.getCqlErrors().size() >0){
+			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
+		}
+		
 		String versionNumber = null;
 		if (isMajor) {
 			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());

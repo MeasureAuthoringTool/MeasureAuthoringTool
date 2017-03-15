@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
 import org.cqframework.cql.elm.tracking.ClassType;
 import org.cqframework.cql.elm.tracking.DataType;
@@ -1149,9 +1148,9 @@ public class CQLFilter {
 			fw.write(getCQL());
 			fw.close();
 			
-			//CQLtoELM cqlToElm = new CQLtoELM(f);
-			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-			cqlToElm.doTranslation(true, false, true, CqlTranslator.Format.JSON);
+			CQLtoELM cqlToElm = new CQLtoELM(f);
+			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			cqlToElm.doTranslation(true, false, true);
 	    	List<String> defList = new ArrayList<String>();
 	    	defList.add("testInclude");
 	    	defList.add("test");

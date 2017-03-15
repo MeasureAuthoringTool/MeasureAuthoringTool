@@ -1238,160 +1238,11 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
-	private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
-		return parseCQLLibraryForErrors(cqlModel, false);
+	@Override
+	public SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
+		return CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), null);
 	}
-	
-	private SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, boolean isFindUsedCQLExpressionsFlag) {
-		//long currentTime = System.currentTimeMillis();
-		//System.out.println("Start time parseCQLLibraryForErrors " + currentTime);
-		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 		
-		Map<String, String> cqlLibNameMap = new HashMap<String, String>();
-		
-		getCQLIncludeLibMap(cqlModel, cqlLibNameMap);
-		
-		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, isFindUsedCQLExpressionsFlag);
-		
-		//System.out.println("End time parseCQLLibraryForErrors " + (System.currentTimeMillis()- currentTime));
-		
-		return parsedCQL;
-	}
-
-	public void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, String> cqlLibNameMap) {
-		//long currentTime = System.currentTimeMillis();
-		//System.out.println("Start time getCQLIncludeLibMap " + currentTime);		
-		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
-		if(cqlIncludeLibraries == null){
-			return;
-		}
-		
-		for(CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries){
-			CQLLibrary cqlLibrary = getCqlLibraryDAO().find(cqlIncludeLibrary.getCqlLibraryId());
-			
-			if(cqlLibrary == null){
-				logger.info("Could not find included library:"+cqlIncludeLibrary.getAliasName());
-				continue;
-			}
-			
-			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
-			
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
-			String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
-			System.out.println("Include lib version for "+cqlIncludeLibrary.getCqlLibraryName()+" is:"+cqlIncludeLibrary.getVersion());
-			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), cqlString);
-			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap);
-			
-		}
-		//System.out.println("End time getCQLIncludeLibMap " + (System.currentTimeMillis()-currentTime));		
-	}
-
-	private void validateCQLWithIncludes(CQLModel cqlModel,
-			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL, boolean isFindUsedCQLExpressionsFlag) {
-		//long currentTime = System.currentTimeMillis();
-		//System.out.println("Start time validateCQLWithIncludes " + currentTime);	
-		List<File> fileList = new ArrayList<File>();
-		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-				
-		try{
-			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
-			File tempDir = test.getParentFile();
-						
-			File folder = new File(tempDir.getAbsolutePath() + File.separator + UUIDUtilClient.uuid());
-			folder.mkdir();
-			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
-			fileList.add(mainCQLFile);
-			
-			for(String cqlLibName:cqlLibNameMap.keySet()){
-				File cqlIncludedFile = createCQLTempFile(cqlLibNameMap.get(cqlLibName), cqlLibName, folder);
-				fileList.add(cqlIncludedFile);
-			}
-			
-			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
-			cqlToElm.doTranslation(true, false, false);
-			
-			cqlTranslatorExceptions = cqlToElm.getErrors();
-			
-			fileList.add(test);
-			fileList.add(folder);
-			
-			if(isFindUsedCQLExpressionsFlag){
-				if(cqlToElm != null){
-					
-					List<String> exprList = new ArrayList<String>();
-					
-					for(CQLDefinition cqlDefinition:cqlModel.getDefinitionList()){
-						System.out.println("name:"+cqlDefinition.getDefinitionName());
-						exprList.add(cqlDefinition.getDefinitionName());
-					}
-					
-					for(CQLFunctions cqlFunction:cqlModel.getCqlFunctions()){
-						System.out.println("name:"+cqlFunction.getFunctionName());
-						exprList.add(cqlFunction.getFunctionName());
-					}
-					
-					CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, folder.getAbsolutePath());
-		    		cqlFilter.findUsedExpressions();
-		    		
-		    		GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
-		    		usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
-		    		usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
-		    		usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
-		    		usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
-		    		usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
-		    		usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
-		    		usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
-		    		
-		    		parsedCQL.setUsedCQLArtifacts(usedArtifacts);
-		    		
-		    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-		        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-		        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-		        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-		        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-		        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-		        	System.out.println("Used libraries:"+cqlFilter.getUsedLibraries());
-				}
-			}
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			for(File file:fileList){
-				file.delete();
-			}
-		}
-		
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		
-		for(CqlTranslatorException cte : cqlTranslatorExceptions){
-			CQLErrors cqlErrors = new CQLErrors();
-			
-			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-			
-			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-			
-			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-			
-			cqlErrors.setErrorMessage(cte.getMessage());
-			errors.add(cqlErrors);
-		}
-		
-		parsedCQL.setCqlErrors(errors);
-		//System.out.println("End time validateCQLWithIncludes " + (System.currentTimeMillis()-currentTime));
-	}
-
-	public File createCQLTempFile(String cqlFileString, String name, File parentFolder) throws IOException {
-		File cqlFile = new File(parentFolder, name+".cql");
-		FileWriter fw = new FileWriter(cqlFile);
-		fw.write(cqlFileString);
-		fw.close();
-		return cqlFile;
-	}
-	
 	/**
 	 * Modify QDM status.
 	 *
@@ -2221,17 +2072,26 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
 		logger.info("GETTING CQL ARTIFACTS");
-		//long currentTime = System.currentTimeMillis();
-		//System.out.println("Start time getUsedCQlArtifacts " + currentTime);
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
-		SaveUpdateCQLResult cqlResult = parseCQLLibraryForErrors(cqlModel, true);
+		
+		List<String> exprList = new ArrayList<String>();
+		
+		for(CQLDefinition cqlDefinition:cqlModel.getDefinitionList()){
+			System.out.println("name:"+cqlDefinition.getDefinitionName());
+			exprList.add(cqlDefinition.getDefinitionName());
+		}
+		
+		for(CQLFunctions cqlFunction:cqlModel.getCqlFunctions()){
+			System.out.println("name:"+cqlFunction.getFunctionName());
+			exprList.add(cqlFunction.getFunctionName());
+		}
+		
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
 		
 		XmlProcessor xmlProcessor = new XmlProcessor(xml);
 		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
 		cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 		cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
-		
-		//System.out.println("End time getUsedCQlArtifacts " + (System.currentTimeMillis()-currentTime));
 		
 		return cqlResult.getUsedCQLArtifacts();		
 	}

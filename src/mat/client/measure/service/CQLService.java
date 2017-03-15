@@ -195,8 +195,6 @@ public interface CQLService {
 
 	int countNumberOfAssociation(String associatedWithId);
 
-
-
-
+	SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel);
 
 }

@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
+import org.cqframework.cql.elm.tracking.ClassType;
+import org.cqframework.cql.elm.tracking.DataType;
+import org.cqframework.cql.elm.tracking.ListType;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.BinaryExpression;
@@ -49,6 +54,9 @@ import org.hl7.elm.r1.Tuple;
 import org.hl7.elm.r1.TupleElement;
 import org.hl7.elm.r1.UnaryExpression;
 import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.ProfileInfo;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
 
 /**
  *
@@ -101,9 +109,13 @@ public class CQLFilter {
      */
     private Map<String, LibraryHolder> includedLibraries;
     
+    private Map<String, List<String>> valueSetDataTypeMap;
+    
     private LibraryHolder currentLibraryHolder;
     
     private String cqlFolderPath = "";
+    
+    private static Map<String, String> qdmTypeInfoMap = new HashMap<String, String>();
     
     /**
      * The cql filter
@@ -124,6 +136,7 @@ public class CQLFilter {
         this.usedCodeSystems = new ArrayList<String>();
         this.usedCodes = new ArrayList<String>();
         this.includedLibraries = new HashMap<String, LibraryHolder>();
+        this.valueSetDataTypeMap = new HashMap<String, List<String>>();
     }
 
     /**
@@ -203,6 +216,7 @@ public class CQLFilter {
         }
 
         System.out.println(expression.getClass());
+        System.out.println(expression.toString());
 
         // check for parameter, definition, function, valueset references, codesystems //
         // check for expression references
@@ -486,6 +500,7 @@ public class CQLFilter {
         ValueSetRef valueSetRef = (ValueSetRef) expression;
         System.out.println("\t" + valueSetRef.getName());
         String name = valueSetRef.getName();
+        
         System.out.println("aliasalias:"+this.currentLibraryHolder.getLibraryAlias());
         if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
         	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
@@ -495,22 +510,7 @@ public class CQLFilter {
         this.addUsedValueset(name);
     }
 
-    private String getLibraryAliasWithName(String libraryAlias) {
-		
-    	List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
-    	
-    	for(IncludeDef includeDef: includeDefs){
-    		System.out.println("Include alias:"+includeDef.getLocalIdentifier());
-    		System.out.println("Include library name:"+includeDef.getPath());
-    		
-    		if(includeDef.getLocalIdentifier().equals(libraryAlias)){
-    			return includeDef.getPath() + "." + libraryAlias;
-    		}
-    	}
-    	return "";
-	}
-
-	/**
+    /**
      * Checks for code system reference. Adds the codesystem to the used codesystem list
      * @param expression the expression
      */
@@ -779,11 +779,58 @@ public class CQLFilter {
     private void checkForRetrieveExpression(Expression expression) {
         Retrieve retrieve = (Retrieve) expression;
         checkForUsedStatements(retrieve.getCodes());
-        
+        saveValueSet_DataType(retrieve);
         checkForUsedStatements(retrieve.getDateRange());
     }
 
-    /**
+    private void saveValueSet_DataType(Retrieve retrieve) {
+		
+    	Expression expr = retrieve.getCodes();
+    	if(expr == null){
+    		return;
+    	}
+    	
+    	String valueSetOrCodeName = "";
+    	
+    	if(expr instanceof CodeRef){
+    		CodeRef codeRef = (CodeRef) retrieve.getCodes();
+    		valueSetOrCodeName = codeRef.getName();
+    	}else if(expr instanceof ValueSetRef){
+    		ValueSetRef valueSetRef = (ValueSetRef) retrieve.getCodes();
+    		valueSetOrCodeName = valueSetRef.getName();
+    	}
+    			
+		String dataTypeTemplateId = retrieve.getTemplateId();
+		String dataTypeName = "";
+		
+		if(dataTypeTemplateId != null){
+			dataTypeName = getDataTypeName(dataTypeTemplateId);
+		}
+		else{
+			//If you can find the templateId for the datatype for the retrieve, try this.
+			DataType dataType = retrieve.getResultType();
+			if(dataType instanceof ListType){
+				ListType listType = (ListType)dataType;
+				if(listType.getElementType() instanceof ClassType){
+					dataTypeName = ((ClassType)listType.getElementType()).getLabel();
+				}
+			}
+		}
+		
+		if(dataTypeName != null && dataTypeName.length() > 0){
+			List<String> dataTypeList = this.valueSetDataTypeMap.get(valueSetOrCodeName);
+			if(dataTypeList == null){
+				dataTypeList = new ArrayList<String>();
+				this.valueSetDataTypeMap.put(valueSetOrCodeName, dataTypeList);
+			}
+			
+			if(!dataTypeList.contains(dataTypeName)){
+				dataTypeList.add(dataTypeName);
+			}
+		}
+	}
+
+	/**
      * Check for query expression
      * @param expression the expression
      */
@@ -853,7 +900,7 @@ public class CQLFilter {
     			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "." +libraryAliasName);
     			
     			if(includedLibrary == null){
-    				String libraryPathName = includeDef.getPath();
+    				String libraryPathName = includeDef.getPath() + "_" + includeDef.getVersion();
     				System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
     				try {
     					
@@ -993,6 +1040,31 @@ public class CQLFilter {
     	return new ArrayList<String>(this.includedLibraries.keySet());
     }
     
+    public Map<String, List<String>> getValueSetDataTypeMap() {
+		return valueSetDataTypeMap;
+	}
+    
+    public static String getDataTypeName(String dataTypeIdentifier){
+    	//load qdm info if blank
+    	if(qdmTypeInfoMap.size() == 0){
+    		
+    		QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
+	    	ModelInfo info = qdmModelInfoProvider.load();
+	    	
+	    	List<TypeInfo> typeInfos = info.getTypeInfo();
+	    	for(TypeInfo typeInfo : typeInfos) {
+	    		 if(typeInfo instanceof ProfileInfo) {
+	                 ProfileInfo profileInfo = (ProfileInfo) typeInfo;
+	                 System.out.println(profileInfo.getIdentifier()  + " >>> " + profileInfo.getLabel());
+	                 qdmTypeInfoMap.put(profileInfo.getIdentifier(), profileInfo.getLabel());
+	             }
+	    	} 
+    	}
+    	
+    	String dataTypeName = qdmTypeInfoMap.get(dataTypeIdentifier);
+    	return dataTypeName;
+    }
+    
     private class LibraryHolder{
     	private Library library;
     	private String libraryAlias;
@@ -1030,21 +1102,25 @@ public class CQLFilter {
     }
     
     public static void main(String[] args) {
+    	test1();
+      	
+	}
+    
+    public static void test2(){
     	try {
-			File f = File.createTempFile("test", ".cql");
-			FileWriter fw = new FileWriter(f);
-			fw.write(getCQL());
-			fw.close();
+			File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");			
+			//CQLtoELM cqlToElm = new CQLtoELM(f);
+			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			cqlToElm.doTranslation(true, false, false, CqlTranslator.Format.XML);
 			
-			CQLtoELM cqlToElm = new CQLtoELM(f);
-			cqlToElm.doTranslation(true, false, true);
-	    	List<String> defList = new ArrayList<String>();
-	    	defList.add("testInclude");
-	    	defList.add("test1");
-	    	defList.add("birthdateDefn");
-//	    	defList.add("test1");
-//	    	defList.add("SDE Ethnicity");
-	    		    	
+			List<String> defList = new ArrayList<String>();
+	    	defList.add("Union Diagnoses");
+	    	defList.add("Depression Office Visit Encounter 1");
+	    	defList.add("Depression Office Visit Encounter 2");
+	    	defList.add("Depression Office Visit Encounter 3");
+	    	defList.add("Depression Face to Face Encounter 1");
+	    	defList.add("Depression Behavioral Health Encounter 1");
+	    	    		    	
 	    	if(cqlToElm.getErrors().size() == 0){
 	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
 	    		cqlFilter.filter();
@@ -1055,6 +1131,48 @@ public class CQLFilter {
 	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
 	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
 	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+	    	}else{
+	    		System.out.println(cqlToElm.getErrors());
+	    	}	    	
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+    }
+    
+    public static void test1(){
+    	try {
+			File f = File.createTempFile("test", ".cql");
+			FileWriter fw = new FileWriter(f);
+			fw.write(getCQL());
+			fw.close();
+			
+			//CQLtoELM cqlToElm = new CQLtoELM(f);
+			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			cqlToElm.doTranslation(true, false, true, CqlTranslator.Format.JSON);
+	    	List<String> defList = new ArrayList<String>();
+	    	defList.add("testInclude");
+	    	defList.add("test");
+//	    	defList.add("birthdateDefn");
+//	    	defList.add("test1.teq");
+//	    	defList.add("SDE Race");
+	    	defList.add("SDE Sex");
+//	    	defList.add("test2");
+//	    	defList.add("SDE Ethnicity");
+	    	    		    	
+	    	if(cqlToElm.getErrors().size() == 0){
+	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+	    		cqlFilter.filter();
+	    		
+	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
 	    	}else{
 	    		System.out.println(cqlToElm.getErrors());
 	    	}	    	
@@ -1064,12 +1182,7 @@ public class CQLFilter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-    	
-    	
-    	
-	}
-    
-    
+    }    
 
 	public static String getCQL(){
     	String s = "" 
@@ -1111,11 +1224,15 @@ public class CQLFilter {
 				
 				+ " define \"test\": \"birthdateDefn\" "
 				
+				+ " define \"test()\": \"birthdateDefn\" "
+
 				+ " define \"test1.teq\": (([\"Medication, Not Dispensed\"] b where b.recorder in \"Payer\")) "
     		
-    			+ " define \"test1\": \"test1.teq\" ";
+    			+ " define \"test1\": \"test1.teq\" "
+    			
+				+ " define \"test2\": \"Measurement Period\" "
     	
-    			//+ " define \"testInclude\": t1.tp ";
+    			+ " define \"testInclude\": [\"Medication, Not Dispensed\": \"Birthdate\"] ";
     	
     	return s;
     }

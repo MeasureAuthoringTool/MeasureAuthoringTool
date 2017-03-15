@@ -14,6 +14,7 @@ import mat.dao.PropertyOperator;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.StewardDAO;
 import mat.dao.UserDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
@@ -35,6 +36,7 @@ import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLModel;
 import mat.model.cql.parser.CQLFileObject;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
@@ -120,6 +122,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	private UserDAO userDAO;
 	
 	private String currentReleaseVersion;
+	
+	/** The cql library dao. */
+	@Autowired
+	private CQLLibraryDAO cqlLibraryDAO;
 	
 	//	@Override
 	//	public void clone(Measure measurePackage, String newCloneName) {
@@ -244,11 +250,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		Measure measure = measureDAO.find(measureId);
 		String exportedXML = "";
-		MATCQLParser matcqlParser = new MATCQLParser();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getMeasureXMLAsString()),"").toString();
-		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+				
 		if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
-			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlFileObject);
+			
+			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML.getMeasureXMLAsString());
+			MATCQLParser matcqlParser = new MATCQLParser();
+			CQLFileObject cqlFileObject = matcqlParser.parseCQL(CQLUtilityClass.getCqlString(cqlModel, "").toString());
+			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
+			
 		} else {
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO);
 		}
@@ -670,6 +679,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	public void setCurrentReleaseVersion(String currentReleaseVersion) {
 		this.currentReleaseVersion = currentReleaseVersion;
+	}
+
+	public CQLLibraryDAO getCqlLibraryDAO() {
+		return cqlLibraryDAO;
+	}
+
+	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
+		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
 	
 }

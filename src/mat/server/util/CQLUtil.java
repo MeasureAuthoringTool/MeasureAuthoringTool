@@ -1,6 +1,11 @@
 package mat.server.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +15,10 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
@@ -17,7 +26,17 @@ import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
+import mat.server.CQLUtilityClass;
+import mat.server.cqlparser.CQLFilter;
+import mat.shared.CQLErrors;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,6 +45,7 @@ public class CQLUtil {
 	
 	/** The Constant xPath. */
 	static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	private static final Log logger = LogFactory.getLog(CQLUtil.class);
 
 	public static CQLArtifactHolder getUsedCQLArtifacts(Document originalDoc, CQLFileObject cqlFileObject) throws XPathExpressionException {
 					
@@ -198,39 +218,31 @@ public class CQLUtil {
 		CQLUtil cqlUtil = new CQLUtil();
 		CQLUtil.CQLArtifactHolder cqlArtifactHolder = cqlUtil.new CQLArtifactHolder();
 		
-		String xPathForDefinitions = "//cqldefinition/@uuid";
-		String xPathForFunctions = "//cqlfunction/@uuid";
-		
-		String xPathForDefIdentifiers = "//cqldefinition/@displayName"; 
-		String xPathForFuncIdentifiers = "//cqlfunction/@displayName"; 
+		String xPathForDefinitions = "//cqldefinition";
+		String xPathForFunctions = "//cqlfunction";
+ 
 		try {
 			NodeList cqlDefinitions = (NodeList) xPath.evaluate(xPathForDefinitions, 
 												originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			
 			for(int i = 0; i < cqlDefinitions.getLength(); i++) {
-				String uuid = cqlDefinitions.item(i).getNodeValue(); 
+				String uuid = cqlDefinitions.item(i).getAttributes().getNamedItem("uuid").getNodeValue(); 
+				String name = cqlDefinitions.item(i).getAttributes().getNamedItem("displayName").getNodeValue(); 
+				
 				cqlArtifactHolder.addDefinitionUUID(uuid);
+				cqlArtifactHolder.addDefinitionIdentifier(name.replaceAll("\"", ""));
 			}
 			
 			NodeList cqlFunctions = (NodeList) xPath.evaluate(xPathForFunctions, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
 			
 			for(int i = 0; i < cqlFunctions.getLength(); i++) {
-				String uuid = cqlFunctions.item(i).getNodeValue(); 
+				String uuid = cqlFunctions.item(i).getAttributes().getNamedItem("uuid").getNodeValue();
+				String name = cqlFunctions.item(i).getAttributes().getNamedItem("displayName").getNodeValue();
+				
 				cqlArtifactHolder.addFunctionUUID(uuid);
+				cqlArtifactHolder.addFunctionIdentifier(name.replaceAll("\"", ""));
 			}
-			
-			NodeList cqlDefIdentifiers = (NodeList) xPath.evaluate(xPathForDefIdentifiers, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
-			for(int i = 0; i < cqlDefIdentifiers.getLength(); i++) {
-				String identifier = cqlDefIdentifiers.item(i).getNodeValue();
-				cqlArtifactHolder.addDefinitionIdentifier(identifier.replaceAll("\"", ""));
-			}
-			
-			NodeList cqlFuncIdentifiers = (NodeList) xPath.evaluate(xPathForFuncIdentifiers, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
-			for(int i = 0; i < cqlFuncIdentifiers.getLength(); i++) {
-				String identifier = cqlFuncIdentifiers.item(i).getNodeValue();
-				cqlArtifactHolder.addFunctionIdentifier(identifier.replaceAll("\"", ""));
-			}
-						
+					
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -301,15 +313,15 @@ public class CQLUtil {
 	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
 	 * @param originalDoc
 	 * 	the simple xml document
-	 * @param usedCQLDefinitions
+	 * @param usedDefinitionsList
 	 * 	the usedcqldefinitions
 	 * @throws XPathExpressionException
 	 */
-	public static void removeUnusedCQLDefinitions(Document originalDoc, Set<String> usedCQLDefinitions) throws XPathExpressionException {
+	public static void removeUnusedCQLDefinitions(Document originalDoc, List<String> usedDefinitionsList) throws XPathExpressionException {
 		
 		String idXPathString = ""; 
-		for (String id:usedCQLDefinitions) {
-			idXPathString += "[@id !='" + id + "']"; 
+		for (String name:usedDefinitionsList) {
+			idXPathString += "[@name !='" + name + "']"; 
 		}
 		
 		String xPathForUnusedDefinitions = "//cqlLookUp//definition" + idXPathString; 
@@ -331,14 +343,14 @@ public class CQLUtil {
 	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
 	 * @param originalDoc
 	 * 	the simple xml document
-	 * @param usedCQLFunctions
+	 * @param list
 	 * 	the usedcqlfunctions
 	 * @throws XPathExpressionException
 	 */
-	public static void removeUnusedCQLFunctions(Document originalDoc, Set<String> usedCQLFunctions) throws XPathExpressionException {
+	public static void removeUnusedCQLFunctions(Document originalDoc, List<String> usedFunctionsList) throws XPathExpressionException {
 		String idXPathString = ""; 
-		for(String id: usedCQLFunctions) {
-			idXPathString += "[@id !='" + id + "']";
+		for(String name: usedFunctionsList) {
+			idXPathString += "[@name !='" + name + "']";
 		}
 		
 		String xPathForUnusedFunctions = "//cqlLookUp//function" + idXPathString; 
@@ -437,13 +449,13 @@ public class CQLUtil {
 	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
 	 * @param originalDoc
 	 * 	the simple xml document
-	 * @param cqlParameterIdentifierSet
+	 * @param usedParameterList
 	 * 	the used parameters
 	 * @throws XPathExpressionException
 	 */
-	public static void removeUnusedParameters(Document originalDoc, Set<String> cqlParameterIdentifierSet) throws XPathExpressionException {
+	public static void removeUnusedParameters(Document originalDoc, List<String> usedParameterList) throws XPathExpressionException {
 		String nameXPathString = ""; 
-		for(String name : cqlParameterIdentifierSet) {
+		for(String name : usedParameterList) {
 			nameXPathString += "[@name !='" + name + "']";
 		}
 		
@@ -457,6 +469,144 @@ public class CQLUtil {
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);
 		}
+	}
+	
+	public static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO, List<String> exprList) {
+		
+		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
+		
+		Map<String, String> cqlLibNameMap = new HashMap<String, String>();
+		
+		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
+		
+		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList);
+				
+		return parsedCQL;
+	}
+
+	private static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, String> cqlLibNameMap, CQLLibraryDAO cqlLibraryDAO) {
+				
+		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
+		if(cqlIncludeLibraries == null){
+			return;
+		}
+		
+		for(CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries){
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
+			
+			if(cqlLibrary == null){
+				logger.info("Could not find included library:"+cqlIncludeLibrary.getAliasName());
+				continue;
+			}
+			
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+			
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
+			String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
+			System.out.println("Include lib version for "+cqlIncludeLibrary.getCqlLibraryName()+" is:"+cqlIncludeLibrary.getVersion());
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), cqlString);
+			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
+		}
+	
+	}
+
+	private static void validateCQLWithIncludes(CQLModel cqlModel,
+			Map<String, String> cqlLibNameMap, SaveUpdateCQLResult parsedCQL, List<String> exprList) {
+		
+		List<File> fileList = new ArrayList<File>();
+		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+				
+		try{
+			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
+			File tempDir = test.getParentFile();
+						
+			File folder = new File(tempDir.getAbsolutePath() + File.separator + UUIDUtilClient.uuid());
+			folder.mkdir();
+			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
+			fileList.add(mainCQLFile);
+			
+			for(String cqlLibName:cqlLibNameMap.keySet()){
+				File cqlIncludedFile = createCQLTempFile(cqlLibNameMap.get(cqlLibName), cqlLibName, folder);
+				fileList.add(cqlIncludedFile);
+			}
+			
+			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
+			cqlToElm.doTranslation(true, false, false);
+			
+			cqlTranslatorExceptions = cqlToElm.getErrors();
+			
+			fileList.add(test);
+			fileList.add(folder);
+			
+			if(exprList != null){
+								
+				filterCQLArtifacts(cqlModel, parsedCQL, folder, cqlToElm, exprList);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			for(File file:fileList){
+				file.delete();
+			}
+		}
+		
+		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		
+		for(CqlTranslatorException cte : cqlTranslatorExceptions){
+			CQLErrors cqlErrors = new CQLErrors();
+			
+			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
+			
+			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+			
+			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
+			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+			
+			cqlErrors.setErrorMessage(cte.getMessage());
+			errors.add(cqlErrors);
+		}
+		
+		parsedCQL.setCqlErrors(errors);
+	}
+
+	private static void filterCQLArtifacts(CQLModel cqlModel,
+			SaveUpdateCQLResult parsedCQL, File folder, CQLtoELM cqlToElm, List<String> exprList) {
+		if(cqlToElm != null){
+			
+			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, folder.getAbsolutePath());
+			cqlFilter.findUsedExpressions();
+			
+			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
+			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
+			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
+			usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
+			usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
+			usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
+			usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
+			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
+			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
+			
+			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
+			
+			System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+			System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+			System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+			System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+			System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+			System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+			System.out.println("Used libraries:"+cqlFilter.getUsedLibraries());
+		}
+	}
+
+	private static File createCQLTempFile(String cqlFileString, String name, File parentFolder) throws IOException {
+		File cqlFile = new File(parentFolder, name+".cql");
+		FileWriter fw = new FileWriter(cqlFile);
+		fw.write(cqlFileString);
+		fw.close();
+		return cqlFile;
 	}
 	
 	public class CQLArtifactHolder{

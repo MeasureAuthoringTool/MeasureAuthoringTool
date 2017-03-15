@@ -2,6 +2,7 @@ package mat.shared;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.shared.GenericResult;
 
@@ -24,6 +25,8 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private List<String> usedCQLcodes = new ArrayList<String>();
 	
 	private List<String> usedCQLLibraries = new ArrayList<String>();
+	
+	private Map<String, List<String>> valueSetDataTypeMap;
 
 	public List<String> getUsedCQLDefinitions() {
 		return usedCQLDefinitions;
@@ -79,6 +82,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setUsedCQLLibraries(List<String> usedCQLLibraries) {
 		this.usedCQLLibraries = usedCQLLibraries;
+	}
+
+	public Map<String, List<String>> getValueSetDataTypeMap() {
+		return valueSetDataTypeMap;
+	}
+
+	public void setValueSetDataTypeMap(Map<String, List<String>> valueSetDataTypeMap) {
+		this.valueSetDataTypeMap = valueSetDataTypeMap;
 	} 
 	
 	

@@ -4274,15 +4274,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean parseCQLFile(String measureXML, String measureId) {
 		boolean isInvalid = false;
 		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML), "")
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML);
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "")
 				.toString();
-		MATCQLParser matcqlParser = new MATCQLParser();
-		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+//		MATCQLParser matcqlParser = new MATCQLParser();
+//		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
 		List<String> message = new ArrayList<String>();
-		String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlFileObject);
-		CQLModel cqlModel = new CQLModel();
-		cqlModel = CQLUtilityClass.getCQLStringFromXML(exportedXML);
-		StringBuilder cqlString = getCqlService().getCqlString(cqlModel);
+		String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+		CQLModel cqlModel1 = CQLUtilityClass.getCQLStringFromXML(exportedXML);
+		StringBuilder cqlString = getCqlService().getCqlString(cqlModel1);
 		if (!StringUtils.isBlank(cqlString.toString())) {
 			CQLtoELM cqlToElm = new CQLtoELM(cqlString.toString());
 			try {
@@ -5877,6 +5877,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 
+		
 		return result;
 	}
 

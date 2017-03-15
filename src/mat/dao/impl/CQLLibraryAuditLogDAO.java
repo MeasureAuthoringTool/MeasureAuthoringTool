@@ -7,23 +7,25 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.CQLAuditLog;
-import mat.model.MeasureAuditLog;
 import mat.model.clause.CQLLibrary;
 import mat.server.LoggedInUserUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * DAO implementation of Measure Audit Log.
  */
 public class CQLLibraryAuditLogDAO extends GenericDAO<CQLAuditLog, String> implements mat.dao.CQLLibraryAuditLogDAO{
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.CQLLibraryAuditLogDAO#recordCQLLibraryEvent(mat.model.clause.CQLLibrary, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean recordCQLLibraryEvent(CQLLibrary cqlLibrary, String event, String additionalInfo){
 		Session session = null;
@@ -46,13 +48,16 @@ public class CQLLibraryAuditLogDAO extends GenericDAO<CQLAuditLog, String> imple
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.CQLLibraryAuditLogDAO#searchHistory(java.lang.String, int, int, java.util.List)
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public SearchHistoryDTO searchHistory(String cqlId, int startIndex, int numberOfRows,List<String> filterList){
 		List<AuditLogDTO> logResults = new ArrayList<AuditLogDTO>();
 		SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
 		
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);
+		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLAuditLog.class);
 		logCriteria.add(Restrictions.eq("cqlLibrary.id", cqlId));
 		logCriteria.add(Restrictions.ne("activityType", "User Comment"));
 		
@@ -78,49 +83,9 @@ public class CQLLibraryAuditLogDAO extends GenericDAO<CQLAuditLog, String> imple
 			logResults.add(dto);
 		}
 		searchHistoryDTO.setLogs(logResults);
-		setPagesAndRows(cqlId, numberOfRows, filterList, searchHistoryDTO);
+		searchHistoryDTO.setTotalResults(logResults.size());
 		return searchHistoryDTO; 
 	}
 	
-	/**
-	 * Sets the pages and rows.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param numberOfRows
-	 *            the number of rows
-	 * @param filterList
-	 *            the filter list
-	 * @param searchHistoryDTO
-	 *            the search history dto
-	 */
-	@SuppressWarnings("rawtypes")
-	private void setPagesAndRows(String measureId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){
-		int pageCount = 0;
-
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);		
 		
-		logCriteria.add(Restrictions.eq("measure.id", measureId));
-
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
-		
-		logCriteria.setProjection(Projections.rowCount());
-
-		List results = logCriteria.list();
-
-		
-		if(results != null && !results.isEmpty()){
-			long totalRows = Long.parseLong(String.valueOf(results.get(0)));
-			
-			searchHistoryDTO.setTotalResults(totalRows);
-			
-			int mod = (int) (totalRows % numberOfRows);
-			pageCount = (int) (totalRows / numberOfRows);
-			pageCount = (mod > 0)?(pageCount + 1) : pageCount;
-			
-			searchHistoryDTO.setPageCount(pageCount);
-		}
-	}	
 }

@@ -1,5 +1,6 @@
 package mat.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -24,6 +25,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
+import mat.DTO.SearchHistoryDTO;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryDraftView;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -50,9 +52,12 @@ import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
+// TODO: Auto-generated Javadoc
+
 /**
- * @author jnarang
+ * The Class CqlLibraryPresenter.
  *
+ * @author jnarang
  */
 public class CqlLibraryPresenter implements MatPresenter {
 
@@ -65,10 +70,19 @@ public class CqlLibraryPresenter implements MatPresenter {
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
 
+	/** The cql library view. */
 	ViewDisplay cqlLibraryView;
+	
+	/** The detail display. */
 	DetailDisplay detailDisplay;
+	
+	/** The version display. */
 	VersionDisplay versionDisplay;
+	
+	/** The draft display. */
 	DraftDisplay draftDisplay;
+	
+	/** The share display. */
 	ShareDisplay shareDisplay;
 
 	/** The is create new Item widget visible. */
@@ -82,38 +96,94 @@ public class CqlLibraryPresenter implements MatPresenter {
 	boolean isSearchVisibleOnDraft = true;
 	
 
+	/** The cql model. */
 	private CQLModel cqlModel;
 
+	/** The validator. */
 	CQLModelValidator validator = new CQLModelValidator();
 	
+	/** The cql shared data set object. */
 	CQLLibraryDataSetObject cqlSharedDataSetObject;
 	
+	/** The save CQL library result. */
 	SaveCQLLibraryResult saveCQLLibraryResult;
 
+	/** The history display. */
 	CQLLibraryHistoryView historyDisplay;
 	
+	/**
+	 * The Interface DraftDisplay.
+	 */
 	public static interface DraftDisplay {
 
+		/**
+		 * Builds the data table.
+		 *
+		 * @param result the result
+		 */
 		void buildDataTable(SaveCQLLibraryResult result);
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Gets the error messages.
+		 *
+		 * @return the error messages
+		 */
 		ErrorMessageAlert getErrorMessages();
 
+		/**
+		 * Gets the selected library.
+		 *
+		 * @return the selected library
+		 */
 		CQLLibraryDataSetObject getSelectedLibrary();
 
+		/**
+		 * Gets the zoom button.
+		 *
+		 * @return the zoom button
+		 */
 		CustomButton getZoomButton();
 
+		/**
+		 * Gets the search widget.
+		 *
+		 * @return the search widget
+		 */
 		SearchWidget getSearchWidget();
 
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
 		HasClickHandlers getSearchButton();
 
+		/**
+		 * Gets the cancel button.
+		 *
+		 * @return the cancel button
+		 */
 		HasClickHandlers getCancelButton();
 
+		/**
+		 * Gets the save button.
+		 *
+		 * @return the save button
+		 */
 		HasClickHandlers getSaveButton();
 		
 	}
 	
+	/**
+	 * The Interface ViewDisplay.
+	 */
 	public static interface ViewDisplay {
 
 		/**
@@ -128,71 +198,216 @@ public class CqlLibraryPresenter implements MatPresenter {
 		 */
 		void buildDefaultView();
 
+		/**
+		 * Gets the creates the new item widget.
+		 *
+		 * @return the creates the new item widget
+		 */
 		CreateNewItemWidget getCreateNewItemWidget();
 
+		/**
+		 * Gets the adds the new folder button.
+		 *
+		 * @return the adds the new folder button
+		 */
 		CustomButton getAddNewFolderButton();
 
+		/**
+		 * Gets the zoom button.
+		 *
+		 * @return the zoom button
+		 */
 		CustomButton getZoomButton();
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param searchModel the search model
+		 * @param searchText the search text
+		 * @param filter the filter
+		 */
 		void buildCellTable(SaveCQLLibraryResult searchModel, String searchText,int filter);
 
+		/**
+		 * Gets the CQL library search view.
+		 *
+		 * @return the CQL library search view
+		 */
 		CQLLibrarySearchView getCQLLibrarySearchView();
 
+		/**
+		 * Gets the selected option.
+		 *
+		 * @return the selected option
+		 */
 		String getSelectedOption();
 
+		/**
+		 * Gets the error message alert.
+		 *
+		 * @return the error message alert
+		 */
 		MessageAlert getErrorMessageAlert();
 
+		/**
+		 * Builds the create new view.
+		 */
 		void buildCreateNewView();
 
+		/**
+		 * Clear selections.
+		 */
 		void clearSelections();
 
+		/**
+		 * Gets the select id for edit tool.
+		 *
+		 * @return the select id for edit tool
+		 */
 		HasSelectionHandlers<CQLLibraryDataSetObject> getSelectIdForEditTool();
 
+		/**
+		 * Gets the widget VP.
+		 *
+		 * @return the widget VP
+		 */
 		VerticalPanel getWidgetVP();
 
+		/**
+		 * Gets the search filter widget.
+		 *
+		 * @return the search filter widget
+		 */
 		SearchWidgetWithFilter getSearchFilterWidget();
 
+		/**
+		 * Gets the selected filter.
+		 *
+		 * @return the selected filter
+		 */
 		int getSelectedFilter();
 
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
 		HasValue<String> getSearchString();
 
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
 		HasClickHandlers getSearchButton();
 
+		/**
+		 * Gets the most recent library widget.
+		 *
+		 * @return the most recent library widget
+		 */
 		MostRecentCQLLibraryWidget getMostRecentLibraryWidget();
 
+		/**
+		 * Builds the most recent widget.
+		 */
 		void buildMostRecentWidget();
 
 	}
 
+	/**
+	 * The Interface VersionDisplay.
+	 */
 	public static interface VersionDisplay{
 
+		/**
+		 * Builds the data table.
+		 *
+		 * @param result the result
+		 */
 		void buildDataTable(SaveCQLLibraryResult result);
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Gets the major radio button.
+		 *
+		 * @return the major radio button
+		 */
 		RadioButton getMajorRadioButton();
 
+		/**
+		 * Gets the minor radio.
+		 *
+		 * @return the minor radio
+		 */
 		RadioButton getMinorRadio();
 
+		/**
+		 * Gets the search widget.
+		 *
+		 * @return the search widget
+		 */
 		SearchWidget getSearchWidget();
 
+		/**
+		 * Gets the zoom button.
+		 *
+		 * @return the zoom button
+		 */
 		CustomButton getZoomButton();
 
+		/**
+		 * Gets the error messages.
+		 *
+		 * @return the error messages
+		 */
 		ErrorMessageAlert getErrorMessages();
 
+		/**
+		 * Gets the save button.
+		 *
+		 * @return the save button
+		 */
 		org.gwtbootstrap3.client.ui.Button getSaveButton();
 
+		/**
+		 * Gets the cancel button.
+		 *
+		 * @return the cancel button
+		 */
 		org.gwtbootstrap3.client.ui.Button getCancelButton();
 
+		/**
+		 * Gets the selected library.
+		 *
+		 * @return the selected library
+		 */
 		CQLLibraryDataSetObject getSelectedLibrary();
 
+		/**
+		 * Clear radio button selection.
+		 */
 		void clearRadioButtonSelection();
 		
 	}
 	
 	
+	/**
+	 * The Interface DetailDisplay.
+	 */
 	public static interface DetailDisplay {
 		/**
 		 * Gets the name.
@@ -215,58 +430,167 @@ public class CqlLibraryPresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getCancelButton();
 
+		/**
+		 * Reset all.
+		 */
 		public void resetAll();
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Gets the name field.
+		 *
+		 * @return the name field
+		 */
 		TextArea getNameField();
 
+		/**
+		 * Gets the error message.
+		 *
+		 * @return the error message
+		 */
 		ErrorMessageAlert getErrorMessage();
 	}
 	
 	
+	/**
+	 * The Interface ShareDisplay.
+	 */
 	public static interface ShareDisplay {
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Builds the CQL library share table.
+		 *
+		 * @param data the data
+		 */
 		void buildCQLLibraryShareTable(List<CQLLibraryShareDTO> data);
 
+		/**
+		 * Gets the cancel button.
+		 *
+		 * @return the cancel button
+		 */
 		HasClickHandlers getCancelButton();
 
+		/**
+		 * Gets the error message display.
+		 *
+		 * @return the error message display
+		 */
 		ErrorMessageAlert getErrorMessageDisplay();
 
+		/**
+		 * Gets the save button.
+		 *
+		 * @return the save button
+		 */
 		HasClickHandlers getSaveButton();
 
 		//HasValueChangeHandlers<Boolean> privateCheckbox();
 
+		/**
+		 * Sets the CQ library name.
+		 *
+		 * @param name the new CQ library name
+		 */
 		void setCQLibraryName(String name);
 
+		/**
+		 * Gets the zoom button.
+		 *
+		 * @return the zoom button
+		 */
 		CustomButton getZoomButton();
 
+		/**
+		 * Gets the search widget.
+		 *
+		 * @return the search widget
+		 */
 		SearchWidget getSearchWidget();
 
 		//void setPrivate(boolean isPrivate);
 		
 	}
 	
+	/**
+	 * The Interface HistoryDisplay.
+	 */
 	public interface HistoryDisplay {
 
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param results the results
+		 */
 		void buildCellTable(List<AuditLogDTO> results);
 
+		/**
+		 * Sets the CQL library name.
+		 *
+		 * @param name the new CQL library name
+		 */
 		void setCQLLibraryName(String name);
 
+		/**
+		 * Sets the CQL library id.
+		 *
+		 * @param id the new CQL library id
+		 */
 		void setCQLLibraryId(String id);
 
+		/**
+		 * Gets the CQL library id.
+		 *
+		 * @return the CQL library id
+		 */
 		String getCQLLibraryId();
 
+		/**
+		 * Gets the CQL library name.
+		 *
+		 * @return the CQL library name
+		 */
 		String getCQLLibraryName();
 
+		/**
+		 * Gets the return to link.
+		 *
+		 * @return the return to link
+		 */
 		HasClickHandlers getReturnToLink();
 
+		/**
+		 * Sets the return to link text.
+		 *
+		 * @param s the new return to link text
+		 */
 		void setReturnToLinkText(String s);
 		
 	}
 
+	/**
+	 * Instantiates a new cql library presenter.
+	 *
+	 * @param cqlLibraryView the cql library view
+	 * @param detailDisplay the detail display
+	 * @param versionDisplay the version display
+	 * @param draftDisplay the draft display
+	 * @param shareDisplay the share display
+	 * @param historyDisplay the history display
+	 */
 	public CqlLibraryPresenter(CqlLibraryView cqlLibraryView, CQLLibraryDetailView detailDisplay, 
 			CQLLibraryVersionView versionDisplay, CQLLibraryDraftView draftDisplay, CQLLibraryShareView shareDisplay, CQLLibraryHistoryView historyDisplay) {
 		this.cqlLibraryView = cqlLibraryView;
@@ -286,6 +610,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		addObserverHandlers();
 	}
 
+	/**
+	 * Adds the history display handlers.
+	 */
 	private void addHistoryDisplayHandlers() {
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
@@ -296,6 +623,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Adds the observer handlers.
+	 */
 	private void addObserverHandlers() {
 		cqlLibraryView.getCQLLibrarySearchView().setObserver(new CQLLibrarySearchView.Observer() {
 			
@@ -309,15 +639,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onHistoryClicked(CQLLibraryDataSetObject result) {
 				historyDisplay
 				.setReturnToLinkText("<< Return to CQL Library");
-				/*displayHistory(
+				displayHistory(
 						result.getId(),
-						result.getName());*/
+						result.getCqlName());
 			}
 			
 		});
 		
 	}
 
+	/**
+	 * Adds the share display view handlers.
+	 */
 	private void addShareDisplayViewHandlers() {
 		shareDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			
@@ -464,6 +797,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 
+	/**
+	 * Save draft from version.
+	 *
+	 * @param selectedLibrary the selected library
+	 */
 	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
 		draftDisplay.getErrorMessages().clearAlert();
 		draftDisplay.getZoomButton().setEnabled(false);
@@ -557,7 +895,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * @param event
+	 * Checks if is library selected.
+	 *
+	 * @param selectedItem the selected item
 	 */
 	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
 		
@@ -637,9 +977,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 	
 	/**
 	 * Method to Save Version of a Draft.
-	 * @param libraryId
-	 * @param isMajor
-	 * @param version
+	 *
+	 * @param libraryId the library id
+	 * @param isMajor the is major
+	 * @param version the version
 	 */
 	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
 		Mat.showLoadingMessage();
@@ -733,6 +1074,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Save cql library.
+	 *
+	 * @param libraryDataSetObject the library data set object
+	 */
 	private void saveCqlLibrary(CQLLibraryDataSetObject libraryDataSetObject) {
 		MatContext.get().getCQLLibraryService().save(libraryDataSetObject, new AsyncCallback<SaveCQLLibraryResult>() {
 
@@ -759,12 +1105,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 	
 	/**
 	 * CQLLibrary Selected Event is fired from this method.
-	 * @param id
-	 * @param version
-	 * @param name
-	 * @param isEditable
-	 * @param isLocked
-	 * @param lockedUserId
+	 *
+	 * @param id the id
+	 * @param version the version
+	 * @param name the name
+	 * @param isEditable the is editable
+	 * @param isLocked the is locked
+	 * @param lockedUserId the locked user id
 	 */
 	private void fireCQLLibrarySelectedEvent(String id, String version,
 			String name, boolean isEditable, boolean isLocked, String lockedUserId) {
@@ -910,6 +1257,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		Mat.focusSkipLists("CQLLibrary");
 	}
 	
+	/**
+	 * Display share.
+	 */
 	private void displayShare() {
 		searchUsersForSharing();
 		shareDisplay.setCQLibraryName(cqlSharedDataSetObject.getCqlName());
@@ -921,11 +1271,59 @@ public class CqlLibraryPresenter implements MatPresenter {
 		panel.setContent(shareDisplay.asWidget());
 		Mat.focusSkipLists("CQLLibrary");
 	}
+	
+	/**
+	 * Display history.
+	 *
+	 * @param cqlLibraryId the cql library id
+	 * @param cqlLibraryName the cql library name
+	 */
+	private void displayHistory(String cqlLibraryId, String cqlLibraryName) {
+		int startIndex = 0;
+		int pageSize = Integer.MAX_VALUE;
+		String heading = "My CQL Library > History";
+		panel.getButtonPanel().clear();
+		panel.setHeading(heading, "CQL Library");
+		searchHistory(cqlLibraryId, startIndex, pageSize);
+		historyDisplay.setCQLLibraryId(cqlLibraryId);
+		historyDisplay.setCQLLibraryName(cqlLibraryName);
+		panel.setContent(historyDisplay.asWidget());
+		Mat.focusSkipLists("MeasureLibrary");
+	}
 
 	
 	/**
+	 * Search history.
+	 *
+	 * @param cqlLibraryId the cql library id
+	 * @param startIndex the start index
+	 * @param pageSize the page size
+	 */
+	private void searchHistory(String cqlLibraryId, int startIndex, int pageSize) {
+		List<String> filterList = new ArrayList<String>();
+
+		MatContext.get().getAuditService().executeSearch(cqlLibraryId, startIndex, pageSize, filterList,
+				new AsyncCallback<SearchHistoryDTO>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						historyDisplay.getErrorAlert()
+								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null,
+								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+					}
+
+					@Override
+					public void onSuccess(SearchHistoryDTO data) {
+						historyDisplay.buildCellTable(data.getLogs());
+					}
+				});
+		
+	}
+
+	/**
 	 * This method returns all libraries available for versioning.
-	 * @param searchText
+	 *
+	 * @param searchText the search text
 	 */
 	private void searchLibrariesForVersion(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
@@ -967,6 +1365,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 
 	
+	/**
+	 * Search libraries for draft.
+	 *
+	 * @param searchText the search text
+	 */
 	private void searchLibrariesForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		draftDisplay.getErrorMessages().clearAlert();
@@ -1005,6 +1408,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Search users for sharing.
+	 */
 	private void searchUsersForSharing(){
 		String searchText = shareDisplay.getSearchWidget().getSearchInput().getText();
 	    final String lastSearchText = (searchText != null) ? searchText.trim() : null;
@@ -1085,8 +1491,14 @@ public class CqlLibraryPresenter implements MatPresenter {
 		panel.setContent(fp);
 		Mat.focusSkipLists("CQLLibrary");
 	}
+	
 	/**
 	 * This method reterives all Libraries in CQL Library tab based on Selected filters and Search Input.
+	 *
+	 * @param searchText the search text
+	 * @param filter the filter
+	 * @param startIndex the start index
+	 * @param pageSize the page size
 	 */
 	private void search(final String searchText, final int filter, int startIndex,int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText
@@ -1161,12 +1573,20 @@ public class CqlLibraryPresenter implements MatPresenter {
 		subSkipContentHolder.setFocus(true);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		draftDisplay.getSearchWidget().getSearchInput().setText("");
+		versionDisplay.getSearchWidget().getSearchInput().setText("");
+		shareDisplay.getSearchWidget().getSearchInput().setText("");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		
@@ -1176,6 +1596,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return panel;

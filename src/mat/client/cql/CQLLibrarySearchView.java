@@ -289,7 +289,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
 					@Override
 					public void update(int index, CQLLibraryDataSetObject object, String value) {
-						//observer.onHistoryClicked(object);
+						observer.onHistoryClicked(object);
 					}
 				});
 				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"

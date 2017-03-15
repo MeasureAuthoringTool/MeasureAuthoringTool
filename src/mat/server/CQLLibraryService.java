@@ -90,12 +90,15 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	@Autowired
 	private CQLService cqlService;
 	
+	/** The share level DAO. */
 	@Autowired
 	private ShareLevelDAO shareLevelDAO;
 	
+	/** The cql library share DAO. */
 	@Autowired
 	private CQLLibraryShareDAO cqlLibraryShareDAO;
 	
+	/** The cql library audit log DAO. */
 	@Autowired
 	private CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO;
 	
@@ -114,6 +117,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
+	 */
 	@Override
 	public SaveCQLLibraryResult searchForIncludes(String searchText){
 		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
@@ -1086,6 +1092,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.CQLLibraryServiceInterface#countNumberOfAssociation(java.lang.String)
+	 */
 	@Override
 	public int countNumberOfAssociation(String Id){
 		return cqlService.countNumberOfAssociation(Id);
@@ -1471,6 +1480,9 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.CQLLibraryServiceInterface#updateUsersShare(mat.client.measure.service.SaveCQLLibraryResult)
+	 */
 	@Override
 	public void updateUsersShare(final SaveCQLLibraryResult result) {
 		StringBuffer auditLogAdditionlInfo = new StringBuffer("CQL Library shared with ");
@@ -1509,7 +1521,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 						auditLogAdditionlInfo.append(", ");
 					}
 					first = false;
-					auditLogAdditionlInfo.append(user.getEmailAddress());
+					auditLogAdditionlInfo.append(user.getFirstName() +  " " + user.getLastName());
 					
 					cqlLibraryShare.setShareLevel(sLevel);
 					cqlLibraryShareDAO.save(cqlLibraryShare);
@@ -1525,7 +1537,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 						auditLogForModifyRemove.append(", ");
 					}
 					firstRemove = false;
-					auditLogForModifyRemove.append(user.getEmailAddress());
+					auditLogForModifyRemove.append(user.getFirstName() +  " " + user.getLastName());
 				}
 			}
 		}

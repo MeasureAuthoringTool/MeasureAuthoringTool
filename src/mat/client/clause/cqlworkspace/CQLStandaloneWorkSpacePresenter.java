@@ -2106,6 +2106,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	@Override
 	public void beforeClosingDisplay() {
+		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
@@ -2127,6 +2128,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
+		
+		
 		
 	}
 

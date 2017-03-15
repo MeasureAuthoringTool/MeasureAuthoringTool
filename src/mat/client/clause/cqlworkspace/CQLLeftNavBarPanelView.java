@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.DeleteConfirmationMessageAlert;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
@@ -2304,4 +2305,11 @@ public class CQLLeftNavBarPanelView {
 		return availableQDSAttributeList;
 	}
 	
+	public void clearShotcutKeyList(){
+		MatContext.get().getParameters().clear();
+		MatContext.get().getDefinitions().clear();
+		MatContext.get().getFuncs().clear();
+		MatContext.get().getValuesets().clear();
+		MatContext.get().getIncludes().clear();
+	}
 }

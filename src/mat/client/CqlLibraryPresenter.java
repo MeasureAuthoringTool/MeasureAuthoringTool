@@ -1232,7 +1232,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		versionDisplay.getErrorMessages().clearAlert();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, versionDisplay.getZoomButton());
+		panel.setButtonPanel(null, null,versionDisplay.getZoomButton(),"searchButton_cqlVersion");
 		versionDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnVersion = false;
 		panel.setHeading("My CQL Library > Create CQL Library Version of Draft", "CQLLibrary");
@@ -1249,7 +1249,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		draftDisplay.getErrorMessages().clearAlert();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, draftDisplay.getZoomButton());
+		panel.setButtonPanel(null, null,draftDisplay.getZoomButton(),"searchButton_cqlDraft");
 		draftDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnDraft = false;
 		panel.setHeading("My CQL Library > Create Draft of Existing Libraries", "CQLLibrary");
@@ -1264,7 +1264,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		searchUsersForSharing();
 		shareDisplay.setCQLibraryName(cqlSharedDataSetObject.getCqlName());
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, shareDisplay.getZoomButton());
+		panel.setButtonPanel(null, null,shareDisplay.getZoomButton(),"searchButton_cqlShare");
 		shareDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnVersion = false;
 		panel.setHeading("My CQL Libraries > CQL Library Sharing", "CQLLibrary");
@@ -1484,7 +1484,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		search(cqlLibraryView.getSearchString().getValue(), filter, 1,Integer.MAX_VALUE);
 		searchRecentLibraries();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(), cqlLibraryView.getZoomButton());
+		panel.setButtonPanel(cqlLibraryView.getAddNewFolderButton(),"createElement_cqlLib", cqlLibraryView.getZoomButton(),"searchButton_cqlLib");
 		
 		fp.add(cqlLibraryView.asWidget());
 		isSearchFilterVisible = true;

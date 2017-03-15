@@ -1318,7 +1318,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		draftDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, draftDisplay.getZoomButton());
+		panel.setButtonPanel(null,null, draftDisplay.getZoomButton(),"searchButton_measureDraft");
 		draftDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnDraft = false;
 		panel.setHeading("My Measures > Create Draft of Existing Measure", "MeasureLibrary");
@@ -1357,7 +1357,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getSuccessMeasureDeletion().clear();
 		searchDisplay.getErrorMeasureDeletion().clear();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, versionDisplay.getZoomButton());
+		panel.setButtonPanel(null, null,versionDisplay.getZoomButton(),"searchButton_measureVersion");
 		versionDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnVersion = false;
 		panel.setHeading("My Measures > Create Measure Version of Draft", "MeasureLibrary");
@@ -1497,7 +1497,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
 			panel.getButtonPanel().clear();
-			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), searchDisplay.getZoomButton());
+			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(),"createElement_measureLib", searchDisplay.getZoomButton(),"searchButton_measureLib");
 			fp.add(searchDisplay.asWidget());
 		}
 		// MAT-1929: Retain filters at measure library screen. commented

@@ -87,7 +87,7 @@ public class InsertIntoAceEditorDialogBox {
 	private static final String NEGATION_RATIONALE = "negation rationale";
 	
 	/** The currention section. */
-	private static String currention_Section; 
+	private static AceEditor curEditor; 
 	
 	
 	/**
@@ -160,7 +160,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param searchDisplay - ViewDisplay.
 	 * @param currentSection - String.
 	 */
-	public static  void showListOfItemAvailableForInsertDialogBox(final ViewDisplay searchDisplay, String currentSection) {
+	public static  void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Item into CQL Editor");
 		dialogModal.setClosable(true);
@@ -170,7 +170,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setSize(ModalSize.MEDIUM);
 		ModalBody modalBody = new ModalBody();
-		currention_Section = currentSection;
+		curEditor = editor;
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
 		availableItemToInsert.clear();
 		availableItemToInsert.setWidth("350px");
@@ -206,7 +206,7 @@ public class InsertIntoAceEditorDialogBox {
 		
 		
 		// Based on Current Section this method will reterive instance of Ace Editor.
-		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+		//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		
 		// main form
 		Form bodyForm = new Form();
@@ -269,7 +269,7 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
-		addChangeHandlerIntoLists(dialogModal, searchDisplay, availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
+		addChangeHandlerIntoLists(dialogModal, cqlNavBarView, availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
 				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);
 		
@@ -409,7 +409,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param searchDisplay the search display
 	 * @param currentSection the current section
 	 */
-	private static void showAttributesDialogBox(final ViewDisplay searchDisplay, String currentSection) {
+	private static void showAttributesDialogBox() {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Options for Attributes");
 		dialogModal.setClosable(true);
@@ -450,7 +450,7 @@ public class InsertIntoAceEditorDialogBox {
 		createTimeWidget(timePanel);
 		
 		
-		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+		//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		
 		Grid queryGrid = new Grid(6,2);
 		queryGrid.setWidget(0, 0, dtFormGroup);
@@ -634,14 +634,14 @@ public class InsertIntoAceEditorDialogBox {
 									helpBlock.setText("Please Enter valid Quantity.");
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								} else {
-									editor.insertAtCursor(attributeStringBuilder());
-									editor.focus();
+									curEditor.insertAtCursor(attributeStringBuilder());
+									curEditor.focus();
 									dialogModal.hide();
 								}
 
 							} else if (yyyyTxtBox.isEnabled() && !QuantityTextBox.isEnabled()) {
 
-								validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
+								validateDateTimeWidget(curEditor, helpBlock, messageFormgroup, dialogModal);
 
 							} else if (QuantityTextBox.isEnabled() && yyyyTxtBox.isEnabled()) {
 								// this scenario both time widget and Quantity
@@ -670,8 +670,8 @@ public class InsertIntoAceEditorDialogBox {
 										helpBlock.setText("Please Enter valid Quantity.");
 										messageFormgroup.setValidationState(ValidationState.ERROR);
 									} else {
-										editor.insertAtCursor(attributeStringBuilder());
-										editor.focus();
+										curEditor.insertAtCursor(attributeStringBuilder());
+										curEditor.focus();
 										dialogModal.hide();
 									}
 								} else if ((QuantityTextBox.getText().isEmpty() && UnitslistBox.getSelectedIndex() == 0)
@@ -680,7 +680,7 @@ public class InsertIntoAceEditorDialogBox {
 												|| !minTxtBox.getText().isEmpty() || !ssTxtBox.getText().isEmpty()
 												|| !msTxtBox.getText().isEmpty())) {
 
-									validateDateTimeWidget(editor, helpBlock, messageFormgroup, dialogModal);
+									validateDateTimeWidget(curEditor, helpBlock, messageFormgroup, dialogModal);
 
 								} else {
 
@@ -690,8 +690,8 @@ public class InsertIntoAceEditorDialogBox {
 								}
 
 							} else {
-								editor.insertAtCursor(attributeStringBuilder());
-								editor.focus();
+								curEditor.insertAtCursor(attributeStringBuilder());
+								curEditor.focus();
 								dialogModal.hide();
 							}
 
@@ -703,8 +703,8 @@ public class InsertIntoAceEditorDialogBox {
 						}
 
 					} else {
-						editor.insertAtCursor(attributeStringBuilder());
-						editor.focus();
+						curEditor.insertAtCursor(attributeStringBuilder());
+						curEditor.focus();
 						dialogModal.hide();
 					}
 
@@ -737,7 +737,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableItemTypeFormGroup - FormGroup.
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
-	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ViewDisplay searchDisplay,
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
@@ -765,8 +765,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList().get(i)
+						for (int i = 0; i < cqlNavBarView.getViewParameterList().size(); i++) {
+							listAllItemNames.addItem(cqlNavBarView.getViewParameterList().get(i)
 									.getParameterName());
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
@@ -777,8 +777,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions().size(); i++) {
-							CQLFunctions functions = searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions().get(i);
+						for (int i = 0; i < cqlNavBarView.getViewFunctions().size(); i++) {
+							CQLFunctions functions = cqlNavBarView.getViewFunctions().get(i);
 							String funcArg = getFunctionArgumentValueBuilder(functions);
 							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
 							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
@@ -791,8 +791,8 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions().size(); i++) {
-							listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions().get(i)
+						for (int i = 0; i < cqlNavBarView.getViewDefinitions().size(); i++) {
+							listAllItemNames.addItem(cqlNavBarView.getViewDefinitions().get(i)
 									.getDefinitionName());
 						}
 					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
@@ -823,7 +823,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmList().size(); i++) {
+						for (int i = 0; i < cqlNavBarView.getAppliedQdmList().size(); i++) {
 							/*if(!searchDisplay.getAppliedQdmList().get(i)
 									.getDataType().equalsIgnoreCase("attribute")){
 								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
@@ -838,7 +838,7 @@ public class InsertIntoAceEditorDialogBox {
 								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
 									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
 								} else {*/
-									listAllItemNames.addItem(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmList().get(i).getCodeListName());
+									listAllItemNames.addItem(cqlNavBarView.getAppliedQdmList().get(i).getCodeListName());
 								//}
 								
 							//}
@@ -848,7 +848,7 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						showAttributesDialogBox(searchDisplay, currention_Section);
+						showAttributesDialogBox();
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);
@@ -861,9 +861,9 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						searchDisplay.resetMessageDisplay();
-						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(searchDisplay, currention_Section);
-						searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+						//searchDisplay.resetMessageDisplay();
+						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(cqlNavBarView, curEditor);
+						cqlNavBarView.setIsPageDirty(true);
 					}else {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
@@ -974,7 +974,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param searchDisplay - ViewDisplay.
 	 * @param currentSection - String.
 	 * @return AceEditor.
-	 */
+	 *//*
 	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch(currentSection) {
@@ -989,7 +989,7 @@ public class InsertIntoAceEditorDialogBox {
 				break;
 		}
 		return editor;
-	}
+	}*/
 	
 	/**
 	 * This method populates first drop down of the pop up.

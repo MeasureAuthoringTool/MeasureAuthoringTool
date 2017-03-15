@@ -124,6 +124,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 	
+	private AceEditor curAceEditor;
+	
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -329,7 +331,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay, currentSection);
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay
+				.getCqlLeftNavBarPanelView(), curAceEditor);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
 
@@ -474,8 +477,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				searchDisplay.buildInfoPanel((Widget) event.getSource());
-
+				//searchDisplay.buildInfoPanel((Widget) event.getSource());
+				searchDisplay.getCQLParametersView().getParameterAceEditor().execCommand("Command-Shift-/");
+				searchDisplay.getCQLParametersView().getParameterAceEditor().execCommand("toggleBlockComment");
 			}
 		});
 		
@@ -2133,6 +2137,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		isModified = false;
 		modifyValueSetDTO = null;
+		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
 		searchDisplay.resetAll();
@@ -2566,6 +2571,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
+		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
 	}
 
 	/**
@@ -2602,6 +2608,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
+		curAceEditor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
 	}
 
 	/**
@@ -2618,6 +2625,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setTitle("Delete");
+		curAceEditor = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor();
 
 	}
 
@@ -2857,11 +2865,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean validateCQLArtifact(SaveUpdateCQLResult result, String currentSect) {
 		boolean isInvalid = false;
 		if (!result.getCqlErrors().isEmpty()) {
-			final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+			//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 			for (CQLErrors error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
-				editor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
 				if (!isInvalid) {
 					isInvalid = true;
 				}
@@ -2925,7 +2933,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param currentSection the current section
 	 * @return the ace editor based on current section
 	 */
-	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+	/*private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch (currentSection) {
 		case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
@@ -2938,11 +2946,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			editor = searchDisplay.getCQLParametersView().getParameterAceEditor();
 			break;
 		default:
-			/* editor = searchDisplay.getDefineAceEditor(); */
+			 editor = searchDisplay.getDefineAceEditor(); 
 			break;
 		}
 		return editor;
-	}
+	}*/
 
 	/*
 	 * private void removeMarkers(AceEditor aceEditor, int row){

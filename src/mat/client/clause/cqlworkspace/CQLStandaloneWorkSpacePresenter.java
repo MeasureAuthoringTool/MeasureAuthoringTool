@@ -82,6 +82,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
+	private AceEditor curAceEditor;
+	
 	/**
 	 * The Interface ViewDisplay.
 	 */
@@ -1704,7 +1706,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 */
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
-		//InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay, currentSection);
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay
+				.getCqlLeftNavBarPanelView(), curAceEditor);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
 	
@@ -2123,14 +2126,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		}
 		/*isModified = false;
 		modifyValueSetDTO = null;*/
+		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-		
-		
-		
+	
 	}
 
 	@Override
@@ -2464,6 +2466,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
+		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
 	}
 
 	/**
@@ -2501,7 +2504,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				MatContext.get().getLibraryLockService().checkForEditPermission());
 
 		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
-	searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
+		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
+		curAceEditor = searchDisplay.getCQLDefinitionsView().getDefineAceEditor();
 	}
 
 	/**
@@ -2519,7 +2523,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
-
+		curAceEditor = searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor();
 	}
 
 	/**
@@ -2790,11 +2794,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	private boolean validateCQLArtifact(SaveUpdateCQLResult result, String currentSect) {
 		boolean isInvalid = false;
 		if (!result.getCqlErrors().isEmpty()) {
-			final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+			//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 			for (CQLErrors error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
-				editor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
 				if (!isInvalid) {
 					isInvalid = true;
 				}
@@ -2812,7 +2816,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 * @param currentSection the current section
 	 * @return the ace editor based on current section
 	 */
-	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+	/*private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch (currentSection) {
 		case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
@@ -2825,11 +2829,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			editor = searchDisplay.getCQLParametersView().getParameterAceEditor();
 			break;
 		default:
-			/* editor = searchDisplay.getDefineAceEditor(); */
+			 editor = searchDisplay.getDefineAceEditor(); 
 			break;
 		}
 		return editor;
-	}
+	}*/
 	
 	/**
 	 * Method to trigger double Click on List Boxes based on section when user

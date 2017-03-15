@@ -884,6 +884,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
+			isClone = false;
 			draftDisplay.getSearchWidget().getSearchInput().setValue("");
 			versionDisplay.getSearchWidget().getSearchInput().setValue("");
 			detailDisplay.getName().setValue("");
@@ -1125,6 +1126,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		isMeasureDeleted = false;
 		measureDeletion = false;
+		isClone = false;
 	}
 	
 	/* (non-Javadoc)

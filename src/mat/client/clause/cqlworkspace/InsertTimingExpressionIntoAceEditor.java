@@ -81,7 +81,7 @@ public class InsertTimingExpressionIntoAceEditor {
 	 * @param currentSection the current section
 	 */
 
-	public static void showTimingExpressionDialogBox(final ViewDisplay searchDisplay, String currentSection) {
+	public static void showTimingExpressionDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		
 		dialogModal = new Modal();
         primaryTimingSubMenu = new DropDownSubMenu();
@@ -126,7 +126,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		mainButton.setType(ButtonType.DEFAULT);
 		mainButton.setId("mainButton_id");
 		
-		final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
+		//final AceEditor editor = getAceEditorBasedOnCurrentSection(searchDisplay, currentSection);
 		Label cqlTimingExpressionLabel = new Label(LabelType.INFO, "Cql Timing Expression");
 		cqlTimingExpressionLabel.setMarginTop(5);
 		cqlTimingExpressionLabel.setId("cqlTimingExpresionLabel");
@@ -671,7 +671,7 @@ public class InsertTimingExpressionIntoAceEditor {
 	 * @param searchDisplay the search display
 	 * @param currentSection the current section
 	 * @return the ace editor based on current section
-	 */
+	 *//*
 	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch(currentSection) {
@@ -686,6 +686,6 @@ public class InsertTimingExpressionIntoAceEditor {
 				break;
 		}
 		return editor;
-	}
+	}*/
 
 }

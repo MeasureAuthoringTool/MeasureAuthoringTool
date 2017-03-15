@@ -1,27 +1,16 @@
 package mat.client.clause.cqlworkspace;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
-import mat.client.util.MatTextBox;
-import mat.model.cql.CQLFunctionArgument;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,8 +43,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
 
-	/** The qdm view. */
-	private CQLAppliedValueSetView qdmView;
+	/** The value set view. */
+	private CQLAppliedValueSetView valueSetView;
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
@@ -86,7 +75,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
-		qdmView = new CQLAppliedValueSetView();
+		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
@@ -122,7 +111,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainHPPanel.add(mainPanel);
 		
 		mainVPanel.add(mainHPPanel);
-        mainVPanel.add(qdmView.getCellTableMainPanel());
+        mainVPanel.add(valueSetView.getCellTableMainPanel());
         
 	}
 
@@ -169,15 +158,15 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void buildAppliedQDM() {
 		mainFlowPanel.clear();
-		qdmView.resetVSACValueSetWidget();
-		qdmView.setWidgetToDefault();
+		valueSetView.resetVSACValueSetWidget();
+		valueSetView.setWidgetToDefault();
 		resetMessageDisplay();
 		
 		unsetEachSectionSelectedObject();
 		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
 
-		appliedQDMTopPanel.add(qdmView.asWidget());
-		qdmView.buildCellTableWidget();
+		appliedQDMTopPanel.add(valueSetView.asWidget());
+		valueSetView.buildCellTableWidget();
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStyleName("cqlRightContainer");
 		vp.setWidth("700px");
@@ -265,18 +254,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
 	}
 	
-	
-	/**
-	 * Creates the add argument view for functions.
-	 *
-	 * @param argumentList
-	 *            the argument list
-	 */
-	@Override
-	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList,boolean isEditable) {
-		cqlFunctionsView.createAddArgumentViewForFunctions(argumentList,isEditable);
-	}
-
 	/**
 	 * Reset All components to default state.
 	 */
@@ -359,152 +336,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public Widget asWidget() {
 		return mainVPanel;
 	}
-	
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * getParameterNameTxtArea()
-	 */
-	/**
-	 * Gets the parameter name txt area.
-	 *
-	 * @return the parameter name txt area
-	 */
-	@Override
-	public TextBox getParameterNameTxtArea() {
-		return cqlParametersView.getParameterNameTxtArea();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDeleteDefineButton
-	 * ()
-	 */
-	/**
-	 * Gets the delete define button.
-	 *
-	 * @return the delete define button
-	 */
-	@Override
-	public Button getDeleteDefineButton() {
-		return cqlDefinitionsView.getDefineButtonBar().getDeleteButton();
-	}
-
-	/**
-	 * Gets the delete parameter button.
-	 *
-	 * @return the delete define button
-	 */
-	@Override
-	public Button getDeleteParameterButton() {
-		return cqlParametersView.getParameterButtonBar().getDeleteButton();
-	}
-
-	/**
-	 * Gets the alias name txt area.
-	 *
-	 * @return the alias name txt area
-	 */
-	@Override
-	public TextBox getAliasNameTxtArea() {
-		return getIncludeView().getAliasNameTxtArea();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getViewCQLEditor()
-	 */
-	@Override
-	public AceEditor getViewCQLEditor() {
-		return getIncludeView().getViewCQLEditor();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getOwnerNameTextBox()
-	 */
-	@Override
-	public TextBox getOwnerNameTextBox() {
-		return getIncludeView().getOwnerNameTextBox();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineNameTxtArea(
-	 * )
-	 */
-	/**
-	 * Gets the define name txt area.
-	 *
-	 * @return the define name txt area
-	 */
-	@Override
-	public TextBox getDefineNameTxtArea() {
-		return cqlDefinitionsView.getDefineNameTxtArea();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getAddDefineButton()
-	 */
-	/**
-	 * Gets the adds the define button.
-	 *
-	 * @return the adds the define button
-	 */
-	@Override
-	public Button getAddDefineButton() {
-		return cqlDefinitionsView.getDefineButtonBar().getSaveButton();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getParameterAceEditor
-	 * ()
-	 */
-	/**
-	 * Gets the parameter ace editor.
-	 *
-	 * @return the parameter ace editor
-	 */
-	@Override
-	public AceEditor getParameterAceEditor() {
-		return cqlParametersView.getParameterAceEditor();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getDefineAceEditor()
-	 */
-	/**
-	 * Gets the define ace editor.
-	 *
-	 * @return the define ace editor
-	 */
-	@Override
-	public AceEditor getDefineAceEditor() {
-		return cqlDefinitionsView.getDefineAceEditor();
-	}
-
-	/**
-	 * Sets the define ace editor.
-	 *
-	 * @param defineAceEditor
-	 *            the new define ace editor
-	 */
-	public void setDefineAceEditor(AceEditor defineAceEditor) {
-		cqlDefinitionsView.setDefineAceEditor(defineAceEditor);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -572,202 +403,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		this.nextClickedMenu = nextClickedMenu;
 	}
 
-	
-
-	/**
-	 * Gets the cql ace editor.
-	 *
-	 * @return the cql ace editor
-	 */
-	@Override
-	public AceEditor getCqlAceEditor() {
-		return cqlViewCQLView.getCqlAceEditor();
-	}
-
-
-	/**
-	 * Gets the func name txt area.
-	 *
-	 * @return the func name txt area
-	 */
-	@Override
-	public TextBox getFuncNameTxtArea() {
-		return cqlFunctionsView.getFuncNameTxtArea();
-	}
-
-	/**
-	 * Sets the func name txt area.
-	 *
-	 * @param funcNameTxtArea
-	 *            the new func name txt area
-	 */
-	public void setFuncNameTxtArea(MatTextBox funcNameTxtArea) {
-		cqlFunctionsView.setFuncNameTxtArea(funcNameTxtArea);
-	}
-	
-
-	/**
-	 * get the erase define button.
-	 *
-	 * @return the erase define button
-	 */
-	@Override
-	public Button getEraseDefineButton() {
-		return cqlDefinitionsView.getDefineButtonBar().getEraseButton();
-	}
-
-	/**
-	 * get the erase define button.
-	 *
-	 * @return the erase parameter button
-	 */
-	@Override
-	public Button getEraseParameterButton() {
-		return cqlParametersView.getParameterButtonBar().getEraseButton();
-	}
-
-	/**
-	 * get the erase define button.
-	 *
-	 * @return the erase parameter button
-	 */
-	@Override
-	public Button getEraseFunctionButton() {
-		return cqlFunctionsView.getFunctionButtonBar().getEraseButton();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getSaveFunctionButton()
-	 */
-	@Override
-	public Button getSaveFunctionButton() {
-		return cqlFunctionsView.getFunctionButtonBar().getSaveButton();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getFunctionBodyAceEditor()
-	 */
-	@Override
-	public AceEditor getFunctionBodyAceEditor() {
-		return cqlFunctionsView.getFunctionBodyAceEditor();
-	}
-
-	/**
-	 * Sets the function body ace editor.
-	 *
-	 * @param functionBodyAceEditor
-	 *            the new function body ace editor
-	 */
-	public void setFunctionBodyAceEditor(AceEditor functionBodyAceEditor) {
-		cqlFunctionsView.setFunctionBodyAceEditor(functionBodyAceEditor);
-	}
-
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getAddNewArgument()
-	 */
-	@Override
-	public Button getAddNewArgument() {
-		return cqlFunctionsView.getAddNewArgument();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getContextPATToggleSwitch()
-	 */
-	@Override
-	public InlineRadio getContextDefinePATRadioBtn() {
-		return cqlDefinitionsView.getContextDefinePATRadioBtn();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getContextPOPToggleSwitch()
-	 */
-	@Override
-	public InlineRadio getContextDefinePOPRadioBtn() {
-		return cqlDefinitionsView.getContextDefinePOPRadioBtn();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getAddParameterButton()
-	 */
-	@Override
-	public Button getAddParameterButton() {
-		return cqlParametersView.getParameterButtonBar().getSaveButton();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getParameterButtonBar()
-	 */
-	@Override
-	public CQLButtonToolBar getParameterButtonBar() {
-		return cqlParametersView.getParameterButtonBar();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getDefineButtonBar()
-	 */
-	@Override
-	public CQLButtonToolBar getDefineButtonBar() {
-		return cqlDefinitionsView.getDefineButtonBar();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getFunctionButtonBar()
-	 */
-	@Override
-	public CQLButtonToolBar getFunctionButtonBar() {
-		return cqlFunctionsView.getFunctionButtonBar();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getFunctionArgumentList()
-	 */
-	@Override
-	public List<CQLFunctionArgument> getFunctionArgumentList() {
-		return cqlFunctionsView.getFunctionArgumentList();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setFunctionArgumentList(java.util.List)
-	 */
-	@Override
-	public void setFunctionArgumentList(List<CQLFunctionArgument> functionArgumentList) {
-		cqlFunctionsView.setFunctionArgumentList(functionArgumentList);
-	}
-
 	/**
 	 * Gets the main flow panel.
 	 *
@@ -778,51 +413,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return mainFlowPanel;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getContextFuncPATRadioBtn()
-	 */
-	@Override
-	public InlineRadio getContextFuncPATRadioBtn() {
-		return cqlFunctionsView.getContextFuncPATRadioBtn();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getContextFuncPOPRadioBtn()
-	 */
-	@Override
-	public InlineRadio getContextFuncPOPRadioBtn() {
-		return cqlFunctionsView.getContextFuncPOPRadioBtn();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getFunctionArgNameMap()
-	 */
-	@Override
-	public Map<String, CQLFunctionArgument> getFunctionArgNameMap() {
-		return cqlFunctionsView.getFunctionArgNameMap();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setFunctionArgNameMap(java.util.HashMap)
-	 */
-	@Override
-	public void setFunctionArgNameMap(HashMap<String, CQLFunctionArgument> functionArgNameMap) {
-		cqlFunctionsView.setFunctionArgNameMap(functionArgNameMap);
-	}
-
-	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildInfoPanel(com.google.gwt.user.client.ui.Widget)
 	 */
@@ -886,7 +476,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
-		qdmView.clearCellTableMainPanel();
+		valueSetView.clearCellTableMainPanel();
 	}
 	
 	
@@ -905,52 +495,25 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		hideAceEditorAutoCompletePopUp();
 
 	}
+
 	
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getDefineInfoButton()
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
 	 */
 	@Override
-	public Button getDefineInfoButton() {
-		return cqlDefinitionsView.getDefineButtonBar().getInfoButton();
+	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView(){
+		return cqlLeftNavBarPanelView;
 	}
 
 	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getParamInfoButton()
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlGeneralInformationView()
 	 */
 	@Override
-	public Button getParamInfoButton() {
-		return cqlParametersView.getParameterButtonBar().getInfoButton();
+	public CQLGeneralInformationView getCqlGeneralInformationView(){
+		return generalInformationView;
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFuncInfoButton()
-	 */
-	@Override
-	public Button getFuncInfoButton() {
-		return cqlFunctionsView.getFunctionButtonBar().getInfoButton();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getDefineTimingExpButton()
-	 */
-	@Override
-	public Button getDefineTimingExpButton() {
-		return getDefineButtonBar().getTimingExpButton();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getFuncTimingExpButton()
-	 */
-	@Override
-	public Button getFuncTimingExpButton() {
-		return getFunctionButtonBar().getTimingExpButton();
-	}
-
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIncludeView()
 	 */
@@ -963,11 +526,26 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getQdmView()
 	 */
 	@Override
-	public CQLAppliedValueSetView getQdmView() {
-		return qdmView;
+	public CQLAppliedValueSetView getValueSetView() {
+		return valueSetView;
 	}
 	
-
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCQLParametersView()
+	 */
+	@Override
+	public CQLParametersView getCQLParametersView(){
+		return cqlParametersView;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCQlDefinitionsView()
+	 */
+	@Override
+	public CQlDefinitionsView getCQlDefinitionsView(){
+		return cqlDefinitionsView;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlFunctionsView()
 	 */
@@ -976,27 +554,14 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return cqlFunctionsView;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
+	/**
+	 * Gets the view CQL view.
+	 *
+	 * @return the view CQL view
 	 */
 	@Override
-	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView(){
-		return cqlLeftNavBarPanelView;
-	}
-	
-	@Override
-	public CQLParametersView getCQLParametersView(){
-		return cqlParametersView;
-	}
-	
-	@Override
-	public CQlDefinitionsView getCQlDefinitionsView(){
-		return cqlDefinitionsView;
-	}
-	
-	@Override
-	public CQLGeneralInformationView getCqlGeneralInformationView(){
-		return generalInformationView;
+	public CQLViewCQLView getViewCQLView(){
+		return cqlViewCQLView;
 	}
 
 }

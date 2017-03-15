@@ -676,13 +676,13 @@ public class InsertTimingExpressionIntoAceEditor {
 		AceEditor editor = null;
 		switch(currentSection) {
 			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
-				editor = searchDisplay.getDefineAceEditor();
+				editor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
 				break;
 			case CQLWorkSpaceConstants.CQL_FUNCTION_MENU:
-				editor = searchDisplay.getFunctionBodyAceEditor();
+				editor = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor();
 				break;
 			default:
-				editor = searchDisplay.getDefineAceEditor();
+				editor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
 				break;
 		}
 		return editor;

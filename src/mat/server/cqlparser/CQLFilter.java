@@ -1109,9 +1109,9 @@ public class CQLFilter {
     public static void test2(){
     	try {
 			File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");			
-			//CQLtoELM cqlToElm = new CQLtoELM(f);
-			MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-			cqlToElm.doTranslation(true, false, false, CqlTranslator.Format.XML);
+			CQLtoELM cqlToElm = new CQLtoELM(f);
+			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+			cqlToElm.doTranslation(true, false, false);
 			
 			List<String> defList = new ArrayList<String>();
 	    	defList.add("Union Diagnoses");

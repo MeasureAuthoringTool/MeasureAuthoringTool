@@ -82,6 +82,9 @@ var SqlHighlightRules = function() {
     this.$rules = {
         "start" : [ {
             token : "comment",
+            regex : "\\/\\/.*$"
+        },  {
+            token : "comment",
             start : "/\\*",
             end : "\\*/"
         }, {

@@ -48,7 +48,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	protected PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("securityQnA");
 	
 	/**
 	 * Instantiates a new security questions view.

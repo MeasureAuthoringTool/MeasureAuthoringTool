@@ -39,7 +39,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		new ChangePasswordWidget();
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("tempPwd");
 	
 	/** The pwd error messages. */
 	private ErrorMessageDisplay pwdErrorMessages = new ErrorMessageDisplay();

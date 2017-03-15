@@ -30,7 +30,7 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 	private Panel mainPanel;
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("changePassword");
 	
 	/** The password widget. */
 	private ChangePasswordWidget passwordWidget = new ChangePasswordWidget();

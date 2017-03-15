@@ -212,7 +212,7 @@ HasSelectionHandlers<Boolean> {
 	private MatSimplePager spager;
 	
 	/** The save cancel button bar. */
-	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar("qdmApplied");
 	
 	/** The search widget. */
 	private SearchWidget searchWidget = new SearchWidget("Retrieve OID",

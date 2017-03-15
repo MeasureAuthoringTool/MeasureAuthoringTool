@@ -48,7 +48,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	
 	private static final int PAGE_SIZE = 25;
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureVersion");
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	/** The content. */

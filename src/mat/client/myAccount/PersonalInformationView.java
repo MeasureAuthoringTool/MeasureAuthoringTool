@@ -66,7 +66,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("personalInfo");
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();

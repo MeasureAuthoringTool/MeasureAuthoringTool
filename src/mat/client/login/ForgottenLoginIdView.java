@@ -76,7 +76,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		bluePanel.add(new SpacerWidget());
 		bluePanel.add(new SpacerWidget());
 		
-		buttonBar = new SaveCancelButtonBar();
+		buttonBar = new SaveCancelButtonBar("forgotUser");
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);
 		

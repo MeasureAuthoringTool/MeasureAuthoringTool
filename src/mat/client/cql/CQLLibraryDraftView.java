@@ -63,7 +63,7 @@ public class CQLLibraryDraftView implements CqlLibraryPresenter.DraftDisplay{
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlDraft");
 	
 	
 	

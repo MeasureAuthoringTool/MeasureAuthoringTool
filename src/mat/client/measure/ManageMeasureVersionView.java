@@ -53,7 +53,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	private static final int PAGE_SIZE = 25;
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measuVersion");
 	
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();

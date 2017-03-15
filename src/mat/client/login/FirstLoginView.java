@@ -40,7 +40,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		new ChangePasswordWidget();
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("firstLogin");
 	
 	/** The pwd error messages. */
 	private ErrorMessageDisplay pwdErrorMessages = new ErrorMessageDisplay();

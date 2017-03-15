@@ -52,7 +52,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("transferMOwnership");
 	
 	/** The success messages. */
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();

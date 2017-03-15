@@ -31,7 +31,7 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
 	
-	SaveCancelButtonBar buttonToolBar = new SaveCancelButtonBar();
+	SaveCancelButtonBar buttonToolBar = new SaveCancelButtonBar("cqlDetail");
 	
 	public CQLLibraryDetailView(){
 		resetAll();

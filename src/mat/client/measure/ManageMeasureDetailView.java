@@ -56,7 +56,7 @@ public class ManageMeasureDetailView
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();

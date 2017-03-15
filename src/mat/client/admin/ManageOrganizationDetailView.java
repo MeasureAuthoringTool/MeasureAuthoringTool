@@ -24,7 +24,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("Organization");
 	
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();

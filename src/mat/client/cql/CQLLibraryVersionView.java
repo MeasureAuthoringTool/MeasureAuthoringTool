@@ -72,7 +72,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlVersion");
 	
 	public CQLLibraryVersionView(){
 		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);

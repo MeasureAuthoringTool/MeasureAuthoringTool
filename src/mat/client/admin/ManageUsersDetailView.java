@@ -50,7 +50,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	private RadioButton activeStatus = new RadioButton("status", "Active");
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("user");
 	
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();

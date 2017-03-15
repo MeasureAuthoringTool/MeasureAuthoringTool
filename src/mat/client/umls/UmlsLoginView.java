@@ -71,7 +71,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
 	
 	/** The button bar. */
-	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("umls");
 	
 	/**
 	 * Instantiates a new umls login view.

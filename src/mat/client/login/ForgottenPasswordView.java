@@ -41,7 +41,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private TextBox securityAnswer;
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("forgotPwd");
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();

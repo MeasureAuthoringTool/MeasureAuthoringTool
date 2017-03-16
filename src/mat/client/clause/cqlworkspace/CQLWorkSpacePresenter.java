@@ -228,7 +228,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * @param source
 		 *            the source
 		 */
-		void buildInfoPanel(Widget source);
+		//void buildInfoPanel(Widget source);
 
 		/**
 		 * Hide ace editor auto complete pop up.
@@ -477,9 +477,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				//searchDisplay.buildInfoPanel((Widget) event.getSource());
-				searchDisplay.getCQLParametersView().getParameterAceEditor().execCommand("Command-Shift-/");
-				searchDisplay.getCQLParametersView().getParameterAceEditor().execCommand("toggleBlockComment");
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
+				
 			}
 		});
 		
@@ -558,7 +557,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				searchDisplay.buildInfoPanel((Widget) event.getSource());
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
 		});
@@ -702,7 +701,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				searchDisplay.buildInfoPanel((Widget) event.getSource());
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
 		});

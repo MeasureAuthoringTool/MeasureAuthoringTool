@@ -319,7 +319,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	}
 	
 	
-    @Override
+   /* @Override
 	public void buildInfoPanel(Widget sourceWidget) {
 
 		PopupPanel panel = new PopupPanel();
@@ -347,7 +347,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		dialogContents.add(html7);
 		dialogContents.add(html8);
 		panel.show();
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getClickedMenu()

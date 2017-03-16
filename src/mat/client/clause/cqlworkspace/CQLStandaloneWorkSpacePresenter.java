@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
@@ -179,7 +180,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 		CQLButtonToolBar getFunctionButtonBar();
 
-		void buildInfoPanel(Widget sourceWidget);
+		/*void buildInfoPanel(Widget sourceWidget);*/
 
 		TextBox getDefineNameTxtArea();
 
@@ -287,6 +288,19 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 
 	private void addParameterEventHandlers() {
+		
+		/*searchDisplay.getCQLParametersView().getParameterButtonBar().getCommentButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getParameterAceEditor().getCommandDescription("toggleBlockComment");
+				searchDisplay.getParameterAceEditor().addCommand(searchDisplay.getParameterAceEditor().getCommandDescription("toggleBlockComment"));
+				searchDisplay.getParameterAceEditor().execCommand(AceCommand.SELECT_ALL);
+				searchDisplay.getParameterAceEditor().execCommand(AceCommand.TOGGLE_COMMENT);
+			
+			}
+		});
+		*/
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -414,7 +428,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 					@Override
 					public void onClick(ClickEvent event) {
 						searchDisplay.resetMessageDisplay();
-						searchDisplay.buildInfoPanel((Widget) event.getSource());
+						searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 					}
 				});
@@ -522,7 +536,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				searchDisplay.buildInfoPanel((Widget) event.getSource());
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
 		});
@@ -693,7 +707,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
-				searchDisplay.buildInfoPanel((Widget) event.getSource());
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
 		});
@@ -2132,7 +2146,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-	
+		
+		
+		
 	}
 
 	@Override

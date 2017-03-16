@@ -423,7 +423,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
 	 * buildInfoPanel(com.google.gwt.user.client.ui.Widget)
 	 */
-	@Override
+	/*@Override
 	public void buildInfoPanel(Widget sourceWidget) {
 
 		PopupPanel panel = new PopupPanel();
@@ -451,7 +451,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		dialogContents.add(html7);
 		dialogContents.add(html8);
 		panel.show();
-	}
+	}*/
 	
 
 	/* (non-Javadoc)

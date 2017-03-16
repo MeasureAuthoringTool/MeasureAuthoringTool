@@ -2568,6 +2568,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 */
 	private void buildCQLView() {
 		searchDisplay.getCqlAceEditor().setText("");
+		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
@@ -2608,11 +2609,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 							}
 
 						}
+						showSearchingBusy(false);
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						showSearchingBusy(false);
 					}
 				});
 

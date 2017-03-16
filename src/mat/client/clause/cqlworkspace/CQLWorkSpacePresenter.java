@@ -2807,6 +2807,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void buildCQLView() {
 		searchDisplay.getViewCQLView().getCqlAceEditor().setText("");
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
@@ -2845,13 +2846,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
 								}
 							}
-
+							showSearchingBusy(false);
 						}
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						showSearchingBusy(false);
 					}
 				});
 

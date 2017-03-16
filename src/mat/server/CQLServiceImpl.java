@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
@@ -13,57 +12,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
-
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.service.CQLService;
-import mat.client.shared.ValueSetNameInputValidator;
-import mat.dao.clause.CQLDAO;
-import mat.dao.clause.CQLLibraryAssociationDAO;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.model.CQLValueSetTransferObject;
-import mat.model.MatValueSet;
-import mat.model.clause.CQLData;
-import mat.model.clause.CQLLibrary;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLFunctionsWrapper;
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLIncludeLibraryWrapper;
-import mat.model.cql.CQLKeywords;
-import mat.model.cql.CQLLibraryAssociation;
-import mat.model.cql.CQLLibraryModel;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLParametersWrapper;
-import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.model.cql.parser.CQLFileObject;
-import mat.server.cqlparser.CQLFilter;
-import mat.server.cqlparser.CQLTemplateXML;
-import mat.server.cqlparser.MATCQLParser;
-import mat.server.service.MeasurePackageService;
-import mat.server.util.CQLUtil;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
-import mat.server.util.ResourceLoader;
-import mat.server.util.XmlProcessor;
-import mat.shared.CQLErrors;
-import mat.shared.CQLModelValidator;
-import mat.shared.ConstantMessages;
-import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.SaveUpdateCQLResult;
-import mat.shared.UUIDUtilClient;
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -85,6 +38,46 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.measure.service.CQLService;
+import mat.client.shared.ValueSetNameInputValidator;
+import mat.dao.clause.CQLDAO;
+import mat.dao.clause.CQLLibraryAssociationDAO;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.CQLValueSetTransferObject;
+import mat.model.MatValueSet;
+import mat.model.clause.CQLData;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLFunctionsWrapper;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLIncludeLibraryWrapper;
+import mat.model.cql.CQLKeywords;
+import mat.model.cql.CQLLibraryAssociation;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLParametersWrapper;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.model.cql.parser.CQLFileObject;
+import mat.server.cqlparser.CQLTemplateXML;
+import mat.server.cqlparser.MATCQLParser;
+import mat.server.service.MeasurePackageService;
+import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.server.util.ResourceLoader;
+import mat.server.util.XmlProcessor;
+import mat.shared.CQLErrors;
+import mat.shared.CQLModelValidator;
+import mat.shared.ConstantMessages;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.SaveUpdateCQLResult;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.xml.XMLSerializer;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -351,6 +344,8 @@ public class CQLServiceImpl implements CQLService {
 							result.setXml(finalUpdatedXmlString);
 							String name = "define function" + " \"" + currentObj.getFunctionName() + "\""; 
 							parseCQLExpressionForErrors(result, finalUpdatedXmlString, name, currentObj.getFunctionLogic());
+							result.setUsedCQLArtifacts(getUsedCQlArtifacts(finalUpdatedXmlString));
+							
 							wrapper = modfiyCQLFunctionList(toBeModifiedObj,
 									currentObj, functionsList);
 							result.setSuccess(true);
@@ -525,6 +520,8 @@ public class CQLServiceImpl implements CQLService {
 							
 							String name = "parameter" + " \"" + currentObj.getParameterName() + "\""; 
 							parseCQLExpressionForErrors(result, finalUpdatedString, name, currentObj.getParameterLogic());
+							result.setUsedCQLArtifacts(getUsedCQlArtifacts(finalUpdatedString));
+							
 							wrapper = modfiyCQLParameterList(toBeModifiedObj,
 									currentObj, parameterList);
 							result.setSuccess(true);
@@ -689,8 +686,10 @@ public class CQLServiceImpl implements CQLService {
 							
 							String name = "define" + " \"" + currentObj.getDefinitionName() + "\""; 
 							parseCQLExpressionForErrors(result, finalUpdatedXmlString,name, currentObj.getDefinitionLogic());
+							result.setUsedCQLArtifacts(getUsedCQlArtifacts(finalUpdatedXmlString));
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj,
 									currentObj, definitionList);
+							
 							result.setSuccess(true);
 							result.setDefinition(currentObj);
 						} else {
@@ -1227,15 +1226,31 @@ public class CQLServiceImpl implements CQLService {
 		}else {
 			parsedCQL = parseCQLLibraryForErrors(cqlModel);
 		}
+
 		
-		if (!parsedCQL.getCqlErrors().isEmpty()) {
-			modifyQDMStatus(cqlModel);	
-		}else{
-			findUsedValuesets(cqlFileString, cqlModel);		
+		if(parsedCQL.getCqlErrors().isEmpty()) {
+			parsedCQL.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
+			findUsedValuesets(parsedCQL, cqlModel);	
 		}
+		
+		
 		result.setCqlModel(cqlModel);
 		result.setCqlErrors(parsedCQL.getCqlErrors());
 		return result;
+	}
+	
+	public void findUsedValuesets(SaveUpdateCQLResult parsedCQL, CQLModel cqlModel) {
+		
+		List<String> valuesets = parsedCQL.getUsedCQLArtifacts().getUsedCQLValueSets();
+		System.out.println("USED VALUSETS: " + valuesets);
+		
+		
+		for(CQLQualityDataSetDTO valueset : cqlModel.getAllValueSetList()) {
+			if(valuesets.contains(valueset.getCodeListName())) {
+				valueset.setUsed(true);
+			}
+		}
+		
 	}
 	
 	@Override
@@ -2088,11 +2103,23 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
 		
-		XmlProcessor xmlProcessor = new XmlProcessor(xml);
-		CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
-		cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
-		cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
+		// if there are no errors in the cql file, get the used cql artifacts
+		if(cqlResult.getCqlErrors().isEmpty()) {
+			
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
+			cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
+			cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
+			
+			System.out.println("THE USED DEFS: " + cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions());
+			System.out.println("THE USED PARAMS: " + cqlResult.getUsedCQLArtifacts().getUsedCQLParameters());
+			System.out.println("THE USED FUNCS: " + cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions());
+		} else {
+			System.out.println("THE CQL ERRORS: " + cqlResult.getCqlErrors());
+			cqlResult.getUsedCQLArtifacts().setCqlErrors(cqlResult.getCqlErrors());
+		}
 		
+
 		return cqlResult.getUsedCQLArtifacts();		
 	}
 	
@@ -2105,6 +2132,7 @@ public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult resul
 	private void findUsedValuesets(String cqlFileString, CQLModel cqlModel){
 		MATCQLParser matcqlParser = new MATCQLParser();
 		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		
 		try {
 			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getUsedCQLValuesets(cqlFileObject);
 			List<String> usedValuesets = new ArrayList<String>();

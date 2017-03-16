@@ -27,6 +27,9 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private List<String> usedCQLLibraries = new ArrayList<String>();
 	
 	private Map<String, List<String>> valueSetDataTypeMap;
+	
+	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>(); 
+
 
 	public List<String> getUsedCQLDefinitions() {
 		return usedCQLDefinitions;
@@ -90,7 +93,13 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setValueSetDataTypeMap(Map<String, List<String>> valueSetDataTypeMap) {
 		this.valueSetDataTypeMap = valueSetDataTypeMap;
-	} 
-	
-	
+	}
+
+	public List<CQLErrors> getCqlErrors() {
+		return cqlErrors;
+	}
+
+	public void setCqlErrors(List<CQLErrors> cqlErrors) {
+		this.cqlErrors = cqlErrors;
+	}
 }

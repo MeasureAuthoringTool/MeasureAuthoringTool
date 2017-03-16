@@ -789,10 +789,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
-											if (result.getUsedCQLParameters().contains(
-													searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName())) {
+											
+											String currentParameterName = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName();
+											
+											// if it Measurement Period, disable the paramter delete button
+											if(currentParameterName.equals("Measurement Period")) {
 												searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 											}
+											
+											else {												
+												// if there are cql errors, enable the parameter delete button
+												if(!result.getCqlErrors().isEmpty()) {
+													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+
+												} 
+												
+												// check if the parameter is in use, if it is disable the parameter delete button
+												else if(result.getUsedCQLParameters().contains(	searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName())) {
+													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+													
+												}											
+											}	
+											
 										}
 
 									});
@@ -856,11 +874,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
-											if (result.getUsedCQLDefinitions().contains(
-													searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getDefinitionName())) {
-												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+											
+											String currentDefinitionName = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getDefinitionName();
 
+											// if it is a 4 default definition, disable definition delete button
+											if(currentDefinitionName.equals("SDE Race") || currentDefinitionName.equals("SDE Payer") || currentDefinitionName.equals("SDE Sex") 
+													|| currentDefinitionName.equals("SDE Ethnicity")) {
+												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 											}
+											
+											else {				
+												
+												// if there are cql errors, enable the definition delete button
+												if(!result.getCqlErrors().isEmpty()) {
+													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+												}
+												
+												// if the definition is in use, disable the definition delete button
+												else if (result.getUsedCQLDefinitions().contains(currentDefinitionName)) {
+													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+												}
+											}
+											
 										}
 
 									});
@@ -917,11 +952,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
-											if (result.getUsedCQLFunctions().contains(
-													searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionName())) {
-												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-
+											
+											// if the cql file has errors, enable the function delete button
+											if(!result.getCqlErrors().isEmpty()) {
+												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 											}
+											
+											else {
+												// if the function is in use, disable the function delete button
+												if (result.getUsedCQLFunctions().contains(
+														searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionName())) {
+													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+
+												}
+											}
+											
 										}
 
 									});
@@ -996,10 +1041,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 															@Override
 															public void onSuccess(GetUsedCQLArtifactsResult result) {
 																CQLIncludeLibrary cqlIncludeLibrary = searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID);
-																if (result.getUsedCQLLibraries().contains(
-																		cqlIncludeLibrary.getCqlLibraryName() + "." + cqlIncludeLibrary.getAliasName())) {
-																	searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+													
+																// if the cql file has errors, enable the includes delete button
+																if(!result.getCqlErrors().isEmpty()) {
+																	searchDisplay.getIncludeView().getDeleteButton().setEnabled(true);
+
 																}
+																
+																else {
+																	
+																	// if the includes is in use, disable the includes delete button
+																	if (result.getUsedCQLLibraries().contains(
+																			cqlIncludeLibrary.getCqlLibraryName() + "." + cqlIncludeLibrary.getAliasName())) {
+																		searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+																	}
+																}
+
 															}
 
 														});
@@ -1853,7 +1910,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().redisplay();
-											searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
@@ -1864,6 +1920,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
 											}
+											
+											// if there are errors, enable the function delete button
+											if(!result.getCqlErrors().isEmpty()) {
+												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+											}
+											
+											else {
+												// if the saved function is in use, then disable the delete button
+												if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(result.getFunction().getFunctionName())) {
+													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+												}
+												
+												else {
+													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+												}
+											}
+											
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setAnnotations();
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().redisplay();
 
@@ -1959,7 +2032,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
 											searchDisplay.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
 											searchDisplay.getCQLParametersView().getParameterAceEditor().redisplay();
-											searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
@@ -1967,8 +2039,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											} else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
-
 											}
+											
+											
+											// if there are errors, enable the parameter delete button
+											if(!result.getCqlErrors().isEmpty()) {
+												searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+											}
+											
+											else {
+												// if the saved parameter is in use, then disable the delete button
+												if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(result.getParameter().getParameterName())) {
+													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+												}
+												
+												else {
+													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+												}
+											}
+											
 											searchDisplay.getCQLParametersView().getParameterAceEditor().setAnnotations();
 											searchDisplay.getCQLParametersView().getParameterAceEditor().redisplay();
 
@@ -2065,7 +2154,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().removeAllMarkers();
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
-											searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
@@ -2073,6 +2162,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
 											}
+											
+											// if there are errors, enable the definition button
+											if(!result.getCqlErrors().isEmpty()) {
+												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+											}
+											
+											else {
+												// if the saved definition is in use, then disable the delete button
+												if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(result.getDefinition().getDefinitionName())) {
+													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+												}
+												
+												else {
+													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+												}
+											}
+											
+
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setAnnotations();
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
 

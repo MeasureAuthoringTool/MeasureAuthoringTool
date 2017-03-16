@@ -137,7 +137,7 @@ oop.inherits(Mode, TextMode);
 (function() {
 
     this.lineCommentStart = "//";
-
+    this.blockComment = {start: "/*", end: "*/"};
     this.$id = "ace/mode/cql";
 }).call(Mode.prototype);
 

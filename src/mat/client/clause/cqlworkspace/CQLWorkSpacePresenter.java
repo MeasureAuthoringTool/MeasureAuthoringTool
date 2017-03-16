@@ -790,10 +790,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
 											
-											String currentParameterName = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName();
+											CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 											
 											// if it Measurement Period, disable the paramter delete button
-											if(currentParameterName.equals("Measurement Period")) {
+											if(currentParameter.isReadOnly()) {
 												searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 											}
 											
@@ -805,7 +805,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												} 
 												
 												// check if the parameter is in use, if it is disable the parameter delete button
-												else if(result.getUsedCQLParameters().contains(	searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName())) {
+												else if(result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
 													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 													
 												}											
@@ -875,11 +875,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
 											
-											String currentDefinitionName = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getDefinitionName();
+											CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
 
 											// if it is a 4 default definition, disable definition delete button
-											if(currentDefinitionName.equals("SDE Race") || currentDefinitionName.equals("SDE Payer") || currentDefinitionName.equals("SDE Sex") 
-													|| currentDefinitionName.equals("SDE Ethnicity")) {
+											if(currentDefinition.isSupplDataElement()) {
 												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 											}
 											
@@ -891,7 +890,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												}
 												
 												// if the definition is in use, disable the definition delete button
-												else if (result.getUsedCQLDefinitions().contains(currentDefinitionName)) {
+												else if (result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
 													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 												}
 											}

@@ -1926,7 +1926,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											else {
 												// if the saved function is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(result.getFunction().getFunctionName())) {
+												if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionName)) {
 													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 												}
 												
@@ -2047,7 +2047,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											else {
 												// if the saved parameter is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(result.getParameter().getParameterName())) {
+												if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
 													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 												}
 												
@@ -2168,7 +2168,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											else {
 												// if the saved definition is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(result.getDefinition().getDefinitionName())) {
+												if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionName)) {
 													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 												}
 												

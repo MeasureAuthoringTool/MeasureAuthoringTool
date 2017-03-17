@@ -288,7 +288,7 @@ public class CQLFunctionsView {
 			argumentListTable = addColumnToTable(argumentListTable, sortHandler);
 			listDataProvider.addDataDisplay(argumentListTable);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlFunctionArg");
 			spager.setDisplay(argumentListTable);
 			spager.setPageStart(0);
 			cellTablePanel.add(argumentListTable);

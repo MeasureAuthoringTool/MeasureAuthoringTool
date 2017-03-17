@@ -2,6 +2,8 @@ package mat.client.shared;
 
 import mat.client.CustomPager;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.view.client.Range;
 
 //public class MatSimplePager extends SimplePager {
@@ -31,8 +33,8 @@ public class MatSimplePager extends CustomPager {
 	 * @param showLastPageButton
 	 *            the show last page button
 	 */
-	public MatSimplePager(TextLocation location, Resources resources, boolean showFastForwardButton, int fastForwardRows, boolean showLastPageButton) {
-		super(location, resources, showFastForwardButton, fastForwardRows, showLastPageButton);
+	public MatSimplePager(TextLocation location, Resources resources, boolean showFastForwardButton, int fastForwardRows, boolean showLastPageButton, String panelId) {
+		super(location, resources, showFastForwardButton, fastForwardRows, showLastPageButton,panelId);
 		this.setRangeLimited(true);
 	}
 
@@ -84,7 +86,7 @@ public class MatSimplePager extends CustomPager {
 	 */
 	
 	public void setToolTipAndTabIndex(MatSimplePager spager ){
-		/*final NodeList<Element> tdElems = spager.getElement().getElementsByTagName("td");
+		final NodeList<Element> tdElems = spager.getElement().getElementsByTagName("td");
 		for (int i = 0; i < tdElems.getLength(); i++) {
 			final String toolTipText;
 			if (i == 0){
@@ -96,7 +98,7 @@ public class MatSimplePager extends CustomPager {
 				tdElems.getItem(i).setTabIndex(0);
 			}
 			else if (i == 2){
-				continue;  This is the middle td - no button 
+				continue;  //This is the middle td - no button 
 			}
 			else if (i == 3){
 				toolTipText = "Next page";
@@ -114,8 +116,8 @@ public class MatSimplePager extends CustomPager {
 		for (int j = 0; j < imgElems.getLength(); j++) {
 			System.out.println("Image Name ::: " + imgElems.getItem(j).getId());
 			Element img = imgElems.getItem(j);
-			
-		}*/
+			img.setId("abc");
+		}
 
 	}
 

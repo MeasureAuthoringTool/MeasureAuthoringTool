@@ -331,7 +331,7 @@ public class AddEditComponentMeasuresView implements
 					.create(CustomPager.Resources.class);
 			MatSimplePager spager = new MatSimplePager(
 					CustomPager.TextLocation.CENTER, pagerResources, false, 0,
-					true);
+					true,"AddEditCompnentMeasure");
 			spager.setPageStart(0);
 			buildCellTableCssStyle();
 			spager.setDisplay(table);

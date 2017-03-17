@@ -206,7 +206,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		cellTable = addColumnToTable(cellTable);
 		listDataProvider.addDataDisplay(cellTable);
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"manageUser");
 		spager.setPageStart(0);
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);

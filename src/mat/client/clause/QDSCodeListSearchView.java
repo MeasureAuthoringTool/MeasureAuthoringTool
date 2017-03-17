@@ -517,7 +517,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		groupingPanel.add(groupingValueSetTable);
 
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"AppliedQDM");
 		spager.addStyleName("valueSetMarginLeft_7px");
         spager.setDisplay(groupingValueSetTable);
         spager.setPageStart(0);

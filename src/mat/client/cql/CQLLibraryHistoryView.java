@@ -210,7 +210,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 			cellTable = addColumnToTable(cellTable);
 			listDataProvider.addDataDisplay(cellTable);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlHistory");
 			spager.setPageStart(0);
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);

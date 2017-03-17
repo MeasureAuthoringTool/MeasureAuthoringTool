@@ -500,7 +500,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			CustomPager.Resources pagerResources = GWT
 					.create(CustomPager.Resources.class);
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-					pagerResources, false, 0, true);
+					pagerResources, false, 0, true,"valuesetAndCodes");
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			com.google.gwt.user.client.ui.Label invisibleLabel;

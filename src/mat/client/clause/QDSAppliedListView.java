@@ -317,7 +317,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			sortProvider.addDataDisplay(table);
 			MatSimplePager spager;
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"AppliedQDM");
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			/* spager.setToolTipAndTabIndex(spager); */

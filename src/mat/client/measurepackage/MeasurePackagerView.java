@@ -1107,7 +1107,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
-				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
 				spager.setPageStart(0);
 				spager.setDisplay(table);
 				spager.setPageSize(2);

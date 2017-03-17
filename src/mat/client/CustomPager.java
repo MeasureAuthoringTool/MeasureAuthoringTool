@@ -318,7 +318,7 @@ public class CustomPager extends AbstractPager {
   // Hack for Google I/O demo
   public CustomPager(TextLocation location) {
     this(location, getDefaultResources(), true, DEFAULT_FAST_FORWARD_ROWS,
-        false);
+        false,"");
   }
 
   /**
@@ -333,7 +333,7 @@ public class CustomPager extends AbstractPager {
    */
 public CustomPager(TextLocation location, Resources resources,
       boolean showFastForwardButton, final int fastForwardRows,
-      boolean showLastPageButton) {
+      boolean showLastPageButton,String panelId) {
     this.resources = resources;
     this.fastForwardRows = fastForwardRows;
     style = resources.simplePagerStyle();
@@ -507,7 +507,7 @@ public CustomPager(TextLocation location, Resources resources,
 
     // Construct the widget.
     HorizontalPanel layout = new HorizontalPanel();
-    layout.getElement().setId("layout_HorizontalPanel");
+    layout.getElement().setId("layout_HorizontalPanel_"+panelId);
     layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
     initWidget(layout);
     if (location == TextLocation.RIGHT) {

@@ -574,7 +574,7 @@ HasSelectionHandlers<Boolean> {
 			CustomPager.Resources pagerResources = GWT
 					.create(CustomPager.Resources.class);
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
-					pagerResources, false, 0, true);
+					pagerResources, false, 0, true,"AppliedQDM");
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			Label invisibleLabel;

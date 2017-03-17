@@ -177,7 +177,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			
 			provider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlLib");
 			spager.setPageStart(0);
 			buildCellTableCssStyle();
 			spager.setDisplay(table);

@@ -692,7 +692,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			
 			provider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureLib");
 			spager.setPageStart(0);
 			buildCellTableCssStyle();
 			spager.setDisplay(table);

@@ -899,7 +899,7 @@ public class CQLFilter {
     			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "." +libraryAliasName);
     			
     			if(includedLibrary == null){
-    				String libraryPathName = includeDef.getPath() + "_" + includeDef.getVersion();
+    				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion(); 
     				System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
     				try {
     					

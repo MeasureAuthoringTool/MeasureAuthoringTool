@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
@@ -408,27 +407,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// load most recent used cql artifacts
-				MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-						MatContext.get().getCurrentCQLLibraryId(),
-						new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-
-							@Override
-							public void onSuccess(GetUsedCQLArtifactsResult result) {
-								String selectedParamName = searchDisplay.getCQLParametersView()
-										.getParameterNameTxtArea().getText();
-								if (!result.getUsedCQLParameters().contains(selectedParamName)) {
-									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER());
-								}
-							}
-
-						});
+				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER());
+					
 			}
 
 		});
@@ -566,27 +547,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// load most recent used cql artifacts
-				MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-						MatContext.get().getCurrentCQLLibraryId(),
-						new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-
-							@Override
-							public void onSuccess(GetUsedCQLArtifactsResult result) {
-								String selectedDefName = searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea()
-										.getText();
-								if (!result.getUsedCQLDefinitions().contains(selectedDefName)) {
-									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
-								}
-							}
-
-						});
+				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
+						
 			}
 		});
 	}
@@ -753,26 +716,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// load most recent used cql artifacts
-				MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-						MatContext.get().getCurrentCQLLibraryId(),
-						new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-
-							@Override
-							public void onSuccess(GetUsedCQLArtifactsResult result) {
-								String selectedFuncName = searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().getText();
-								if (!result.getUsedCQLFunctions().contains(selectedFuncName)) {
-									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION());
-								}
-							}
-
-						});
+				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION());
+					
 			}
 
 		});
@@ -1141,28 +1087,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// load most recent used cql artifacts
-				MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(MatContext.get().getCurrentCQLLibraryId(),
-						new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-
-							@Override
-							public void onSuccess(GetUsedCQLArtifactsResult result) {
-								String selectedAliasName = searchDisplay.getIncludeView().getAliasNameTxtArea()
-										.getText();
-								String selectedLibName = searchDisplay.getIncludeView().getCqlLibraryNameTextBox()
-										.getText();
-								if (!result.getUsedCQLLibraries().contains(selectedLibName + "." + selectedAliasName)) {
-									searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-											MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE());
-								}
-							}
-
-						});
+				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE());
 			}
 
 		});

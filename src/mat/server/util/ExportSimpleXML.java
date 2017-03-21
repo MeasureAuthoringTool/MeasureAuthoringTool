@@ -131,13 +131,9 @@ public class ExportSimpleXML {
 			/*if(validateMeasure(measureXMLDocument, message)){*/
 			measure_Id = measureXMLObject.getMeasure_id();
 			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id,cqlLibraryDAO, cqlModel);			
-			
 			int insertAt = exportedXML.indexOf("<title>"); 
 			exportedXML = exportedXML.substring(0,  insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>" + exportedXML.substring(insertAt, exportedXML.length());
-			
-			
-			
-			//}
+			System.out.println("Exported XML:"+exportedXML);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -364,9 +360,26 @@ public class ExportSimpleXML {
 				List<String> dataTypeList = usedValueSetDatatypeMap.get(valueSetName);
 				for(String dataType:dataTypeList){
 					String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name='"+ valueSetName +"']";
+					
+					if("Birthdate".equals(valueSetName) || "Dead".equals(valueSetName)){
+						xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName='"+ valueSetName +"']";
+					}
 					Node valueSetNode = (Node) xPath.evaluate(xPathForValueSetNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
 					
 					Node clonedValueSetNode = valueSetNode.cloneNode(true);
+					
+					if(clonedValueSetNode.getNodeName().equals("code")){
+						Node codeOID = clonedValueSetNode.getAttributes().getNamedItem("codeOID");
+						if(codeOID != null){
+							((Element)clonedValueSetNode).setAttribute("oid", codeOID.getNodeValue());
+							clonedValueSetNode.getAttributes().removeNamedItem("codeOID");
+						}
+						Node uuid = clonedValueSetNode.getAttributes().getNamedItem("uuid");
+						if(uuid == null){
+							((Element)clonedValueSetNode).setAttribute("uuid", UUIDUtilClient.uuid());
+						}
+					}
+					
 					originalDoc.renameNode(clonedValueSetNode, null, "qdm");
 					
 					((Element)clonedValueSetNode).setAttribute("datatype", dataType);

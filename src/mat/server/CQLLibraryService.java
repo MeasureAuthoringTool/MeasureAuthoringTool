@@ -1359,6 +1359,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param matValueSetTransferObject the mat value set transfer object
 	 * @return the save update CQL result
 	 */
+	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
@@ -1657,6 +1658,19 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 				e.printStackTrace();
 			}
 		}
+
+
+	public void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
+			String libraryId) {
+		SaveUpdateCQLResult cqlResult = null;
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		if (cqlLibrary != null) {
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+			XmlProcessor processor = new XmlProcessor(cqlXml);
+			cqlResult = cqlService.updateCQLLookUpTag(cqlXml, modifyWithDTO, modifyDTO);
+		}
+		
+	}
 		
 
 }

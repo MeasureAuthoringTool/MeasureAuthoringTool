@@ -92,4 +92,7 @@ public interface CQLLibraryServiceAsync {
 
 	void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifiedCqlQDMList, String libraryId,
 			String expProfileToAllValueSet, AsyncCallback<Void> asyncCallback);
+
+	void saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 }

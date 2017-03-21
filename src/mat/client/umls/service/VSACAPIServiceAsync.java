@@ -73,6 +73,17 @@ public interface VSACAPIServiceAsync {
 			AsyncCallback<VsacApiResult> callback);
 	
 	/**
+	 * Update stand alone vsac value sets.
+	 * 
+	 * @param libraryId
+	 *            the library id
+	 * @param callback
+	 *            the callback
+	 */
+	void updateStandaloneCQLVSACValueSets(String libraryId, String defaultExpId,
+			AsyncCallback<VsacApiResult> callback);
+	
+	/**
 	 * Validate vsac user.
 	 * 
 	 * @param userName

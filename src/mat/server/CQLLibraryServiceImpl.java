@@ -184,4 +184,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			String expansionProfile) {
 		this.getCQLLibraryService().updateCQLLibraryXMLForExpansionProfile(modifyWithDTO, measureId, expansionProfile);
 	}
+	@Override
+	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
+		return this.getCQLLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject);
+	}
 }

@@ -3,6 +3,7 @@
  */
 package mat.client.umls.service;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -69,6 +70,8 @@ public interface VSACAPIService extends RemoteService {
 	 * @return the vsac api result
 	 */
 	VsacApiResult updateCQLVSACValueSets(String measureId, String defaultExpId);
+	
+	VsacApiResult updateStandaloneCQLVSACValueSets(String libraryId, String defaultExpId);
 	
 	/**
 	 * Validate vsac user.

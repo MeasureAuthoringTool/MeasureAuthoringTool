@@ -1473,7 +1473,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onModifyClicked(CQLQualityDataSetDTO result) {
 				searchDisplay.resetMessageDisplay();
-				resetCQLValuesetearchPanel();
+				searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 				isModified = true;
 				modifyValueSetDTO = result;
 				String displayName = result.getCodeListName();
@@ -1494,7 +1494,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(CQLQualityDataSetDTO result, final int index) {
 				searchDisplay.resetMessageDisplay();
-				resetCQLValuesetearchPanel();
+				searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 				if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 					isModified = false;
 				}
@@ -2579,7 +2579,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
 			searchDisplay.getValueSetView().buildAppliedValueSetCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(),
 					isEditable);
-				resetCQLValuesetearchPanel();
+			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 				searchDisplay.getValueSetView().setWidgetsReadOnly(isEditable);
 			
 		}
@@ -2908,53 +2908,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 		return isInvalid;
-	}
-
-	/**
-	 * Validate user defined input. In this functionality we are disabling all
-	 * the fields in Search Panel except Name
-	 * which are required to create new UserDefined QDM Element.
-	 */
-	private void validateUserDefinedInput() {
-		if (searchDisplay.getValueSetView().getUserDefinedInput().getValue().length() > 0) {
-			isUserDefined = true;
-			searchDisplay.getValueSetView().getOIDInput().setEnabled(true);
-			searchDisplay.getValueSetView().getUserDefinedInput()
-					.setTitle(searchDisplay.getValueSetView().getUserDefinedInput().getValue());
-			searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(false);
-			searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-
-			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(false);
-			searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
-		} else {
-			isUserDefined = false;
-			searchDisplay.getValueSetView().getUserDefinedInput().setTitle("Enter Name");
-			searchDisplay.getValueSetView().getOIDInput().setEnabled(true);
-			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(true);
-			searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
-		}
-	}
-
-	/**
-	 * Validate oid input. depending on the OID input we are disabling and
-	 * enabling the fields in Search Panel
-	 */
-	private void validateOIDInput() {
-		if (searchDisplay.getValueSetView().getOIDInput().getValue().length() > 0) {
-			isUserDefined = false;
-			searchDisplay.getValueSetView().getUserDefinedInput().setEnabled(false);
-			searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
-			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(true);
-		} else if (searchDisplay.getValueSetView().getUserDefinedInput().getValue().length() > 0) {
-			isUserDefined = true;
-			searchDisplay.getValueSetView().getQDMExpProfileListBox().clear();
-			searchDisplay.getValueSetView().getVersionListBox().clear();
-			searchDisplay.getValueSetView().getUserDefinedInput().setEnabled(true);
-			searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
-
-		} else {
-			searchDisplay.getValueSetView().getUserDefinedInput().setEnabled(true);
-		}
 	}
 
 	/**
@@ -3344,7 +3297,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
 				isModified = false;
-				resetCQLValuesetearchPanel();
+				searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 			}
 		});
 
@@ -3408,7 +3361,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				searchDisplay.resetMessageDisplay();
-				validateUserDefinedInput();
+				isUserDefined = searchDisplay.getValueSetView().validateUserDefinedInput(isUserDefined);
 			}
 		});
 
@@ -3422,7 +3375,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				searchDisplay.resetMessageDisplay();
-				validateOIDInput();
+				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
 			}
 		});
 
@@ -3500,7 +3453,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedListModel, MatContext.get().getMeasureLockService().checkForEditPermission());
 				} else {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(searchDisplay.getValueSetView().convertMessage(result.getFailureReason()));
 				}
 			}
 		});
@@ -3736,7 +3689,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
 				} else {
-					String message = convertMessage(result.getFailureReason());
+					String message = searchDisplay.getValueSetView().convertMessage(result.getFailureReason());
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
@@ -3790,7 +3743,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									
 									message = MatContext.get().getMessageDelegate().getValuesetSuccessMessage(codeListName);
 									MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeListName));
-									resetCQLValuesetearchPanel();
+									searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
 									getAppliedValueSetList();
 								} else {
@@ -3867,7 +3820,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.getValuesetSuccessMessage(userDefinedInput);
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(message);
 												MatContext.get().setValuesets(result.getCqlAppliedQDMList());
-												resetCQLValuesetearchPanel();
+												searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 												getAppliedValueSetList();
 											}
 										} else {
@@ -4068,7 +4021,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if(result != null){
 					if(result.isSuccess()){
 						isModified = false;
-						resetCQLValuesetearchPanel();
+						searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 						modifyValueSetDTO = result.getCqlQualityDataSetDTO();
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
@@ -4267,28 +4220,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	
 	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
-	private String convertMessage(final int id) {
-		String message;
-		switch (id) {
-		case VsacApiResult.UMLS_NOT_LOGGEDIN:
-			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
-			break;
-		case VsacApiResult.OID_REQUIRED:
-			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
-			break;
-		default:
-			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
-	}
-
-	/**
 	 * Gets the VSAC version list by oid. if the default Expansion Profile is
 	 * present then we are not making this VSAC call.
 	 * 
@@ -4318,35 +4249,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 	
-	/**
-	 * Reset QDM search panel.
-	 */
-	private void resetCQLValuesetearchPanel() {
-		HTML searchHeaderText = new HTML("<strong>Search</strong>");
-		searchDisplay.getValueSetView().getSearchHeader().clear();
-		searchDisplay.getValueSetView().getSearchHeader().add(searchHeaderText);
-		
-		searchDisplay.getValueSetView().getOIDInput().setEnabled(true);
-		searchDisplay.getValueSetView().getOIDInput().setValue("");
-		searchDisplay.getValueSetView().getOIDInput().setTitle("Enter OID");
-		
-		searchDisplay.getValueSetView().getUserDefinedInput().setEnabled(true);
-		searchDisplay.getValueSetView().getUserDefinedInput().setValue("");
-		searchDisplay.getValueSetView().getUserDefinedInput().setTitle("Enter Name");
-		
-		searchDisplay.getValueSetView().getQDMExpProfileListBox().clear();
-		searchDisplay.getValueSetView().getVersionListBox().clear();
-		
-		searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(false);
-		searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-		
-		searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
-		
-		searchDisplay.getValueSetView().getApplyDefaultExpansionIdButton().setEnabled(true);
-		searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(true);
-	}
-	
-
 	/**
 	 * On modify value set qdm.
 	 *

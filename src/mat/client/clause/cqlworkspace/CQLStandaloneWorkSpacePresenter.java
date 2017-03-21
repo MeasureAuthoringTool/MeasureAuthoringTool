@@ -2986,7 +2986,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			expansionId = expProfileToAllValueSet;
 		}
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
-/*		vsacapiService.updateCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
+		vsacapiService.updateStandaloneCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override
@@ -3010,10 +3010,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 					}
 					searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedListModel, MatContext.get().getLibraryLockService().checkForEditPermission());
 				} else {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(convertMessage(result.getFailureReason()));
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(searchDisplay.getValueSetView().convertMessage(result.getFailureReason()));
 				}
 			}
-		});*/
+		});
 	}
 	
 	
@@ -3442,7 +3442,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				// Check if QDM name already exists in the list.
 				if (!CheckNameInValueSetList(userDefinedInput)) {
 					showSearchingBusy(true);
-					MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject,
+					MatContext.get().getLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject,
 							new AsyncCallback<SaveUpdateCQLResult>() {
 								@Override
 								public void onFailure(final Throwable caught) {

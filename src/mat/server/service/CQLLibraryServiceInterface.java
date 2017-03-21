@@ -96,4 +96,6 @@ public interface CQLLibraryServiceInterface {
 	void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
 			String expansionProfile);
 
+	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
+
 }

@@ -374,6 +374,24 @@ public class ExportSimpleXML {
 							((Element)clonedValueSetNode).setAttribute("oid", codeOID.getNodeValue());
 							clonedValueSetNode.getAttributes().removeNamedItem("codeOID");
 						}
+						
+						Node codeSystemName = clonedValueSetNode.getAttributes().getNamedItem("codeSystemName");
+						if(codeSystemName != null){
+							((Element)clonedValueSetNode).setAttribute("taxonomy", codeSystemName.getNodeValue());
+							clonedValueSetNode.getAttributes().removeNamedItem("codeSystemName");
+						}
+						
+						Node codeName = clonedValueSetNode.getAttributes().getNamedItem("codeName");
+						if(codeName != null){
+							((Element)clonedValueSetNode).setAttribute("name", codeName.getNodeValue());
+							clonedValueSetNode.getAttributes().removeNamedItem("codeName");
+						}
+						
+						Node suppDataElement = clonedValueSetNode.getAttributes().getNamedItem("suppDataElement");
+						if(suppDataElement == null){
+							((Element)clonedValueSetNode).setAttribute("suppDataElement", "false");
+						}
+						
 						Node uuid = clonedValueSetNode.getAttributes().getNamedItem("uuid");
 						if(uuid == null){
 							((Element)clonedValueSetNode).setAttribute("uuid", UUIDUtilClient.uuid());

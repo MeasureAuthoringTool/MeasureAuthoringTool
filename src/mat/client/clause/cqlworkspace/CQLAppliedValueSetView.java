@@ -65,6 +65,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -1417,4 +1418,106 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public void clearCellTableMainPanel(){
 		cellTableMainPanel.clear();
 	}
+	
+	/**
+	 * Validate user defined input. In this functionality we are disabling all
+	 * the fields in Search Panel except Name
+	 * which are required to create new UserDefined QDM Element.
+	 */
+	public boolean validateUserDefinedInput(boolean isUserDefined) {
+		if (getUserDefinedInput().getValue().length() > 0) {
+			isUserDefined = true;
+			getOIDInput().setEnabled(true);
+			getUserDefinedInput()
+					.setTitle(getUserDefinedInput().getValue());
+			getQDMExpProfileListBox().setEnabled(false);
+			getVersionListBox().setEnabled(false);
+
+			getRetrieveFromVSACButton().setEnabled(false);
+			getSaveButton().setEnabled(true);
+		} else {
+			isUserDefined = false;
+			getUserDefinedInput().setTitle("Enter Name");
+			getOIDInput().setEnabled(true);
+			getRetrieveFromVSACButton().setEnabled(true);
+			getSaveButton().setEnabled(false);
+		}
+		return isUserDefined;
+	}
+	
+	
+	/**
+	 * Validate oid input. depending on the OID input we are disabling and
+	 * enabling the fields in Search Panel
+	 */
+	public boolean validateOIDInput(boolean isUserDefined) {
+		if (getOIDInput().getValue().length() > 0) {
+			isUserDefined = false;
+			getUserDefinedInput().setEnabled(false);
+			getSaveButton().setEnabled(false);
+			getRetrieveFromVSACButton().setEnabled(true);
+		} else if (getUserDefinedInput().getValue().length() > 0) {
+			isUserDefined = true;
+			getQDMExpProfileListBox().clear();
+			getVersionListBox().clear();
+			getUserDefinedInput().setEnabled(true);
+			getSaveButton().setEnabled(true);
+
+		} else {
+			getUserDefinedInput().setEnabled(true);
+		}
+		return isUserDefined;
+	}
+	
+	/**
+	 * Convert message.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the string
+	 */
+	public String convertMessage(final int id) {
+		String message;
+		switch (id) {
+		case VsacApiResult.UMLS_NOT_LOGGEDIN:
+			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
+			break;
+		case VsacApiResult.OID_REQUIRED:
+			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
+			break;
+		default:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
+		}
+		return message;
+	}
+	
+	
+	/**
+	 * Reset QDM search panel.
+	 */
+	public void resetCQLValuesetearchPanel() {
+		HTML searchHeaderText = new HTML("<strong>Search</strong>");
+		getSearchHeader().clear();
+		getSearchHeader().add(searchHeaderText);
+		
+		getOIDInput().setEnabled(true);
+		getOIDInput().setValue("");
+		getOIDInput().setTitle("Enter OID");
+		
+		getUserDefinedInput().setEnabled(true);
+		getUserDefinedInput().setValue("");
+		getUserDefinedInput().setTitle("Enter Name");
+		
+		getQDMExpProfileListBox().clear();
+		getVersionListBox().clear();
+		
+		getQDMExpProfileListBox().setEnabled(false);
+		getVersionListBox().setEnabled(false);
+		
+		getSaveButton().setEnabled(false);
+		
+		getApplyDefaultExpansionIdButton().setEnabled(true);
+		getUpdateFromVSACButton().setEnabled(true);
+	}
+	
 }

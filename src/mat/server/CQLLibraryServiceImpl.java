@@ -188,4 +188,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		return this.getCQLLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject);
 	}
+	@Override
+	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
+		return this.getCQLLibraryService().modifyCQLValueSets(matValueSetTransferObject);
+	}
 }

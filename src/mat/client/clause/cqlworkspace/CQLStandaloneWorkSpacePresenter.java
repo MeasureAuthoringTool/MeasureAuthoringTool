@@ -3282,7 +3282,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		}
 		matValueSetTransferObject.scrubForMarkUp();
 		showSearchingBusy(true);
-		MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject,
+		MatContext.get().getLibraryService().modifyCQLValueSets(matValueSetTransferObject,
 				new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {

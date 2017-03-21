@@ -95,4 +95,7 @@ public interface CQLLibraryServiceAsync {
 
 	void saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
+	void modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 }

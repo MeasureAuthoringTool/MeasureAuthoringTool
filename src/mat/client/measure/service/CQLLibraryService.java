@@ -5,11 +5,14 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -54,22 +57,28 @@ public interface CQLLibraryService extends RemoteService {
 	GetUsedCQLArtifactsResult getUsedCqlArtifacts(String libraryId);
 
 	int countNumberOfAssociation(String Id);
+	
+	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
+
+	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList);
-
+	
 	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList);
-
+	
 	SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
-
+	
 	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList);
-
+	
 	SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList);
-
+	
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList);
+	
+	void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
 }

@@ -38,7 +38,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	private FlowPanel mainFlowPanel = new FlowPanel();
 	
 	/** The qdm view. */
-	private CQLAppliedValueSetView qdmView;
+	private CQLAppliedValueSetView valueSetView;
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
@@ -76,7 +76,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
-		qdmView = new CQLAppliedValueSetView();
+		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
@@ -107,7 +107,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
 		mainHPPanel.add(mainPanel);
 		mainVPanel.add(mainHPPanel);
-        mainVPanel.add(qdmView.getCellTableMainPanel());
+        mainVPanel.add(valueSetView.getCellTableMainPanel());
 		
 	}
 	
@@ -218,7 +218,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
-		qdmView.clearCellTableMainPanel();
+		valueSetView.clearCellTableMainPanel();
 	}
 	
 	
@@ -602,6 +602,37 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList,boolean isEditable) {
 		cqlFunctionsView.createAddArgumentViewForFunctions(argumentList,isEditable);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildAppliedQDM()
+	 */
+	@Override
+	public void buildAppliedQDM() {
+		mainFlowPanel.clear();
+		valueSetView.resetVSACValueSetWidget();
+		valueSetView.setWidgetToDefault();
+		resetMessageDisplay();
+		
+		unsetEachSectionSelectedObject();
+		VerticalPanel appliedQDMTopPanel = new VerticalPanel();
+
+		appliedQDMTopPanel.add(valueSetView.asWidget());
+		valueSetView.buildCellTableWidget();
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		appliedQDMTopPanel.setWidth("700px");
+		appliedQDMTopPanel.setStyleName("marginLeft15px");
+		vp.add(appliedQDMTopPanel);
+		
+		mainFlowPanel.add(vp);
+
+	}
+
+	@Override
+	public CQLAppliedValueSetView getValueSetView() {
+		return valueSetView;
 	}
 
 }

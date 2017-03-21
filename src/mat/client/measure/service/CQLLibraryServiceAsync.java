@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -82,4 +84,12 @@ public interface CQLLibraryServiceAsync {
 
 	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject, AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+	
+	void deleteValueSet(String toBeDeletedValueSetId, String currentMeasureId,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
+	void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifiedCqlQDMList, String libraryId,
+			String expProfileToAllValueSet, AsyncCallback<Void> asyncCallback);
 }

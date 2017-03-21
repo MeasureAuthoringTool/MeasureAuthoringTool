@@ -4,11 +4,14 @@ import java.util.List;
 
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -138,6 +141,14 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().countNumberOfAssociation(Id);
 	}
 	@Override
+	public SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
+		return this.getCQLLibraryService().saveCQLValueset(valueSetTransferObject);
+	}
+	@Override
+	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId) {
+		return this.getCQLLibraryService().deleteValueSet(toBeDelValueSetId, libraryId);
+	}
+	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
 		return this.getCQLLibraryService().saveAndModifyDefinitions(libraryId, toBeModifiedObj, currentObj, definitionList);
@@ -167,5 +178,10 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList) {
 		return this.getCQLLibraryService().deleteParameter(libraryId, toBeDeletedObj, currentObj, parameterList);
+	}
+	@Override
+	public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
+			String expansionProfile) {
+		this.getCQLLibraryService().updateCQLLibraryXMLForExpansionProfile(modifyWithDTO, measureId, expansionProfile);
 	}
 }

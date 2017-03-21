@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -54,6 +55,7 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
@@ -816,6 +818,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		
 		if(str != null) {
 			cqlResult = cqlService.getCQLData(str);
+			cqlResult.setExpIdentifier(getDefaultExpansionIdentifier(str));
 			cqlResult.setSuccess(true);
 		}
 		
@@ -844,6 +847,29 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 		return xmlString;
 	}
 	
+	public String getDefaultExpansionIdentifier(String xml) {
+		String defaultExpId = null;
+		if (xml != null) {
+			XmlProcessor processor = new XmlProcessor(xml);
+
+			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//cqlLookUp/valuesets/@vsacExpIdentifier";
+
+			try {
+				Node vsacExpIdAttr = (Node) XPathFactory.newInstance().newXPath().evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(),
+						XPathConstants.NODE);
+				if (vsacExpIdAttr != null) {
+					defaultExpId = vsacExpIdAttr.getNodeValue();
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		if(defaultExpId != null){
+			return defaultExpId;
+		} else{
+			return "";
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.CQLLibraryServiceInterface#isLibraryLocked(java.lang.String)
@@ -1309,6 +1335,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param valueSetTransferObject the value set transfer object
 	 * @return the save update CQL result
 	 */
+	@Override
 	public SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		
 		SaveUpdateCQLResult result = null;
@@ -1385,6 +1412,7 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	 * @param libraryId the library id
 	 * @return the save update CQL result
 	 */
+	@Override
 	public SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId) {
 		
 		SaveUpdateCQLResult cqlResult = null;
@@ -1553,5 +1581,82 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 					"CQL Library Shared", auditLogAdditionlInfo.toString());
 		}
 	}
+
+
+	@Override
+	public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String libraryId,
+			String expansionProfile) {
+		logger.debug(" CQLLibraryService: updateLibraryXMLForExpansionIdentifier Start : Library Id :: "
+				+ libraryId);
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		
+		if (cqlLibrary != null) {
+			String cqlXml = getCQLLibraryXml(cqlLibrary);
+			XmlProcessor processor = new XmlProcessor(cqlXml);
+			String XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR = "/cqlLookUp/valuesets";
+			try {
+				Node nodesElementLookUp = (Node) xPath.evaluate(XPATH_EXP_FOR_ELEMENTLOOKUP_ATTR,
+						processor.getOriginalDoc(), XPathConstants.NODE);
+				if (nodesElementLookUp != null) {
+					if (nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
+						if (!StringUtils.isBlank(expansionProfile)) {
+							nodesElementLookUp.getAttributes().getNamedItem("vsacExpIdentifier")
+									.setNodeValue(expansionProfile);
+						} else {
+							nodesElementLookUp.getAttributes().removeNamedItem("vsacExpIdentifier");
+						}
+					} else {
+						if (!StringUtils.isEmpty(expansionProfile)) {
+							Attr vsacExpIdentifierAttr = processor.getOriginalDoc()
+									.createAttribute("vsacExpIdentifier");
+							vsacExpIdentifierAttr.setNodeValue(expansionProfile);
+							nodesElementLookUp.getAttributes().setNamedItem(vsacExpIdentifierAttr);
+						}
+					}
+				}
+				for (CQLQualityDataSetDTO dto : modifyWithDTO) {
+					updateCQLLibraryXmlForQDM(dto, processor, expansionProfile);
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+
+			cqlLibrary.setCQLByteArray(processor.transform(processor.getOriginalDoc()).getBytes());
+			cqlLibraryDAO.save(cqlLibrary);
+		}
+	}
+
+
+	private void updateCQLLibraryXmlForQDM(CQLQualityDataSetDTO dto, XmlProcessor processor, String expansionProfile) {
+			String XPATH_EXPRESSION_ELEMENTLOOKUP = "/cqlLookUp/valuesets/valueset[@uuid='"
+					+ dto.getUuid() + "']";
+			NodeList nodesElementLookUp;
+			try {
+				nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP,
+						processor.getOriginalDoc(), XPathConstants.NODESET);
+
+				for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
+					Node newNode = nodesElementLookUp.item(i);
+					newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
+					if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+						if (!StringUtils.isBlank(dto.getExpansionIdentifier())) {
+							newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(expansionProfile);
+						} else {
+							newNode.getAttributes().removeNamedItem("expansionIdentifier");
+						}
+					} else {
+						if (!StringUtils.isEmpty(expansionProfile)) {
+							Attr expansionIdentifierAttr = processor.getOriginalDoc()
+									.createAttribute("expansionIdentifier");
+							expansionIdentifierAttr.setNodeValue(expansionProfile);
+							newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
+						}
+					}
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		
 
 }

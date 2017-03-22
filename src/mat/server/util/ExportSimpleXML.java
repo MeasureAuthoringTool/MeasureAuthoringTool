@@ -334,6 +334,8 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
 			
 			resolveValueSetsWithDataTypesUsed(originalDoc, result.getUsedCQLArtifacts().getValueSetDataTypeMap(), cqlModel);
+			
+			CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
 		}
 		
 		private static void resolveValueSetsWithDataTypesUsed(
@@ -341,6 +343,7 @@ public class ExportSimpleXML {
 			
 			System.out.println("usedValueSetMap:"+usedValueSetDatatypeMap);
 			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
+			List<String> valueSetDataTypeUniqueList = new ArrayList<String>();
 						
 			String xPathForElementLookupNode = "//elementLookUp";
 			Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
@@ -369,6 +372,7 @@ public class ExportSimpleXML {
 				}
 				
 				for(String dataType:dataTypeList){
+					
 					String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name='"+ valueSetName +"']";
 					
 					//If valueset used is a code ("Birthdate"/"Dead") lookup "codes/code" tag
@@ -423,8 +427,20 @@ public class ExportSimpleXML {
 					//add "datatype" attribute
 					((Element)clonedValueSetNode).setAttribute("datatype", dataType);
 					
+					String oid = clonedValueSetNode.getAttributes().getNamedItem("oid").getNodeValue();
+					String version = "";
+					if(clonedValueSetNode.getAttributes().getNamedItem("version") != null){
+						version = clonedValueSetNode.getAttributes().getNamedItem("version").getNodeValue();
+					}
+					
+					if(valueSetDataTypeUniqueList.contains(valueSetName+"|"+dataType+"|"+oid+"|"+version)){
+						continue;
+					}
+					
 					Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSetNode, true);
-					elementLookUpNode.appendChild(importedNode);					
+					elementLookUpNode.appendChild(importedNode);
+
+					valueSetDataTypeUniqueList.add(valueSetName+"|"+dataType+"|"+oid+"|"+version);
 				}
 			}
 			

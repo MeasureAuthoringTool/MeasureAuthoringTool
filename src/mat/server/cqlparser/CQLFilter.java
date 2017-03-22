@@ -919,7 +919,7 @@ public class CQLFilter {
     		
     		if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
     			//System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
-    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "." +libraryAliasName);
+    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName);
     			
     			if(includedLibrary == null){
     				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
@@ -934,7 +934,7 @@ public class CQLFilter {
 						includedCQLtoELM.doTranslation(true, false, false);
 						
 						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
-						this.includedLibraries.put(includeDef.getPath() + "." +libraryAliasName  , includedLibrary);
+						this.includedLibraries.put(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName  , includedLibrary);
 						
     				} catch (IOException e) {
 						// TODO Auto-generated catch block

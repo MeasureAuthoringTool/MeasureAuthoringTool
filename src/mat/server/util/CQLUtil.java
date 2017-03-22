@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -376,8 +377,14 @@ public class CQLUtil {
 	 */
 	public static void removeUnusedValuesets(Document originalDoc, Set<String> cqlValuesetIdentifierSet) throws XPathExpressionException {
 		String nameXPathString = ""; 
+		Set<String> cqlCodes = new HashSet<String>();
+		
 		for(String name : cqlValuesetIdentifierSet) {
-			nameXPathString += "[@name !='" + name + "']";
+			if(name.equals("Birthdate") || name.equals("Dead")){
+				cqlCodes.add(name);
+			}else{
+				nameXPathString += "[@name !='" + name + "']";
+			}
 		}
 		
 		String xPathForUnusedValuesets= "//cqlLookUp//valueset" + nameXPathString; 
@@ -392,6 +399,8 @@ public class CQLUtil {
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);
 		}
+		
+		removeUnusedCodes(originalDoc, cqlCodes);
 	}
 	
 	/**
@@ -465,6 +474,34 @@ public class CQLUtil {
 		NodeList unusedCqlParameterNodeList = (NodeList) xPath.evaluate(xPathForUnusedParameters, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
 		for (int i = 0; i < unusedCqlParameterNodeList.getLength(); i++) {
 			Node current = unusedCqlParameterNodeList.item(i); 
+			
+			Node parent = current.getParentNode(); 
+			parent.removeChild(current);
+		}
+	}
+	
+	/**
+	 * Removes all unused cql includes from the simple xml file. Iterates through the usedCQLLibraries set, 
+	 * adds them to the xpath string, and then removes all nodes that are not a part of the xpath string. 
+	 * @param originalDoc
+	 * 	the simple xml document
+	 * @param usedCQLLibraries
+	 * 	the used includes
+	 * @throws XPathExpressionException
+	 */
+	public static void removeUnusedIncludes(Document originalDoc,
+			List<String> usedCQLLibraries, CQLModel cqlModel) throws XPathExpressionException {
+		
+		String nameXPathString = "";
+		for(String libName: usedCQLLibraries){
+			String lib = libName.split(Pattern.quote("|"))[1];
+			nameXPathString += "[@name != '" + lib + "']";
+		}
+		
+		String xPathForUnusedIncludes = "//cqlLookUp//includeLibrarys/includeLibrary" + nameXPathString; 
+		NodeList unusedCqlIncludeNodeList = (NodeList) xPath.evaluate(xPathForUnusedIncludes, originalDoc.getDocumentElement(), XPathConstants.NODESET); 
+		for (int i = 0; i < unusedCqlIncludeNodeList.getLength(); i++) {
+			Node current = unusedCqlIncludeNodeList.item(i); 
 			
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);

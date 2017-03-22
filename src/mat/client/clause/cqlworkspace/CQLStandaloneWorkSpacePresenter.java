@@ -2586,17 +2586,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 								if (dto.isSuppDataElement())
 									continue;
 								allValuesets.add(dto);
-								ExpIdentifier = result.getExpIdentifier();
+								if(!result.getExpIdentifier().equalsIgnoreCase(""))
+									ExpIdentifier = result.getExpIdentifier();
 							}
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(allValuesets);
 							for(CQLQualityDataSetDTO valueset : allValuesets){
 								//filtering out codes from valuesets list
 								if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8"))
 									continue;
-									
+
 								appliedValueSetTableList.add(valueset);		
 							}
-							
+
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 						}
 						searchDisplay.hideAceEditorAutoCompletePopUp();
@@ -3595,33 +3596,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				}
 			}
 		}
-		updateAllSuppleDataElementsWithExpProfile(modifiedCqlValueSetList);
-	}
-	
-	/**
-	 * Update Expansion Profile in Default Four SDE's.
-	 *
-	 * @param modifiedCqlQDMList the modified cql QDM list
-	 */
-	protected void updateAllSuppleDataElementsWithExpProfile(final List<CQLQualityDataSetDTO> modifiedCqlQDMList) {
-		String libraryId =  MatContext.get().getCurrentCQLLibraryId();
-		MatContext.get().getLibraryService().getCQLData(libraryId, new AsyncCallback<SaveUpdateCQLResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-			@Override
-			public void onSuccess(SaveUpdateCQLResult result) {
-				for (CQLQualityDataSetDTO cqlQualityDataSetDTO : result.getCqlModel().getAllValueSetList()) {
-					if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
-						cqlQualityDataSetDTO.setVersion("1.0");
-						cqlQualityDataSetDTO.setExpansionIdentifier(expProfileToAllValueSet);
-						modifiedCqlQDMList.add(cqlQualityDataSetDTO);
-					}
-				}
-				updateAllInLibraryXml(modifiedCqlQDMList);
-			}
-		});
+		updateAllInLibraryXml(modifiedCqlValueSetList);
 	}
 	
 	/**

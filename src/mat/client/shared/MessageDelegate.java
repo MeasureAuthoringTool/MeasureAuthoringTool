@@ -707,7 +707,7 @@ public class MessageDelegate {
 	private final String VSAC_RETRIEVE_FAILED = "Unable to retrieve from VSAC. Please check the data and try again.";
 	
 	/** The vsac update successfull. */
-	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
+	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied Value Set list with VSAC data.";
 	
 	
 	/** The comment added successfully. */

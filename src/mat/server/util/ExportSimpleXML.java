@@ -130,12 +130,10 @@ public class ExportSimpleXML {
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
-			/*if(validateMeasure(measureXMLDocument, message)){*/
 			measure_Id = measureXMLObject.getMeasure_id();
 			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO,measureDAO, measure_Id,cqlLibraryDAO, cqlModel);			
 			int insertAt = exportedXML.indexOf("<title>"); 
 			exportedXML = exportedXML.substring(0,  insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>" + exportedXML.substring(insertAt, exportedXML.length());
-			System.out.println("Exported XML:"+exportedXML);
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

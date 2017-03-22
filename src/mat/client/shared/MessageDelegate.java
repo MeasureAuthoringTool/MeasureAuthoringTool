@@ -327,7 +327,7 @@ public class MessageDelegate {
 	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = " Logic must only contain clauses.";
 	
 	/** The invalid character validation error. */
-	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Value set name cannot contain any of the following characters : + * ? : - | ! ; %";
+	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Value set name cannot contain any of the following characters + * ? : - | ! \" %";
 	
 	/** The organization success message. */
 	private final String ORGANIZATION_SUCCESS_MESSAGE = "Organization successfully added.";

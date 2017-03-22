@@ -658,8 +658,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 				
 			}	
 		});

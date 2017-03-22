@@ -479,6 +479,8 @@ public class CQLUtil {
 		
 		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
 		
+		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		
 		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList);
 				
 		return parsedCQL;
@@ -502,9 +504,8 @@ public class CQLUtil {
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 			
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
-			String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
 			System.out.println("Include lib version for "+cqlIncludeLibrary.getCqlLibraryName()+" is:"+cqlIncludeLibrary.getVersion());
-			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), cqlString);
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName()+"-"+cqlIncludeLibrary.getVersion(), includeCqlXMLString);
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
 		}
 	
@@ -527,7 +528,9 @@ public class CQLUtil {
 			fileList.add(mainCQLFile);
 			
 			for(String cqlLibName:cqlLibNameMap.keySet()){
-				File cqlIncludedFile = createCQLTempFile(cqlLibNameMap.get(cqlLibName), cqlLibName, folder);
+				CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName));
+				String cqlString = CQLUtilityClass.getCqlString(includeCqlModel,"").toString();
+				File cqlIncludedFile = createCQLTempFile(cqlString, cqlLibName, folder);
 				fileList.add(cqlIncludedFile);
 			}
 			
@@ -590,14 +593,7 @@ public class CQLUtil {
 			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
 			
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
-			
-			System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-			System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-			System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-			System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-			System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-			System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-			System.out.println("Used libraries:"+cqlFilter.getUsedLibraries());
+				
 		}
 	}
 

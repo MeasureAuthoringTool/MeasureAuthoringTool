@@ -125,7 +125,7 @@ public class CQLFilter {
     	
         this.cqlFolderPath = parentFolderPath;
     	this.library = library;
-        this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
+        this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
         this.populationList = populationList;
 
         this.usedExpressions = new ArrayList<String>();
@@ -148,7 +148,7 @@ public class CQLFilter {
 
         for(String expressionName : this.populationList) {
             //assuming that definitions/functions attached to populations will always come from the primary CQL library
-        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
+        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
         	
         	checkForUsedStatements(expressionName);
         }
@@ -166,7 +166,7 @@ public class CQLFilter {
 
         for(String expressionName : this.populationList) {
             //assuming that definitions/functions attached to populations will always come from the primary CQL library
-        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "");
+        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "", "");
         	
         	checkForUsedStatements(expressionName);
         }
@@ -394,9 +394,9 @@ public class CQLFilter {
         ExpressionRef expressionRef = (ExpressionRef) expression;        
         
         // since we found an expression ref, we want to get the details of it.
-        // so we will recursively call get used statements on the expresson ref
+        // so we will recursively call get used statements on the expression ref
         String includedLibraryAlias = expressionRef.getLibraryName();
-        System.out.println("Expresion name:"+expressionRef.getName());
+        System.out.println("Expression name:"+expressionRef.getName());
         System.out.println("Included library:"+includedLibraryAlias+":");
         
         String expressionName = expressionRef.getName();
@@ -406,13 +406,14 @@ public class CQLFilter {
         if(includedLibraryAlias != null){
 	        LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
 	        System.out.println(this.includedLibraries);
-	        includedLibraryAlias = includedLibrary.getLibraryName() + "." + includedLibraryAlias;
+	        includedLibraryAlias = includedLibrary.getLibraryName()  + "-" + includedLibrary.getLibraryVersion() +  "|" + includedLibraryAlias;
 	      	existingLibrary = this.currentLibraryHolder; 
 	    	this.currentLibraryHolder = includedLibrary;
-	    	this.addUsedExpression(includedLibraryAlias + "." + expressionRef.getName());
+	    	this.addUsedExpression(includedLibraryAlias + "|" + expressionRef.getName());
     	}else{
     		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + expressionRef.getName());
+    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
+    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName());
     		}else{
     			this.addUsedExpression(expressionRef.getName());
     		}
@@ -438,13 +439,13 @@ public class CQLFilter {
         LibraryHolder existingLibrary = null;
     	if(includedLibraryAlias != null){
     		LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
-    		includedLibraryAlias = includedLibrary.getLibraryName() + "." + includedLibraryAlias;
+    		includedLibraryAlias = includedLibrary.getLibraryName() + "-" + includedLibrary.getLibraryVersion() + "|" + includedLibraryAlias;
 	      	existingLibrary = this.currentLibraryHolder;
 	    	this.currentLibraryHolder = includedLibrary;
-	    	this.addUsedFunction(includedLibraryAlias + "." + functionRef.getName());
+	    	this.addUsedFunction(includedLibraryAlias + "|" + functionRef.getName());
     	}else{
     		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.libraryAlias + functionRef.getName());
+    			this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName());
     		}else{
     			this.addUsedFunction(functionRef.getName());
     		}
@@ -464,10 +465,14 @@ public class CQLFilter {
     private void checkForParameterRef(Expression expression) {
         ParameterRef parameterRef = (ParameterRef) expression;
         String name = parameterRef.getName();
+        String libraryAlias = parameterRef.getLibraryName();
         
-        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        if(libraryAlias != null){
+        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+        }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
         	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name; 
+        	name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name; 
         }
         
         this.addUsedParameter(name);
@@ -497,13 +502,15 @@ public class CQLFilter {
      */
     private void checkForValuesetRef(Expression expression) {
         ValueSetRef valueSetRef = (ValueSetRef) expression;
-        System.out.println("\t" + valueSetRef.getName());
         String name = valueSetRef.getName();
         
-        System.out.println("aliasalias:"+this.currentLibraryHolder.getLibraryAlias());
-        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        String libraryAlias = valueSetRef.getLibraryName();
+        
+        if(libraryAlias != null){
+        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+        }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
         }
         
         this.addUsedValueset(name);
@@ -524,9 +531,15 @@ public class CQLFilter {
         System.out.println("\t" + codeRef.getName());
         String name = codeRef.getName();
         
-        if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        String libraryAlias = codeRef.getLibraryName();
+        
+        if(libraryAlias != null){
+        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+        }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
         	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+        	name = this.currentLibraryHolder.getLibraryName()  + "-" + this.currentLibraryHolder.getLibraryVersion() 
+        			+  "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
         }
         
         this.addUsedCode(name);
@@ -790,13 +803,16 @@ public class CQLFilter {
     	}
     	
     	String valueSetOrCodeName = "";
+    	String libraryAlias = "";
     	
     	if(expr instanceof CodeRef){
     		CodeRef codeRef = (CodeRef) retrieve.getCodes();
     		valueSetOrCodeName = codeRef.getName();
+    		libraryAlias = codeRef.getLibraryName();
     	}else if(expr instanceof ValueSetRef){
     		ValueSetRef valueSetRef = (ValueSetRef) retrieve.getCodes();
     		valueSetOrCodeName = valueSetRef.getName();
+    		libraryAlias = valueSetRef.getLibraryName();
     	}
     			
 		String dataTypeTemplateId = retrieve.getTemplateId();
@@ -815,6 +831,13 @@ public class CQLFilter {
 				}
 			}
 		}
+		        
+        if(libraryAlias != null){
+        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+        	valueSetOrCodeName = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + valueSetOrCodeName;
+        }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+	        valueSetOrCodeName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + valueSetOrCodeName;
+	    }
 		
 		if(dataTypeName != null && dataTypeName.length() > 0){
 			List<String> dataTypeList = this.valueSetDataTypeMap.get(valueSetOrCodeName);
@@ -899,7 +922,7 @@ public class CQLFilter {
     			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "." +libraryAliasName);
     			
     			if(includedLibrary == null){
-    				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion(); 
+    				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
     				System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
     				try {
     					
@@ -910,7 +933,7 @@ public class CQLFilter {
     					CQLtoELM includedCQLtoELM = new CQLtoELM(includedLibraryFile);
 						includedCQLtoELM.doTranslation(true, false, false);
 						
-						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath());
+						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
 						this.includedLibraries.put(includeDef.getPath() + "." +libraryAliasName  , includedLibrary);
 						
     				} catch (IOException e) {
@@ -1054,7 +1077,7 @@ public class CQLFilter {
 	    	for(TypeInfo typeInfo : typeInfos) {
 	    		 if(typeInfo instanceof ProfileInfo) {
 	                 ProfileInfo profileInfo = (ProfileInfo) typeInfo;
-	                 System.out.println(profileInfo.getIdentifier()  + " >>> " + profileInfo.getLabel());
+	                 //System.out.println(profileInfo.getIdentifier()  + " >>> " + profileInfo.getLabel());
 	                 qdmTypeInfoMap.put(profileInfo.getIdentifier(), profileInfo.getLabel());
 	             }
 	    	} 
@@ -1068,11 +1091,13 @@ public class CQLFilter {
     	private Library library;
     	private String libraryAlias;
     	private String libraryName;
+    	private String libraryVersion;
     	
-    	public LibraryHolder(Library library, String alias, String libraryName) {
+    	public LibraryHolder(Library library, String alias, String libraryName, String libraryVer) {
 			this.setLibrary(library);
 			this.setLibraryAlias(alias);
 			this.setLibraryName(libraryName);
+			this.setLibraryVersion(libraryVer);
 		}
 
 		public Library getLibrary() {
@@ -1098,27 +1123,37 @@ public class CQLFilter {
 		public void setLibraryName(String libraryName) {
 			this.libraryName = libraryName;
 		}
+
+		public String getLibraryVersion() {
+			return libraryVersion;
+		}
+
+		public void setLibraryVersion(String libraryVersion) {
+			this.libraryVersion = libraryVersion;
+		}
     }
     
     public static void main(String[] args) {
-    	test1();
+    	test2();
       	
 	}
     
     public static void test2(){
     	try {
-			File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");			
+			//File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");
+    		File f = new File("C:\\chinmay\\ANewMeasure-0.0.008.cql");
 			CQLtoELM cqlToElm = new CQLtoELM(f);
 			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
 			cqlToElm.doTranslation(true, false, false);
 			
 			List<String> defList = new ArrayList<String>();
-	    	defList.add("Union Diagnoses");
-	    	defList.add("Depression Office Visit Encounter 1");
-	    	defList.add("Depression Office Visit Encounter 2");
-	    	defList.add("Depression Office Visit Encounter 3");
-	    	defList.add("Depression Face to Face Encounter 1");
-	    	defList.add("Depression Behavioral Health Encounter 1");
+			defList.add("Anesthetic Procedures");
+//	    	defList.add("Union Diagnoses");
+//	    	defList.add("Depression Office Visit Encounter 1");
+//	    	defList.add("Depression Office Visit Encounter 2");
+//	    	defList.add("Depression Office Visit Encounter 3");
+//	    	defList.add("Depression Face to Face Encounter 1");
+//	    	defList.add("Depression Behavioral Health Encounter 1");
 	    	    		    	
 	    	if(cqlToElm.getErrors().size() == 0){
 	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
@@ -1131,6 +1166,7 @@ public class CQLFilter {
 	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
 	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
 	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
 	    	}else{
 	    		System.out.println(cqlToElm.getErrors());
 	    	}	    	
@@ -1172,6 +1208,7 @@ public class CQLFilter {
 	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
 	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
 	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
 	    	}else{
 	    		System.out.println(cqlToElm.getErrors());
 	    	}	    	
@@ -1207,7 +1244,8 @@ public class CQLFilter {
 				
 				+ "code \"Dead\": '419099009' from \"SNOMEDCT:2016-03\" display 'Dead' "
 				
-				+ "parameter \"Measurement Period\" Interval<DateTime> "
+				+ "parameter \"Measurement Period\" "
+				+ "		Interval<DateTime> "
 				
 				+ "context Patient "
 				

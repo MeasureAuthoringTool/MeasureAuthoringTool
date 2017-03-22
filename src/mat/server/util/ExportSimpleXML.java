@@ -6,10 +6,12 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -320,7 +322,6 @@ public class ExportSimpleXML {
 		 */
 		private static void removeUnusedCQLArtifacts(Document originalDoc, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException {
 			
-			//CQLUtil.CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getUsedCQLArtifacts(originalDoc, cqlModel);
 			CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(originalDoc);
 			List<String> expressionList = new ArrayList<String>();
 			expressionList.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
@@ -334,14 +335,15 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
 			CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
 			
-			resolveValueSetsWithDataTypesUsed(originalDoc, result.getUsedCQLArtifacts().getValueSetDataTypeMap());
+			resolveValueSetsWithDataTypesUsed(originalDoc, result.getUsedCQLArtifacts().getValueSetDataTypeMap(), cqlModel);
 		}
 		
 		private static void resolveValueSetsWithDataTypesUsed(
-				Document originalDoc, Map<String, List<String>> usedValueSetDatatypeMap) throws XPathExpressionException {
+				Document originalDoc, Map<String, List<String>> usedValueSetDatatypeMap, CQLModel cqlModel) throws XPathExpressionException {
 			
 			System.out.println("usedValueSetMap:"+usedValueSetDatatypeMap);
-			
+			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
+						
 			String xPathForElementLookupNode = "//elementLookUp";
 			Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -354,10 +356,20 @@ public class ExportSimpleXML {
 				originalDoc.importNode(elementLookUpNode, true);
 				parentNode.appendChild(elementLookUpNode);
 			}
-			
+			System.out.println("xml map:"+cqlModel.getIncludedCQLLibXMLMap().keySet());
 			for(String valueSetName:usedValueSetDatatypeMap.keySet()){
-				
 				List<String> dataTypeList = usedValueSetDatatypeMap.get(valueSetName);
+				
+				Document xmlDoc = findXMLProcessor(valueSetName, cqlModel, includedXMLMap);
+				if(xmlDoc == null){
+					xmlDoc = originalDoc;
+				}else{
+					String[] arr = valueSetName.split(Pattern.quote("|"));
+					if(arr.length == 3){
+						valueSetName = arr[2];
+					}
+				}
+				
 				for(String dataType:dataTypeList){
 					String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name='"+ valueSetName +"']";
 					
@@ -365,7 +377,7 @@ public class ExportSimpleXML {
 					if("Birthdate".equals(valueSetName) || "Dead".equals(valueSetName)){
 						xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName='"+ valueSetName +"']";
 					}
-					Node valueSetNode = (Node) xPath.evaluate(xPathForValueSetNode, originalDoc.getDocumentElement(), 
+					Node valueSetNode = (Node) xPath.evaluate(xPathForValueSetNode, xmlDoc.getDocumentElement(), 
 							XPathConstants.NODE);
 					
 					Node clonedValueSetNode = valueSetNode.cloneNode(true);
@@ -408,17 +420,47 @@ public class ExportSimpleXML {
 					}
 					
 					//rename node to "qdm"
-					originalDoc.renameNode(clonedValueSetNode, null, "qdm");
+					xmlDoc.renameNode(clonedValueSetNode, null, "qdm");
 					
 					//add "datatype" attribute
 					((Element)clonedValueSetNode).setAttribute("datatype", dataType);
 					
-					elementLookUpNode.appendChild(clonedValueSetNode);					
+					Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSetNode, true);
+					elementLookUpNode.appendChild(importedNode);					
 				}
 			}
 			
 			CQLUtil.removeUnusedValuesets(originalDoc, usedValueSetDatatypeMap.keySet());			
 		}
+
+	private static Document findXMLProcessor(String valueSetName,
+				CQLModel cqlModel, Map<String, Document> includedXMLMap) {
+		
+		Document returnDoc = null;
+		System.out.println("valueSetName:"+valueSetName);
+		String[] nameSplitArr = valueSetName.split(Pattern.quote("|"));
+		System.out.println(nameSplitArr.length);
+		for(int i=0;i<nameSplitArr.length;i++){
+			System.out.println("----------------"+nameSplitArr[i]);
+		}
+		if(nameSplitArr.length == 3){
+			String includedLibName = nameSplitArr[0];
+			System.out.println("includedLibName:"+includedLibName);			
+			returnDoc = includedXMLMap.get(includedLibName);
+			if(returnDoc == null){
+				Map<String, String> cqlLibXMLMap = cqlModel.getIncludedCQLLibXMLMap();
+				System.out.println(cqlLibXMLMap.keySet());
+				String xml = cqlLibXMLMap.get(includedLibName);
+				if(xml != null){
+					XmlProcessor xmlProcessor = new XmlProcessor(xml);
+					includedXMLMap.put(includedLibName, xmlProcessor.getOriginalDoc());
+					returnDoc = xmlProcessor.getOriginalDoc();
+				}
+			}			
+		}
+		
+		return returnDoc;
+	}
 
 	/**
 	 * This method will remove empty comments nodes from clauses which are part of Measure Grouping.

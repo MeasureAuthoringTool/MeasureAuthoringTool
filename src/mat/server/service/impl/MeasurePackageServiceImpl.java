@@ -37,10 +37,8 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLModel;
-import mat.model.cql.parser.CQLFileObject;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
-import mat.server.cqlparser.MATCQLParser;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
@@ -254,8 +252,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
 			
 			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML.getMeasureXMLAsString());
-			MATCQLParser matcqlParser = new MATCQLParser();
-			CQLFileObject cqlFileObject = matcqlParser.parseCQL(CQLUtilityClass.getCqlString(cqlModel, "").toString());
+//			MATCQLParser matcqlParser = new MATCQLParser();
+//			CQLFileObject cqlFileObject = matcqlParser.parseCQL(CQLUtilityClass.getCqlString(cqlModel, "").toString());
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
 			
 		} else {

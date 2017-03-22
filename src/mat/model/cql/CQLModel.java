@@ -1,7 +1,9 @@
 package mat.model.cql;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -22,6 +24,12 @@ public class CQLModel implements IsSerializable{
 	private List<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
 	private List<CQLCode> codeList = new ArrayList<CQLCode>();
 	private List<CQLIncludeLibrary> cqlIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
+	
+	/**
+	 * This member is set programatically from some class and isnt populated by Hibernate.
+	 * So it is possible it is null/empty.
+	 */
+	private Map<String, String> includedCQLLibXMLMap = new HashMap<String, String>();
 	
 	
 	private int lines;
@@ -127,6 +135,13 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public Map<String, String> getIncludedCQLLibXMLMap() {
+		return includedCQLLibXMLMap;
+	}
+	public void setIncludedCQLLibXMLMap(Map<String, String> includedCQLLibXMLMap) {
+		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
 	}
 	
 }

@@ -361,45 +361,56 @@ public class ExportSimpleXML {
 				for(String dataType:dataTypeList){
 					String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name='"+ valueSetName +"']";
 					
+					//If valueset used is a code ("Birthdate"/"Dead") lookup "codes/code" tag
 					if("Birthdate".equals(valueSetName) || "Dead".equals(valueSetName)){
 						xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName='"+ valueSetName +"']";
 					}
-					Node valueSetNode = (Node) xPath.evaluate(xPathForValueSetNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
+					Node valueSetNode = (Node) xPath.evaluate(xPathForValueSetNode, originalDoc.getDocumentElement(), 
+							XPathConstants.NODE);
 					
 					Node clonedValueSetNode = valueSetNode.cloneNode(true);
 					
 					if(clonedValueSetNode.getNodeName().equals("code")){
+						
+						//rename "codeOID" attribute to "oid"
 						Node codeOID = clonedValueSetNode.getAttributes().getNamedItem("codeOID");
 						if(codeOID != null){
 							((Element)clonedValueSetNode).setAttribute("oid", codeOID.getNodeValue());
 							clonedValueSetNode.getAttributes().removeNamedItem("codeOID");
 						}
 						
+						//rename "codeSystemName" attribute to "taxonomy"
 						Node codeSystemName = clonedValueSetNode.getAttributes().getNamedItem("codeSystemName");
 						if(codeSystemName != null){
 							((Element)clonedValueSetNode).setAttribute("taxonomy", codeSystemName.getNodeValue());
 							clonedValueSetNode.getAttributes().removeNamedItem("codeSystemName");
 						}
 						
+						
+						//rename "codeName" attribute to "name"
 						Node codeName = clonedValueSetNode.getAttributes().getNamedItem("codeName");
 						if(codeName != null){
 							((Element)clonedValueSetNode).setAttribute("name", codeName.getNodeValue());
 							clonedValueSetNode.getAttributes().removeNamedItem("codeName");
 						}
 						
+						//set "suppDataElement" attribute to "false"
 						Node suppDataElement = clonedValueSetNode.getAttributes().getNamedItem("suppDataElement");
 						if(suppDataElement == null){
 							((Element)clonedValueSetNode).setAttribute("suppDataElement", "false");
 						}
 						
+						//set "uuid" attribute to new a UUID
 						Node uuid = clonedValueSetNode.getAttributes().getNamedItem("uuid");
 						if(uuid == null){
 							((Element)clonedValueSetNode).setAttribute("uuid", UUIDUtilClient.uuid());
 						}
 					}
 					
+					//rename node to "qdm"
 					originalDoc.renameNode(clonedValueSetNode, null, "qdm");
 					
+					//add "datatype" attribute
 					((Element)clonedValueSetNode).setAttribute("datatype", dataType);
 					
 					elementLookUpNode.appendChild(clonedValueSetNode);					

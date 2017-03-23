@@ -309,8 +309,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		// get the name from the simple xml
 		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
+		String xPathVersion = "/measure/cqlLookUp[1]/version[1]";
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML); 
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName); 
+		Node cqlVersion = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathVersion);
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(simpleXML),"").toString();
 		ExportResult result = new ExportResult();
@@ -322,7 +324,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		if(cqlFileName == null) {
 			result.setCqlLibraryName(result.measureName);
 		} else {
-			result.setCqlLibraryName(cqlFileName.getTextContent());
+			result.setCqlLibraryName(cqlFileName.getTextContent() + "-" + cqlVersion.getTextContent());
 		}
 		
 		

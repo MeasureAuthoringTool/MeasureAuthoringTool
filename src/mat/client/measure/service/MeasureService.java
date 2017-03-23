@@ -14,6 +14,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -706,4 +707,6 @@ public interface MeasureService extends RemoteService {
 			CQLIncludeLibrary toBeModifiedIncludeObj,
 			CQLIncludeLibrary cqlLibObject,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);
+	
+	VsacApiResult updateCQLVSACValueSets(String currentMeasureId, String expansionId);
 }

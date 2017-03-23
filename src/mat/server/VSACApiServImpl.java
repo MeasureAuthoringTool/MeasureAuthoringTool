@@ -253,23 +253,6 @@ public class VSACApiServImpl implements VSACApiService{
 	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
 	 * @param map - HaspMap
 	 * @param measureId - String */
-	private void updateAllCQLInMeasureXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String measureId) {
-		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
-		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
-			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
-			getMeasureLibraryService().updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(),
-					entrySet.getValue(), measureId);
-			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
-		}
-		LOGGER.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
-	}
-	
-	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
-	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
-	 * @param map - HaspMap
-	 * @param measureId - String */
 	private void updateAllCQLInLibraryXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String libraryId) {
 		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
 		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
@@ -630,12 +613,10 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @return VsacApiResult - Result.
 	 */
 	@Override
-	public final VsacApiResult updateCQLVSACValueSets(final String measureId, String defaultExpId, String sessionId) {
+	public final VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId, String sessionId) {
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
 		if (isAlreadySignedIn(sessionId)) {
-			CQLQualityDataModelWrapper details = getMeasureLibraryService().getCQLAppliedQDMFromMeasureXml(measureId, false);
-			List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
 			HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> updateInMeasureXml =
 					new HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO>();
 			ArrayList<CQLQualityDataSetDTO> modifiedQDMList = new ArrayList<CQLQualityDataSetDTO>();
@@ -742,7 +723,7 @@ public class VSACApiServImpl implements VSACApiService{
 				}
 				modifiedQDMList.add(toBeModifiedQDM);
 			}
-			updateAllCQLInMeasureXml(updateInMeasureXml, measureId);
+			result.setCqlQualityDataSetMap(updateInMeasureXml);
 			result.setSuccess(true);
 			result.setUpdatedCQLQualityDataDTOLIst(modifiedQDMList);
 		} else {

@@ -9,9 +9,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -31,6 +35,7 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
+import mat.client.umls.service.VsacApiResult;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
@@ -72,7 +77,8 @@ import mat.shared.SaveUpdateCQLResult;
 /**
  * The Class CQLLibraryService.
  */
-public class CQLLibraryService implements CQLLibraryServiceInterface {
+@SuppressWarnings("serial")
+public class CQLLibraryService extends SpringRemoteServiceServlet implements CQLLibraryServiceInterface {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLLibraryService.class);
 	
@@ -118,7 +124,15 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 	/** The lock threshold. */
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 	
-	
+	/**
+	 * Gets the vsac service.
+	 * 
+	 * @return the service
+	 */
+	private VSACApiServImpl getVsacService() {
+		return (VSACApiServImpl) context.getBean("vsacapi");
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
 	 */
@@ -1663,15 +1677,36 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 
 	public void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String libraryId) {
-		SaveUpdateCQLResult cqlResult = null;
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		if (cqlLibrary != null) {
-			String cqlXml = getCQLLibraryXml(cqlLibrary);
-			XmlProcessor processor = new XmlProcessor(cqlXml);
-			cqlResult = cqlService.updateCQLLookUpTag(cqlXml, modifyWithDTO, modifyDTO);
+			cqlService.updateCQLLookUpTag(getCQLLibraryXml(cqlLibrary), modifyWithDTO, modifyDTO);
 		}
 		
 	}
 		
+	@Override
+	public VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId) {
+		List<CQLQualityDataSetDTO> appliedQDMList = getCQLData(cqlLibraryId).getCqlModel().getAllValueSetList();
+		VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
+		if(result.isSuccess()){
+			updateAllCQLInLibraryXml(result.getCqlQualityDataSetMap(), cqlLibraryId);
+		}
+		return result;
+	}
 
+	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
+	 * @param map - HaspMap
+	 * @param libraryId - String */
+	private void updateAllCQLInLibraryXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String libraryId) {
+		logger.info("Start VSACAPIServiceImpl updateAllInLibraryXml :");
+		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
+			logger.info("Calling updateLibraryXML for : " + entrySet.getKey().getOid());
+			updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(),
+					entrySet.getValue(), libraryId);
+			logger.info("Successfully updated Library XML for  : " + entrySet.getKey().getOid());
+		}
+		logger.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
+	}
 }

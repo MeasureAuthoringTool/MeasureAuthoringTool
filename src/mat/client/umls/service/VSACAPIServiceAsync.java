@@ -1,6 +1,10 @@
 package mat.client.umls.service;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import mat.model.cql.CQLQualityDataSetDTO;
 
 /**
  * The Interface VSACAPIServiceAsync.
@@ -64,12 +68,12 @@ public interface VSACAPIServiceAsync {
 	/**
 	 * Update vsac value sets.
 	 * 
-	 * @param measureId
-	 *            the measure id
+	 * @param appliedQDMList
+	 *            the applied qdm list
 	 * @param callback
 	 *            the callback
 	 */
-	void updateCQLVSACValueSets(String measureId, String defaultExpId,
+	void updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId,
 			AsyncCallback<VsacApiResult> callback);
 	
 	/**

@@ -18,6 +18,7 @@ import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -704,5 +705,11 @@ public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
 		CQLIncludeLibrary cqlLibObject,
 		List<CQLIncludeLibrary> viewIncludeLibrarys) {
 	return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+}
+
+@Override
+public VsacApiResult updateCQLVSACValueSets(String currentMeasureId, String expansionId) {
+	String sessionId = getThreadLocalRequest().getSession().getId();
+	return this.getMeasureLibraryService().updateCQLVSACValueSets(currentMeasureId, expansionId, sessionId);
 }
 }

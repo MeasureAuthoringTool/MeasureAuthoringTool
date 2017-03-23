@@ -44,6 +44,7 @@ import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
@@ -117,6 +118,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	
 	/** The vsacapi service. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get().getVsacapiServiceAsync();
+	
+	/** The cql service. */
+	private final CQLLibraryServiceAsync cqlService = MatContext.get().getCQLLibraryService();
 	
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet;
@@ -2987,7 +2991,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			expansionId = expProfileToAllValueSet;
 		}
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
-		vsacapiService.updateStandaloneCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
+		cqlService.updateCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override

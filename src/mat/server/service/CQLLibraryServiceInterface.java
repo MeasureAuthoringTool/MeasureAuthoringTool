@@ -3,6 +3,7 @@ package mat.server.service;
 import java.util.List;
 
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLDefinition;
@@ -99,5 +100,7 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
+
+	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
 
 }

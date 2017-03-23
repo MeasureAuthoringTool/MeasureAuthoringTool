@@ -13,6 +13,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -768,6 +769,9 @@ public interface MeasureServiceAsync {
 			CQLIncludeLibrary cqlLibObject,
 			List<CQLIncludeLibrary> viewIncludeLibrarys,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
+	void updateCQLVSACValueSets(String currentMeasureId, String expansionId,
+			AsyncCallback<VsacApiResult> asyncCallback);
 
 	
 }

@@ -4,13 +4,13 @@ import java.util.List;
 
 import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
@@ -191,5 +191,10 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	@Override
 	public SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
 		return this.getCQLLibraryService().modifyCQLValueSets(matValueSetTransferObject);
+	}
+	@Override
+	public VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId) {
+		String sessionId = getThreadLocalRequest().getSession().getId();
+		return this.getCQLLibraryService().updateCQLVSACValueSets(currentCQLLibraryId, expansionId, sessionId);
 	}
 }

@@ -3429,7 +3429,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			expansionId = expProfileToAllValueSet;
 		}
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
-		vsacapiService.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
+		service.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override

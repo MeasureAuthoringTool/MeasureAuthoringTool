@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +48,7 @@ import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.client.umls.service.VsacApiResult;
 import mat.dao.AuthorDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
@@ -138,6 +140,7 @@ import org.xml.sax.SAXException;
 /**
  * The Class MeasureLibraryServiceImpl.
  */
+@SuppressWarnings("serial")
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/**
@@ -2146,6 +2149,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private MeasurePackageService getService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
+	}
+	
+	/**
+	 * Gets the vsac service.
+	 * 
+	 * @return the service
+	 */
+	private VSACApiServImpl getVsacService() {
+		return (VSACApiServImpl) context.getBean("vsacapi");
 	}
 
 	/**
@@ -6186,5 +6198,33 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return result;
 
+	}
+
+	@Override
+	public VsacApiResult updateCQLVSACValueSets(String measureId, String expansionId, String sessionId) {
+		CQLQualityDataModelWrapper details = getCQLAppliedQDMFromMeasureXml(measureId, false);
+		List<CQLQualityDataSetDTO> appliedQDMList = details.getQualityDataDTO();
+		VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
+		if(result.isSuccess()){
+			updateAllCQLInMeasureXml(result.getCqlQualityDataSetMap(), measureId);
+		}
+		return result;
+	}
+	
+	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
+	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
+	 * @param map - HaspMap
+	 * @param measureId - String */
+	private void updateAllCQLInMeasureXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String measureId) {
+		logger.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
+		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
+			logger.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
+			updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(),
+					entrySet.getValue(), measureId);
+			logger.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
+		}
+		logger.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
 	}
 }

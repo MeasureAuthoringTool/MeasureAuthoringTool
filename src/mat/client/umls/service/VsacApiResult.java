@@ -1,6 +1,7 @@
 package mat.client.umls.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
@@ -45,6 +46,8 @@ public class VsacApiResult implements IsSerializable {
 	private List<VSACExpansionProfile> vsacExpProfileResp;
 	
 	private List<VSACVersion> vsacVersionResp;
+	
+	private HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> cqlQualityDataSetMap;
 	
 	/**
 	 * Gets the failure reason.
@@ -159,6 +162,14 @@ public class VsacApiResult implements IsSerializable {
 
 	public void setVsacVersionResp(List<VSACVersion> vsacVersionResp) {
 		this.vsacVersionResp = vsacVersionResp;
+	}
+
+	public HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> getCqlQualityDataSetMap() {
+		return cqlQualityDataSetMap;
+	}
+
+	public void setCqlQualityDataSetMap(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> cqlQualityDataSetMap) {
+		this.cqlQualityDataSetMap = cqlQualityDataSetMap;
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -98,4 +99,7 @@ public interface CQLLibraryServiceAsync {
 
 	void modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
+	void updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId,
+			AsyncCallback<VsacApiResult> asyncCallback);
 }

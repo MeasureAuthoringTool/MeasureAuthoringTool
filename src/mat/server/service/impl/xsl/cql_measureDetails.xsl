@@ -180,15 +180,28 @@
 	      <expressionDocument>
 	         <id root="{cqlUUID}"/>
 	         <text mediaType="application/cql">
-	            <reference value="{../cqlLookUp/library}_CQL.cql"/>
+	            <reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.cql"/>
 	            <translation mediaType="application/elm+xml">
-		               <reference value="{../cqlLookUp/library}_ELM.xml"/>
+		               <reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.xml"/>
 	            </translation>
 	         </text>
 	      </expressionDocument>
 	   </relatedDocument>
-
-
+		
+	    <xsl:for-each select="../cqlLookUp/includeLibrarys/includeLibrary">
+	    	<relatedDocument typeCode="COMP">
+	      		<expressionDocument>
+	         		<id root="{@id}"/>
+	    			 <text mediaType="application/cql">
+	    			 	<reference value="{@cqlLibRefName}-{@cqlVersion}.cql"/>
+			            <translation mediaType="application/elm+xml">
+				               <reference value="{@cqlLibRefName}-{@cqlVersion}.xml"/>
+			            </translation>
+	         		</text>
+	      		</expressionDocument>
+	      	</relatedDocument>	
+	    </xsl:for-each>			
+			
         <!-- Component Of -->
         <xsl:call-template name="componentOfTemplate" />
 

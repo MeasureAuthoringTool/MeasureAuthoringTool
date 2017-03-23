@@ -1232,7 +1232,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 																			
 																			// if the includes is in use, disable the includes delete button
 																			if (result.getUsedCQLLibraries().contains(
-																					cqlIncludeLibrary.getCqlLibraryName() + "." + cqlIncludeLibrary.getAliasName())) {
+																					cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName())) {
 																				searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 																			}
 																		}

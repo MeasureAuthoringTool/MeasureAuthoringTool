@@ -416,8 +416,8 @@ public class CQLLibraryService implements CQLLibraryServiceInterface {
 			result.setSuccess(true);
 			result.setId(newLibraryObject.getId());
 			result.setCqlLibraryName(newLibraryObject.getName());
-			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
-					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
+			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(existingLibrary.getVersion(), 
+					newLibraryObject.getRevisionNumber(), existingLibrary.isDraft());
 			result.setVersionStr(formattedVersion);
 			result.setEditable(isDraftable);
 			

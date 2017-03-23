@@ -196,10 +196,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 		searchHeader.getElement().setId("historyCellTableCaption_Label");
 		searchHeader.setStyleName("recentSearchHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
-		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(searchHeader.getElement());
-		if((results!=null) && (results.size() > 0)){
+				if((results!=null) && (results.size() > 0)){
 			cellTable = new CellTable<AuditLogDTO>();
 			ListDataProvider<AuditLogDTO> listDataProvider = new ListDataProvider<AuditLogDTO>();
 			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -213,6 +210,9 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 			listDataProvider.addDataDisplay(cellTable);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlHistory");
+			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(searchHeader.getElement());
 			spager.setPageStart(0);
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);

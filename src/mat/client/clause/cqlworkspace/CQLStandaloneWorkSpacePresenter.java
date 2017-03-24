@@ -422,6 +422,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 * @return the applied QDM list
 	 */
 	private void getAppliedValueSetList() {
+		showSearchingBusy(true);
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		if ((cqlLibraryId != null) && !cqlLibraryId.equals("")) {
 			MatContext.get().getLibraryService().getCQLData(cqlLibraryId, new AsyncCallback<SaveUpdateCQLResult>() {
@@ -430,6 +431,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
+					showSearchingBusy(false);
 					
 				}
 
@@ -502,7 +504,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 							isExpansionProfile = false;
 						}
 					}
-					
+					showSearchingBusy(false);
 				}
 			});
 		}
@@ -2387,8 +2389,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		if (searchDisplay.getFunctionArgumentList().size() > 0) {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
-		/*isModified = false;
-		modifyValueSetDTO = null;*/
+		isModified = false;
+		modifyValueSetDTO = null;
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.getCqlLeftNavBarPanelView().getMessagePanel().clear();
@@ -2983,26 +2985,24 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 	 * Update vsac value sets.
 	 */
 	private void updateVSACValueSets() {
-		
+		showSearchingBusy(true);
 		String expansionId = null;
 		if(expProfileToAllValueSet.isEmpty()){
 			expansionId = null;
 		} else {
 			expansionId = expProfileToAllValueSet;
 		}
-		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
 		cqlService.updateCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 			
 			@Override
 			public void onFailure(final Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+				showSearchingBusy(false);
 			}
 			
 			@Override
 			public void onSuccess(final VsacApiResult result) {
-				searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 				if (result.isSuccess()) {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
 					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
@@ -3017,6 +3017,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(searchDisplay.getValueSetView().convertMessage(result.getFailureReason()));
 				}
+				showSearchingBusy(false);
 			}
 		});
 	}
@@ -3099,7 +3100,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 			return;
 		}
-		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
+		showSearchingBusy(true);
 		expProfileToAllValueSet = getExpProfileValue();
 		if (expProfileToAllValueSet.isEmpty()) {
 			isExpansionProfile = false;
@@ -3116,7 +3117,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
-				searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+				showSearchingBusy(false);
 			}
 
 			/**
@@ -3155,7 +3156,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 						searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 						searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 					}
-					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
@@ -3164,7 +3165,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 					String message = searchDisplay.getValueSetView().convertMessage(result.getFailureReason());
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
-					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+					showSearchingBusy(false);
 				}
 			}
 		});
@@ -3958,6 +3959,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getInsertButton().setEnabled(!busy);
 			searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getInfoButton().setEnabled(!busy);
 			searchDisplay.getCQLFunctionsView().getAddNewArgument().setEnabled(!busy);
+			
+			searchDisplay.getValueSetView().getApplyDefaultExpansionIdButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().getSaveButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().getCancelQDMButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!busy);
 		}
 		searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
 		

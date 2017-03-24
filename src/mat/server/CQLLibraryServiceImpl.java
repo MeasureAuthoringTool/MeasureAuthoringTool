@@ -9,6 +9,7 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -196,5 +197,9 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.getCQLLibraryService().updateCQLVSACValueSets(currentCQLLibraryId, expansionId, sessionId);
+	}
+	@Override
+	public CQLKeywords getCQLKeywordsLists() {
+		return this.getCQLLibraryService().getCQLKeywordsLists();
 	}
 }

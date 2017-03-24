@@ -9,6 +9,7 @@ import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -102,5 +103,5 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
 	VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId);
-
+	CQLKeywords getCQLKeywordsLists();
 }

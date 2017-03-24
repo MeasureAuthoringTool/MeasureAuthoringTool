@@ -10,6 +10,7 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -87,4 +88,5 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 	
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);
+	 CQLKeywords getCQLKeywordsLists();
 }

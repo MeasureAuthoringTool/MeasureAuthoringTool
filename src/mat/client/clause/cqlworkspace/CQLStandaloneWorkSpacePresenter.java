@@ -2422,7 +2422,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				isCQLWorkSpaceLoaded = false;
 			}
 		}
-		
+		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpaceSA();
+		MatContext.get().getAllUnits();
 		CqlComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 		

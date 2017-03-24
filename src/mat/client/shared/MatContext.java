@@ -1692,6 +1692,25 @@ public class MatContext implements IsSerializable {
 		
 	}
 
+	public void getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpaceSA(){
+		
+		cqlLibraryService.getCQLKeywordsLists(new AsyncCallback<CQLKeywords>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSuccess(CQLKeywords result) {
+				cqlKeywords = result;
+				
+			}
+		});
+		getAllDataType();
+		
+	}
 
 /*	private void getAllDataTypes() {
 		listBoxCodeProvider.getAllDataType(

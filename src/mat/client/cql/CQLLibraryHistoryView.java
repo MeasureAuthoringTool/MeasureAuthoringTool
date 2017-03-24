@@ -232,7 +232,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 			cellTablePanel.add(spager);
 			
 		} else {
-			HTML desc = new HTML("<p> No Users available for sharing.</p>");
+			HTML desc = new HTML("<p> No Log Entry available for History.</p>");
 			cellTablePanel.add(searchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);

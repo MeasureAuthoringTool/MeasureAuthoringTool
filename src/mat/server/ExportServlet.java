@@ -24,6 +24,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
+import mat.server.service.impl.ZipPackager;
 import mat.server.simplexml.MATCssUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
@@ -197,7 +198,16 @@ public class ExportServlet extends HttpServlet {
 		
 		ExportResult export = getService().getELMFile(id); 
 		
-		if (SAVE.equals(type)) {
+		if(export.getIncludedCQLExports().size() > 0){
+			ZipPackager zp = new ZipPackager();
+			zp.getCQLZipBarr(export, "xml");
+			
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + "_" + "ELM"));
+			resp.setContentType("application/zip");
+			resp.getOutputStream().write(export.zipbarr);
+			resp.getOutputStream().close();
+			export.zipbarr = null;
+		}else if (SAVE.equals(type)) {
 			String currentReleaseVersion = measure.getReleaseVersion();
 			if(currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
@@ -217,9 +227,20 @@ public class ExportServlet extends HttpServlet {
 	private ExportResult exportCQLLibraryFile(HttpServletResponse resp,
 			MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure, FileNameUtility fnu) throws Exception {
+		
 		ExportResult export;
 		export = getService().getCQLLibraryFile(id);
-		if (SAVE.equals(type)) {
+		
+		if(export.getIncludedCQLExports().size() > 0){
+			ZipPackager zp = new ZipPackager();
+			zp.getCQLZipBarr(export, "cql");
+			
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + "_" + "CQL"));
+			resp.setContentType("application/zip");
+			resp.getOutputStream().write(export.zipbarr);
+			resp.getOutputStream().close();
+			export.zipbarr = null;
+		}else if (SAVE.equals(type)) {
 			String currentReleaseVersion = measure.getReleaseVersion();
 			if(currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");

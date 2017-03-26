@@ -1,5 +1,6 @@
 package mat.server.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface SimpleEMeasureService {
 		/** The export. */
 		public String export;
 		
+		public List<ExportResult> includedCQLExports = new ArrayList<ExportResult>();
+		
 		/** The wkbkbarr. */
 		public byte[] wkbkbarr;
 		
@@ -45,7 +48,11 @@ public interface SimpleEMeasureService {
 
 		public void setCqlLibraryName(String cqlLibraryName) {
 			this.cqlLibraryName = cqlLibraryName;
-		}	
+		}
+		
+		public List<ExportResult> getIncludedCQLExports() {
+			return includedCQLExports;
+		}
 	}
 	
 	/**

@@ -8,13 +8,13 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
-import org.eclipse.persistence.jaxb.compiler.XMLProcessor;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
@@ -43,7 +43,7 @@ public class ZipPackager {
 	 * @throws Exception             the exception
 	 */
 	public byte[] getZipBarr(String emeasureName,Date exportDate, String releaseVersion, byte[] wkbkbarr, String emeasureXMLStr, 
-			String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr, String cqlFileStr, String elmFileStr) throws Exception{
+			String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr, ExportResult cqlExportResult, ExportResult elmExportResult) throws Exception{
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -96,8 +96,10 @@ public class ZipPackager {
 		    addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
 		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
-		    addBytesToZip(cqlFilePath, cqlFileStr.getBytes(), zip);
-		    addBytesToZip(elmFilePath, elmFileStr.getBytes(), zip);
+		    addBytesToZip(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
+		    		getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    addBytesToZip(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
+		    		getCQLZipBarr(elmExportResult, "xml"), zip);
 		    
 		    zip.close();
 		    ret = baos.toByteArray();
@@ -145,7 +147,7 @@ public class ZipPackager {
 	 * @throws Exception             the exception
 	 */
 	public void createBulkExportZip(String emeasureName,Date exportDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, String cqlFileStr, String elmFileStr) throws Exception{
+			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult) throws Exception{
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try{
@@ -191,8 +193,10 @@ public class ZipPackager {
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 		//	filesMap.put(codeListXLSPath, wkbkbarr);
-			filesMap.put(cqlFilePath, cqlFileStr.getBytes());
-			filesMap.put(elmFilePath, elmFileStr.getBytes());
+			filesMap.put(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
+					getCQLZipBarr(cqlExportResult, "cql"));
+			filesMap.put(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
+					getCQLZipBarr(elmExportResult, "xml"));
 		    
 		  
 		}catch(Exception e){
@@ -217,7 +221,7 @@ public class ZipPackager {
 	 * @return the zip barr
 	 */
 	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, String cqlFileStr, String elmFileStr, String currentRealeaseVersion) {
+						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, String currentRealeaseVersion) {
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -255,8 +259,10 @@ public class ZipPackager {
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
-		    addBytesToZip(cqlFilePath,cqlFileStr.getBytes(),zip);
-		    addBytesToZip(elmFilePath, elmFileStr.getBytes(), zip);
+		    addBytesToZip(parentPath  +File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
+		    		getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    addBytesToZip(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
+		    		getCQLZipBarr(elmExportResult, "xml"), zip);
 		    
 		    zip.close();
 		    ret = baos.toByteArray();
@@ -279,13 +285,13 @@ public class ZipPackager {
 	 * @param filesMap the files map
 	 * @param seqNum the seq num
 	 * @param currentReleaseVersion 
-	 * @param elmFileStr 
+	 * @param elmExportResult 
 	 * @throws Exception the exception
 	 */
 	public void createBulkExportZip(String emeasureName, byte[] wkbkbarr,
 			String emeasureXMLStr, String emeasureHTMLStr,
 			String packageDate, String simpleXmlStr,
-			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, String cqlFileStr, String elmFileStr) throws Exception{
+			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult) throws Exception{
 		FileNameUtility fnu = new FileNameUtility();
 
 		try{
@@ -321,8 +327,10 @@ public class ZipPackager {
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 	//		filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
-			filesMap.put(cqlFilePath, cqlFileStr.getBytes());
-			filesMap.put(elmFilePath, elmFileStr.getBytes());
+			filesMap.put(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql", 
+					getCQLZipBarr(cqlExportResult, "cql"));
+			filesMap.put(parentPath + File.separator + elmExportResult.measureName + "_" + "xml", 
+					getCQLZipBarr(elmExportResult, "xml"));
 
 			
 		}catch(Exception e){
@@ -354,6 +362,33 @@ public class ZipPackager {
 		}
 		
 		
+	}
+
+	public byte[] getCQLZipBarr(ExportResult export, String extension) {
+		byte[] ret = null;
+		
+		try{
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zip = new ZipOutputStream(baos);
+			
+			String parentPath = "";
+			parentPath = export.measureName + "_" + extension;
+						
+			String cqlFilePath = "";
+			cqlFilePath = parentPath+File.separator+export.getCqlLibraryName() + "." + extension;
+			addBytesToZip(cqlFilePath,export.export.getBytes(),zip);
+			
+			for(ExportResult includedResult : export.getIncludedCQLExports()){
+				cqlFilePath = parentPath+File.separator+includedResult.getCqlLibraryName() + "." + extension;
+				addBytesToZip(cqlFilePath,includedResult.export.getBytes(),zip);
+			}
+			zip.close();
+			ret = baos.toByteArray();
+			export.zipbarr = ret;
+		}catch(Exception er){
+			er.printStackTrace();
+		}
+		return ret;
 	}
 	 
 }

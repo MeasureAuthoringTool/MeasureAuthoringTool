@@ -96,11 +96,22 @@ public class ZipPackager {
 		    addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
 		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
-		    addBytesToZip(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
-		    		getCQLZipBarr(cqlExportResult, "cql"), zip);
-		    addBytesToZip(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
-		    		getCQLZipBarr(elmExportResult, "xml"), zip);
 		    
+		    if(cqlExportResult.includedCQLExports.size() > 0){
+		    	addBytesToZip(parentPath  +File.separator + cqlExportResult.getCqlLibraryName() + "_" + "cql.zip", 
+		    			getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    }else{
+		    	addBytesToZip(parentPath  +File.separator + cqlExportResult.getCqlLibraryName() + ".cql", 
+		    			getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    }
+
+		    if(elmExportResult.includedCQLExports.size() > 0){
+		    	addBytesToZip(parentPath + File.separator + elmExportResult.getCqlLibraryName() + "_" + "xml.zip", 
+		    			getCQLZipBarr(elmExportResult, "xml"), zip);
+		    }else{
+		    	addBytesToZip(parentPath + File.separator + elmExportResult.getCqlLibraryName() + ".xml", 
+		    			getCQLZipBarr(elmExportResult, "xml"), zip);
+		    }		    
 		    zip.close();
 		    ret = baos.toByteArray();
 		}catch(Exception e){
@@ -151,7 +162,6 @@ public class ZipPackager {
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try{
-
 			
 			URL u = new URL(emeasureXSLUrl);
 			int contentLength = u.openConnection().getContentLength();
@@ -193,12 +203,23 @@ public class ZipPackager {
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 		//	filesMap.put(codeListXLSPath, wkbkbarr);
-			filesMap.put(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
-					getCQLZipBarr(cqlExportResult, "cql"));
-			filesMap.put(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
-					getCQLZipBarr(elmExportResult, "xml"));
-		    
-		  
+			
+			if(cqlExportResult.includedCQLExports.size() > 0){
+				filesMap.put(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "_" + "cql.zip", 
+						getCQLZipBarr(cqlExportResult, "cql"));
+			}else{
+				filesMap.put(parentPath + File.separator + cqlExportResult.getCqlLibraryName() + ".cql", 
+						getCQLZipBarr(cqlExportResult, "cql"));
+			}
+
+			if(elmExportResult.includedCQLExports.size() > 0){
+				filesMap.put(parentPath + File.separator + elmExportResult.getCqlLibraryName() + "_" + "xml.zip", 
+						getCQLZipBarr(elmExportResult, "xml"));
+			}else{
+				filesMap.put(parentPath + File.separator + elmExportResult.getCqlLibraryName() + ".xml", 
+						getCQLZipBarr(elmExportResult, "xml"));
+			}
+				  
 		}catch(Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
@@ -339,11 +360,22 @@ public class ZipPackager {
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 	//		filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
-			filesMap.put(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql", 
-					getCQLZipBarr(cqlExportResult, "cql"));
-			filesMap.put(parentPath + File.separator + elmExportResult.measureName + "_" + "xml", 
-					getCQLZipBarr(elmExportResult, "xml"));
+			
+			if(cqlExportResult.includedCQLExports.size() > 0){
+				filesMap.put(parentPath + File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
+						getCQLZipBarr(cqlExportResult, "cql"));
+			}else{
+				filesMap.put(parentPath + File.separator + cqlExportResult.measureName + ".cql", 
+						getCQLZipBarr(cqlExportResult, "cql"));
+			}
 
+			if(elmExportResult.includedCQLExports.size() > 0){
+				filesMap.put(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
+						getCQLZipBarr(elmExportResult, "xml"));
+			}else{
+				filesMap.put(parentPath + File.separator + elmExportResult.measureName + ".xml", 
+						getCQLZipBarr(elmExportResult, "xml"));
+			}
 			
 		}catch(Exception e){
 			System.out.println(e.toString());

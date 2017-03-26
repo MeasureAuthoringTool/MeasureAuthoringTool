@@ -395,14 +395,12 @@ public class CQLUtil {
 		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for(int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
 			Node current = unusedCqlValuesetNodeList.item(i); 
-			//before removing the ValueSet Node we have to make sure to remove the codeSystems for that Valueset
-			String oid = current.getAttributes().getNamedItem("oid").getNodeValue();
-			removeUnsedCodeSystems(originalDoc, oid);
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);
 		}
 		
 		removeUnusedCodes(originalDoc, cqlCodes);
+		removeUnsedCodeSystems(originalDoc);
 	}
 	
 	/**
@@ -426,9 +424,6 @@ public class CQLUtil {
 		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for(int i = 0; i < unusedCqlCodesNodeList.getLength(); i++) {
 			Node current = unusedCqlCodesNodeList.item(i); 
-			//before removing the ValueSet Node we have to make sure to remove the codeSystems for that Valueset
-			//String oid = current.getAttributes().getNamedItem("oid").getNodeValue();
-			//removeUnsedCodeSystems(originalDoc, oid);
 			Node parent = current.getParentNode(); 
 			parent.removeChild(current);
 		}
@@ -438,21 +433,29 @@ public class CQLUtil {
 	 * Removes the unsed code systems.
 	 *
 	 * @param originalDoc the original doc
-	 * @param oid the oid
+	 * @throws XPathExpressionException 
 	 */
-	private static void removeUnsedCodeSystems(Document originalDoc, String oid) {
-		String xPathForUnusedCodeSystems= "//cqlLookUp//codeSystem[@valueSetOID='"+ oid +"']" ; 
-		try {
-			NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			for(int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++){
-				Node current = unusedCqlCodeSystemNodeList.item(i); 
-				Node parent = current.getParentNode(); 
-				parent.removeChild(current);
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	private static void removeUnsedCodeSystems(Document originalDoc) throws XPathExpressionException {
+		
+		//find all used codeSystemNames
+		String xPathForCodesystemNames = "//cqlLookUp/codes/code/@codeSystemName";
+		NodeList codeSystemNameList = (NodeList) xPath.evaluate(xPathForCodesystemNames, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		String nameXPathString = ""; 
+		for(int i=0; i < codeSystemNameList.getLength(); i++) {
+			String name = codeSystemNameList.item(i).getNodeValue();
+			nameXPathString += "[@codeSystemName !='"+ name +"']";
 		}
+		String xPathForUnusedCodeSystems= "//cqlLookUp/codeSystems/codeSystem" + nameXPathString ; 
+		
+		NodeList unusedCqlCodeSystemNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodeSystems, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i = 0; i < unusedCqlCodeSystemNodeList.getLength(); i++){
+			Node current = unusedCqlCodeSystemNodeList.item(i); 
+			Node parent = current.getParentNode(); 
+			parent.removeChild(current);
+		}
+		
 	}
 
 	/**

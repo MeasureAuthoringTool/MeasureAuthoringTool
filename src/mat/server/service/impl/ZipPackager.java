@@ -259,10 +259,22 @@ public class ZipPackager {
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
-		    addBytesToZip(parentPath  +File.separator + cqlExportResult.measureName + "_" + "cql.zip", 
-		    		getCQLZipBarr(cqlExportResult, "cql"), zip);
-		    addBytesToZip(parentPath + File.separator + elmExportResult.measureName + "_" + "xml.zip", 
-		    		getCQLZipBarr(elmExportResult, "xml"), zip);
+		    
+		    if(cqlExportResult.includedCQLExports.size() > 0){
+			    addBytesToZip(parentPath  +File.separator + cqlExportResult.getCqlLibraryName() + "_" + "cql.zip", 
+			    		getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    }else{
+		    	addBytesToZip(parentPath  +File.separator + cqlExportResult.getCqlLibraryName() + ".cql", 
+			    		getCQLZipBarr(cqlExportResult, "cql"), zip);
+		    }
+		    
+		    if(elmExportResult.includedCQLExports.size() > 0){
+		    	addBytesToZip(parentPath + File.separator + elmExportResult.getCqlLibraryName() + "_" + "xml.zip", 
+		    			getCQLZipBarr(elmExportResult, "xml"), zip);
+		    }else{
+		    	addBytesToZip(parentPath + File.separator + elmExportResult.getCqlLibraryName() + ".xml", 
+		    			getCQLZipBarr(elmExportResult, "xml"), zip);
+		    }
 		    
 		    zip.close();
 		    ret = baos.toByteArray();

@@ -21,29 +21,35 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
+import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.ListObject;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.simplexml.hqmf.CQLBasedHQMFGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
+import mat.server.util.CQLUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
+import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import net.sf.saxon.TransformerFactoryImpl;
 
@@ -52,7 +58,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
-import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Document;
@@ -123,6 +128,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	/**MeasureExportDAO.**/
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
+	
+	/** The cql library dao. */
+	@Autowired
+	private CQLLibraryDAO cqlLibraryDAO;
 
 	/**ApplicationContext.**/
 	@Autowired
@@ -301,20 +310,16 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Override
 	public final ExportResult getCQLLibraryFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		//MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
-		//String measureXML = measureXml.getMeasureXMLAsString();
 		String simpleXML = measureExport.getSimpleXML();
-		System.out.println(simpleXML);
-
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(simpleXML);
 		
 		// get the name from the simple xml
-		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
-		String xPathVersion = "/measure/cqlLookUp[1]/version[1]";
+		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 		
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML); 
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName); 
-		Node cqlVersion = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathVersion);
+	
 		
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(simpleXML),"").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;
@@ -324,44 +329,60 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		if(cqlFileName == null) {
 			result.setCqlLibraryName(result.measureName);
 		} else {
-			result.setCqlLibraryName(cqlFileName.getTextContent() + "-" + cqlVersion.getTextContent());
+			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		}
 		
+		//find included CQL libraries and add them to result
+		getIncludedCQLLibs(result, xmlProcessor);
 		
 		return result;
+	}
+
+	private void getIncludedCQLLibs(ExportResult result,
+			XmlProcessor xmlProcessor) throws XPathExpressionException {
+		
+		String xPathForIncludedLibs = "/measure/allUsedCQLLibs/lib";
+		NodeList includedCQLLibNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForIncludedLibs);
+		
+		for(int i=0;i<includedCQLLibNodes.getLength();i++){
+			Node libNode = includedCQLLibNodes.item(i);
+			String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
+			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
+			
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+			String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString),"").toString();
+			ExportResult includeResult = new ExportResult();
+			includeResult.export = cqlFileString;
+			
+			String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
+			String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
+			
+			includeResult.setCqlLibraryName(libName + "-" + libVersion); 
+			
+			result.includedCQLExports.add(includeResult);
+		}		
 	}
 
 	@Override
 	public final ExportResult getELMFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-//		MeasureXML measureXml = measureXMLDAO.findForMeasure(measureId);
-//		String measureXML = measureXml.getMeasureXMLAsString();
+
 		
 		String measureSimpleXML = measureExport.getSimpleXML();
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureSimpleXML),"").toString();
+		XmlProcessor xmlProcessor = new XmlProcessor(measureSimpleXML);
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureSimpleXML);
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		ExportResult result = new ExportResult();
-		
+		result.measureName = measureExport.getMeasure().getaBBRName();
 		String elmString = ""; 
-		
-		System.out.println(cqlFileString);
-		
+				
 		// if the cqlFile String is blank, don't even parse it.
 		if(!cqlFileString.isEmpty()) {
 
-			CQLtoELM cqlToElm = new CQLtoELM(cqlFileString); 
-			cqlToElm.doTranslation(false, false, false);
-			elmString = cqlToElm.getElmString();
-			
-			
-			LOGGER.info(elmString);
-			// get cql library name from the elm file. 
-			// it is located at /library/identifier/@id
-			String xPathIdentifier = "/library/identifier/@id";
-			XmlProcessor xmlProcessor = new XmlProcessor(elmString);
-			Node cqlLibraryName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathIdentifier);		
-			result.setCqlLibraryName(cqlLibraryName.getTextContent());
-			
-
+			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			elmString = elmResult.getElmString();					
+					
+			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
 			elmString = "";
 			result.measureName = measureExport.getMeasure().getaBBRName();
@@ -370,9 +391,39 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		result.export = elmString; 
 		
+		getIncludedCQLELMs(result, xmlProcessor);
 		
 		return result;
 	}
+	
+	private void getIncludedCQLELMs(ExportResult result,
+			XmlProcessor xmlProcessor) throws XPathExpressionException {
+		
+		String xPathForIncludedLibs = "/measure/allUsedCQLLibs/lib";
+		NodeList includedCQLLibNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForIncludedLibs);
+		
+		for(int i=0;i<includedCQLLibNodes.getLength();i++){
+			Node libNode = includedCQLLibNodes.item(i);
+			String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
+			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
+			
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
+			SaveUpdateCQLResult elmResult =  CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			String elmString = elmResult.getElmString();
+			ExportResult includeResult = new ExportResult();
+			includeResult.export = elmString;
+			
+			String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
+			String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
+			
+			includeResult.setCqlLibraryName(libName + "-" + libVersion); 
+			
+			result.includedCQLExports.add(includeResult);
+		}
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.SimpleEMeasureService#getEMeasureXML(java.lang.String)
 	 */
@@ -608,7 +659,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 				ZipPackager zp = new ZipPackager();
 				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), 
-						emeasureHTMLStr, simpleXmlStr,emeasureXML, cqlFileStr, elmFileStr, me.getMeasure().getReleaseVersion());
+						emeasureHTMLStr, simpleXmlStr,emeasureXML, exportResult, elmExportResult, me.getMeasure().getReleaseVersion());
 		}
 	
 	
@@ -707,7 +758,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName,exportDate, releaseVersion, wkbkbarr, emeasureXMLStr,
-				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, cqlFileStr, elmFileStr);
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, cqlExportResult, elmExportResult);
 	}
 
 	/**
@@ -885,7 +936,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum,currentReleaseVersion, cqlFileStr, elmFileStr);
+				seqNum,currentReleaseVersion, cqlEportResult, elmExportResult);
 	}
 
 	/**
@@ -923,14 +974,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
-		ExportResult cqlEportResult = getCQLLibraryFile(measureId);
-		String cqlFileStr = cqlEportResult.export;
+		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
+		String cqlFileStr = cqlExportResult.export;
 		ExportResult elmExportResult = getELMFile(measureId);
 		String elmFileStr = elmExportResult.export;
 		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName,exportDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum, me.getMeasure().getReleaseVersion(), cqlFileStr, elmFileStr);
+				seqNum, me.getMeasure().getReleaseVersion(), cqlExportResult, elmExportResult);
 	}
 }

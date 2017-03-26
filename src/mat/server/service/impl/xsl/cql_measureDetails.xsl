@@ -188,14 +188,14 @@
 	      </expressionDocument>
 	   </relatedDocument>
 		
-	    <xsl:for-each select="../cqlLookUp/includeLibrarys/includeLibrary">
+	    <xsl:for-each select="../allUsedCQLLibs/lib">
 	    	<relatedDocument typeCode="COMP">
 	      		<expressionDocument>
 	         		<id root="{@id}"/>
 	    			 <text mediaType="application/cql">
-	    			 	<reference value="{@cqlLibRefName}-{@cqlVersion}.cql"/>
+	    			 	<reference value="{@name}-{@version}.cql"/>
 			            <translation mediaType="application/elm+xml">
-				               <reference value="{@cqlLibRefName}-{@cqlVersion}.xml"/>
+				               <reference value="{@name}-{@version}.xml"/>
 			            </translation>
 	         		</text>
 	      		</expressionDocument>

@@ -121,5 +121,9 @@ public class CQLIncludeLibrary implements IsSerializable {
 		}
 
 	}
+	
+	public String toString(){
+		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version; 
+	}
 
 }

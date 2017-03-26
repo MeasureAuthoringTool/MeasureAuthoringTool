@@ -336,6 +336,7 @@ public class ExportSimpleXML {
 			resolveValueSetsWithDataTypesUsed(originalDoc, result.getUsedCQLArtifacts().getValueSetDataTypeMap(), cqlModel);
 			
 			CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
+			CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
 		}
 		
 		private static void resolveValueSetsWithDataTypesUsed(
@@ -357,7 +358,7 @@ public class ExportSimpleXML {
 				originalDoc.importNode(elementLookUpNode, true);
 				parentNode.appendChild(elementLookUpNode);
 			}
-			System.out.println("xml map:"+cqlModel.getIncludedCQLLibXMLMap().keySet());
+			
 			for(String valueSetName:usedValueSetDatatypeMap.keySet()){
 				List<String> dataTypeList = usedValueSetDatatypeMap.get(valueSetName);
 				
@@ -462,9 +463,9 @@ public class ExportSimpleXML {
 			System.out.println("includedLibName:"+includedLibName);			
 			returnDoc = includedXMLMap.get(includedLibName);
 			if(returnDoc == null){
-				Map<String, String> cqlLibXMLMap = cqlModel.getIncludedCQLLibXMLMap();
+				Map<String, mat.shared.LibHolderObject> cqlLibXMLMap = cqlModel.getIncludedCQLLibXMLMap();
 				System.out.println(cqlLibXMLMap.keySet());
-				String xml = cqlLibXMLMap.get(includedLibName);
+				String xml = cqlLibXMLMap.get(includedLibName).getMeasureXML();
 				if(xml != null){
 					XmlProcessor xmlProcessor = new XmlProcessor(xml);
 					includedXMLMap.put(includedLibName, xmlProcessor.getOriginalDoc());

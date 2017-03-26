@@ -1,12 +1,14 @@
 package mat.server.cqlparser;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
 
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
@@ -66,6 +68,8 @@ public class CQLFilter {
      * The cql library
      */
     private Library library;
+    
+    private CQLModel cqlModel;
 
     /**
      * The lists of populations that are included in MAT
@@ -121,10 +125,11 @@ public class CQLFilter {
      * @param library the library of the CQL
      * @param populationList the lists of populations that are included in MAT
      */
-    public CQLFilter(Library library, List<String> populationList, String parentFolderPath) {
+    public CQLFilter(Library library, List<String> populationList, String parentFolderPath, CQLModel cqlModel) {
     	
         this.cqlFolderPath = parentFolderPath;
     	this.library = library;
+    	this.cqlModel = cqlModel;
         this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
         this.populationList = populationList;
 
@@ -934,6 +939,11 @@ public class CQLFilter {
 						includedCQLtoELM.doTranslation(true, false, false);
 						
 						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
+						CQLIncludeLibrary cqlIncludeLibrary = this.cqlModel.getIncludedCQLLibXMLMap().
+								get(includeDef.getPath() + "-" + includeDef.getVersion()).getCqlLibrary();
+						
+						includedLibrary.setCqlIncludeLibraryObject(cqlIncludeLibrary);
+												
 						this.includedLibraries.put(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName  , includedLibrary);
 						
     				} catch (IOException e) {
@@ -1062,6 +1072,17 @@ public class CQLFilter {
     	return new ArrayList<String>(this.includedLibraries.keySet());
     }
     
+    public Map<String, CQLIncludeLibrary> getUsedLibrariesMap(){
+    	Map<String, CQLIncludeLibrary> usedLibMap = new HashMap<String, CQLIncludeLibrary>();
+    	
+    	for(String libName:this.includedLibraries.keySet()){
+    		LibraryHolder libHolder = this.includedLibraries.get(libName);
+    		usedLibMap.put(libName, libHolder.getCqlIncludeLibraryObject());
+    	}
+    	
+    	return usedLibMap;
+    }
+    
     public Map<String, List<String>> getValueSetDataTypeMap() {
 		return valueSetDataTypeMap;
 	}
@@ -1087,11 +1108,13 @@ public class CQLFilter {
     	return dataTypeName;
     }
     
-    private class LibraryHolder{
+    public class LibraryHolder{
     	private Library library;
     	private String libraryAlias;
     	private String libraryName;
     	private String libraryVersion;
+    	private CQLIncludeLibrary cqlIncludeLibraryObject;
+    	
     	
     	public LibraryHolder(Library library, String alias, String libraryName, String libraryVer) {
 			this.setLibrary(library);
@@ -1099,6 +1122,8 @@ public class CQLFilter {
 			this.setLibraryName(libraryName);
 			this.setLibraryVersion(libraryVer);
 		}
+
+		
 
 		public Library getLibrary() {
 			return library;
@@ -1131,94 +1156,102 @@ public class CQLFilter {
 		public void setLibraryVersion(String libraryVersion) {
 			this.libraryVersion = libraryVersion;
 		}
+
+		public CQLIncludeLibrary getCqlIncludeLibraryObject() {
+			return cqlIncludeLibraryObject;
+		}
+		
+		public void setCqlIncludeLibraryObject(CQLIncludeLibrary cqlIncludeLibraryObject) {
+			this.cqlIncludeLibraryObject = cqlIncludeLibraryObject;
+		}
     }
     
-    public static void main(String[] args) {
-    	test2();
-      	
-	}
+//    public static void main(String[] args) {
+//    	test2();
+//      	
+//	}
     
-    public static void test2(){
-    	try {
-			//File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");
-    		File f = new File("C:\\chinmay\\ANewMeasure-0.0.008.cql");
-			CQLtoELM cqlToElm = new CQLtoELM(f);
-			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-			cqlToElm.doTranslation(true, false, false);
-			
-			List<String> defList = new ArrayList<String>();
-			defList.add("Anesthetic Procedures");
-//	    	defList.add("Union Diagnoses");
-//	    	defList.add("Depression Office Visit Encounter 1");
-//	    	defList.add("Depression Office Visit Encounter 2");
-//	    	defList.add("Depression Office Visit Encounter 3");
-//	    	defList.add("Depression Face to Face Encounter 1");
-//	    	defList.add("Depression Behavioral Health Encounter 1");
-	    	    		    	
-	    	if(cqlToElm.getErrors().size() == 0){
-	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
-	    		cqlFilter.filter();
-	    		
-	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
-	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
-	    	}else{
-	    		System.out.println(cqlToElm.getErrors());
-	    	}	    	
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-    }
+//    public static void test2(){
+//    	try {
+//			//File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");
+//    		File f = new File("C:\\chinmay\\ANewMeasure-0.0.008.cql");
+//			CQLtoELM cqlToElm = new CQLtoELM(f);
+//			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+//			cqlToElm.doTranslation(true, false, false);
+//			
+//			List<String> defList = new ArrayList<String>();
+//			defList.add("Anesthetic Procedures");
+////	    	defList.add("Union Diagnoses");
+////	    	defList.add("Depression Office Visit Encounter 1");
+////	    	defList.add("Depression Office Visit Encounter 2");
+////	    	defList.add("Depression Office Visit Encounter 3");
+////	    	defList.add("Depression Face to Face Encounter 1");
+////	    	defList.add("Depression Behavioral Health Encounter 1");
+//	    	    		    	
+//	    	if(cqlToElm.getErrors().size() == 0){
+//	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+//	    		cqlFilter.filter();
+//	    		
+//	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+//	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+//	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+//	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+//	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+//	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+//	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+//	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
+//	    	}else{
+//	    		System.out.println(cqlToElm.getErrors());
+//	    	}	    	
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//    }
     
-    public static void test1(){
-    	try {
-			File f = File.createTempFile("test", ".cql");
-			FileWriter fw = new FileWriter(f);
-			fw.write(getCQL());
-			fw.close();
-			
-			CQLtoELM cqlToElm = new CQLtoELM(f);
-			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-			cqlToElm.doTranslation(true, false, true);
-	    	List<String> defList = new ArrayList<String>();
-	    	defList.add("testInclude");
-	    	defList.add("test");
-//	    	defList.add("birthdateDefn");
-//	    	defList.add("test1.teq");
-//	    	defList.add("SDE Race");
-	    	defList.add("SDE Sex");
-//	    	defList.add("test2");
-//	    	defList.add("SDE Ethnicity");
-	    	    		    	
-	    	if(cqlToElm.getErrors().size() == 0){
-	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
-	    		cqlFilter.filter();
-	    		
-	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
-	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
-	    	}else{
-	    		System.out.println(cqlToElm.getErrors());
-	    	}	    	
-	    	
-	    	f.delete();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-    }    
+//    public static void test1(){
+//    	try {
+//			File f = File.createTempFile("test", ".cql");
+//			FileWriter fw = new FileWriter(f);
+//			fw.write(getCQL());
+//			fw.close();
+//			
+//			CQLtoELM cqlToElm = new CQLtoELM(f);
+//			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+//			cqlToElm.doTranslation(true, false, true);
+//	    	List<String> defList = new ArrayList<String>();
+//	    	defList.add("testInclude");
+//	    	defList.add("test");
+////	    	defList.add("birthdateDefn");
+////	    	defList.add("test1.teq");
+////	    	defList.add("SDE Race");
+//	    	defList.add("SDE Sex");
+////	    	defList.add("test2");
+////	    	defList.add("SDE Ethnicity");
+//	    	    		    	
+//	    	if(cqlToElm.getErrors().size() == 0){
+//	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+//	    		cqlFilter.filter();
+//	    		
+//	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+//	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+//	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+//	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+//	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+//	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+//	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+//	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
+//	    	}else{
+//	    		System.out.println(cqlToElm.getErrors());
+//	    	}	    	
+//	    	
+//	    	f.delete();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//    }    
 
 	public static String getCQL(){
     	String s = "" 

@@ -592,7 +592,7 @@ public class CQLUtil {
 			}
 			
 			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
-			cqlToElm.doTranslation(true, false, generateELM);
+			cqlToElm.doTranslation(!generateELM, false, generateELM);
 			
 			if(generateELM){
 				String elmString = cqlToElm.getElmString();

@@ -1048,39 +1048,28 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult deleteValueSet(String xml,String toBeDelValueSetId){
 		logger.info("Start deleteValueSet : ");
-		SaveUpdateCQLResult CQLFileData = new SaveUpdateCQLResult();
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();	
-		CQLFileData = getCQLFileData(xml);
-		if (CQLFileData != null && CQLFileData.isSuccess()) {
-			XmlProcessor xmlProcessor = new XmlProcessor(xml);
-			if (CQLFileData.getCqlErrors().isEmpty()) {
-				try {
-					String xpathforValueSet = "//cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
-					Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
-					if (valueSetElements != null) {
-						Node parentNode = valueSetElements.getParentNode();
-						parentNode.removeChild(valueSetElements);
-						result.setSuccess(true);
-						result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-					} else {
-						logger.info("Unable to find the selected valueset element with id in deleteValueSet : " + toBeDelValueSetId);
-						result.setSuccess(false);
-					}
-				} catch (XPathExpressionException e) {
-					result.setSuccess(false);
-					logger.info("Error in method deleteValueSet: " + e.getMessage());
-				}
-			} else{
-				result.setCqlErrors(CQLFileData.getCqlErrors());
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		try {
+			String xpathforValueSet = "//cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
+			Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
+			if (valueSetElements != null) {
+				Node parentNode = valueSetElements.getParentNode();
+				parentNode.removeChild(valueSetElements);
+				result.setSuccess(true);
+				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			} else {
+				logger.info("Unable to find the selected valueset element with id in deleteValueSet : " + toBeDelValueSetId);
 				result.setSuccess(false);
 			}
-			
-		} else {
+		} catch (XPathExpressionException e) {
 			result.setSuccess(false);
+			logger.info("Error in method deleteValueSet: " + e.getMessage());
 		}
+
 		logger.info("END deleteValueSet : ");
 		return result;
-		
+
 	}
 	
 	/* (non-Javadoc)

@@ -55,6 +55,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
+import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
@@ -141,6 +142,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
 		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
 		List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
+		List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
 		
 		saveCQLLibraryResult.setResultsTotal(list.size());
 		
@@ -149,11 +151,21 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			if(object.getMeasureId() != null){
 				if(countNumberOfAssociation(object.getMeasureId()) == 0){
 					allLibraries.add(object);
+				} else if(countNumberOfAssociation(object.getMeasureId()) > 0){
+					totalAssociations = getAssociations(object.getMeasureId());
+					if(!hasChildLibraries(totalAssociations)){
+						allLibraries.add(object);
+					}
 				}
 			}else{
 				if(object.getId() != null){
 					if(countNumberOfAssociation(object.getId()) == 0){
 						allLibraries.add(object);
+					}else if(countNumberOfAssociation(object.getId()) > 0){
+						totalAssociations = getAssociations(object.getId());
+						if(!hasChildLibraries(totalAssociations)){
+							allLibraries.add(object);
+						}
 					}
 				}
 			}
@@ -163,6 +175,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return saveCQLLibraryResult;
 	}
 	
+
+	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
+		for(CQLLibraryAssociation result : totalAssociations){
+			if(countNumberOfAssociation(result.getCqlLibraryId()) != 0){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/* (non-Javadoc)
 	 * @see mat.server.service.CQLLibraryServiceInterface#search(java.lang.String, java.lang.String, int, int, int)
@@ -1138,6 +1159,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	@Override
 	public int countNumberOfAssociation(String Id){
 		return cqlService.countNumberOfAssociation(Id);
+	}
+	
+	@Override
+	public List<CQLLibraryAssociation> getAssociations(String Id){
+		return cqlService.getAssociations(Id);
 	}
 	
 	/**

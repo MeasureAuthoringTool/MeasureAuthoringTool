@@ -8,6 +8,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
+import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
@@ -196,5 +197,7 @@ public interface CQLService {
 	int countNumberOfAssociation(String associatedWithId);
 
 	SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel);
+
+	List<CQLLibraryAssociation> getAssociations(String id);
 
 }

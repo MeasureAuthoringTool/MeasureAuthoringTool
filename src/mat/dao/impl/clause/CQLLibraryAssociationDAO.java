@@ -36,5 +36,15 @@ public class CQLLibraryAssociationDAO extends GenericDAO<CQLLibraryAssociation, 
 		}
 
 	}
+	
+	@Override
+	public List<CQLLibraryAssociation> getAssociations(String associatedWithId) {
+
+		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryAssociation.class);
+
+		criteria.add(Restrictions.eq("associationId", associatedWithId));
+
+		return criteria.list();
+	}
 
 }

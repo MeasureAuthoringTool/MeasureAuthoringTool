@@ -925,6 +925,12 @@ public class CQLServiceImpl implements CQLService {
 	public int countNumberOfAssociation(String associatedWithId){
 		return cqlLibraryAssociationDAO.findAssociationCount(associatedWithId);
 	}
+	
+	@Override
+	public List<CQLLibraryAssociation> getAssociations(String associatedWithId){
+		return cqlLibraryAssociationDAO.getAssociations(associatedWithId);
+	}
+
 
 	/**
 	 * Check and append include library parent node.

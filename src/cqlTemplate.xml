@@ -61,6 +61,7 @@
         <function>Coalesce()</function>
         <function>Count()</function>
         <function>DateTime()</function>
+        <function>Exp()</function>
         <function>First()</function>
         <function>Floor()</function>
         <function>IndexOf()</function>

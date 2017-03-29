@@ -2325,14 +2325,14 @@ public class CQLLeftNavBarPanelView {
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		panel.setWidget(dialogContents);
 
-		HTML html1 = new HTML("Ctrl-Alt-v  : Value Sets");
-		HTML html2 = new HTML("Ctrl-Alt-y  : Datatypes");
-		HTML html3 = new HTML("Ctrl-Alt-t  : Timings");
-		HTML html4 = new HTML("Ctrl-Alt-f  : Functions");
-		HTML html5 = new HTML("Ctrl-Alt-d  : Definitions");
-		HTML html6 = new HTML("Ctrl-Alt-p  : Parameters");
-		HTML html7 = new HTML("Ctrl-Alt-a  : Attributes");
-		HTML html8 = new HTML("Ctrl-Space  : All");
+		HTML html1 = new HTML("Ctrl-Alt-a: attributes");
+		HTML html2 = new HTML("Ctrl-Alt-y: datatypes");
+		HTML html3 = new HTML("Ctrl-Alt-d: definitions");
+		HTML html4 = new HTML("Ctrl-Alt-f: functions");
+		HTML html5 = new HTML("Ctrl-Alt-p: parameters");
+		HTML html6 = new HTML("Ctrl-Alt-t: timings");
+		HTML html7 = new HTML("Ctrl-Alt-v: value sets");
+		HTML html8 = new HTML("Ctrl-Space: all");
 
 		dialogContents.add(html1);
 		dialogContents.add(html2);

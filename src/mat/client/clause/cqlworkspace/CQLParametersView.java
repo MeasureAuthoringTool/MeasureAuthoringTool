@@ -46,14 +46,14 @@ public class CQLParametersView {
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
 
-		Label parameterLabel = new Label(LabelType.INFO, "Parameter");
+		Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
+		parameterLabel.setText("Parameter Name");
 		parameterNameTxtArea.setText("");
 		parameterNameTxtArea.setSize("260px", "25px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
-		parameterLabel.setText("Parameter");
 
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("685px", "510px");

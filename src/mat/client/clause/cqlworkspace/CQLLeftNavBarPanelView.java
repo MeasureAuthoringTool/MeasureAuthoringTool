@@ -360,7 +360,7 @@ public class CQLLeftNavBarPanelView {
 		includesLibrary.add(includesCollapse);
 
 		appliedQDM.setIcon(IconType.PENCIL);
-		appliedQDM.setTitle("ValueSets");
+		appliedQDM.setTitle("ValueSets/Codes");
 		valueSetBadge.setText("0" + appliedQdmTableList.size());
 		Anchor valueSetAnchor = (Anchor) (appliedQDM.getWidget(0));
 		// Double Click causing issues.So Event is not propogated

@@ -479,7 +479,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		qdmElementsHeader.setStyleName("measureGroupingTableHeader");
 		qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
 		
-		HTML searchHeaderText = new HTML("<strong>Applied Value Sets/Codes</strong>");
+		HTML searchHeaderText = new HTML("<strong>Applied Value Sets</strong>");
 		qdmElementsHeader.add(searchHeaderText);
 		cellTablePanel.add(qdmElementsHeader);
 		if ((appliedValueSetList != null)

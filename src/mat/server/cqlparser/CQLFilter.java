@@ -219,7 +219,7 @@ public class CQLFilter {
         
         ExpressionDef expression = findExpressionByName(expressionName);
         
-        if(expression.getExpression() == null) {
+        if(expression == null || expression.getExpression() == null) {
 //            System.err.println(String.format("Expression %s not found.", expressionName));
 //            try{
 //            throw new Exception("hiiiii");
@@ -237,7 +237,7 @@ public class CQLFilter {
     private void createCQLExpressionObject(ExpressionDef expression) {
     	
     	if(expression.getClass().equals(ExpressionDef.class)) {
-           CQLExpressionObject definitionObject = new CQLExpressionObject("Definition");
+           CQLExpressionObject definitionObject = new CQLExpressionObject("Definition",expression.getName());
            definitionObject.getUsedCodes().addAll(this.getUsedCodes());
            definitionObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
            definitionObject.getUsedExpressions().addAll(this.getUsedExpressions());
@@ -252,7 +252,7 @@ public class CQLFilter {
         }
 
         else if(expression.getClass().equals(FunctionDef.class)) {
-        	CQLExpressionObject funcObject = new CQLExpressionObject("Function");
+        	CQLExpressionObject funcObject = new CQLExpressionObject("Function",expression.getName());
         	funcObject.getUsedCodes().addAll(this.getUsedCodes());
         	funcObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
         	funcObject.getUsedExpressions().addAll(this.getUsedExpressions());
@@ -267,7 +267,7 @@ public class CQLFilter {
 
         // check for parameters
         else if(expression.getClass().equals(ParameterDef.class)) {
-        	CQLExpressionObject paramObject = new CQLExpressionObject("Parameter");
+        	CQLExpressionObject paramObject = new CQLExpressionObject("Parameter",expression.getName());
         	paramObject.getUsedCodes().addAll(this.getUsedCodes());
         	paramObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
         	paramObject.getUsedExpressions().addAll(this.getUsedExpressions());

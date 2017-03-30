@@ -9,9 +9,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLExpressionObject implements IsSerializable {
 	
-	public CQLExpressionObject(String type) {
+	public CQLExpressionObject(String type, String name) {
 		// TODO Auto-generated constructor stub
 		this.type = type;
+		this.name = name;
 	}
 	 /**
      * The used expressions list
@@ -46,6 +47,7 @@ public class CQLExpressionObject implements IsSerializable {
     private Map<String, List<String>> valueSetDataTypeMap = new HashMap<String,List<String>>();
     
     String type;
+    String name;
 
 	public List<String> getUsedExpressions() {
 		return usedExpressions;
@@ -109,5 +111,13 @@ public class CQLExpressionObject implements IsSerializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -20,6 +20,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	/** The cql model. */
 	private CQLModel cqlModel;
 	
+	private CQLObject cqlObject;
+	
 	private String expIdentifier;
 	
 	private String xml;
@@ -71,6 +73,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	CQLQualityDataSetDTO cqlQualityDataSetDTO;
 
 	private String elmString = "";
+	
+	private boolean isDatatypeUsedCorrectly = true;
 	
 	/**
 	 * Gets the cql string.
@@ -294,6 +298,22 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setExpIdentifier(String expIdentifier) {
 		this.expIdentifier = expIdentifier;
+	}
+
+	public boolean isDatatypeUsedCorrectly() {
+		return isDatatypeUsedCorrectly;
+	}
+
+	public void setDatatypeUsedCorrectly(boolean isDatatypeUsedCorrectly) {
+		this.isDatatypeUsedCorrectly = isDatatypeUsedCorrectly;
+	}
+
+	public CQLObject getCqlObject() {
+		return cqlObject;
+	}
+
+	public void setCqlObject(CQLObject cqlObject) {
+		this.cqlObject = cqlObject;
 	}
 	
 }

@@ -83,6 +83,9 @@ public class MessageDelegate {
 	/** The Constant NO_MEASURES. */
 	public static final String NO_LIBRARUES = "No libraries returned. Please search again.";
 	
+	public static final String WARNING_BAD_DATA_TYPE_COMBINATION ="Caution this expression contains an incorrect value "
+			+ "set/code datatype combination.";
+	
 	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
 	
 	
@@ -2752,6 +2755,10 @@ public class MessageDelegate {
 
 	public String getNoVersionCreated() {
 		return NO_VERSION_CREATED;
+	}
+
+	public String getWarningBadDataTypeCombination() {
+		return WARNING_BAD_DATA_TYPE_COMBINATION;
 	}
 	
 }

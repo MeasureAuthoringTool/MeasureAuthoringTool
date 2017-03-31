@@ -2243,7 +2243,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
 		result.setId(meas.getId());
-
+		versionStr = MeasureUtility.formatVersionText(versionStr);
 		result.setVersionStr(versionStr);
 		logger.info("Result passed for Version Number " + versionStr);
 		return result;

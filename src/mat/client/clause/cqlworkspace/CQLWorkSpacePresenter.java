@@ -485,6 +485,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		});
 		
+		searchDisplay.getCQLParametersView().getParameterNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 	}
 
 	/**
@@ -557,6 +568,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, searchDisplay.getCqlFunctionsView(), 
 						MatContext.get().getMeasureLockService().checkForEditPermission());
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+			}
+		});
+		
+		searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
 			}
 		});
 
@@ -673,6 +695,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
 								
 					}
+		});
+				
+		searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
 		});
 		
 	}
@@ -2173,6 +2206,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
+		/*MatContext.get().getValuesets().clear();*/
 	}
 
 	/**

@@ -649,6 +649,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 
 					}
 				});
+		
+		searchDisplay.getCQLParametersView().getParameterNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(MatContext.get().getLibraryLockService().checkForEditPermission()){
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
 	}
 	
 	private void addDefineEventHandlers() {
@@ -774,6 +785,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
 						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_DEFINITION());
 						
+			}
+		});
+		
+		searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
 			}
 		});
 	}
@@ -981,6 +1003,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 	}
 	private void addWarningAlertHandlers() {
 		
@@ -1054,6 +1087,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
 				.setText(cqlLibraryName);
+			}
+		});
+		
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(MatContext.get().getLibraryLockService().checkForEditPermission()){
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
 			}
 		});
 	}
@@ -2399,9 +2443,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-		
-		
-		
+		/*MatContext.get().getValuesets().clear();*/
 	}
 
 	@Override

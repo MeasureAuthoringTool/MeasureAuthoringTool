@@ -262,7 +262,7 @@ public class CQLIncludeLibraryView {
 		searchCellTablePanel.clear();
 		searchWidgetFocusPanel.clear();
 		ownerTextboxPanel.clear();
-		aliasNameTxtBox.setText("");
+		
 		VerticalPanel searchLibraryVP = new VerticalPanel();
 		Label librariesLabel = new Label(LabelType.INFO, "Library");
 		librariesLabel.setMarginTop(5);

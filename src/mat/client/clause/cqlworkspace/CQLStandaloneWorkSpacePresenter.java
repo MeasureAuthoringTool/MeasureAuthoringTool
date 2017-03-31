@@ -1376,7 +1376,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 							searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex(),
 							false);
 				}
-
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 				searchDisplay.buildIncludesView();
 				SaveCQLLibraryResult cqlLibrarySearchModel = new SaveCQLLibraryResult();
 				cqlLibrarySearchModel

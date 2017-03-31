@@ -3859,6 +3859,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 									searchDisplay.getCqlAceEditor().setAnnotations();
 									searchDisplay.getCqlAceEditor().redisplay();
+								}  else if (!result.isDatatypeUsedCorrectly()) {
+									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+									searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
+									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 								} else {
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()

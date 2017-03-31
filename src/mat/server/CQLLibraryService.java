@@ -482,7 +482,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
-		if(cqlResult.getCqlErrors().size() >0){
+		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
 			return result;

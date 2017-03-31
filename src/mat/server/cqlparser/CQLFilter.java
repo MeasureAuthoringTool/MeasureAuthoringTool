@@ -188,6 +188,9 @@ public class CQLFilter {
         	this.currentLibraryHolder = new LibraryHolder(this.library, "", "", "");
         	
         	checkForUsedStatements(expressionName);
+        	
+        	ExpressionDef expression = findExpressionByName(expressionName);
+        	createCQLExpressionObject(expression);
         }
         collectUsed();
         System.out.println(this.includedLibraries);
@@ -231,7 +234,7 @@ public class CQLFilter {
 
         checkForUsedStatements(expression.getExpression());
        
-        createCQLExpressionObject(expression);
+        
     }
 
     private void createCQLExpressionObject(ExpressionDef expression) {

@@ -1025,7 +1025,7 @@ public class CQLServiceImpl implements CQLService {
 				
 				if(definitionNode != null) {
 					// remove from xml
-					//Node deletedNode = definitionNode.getParentNode().removeChild(definitionNode);
+					definitionNode.getParentNode().removeChild(definitionNode);
 					processor.setOriginalXml(processor
 							.transform(processor.getOriginalDoc()));
 					result.setXml(processor.getOriginalXml());
@@ -1106,7 +1106,7 @@ public class CQLServiceImpl implements CQLService {
 				if(functionNode != null) {
 									
 					// remove from xml
-					//Node deletedNode = functionNode.getParentNode().removeChild(functionNode);
+					 functionNode.getParentNode().removeChild(functionNode);
 					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 					result.setXml(processor.getOriginalXml());
 					/*xmlModel.setXml(processor.getOriginalXml());
@@ -1160,7 +1160,7 @@ public class CQLServiceImpl implements CQLService {
 				if(parameterNode != null) {
 				
 					// remove from xml
-					//Node deletedNode = parameterNode.getParentNode().removeChild(parameterNode);
+					parameterNode.getParentNode().removeChild(parameterNode);
 					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 					result.setXml(processor.getOriginalXml());
 					/*xmlModel.setXml(processor.getOriginalXml());

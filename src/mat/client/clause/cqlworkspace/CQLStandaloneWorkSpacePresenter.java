@@ -1509,21 +1509,16 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
 
-											} else {
-												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
-											}
-											
-											
-											if (validateCQLArtifact(result, currentSection)) {
+											} else if (!result.isDatatypeUsedCorrectly()) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
-														.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
-
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											} else {
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
 											}
+											
+											
 											
 											// if there are errors, enable the function delete button
 											if(!result.getCqlErrors().isEmpty()) {
@@ -1642,6 +1637,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
 
+											} else if (!result.isDatatypeUsedCorrectly()) {
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											} else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
@@ -1767,6 +1765,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter{
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
+											} else if (!result.isDatatypeUsedCorrectly()) {
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											} else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());

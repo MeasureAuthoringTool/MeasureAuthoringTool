@@ -190,7 +190,9 @@ public class CQLFilter {
         	checkForUsedStatements(expressionName);
         	
         	ExpressionDef expression = findExpressionByName(expressionName);
-        	createCQLExpressionObject(expression);
+        	if(expression != null) {
+        		createCQLExpressionObject(expression);
+        	}
         }
         collectUsed();
         System.out.println(this.includedLibraries);

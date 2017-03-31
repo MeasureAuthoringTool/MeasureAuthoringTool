@@ -2535,7 +2535,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		SaveUpdateCQLResult cqlResult =  getMeasureCQLFileData(measureId);
-		if(cqlResult.getCqlErrors().size() >0){
+		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
@@ -4286,17 +4286,71 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML);
 		List<String> message = new ArrayList<String>();
-		String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
-		CQLModel cqlModel1 = CQLUtilityClass.getCQLStringFromXML(exportedXML);
 		
-		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel1, cqlLibraryDAO, null);
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 		
-		if(result.getCqlErrors() != null && result.getCqlErrors().size() > 0){
+		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
+			String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+			CQLModel model = CQLUtilityClass.getCQLStringFromXML(exportedXML);
+			SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, null);
+			if(result.getCqlErrors() != null && result.getCqlErrors().size() > 0){
+				isInvalid = true;
+			} else {
+				if(exportedXML != null &&  !exportedXML.isEmpty()) {
+					XmlProcessor processor = new XmlProcessor(exportedXML);
+					String xPathForValueSetBirthDate = "//qdm[@name='Birthdate']";
+					try {
+						//Check for Birth date value set with data type
+						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype","Patient Characteristic Birthdate");
+						//Check for Dead value set with data type if Birth date is good
+						if(!isInvalid){
+							String xPathForValueSetDead = "//qdm[@name='Dead']";
+							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype","Patient Characteristic Expired");
+						}
+						//Check for Patient Characterstic Expired with value set if both birth date and dead combination are good.
+						if(!isInvalid){
+							String xPathForExpiredDataType = "//qdm[@datatype='Patient Characteristic Expired']";
+							isInvalid = validateDataTypeAndValueSet(xPathForExpiredDataType,processor,"name","Dead");
+						}
+						//Check for Patient Characterstic Birth date with value set if both birth date and dead combination are good and 
+						// Patient Characterstic Expired data type combination with value set is good too.
+						if(!isInvalid){
+							String xPathForBirthdateDataType = "//qdm[@datatype='Patient Characteristic Birthdate']";
+							isInvalid = validateDataTypeAndValueSet(xPathForBirthdateDataType,processor,"name","Birthdate");
+						}
+						
+					} catch (XPathExpressionException e) {
+						logger.info("Issue in parseCQLFile while packaging. ExportSimpleXml is null or blank or Xpath breaking");
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		} else {
 			isInvalid = true;
 		}
 		return isInvalid;
 	}
 
+	
+	private boolean validateDataTypeAndValueSet(String xPathToEval, XmlProcessor processor, String namedItem, String compareTo) throws XPathExpressionException{
+		boolean isInvalid = false;
+		
+		NodeList valueSetNodeList = (NodeList) xPath.evaluate(xPathToEval,
+				processor.getOriginalDoc(), XPathConstants.NODESET);
+		for(int i=0; i<valueSetNodeList.getLength();i++){
+			Node node = valueSetNodeList.item(i);
+			if(node.getAttributes().getNamedItem(namedItem)!=null ){
+				if(!node.getAttributes().getNamedItem(namedItem).getNodeValue().equalsIgnoreCase(compareTo)){
+					isInvalid = true;
+					break;
+				}
+			}
+		}
+		
+		
+		return isInvalid;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

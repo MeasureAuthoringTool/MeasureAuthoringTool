@@ -412,15 +412,19 @@ public class CQLUtil {
 			}
 		}
 
-		String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
-		System.out.println(xPathForUnusedValuesets);
-
-		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		for (int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
-			Node current = unusedCqlValuesetNodeList.item(i);
-			Node parent = current.getParentNode();
-			parent.removeChild(current);
+		if(nameXPathString.length() > 0) {
+			
+			String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
+			System.out.println(xPathForUnusedValuesets);
+	
+			NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for (int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
+				Node current = unusedCqlValuesetNodeList.item(i);
+				Node parent = current.getParentNode();
+				parent.removeChild(current);
+			}
+			
 		}
 
 		removeUnusedCodes(originalDoc, cqlCodes);
@@ -606,7 +610,7 @@ public class CQLUtil {
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
 			System.out.println("Include lib version for " + cqlIncludeLibrary.getCqlLibraryName() + " is:"
 					+ cqlIncludeLibrary.getVersion());
-			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion(),
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
 		}
@@ -629,11 +633,17 @@ public class CQLUtil {
 			fileList.add(mainCQLFile);
 
 			for (String cqlLibName : cqlLibNameMap.keySet()) {
+				
 				CQLModel includeCqlModel = CQLUtilityClass
 						.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
+				
+				LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
+				
 				String cqlString = CQLUtilityClass.getCqlString(includeCqlModel, "").toString();
-				File cqlIncludedFile = createCQLTempFile(cqlString, cqlLibName, folder);
+				System.out.println("Creating file:"+libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion());
+				File cqlIncludedFile = createCQLTempFile(cqlString, libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), folder);
 				fileList.add(cqlIncludedFile);
+				
 			}
 
 			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
@@ -678,10 +688,6 @@ public class CQLUtil {
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
-
-		//if (errors.size() == 0) {
-			//findValidValuesetDatatypeCombination(parsedCQL);
-		//}
 
 		parsedCQL.setCqlErrors(errors);
 	}

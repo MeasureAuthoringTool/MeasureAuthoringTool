@@ -465,7 +465,7 @@ public class ExportSimpleXML {
 			if(returnDoc == null){
 				Map<String, mat.shared.LibHolderObject> cqlLibXMLMap = cqlModel.getIncludedCQLLibXMLMap();
 				System.out.println(cqlLibXMLMap.keySet());
-				String xml = cqlLibXMLMap.get(includedLibName).getMeasureXML();
+				String xml = cqlLibXMLMap.get(includedLibName + "|" + nameSplitArr[1]).getMeasureXML();
 				if(xml != null){
 					XmlProcessor xmlProcessor = new XmlProcessor(xml);
 					includedXMLMap.put(includedLibName, xmlProcessor.getOriginalDoc());

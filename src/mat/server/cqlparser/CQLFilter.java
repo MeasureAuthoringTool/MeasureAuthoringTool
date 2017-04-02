@@ -1022,7 +1022,7 @@ public class CQLFilter {
     		
     		if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
     			//System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
-    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName);
+    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName);
     			
     			if(includedLibrary == null){
     				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
@@ -1038,7 +1038,7 @@ public class CQLFilter {
 						
 						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
 						CQLIncludeLibrary cqlIncludeLibrary = this.cqlModel.getIncludedCQLLibXMLMap().
-								get(includeDef.getPath() + "-" + includeDef.getVersion()).getCqlLibrary();
+								get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName).getCqlLibrary();
 						
 						includedLibrary.setCqlIncludeLibraryObject(cqlIncludeLibrary);
 												

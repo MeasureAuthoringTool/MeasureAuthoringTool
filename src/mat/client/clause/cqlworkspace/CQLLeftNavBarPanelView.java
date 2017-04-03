@@ -263,6 +263,9 @@ public class CQLLeftNavBarPanelView {
 	/** The is nav bar click. */
 	private Boolean isNavBarClick = false;
 	
+	/** The Loading flag for page. */
+	private Boolean isLoading = false;
+	
 	/** The current selected definition obj id. */
 	private String currentSelectedDefinitionObjId = null;
 
@@ -2426,5 +2429,15 @@ public class CQLLeftNavBarPanelView {
 		dialogContents.add(html7);
 		dialogContents.add(html8);
 		panel.show();
+	}
+
+
+	public Boolean getIsLoading() {
+		return isLoading;
+	}
+
+
+	public void setIsLoading(Boolean isLoading) {
+		this.isLoading = isLoading;
 	}
 }

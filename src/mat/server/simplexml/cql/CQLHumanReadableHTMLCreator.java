@@ -1,7 +1,6 @@
 package mat.server.simplexml.cql;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import mat.model.cql.parser.CQLValueSetModelObject;
 import mat.server.simplexml.HeaderHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
-import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.DocumentType;
@@ -99,34 +97,13 @@ public class CQLHumanReadableHTMLCreator {
 	
 	/** The cql objects. */
 	private static List<String> cqlObjects = new ArrayList<String>();
-	
-	/** The Constant ELEMENT_LOOK_UP. */
-	private static final String ELEMENT_LOOK_UP = "elementLookUp";
-	
-	/** The Constant FUNCTIONAL_OP. */
-	private static final String FUNCTIONAL_OP = "functionalOp";
-	
-	/** The Constant DISPLAY_NAME. */
-	private static final String DISPLAY_NAME = "displayName";
-	
-	/** The Constant ELEMENT_REF. */
-	private static final String ELEMENT_REF = "elementRef";
-	
+		
 	/** The Constant HTML_LI. */
 	private static final String HTML_LI = "li";
 	
 	/** The Constant HTML_UL. */
 	private static final String HTML_UL = "ul";
-	
-	/** The Constant SET_OP. */
-	private static final String SET_OP = "setOp";
-	
-	/** The Constant COMMENT. */
-	private static final String COMMENT = "comment";
-	
-	/** The Constant LOGICAL_OP. */
-	private static final String LOGICAL_OP = "logicalOp";
-	
+		
 	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
 	
@@ -319,10 +296,10 @@ public class CQLHumanReadableHTMLCreator {
 		
 		try {
 			
-			Collection<CQLCodeModelObject> cqlCodesList = getAllCodesUsed(cqlFileObject);
 			NodeList qdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-														"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='false']");
-			if( (qdmElementList.getLength() + cqlCodesList.size()) < 1) {
+														"/measure/elementLookUp/qdm[@suppDataElement='false']");
+			
+			if(qdmElementList.getLength() < 1) {
 				String output = "None"; 
 				Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
 				qdmElementLI.append(output);
@@ -333,36 +310,21 @@ public class CQLHumanReadableHTMLCreator {
 
 				// make the output string from the qdm node information and add it to the string list.
 				for(int i = 0; i < qdmElementList.getLength(); i++) {
-					//Commented data type usage in 'generateQDMDataElements' method till code to find Value sets with Data type is added in Release 5.2
-					/*String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					
+					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
 					if("attribute".equals(dataTypeName)){
 						dataTypeName = "Attribute";
-					}*/
+					}
 					//End Comment
 					String name = qdmElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
 					String oid = qdmElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
 					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 
-					//Commented data type usage in 'generateQDMDataElements' method till code to find Value sets with Data type is added in Release 5.2
-					//String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
-					//End Comment
-					String output = String.format("\"%s\" using \"%s %s Value Set (%s)\"", name, name, taxonomy, oid);
+					
+					String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
+								
 					qdmElementStringList.add(output); 
 				}
 				
-				// make the output string from cql code node and add it to the string list
-				for(CQLCodeModelObject cqlCodeModelObject:cqlCodesList){
-					
-					String codeSystem = cqlCodeModelObject.getCodeSystemIdentifier();
-					if(codeSystem.indexOf(":") > -1){
-						codeSystem = codeSystem.replaceFirst(":", " Version ").replace("\"", "");
-					}
-					String codeIdentifier = cqlCodeModelObject.getCodeIdentifier().replace("\"", "");
-					String output = "\""+cqlCodeModelObject.getDataTypeUsed().replace("\"", "") + ": " + codeIdentifier
-							+"\" using \"" + codeIdentifier + " " +codeSystem 
-							+ " Code (" +cqlCodeModelObject.getCodeId().replace("'", "") + ")\"";
-					qdmElementStringList.add(output); 
-				}
-
 				// sort and append the qdm elements
 				Collections.sort(qdmElementStringList);
 				for(int i = 0; i < qdmElementStringList.size(); i++) {
@@ -376,27 +338,6 @@ public class CQLHumanReadableHTMLCreator {
 		}
 	}
 	
-	private static Collection<CQLCodeModelObject> getAllCodesUsed(CQLFileObject cqlFileObject) {
-		
-		Map<String, CQLCodeModelObject> codeMap = new HashMap<String, CQLCodeModelObject>();
-		
-		for(String cqlName:cqlFileObject.getDefinitionsMap().keySet()){
-			CQLDefinitionModelObject cqlDefinitionModelObject = cqlFileObject.getDefinitionsMap().get(cqlName);
-			for (CQLCodeModelObject cqlCodeModelObject:cqlDefinitionModelObject.getReferredToCodes()){
-				codeMap.put(cqlCodeModelObject.getCodeIdentifier()+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);
-			}
-		}
-		
-		for(String cqlName:cqlFileObject.getFunctionsMap().keySet()){
-			CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(cqlName);
-			for (CQLCodeModelObject cqlCodeModelObject:cqlFunctionModelObject.getReferredToCodes()){
-				codeMap.put(cqlCodeModelObject.getCodeIdentifier()+cqlCodeModelObject.getDataTypeUsed(), cqlCodeModelObject);
-			}
-		}
-		
-		return codeMap.values();
-	}
-
 	/**
 	 * Generate population nodes.
 	 *
@@ -581,53 +522,20 @@ public class CQLHumanReadableHTMLCreator {
 			int currentGroupNumber, CQLFileObject cqlFileObject, String PopulationDisplayName) {
 		
 		try {
-			NodeList childNodes = clauseNode.getChildNodes();
-			String scoring = populationOrSubtreeXMLProcessor.findNode(
-					populationOrSubtreeXMLProcessor.getOriginalDoc(),
-					"//measureDetails/scoring").getTextContent();
+						
 			String parentName = "";
 			if (clauseNode.getAttributes().getNamedItem("type") != null) {
 				parentName = clauseNode.getAttributes().getNamedItem("type")
 						.getNodeValue();
 			}
-			/*if (childNodes.getLength() == 0) {
-				if("measureObservation".equalsIgnoreCase(parentName)){
-					displayNone(
-							populationOrSubtreeListElement,
-							populationOrSubtreeXMLProcessor, clauseNode);
-				}else{
-					displayNone(
-							populationOrSubtreeListElement.appendElement(HTML_UL),
-							populationOrSubtreeXMLProcessor, clauseNode);
-				}
-			}*/
-			/*String parentName = "";*/
-			/*if (clauseNode.getAttributes().getNamedItem("type") != null) {
-				parentName = clauseNode.getAttributes().getNamedItem("type")
-						.getNodeValue();
-				if (("denominator".equalsIgnoreCase(parentName)
-						|| "measurePopulation".equalsIgnoreCase(parentName) || ("numerator"
-								.equalsIgnoreCase(parentName) && "ratio"
-								.equalsIgnoreCase(scoring)))
-								&& !"measureDetails".equalsIgnoreCase(clauseNode
-										.getNodeName())) {
-					
-					displayInitialPop(populationOrSubtreeListElement,
-							populationOrSubtreeXMLProcessor, clauseNode,
-							currentGroupNumber);
-				}
-			}*/
-			//for (int i = 0; i < childNodes.getLength(); i++) {
-				Node cqlNode = clauseNode;
-				if(clauseNode.hasChildNodes()){
-					cqlNode = clauseNode.getFirstChild();
-				}
-				generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, cqlNode, parentName, PopulationDisplayName);
-			//}
+			
+			Node cqlNode = clauseNode;
+			if(clauseNode.hasChildNodes()){
+				cqlNode = clauseNode.getFirstChild();
+			}
+			generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, cqlNode, parentName, PopulationDisplayName);
+			
 		} catch (DOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -651,7 +559,7 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
 		NodeList supplementalQdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/cqlLookUp/valuesets/valueset[@suppDataElement='true']");
+				"/measure/elementLookUp/qdm[@suppDataElement='true']");
 				
 		if(supplementalQdmElementList != null && supplementalQdmElementList.getLength()>0){
 			ArrayList<String> suppQdmStringList = new ArrayList<String>(); 
@@ -683,343 +591,6 @@ public class CQLHumanReadableHTMLCreator {
 		}
 	}
 		
-	
-	/**
-	 * Parses the child.
-	 *
-	 * @param item the item
-	 * @param parentListElement the parent list element
-	 * @param parentNode the parent node
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 */
-	private static void parseChild(Node item, Element parentListElement,
-			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor) {
-		
-		String nodeName = item.getNodeName();
-	
-		if (LOGICAL_OP.equals(nodeName)) {
-			String nodeDisplayName = item.getAttributes()
-					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
-			String parentNodeDisplayName = parentNode.getAttributes()
-					.getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
-			// set the Flag if we have AND -> AND NOT or OR -> OR NOT
-			boolean isNestedNot = (nodeDisplayName.equals(parentNodeDisplayName
-					+ " NOT"));
-			
-			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					if (isNestedNot) {
-						// liElement.appendText(nodeDisplayName+":");
-					} else {
-						parentListElement = parentListElement
-								.appendElement(HTML_LI);
-						parentListElement.appendText(parentNodeDisplayName + ":");
-					}
-				}
-			}
-			Element ulElement = null;
-			if (isNestedNot) {
-				ulElement = parentListElement;
-			} else {
-				if(parentListElement.nodeName().equals(HTML_UL) && parentListElement.parent().html().contains("Measure Observation")){
-					ulElement = parentListElement;
-				}else{
-					ulElement = parentListElement.appendElement(HTML_UL);
-				}
-			}
-			NodeList childNodes = item.getChildNodes();
-			if (childNodes.getLength() == 0) {
-				boolean isNoneAdded = displayNone(ulElement, populationOrSubtreeXMLProcessor,
-						parentNode);
-				if(!isNoneAdded){
-					if(ulElement.childNodeSize() == 0){
-						ulElement.remove();
-					}
-				}
-				// ulElement.appendElement(HTML_LI).appendText("None");
-			}else if((childNodes.getLength() == 1) && childNodes.item(0).getNodeName().equals(COMMENT)){
-				Node commentNode = childNodes.item(0);
-				String commentValue = commentNode.getTextContent();
-				if ((commentValue == null) || (commentValue.trim().length() == 0)) {
-					boolean isNoneAdded = displayNone(ulElement, populationOrSubtreeXMLProcessor,
-							parentNode);
-					if(!isNoneAdded){
-						if(ulElement.childNodeSize() == 0){
-							ulElement.remove();
-						}
-					}
-				}
-			}
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				if (!isEmptyComment(childNodes.item(i))) {
-					parseChild(childNodes.item(i), ulElement, item,
-						populationOrSubtreeXMLProcessor);
-				}
-			}
-		} else if (COMMENT.equals(nodeName)) {
-			
-			//System.out.println("comment value:" + commentValue);
-			if (!isEmptyComment(item)) {
-				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.attr("style", "list-style-type: none");
-				Element italicElement = liElement.appendElement("i");
-				italicElement.appendText("# " + item.getTextContent());
-			} else {
-				// it is an empty comment
-  				if ((item.getParentNode().getChildNodes().getLength() == 1)
-						&& "AND".equalsIgnoreCase(item.getParentNode()
-								.getAttributes().getNamedItem("displayName")
-								.getNodeValue())) {
-					displayNone(parentListElement, populationOrSubtreeXMLProcessor,
-							parentNode);
-				}
-			}
-			return;
-		} else if (SET_OP.equals(nodeName)) {
-			// Element liElement = parentListElement.appendElement(HTML_LI);
-			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-				parentListElement = parentListElement.appendElement(HTML_LI);
-				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					parentListElement = parentListElement.appendText(getNodeText(parentNode,
-							populationOrSubtreeXMLProcessor));
-					// parentListElement = liElement.appendElement(HTML_UL);
-				}
-			}
-			// Element ulElement = liElement.appendElement(HTML_UL);
-			if (parentListElement.nodeName().equals(HTML_UL)) {
-				parentListElement = parentListElement.appendElement(HTML_LI);
-				parentListElement.appendText(
-						getNodeText(item, populationOrSubtreeXMLProcessor));
-			} else {
-				if (parentListElement.html().contains("Stratification")) {
-					parentListElement = parentListElement
-							.appendElement(HTML_UL)
-							.appendElement(HTML_LI)
-							.appendText(
-									getNodeText(item,
-											populationOrSubtreeXMLProcessor));
-				} else {
-					parentListElement.appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
-				}
-			}
-			Element ulElement = parentListElement.appendElement(HTML_UL);
-			NodeList childNodes = item.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				parseChild(childNodes.item(i), ulElement, item,
-						populationOrSubtreeXMLProcessor);
-			}
-		} else if (ELEMENT_REF.equals(nodeName)) {
-			
-			if (LOGICAL_OP.equals(parentNode.getNodeName())
-					|| SET_OP.equals(parentNode.getNodeName())) {
-				Element liElement = parentListElement
-						.appendElement(HTML_LI);
-			
-				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					liElement.appendText(getNodeText(parentNode,
-							populationOrSubtreeXMLProcessor)
-							+ getNodeText(item,
-									populationOrSubtreeXMLProcessor));
-				} else {
-					liElement.appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
-				}
-			} else {
-				if(parentListElement.html().contains(
-						"Stratification")) {
-					parentListElement = parentListElement.appendElement(
-							HTML_UL).appendElement(HTML_LI);
-				}
-				String parentNodeName = parentListElement.nodeName();
-				if("ul".equals(parentNodeName)){
-					parentListElement.appendElement(HTML_LI).appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
-				}else{
-					parentListElement.appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
-				}
-			}
-			
-		} else if (ELEMENT_LOOK_UP.equals(nodeName)
-				|| "itemCount".equals(nodeName)
-				|| "measureDetails".equals(nodeName)) {
-			// ignore
-		} else {
-			Element liElement = parentListElement.appendElement(HTML_LI);
-			
-			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-				// liElement.appendText(" "+getNodeText(parentNode,
-				// populationOrSubtreeXMLProcessor));
-				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					liElement.appendText(" "
-							+ getNodeText(parentNode,
-									populationOrSubtreeXMLProcessor));
-				}
-			}
-			liElement.appendText(item.getAttributes()
-					.getNamedItem(DISPLAY_NAME).getNodeValue()
-					+ " ");
-		}
-		
-		//System.out.println("End of parseChild - Node Name: " + nodeName);
-		//System.out.println("End of parseChild - Parent List Element: " + parentListElement);
-		
-	}
-	
-	/**
-	 * This method is used to get the correct text to add to human readable
-	 * depending on the type of node.
-	 *
-	 * @param node the node
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @return the node text
-	 */
-	private static String getNodeText(Node node,
-			XmlProcessor populationOrSubtreeXMLProcessor) {
-		String nodeName = node.getNodeName();
-		String name = "";
-		if (LOGICAL_OP.equals(nodeName)) {
-			name = node.getAttributes().getNamedItem(DISPLAY_NAME)
-					.getNodeValue().toUpperCase();
-			name += ": ";
-		} else if (SET_OP.equals(nodeName)) {
-			name = node.getAttributes().getNamedItem(DISPLAY_NAME)
-					.getNodeValue().toLowerCase();
-			name = StringUtils.capitalize(name);
-			name += " of: ";
-		} else if (ELEMENT_REF.equals(nodeName)) {
-			name = node.getAttributes().getNamedItem(DISPLAY_NAME)
-					.getNodeValue();
-			if (name.endsWith(" : Timing Element")) {
-				name = name.substring(0, name.indexOf(" : Timing Element"));
-			} else if (!name.endsWith(" : Patient Characteristic Birthdate")
-					&& !name.endsWith(" : Patient Characteristic Expired")) {
-				String[] nameArr = name.split(":");
-				
-				if (nameArr.length == 2) {
-					name = nameArr[1].trim() + ": " + nameArr[0].trim();
-				}
-				if (nameArr.length == 3) {
-					name = nameArr[1].trim() + ": " + nameArr[2].trim() + ": "
-							+ nameArr[0].trim();
-				}
-				// Move Occurrence of to the beginning of the name
-				if (name.contains("Occurrence") && name.contains("of")) {
-					int occurLoc = name.indexOf("Occurrence", 0);
-					int ofLoc = name.indexOf("of", occurLoc);
-					String occur = name.substring(occurLoc, ofLoc + 2);
-					name = name.replaceAll(occur, "");
-					occur += " ";
-					name = occur.concat(name);
-				}
-			}
-			
-			name = "\"" + name + "\" ";
-		}
-		return name;
-	}
-	
-	/**
-	 * Checks if is empty comment.
-	 *
-	 * @param item the item
-	 * @return true, if is empty comment
-	 */
-	private static boolean isEmptyComment(Node item) {
-		boolean isEmptyComment = false;
-		if(COMMENT.equals(item.getNodeName())){
-			String commentValue = item.getTextContent();
-			if ((commentValue == null)) {
-				isEmptyComment = true;
-			} else if (commentValue.trim().length() == 0) {
-				isEmptyComment = true;
-			}
-		}
-		return isEmptyComment;
-	}
-	
-	/**
-	 * Display initial pop.
-	 *
-	 * @param populationOrSubtreeListElement the population or subtree list element
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param clause the clause
-	 * @param loop the loop
-	 */
-	private static void displayInitialPop(
-			Element populationOrSubtreeListElement,
-			XmlProcessor populationOrSubtreeXMLProcessor, Node clause, int loop) {
-		
-		Element listStart = populationOrSubtreeListElement
-				.appendElement(HTML_UL);
-		Element list = listStart.appendElement(HTML_LI);
-		try {
-			Node assocPop = clause.getAttributes().getNamedItem(
-					"associatedPopulationUUID");
-			if (assocPop != null) {
-				Node display = populationOrSubtreeXMLProcessor.findNode(
-						populationOrSubtreeXMLProcessor.getOriginalDoc(),
-						"//measure//measureGrouping//group/clause[@uuid = \""
-								+ assocPop.getNodeValue() + "\"]");
-				String name = display.getAttributes()
-						.getNamedItem("displayName").getNodeValue();
-				String number = initialPopulationHash.get(display
-						.getAttributes().getNamedItem("uuid").getNodeValue());
-				String lastNum = name.substring(name.length() - 1);
-				if (!("-1".equals(number))) {
-					name = name.replace(lastNum, number);
-				} else {
-					name = (name.substring(0, name.length() - 1)).trim();
-				}
-				list.appendText("AND: " + name);
-			} else {
-				list.appendText("AND: Initial Population");
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * Display none.
-	 *
-	 * @param list the list
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param parentNode the parent node
-	 * @return true, if successful
-	 */
-	private static boolean displayNone(Element list,
-			XmlProcessor populationOrSubtreeXMLProcessor, Node parentNode) {
-		boolean retValue = false;
-		try {
-			// if the population displays "AND:Initial Population" then don't put a NONE
-			String scoring = populationOrSubtreeXMLProcessor.findNode(
-					populationOrSubtreeXMLProcessor.getOriginalDoc(),
-					"//measureDetails/scoring").getTextContent();
-			String type = parentNode.getAttributes().getNamedItem("type")
-					.getNodeValue();
-			if (("proportion".equalsIgnoreCase(scoring) && !"denominator"
-					.equalsIgnoreCase(type))
-					|| ("ratio".equalsIgnoreCase(scoring)
-							&& !"denominator".equalsIgnoreCase(type) && !"numerator"
-							.equalsIgnoreCase(type))
-							|| ("continuous Variable".equalsIgnoreCase(scoring) && !"measurePopulation"
-									.equalsIgnoreCase(type))
-									|| ("cohort".equalsIgnoreCase(scoring))) {
-				
-				list.appendElement(HTML_LI).appendText("None");
-				retValue = true;
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return retValue;
-	}
-	
 	/**
 	 * Gets the item count text.
 	 *
@@ -1060,23 +631,6 @@ public class CQLHumanReadableHTMLCreator {
 		return itemCountText;
 	}
 	
-	/**
-	 * Gets the population name.
-	 *
-	 * @param populationType the population type
-	 * @param addPlural the add plural
-	 * @return the population name
-	 */
-	private static String getPopulationName(String populationType,
-			boolean addPlural) {
-		String name = getPopulationName(populationType);
-		if (addPlural
-				&& (!name.endsWith("Exclusions") && !name
-						.endsWith("Exceptions"))) {
-			name += "s ";
-		}
-		return name;
-	}
 	
 	/**
 	 * Gets the population name.

@@ -83,8 +83,7 @@ public class MessageDelegate {
 	/** The Constant NO_MEASURES. */
 	public static final String NO_LIBRARUES = "No libraries returned. Please search again.";
 	
-	public static final String WARNING_BAD_DATA_TYPE_COMBINATION ="Caution this expression contains an incorrect value "
-			+ "set/code datatype combination.";
+	public static final String WARNING_BAD_DATA_TYPE_COMBINATION ="Successfully saved with errors. You have an incorrect value set/code datatype combination.";
 	
 	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
 	
@@ -211,6 +210,7 @@ public class MessageDelegate {
 	
 	public final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with few validation errors. Errors are marked with triangle sign on line number.";
 	public final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";
+	public final String VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE ="CQL file with validation errors. You have an incorrect value set/code datatype combination.";
 	
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully saved CQL general information.";
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
@@ -2759,6 +2759,10 @@ public class MessageDelegate {
 
 	public String getWarningBadDataTypeCombination() {
 		return WARNING_BAD_DATA_TYPE_COMBINATION;
+	}
+
+	public String getVIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE() {
+		return VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE;
 	}
 	
 }

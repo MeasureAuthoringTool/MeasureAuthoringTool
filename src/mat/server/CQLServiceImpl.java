@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -2094,8 +2095,13 @@ public class CQLServiceImpl implements CQLService {
 		boolean isValid = true;
 		if(valueSetDataTypeMap != null && !valueSetDataTypeMap.isEmpty()){
 			for (String valueSetName : valueSetDataTypeMap.keySet()) {
+				List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
+				String [] valueSetNameArray = valueSetName.split(Pattern.quote("|"));
+				if(valueSetNameArray.length == 3){
+					valueSetName = valueSetNameArray[2];
+				}
 				if (valueSetName.equalsIgnoreCase(BIRTHDATE)) {
-					List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
+					
 					for (String dataType : dataTypeList) {
 						if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
 							isValid = false;
@@ -2103,7 +2109,6 @@ public class CQLServiceImpl implements CQLService {
 						}
 					}
 				} else if (valueSetName.equalsIgnoreCase(DEAD)) {
-					List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
 					for (String dataType : dataTypeList) {
 						if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
 							isValid = false;
@@ -2116,6 +2121,10 @@ public class CQLServiceImpl implements CQLService {
 			if(isValid) {
 				for (String valueSetName : valueSetDataTypeMap.keySet()) {
 					List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
+					String [] valueSetNameArray = valueSetName.split(Pattern.quote("|"));
+					if(valueSetNameArray.length == 3){
+						valueSetName = valueSetNameArray[2];
+					}
 					for (String dataType : dataTypeList) {
 						if (dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE) && !valueSetName.equalsIgnoreCase(BIRTHDATE)) {
 							isValid = false;

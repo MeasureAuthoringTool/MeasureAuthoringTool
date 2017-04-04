@@ -3,6 +3,8 @@ package mat.client.util;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -26,7 +28,7 @@ public class MatTextBox extends TextBox {
 		super(Document.get().createTextInputElement());
 		removeStyleName("gwt-Text-box");
 		setStyleName("Text-Box");
-		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
+		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS | Event.ONKEYUP);
 		MatTextBox.this.addKeyDownHandler(new KeyDownHandler() {
 			
 			@Override
@@ -109,6 +111,11 @@ public class MatTextBox extends TextBox {
 				}
 			});
 			return;
+		}
+		
+		if (event.getTypeInt() == Event.ONKEYDOWN) {
+			NativeEvent nativeEvent = Document.get().createKeyUpEvent(false, false, false, false, event.getTypeInt());
+			DomEvent.fireNativeEvent(nativeEvent, this);
 		}
 		// Checking for key Down event.
 	    if ((event.getTypeInt() == Event.ONKEYDOWN)) {

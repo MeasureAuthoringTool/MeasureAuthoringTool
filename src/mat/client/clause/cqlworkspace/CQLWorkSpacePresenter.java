@@ -16,6 +16,8 @@ import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -485,10 +487,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		});
 		
-		searchDisplay.getCQLParametersView().getParameterNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+		searchDisplay.getCQLParametersView().getParameterNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onKeyDown(KeyDownEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
@@ -571,10 +573,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+		searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onKeyDown(KeyDownEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
@@ -697,10 +699,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 		});
 				
-		searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().addKeyDownHandler(new KeyDownHandler() {
+		searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
-			public void onKeyDown(KeyDownEvent event) {
+			public void onKeyUp(KeyUpEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);

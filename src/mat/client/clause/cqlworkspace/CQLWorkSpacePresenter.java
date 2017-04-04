@@ -2273,7 +2273,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		showSearchingBusy(true);
 		//int startIndex = 1;
 		//int pageSize = Integer.MAX_VALUE;
-		MatContext.get().getCQLLibraryService().searchForIncludes(searchText, new AsyncCallback<SaveCQLLibraryResult>() {
+		String measureID = MatContext.get().getCurrentMeasureId();
+		
+		MatContext.get().getCQLLibraryService().searchForIncludes(measureID,searchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

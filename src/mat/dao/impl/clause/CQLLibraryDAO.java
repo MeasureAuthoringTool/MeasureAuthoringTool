@@ -310,6 +310,16 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	}
 	
 	@Override
+	public String getAssociatedMeasureId(String Id) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(CQLLibrary.class);
+		criteria.setProjection(Projections.property("measureId"));
+		criteria.add(Restrictions.eq("id", Id));
+		String measureId = (String) criteria.list().get(0);
+		return measureId;
+	}
+	
+	@Override
 	public boolean isLibraryLocked(String cqlLibraryId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria libCriteria = session.createCriteria(CQLLibrary.class);
@@ -531,6 +541,22 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		}
 		
 		return cqlLibIds;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public String getSetIdForCQLLibrary(String cqlLibraryId){
+		
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		mCriteria.setProjection(Projections.property("set_id"));
+		mCriteria.add(Restrictions.eq("id", cqlLibraryId));
+		if(mCriteria.list().size() >0){
+		String setId = (String) mCriteria.list().get(0);
+		return setId;
+		}else{
+			return null;
+		}
 	}
 	
 	@Override

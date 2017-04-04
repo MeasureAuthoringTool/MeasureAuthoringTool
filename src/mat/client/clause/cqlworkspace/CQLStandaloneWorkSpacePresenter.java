@@ -4204,8 +4204,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
+		
+		String libraryID = MatContext.get().getCurrentCQLLibraryId();
 
-		MatContext.get().getCQLLibraryService().searchForIncludes(searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(libraryID,searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

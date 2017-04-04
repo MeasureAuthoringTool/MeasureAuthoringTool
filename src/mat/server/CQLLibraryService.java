@@ -138,47 +138,64 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(String searchText){
-		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
-		List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-		List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
-		List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
-		
-		saveCQLLibraryResult.setResultsTotal(list.size());
-		
-		for(CQLLibrary cqlLibrary : list){
-			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
-			if(object.getMeasureId() != null){
-				if(countNumberOfAssociation(object.getMeasureId()) == 0){
-					allLibraries.add(object);
-				} else if(countNumberOfAssociation(object.getMeasureId()) > 0){
-					totalAssociations = getAssociations(object.getMeasureId());
-					if(!hasChildLibraries(totalAssociations)){
-						allLibraries.add(object);
-					}
-				}
-			}else{
-				if(object.getId() != null){
-					if(countNumberOfAssociation(object.getId()) == 0){
-						allLibraries.add(object);
-					}else if(countNumberOfAssociation(object.getId()) > 0){
-						totalAssociations = getAssociations(object.getId());
-						if(!hasChildLibraries(totalAssociations)){
-							allLibraries.add(object);
-						}
-					}
-				}
-			}
-		}
-		
-		saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
-		return saveCQLLibraryResult;
-	}
+	public SaveCQLLibraryResult searchForIncludes(String referringId, String searchText){
+        SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
+        List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
+        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
+        List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
+        saveCQLLibraryResult.setResultsTotal(list.size());
+        String setId = cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
+        
+        for(CQLLibrary cqlLibrary : list){
+               CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
+               String asociationId = (object.getMeasureId() != null) ? object.getMeasureId():object.getId();
+               
+               if(countNumberOfAssociation(asociationId) == 0){
+                     allLibraries.add(object);
+               } else {
+                     totalAssociations = getAssociations(asociationId);
+                    if(!hasChildLibraries(totalAssociations)){
+						if(!hasCyclicDependency(setId, asociationId)){
+                            allLibraries.add(object);
+                    	 }
+                     }
+               }
+        }
+        saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
+        return saveCQLLibraryResult;
+ }
 	
 
 	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
 		for(CQLLibraryAssociation result : totalAssociations){
-			if(countNumberOfAssociation(result.getCqlLibraryId()) != 0){
+			String associatedMeasureId = getAssociatedMeasureId(result);
+			String searchId = (associatedMeasureId!=null) ? associatedMeasureId:result.getCqlLibraryId();
+				if(countNumberOfAssociation(searchId) != 0){
+					return true;
+				}
+		}
+		return false;
+	}
+	
+	private String getAssociatedMeasureId(CQLLibraryAssociation result) {
+		return cqlLibraryDAO.getAssociatedMeasureId(result.getCqlLibraryId());
+	}
+
+	private boolean hasCyclicDependency(String setId, String asociationId){
+		String associateSetId = cqlLibraryDAO.getSetIdForCQLLibrary(asociationId);
+		if(setId != null && associateSetId != null){
+			if(!setId.equalsIgnoreCase(associateSetId)){
+				List<CQLLibraryAssociation> primaryAssociations = getAssociations(asociationId);
+				for(CQLLibraryAssociation parent : primaryAssociations){
+					String associatedMeasureId = getAssociatedMeasureId(parent);
+					String searchId = (associatedMeasureId!=null) ? associatedMeasureId:parent.getCqlLibraryId();
+					if(countNumberOfAssociation(searchId) != 0){
+							hasCyclicDependency(setId,searchId);
+					}
+				}
+			}else{
+				System.out.println("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
+				logger.info("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
 				return true;
 			}
 		}

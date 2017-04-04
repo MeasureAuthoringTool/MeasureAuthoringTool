@@ -550,7 +550,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
 		mCriteria.setProjection(Projections.property("set_id"));
-		mCriteria.add(Restrictions.eq("id", cqlLibraryId));
+		mCriteria.add(Restrictions.or(Restrictions.eq("id", cqlLibraryId),Restrictions.eq("measureId", cqlLibraryId)));
 		if(mCriteria.list().size() >0){
 		String setId = (String) mCriteria.list().get(0);
 		return setId;

@@ -42,6 +42,7 @@ import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.ShareLevelDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.LockedUserInfo;
@@ -86,6 +87,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	/** The cql library DAO. */
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
+	
+	/** The measure dao. */
+	@Autowired
+	private MeasureDAO measureDAO;
 	
 	/** The cql library set DAO. */
 	@Autowired
@@ -144,8 +149,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
         List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
         saveCQLLibraryResult.setResultsTotal(list.size());
-        String setId = cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
-        
+        String measureSetId = measureDAO.find(referringId).getMeasureSet().getId();
+        String setId = (measureSetId != null) ? measureSetId :cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
         for(CQLLibrary cqlLibrary : list){
                CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
                String asociationId = (object.getMeasureId() != null) ? object.getMeasureId():object.getId();

@@ -143,20 +143,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(String referringId, String searchText){
+	public SaveCQLLibraryResult searchForIncludes(boolean isMeasure,String referringId, String searchText){
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
         List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
         List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
         saveCQLLibraryResult.setResultsTotal(list.size());
-        String measureSetId = measureDAO.find(referringId).getMeasureSet().getId();
-        String setId = (measureSetId != null) ? measureSetId :cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
+        String setId = (isMeasure) ? measureDAO.find(referringId).getMeasureSet().getId() :cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
         for(CQLLibrary cqlLibrary : list){
                CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
                String asociationId = (object.getMeasureId() != null) ? object.getMeasureId():object.getId();
                
                if(countNumberOfAssociation(asociationId) == 0){
-                     allLibraries.add(object);
+            	   if(setId != null && asociationId != null){
+            		   if(!setId.equalsIgnoreCase(cqlLibraryDAO.getSetIdForCQLLibrary(asociationId))){
+            			   allLibraries.add(object);
+            		   }
+            	   }
                } else {
                      totalAssociations = getAssociations(asociationId);
                     if(!hasChildLibraries(totalAssociations)){

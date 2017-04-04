@@ -4209,7 +4209,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		
 		String libraryID = MatContext.get().getCurrentCQLLibraryId();
 
-		MatContext.get().getCQLLibraryService().searchForIncludes(libraryID,searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(false,libraryID,searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

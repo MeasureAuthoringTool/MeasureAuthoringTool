@@ -235,5 +235,10 @@ public class CQLWorkSpaceConstants {
 	public final static String CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC = "Interval<DateTime>";
 	public static final String CQL_DEFAULT_DEFINITON_CONTEXT = "Patient";
 	public static final String CQL_INCLUDES_MENU = "include";
+	public static final String CQL_ATTRIBUTE_RESULT = "result";
+	public static final String CQL_ATTRIBUTE_TARGET_OUTCOME = "targetOutcome";
+	public static final String CQL_INSERT_AS_CODE = " as Code in ";
+	public static final String CQL_INSERT_IN = " in ";
+	
 	
 }

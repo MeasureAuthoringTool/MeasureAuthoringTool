@@ -506,7 +506,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
 		String measureXML = measureExport.getMeasureXMLAsString();
-		String html = HumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId, populationSubXML, measureXML);
+		String html = HumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId, populationSubXML, measureXML, cqlLibraryDAO);
 				
 		result.export = html;
 		return result;
@@ -675,7 +675,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private String getHumanReadableForMeasure(String measureId,
 			String simpleXmlStr, String measureVersionNumber) {
 		
-		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr, measureVersionNumber);
+		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
 		return html;
 
 	}

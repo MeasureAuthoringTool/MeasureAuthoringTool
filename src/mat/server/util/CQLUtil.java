@@ -410,23 +410,20 @@ public class CQLUtil {
 			} else {
 				nameXPathString += "[@name !='" + name + "']";
 			}
-		}
-
-		if(nameXPathString.length() > 0) {
+		}	
 			
-			String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
-			System.out.println(xPathForUnusedValuesets);
-	
-			NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			for (int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
-				Node current = unusedCqlValuesetNodeList.item(i);
-				Node parent = current.getParentNode();
-				parent.removeChild(current);
-			}
-			
-		}
+		String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
+		System.out.println(xPathForUnusedValuesets);
 
+		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for (int i = 0; i < unusedCqlValuesetNodeList.getLength(); i++) {
+			Node current = unusedCqlValuesetNodeList.item(i);
+			Node parent = current.getParentNode();
+			parent.removeChild(current);
+		}
+		
 		removeUnusedCodes(originalDoc, cqlCodes);
 		removeUnsedCodeSystems(originalDoc);
 	}

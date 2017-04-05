@@ -5,19 +5,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLModel;
 import mat.model.cql.parser.CQLBaseStatementInterface;
 import mat.model.cql.parser.CQLCodeModelObject;
 import mat.model.cql.parser.CQLDefinitionModelObject;
-import mat.model.cql.parser.CQLFileObject;
 import mat.model.cql.parser.CQLFunctionModelObject;
 import mat.model.cql.parser.CQLFunctionModelObject.FunctionArgument;
 import mat.model.cql.parser.CQLParameterModelObject;
 import mat.model.cql.parser.CQLValueSetModelObject;
 import mat.server.simplexml.HeaderHumanReadableGenerator;
+import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.XmlProcessor;
+import mat.shared.CQLExpressionObject;
+import mat.shared.LibHolderObject;
+import mat.shared.SaveUpdateCQLResult;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -37,6 +46,12 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class CQLHumanReadableHTMLCreator {
 	
 	
+	private static final String CQLAGGFUNCTION = "cqlaggfunction";
+
+	private static final String CQLFUNCTION = "cqlfunction";
+
+	private static final String CQLDEFINITION = "cqldefinition";
+
 	/** The Constant keyWordListArray. */
 	private static final String[] keyWordListArray = 		{"-", "!", "(", ")", "*", ",", ".", "/", ":", "[", "]", "^", "{", "}", "~", "+", "<", "=", ">",
 															 "after", "all", "and", "as", "asc", "ascending", "before", "between", "begins", "begun", 
@@ -97,6 +112,8 @@ public class CQLHumanReadableHTMLCreator {
 	
 	/** The cql objects. */
 	private static List<String> cqlObjects = new ArrayList<String>();
+	
+	private static Map<String, XmlProcessor> includedXMLMap = new HashMap<String, XmlProcessor>();
 		
 	/** The Constant HTML_LI. */
 	private static final String HTML_LI = "li";
@@ -118,16 +135,27 @@ public class CQLHumanReadableHTMLCreator {
 	 * Generate cql human readable for measure.
 	 *
 	 * @param simpleXmlStr the simple xml str
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
+	 * @param cqlLibraryDAO 
 	 * @return the string
 	 */
 	public static String generateCQLHumanReadableForMeasure(
-			String simpleXmlStr, CQLFileObject cqlFileObject) {
+			String simpleXmlStr, CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO) {
 		
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		cqlObjects.clear();
+		includedXMLMap.clear();
 		
-		populateCQLObjectsList(cqlFileObject);
+		XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
+		
+		CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(simpleXMLProcessor.getOriginalDoc());
+		
+		cqlObjects = new ArrayList<String>();
+		cqlObjects.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
+		cqlObjects.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+		
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
+		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 		
 		String humanReadableHTML = "";
 		
@@ -137,8 +165,8 @@ public class CQLHumanReadableHTMLCreator {
 					.generateHeaderHTMLForCQLMeasure(simpleXmlStr);
 			
 			humanReadableHTML = humanReadableHTMLDocument.toString();
-			XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
-			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor, cqlFileObject);
+			
+			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 			
 		} catch (XPathExpressionException e) {
@@ -146,35 +174,55 @@ public class CQLHumanReadableHTMLCreator {
 			e.printStackTrace();
 		}
 		
+		definitionsOrFunctionsAlreadyDisplayed.clear();
+		cqlObjects.clear();
+		includedXMLMap.clear();
+		
 		return humanReadableHTML;
 	}
 	
+	private static Map<String, XmlProcessor> loadIncludedLibXMLProcessors(
+			CQLModel cqlModel) {
+		
+		Map<String, XmlProcessor> returnMap = new HashMap<String, XmlProcessor>();
+		
+		Map<String, LibHolderObject> includeMap = cqlModel.getIncludedCQLLibXMLMap();
+		
+		for(String libName: includeMap.keySet()){
+			LibHolderObject lib = includeMap.get(libName);
+			String xml = lib.getMeasureXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			returnMap.put(libName, xmlProcessor);
+		}		
+		
+		return returnMap;
+	}
+
 	/**
 	 * Generate human readable.
 	 *
 	 * @param humanReadableHTMLDocument the human readable html document
 	 * @param simpleXMLProcessor the simple xml processor
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
+	 * @param cqlResult 
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void generateHumanReadable(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject)
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult)
 					throws XPathExpressionException {
 		
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
-				simpleXMLProcessor, cqlFileObject);
-		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor, cqlFileObject); 
-//		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
-//		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
+				simpleXMLProcessor, cqlModel,cqlResult);
+		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
-		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlFileObject);
+		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
 	}
 	
 	private static void generateRiskAdjustmentVariables(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject)
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult)
 					throws XPathExpressionException {
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		Element bodyElement = humanReadableHTMLDocument.body();
@@ -197,7 +245,7 @@ public class CQLHumanReadableHTMLCreator {
 						xpathforSubTree);
 				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
 				defineNodeName = "\"" + defineNodeName + "\"";
-				generatePopulationCriteria(mainListElement, cqlFileObject, childNode, defineNodeName, defineNodeName);
+				generatePopulationCriteria(mainListElement, cqlModel, childNode, defineNodeName, defineNodeName, cqlResult, simpleXMLProcessor);
 				
 			}
 		} else {
@@ -245,11 +293,12 @@ public class CQLHumanReadableHTMLCreator {
 	 *
 	 * @param humanReadableHTMLDocument the human readable html document
 	 * @param simpleXMLProcessor the simple xml processor
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
+	 * @param cqlResult 
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void generatePopulationCriteriaHumanReadable(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject)
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult)
 					throws XPathExpressionException {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
@@ -277,7 +326,7 @@ public class CQLHumanReadableHTMLCreator {
 			}
 			NodeList clauseNodeList = groupMap.get(key).getChildNodes();
 			generatePopulationNodes(clauseNodeList, mainListElement,
-					groupNodeList.getLength(),key, simpleXMLProcessor, cqlFileObject);
+					groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
 		}
 	}
 	
@@ -286,9 +335,9 @@ public class CQLHumanReadableHTMLCreator {
 	 * 
 	 * @param humanReadableHTMLDocument the human readable html document
 	 * @param simpleXMLProcessor the simple xml processor
-	 * @param cqlFileObject 
+	 * @param cqlModel 
 	 */
-	private static void generateQDMDataElements(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject) {
+	private static void generateQDMDataElements(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
 		
@@ -346,16 +395,16 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param totalGroupCount the total group count
 	 * @param currentGroupNumber the current group number
 	 * @param simpleXMLProcessor the simple xml processor
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
 	 */
 	private static void generatePopulationNodes(NodeList clauseNodeList,
 			Element mainListElement, int totalGroupCount,
-			int currentGroupNumber, XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject) {
+			int currentGroupNumber, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult) {
 		
 		for (String element : POPULATION_NAME_ARRAY) {
 			generatePopulationNodes(element, clauseNodeList,
 					mainListElement, totalGroupCount, currentGroupNumber,
-					simpleXMLProcessor, cqlFileObject);
+					simpleXMLProcessor, cqlModel, cqlResult);
 		}
 	}
 	
@@ -368,12 +417,12 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param totalGroupCount the total group count
 	 * @param currentGroupNumber the current group number
 	 * @param simpleXMLProcessor the simple xml processor
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
 	 */
 	private static void generatePopulationNodes(String populationType,
 			NodeList clauseNodeList, Element mainListElement,
 			int totalGroupCount, int currentGroupNumber,
-			XmlProcessor simpleXMLProcessor, CQLFileObject cqlFileObject) {
+			XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult) {
 		
 		// find all clause nodes with attribute type=populationType
 		List<Node> clauseNodes = new ArrayList<Node>();
@@ -393,7 +442,7 @@ public class CQLHumanReadableHTMLCreator {
 					.appendElement(HTML_LI);
 			populationListElement.attr("class", "list-unstyled");
 			//Element boldNameElement = populationListElement.appendElement("b");
-		//	String populationName = getPopulationName(populationType, true);
+			//String populationName = getPopulationName(populationType, true);
 			
 			//boldNameElement.appendText(populationName + " =");
 			for (int c = 0; c < clauseNodes.size(); c++) {
@@ -423,7 +472,7 @@ public class CQLHumanReadableHTMLCreator {
 					populationListElement = populationListElement.appendElement(HTML_UL);
 				}*/
 				parseAndBuildHTML(simpleXMLProcessor,
-						populationListElement, clauseNode, c + 1, cqlFileObject, childPopulationName);
+						populationListElement, clauseNode, c + 1, cqlModel, childPopulationName, cqlResult);
 				
 			}
 		} else if (clauseNodes.size() == 1) {
@@ -449,7 +498,7 @@ public class CQLHumanReadableHTMLCreator {
 				populationListElement = populationListElement.appendElement(HTML_UL);
 			}*/
 			parseAndBuildHTML(simpleXMLProcessor, populationListElement,
-					clauseNodes.get(0), 1, cqlFileObject, populationName);
+					clauseNodes.get(0), 1, cqlModel, populationName, cqlResult);
 			
 		}
 	}
@@ -513,13 +562,14 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param populationOrSubtreeListElement the population or subtree list element
 	 * @param clauseNode the clause node
 	 * @param currentGroupNumber the current group number
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
 	 * @param PopulationDisplayName the population display name
+	 * @param cqlResult 
 	 */
 	private static void parseAndBuildHTML(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement, Node clauseNode,
-			int currentGroupNumber, CQLFileObject cqlFileObject, String PopulationDisplayName) {
+			int currentGroupNumber, CQLModel cqlModel, String populationDisplayName, SaveUpdateCQLResult cqlResult) {
 		
 		try {
 						
@@ -533,7 +583,7 @@ public class CQLHumanReadableHTMLCreator {
 			if(clauseNode.hasChildNodes()){
 				cqlNode = clauseNode.getFirstChild();
 			}
-			generatePopulationCriteria(populationOrSubtreeListElement, cqlFileObject, cqlNode, parentName, PopulationDisplayName);
+			generatePopulationCriteria(populationOrSubtreeListElement, cqlModel, cqlNode, parentName, populationDisplayName, cqlResult, populationOrSubtreeXMLProcessor);
 			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -663,21 +713,21 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		return populationName;
 	}
-
-	/**
-	 * Generate cql human readable for single population.
-	 *
-	 * @param populationNode the population node
-	 * @param cqlFileObject the cql file object
-	 * @return the string
-	 */
+	
 	public static String generateCQLHumanReadableForSinglePopulation(
-			Node populationNode, CQLFileObject cqlFileObject) {
-
+			Node populationNode, String measureXML, CQLModel cqlModel,
+			CQLLibraryDAO cqlLibraryDAO) {
+		
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		cqlObjects.clear();
-
-		populateCQLObjectsList(cqlFileObject);
+		includedXMLMap.clear();
+		
+		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
+		
+		populateCQLObjectsList(cqlModel);
+		
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
+		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 
 		Node cqlNode = populationNode.getFirstChild();
 		String populationName = populationNode.getAttributes()
@@ -689,9 +739,21 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element bodyElement = htmlDocument.body();
 
-		generatePopulationCriteria(bodyElement, cqlFileObject, cqlNode,
-				populationName, populationName);
-
+		if(cqlResult.getCqlErrors().size() == 0){
+			includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
+	
+			generatePopulationCriteria(bodyElement, cqlModel, cqlNode,
+					populationName, populationName,cqlResult,measureXMLProcessor);
+		}else{
+			Element mainDivElement = bodyElement.appendElement("div");
+			mainDivElement.attr("class", "treeview hover p-l-10");
+			mainDivElement.append("Unable to generate Human Readable. There are validation errors in CQL. Please correct and try again.");
+		}
+		
+		definitionsOrFunctionsAlreadyDisplayed.clear();
+		cqlObjects.clear();
+		includedXMLMap.clear();
+		
 		return htmlDocument.html();
 	}
 
@@ -699,13 +761,15 @@ public class CQLHumanReadableHTMLCreator {
 	 * Generate population criteria.
 	 *
 	 * @param bodyElement the body element
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
 	 * @param cqlNode the cql node
 	 * @param populationName the population name
 	 * @param populationDisplayName the population display name
+	 * @param cqlResult 
+	 * @param populationOrSubtreeXMLProcessor 
 	 */
 	private static void generatePopulationCriteria(Element bodyElement,
-			CQLFileObject cqlFileObject, Node cqlNode, String populationName, String populationDisplayName) {
+			CQLModel cqlModel, Node cqlNode, String populationName, String populationDisplayName, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor) {
 
 		/*
 		 * bodyElement.append(
@@ -729,28 +793,28 @@ public class CQLHumanReadableHTMLCreator {
 		System.out.println("Generating Human readable for:" + cqlNodeType + ":"
 				+ cqlName);
 
-		if ("cqldefinition".equals(cqlNodeType)) {
-			cqlName = "\"" + cqlName + "\"";
+		if (CQLDEFINITION.equals(cqlNodeType)) {
+			//cqlName = "\"" + cqlName + "\"";
 
-			generateHTMLForPopulation(mainULElement, cqlFileObject.getDefinitionsMap().get(cqlName),
-					populationName, populationDisplayName, cqlName);
-		} else if ("cqlfunction".equals(cqlNodeType)){
-			cqlName = "\"" + cqlName + "\"";
-			System.out.println("Functions map:"+cqlFileObject.getFunctionsMap());
-			generateHTMLForPopulation(mainULElement, cqlFileObject.getFunctionsMap().get(cqlName),
-					populationName, populationDisplayName, cqlName);
-		} else if("cqlaggfunction".equals(cqlNodeType)){
-			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
-			cqlAggregateFunction.setIdentifier(cqlName + " of:");
+			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
+					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType);
+		} else if (CQLFUNCTION.equals(cqlNodeType)){
+			//cqlName = "\"" + cqlName + "\"";
+			//System.out.println("Functions map:"+cqlModel.getFunctionsMap());
+			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
+					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType);
+		} else if(CQLAGGFUNCTION.equals(cqlNodeType)){
+//			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
+//			cqlAggregateFunction.setIdentifier(cqlName + " of:");
 			
 			Node childCQLNode = cqlNode.getChildNodes().item(0);
 			String childCQLName = childCQLNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			childCQLName = "\"" + childCQLName + "\"";
-			CQLFunctionModelObject cqlFunctionModelObject = cqlFileObject.getFunctionsMap().get(childCQLName);
+//			CQLFunctionModelObject cqlFunctionModelObject = cqlModel.getFunctionsMap().get(childCQLName);
+//			
+//			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
 			
-			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
-			
-			generateHTMLForPopulation(mainULElement, cqlAggregateFunction, populationName, populationDisplayName, cqlName);
+			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType);
 		} else {
 			generateHTMLForPopulation(mainULElement, populationName, populationDisplayName, "");
 		}
@@ -762,11 +826,14 @@ public class CQLHumanReadableHTMLCreator {
 	 * Generate html for population.
 	 *
 	 * @param mainElement the main element
+	 * @param cqlResult 
+	 * @param cqlModel 
 	 * @param populationName the population name
 	 * @param populationDisplayName the population display name
 	 * @param mainDefinitionName the main definition name
+	 * @param populationOrSubtreeXMLProcessor 
 	 */
-	private static void generateHTMLForPopulation(Element mainElement,String populationName, String populationDisplayName, 
+	private static void generateHTMLForPopulation(Element mainElement, String populationName, String populationDisplayName, 
 			String mainDefinitionName) {
 		// create a base LI element
 		Element mainliElement = mainElement.appendElement("li");
@@ -777,12 +844,6 @@ public class CQLHumanReadableHTMLCreator {
 		String id = "test-" + populationName + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
-
-		/*if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
-			checkBoxElement.attr("checked", "");
-		} else {
-			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
-		}*/
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);
@@ -793,10 +854,8 @@ public class CQLHumanReadableHTMLCreator {
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println(mainDefinitionName);
-		/*Element ulElement = definitionLabelElement.appendElement(HTML_UL);
-		ulElement.appendElement(HTML_LI).appendText("None");*/
+
 		generateHTMLToDsiplayNone(mainliElement);
-		//generateHTMLForDefinitionOrFunction(cqlBaseStatementObject, mainliElement, true);
 	}
 
 	/**
@@ -807,10 +866,11 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param populationName the population name
 	 * @param populationDisplayName the population display name
 	 * @param mainDefinitionName the main definition name
+	 * @param cqlNodeType 
 	 */
 	private static void generateHTMLForPopulation(Element mainElement,
-			CQLBaseStatementInterface cqlBaseStatementObject, String populationName, String populationDisplayName, 
-			String mainDefinitionName) {
+			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, String populationName, String populationDisplayName, 
+			String mainDefinitionName, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType) {
 		// create a base LI element
 		Element mainliElement = mainElement.appendElement("li");
 		mainliElement.attr("class", "list-unstyled");
@@ -821,12 +881,6 @@ public class CQLHumanReadableHTMLCreator {
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
 
-		/*if (definitionsOrFunctionsAlreadyDisplayed.contains(populationDisplayName)) {
-			checkBoxElement.attr("checked", "");
-		} else {
-			definitionsOrFunctionsAlreadyDisplayed.add(populationDisplayName);
-		}*/
-
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);
 		definitionLabelElement.attr("class", "list-header");
@@ -836,7 +890,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println("Main Defintion Name: " + mainDefinitionName);
-		generateHTMLForDefinitionOrFunction(cqlBaseStatementObject, mainliElement, true);
+		generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, populationOrSubtreeXMLProcessor,cqlNodeType, mainDefinitionName, mainliElement, true);
 	}
 
 	
@@ -865,42 +919,30 @@ public class CQLHumanReadableHTMLCreator {
 	 *
 	 * @param cqlBaseStatementObject the cql base statement object
 	 * @param mainElement the main element
-	 * @param isTopDefinition the is top definition
+	 * @param isTopExpression the is top definition
 	 */
 	private static void generateHTMLForDefinitionOrFunction(
-			CQLBaseStatementInterface cqlBaseStatementObject,
-			Element mainElement, boolean isTopDefinition) {
+			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType, String expressionName, 
+			Element mainElement, boolean isTopExpression) {
 
-		String statementIdentifier = cqlBaseStatementObject.getIdentifier();
+		String statementIdentifier = expressionName;
+		String fullExpressionName = expressionName;
 		
-		//If this cqlBaseStatementObject is a function, then we need to consider 
-		//arguments to the function.
-		String statementSignature = statementIdentifier;
-		
-		List<FunctionArgument> argumentList = cqlBaseStatementObject.getArguments();
-		if(argumentList != null && argumentList.size() > 0){
-			statementSignature += "(";
-		}
-		for(FunctionArgument functionArgument:argumentList){
-			statementSignature += functionArgument.getArgumentName() + " " + functionArgument.getArgumentType() + ", ";
+		String[] arr = expressionName.split(Pattern.quote("|"));
+		if(arr.length == 3){
+			expressionName = arr[2];
+			statementIdentifier = arr[1] + "." + arr[2];
 		}
 		
-		if(argumentList != null && argumentList.size() > 0){
-			if(statementSignature.endsWith(", ")){
-				statementSignature = statementSignature.substring(0, statementSignature.length()-2);
-			}
-			statementSignature += ")";
-		}
-
 		Element mainULElement = mainElement;
-		if (isTopDefinition) {
+		if (isTopExpression) {
 			mainULElement = mainElement.appendElement("ul");
 			mainULElement.attr("class", "code");
 		}
 
 		Element mainliElement = mainULElement;
 		// create a base LI element
-		if (isTopDefinition) {
+		if (isTopExpression) {
 			mainliElement = mainULElement.appendElement("li");
 		}
 
@@ -932,23 +974,25 @@ public class CQLHumanReadableHTMLCreator {
 		Element subLiElement = subULElement.appendElement("li");
 		Element subDivElement = subLiElement.appendElement("div");
 		
-		if(!(cqlBaseStatementObject instanceof CQLAggregateFunction)){
+		if(!(cqlNodeType.equals(CQLAGGFUNCTION))){
 			
 			Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
 			Element spanElemDefName = getSpanElementWithClass(subDivElement,
 					"cql-class");
-			if(cqlBaseStatementObject instanceof CQLFunctionModelObject){
+			if(cqlNodeType.equals(CQLFUNCTION)){
 				spanElem.appendText("define function ");
-				spanElemDefName.appendText(statementSignature + ":");
-			}else if(cqlBaseStatementObject instanceof CQLDefinitionModelObject) {
+				String signature = getCQLFunctionSignature(expressionName, populationOrSubtreeXMLProcessor);
+				spanElemDefName.appendText(expressionName + signature + ":");
+			}else if(cqlNodeType.equals(CQLDEFINITION)) {
 				spanElem.appendText("define ");
-				spanElemDefName.appendText(statementSignature + ":");
+				spanElemDefName.appendText(expressionName + ":");
 			} else {
 				spanElem.appendText("parameter ");
-				spanElemDefName.appendText(statementSignature);
+				spanElemDefName.appendText(expressionName);
 			}			
 			
-			List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
+			//List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
+			List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
 			
 			if(codeLineList.size() > 0){
 				subDivElement.append("&nbsp;" + codeLineList.get(0));
@@ -961,29 +1005,212 @@ public class CQLHumanReadableHTMLCreator {
 					spanElemDefBody.append(codeLineList.get(i));
 				}
 			}
+			
 			subDivElement.appendElement("br");
 		}
 		
+		List<String> referredToDefinitions = getReferredToDefinitions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		for(String defName:referredToDefinitions){
+			
+			XmlProcessor processor = populationOrSubtreeXMLProcessor;
+			System.out.println("defName:"+defName);
+			String[] arr1 = defName.split(Pattern.quote("|"));
+			if(arr1.length == 3){
+				processor = includedXMLMap.get(arr1[0] + "|" + arr1[1]);
+			}
+			
+			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLDEFINITION, defName, subDivElement, false);
+		}
+		
+		List<String> referredToFunctions = getReferredToFunctions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		for(String funcName:referredToFunctions){
+			
+			XmlProcessor processor = populationOrSubtreeXMLProcessor;
+			System.out.println("funcName:"+funcName);
+			String[] arr1 = funcName.split(Pattern.quote("|"));
+			if(arr1.length == 3){
+				processor = includedXMLMap.get(arr1[0] + "|" + arr1[1]);
+			}
+			
+			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLFUNCTION, funcName, subDivElement, false);
+		}
+		
+		
+//		List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlBaseStatementObject
+//				.getReferredToDefinitions();
+//		
+//		for(CQLDefinitionModelObject referredTDefinitionModelObject : referredToDefinitionsModelObjectList){
+//			generateHTMLForDefinitionOrFunction(referredTDefinitionModelObject, subDivElement, false);
+//		}
+//		
+//		List<CQLFunctionModelObject> referredToFunctionsModelObjectList = cqlBaseStatementObject.getReferredToFunctions();
+//		
+//		for(CQLFunctionModelObject referredToFunctionModelObject : referredToFunctionsModelObjectList){
+//			generateHTMLForDefinitionOrFunction(referredToFunctionModelObject, subDivElement, false);
+//		}
+//		
+//        List<CQLParameterModelObject> referredToParameterModelObjectList = cqlBaseStatementObject.getReferredToParameters();
+//		
+//		for(CQLParameterModelObject referredToParameterModelObject : referredToParameterModelObjectList){
+//			generateHTMLForDefinitionOrFunction(referredToParameterModelObject, subDivElement, false);
+//		}
+		
+	}
+	
+	private static List<String> getReferredToFunctions(String expressionName,
+			String cqlNodeType, XmlProcessor populationOrSubtreeXMLProcessor,
+			SaveUpdateCQLResult cqlResult) {
+		
+		List<String> usedFuncs = new ArrayList<String>();
+		
+		if(cqlNodeType.equals(CQLDEFINITION)){
+			CQLExpressionObject defObject = findCQLDefinitionObject(cqlResult, expressionName);
+			if(defObject != null){
+				usedFuncs = defObject.getUsedFunctions();
+			}
+		}else if(cqlNodeType.equals(CQLFUNCTION)){
+			CQLExpressionObject defObject = findCQLFunctionObject(cqlResult, expressionName);
+			if(defObject != null){
+				usedFuncs = defObject.getUsedFunctions();
+			}
+		}
+		
+		return usedFuncs;
+	}
+	
+	private static List<String> getReferredToDefinitions(String expressionName,
+			String cqlNodeType, XmlProcessor populationOrSubtreeXMLProcessor,
+			SaveUpdateCQLResult cqlResult) {
+		
+		List<String> usedDefs = new ArrayList<String>();
+		
+		if(cqlNodeType.equals(CQLDEFINITION)){
+			CQLExpressionObject defObject = findCQLDefinitionObject(cqlResult, expressionName);
+			if(defObject != null){
+				usedDefs = defObject.getUsedExpressions();
+			}
+		}else if(cqlNodeType.equals(CQLFUNCTION)){
+			CQLExpressionObject defObject = findCQLFunctionObject(cqlResult, expressionName);
+			if(defObject != null){
+				usedDefs = defObject.getUsedExpressions();
+			}
+		}
+		
+		return usedDefs;
+	}
 
-		List<CQLDefinitionModelObject> referredToDefinitionsModelObjectList = cqlBaseStatementObject
-				.getReferredToDefinitions();
+	private static CQLExpressionObject findCQLFunctionObject(
+			SaveUpdateCQLResult cqlResult, String expressionName) {
 		
-		for(CQLDefinitionModelObject referredTDefinitionModelObject : referredToDefinitionsModelObjectList){
-			generateHTMLForDefinitionOrFunction(referredTDefinitionModelObject, subDivElement, false);
+		CQLExpressionObject returnObject = null;
+		List<CQLExpressionObject> functionsList = cqlResult.getCqlObject().getCqlFunctionObjectList();
+		
+		for(CQLExpressionObject defObject: functionsList){
+			if(defObject.getName().equals(expressionName)){
+				returnObject = defObject;
+				break;
+			}
 		}
 		
-		List<CQLFunctionModelObject> referredToFunctionsModelObjectList = cqlBaseStatementObject.getReferredToFunctions();
+		return returnObject;
+	}
+
+	private static CQLExpressionObject findCQLDefinitionObject(SaveUpdateCQLResult cqlResult,
+			String expressionName) {
 		
-		for(CQLFunctionModelObject referredToFunctionModelObject : referredToFunctionsModelObjectList){
-			generateHTMLForDefinitionOrFunction(referredToFunctionModelObject, subDivElement, false);
+		CQLExpressionObject returnObject = null;
+		List<CQLExpressionObject> definitionList = cqlResult.getCqlObject().getCqlDefinitionObjectList();
+		
+		for(CQLExpressionObject defObject: definitionList){
+			System.out.println(defObject.getName() + " equals " + expressionName + "?");
+			if(defObject.getName().equals(expressionName)){
+				returnObject = defObject;
+				break;
+			}
 		}
 		
-        List<CQLParameterModelObject> referredToParameterModelObjectList = cqlBaseStatementObject.getReferredToParameters();
+		return returnObject;
+	}
+
+	private static String getCQLFunctionSignature(String expressionName,
+			XmlProcessor populationOrSubtreeXMLProcessor) {
 		
-		for(CQLParameterModelObject referredToParameterModelObject : referredToParameterModelObjectList){
-			generateHTMLForDefinitionOrFunction(referredToParameterModelObject, subDivElement, false);
+		String signature = "";
+		
+		String xPath = "//cqlLookUp//function[@name = '"+ expressionName +"']/arguments";
+		try {
+			Node argumentsNode = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), xPath);
+			if(argumentsNode != null){
+				NodeList children = argumentsNode.getChildNodes();
+				for(int i=0;i < children.getLength();i++){
+					Node child = children.item(i);
+					if(child.getNodeName().equals("argument")){
+						String type = child.getAttributes().getNamedItem("type").getNodeValue();
+						String argName = child.getAttributes().getNamedItem("argumentName").getNodeValue();
+						signature += argName + " " + type + ", ";
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
+		if(signature.length() > 0){
+			signature = signature.trim();
+			if(signature.endsWith(",")){
+				signature = signature.substring(0, signature.length() - 1);
+			}
+			signature = "(" + signature + ")";
+		}
+		
+		return signature;
+	}
+
+	private static List<String> getExpressionLineList(CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor simpleXMLProcessor, String cqlName, String cqlType){
+		
+		List<String> lineList = new ArrayList<String>();
+		
+		if(cqlType.equals(CQLFUNCTION) || cqlType.equals(CQLDEFINITION)){
+			lineList.add("");
+		}
+		
+		String logic = getLogicStringFromXML(cqlName, cqlType, simpleXMLProcessor);
+		String lines[] = logic.split("\\r?\\n");
+		
+		for(int i=0;i<lines.length;i++){
+			String escapedLine = lines[i].replaceAll("\\s", "&nbsp;");
+			lineList.add(escapedLine);
+		}		
+		return lineList;
+	}
+
+	private static String getLogicStringFromXML(String cqlName, String cqlType,
+			XmlProcessor simpleXMLProcessor) {
+		
+		String logic = "";
+		String xPath = "//cqlLookUp//";
+		
+		if(cqlType.equals(CQLDEFINITION)){
+			xPath += "definition[@name='" + cqlName + "']/logic";
+		}else if(cqlType.equals(CQLFUNCTION)){
+			xPath += "function[@name='" + cqlName + "']/logic";
+		}
+		System.out.println("logic xpath:"+xPath);
+		 try {
+			Node logicNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), xPath);
+			if(logicNode != null){
+				logic = logicNode.getTextContent();
+				System.out.println();
+				System.out.println("Found logic as:");
+				System.out.println(logic);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return logic;
 	}
 
 	/**
@@ -1211,15 +1438,19 @@ public class CQLHumanReadableHTMLCreator {
 	/**
 	 * Populate cql objects list.
 	 *
-	 * @param cqlFileObject the cql file object
+	 * @param cqlModel the cql file object
 	 */
-	private static void populateCQLObjectsList(CQLFileObject cqlFileObject) {
+	private static void populateCQLObjectsList(CQLModel cqlModel) {
 		
-		Map<String, CQLDefinitionModelObject> cqlDefinitionMap = cqlFileObject.getDefinitionsMap();
-		cqlObjects.addAll(cqlDefinitionMap.keySet());
+		List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
+		for(CQLDefinition cqlDef:cqlDefinition){
+			cqlObjects.add(cqlDef.getDefinitionName());
+		}
 		
-		Map<String, CQLFunctionModelObject> cqlFunctionsMap = cqlFileObject.getFunctionsMap();
-		cqlObjects.addAll(cqlFunctionsMap.keySet());
+		List<CQLFunctions> cqlFunctions = cqlModel.getCqlFunctions();
+		for(CQLFunctions cqlFunc:cqlFunctions){
+			cqlObjects.add(cqlFunc.getFunctionName());
+		}
 	}
 	
 	/**
@@ -1337,5 +1568,7 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		
 	}
+
+	
 
 }

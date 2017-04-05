@@ -328,11 +328,26 @@ public class InsertIntoAceEditorDialogBox {
 											
 										}
 										String name = itemNameToBeInserted;
+										boolean isCodeDataType = true;
 										if(dataType != null){
-											StringBuilder sb = new StringBuilder();
-											sb = sb.append("[\"" + dataType + "\"");
-											sb = sb.append(": \"").append(name + "\"]");
-											itemNameToBeInserted = sb.toString();
+											if((name.equals("Dead") && !dataType.equalsIgnoreCase("Patient Characteristic Expired")) 
+													|| name.equals("Birthdate") && !dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
+												isCodeDataType = false;
+											}
+											
+											if(isCodeDataType){ 
+												StringBuilder sb = new StringBuilder();
+												sb = sb.append("[\"" + dataType + "\"");
+												sb = sb.append(": \"").append(name + "\"]");
+												itemNameToBeInserted = sb.toString();
+											} else {
+												dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+												helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+												helpBlock.setText("Please select appropriate DataType for codes.");
+												messageFormgroup.setValidationState(ValidationState.ERROR);
+												itemNameToBeInserted = "";
+											}
+											
 										} else {
 											StringBuilder sb = new StringBuilder();
 											sb = sb.append("\"" + name + "\"");
@@ -353,9 +368,12 @@ public class InsertIntoAceEditorDialogBox {
 										sb = sb.append("\"()");
 										itemNameToBeInserted = sb.toString(); 
 									}
-									editor.insertAtCursor(itemNameToBeInserted);
-									editor.focus();
-									dialogModal.hide();
+									if(!itemNameToBeInserted.isEmpty()){
+										editor.insertAtCursor(itemNameToBeInserted);
+										editor.focus();
+										dialogModal.hide();
+									}
+									
 								}
 							} else {
 								if (itemTypeName.equalsIgnoreCase("Applied Value Sets/Codes")) {

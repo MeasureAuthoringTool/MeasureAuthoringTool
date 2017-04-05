@@ -2230,7 +2230,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-		/*MatContext.get().getValuesets().clear();*/
+		MatContext.get().getValuesets().clear();
 	}
 
 	/**

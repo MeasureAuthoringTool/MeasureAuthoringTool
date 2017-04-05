@@ -2596,6 +2596,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 									.createAlert(MatContext.get().getMessageDelegate().getMODIFY_CQL_LIBRARY_NAME());
+							searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 							MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
 							CqlComposerPresenter.setContentHeading();
 						}
@@ -2666,7 +2667,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetAll();
 		panel.clear();
 		searchDisplay.getMainPanel().clear();
-		/* MatContext.get().getValuesets().clear(); */
+		 MatContext.get().getValuesets().clear(); 
 	}
 
 	@Override

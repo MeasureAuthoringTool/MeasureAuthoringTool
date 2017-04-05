@@ -98,6 +98,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	/** The exp profile to all qdm. */
 	private String expProfileToAllValueSet = "";
+	
+	/** The setId for the current library. */
+	private String setId = null;
 
 	/** The is modfied. */
 	private boolean isModified = false;
@@ -2660,6 +2663,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getFunctionArgumentList().clear();
 		}
 		isModified = false;
+		setId = null;
 		modifyValueSetDTO = null;
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
@@ -2709,6 +2713,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								// System.out.println("I got the model");
 
 								// if(result.getCqlModel().getLibraryName()!=null){
+								if(result.getSetId() != null){
+									setId = result.getSetId();
+								}
 								if (result.getCqlModel().getLibraryName() != null) {
 									cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 											.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
@@ -4208,9 +4215,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
 		
-		String libraryID = MatContext.get().getCurrentCQLLibraryId();
-
-		MatContext.get().getCQLLibraryService().searchForIncludes(false,libraryID,searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId,searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

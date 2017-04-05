@@ -143,72 +143,19 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(boolean isMeasure,String referringId, String searchText){
+	public SaveCQLLibraryResult searchForIncludes(String setId, String searchText){
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(searchText);
-        List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
+        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, searchText);
         saveCQLLibraryResult.setResultsTotal(list.size());
-        String setId = (isMeasure) ? measureDAO.find(referringId).getMeasureSet().getId() :cqlLibraryDAO.getSetIdForCQLLibrary(referringId);
         for(CQLLibrary cqlLibrary : list){
                CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
-               String asociationId = (object.getMeasureId() != null) ? object.getMeasureId():object.getId();
-               
-               if(countNumberOfAssociation(asociationId) == 0){
-            	   if(setId != null && asociationId != null){
-            		   if(!setId.equalsIgnoreCase(cqlLibraryDAO.getSetIdForCQLLibrary(asociationId))){
-            			   allLibraries.add(object);
-            		   }
-            	   }
-               } else {
-                     totalAssociations = getAssociations(asociationId);
-                    if(!hasChildLibraries(totalAssociations)){
-						if(!hasCyclicDependency(setId, asociationId)){
-                            allLibraries.add(object);
-                    	 }
-                     }
-               }
+               allLibraries.add(object);
         }
         saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
         return saveCQLLibraryResult;
  }
 	
-
-	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
-		for(CQLLibraryAssociation result : totalAssociations){
-			String associatedMeasureId = getAssociatedMeasureId(result);
-			String searchId = (associatedMeasureId!=null) ? associatedMeasureId:result.getCqlLibraryId();
-				if(countNumberOfAssociation(searchId) != 0){
-					return true;
-				}
-		}
-		return false;
-	}
-	
-	private String getAssociatedMeasureId(CQLLibraryAssociation result) {
-		return cqlLibraryDAO.getAssociatedMeasureId(result.getCqlLibraryId());
-	}
-
-	private boolean hasCyclicDependency(String setId, String asociationId){
-		String associateSetId = cqlLibraryDAO.getSetIdForCQLLibrary(asociationId);
-		if(setId != null && associateSetId != null){
-			if(!setId.equalsIgnoreCase(associateSetId)){
-				List<CQLLibraryAssociation> primaryAssociations = getAssociations(asociationId);
-				for(CQLLibraryAssociation parent : primaryAssociations){
-					String associatedMeasureId = getAssociatedMeasureId(parent);
-					String searchId = (associatedMeasureId!=null) ? associatedMeasureId:parent.getCqlLibraryId();
-					if(countNumberOfAssociation(searchId) != 0){
-							hasCyclicDependency(setId,searchId);
-					}
-				}
-			}else{
-				System.out.println("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
-				logger.info("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/* (non-Javadoc)
 	 * @see mat.server.service.CQLLibraryServiceInterface#search(java.lang.String, java.lang.String, int, int, int)
@@ -879,6 +826,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(str != null) {
 			cqlResult = cqlService.getCQLData(str);
 			cqlResult.setExpIdentifier(getDefaultExpansionIdentifier(str));
+			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
 		}
 		

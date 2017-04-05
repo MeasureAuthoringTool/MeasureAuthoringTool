@@ -6220,10 +6220,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult getMeasureCQLData(String measureId) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
+		Measure measure = getService().getById(measureId);
 
 		if (model != null && !StringUtils.isEmpty(model.getXml())) {
 			String xmlString = model.getXml();
 			result = cqlService.getCQLData(xmlString);
+			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);

@@ -24,6 +24,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private String expIdentifier;
 	
+	private String setId;
+	
 	private String xml;
 	
 	/** The cql string. */
@@ -298,6 +300,20 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setExpIdentifier(String expIdentifier) {
 		this.expIdentifier = expIdentifier;
+	}
+
+	/**
+	 * @return the setId
+	 */
+	public String getSetId() {
+		return setId;
+	}
+
+	/**
+	 * @param setId the setId to set
+	 */
+	public void setSetId(String setId) {
+		this.setId = setId;
 	}
 
 	public boolean isDatatypeUsedCorrectly() {

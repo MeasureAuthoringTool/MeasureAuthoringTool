@@ -20,13 +20,16 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.client.measure.MeasureSearchFilterPanel;
+import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.LockedUserInfo;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
@@ -38,7 +41,10 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLLibraryDAO.class);
 	
-	
+	/** The cql library association DAO. */
+	@Autowired
+	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
+		
 class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		
 		/* (non-Javadoc)
@@ -92,8 +98,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
-	public List<CQLLibrary> searchForIncludes(String searchText){
-		
+	public List<CQLLibrary> searchForIncludes(String setId, String searchText){
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(CQLLibrary.class);
@@ -115,21 +120,75 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 		
 		StringUtility su = new StringUtility();
 		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
-		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
-			
-			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su,
-					cqlLibrary);
-			if (matchesSearch) {
-				orderedList.add(cqlLibrary);
-			}
-		}
 		
+		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
+		
+		//Adding logic to get rid of libraries with second level of child and also those with cyclic dependency.
+		 List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
+		 while(orderedCQlLibListIte.hasNext()){
+			 CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
+	               String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId():cqlLibrary.getId();
+	               
+	               if(cqlLibraryAssociationDAO.findAssociationCount(asociationId) == 0){
+	            	   if(setId != null && asociationId != null){
+	            		   if(setId.equalsIgnoreCase(getSetIdForCQLLibrary(asociationId))){
+	            			   orderedCQlLibListIte.remove();
+	            		   }
+	            	   }
+	               } else {
+	            	   totalAssociations = cqlLibraryAssociationDAO.getAssociations(asociationId);
+	            	   if(hasChildLibraries(totalAssociations)){
+	            		   orderedCQlLibListIte.remove();
+	            	   }
+	            	   else if(hasCyclicDependency(setId, asociationId)){
+	            		   orderedCQlLibListIte.remove();
+	            	   }
+	               }
+	        }
+		
+	        for (CQLLibrary cqlLibrary : orderedCQlLibList) {
+				
+				boolean matchesSearch = searchResultsForCQLLibrary(searchString, su,
+						cqlLibrary);
+				if (matchesSearch) {
+					orderedList.add(cqlLibrary);
+				}
+			}
 		return orderedList;
 		
 	}
 	
+	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
+		for(CQLLibraryAssociation result : totalAssociations){
+			String associatedMeasureId = getAssociatedMeasureId(result.getCqlLibraryId());
+			String searchId = (associatedMeasureId!=null) ? associatedMeasureId:result.getCqlLibraryId();
+				if(cqlLibraryAssociationDAO.findAssociationCount(searchId) != 0){
+					return true;
+				}
+		}
+		return false;
+	}
 	
-	
+	private boolean hasCyclicDependency(String setId, String asociationId){
+		String associateSetId = getSetIdForCQLLibrary(asociationId);
+		if(setId != null && associateSetId != null){
+			if(!setId.equalsIgnoreCase(associateSetId)){
+				List<CQLLibraryAssociation> primaryAssociations = cqlLibraryAssociationDAO.getAssociations(asociationId);
+				for(CQLLibraryAssociation parent : primaryAssociations){
+					String associatedMeasureId = getAssociatedMeasureId(parent.getCqlLibraryId());
+					String searchId = (associatedMeasureId!=null) ? associatedMeasureId:parent.getCqlLibraryId();
+					if(cqlLibraryAssociationDAO.findAssociationCount(searchId) != 0){
+							hasCyclicDependency(setId,searchId);
+					}
+				}
+			}else{
+				System.out.println("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
+				logger.info("The CqlLibrary with Id : "+asociationId+" is removed from list due to cyclic dependency with existing libraries");
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter ) {

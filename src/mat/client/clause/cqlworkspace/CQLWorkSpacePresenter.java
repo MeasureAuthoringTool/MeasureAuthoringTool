@@ -105,6 +105,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/** The exp profile to all qdm. */
 	private String expProfileToAllValueSet = "";
+	
+	/** The setId */
+	private String setId = null;
 
 	/** The is modfied. */
 	private boolean isModified = false;
@@ -2223,6 +2226,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
 		isModified = false;
+		setId= null;
 		modifyValueSetDTO = null;
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
@@ -2275,9 +2279,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		showSearchingBusy(true);
 		//int startIndex = 1;
 		//int pageSize = Integer.MAX_VALUE;
-		String measureID = MatContext.get().getCurrentMeasureId();
 		
-		MatContext.get().getCQLLibraryService().searchForIncludes(true,measureID,searchText, new AsyncCallback<SaveCQLLibraryResult>() {
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId,searchText, new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -2332,6 +2335,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result!= null && result.getCqlModel() != null) {
 							
+							if(result.getSetId() != null){
+								setId= result.getSetId();
+							}
 							if(result.getCqlModel().getLibraryName()!=null){
 						//	if(result.getCqlModel().getLibrary()!=null){
 								String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()

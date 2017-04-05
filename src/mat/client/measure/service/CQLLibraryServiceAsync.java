@@ -55,7 +55,7 @@ public interface CQLLibraryServiceAsync {
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	void searchForIncludes(boolean isMeasure, String referringID, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForIncludes(String referringID, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void updateUsersShare(SaveCQLLibraryResult result, AsyncCallback<Void> callback);
 

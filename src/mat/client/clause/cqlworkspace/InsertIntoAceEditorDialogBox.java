@@ -352,7 +352,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Please select appropriate DataType for codes.");
+													helpBlock.setText("Invalid code/datatype combination.");
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -365,7 +365,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Please select appropriate DataType for codes.");
+													helpBlock.setText("Invalid code/datatype combination.");
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -378,7 +378,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Please select appropriate DataType for codes.");
+													helpBlock.setText("Invalid code/datatype combination.");
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}

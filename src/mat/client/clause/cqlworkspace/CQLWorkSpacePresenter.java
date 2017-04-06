@@ -4425,7 +4425,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setEnabled(!busy);
 		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
 		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+			searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(false);
 			searchDisplay.getIncludeView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getIncludeView().getEraseButton().setEnabled(!busy);
 			

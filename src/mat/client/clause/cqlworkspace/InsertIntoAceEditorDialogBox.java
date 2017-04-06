@@ -328,25 +328,68 @@ public class InsertIntoAceEditorDialogBox {
 											
 										}
 										String name = itemNameToBeInserted;
-										boolean isCodeDataType = true;
 										if(dataType != null){
-											if((name.equals("Dead") && !dataType.equalsIgnoreCase("Patient Characteristic Expired")) 
-													|| name.equals("Birthdate") && !dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
-												isCodeDataType = false;
-											}
-											
-											if(isCodeDataType){ 
+											if(name.equalsIgnoreCase("Dead")){
+												if(dataType.equalsIgnoreCase("Patient Characteristic Expired")){
+													StringBuilder sb = new StringBuilder();
+													sb = sb.append("[\"" + dataType + "\"");
+													sb = sb.append(": \"").append(name + "\"]");
+													itemNameToBeInserted = sb.toString();
+												} else {
+													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+													helpBlock.setText("Invalid code/datatype combination.");
+													messageFormgroup.setValidationState(ValidationState.ERROR);
+													itemNameToBeInserted = "";
+												}
+												
+											} else if(name.equalsIgnoreCase("Birthdate")){
+												if(dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
+													StringBuilder sb = new StringBuilder();
+													sb = sb.append("[\"" + dataType + "\"");
+													sb = sb.append(": \"").append(name + "\"]");
+													itemNameToBeInserted = sb.toString();
+												} else {
+													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+													helpBlock.setText("Please select appropriate DataType for codes.");
+													messageFormgroup.setValidationState(ValidationState.ERROR);
+													itemNameToBeInserted = "";
+												}
+											} else if(dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
+												if(name.equalsIgnoreCase("Birthdate")){
+													StringBuilder sb = new StringBuilder();
+													sb = sb.append("[\"" + dataType + "\"");
+													sb = sb.append(": \"").append(name + "\"]");
+													itemNameToBeInserted = sb.toString();
+												} else {
+													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+													helpBlock.setText("Please select appropriate DataType for codes.");
+													messageFormgroup.setValidationState(ValidationState.ERROR);
+													itemNameToBeInserted = "";
+												}
+											} else if(dataType.equalsIgnoreCase("Patient Characteristic Expired")){
+												if(name.equalsIgnoreCase("Dead")){
+													StringBuilder sb = new StringBuilder();
+													sb = sb.append("[\"" + dataType + "\"");
+													sb = sb.append(": \"").append(name + "\"]");
+													itemNameToBeInserted = sb.toString();
+												} else {
+													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+													helpBlock.setText("Please select appropriate DataType for codes.");
+													messageFormgroup.setValidationState(ValidationState.ERROR);
+													itemNameToBeInserted = "";
+												}
+											} else {
 												StringBuilder sb = new StringBuilder();
 												sb = sb.append("[\"" + dataType + "\"");
 												sb = sb.append(": \"").append(name + "\"]");
 												itemNameToBeInserted = sb.toString();
-											} else {
-												dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
-												helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-												helpBlock.setText("Please select appropriate DataType for codes.");
-												messageFormgroup.setValidationState(ValidationState.ERROR);
-												itemNameToBeInserted = "";
 											}
+											
+											
 											
 										} else {
 											StringBuilder sb = new StringBuilder();

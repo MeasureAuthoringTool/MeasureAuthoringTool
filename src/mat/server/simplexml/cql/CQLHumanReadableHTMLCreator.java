@@ -966,46 +966,51 @@ public class CQLHumanReadableHTMLCreator {
 		defnOrFuncLabelElement.attr("class", "list-header");
 
 		Element strongElement = defnOrFuncLabelElement.appendElement("strong");
-		strongElement.appendText(statementIdentifier);
+		String strongText = statementIdentifier;
+		if(cqlNodeType.equals(CQLFUNCTION)){
+			String signature = getCQLFunctionSignature(expressionName, populationOrSubtreeXMLProcessor);
+			strongText += signature;
+		}
+		strongElement.appendText(strongText);
 				
-		defnOrFuncLabelElement.appendText(" (click to expand/collapse)");
+		//defnOrFuncLabelElement.appendText(" (click to expand/collapse)");
 
 		Element subULElement = mainDivElement.appendElement("ul");
 		Element subLiElement = subULElement.appendElement("li");
+		subLiElement.attr("style","padding-left: 0px;");
 		Element subDivElement = subLiElement.appendElement("div");
 		
 		if(!(cqlNodeType.equals(CQLAGGFUNCTION))){
 			
-			Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
-			Element spanElemDefName = getSpanElementWithClass(subDivElement,
-					"cql-class");
-			if(cqlNodeType.equals(CQLFUNCTION)){
-				spanElem.appendText("define function ");
-				String signature = getCQLFunctionSignature(expressionName, populationOrSubtreeXMLProcessor);
-				spanElemDefName.appendText(expressionName + signature + ":");
-			}else if(cqlNodeType.equals(CQLDEFINITION)) {
-				spanElem.appendText("define ");
-				spanElemDefName.appendText(expressionName + ":");
-			} else {
-				spanElem.appendText("parameter ");
-				spanElemDefName.appendText(expressionName);
-			}			
+//			Element spanElem = getSpanElementWithClass(subDivElement, "cql_keyword");
+//			Element spanElemDefName = getSpanElementWithClass(subDivElement,
+//					"cql-class");
+//			if(cqlNodeType.equals(CQLFUNCTION)){
+//				spanElem.appendText("define function ");
+//				String signature = getCQLFunctionSignature(expressionName, populationOrSubtreeXMLProcessor);
+//				spanElemDefName.appendText(expressionName + signature + ":");
+//			}else if(cqlNodeType.equals(CQLDEFINITION)) {
+//				spanElem.appendText("define ");
+//				spanElemDefName.appendText(expressionName + ":");
+//			} else {
+//				spanElem.appendText("parameter ");
+//				spanElemDefName.appendText(expressionName);
+//			}			
 			
 			//List<String> codeLineList = getDefnOrFuncLineList(cqlBaseStatementObject);
 			List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
 			
 			if(codeLineList.size() > 0){
-				subDivElement.append("&nbsp;" + codeLineList.get(0));
+				mainDivElement.append("&nbsp;" + codeLineList.get(0));
 		
-				subDivElement.appendElement("br");
-		
+				//subDivElement.appendElement("br");
+						
 				for (int i = 1; i < codeLineList.size(); i++) {
 					Element spanElemDefBody = getSpanElementWithClass(subDivElement,
 							"cql-definition-body");
 					spanElemDefBody.append(codeLineList.get(i));
 				}
-			}
-			
+			}			
 			subDivElement.appendElement("br");
 		}
 		
@@ -1162,6 +1167,8 @@ public class CQLHumanReadableHTMLCreator {
 				signature = signature.substring(0, signature.length() - 1);
 			}
 			signature = "(" + signature + ")";
+		}else{
+			signature = "()";
 		}
 		
 		return signature;
@@ -1179,10 +1186,23 @@ public class CQLHumanReadableHTMLCreator {
 		String lines[] = logic.split("\\r?\\n");
 		
 		for(int i=0;i<lines.length;i++){
+			String coloredLine = colorize(lines[i]);
 			String escapedLine = lines[i].replaceAll("\\s", "&nbsp;");
 			lineList.add(escapedLine);
 		}		
 		return lineList;
+	}
+
+	private static String colorize(String escapedLine) {
+		String coloredLine = escapedLine;
+		
+		String[] lineTokens = coloredLine.split(" ");
+		
+		for(int i=0;i<lineTokens.length;i++){
+			System.out.println(lineTokens[i]+"|");
+		}
+		
+		return coloredLine;
 	}
 
 	private static String getLogicStringFromXML(String cqlName, String cqlType,

@@ -141,13 +141,13 @@ public class MATCssCQLUtil {
 			"	box-shadow: 0 10px 10px -10px #8c8b8b inset;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
-			".treeview {\r\n" + 
-			"  -webkit-user-select: none;\r\n" + 
-			"  -moz-user-select: none;\r\n" + 
-			"  -ms-user-select: none;\r\n" + 
-			"  -o-user-select: none;\r\n" + 
-			"  user-select: none;\r\n" + 
-			"}\r\n" + 
+//			".treeview {\r\n" + 
+//			"  -webkit-user-select: none;\r\n" + 
+//			"  -moz-user-select: none;\r\n" + 
+//			"  -ms-user-select: none;\r\n" + 
+//			"  -o-user-select: none;\r\n" + 
+//			"  user-select: none;\r\n" + 
+//			"}\r\n" + 
 			"\r\n" + 
 			".treeview:hover input ~ label:before,\r\n" + 
 			".treeview.hover input ~ label:before {\r\n" + 

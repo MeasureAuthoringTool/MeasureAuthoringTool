@@ -18,7 +18,7 @@ public class CQLHumanReadableGenerator {
 		System.out.println("cqlNodeString:"+cqlNodeString);
 		
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML);
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+//		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 				
 //		MATCQLParser matcqlParser = new MATCQLParser();
 //		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);

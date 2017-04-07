@@ -88,25 +88,27 @@ public class CQLFilter {
     /**
      * The used functions list
      */
-    private List<String> usedFunctions = new ArrayList<String>();;
+    private List<String> usedFunctions = new ArrayList<String>();
 
     /**
      * The used cql valuesets
      */
-    private List<String> usedValuesets = new ArrayList<String>();;
+    private List<String> usedValuesets = new ArrayList<String>();
 
     /**
      * THe used parameters list
      */
-    private List<String> usedParameters = new ArrayList<String>();;
+    private List<String> usedParameters = new ArrayList<String>();
 
     
     /**
      * The used code systems list
      */
-    private List<String> usedCodeSystems = new ArrayList<String>();;
+    private List<String> usedCodeSystems = new ArrayList<String>();
     
-    /**
+    private boolean forDirectReferencesOnly = false;
+    
+  	/**
      * The used codes list
      */
     private List<String> usedCodes = new ArrayList<String>();
@@ -124,16 +126,10 @@ public class CQLFilter {
     private String cqlFolderPath = "";
     
     private static Map<String, String> qdmTypeInfoMap = new HashMap<String, String>();
-     private CQLObject cqlObject = new CQLObject();
+    
+    private CQLObject cqlObject = new CQLObject();
         
-    public CQLObject getCqlObject() {
-		return cqlObject;
-	}
-
-	public void setCqlObject(CQLObject cqlObject) {
-		this.cqlObject = cqlObject;
-	}
-
+    
 	/**
      * The cql filter
      * @param library the library of the CQL
@@ -197,7 +193,8 @@ public class CQLFilter {
         collectUsed();
         System.out.println(this.includedLibraries);
     }
-// Combine All expressions used data for packaging and export.
+    
+    // Combine All expressions used data for packaging and export.
     private void collectUsed() {
 		// TODO Auto-generated method stub
 		List<CQLExpressionObject> allExpressionList = cqlObject.getAllExpressionList();
@@ -267,6 +264,8 @@ public class CQLFilter {
         	funcObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
         	cqlObject.getCqlFunctionObjectList().add(funcObject);
         	
+        	System.out.println("Created Function object" + expression.getName() + " with used definitions as:"+funcObject.getUsedExpressions());
+        	
         	clearUsed();
         }
 
@@ -298,8 +297,9 @@ public class CQLFilter {
 		this.getUsedParameters().clear();
 		this.getUsedValuesets().clear();
 		this.getValueSetDataTypeMap().clear();
-		
 	}
+	
+	
 
 	/**
      * Checks for the used statements for the given expression.
@@ -521,7 +521,9 @@ public class CQLFilter {
     		}
     	}
     	
-        checkForUsedStatements(expressionName);
+        if(!forDirectReferencesOnly){
+        	checkForUsedStatements(expressionName);
+        }
         
         if(existingLibrary != null){
         	this.currentLibraryHolder = existingLibrary;
@@ -553,7 +555,9 @@ public class CQLFilter {
     		}
     	}
         
-        checkForUsedStatements(expressionName);
+        if(!forDirectReferencesOnly){
+        	checkForUsedStatements(expressionName);
+        }
         
         if(existingLibrary != null){
         	this.currentLibraryHolder = existingLibrary;
@@ -1120,7 +1124,22 @@ public class CQLFilter {
             this.usedCodes.add(codeName);
         }
     }
+    
+    public CQLObject getCqlObject() {
+		return cqlObject;
+	}
 
+	public void setCqlObject(CQLObject cqlObject) {
+		this.cqlObject = cqlObject;
+	}
+	
+	public boolean isForDirectReferencesOnly() {
+		return forDirectReferencesOnly;
+	}
+
+	public void setForDirectReferencesOnly(boolean forDirectReferencesOnly) {
+		this.forDirectReferencesOnly = forDirectReferencesOnly;
+	}
 
     /**
      * Gets used expressions

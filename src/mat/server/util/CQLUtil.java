@@ -562,21 +562,16 @@ public class CQLUtil {
 	}
 
 	public static SaveUpdateCQLResult generateELM(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO) {
-		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null, true,false);
+		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null, true);
 	}
 	
-	public static SaveUpdateCQLResult parseCQLLibraryForHumanReadable(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
-			List<String> exprList) {
-		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false,true);
-	}
-
 	public static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
 			List<String> exprList) {
-		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false,false);
+		return parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList, false);
 	}
 
 	private static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
-			List<String> exprList, boolean generateELM, boolean forHumanReadable) {
+			List<String> exprList, boolean generateELM) {
 
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 
@@ -586,7 +581,7 @@ public class CQLUtil {
 
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 
-		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM, forHumanReadable);
+		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM);
 
 		return parsedCQL;
 	}
@@ -619,7 +614,7 @@ public class CQLUtil {
 	}
 
 	private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
-			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM, boolean forHumanReadable) {
+			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM) {
 
 		List<File> fileList = new ArrayList<File>();
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
@@ -663,7 +658,7 @@ public class CQLUtil {
 			
 			if(exprList != null){
 								
-				filterCQLArtifacts(cqlModel, parsedCQL, folder, cqlToElm, exprList, forHumanReadable);
+				filterCQLArtifacts(cqlModel, parsedCQL, folder, cqlToElm, exprList);
 			}
 
 		} catch (Exception e) {
@@ -700,11 +695,10 @@ public class CQLUtil {
 	 */
 	
 	private static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, File folder,
-			CQLtoELM cqlToElm, List<String> exprList, boolean forHumanReadable) {
+			CQLtoELM cqlToElm, List<String> exprList) {
 		if (cqlToElm != null) {
 
 			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, folder.getAbsolutePath(), cqlModel);
-			cqlFilter.setForDirectReferencesOnly(forHumanReadable);
 			cqlFilter.findUsedExpressions();
 			CQLObject cqlObject = cqlFilter.getCqlObject();
 			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
@@ -719,7 +713,18 @@ public class CQLUtil {
 			usedArtifacts.setIncludeLibMap(cqlFilter.getUsedLibrariesMap());
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
-
+			
+			System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
+			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
+						
+			System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
+			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
+			
+			System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
+			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
+			
+			System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
+			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
 		}
 	}
 

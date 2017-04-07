@@ -24,7 +24,6 @@ import mat.server.simplexml.HeaderHumanReadableGenerator;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.XmlProcessor;
-import mat.shared.CQLExpressionObject;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -154,7 +153,7 @@ public class CQLHumanReadableHTMLCreator {
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 		
-		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForHumanReadable(cqlModel, cqlLibraryDAO, cqlObjects);
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
 		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 		
 		String humanReadableHTML = "";
@@ -726,7 +725,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		populateCQLObjectsList(cqlModel);
 		
-		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForHumanReadable(cqlModel, cqlLibraryDAO, cqlObjects);
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
 		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 
 		Node cqlNode = populationNode.getFirstChild();
@@ -994,7 +993,7 @@ public class CQLHumanReadableHTMLCreator {
 		}			
 		subDivElement.appendElement("br");
 				
-		List<String> referredToDefinitions = getReferredToDefinitions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		List<String> referredToDefinitions = getReferredToDefinitions(expressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
 		System.out.println("Referred to definitions for "+ expressionName + " are:"+referredToDefinitions);
 		for(String defName:referredToDefinitions){
 			
@@ -1008,7 +1007,7 @@ public class CQLHumanReadableHTMLCreator {
 			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLDEFINITION, defName, subDivElement, false,"");
 		}
 		
-		List<String> referredToFunctions = getReferredToFunctions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		List<String> referredToFunctions = getReferredToFunctions(expressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
 		System.out.println("Referred to functions for "+ expressionName + " are:"+referredToFunctions);
 		for(String funcName:referredToFunctions){
 			
@@ -1030,15 +1029,13 @@ public class CQLHumanReadableHTMLCreator {
 		List<String> usedFuncs = new ArrayList<String>();
 		
 		if(cqlNodeType.equals(CQLDEFINITION)){
-			CQLExpressionObject defObject = findCQLDefinitionObject(cqlResult, expressionName);
-			if(defObject != null){
-				usedFuncs = defObject.getUsedFunctions();
-			}
+			usedFuncs = cqlResult.getUsedCQLArtifacts().getDefinitionToFunctionMap().get(expressionName);
 		}else if(cqlNodeType.equals(CQLFUNCTION)){
-			CQLExpressionObject defObject = findCQLFunctionObject(cqlResult, expressionName);
-			if(defObject != null){
-				usedFuncs = defObject.getUsedFunctions();
-			}
+			usedFuncs = cqlResult.getUsedCQLArtifacts().getFunctionToFunctionMap().get(expressionName);
+		}
+		
+		if(usedFuncs == null){
+			usedFuncs = new ArrayList<String>(); 
 		}
 		
 		return usedFuncs;
@@ -1051,51 +1048,16 @@ public class CQLHumanReadableHTMLCreator {
 		List<String> usedDefs = new ArrayList<String>();
 		
 		if(cqlNodeType.equals(CQLDEFINITION)){
-			CQLExpressionObject defObject = findCQLDefinitionObject(cqlResult, expressionName);
-			if(defObject != null){
-				usedDefs = defObject.getUsedExpressions();
-			}
+			usedDefs = cqlResult.getUsedCQLArtifacts().getDefinitionToDefinitionMap().get(expressionName);
 		}else if(cqlNodeType.equals(CQLFUNCTION)){
-			CQLExpressionObject defObject = findCQLFunctionObject(cqlResult, expressionName);
-			if(defObject != null){
-				usedDefs = defObject.getUsedExpressions();
-			}
+			usedDefs = cqlResult.getUsedCQLArtifacts().getFunctionToDefinitionMap().get(expressionName);
+		}
+		
+		if(usedDefs == null){
+			usedDefs = new ArrayList<String>();
 		}
 		
 		return usedDefs;
-	}
-
-	private static CQLExpressionObject findCQLFunctionObject(
-			SaveUpdateCQLResult cqlResult, String expressionName) {
-		
-		CQLExpressionObject returnObject = null;
-		List<CQLExpressionObject> functionsList = cqlResult.getCqlObject().getCqlFunctionObjectList();
-		
-		for(CQLExpressionObject defObject: functionsList){
-			if(defObject.getName().equals(expressionName)){
-				returnObject = defObject;
-				break;
-			}
-		}
-		
-		return returnObject;
-	}
-
-	private static CQLExpressionObject findCQLDefinitionObject(SaveUpdateCQLResult cqlResult,
-			String expressionName) {
-		
-		CQLExpressionObject returnObject = null;
-		List<CQLExpressionObject> definitionList = cqlResult.getCqlObject().getCqlDefinitionObjectList();
-		
-		for(CQLExpressionObject defObject: definitionList){
-			//System.out.println(defObject.getName() + " equals " + expressionName + "?");
-			if(defObject.getName().equals(expressionName)){
-				returnObject = defObject;
-				break;
-			}
-		}
-		
-		return returnObject;
 	}
 
 	private static String getCQLFunctionSignature(String expressionName,

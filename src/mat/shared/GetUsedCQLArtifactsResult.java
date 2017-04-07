@@ -1,6 +1,7 @@
 package mat.shared;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private List<String> usedCQLcodes = new ArrayList<String>();
 	
 	private List<String> usedCQLLibraries = new ArrayList<String>();
+	
+	private Map<String, List<String>> definitionToDefinitionMap = new HashMap<String, List<String>>();
+	
+	private Map<String, List<String>> definitionToFunctionMap = new HashMap<String, List<String>>();
+	
+	private Map<String, List<String>> functionToDefinitionMap = new HashMap<String, List<String>>();
+	
+	private Map<String, List<String>> functionToFunctionMap = new HashMap<String, List<String>>();
 	
 	private Map<String, List<String>> valueSetDataTypeMap;
 	
@@ -112,6 +121,42 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setIncludeLibMap(Map<String, CQLIncludeLibrary> includeLibMap) {
 		this.includeLibMap = includeLibMap;
+	}
+	
+	public Map<String, List<String>> getDefinitionToDefinitionMap() {
+		return definitionToDefinitionMap;
+	}
+
+	public void setDefinitionToDefinitionMap(
+			Map<String, List<String>> definitionToDefinitionMap) {
+		this.definitionToDefinitionMap = definitionToDefinitionMap;
+	}
+
+	public Map<String, List<String>> getDefinitionToFunctionMap() {
+		return definitionToFunctionMap;
+	}
+
+	public void setDefinitionToFunctionMap(
+			Map<String, List<String>> definitionToFunctionMap) {
+		this.definitionToFunctionMap = definitionToFunctionMap;
+	}
+
+	public Map<String, List<String>> getFunctionToDefinitionMap() {
+		return functionToDefinitionMap;
+	}
+
+	public void setFunctionToDefinitionMap(
+			Map<String, List<String>> functionToDefinitionMap) {
+		this.functionToDefinitionMap = functionToDefinitionMap;
+	}
+
+	public Map<String, List<String>> getFunctionToFunctionMap() {
+		return functionToFunctionMap;
+	}
+
+	public void setFunctionToFunctionMap(
+			Map<String, List<String>> functionToFunctionMap) {
+		this.functionToFunctionMap = functionToFunctionMap;
 	}
 
 }

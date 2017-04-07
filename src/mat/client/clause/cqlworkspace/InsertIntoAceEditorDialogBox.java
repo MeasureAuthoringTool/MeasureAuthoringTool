@@ -155,6 +155,12 @@ public class InsertIntoAceEditorDialogBox {
 	
     final static CustomQuantityTextBox QuantityTextBox = new CustomQuantityTextBox(30);
 	final static ListBoxMVP UnitslistBox = new ListBoxMVP();
+	
+	private static final String BIRTH_DATE = "Birthdate";
+	private static final String DEAD = "Dead";
+	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Chatacteristic Birthdate";
+	private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
+
 	/**
 	 * Public static method to build Pop up for Insert into Ace Editor.
 	 * @param searchDisplay - ViewDisplay.
@@ -329,8 +335,8 @@ public class InsertIntoAceEditorDialogBox {
 										}
 										String name = itemNameToBeInserted;
 										if(dataType != null){
-											if(name.equalsIgnoreCase("Dead")){
-												if(dataType.equalsIgnoreCase("Patient Characteristic Expired")){
+											if(name.equalsIgnoreCase(DEAD)){
+												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
 													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
 													sb = sb.append(": \"").append(name + "\"]");
@@ -343,8 +349,8 @@ public class InsertIntoAceEditorDialogBox {
 													itemNameToBeInserted = "";
 												}
 												
-											} else if(name.equalsIgnoreCase("Birthdate")){
-												if(dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
+											} else if(name.equalsIgnoreCase(BIRTH_DATE)){
+												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
 													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
 													sb = sb.append(": \"").append(name + "\"]");
@@ -356,8 +362,8 @@ public class InsertIntoAceEditorDialogBox {
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
-											} else if(dataType.equalsIgnoreCase("Patient Characteristic Birthdate")){
-												if(name.equalsIgnoreCase("Birthdate")){
+											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
+												if(name.equalsIgnoreCase(BIRTH_DATE)){
 													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
 													sb = sb.append(": \"").append(name + "\"]");
@@ -369,8 +375,8 @@ public class InsertIntoAceEditorDialogBox {
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
-											} else if(dataType.equalsIgnoreCase("Patient Characteristic Expired")){
-												if(name.equalsIgnoreCase("Dead")){
+											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
+												if(name.equalsIgnoreCase(DEAD)){
 													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
 													sb = sb.append(": \"").append(name + "\"]");

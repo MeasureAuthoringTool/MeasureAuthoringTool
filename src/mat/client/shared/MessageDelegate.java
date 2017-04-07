@@ -760,6 +760,27 @@ public class MessageDelegate {
 	
 	private final String ERROR_LIBRARY_DRAFT = "Please select a Library Version to create a draft.";
 	
+	private final String ERROR_SELECT_ATTRIBUTE_NAME = "Please select Attribute Name.";
+	
+	private final String ERROR_SELECT_ITEM_NAME = "Please select Item Name.";
+	
+	private final String ERROR_SELECT_ITEM_TYPE = "Please select Item Type.";
+	
+	private final String ERROR_SELECT_ITEM_NAME_OR_DATA_TYPE = "Please select Item Name or Datatype.";
+	
+	private final String ERROR_INVALID_CODE_DATA_TYPE = "Invalid code/datatype combination.";
+	
+	private final String ERROR_INVALID_QUANTITY = "Please Enter valid Quantity.";
+	
+	private final String ERROR_INVALID_DATE_TIME_QUANTITY = "You can not enter both DateTime and Quantity.";
+	
+	private final String ERROR_INVALID_MODE_DETAILS = "Please Select valid Mode Details.";
+	
+	private final String ERROR_SELECT_ATTRIBUTE_TO_INSERT = "Please Select Attribute to insert into Editor";
+	
+	private final String ERROR_ENTER_DATE_TIME_AND_QUANTITY = "Please enter DateTime or Quantity/units.";
+	
+	private final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
 	
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
@@ -2763,6 +2784,50 @@ public class MessageDelegate {
 
 	public String getVIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE() {
 		return VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE;
+	}
+
+	public String getERROR_SELECT_ATTRIBUTE_NAME() {
+		return ERROR_SELECT_ATTRIBUTE_NAME;
+	}
+
+	public String getERROR_SELECT_ITEM_NAME() {
+		return ERROR_SELECT_ITEM_NAME;
+	}
+
+	public String getERROR_SELECT_ITEM_TYPE() {
+		return ERROR_SELECT_ITEM_TYPE;
+	}
+
+	public String getERROR_SELECT_ITEM_NAME_OR_DATA_TYPE() {
+		return ERROR_SELECT_ITEM_NAME_OR_DATA_TYPE;
+	}
+
+	public String getERROR_INVALID_CODE_DATA_TYPE() {
+		return ERROR_INVALID_CODE_DATA_TYPE;
+	}
+
+	public String getERROR_INVALID_QUANTITY() {
+		return ERROR_INVALID_QUANTITY;
+	}
+
+	public String getERROR_INVALID_DATE_TIME_QUANTITY() {
+		return ERROR_INVALID_DATE_TIME_QUANTITY;
+	}
+
+	public String getERROR_INVALID_MODE_DETAILS() {
+		return ERROR_INVALID_MODE_DETAILS;
+	}
+
+	public String getERROR_SELECT_ATTRIBUTE_TO_INSERT() {
+		return ERROR_SELECT_ATTRIBUTE_TO_INSERT;
+	}
+
+	public String getERROR_ENTER_DATE_TIME_AND_QUANTITY() {
+		return ERROR_ENTER_DATE_TIME_AND_QUANTITY;
+	}
+
+	public String getERROR_INVALID_DATE_TIME() {
+		return ERROR_INVALID_DATE_TIME;
 	}
 	
 }

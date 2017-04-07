@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -295,7 +296,7 @@ public class InsertIntoAceEditorDialogBox {
 								
 								if (attributeNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please select Attribute Name.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ATTRIBUTE_NAME());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								} else {
 									int columnIndex = editor.getCursorPosition().getColumn();
@@ -309,7 +310,7 @@ public class InsertIntoAceEditorDialogBox {
 								
 							} else {
 								helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-								helpBlock.setText("Please select Attribute Name.");
+								helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ATTRIBUTE_NAME());
 								messageFormgroup.setValidationState(ValidationState.ERROR);
 							}
 						} else {
@@ -319,7 +320,7 @@ public class InsertIntoAceEditorDialogBox {
 								if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please select Item Name.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_NAME());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								} else {
 									int columnIndex = editor.getCursorPosition().getColumn();
@@ -344,7 +345,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Invalid code/datatype combination.");
+													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -358,7 +359,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Invalid code/datatype combination.");
+													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -371,7 +372,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Invalid code/datatype combination.");
+													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -384,7 +385,7 @@ public class InsertIntoAceEditorDialogBox {
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText("Invalid code/datatype combination.");
+													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
 													messageFormgroup.setValidationState(ValidationState.ERROR);
 													itemNameToBeInserted = "";
 												}
@@ -442,13 +443,13 @@ public class InsertIntoAceEditorDialogBox {
 										selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 										dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 										helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-										helpBlock.setText("Please select Item Name or Datatype.");
+										helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_NAME_OR_DATA_TYPE());
 										messageFormgroup.setValidationState(ValidationState.ERROR);
 									}
 								} else{
 									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please select Item Name.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_NAME());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								}
 							}
@@ -456,13 +457,13 @@ public class InsertIntoAceEditorDialogBox {
 					} else {
 						availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
 						helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-						helpBlock.setText("Please select Item Type.");
+						helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_TYPE());
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}
 				} else {
 					availableItemTypeFormGroup.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please select Item Type.");
+					helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_TYPE());
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 			}
@@ -698,7 +699,7 @@ public class InsertIntoAceEditorDialogBox {
 								if (!validateQuantity(QuantityTextBox.getText())) {
 									quantityFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please Enter valid Quantity.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_QUANTITY());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								} else {
 									curEditor.insertAtCursor(attributeStringBuilder());
@@ -721,7 +722,7 @@ public class InsertIntoAceEditorDialogBox {
 												&& msTxtBox.getText().isEmpty())) {
 
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("Please enter DateTime or Quantity/units.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_ENTER_DATE_TIME_AND_QUANTITY());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 
 								} else if ((!QuantityTextBox.getText().isEmpty()
@@ -734,7 +735,7 @@ public class InsertIntoAceEditorDialogBox {
 									if (!validateQuantity(QuantityTextBox.getText())) {
 										quantityFormGroup.setValidationState(ValidationState.ERROR);
 										helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-										helpBlock.setText("Please Enter valid Quantity.");
+										helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_QUANTITY());
 										messageFormgroup.setValidationState(ValidationState.ERROR);
 									} else {
 										curEditor.insertAtCursor(attributeStringBuilder());
@@ -752,7 +753,7 @@ public class InsertIntoAceEditorDialogBox {
 								} else {
 
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-									helpBlock.setText("You can not enter both DateTime and Quantity.");
+									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME_QUANTITY());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								}
 
@@ -765,7 +766,7 @@ public class InsertIntoAceEditorDialogBox {
 						} else {
 							modeDetailsFormGroup.setValidationState(ValidationState.ERROR);
 							helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-							helpBlock.setText("Please Select valid Mode Details.");
+							helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_MODE_DETAILS());
 							messageFormgroup.setValidationState(ValidationState.ERROR);
 						}
 
@@ -777,7 +778,7 @@ public class InsertIntoAceEditorDialogBox {
 
 				} else {
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Select Attribute to insert into Editor");
+					helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ATTRIBUTE_TO_INSERT());
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					attrFormGroup.setValidationState(ValidationState.ERROR);
 				}
@@ -1768,7 +1769,7 @@ private static void defaultFrmGrpValidations(){
 				&& hhTextBox.getText().isEmpty() && minTxtBox.getText().isEmpty() && ssTxtBox.getText().isEmpty()
 				&& msTxtBox.getText().isEmpty()) {
 			helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-			helpBlock.setText("Please Enter a valid Date/Time.");
+			helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME());
 			messageFormgroup.setValidationState(ValidationState.ERROR);
 
 			// check if either date and time fields are not null
@@ -1795,7 +1796,7 @@ private static void defaultFrmGrpValidations(){
 					secondsFormGroup.setValidationState(ValidationState.ERROR);
 					millisecFormGroup.setValidationState(ValidationState.ERROR);
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-					helpBlock.setText("Please Enter a valid Date/Time.");
+					helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME());
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 
@@ -1804,7 +1805,7 @@ private static void defaultFrmGrpValidations(){
 				mmFormGroup.setValidationState(ValidationState.ERROR);
 				ddFormGroup.setValidationState(ValidationState.ERROR);
 				helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-				helpBlock.setText("Please Enter a valid Date/Time.");
+				helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME());
 				messageFormgroup.setValidationState(ValidationState.ERROR);
 			}
 
@@ -1823,7 +1824,7 @@ private static void defaultFrmGrpValidations(){
 				mmFormGroup.setValidationState(ValidationState.ERROR);
 				ddFormGroup.setValidationState(ValidationState.ERROR);
 				helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-				helpBlock.setText("Please Enter a valid Date/Time.");
+				helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME());
 				messageFormgroup.setValidationState(ValidationState.ERROR);
 			}
 		} else if ((yyyyTxtBox.getText().isEmpty() && mmTxtBox.getText().isEmpty() && ddTxtBox.getText().isEmpty())
@@ -1841,7 +1842,7 @@ private static void defaultFrmGrpValidations(){
 				secondsFormGroup.setValidationState(ValidationState.ERROR);
 				millisecFormGroup.setValidationState(ValidationState.ERROR);
 				helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-				helpBlock.setText("Please Enter a valid Date/Time.");
+				helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_DATE_TIME());
 				messageFormgroup.setValidationState(ValidationState.ERROR);
 			}
 		}

@@ -355,7 +355,7 @@ public class MATCssCQLUtil {
 			".cql-definition-body {\r\n" + 
 			"	width:800px;\r\n" + 
 			"	display: block;\r\n" + 
-			"	text-indent: 20px;\r\n" + 
+			//"	text-indent: 20px;\r\n" + 
 			"}" + 
 			"li {"
 			+ "  padding-left: 15px;"

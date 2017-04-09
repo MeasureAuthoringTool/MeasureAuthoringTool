@@ -1074,6 +1074,10 @@ public class CQLHumanReadableHTMLCreator {
 					Node child = children.item(i);
 					if(child.getNodeName().equals("argument")){
 						String type = child.getAttributes().getNamedItem("type").getNodeValue();
+						if("QDM Datatype".equals(type)){
+							type = child.getAttributes().getNamedItem("qdmDataType").getNodeValue();
+							type = "\"" + type + "\"";
+						}
 						String argName = child.getAttributes().getNamedItem("argumentName").getNodeValue();
 						signature += argName + " " + type + ", ";
 					}

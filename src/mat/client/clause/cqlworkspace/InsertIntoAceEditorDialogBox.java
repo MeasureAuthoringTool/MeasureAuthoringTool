@@ -159,7 +159,7 @@ public class InsertIntoAceEditorDialogBox {
 	
 	private static final String BIRTH_DATE = "Birthdate";
 	private static final String DEAD = "Dead";
-	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Chatacteristic Birthdate";
+	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
 	private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
 
 	/**

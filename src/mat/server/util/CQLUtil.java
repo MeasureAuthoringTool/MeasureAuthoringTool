@@ -845,10 +845,81 @@ public class CQLUtil {
 			libNode.setAttribute("alias", cqlLibrary.getAliasName());
 			libNode.setAttribute("name", cqlLibrary.getCqlLibraryName());
 			libNode.setAttribute("version", cqlLibrary.getVersion());
+			libNode.setAttribute("isUnUsedGrandChild", "false");
 
 			allUsedLibsNode.appendChild(libNode);
 		}
 
 	}
+	
+	public static void addUnUsedGrandChildrentoSimpleXML(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
 
+		String allUsedCQLLibsXPath = "//allUsedCQLLibs";
+		
+		XmlProcessor xmlProcessor = new XmlProcessor("<test></test>");
+		xmlProcessor.setOriginalDoc(originalDoc);
+		
+		Node allUsedLibsNode = xmlProcessor.findNode(originalDoc, allUsedCQLLibsXPath);
+		
+		if(allUsedLibsNode != null){
+			
+			List<CQLIncludeLibrary> cqlChildLibs = cqlModel.getCqlIncludeLibrarys();
+			
+			for(CQLIncludeLibrary library:cqlChildLibs){
+				String libId = library.getCqlLibraryId();
+				String libAlias = library.getAliasName();
+				String libName = library.getCqlLibraryName();
+				String libVersion = library.getVersion();				
+				
+				Collection<CQLIncludeLibrary> childs = result.getUsedCQLArtifacts().getIncludeLibMap().values();
+				boolean found = childs.contains(library);
+				
+				if(found){
+					LibHolderObject libHolderObject = cqlModel.getIncludedCQLLibXMLMap().
+							get(libName + "-" + libVersion + "|" + libAlias);
+					
+					if(libHolderObject != null){
+						String xml = libHolderObject.getMeasureXML();
+						CQLModel childCQLModel = CQLUtilityClass.getCQLStringFromXML(xml);
+						List<CQLIncludeLibrary> cqlGrandChildLibs = childCQLModel.getCqlIncludeLibrarys();
+						
+						for(CQLIncludeLibrary grandChildLib : cqlGrandChildLibs){
+							
+							boolean gcFound = childs.contains(grandChildLib);// foundCQLLib(childs, grandChildLib);
+							
+							if(!gcFound){
+								Element libNode = originalDoc.createElement("lib");
+								libNode.setAttribute("id", grandChildLib.getCqlLibraryId());
+								libNode.setAttribute("alias", grandChildLib.getAliasName());
+								libNode.setAttribute("name", grandChildLib.getCqlLibraryName());
+								libNode.setAttribute("version", grandChildLib.getVersion());
+								libNode.setAttribute("isUnUsedGrandChild", "true");
+								allUsedLibsNode.appendChild(libNode);
+							}
+							
+						}
+					}
+					
+				}
+			}
+		}
+	}
+	
+//	private static boolean foundCQLLib(Collection<CQLIncludeLibrary> libs, CQLIncludeLibrary library){
+//		boolean returnVal = false;
+//		
+//		String libString = library.getCqlLibraryName() + "-" + library.getVersion() + "|" + library.getAliasName();
+//		System.out.println(libString);
+//		
+//		for(CQLIncludeLibrary lib : libs){
+//			
+//			if(lib.equals(library)){
+//				returnVal = true;
+//				break;
+//			}
+//			
+//		}
+//		
+//		return returnVal;
+//	}
 }

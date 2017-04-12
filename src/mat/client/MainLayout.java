@@ -199,7 +199,7 @@ public abstract class MainLayout {
 		progress.add(bar);
 		progress.setId("LoadingPanel");
 		getLoadingPanel().add(progress);
-		int delay = 1500;
+		int delay = 100;
 		
 		if(delay > 0){
 			

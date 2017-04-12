@@ -353,7 +353,7 @@ public class CQLUtilityClass {
 						argumentType = argumentType.append(argument
 								.getArgumentType());
 					}
-					cqlStr = cqlStr.append("\""+ argument.getArgumentName() + "\" "
+					cqlStr = cqlStr.append( argument.getArgumentName()+ " "
 							+ argumentType + ", ");
 				}
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
@@ -375,7 +375,7 @@ public class CQLUtilityClass {
 
 
 	public static CQLModel getCQLStringFromXML(String xmlString) {
-		long currentTime = System.currentTimeMillis();
+		//long currentTime = System.currentTimeMillis();
 		//System.out.println("Start time getCQLStringFromXML " + currentTime);
 		CQLModel cqlModel = new CQLModel();
 		// System.out.println("XML:"+xmlString);

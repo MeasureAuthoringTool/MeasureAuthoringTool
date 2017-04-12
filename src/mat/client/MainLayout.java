@@ -1,6 +1,12 @@
 package mat.client;
 
 import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Progress;
+import org.gwtbootstrap3.client.ui.ProgressBar;
+import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
+import org.gwtbootstrap3.client.ui.constants.ProgressType;
+
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
@@ -68,6 +74,9 @@ public abstract class MainLayout {
 	/** The version label. */
 	static HTML versionLabel;
 	
+	static Progress progress = new Progress();
+	static ProgressBar bar = new ProgressBar();
+	
 	/**
 	 * clear the loading panel
 	 * remove css style
@@ -77,9 +86,9 @@ public abstract class MainLayout {
 		MatContext.get().getLoadingQueue().poll();
 		if(MatContext.get().getLoadingQueue().size() == 0){
 			getLoadingPanel().clear();
-			getLoadingPanel().remove(alertImage);
+			/*getLoadingPanel().remove(alertImage);
 			getLoadingPanel().remove(loadingWidget);
-			getLoadingPanel().removeStyleName("msg-alert");
+			getLoadingPanel().removeStyleName("msg-alert");*/
 			getLoadingPanel().getElement().removeAttribute("role");
 		}
 	}
@@ -115,6 +124,8 @@ public abstract class MainLayout {
 	 * no arg method adds default delay to loading message hide op.
 	 */
 	public static void hideLoadingMessage(){
+		bar.setPercent(100.00);
+		bar.setText("Loaded 100 % ");
 		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
 	}
 	
@@ -161,11 +172,53 @@ public abstract class MainLayout {
 	 */
 	public static void showLoadingMessage(){
 		getLoadingPanel().clear();
-		alertImage.getElement().setId("LoadingImage");
+		/*alertImage.getElement().setId("LoadingImage");
 		getLoadingPanel().add(alertImage);
 		loadingWidget.getElement().setAttribute("id", "LoadingPanel");
 		getLoadingPanel().add(loadingWidget);
 		getLoadingPanel().setStyleName("msg-alert");
+		getLoadingPanel().getElement().setAttribute("role", "alert");*/
+		
+		progress.setActive(true);
+		progress.setType(ProgressType.STRIPED);
+		
+	//	bar.setText("Loading Please Wait...");
+		bar.setType(ProgressBarType.INFO);
+		bar.setWidth("100%");
+		bar.setPercent(50.00);
+		bar.setText("Please wait.Loaded " +50+"% ");
+		
+		
+		
+		
+		/*bar.getElement().setAttribute("role", "progressbar");
+		bar.getElement().setAttribute("aria-valuenow", "90");
+		bar.getElement().setAttribute("aria-valuemin", "0");
+		bar.getElement().setAttribute("aria-valuemax", "100");
+		bar.getElement().setAttribute("aria-valuetext", "Loading Please wait");*/
+		progress.add(bar);
+		progress.setId("LoadingPanel");
+		getLoadingPanel().add(progress);
+		int delay = 1500;
+		
+		if(delay > 0){
+			
+			final Timer timer = new Timer() {
+				@Override
+				public void run() {
+					 double percentage = bar.getPercent();
+					 percentage+= 10.00;
+					 bar.setPercent(percentage);
+					 bar.setText("Please wait.Loaded " +(int)percentage+"%.");
+					 if(percentage == 100) {
+						 percentage =50.00;
+					 }
+				}
+			};
+			timer.schedule(delay);
+		}
+		//getLoadingPanel().setStyleName("msg-alert");
+		getLoadingPanel().setWidth("99%");
 		getLoadingPanel().getElement().setAttribute("role", "alert");
 		MatContext.get().getLoadingQueue().add("node");
 	}

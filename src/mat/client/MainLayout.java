@@ -199,7 +199,7 @@ public abstract class MainLayout {
 		progress.add(bar);
 		progress.setId("LoadingPanel");
 		getLoadingPanel().add(progress);
-		int delay = 50;
+		/*int delay = 50;
 		
 		if(delay > 0){
 			
@@ -216,7 +216,7 @@ public abstract class MainLayout {
 				}
 			};
 			timer.schedule(delay);
-		}
+		}*/
 		//getLoadingPanel().setStyleName("msg-alert");
 		getLoadingPanel().setWidth("99%");
 		getLoadingPanel().getElement().setAttribute("role", "alert");

@@ -993,7 +993,7 @@ public class CQLHumanReadableHTMLCreator {
 		}			
 		subDivElement.appendElement("br");
 				
-		List<String> referredToDefinitions = getReferredToDefinitions(expressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		List<String> referredToDefinitions = getReferredToDefinitions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
 		System.out.println("Referred to definitions for "+ expressionName + " are:"+referredToDefinitions);
 		for(String defName:referredToDefinitions){
 			
@@ -1007,7 +1007,7 @@ public class CQLHumanReadableHTMLCreator {
 			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLDEFINITION, defName, subDivElement, false,"");
 		}
 		
-		List<String> referredToFunctions = getReferredToFunctions(expressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
+		List<String> referredToFunctions = getReferredToFunctions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
 		System.out.println("Referred to functions for "+ expressionName + " are:"+referredToFunctions);
 		for(String funcName:referredToFunctions){
 			

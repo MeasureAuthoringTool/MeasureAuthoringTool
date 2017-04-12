@@ -241,16 +241,21 @@ public class CQLFilter {
             return;
         }
         
+        String expressionNameWithLib = expressionName;
+        if(this.currentLibraryHolder != null && this.currentLibraryHolder.getLibraryAlias().length() > 0){
+        	expressionNameWithLib = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + expressionName;
+        }
+        
         if(expression.getClass().equals(FunctionDef.class)) {
-        	this.currentFunctionName = expressionName;
+        	this.currentFunctionName = expressionNameWithLib;
         	this.currentDefinitionName = "";
         	this.currentParameterName = "";
         }else if(expression.getClass().equals(ParameterDef.class)){
-        	this.currentParameterName = expressionName;
+        	this.currentParameterName = expressionNameWithLib;
         	this.currentFunctionName = "";
         	this.currentDefinitionName = "";
         }else if(expression.getClass().equals(ExpressionDef.class)){
-        	this.currentDefinitionName = expressionName;
+        	this.currentDefinitionName = expressionNameWithLib;
         	this.currentParameterName = "";
         	this.currentFunctionName = "";
         }

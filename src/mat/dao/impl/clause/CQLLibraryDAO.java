@@ -154,10 +154,19 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 					orderedList.add(cqlLibrary);
 				}
 			}
+	      
 		return orderedList;
 		
 	}
 	
+	private void printAllID(List<CQLLibrary> orderedCQlLibList) {
+		StringBuilder idString = new StringBuilder();
+		for(CQLLibrary library : orderedCQlLibList){
+			idString.append("\n '").append(library.getId()).append("'");
+		}
+		System.out.println(idString);
+	}
+
 	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
 		for(CQLLibraryAssociation result : totalAssociations){
 			String associatedMeasureId = getAssociatedMeasureId(result.getCqlLibraryId());
@@ -659,5 +668,77 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 									false;
 		return matchesSearch;
 	}
+	
+	@Override
+	public List<CQLLibrary> getLibraryListForLibraryOwner(User user){
+		Criteria listCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(CQLLibrary.class);
+		listCriteria.add(Restrictions.eq("ownerId.id", user.getId()));
+		List<CQLLibrary> cList = listCriteria.list();
+		return sortLibraryListForLibraryOwner(cList);
+	}
+	
+	
+	/**
+	 * Group the CQL Libraries with library set id and find draft or highest version number which ever is available.
+	 * @param libraryResultList
+	 * @return
+	 */
+	private List<CQLLibrary> sortLibraryListForLibraryOwner(List<CQLLibrary> libraryResultList) {
+		// generate sortable lists
+		List<List<CQLLibrary>> librariesLists = new ArrayList<List<CQLLibrary>>();
+		for (CQLLibrary lib : libraryResultList) {
+			boolean hasList = false;
+			for (List<CQLLibrary> clist : librariesLists) {
+				String setId = clist.get(0).getSet_id();
+				if (lib.getSet_id().equalsIgnoreCase(setId)) {
+					clist.add(lib);
+					hasList = true;
+					break;
+				}
+			}
+			if (!hasList) {
+				List<CQLLibrary> clist = new ArrayList<CQLLibrary>();
+				clist.add(lib);
+				librariesLists.add(clist);
+			}
+		}
+		Collections.sort(librariesLists, new CQLLibraryListComparator());
+		// compile list
+		List<CQLLibrary> retList = new ArrayList<CQLLibrary>();
+		for (List<CQLLibrary> clist : librariesLists) {
+			boolean isDraftAvailable = false;
+			CQLLibrary cql = null;
+			for (CQLLibrary lib : clist) {
+				cql = lib;
+				if (lib.isDraft()) {
+					isDraftAvailable = true;
+					retList.add(lib);
+					break;
+				}
+			}
+			if (!isDraftAvailable && (cql != null)) {
+				Criteria mCriteria = getSessionFactory().getCurrentSession()
+						.createCriteria(CQLLibrary.class);
+				mCriteria.add(Restrictions.eq("set_id", cql.getSet_id()));
+				mCriteria.add(Restrictions.eq("ownerId", cql.getOwnerId().getId()));
+				// add check to filter Draft's version number when finding max version
+				// number.
+				mCriteria.add(Restrictions.ne("draft", true));
+				mCriteria.setProjection(Projections.max("version"));
+				String maxVersion = (String) mCriteria.list().get(0);
+				for (CQLLibrary lib : clist) {
+					cql = lib;
+					if (!lib.isDraft()
+							&& lib.getVersion().equalsIgnoreCase(maxVersion)) {
+						retList.add(lib);
+						break;
+					}
+				}
+			}
+		}
+		return retList;
+	}
+	
 	
 }

@@ -30,4 +30,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 		String getAssociatedMeasureId(String measureId);
 		String getSetIdForCQLLibrary(String cqlLibraryId);
+
+		List<CQLLibrary> getLibraryListForLibraryOwner(User user);
 }

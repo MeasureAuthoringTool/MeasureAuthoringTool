@@ -479,7 +479,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		qdmElementsHeader.setStyleName("measureGroupingTableHeader");
 		qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
 		
-		HTML searchHeaderText = new HTML("<strong>Applied Value Sets/Codes</strong>");
+		HTML searchHeaderText = new HTML("<strong>Applied Value Sets</strong>");
 		qdmElementsHeader.add(searchHeaderText);
 		cellTablePanel.add(qdmElementsHeader);
 		if ((appliedValueSetList != null)
@@ -509,19 +509,19 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
-								"In the Following Applied Value Sets/Codes table Name in First Column"
+								"In the Following Applied Value Sets table Name in First Column"
 										+ "OID in Second Column, TableCaptionElement in Third Column, Version in Fourth Column,"
 										+ "And Modify in Fifth Column where the user can Edit and Delete "
-										+ "the existing Value set. The Applied Value Sets/Codes are listed alphabetically in a table.");
+										+ "the existing Value set. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
-								"In the Following Applied Value Sets/Codes table Name in First Column"
+								"In the Following Applied Value Sets table Name in First Column"
 										+ "OID in Second Column, Expansion Profile in Third Column, Version in Fourth Column,"
-										+ "and Select in Fifth Column. The Applied Value Sets/Codes are listed alphabetically in a table.");
+										+ "and Select in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -533,7 +533,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			cellTablePanel.add(cellTablePanelBody);
 			
 		} else {
-			HTML desc = new HTML("<p> No Value Sets/Codes.</p>");
+			HTML desc = new HTML("<p> No value sets.</p>");
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(desc);
 		}
@@ -551,7 +551,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			final CellTable<CQLQualityDataSetDTO> table,
 			ListHandler<CQLQualityDataSetDTO> sortHandler, boolean isEditable) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
-			Label searchHeader = new Label("Value Sets/Codes");
+			Label searchHeader = new Label("Value Sets");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
@@ -1120,8 +1120,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			StringBuilder title, boolean hasImage, boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
 			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\""
-					+ "title = \"QDM Updated From VSAC.\"/>"
+					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
+					+ "title = \"Value set is updated from VSAC.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText + "</span></body>" + "</html>";
 			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
@@ -1129,8 +1129,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		} else if (hasImage && isUserDefined) {
 			String htmlConstant = "<html>"
 					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
-					+ "alt=\"Warning : QDM not available in VSAC.\""
-					+ " title=\"QDM not available in VSAC.\"/>"
+					+ "alt=\"Warning : Value set is not available in VSAC.\""
+					+ " title=\"Value set is not available in VSAC.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText + "</span></body>" + "</html>";
 			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)

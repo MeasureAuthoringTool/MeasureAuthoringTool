@@ -2832,7 +2832,7 @@ public class MessageDelegate {
 		return ERROR_INVALID_DATE_TIME;
 	}
 
-	public static String getCqlFunctionArgumentNameError() {
+	public String getCqlFunctionArgumentNameError() {
 		return CQL_FUNCTION_ARGUMENT_NAME_ERROR;
 	}
 	

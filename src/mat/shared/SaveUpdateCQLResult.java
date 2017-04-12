@@ -68,6 +68,9 @@ public class SaveUpdateCQLResult extends GenericResult{
 	/** The Constant ALREADY_EXISTS. */
 	public static final int ALREADY_EXISTS = 5;
 	
+	/** The Constant SERVER_SIDE_VALIDATION. */
+	public static final int FUNCTION_ARGUMENT_INVALID = 6;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	

@@ -1935,6 +1935,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(
 														result.getFunction().getArgumentList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 											}
+										} else if (result.getFailureReason() == 6) {
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
+													.getMessageDelegate().getCqlFunctionArgumentNameError());
 										}
 
 									}

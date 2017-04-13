@@ -580,12 +580,15 @@ public class CQLUtil {
 		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
 
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		
+		setIncludedCQLExpressions(cqlModel);
 
 		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM);
 
 		return parsedCQL;
 	}
 
+	
 	private static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
 			CQLLibraryDAO cqlLibraryDAO) {
 
@@ -735,6 +738,69 @@ public class CQLUtil {
 		fw.close();
 		return cqlFile;
 	}
+	
+	/**
+	 * This method will extract all the CQL expressions (Definitions, Functions, ValueSets, Parameters) from included 
+	 * child (only child, not grand child) CQL Libs and set them inside CQLModel object.
+	 * 
+	 * This extracted list will then be used by UI CQL Workspace.
+	 * @param cqlModel
+	 */
+	private static void setIncludedCQLExpressions(CQLModel cqlModel) {
+		
+		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
+		if (cqlIncludeLibraries == null) {
+			return;
+		}
+		
+		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
+			
+			LibHolderObject libHolderObject = cqlModel.getIncludedCQLLibXMLMap().get(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName());
+			String alias = cqlIncludeLibrary.getAliasName();
+			
+			String xml = libHolderObject.getMeasureXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/definitions/definition/@name", cqlModel.getIncludedDefNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFuncNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset/@name", cqlModel.getIncludedValueSetNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter/@name", cqlModel.getIncludedParamNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@codeSystemName", cqlModel.getIncludedCodeNames());
+			
+		}
+		System.out.println("Included Definition names:" + cqlModel.getIncludedDefNames());
+		System.out.println("Included Function names:" + cqlModel.getIncludedFuncNames());
+		System.out.println("Included Value-Set names:" + cqlModel.getIncludedValueSetNames());
+		System.out.println("Included Parameter names:" + cqlModel.getIncludedParamNames());
+		System.out.println("Included Code names:" + cqlModel.getIncludedCodeNames());
+	}
+	
+	/**
+	 * @param cqlModel
+	 * @param alias
+	 * @param xmlProcessor
+	 */
+	private static void addNamesToList(String alias,
+			XmlProcessor xmlProcessor, String xPathForFetch, List<String> listToAddTo) {
+		try {
+			
+			NodeList exprList = (NodeList) xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForFetch);
+			
+			if(exprList != null){
+				
+				List<String> exprNameList = new ArrayList<String>();
+				for(int i=0; i < exprList.getLength(); i++){
+					exprNameList.add(alias + "." + exprList.item(i).getNodeValue());
+				}
+				listToAddTo.addAll(exprNameList);
+			}			
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 
 	public class CQLArtifactHolder {
 

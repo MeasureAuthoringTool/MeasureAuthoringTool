@@ -28,6 +28,15 @@ public class CQLModel implements IsSerializable{
 	private List<CQLIncludeLibrary> cqlIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
 	
 	/**
+	 * The following 5 may not be populated all the times.	 * 
+	 */
+	private List<String> includedDefNames = new ArrayList<String>();
+	private List<String> includedFuncNames = new ArrayList<String>();
+	private List<String> includedValueSetNames = new ArrayList<String>();
+	private List<String> includedParamNames = new ArrayList<String>();
+	private List<String> includedCodeNames = new ArrayList<String>();
+	
+	/**
 	 * This member is set programatically from some class and isnt populated by Hibernate.
 	 * So it is possible it is null/empty.
 	 */
@@ -144,6 +153,36 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setIncludedCQLLibXMLMap(Map<String, mat.shared.LibHolderObject> includedCQLLibXMLMap) {
 		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
+	}
+	public List<String> getIncludedDefNames() {
+		return includedDefNames;
+	}
+	public void setIncludedDefNames(List<String> includedDefNames) {
+		this.includedDefNames = includedDefNames;
+	}
+	public List<String> getIncludedFuncNames() {
+		return includedFuncNames;
+	}
+	public void setIncludedFuncNames(List<String> includedFuncNames) {
+		this.includedFuncNames = includedFuncNames;
+	}
+	public List<String> getIncludedValueSetNames() {
+		return includedValueSetNames;
+	}
+	public void setIncludedValueSetNames(List<String> includedValueSetNames) {
+		this.includedValueSetNames = includedValueSetNames;
+	}
+	public List<String> getIncludedParamNames() {
+		return includedParamNames;
+	}
+	public void setIncludedParamNames(List<String> includedParamNames) {
+		this.includedParamNames = includedParamNames;
+	}
+	public List<String> getIncludedCodeNames() {
+		return includedCodeNames;
+	}
+	public void setIncludedCodeNames(List<String> includedCodeNames) {
+		this.includedCodeNames = includedCodeNames;
 	}
 	
 }

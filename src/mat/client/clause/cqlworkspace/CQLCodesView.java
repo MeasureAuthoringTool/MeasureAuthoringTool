@@ -258,12 +258,14 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		FormLabel verLabel = new FormLabel();
 		verLabel.setText("Code System Version");
 		verLabel.setTitle("Code System Version");
+		codeSystemVersionInput.setTitle("Code System Version");
 		codeSystemVersionInput.setHeight("30px");
 
 		VerticalPanel codeSystemGroup = new VerticalPanel();
 		FormLabel codeSystemLabel = new FormLabel();
 		codeSystemLabel.setText("Code System");
 		codeSystemLabel.setTitle("Code System");
+		codeSystemInput.setTitle("Code System");
 		codeSystemInput.setWidth("200px");
 		codeSystemInput.setHeight("30px");
 
@@ -271,12 +273,14 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		FormLabel codeLabel = new FormLabel();
 		codeLabel.setText("Code");
 		codeLabel.setTitle("Code");
+		codeInput.setTitle("Code");
 		codeInput.setHeight("30px");
 
 		VerticalPanel codeDescriptorGroup = new VerticalPanel();
 		FormLabel codeDescriptorLabel = new FormLabel();
 		codeDescriptorLabel.setText("Code Descriptor");
 		codeDescriptorLabel.setTitle("Code Descriptor");
+		codeDescriptorInput.setTitle("Code Descriptor");
 		codeDescriptorInput.setWidth("200px");
 		codeDescriptorInput.setHeight("30px");
 
@@ -437,14 +441,49 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	/**
-	 * Gets the code input.
+	 * Gets the code search input.
 	 *
-	 * @return the code input
+	 * @return the code search input
 	 */
-	public TextBox getCodeInput() {
+	public TextBox getCodeSearchInput() {
 		return sWidget.getSearchBox();
 	}
 	
+	/**
+	 * Gets the Code Descriptor Input.
+	 *
+	 * @return the codeDescriptorInput
+	 */
+	public TextBox getCodeDescriptorInput() {
+		return codeDescriptorInput;
+	}
+	
+	/**
+	 * Gets the Code Input.
+	 *
+	 * @return the codeInput
+	 */
+	public TextBox getCodeInput() {
+		return codeInput;
+	}
+	
+	/**
+	 * Gets the Code System Input.
+	 *
+	 * @return the codeSystemInput
+	 */
+	public TextBox getCodeSystemInput() {
+		return codeSystemInput;
+	}
+	
+	/**
+	 * Gets the user Code System Version Input.
+	 *
+	 * @return the user codeSystemVersionInput
+	 */
+	public TextBox getCodeSystemVersionInput() {
+		return codeSystemVersionInput;
+	}
 	/**
 	 * Checks if is editable.
 	 *
@@ -528,7 +567,11 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 */
 	public void setWidgetsReadOnly(boolean editable){
 		
+		getCodeSearchInput().setEnabled(editable);
+		getCodeDescriptorInput().setEnabled(editable);
 		getCodeInput().setEnabled(editable);
+		getCodeSystemInput().setEnabled(editable);
+		getCodeSystemVersionInput().setEnabled(editable);
 		
 		getCancelCodeButton().setEnabled(editable);
 		getRetrieveFromVSACButton().setEnabled(editable);
@@ -540,7 +583,11 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 * Sets the widget to default.
 	 */
 	public void setWidgetToDefault() {
+		getCodeSearchInput().setValue("");
+		getCodeDescriptorInput().setValue("");
 		getCodeInput().setValue("");
+		getCodeSystemInput().setValue("");
+		getCodeSystemVersionInput().setValue("");
 		getSaveButton().setEnabled(false);
 	}
 	
@@ -606,9 +653,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		getSearchHeader().clear();
 		getSearchHeader().add(searchHeaderText);
 		
-		getCodeInput().setEnabled(true);
-		getCodeInput().setValue("");
-		getCodeInput().setTitle("Enter OID");
+		getCodeSearchInput().setEnabled(true);
+		getCodeSearchInput().setValue("");
+		getCodeSearchInput().setTitle("Enter Code");
 		
 		getSaveButton().setEnabled(false);
 		

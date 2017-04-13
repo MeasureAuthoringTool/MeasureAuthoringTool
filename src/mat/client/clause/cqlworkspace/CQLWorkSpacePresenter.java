@@ -2628,10 +2628,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				codesEvent();
-				
+				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
+				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+				// searchDisplay.hideAceEditorAutoCompletePopUp();
+				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_CODES;
+					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					codesEvent();
+				}
 			}
-			
 		});
 
 	}

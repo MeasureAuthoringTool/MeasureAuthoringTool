@@ -305,8 +305,6 @@ public class CQLLeftNavBarPanelView {
 	 */
 	public VerticalPanel buildMeasureLibCQLView(){
 		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-		valueSetCollapse = createValuesetCollapsablePanel();
-		codesCollapse = createCodesCollapsablePanel();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
@@ -316,20 +314,6 @@ public class CQLLeftNavBarPanelView {
 	}
 	
 
-	/**
-	 * Builds the measure lib CQL view.
-	 *
-	 * @return the vertical panel
-	 *//*
-	public VerticalPanel buildCQLStandCQLView(){
-		includesCollapse = createIncludesCollapsablePanel();
-		paramCollapse = createParameterCollapsablePanel();
-		defineCollapse = createDefineCollapsablePanel();
-		functionCollapse = createFunctionCollapsablePanel();
-		buildLeftHandNavBar();
-		return rightHandNavPanel;
-	}*/
-	
 	/**
 	 * Builds the left hand nav nar.
 	 */
@@ -399,13 +383,9 @@ public class CQLLeftNavBarPanelView {
 		valueSetBadge.setId("valueSetBadge_Badge");
 		valueSetAnchor.add(valueSetBadge);
 		valueSetAnchor.setDataParent("#navGroup");
-		appliedQDM.setDataToggle(Toggle.COLLAPSE);
-		appliedQDM.setHref("#collapseValueSets");
-		appliedQDM.setId("valueSet_Anchor");
-		appliedQDM.add(valueSetCollapse);
 		
 		codesLibrary.setIcon(IconType.PENCIL);
-		codesLibrary.setTitle("ValueSets");
+		codesLibrary.setTitle("Codes");
 		codesBadge.setText("0" + codesList.size());
 		Anchor codesAnchor = (Anchor) (codesLibrary.getWidget(0));
 		// Double Click causing issues.So Event is not propogated
@@ -424,10 +404,6 @@ public class CQLLeftNavBarPanelView {
 		codesBadge.setId("codesBadge_Badge");
 		codesAnchor.add(codesBadge);
 		codesAnchor.setDataParent("#navGroup");
-		codesLibrary.setDataToggle(Toggle.COLLAPSE);
-		codesLibrary.setHref("#collapseCodes");
-		codesLibrary.setId("codes_Anchor");
-		codesLibrary.add(codesCollapse);
 
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
@@ -536,63 +512,6 @@ public class CQLLeftNavBarPanelView {
 		rightHandNavPanel.add(navPills);
 	}
 
-	/**
-	 * Creates the valueSet collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
-	private PanelCollapse createValuesetCollapsablePanel() {
-
-		includesCollapse.setId("collapseValueSets");
-
-		PanelBody valueSetCollapseBody = new PanelBody();
-
-		HorizontalPanel valueSetFP = new HorizontalPanel();
-
-		VerticalPanel rightVerticalPanel = new VerticalPanel();
-		rightVerticalPanel.setSpacing(10);
-
-		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelValueSet");
-		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		Label includesLibraryLabel = new Label("Value Sets");
-		rightVerticalPanel.setCellHorizontalAlignment(includesLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
-		valueSetFP.add(rightVerticalPanel);
-		valueSetCollapseBody.add(valueSetFP);
-
-		valueSetCollapse.add(valueSetCollapseBody);
-		return valueSetCollapse;
-
-	}
-	
-	/**
-	 * Creates the codes collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
-	private PanelCollapse createCodesCollapsablePanel() {
-
-		codesCollapse.setId("collapseCodes");
-
-		PanelBody codesCollapseBody = new PanelBody();
-
-		HorizontalPanel codesFP = new HorizontalPanel();
-
-		VerticalPanel rightVerticalPanel = new VerticalPanel();
-		rightVerticalPanel.setSpacing(10);
-
-		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelCodes");
-		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		Label codesLibraryLabel = new Label("Codes");
-		rightVerticalPanel.setCellHorizontalAlignment(codesLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
-		codesFP.add(rightVerticalPanel);
-		codesCollapseBody.add(codesFP);
-
-		codesCollapse.add(codesCollapseBody);
-		return codesCollapse;
-
-	}
-	
-	
 	/**
 	 * Creates the includes collapsable panel.
 	 *
@@ -1938,16 +1857,6 @@ public class CQLLeftNavBarPanelView {
 	}
 
 	
-	/**
-	 * Gets the codes collapse.
-	 *
-	 * @return the codes collapse
-	 */
-	public PanelCollapse getCodesCollapse() {
-		return codesCollapse;
-	}
-
-
 	/**
 	 * Gets the search suggest define text box.
 	 *

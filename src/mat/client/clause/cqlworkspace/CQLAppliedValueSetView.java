@@ -64,7 +64,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
-import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
@@ -120,11 +119,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
 	
-	/** The vsacapi service async. */
-	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
-			.getVsacapiServiceAsync();
-	
-	
+		
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	

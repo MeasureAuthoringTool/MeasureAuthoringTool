@@ -1578,15 +1578,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setMeasureLocked(isLocked);
 			// Prod issue fixed - Measure Shared with Regular users not loaded
 			// as editable measures.
-			List<MeasureShareDTO> measureShare = getMeasureDAO().getMeasureShareInfoForMeasureAndUser(currentUserId,
-					measure.getId());
-			if (measureShare.size() > 0) {
+			/*List<MeasureShareDTO> measureShare = getMeasureDAO().getMeasureShareInfoForMeasureAndUser(currentUserId,
+					measure.getId());*/
+			/*if (measureShare.size() > 0) {
 				detail.setEditable(((currentUserId.equals(measure.getOwner().getId()) || isSuperUser
 						|| ShareLevel.MODIFY_ID.equals(measureShare.get(0).getShareLevel()))) && measure.isDraft());
 			} else {
-				detail.setEditable(
-						(currentUserId.equals(measure.getOwner().getId()) || isSuperUser) && measure.isDraft());
-			}
+			*/	detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
+			//}
 			if (isLocked && (measure.getLockedUser() != null)) {
 				LockedUserInfo lockedUserInfo = new LockedUserInfo();
 				lockedUserInfo.setUserId(measure.getLockedUser().getId());

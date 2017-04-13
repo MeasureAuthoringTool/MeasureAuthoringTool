@@ -978,11 +978,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCQLFunctionsView().getFunctionArgumentList().clear();
 							}
 						}
+						searchDisplay.resetMessageDisplay();
 					}
 					searchDisplay.getCQLFunctionsView().createAddArgumentViewForFunctions(
 							searchDisplay.getCQLFunctionsView().getFunctionArgumentList(),
 							MatContext.get().getLibraryLockService().checkForEditPermission());
-					searchDisplay.resetMessageDisplay();
+					
 				}
 			}
 		});

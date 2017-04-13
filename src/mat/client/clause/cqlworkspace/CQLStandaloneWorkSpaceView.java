@@ -112,6 +112,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainHPPanel.add(mainPanel);
 		mainVPanel.add(mainHPPanel);
         mainVPanel.add(valueSetView.getCellTableMainPanel());
+        mainVPanel.add(codesView.getCellTableMainPanel());
 		
 	}
 	
@@ -223,6 +224,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
 		valueSetView.clearCellTableMainPanel();
+		codesView.clearCellTableMainPanel();
 	}
 	
 	
@@ -637,7 +639,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public void buildCodes() {
 		mainFlowPanel.clear();
-		codesView.resetVSACValueSetWidget();
+		codesView.resetVSACCodeWidget();
 		codesView.setWidgetToDefault();
 		resetMessageDisplay();
 		

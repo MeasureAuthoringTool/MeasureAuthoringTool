@@ -413,48 +413,49 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		 searchWidgetFormGroup.add(sWidget.getSearchWidget());
-		 searchWidgetFormGroup.add(new SpacerWidget());
+		sWidget.setSearchBoxWidth("200px");
+		searchWidgetFormGroup.add(sWidget.getSearchWidget());
+		searchWidgetFormGroup.add(new SpacerWidget());
 
-		 VerticalPanel namePanel = new VerticalPanel();
-		 FormLabel nameLabel = new FormLabel();
-		 nameLabel.setText("Name");
-		 nameLabel.setTitle("Name");
-		 namePanel.add(nameLabel);
-		 namePanel.add(nameInput);
-		 namePanel.add(new SpacerWidget());
-		 
-		 VerticalPanel expansionIdFormGroup = new VerticalPanel();
-		 FormLabel expLabelPanel = new FormLabel();
-		 expLabelPanel.setText("Expansion Profile");
-		 expLabelPanel.setTitle("Expansion Profile");
-		 expansionIdFormGroup.add(expLabelPanel);
-		 expansionIdFormGroup.add(qdmExpProfileListBox);
-		 expansionIdFormGroup.add(new SpacerWidget());
-		 
-		 VerticalPanel versionFormGroup = new VerticalPanel();
-		 FormLabel verLabel = new FormLabel();
-		 verLabel.setText("Version");
-		 verLabel.setTitle("Version");
-		 versionFormGroup.add(verLabel);
-		 versionFormGroup.add(versionListBox);
-		 versionFormGroup.add(new SpacerWidget());
-		 
-		 VerticalPanel buttonFormGroup = new VerticalPanel();
-		 buttonFormGroup.add(buttonToolBar);
-		 buttonFormGroup.add(new SpacerWidget());
-		 
-		
+		VerticalPanel namePanel = new VerticalPanel();
+		FormLabel nameLabel = new FormLabel();
+		nameLabel.setText("Name");
+		nameLabel.setTitle("Name");
+		namePanel.add(nameLabel);
+		namePanel.add(nameInput);
+		namePanel.add(new SpacerWidget());
+
+		VerticalPanel expansionIdFormGroup = new VerticalPanel();
+		FormLabel expLabelPanel = new FormLabel();
+		expLabelPanel.setText("Expansion Profile");
+		expLabelPanel.setTitle("Expansion Profile");
+		expansionIdFormGroup.add(expLabelPanel);
+		expansionIdFormGroup.add(qdmExpProfileListBox);
+		expansionIdFormGroup.add(new SpacerWidget());
+
+		VerticalPanel versionFormGroup = new VerticalPanel();
+		FormLabel verLabel = new FormLabel();
+		verLabel.setText("Version");
+		verLabel.setTitle("Version");
+		versionFormGroup.add(verLabel);
+		versionFormGroup.add(versionListBox);
+		versionFormGroup.add(new SpacerWidget());
+
+		VerticalPanel buttonFormGroup = new VerticalPanel();
+		buttonFormGroup.add(buttonToolBar);
+		buttonFormGroup.add(new SpacerWidget());
+
+
 		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
 		queryGrid.setWidget(1, 0, namePanel);
 		queryGrid.setWidget(2, 0, expansionIdFormGroup);
 		queryGrid.setWidget(3, 0, versionFormGroup);
 		queryGrid.setWidget(4, 0, buttonFormGroup);
 		queryGrid.setStyleName("secondLabel");
-		
-		 
+
+
 		searchPanelBody.add(queryGrid);
-			
+
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}

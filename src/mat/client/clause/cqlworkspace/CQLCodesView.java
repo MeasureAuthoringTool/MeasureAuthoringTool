@@ -216,93 +216,103 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		Panel searchPanel = new Panel();
 		PanelBody searchPanelBody = new PanelBody();
-		
-		
+
+
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
-		
+
 		searchHeader.setStyleName("measureGroupingTableHeader");
-		
-		
+
+
 		searchPanel.add(searchHeader);
-		searchPanel.setWidth("350px");
-		searchPanel.setHeight("355px");
+		searchPanel.setWidth("550px");
+		searchPanel.setHeight("300px");
 		searchPanelBody.add(new SpacerWidget());
-		
+
 		saveCode.setText("Apply");
 		saveCode.setTitle("Apply");
 		saveCode.setType(ButtonType.PRIMARY);
-		
+
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
-		
-		Grid queryGrid = new Grid(7, 1);
+
+		Grid searchGrid = new Grid(1, 1);
+		Grid codeGrid = new Grid(3, 2);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveCode);
 		buttonToolBar.add(cancelButton);
-		
+
 		VerticalPanel buttonPanel = new VerticalPanel();
 		buttonPanel.add(new SpacerWidget());
 		buttonPanel.add(buttonToolBar);
 		buttonPanel.add(new SpacerWidget());
-		
-		
-		
-		 VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		 searchWidgetFormGroup.add(sWidget.getSearchWidget());
-		 searchWidgetFormGroup.add(new SpacerWidget());
 
-		 VerticalPanel versionFormGroup = new VerticalPanel();
-		 FormLabel verLabel = new FormLabel();
-		 verLabel.setText("Code System Version");
-		 verLabel.setTitle("Code System Version");
-		 
-		 VerticalPanel codeSystemGroup = new VerticalPanel();
-		 FormLabel codeSystemLabel = new FormLabel();
-		 codeSystemLabel.setText("Code System");
-		 codeSystemLabel.setTitle("Code System");
-		 codeSystemInput.setWidth("200px");
-		 
-		 VerticalPanel codeGroup = new VerticalPanel();
-		 FormLabel codeLabel = new FormLabel();
-		 codeLabel.setText("Code");
-		 codeLabel.setTitle("Code");
-		 
-		 VerticalPanel codeDescriptorGroup = new VerticalPanel();
-		 FormLabel codeDescriptorLabel = new FormLabel();
-		 codeDescriptorLabel.setText("Code Descriptor");
-		 codeDescriptorLabel.setTitle("Code Descriptor");
-		 codeDescriptorInput.setWidth("200px");
-		 
-		 codeDescriptorGroup.add(codeDescriptorLabel);
-		 codeDescriptorGroup.add(codeDescriptorInput);
-		 codeDescriptorGroup.add(new SpacerWidget());
-		 codeGroup.add(codeLabel);
-		 codeGroup.add(codeInput);
-		 codeGroup.add(new SpacerWidget());
-		 codeSystemGroup.add(codeSystemLabel);
-		 codeSystemGroup.add(codeSystemInput);
-		 codeSystemGroup.add(new SpacerWidget());
-		 versionFormGroup.add(verLabel);
-		 versionFormGroup.add(codeSystemVersionInput);
-		 versionFormGroup.add(new SpacerWidget());
-		 
-		 VerticalPanel buttonFormGroup = new VerticalPanel();
-		 buttonFormGroup.add(buttonToolBar);
-		 buttonFormGroup.add(new SpacerWidget());
-		 
-		
-		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
-		queryGrid.setWidget(1, 0, codeDescriptorGroup);
-		queryGrid.setWidget(2, 0, codeGroup);
-		queryGrid.setWidget(3, 0, codeSystemGroup);
-		queryGrid.setWidget(4, 0, versionFormGroup);
-		queryGrid.setWidget(5, 0, buttonFormGroup);
-		queryGrid.setStyleName("secondLabel");
-		
-		 
-		searchPanelBody.add(queryGrid);
-			
+
+
+		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
+		sWidget.setSearchBoxWidth("400px");
+		searchWidgetFormGroup.add(sWidget.getSearchWidget());
+		searchWidgetFormGroup.add(new SpacerWidget());
+
+		VerticalPanel versionFormGroup = new VerticalPanel();
+		FormLabel verLabel = new FormLabel();
+		verLabel.setText("Code System Version");
+		verLabel.setTitle("Code System Version");
+		codeSystemVersionInput.setHeight("30px");
+
+		VerticalPanel codeSystemGroup = new VerticalPanel();
+		FormLabel codeSystemLabel = new FormLabel();
+		codeSystemLabel.setText("Code System");
+		codeSystemLabel.setTitle("Code System");
+		codeSystemInput.setWidth("200px");
+		codeSystemInput.setHeight("30px");
+
+		VerticalPanel codeGroup = new VerticalPanel();
+		FormLabel codeLabel = new FormLabel();
+		codeLabel.setText("Code");
+		codeLabel.setTitle("Code");
+		codeInput.setHeight("30px");
+
+		VerticalPanel codeDescriptorGroup = new VerticalPanel();
+		FormLabel codeDescriptorLabel = new FormLabel();
+		codeDescriptorLabel.setText("Code Descriptor");
+		codeDescriptorLabel.setTitle("Code Descriptor");
+		codeDescriptorInput.setWidth("200px");
+		codeDescriptorInput.setHeight("30px");
+
+		codeDescriptorGroup.add(codeDescriptorLabel);
+		codeDescriptorGroup.add(codeDescriptorInput);
+		codeDescriptorGroup.add(new SpacerWidget());
+		codeGroup.add(codeLabel);
+		codeGroup.add(codeInput);
+		codeGroup.add(new SpacerWidget());
+		codeSystemGroup.add(codeSystemLabel);
+		codeSystemGroup.add(codeSystemInput);
+		codeSystemGroup.add(new SpacerWidget());
+		versionFormGroup.add(verLabel);
+		versionFormGroup.add(codeSystemVersionInput);
+		versionFormGroup.add(new SpacerWidget());
+
+		VerticalPanel buttonFormGroup = new VerticalPanel();
+		buttonFormGroup.add(buttonToolBar);
+		buttonFormGroup.add(new SpacerWidget());
+
+
+		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
+		searchGrid.setStyleName("secondLabel");
+		codeGrid.setWidget(0, 0, codeDescriptorGroup);
+		codeGrid.setWidget(0, 1, codeGroup);
+		codeGrid.setWidget(1, 0, codeSystemGroup);
+		codeGrid.setWidget(1, 1, versionFormGroup);
+		codeGrid.setWidget(2, 0, buttonFormGroup);
+		codeGrid.setStyleName("code-grid");
+
+		VerticalPanel codeFormGroup = new VerticalPanel();
+		codeFormGroup.add(searchGrid);
+		codeFormGroup.add(codeGrid);
+
+		searchPanelBody.add(codeFormGroup);
+
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
@@ -332,48 +342,6 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	/**
-	 * Gets the data type value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the data type value
-	 */
-	public String getDataTypeValue(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-	
-	/**
-	 * Gets the version value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the version value
-	 */
-	public String getVersionValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-	
-	/**
-	 * Gets the expansion Profile value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the expansion Profile value
-	 */
-	public String getExpansionProfileValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-	
-	/**
 	 * Check for enable.
 	 * 
 	 * @return true, if successful
@@ -384,11 +352,11 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	}
 
 	/**
-	 * Reset vsac value set widget.
+	 * Reset vsac code widget.
 	 */
-	public void resetVSACValueSetWidget() {
+	public void resetVSACCodeWidget() {
 		if(checkForEnable()){
-			sWidget.getSearchBox().setTitle("Enter OID");
+			sWidget.getSearchBox().setTitle("Enter Code");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();

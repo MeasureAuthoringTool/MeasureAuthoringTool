@@ -1360,6 +1360,10 @@ td,th {
 	padding-top:5px;
 	font-size: medium;
 }
+.code-grid{
+	border-spacing:14px;
+	overflow: scroll;
+}
 .attr-grid{
 	border-spacing:10px;
 	border :10px solid transparent;

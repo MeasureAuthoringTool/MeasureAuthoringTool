@@ -116,6 +116,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 		mainVPanel.add(mainHPPanel);
         mainVPanel.add(valueSetView.getCellTableMainPanel());
+        mainVPanel.add(codesView.getCellTableMainPanel());
         
 	}
 
@@ -185,7 +186,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public void buildCodes() {
 		mainFlowPanel.clear();
-		codesView.resetVSACValueSetWidget();
+		codesView.resetVSACCodeWidget();
 		codesView.setWidgetToDefault();
 		resetMessageDisplay();
 		
@@ -504,6 +505,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
 		valueSetView.clearCellTableMainPanel();
+		codesView.clearCellTableMainPanel();
 	}
 	
 	

@@ -267,7 +267,7 @@ public class CQLLeftNavBarPanelView {
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
 	
 	/** The delete confirmation messge alert. */
-	private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
+	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
 	
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
@@ -529,7 +529,7 @@ public class CQLLeftNavBarPanelView {
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
 		messagePanel.add(globalWarningConfirmationMessageAlert);
-		messagePanel.add(deleteConfirmationMessgeAlert);
+		//messagePanel.add(deleteConfirmationMessgeAlert);
 		messagePanel.setStyleName("marginLeft15px");
 
 		// rightHandNavPanel.add(messagePanel);
@@ -2281,7 +2281,7 @@ public class CQLLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
-		getDeleteConfirmationMessgeAlert().clearAlert();
+		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -2300,7 +2300,7 @@ public class CQLLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		getDeleteConfirmationMessgeAlert().clearAlert();
+		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -2316,8 +2316,8 @@ public class CQLLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		getDeleteConfirmationMessgeAlert().createWarningAlert(message);
-		getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
+		//getDeleteConfirmationMessgeAlert().createWarningAlert(message);
+		//getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
 	
@@ -2388,9 +2388,9 @@ public class CQLLeftNavBarPanelView {
 	 *
 	 * @return the delete confirmation messge alert
 	 */
-	public DeleteConfirmationMessageAlert getDeleteConfirmationMessgeAlert() {
+	/*public DeleteConfirmationMessageAlert getDeleteConfirmationMessgeAlert() {
 		return deleteConfirmationMessgeAlert;
-	}
+	}*/
 
 
 	/**
@@ -2398,9 +2398,9 @@ public class CQLLeftNavBarPanelView {
 	 *
 	 * @param deleteConfirmationMessgeAlert the new delete confirmation messge alert
 	 */
-	public void setDeleteConfirmationMessgeAlert(DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert) {
+	/*public void setDeleteConfirmationMessgeAlert(DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert) {
 		this.deleteConfirmationMessgeAlert = deleteConfirmationMessgeAlert;
-	}
+	}*/
 	
 	
 	/**
@@ -2476,18 +2476,18 @@ public class CQLLeftNavBarPanelView {
 	 *
 	 * @return the delete confirmation yes button
 	 */
-	public Button getDeleteConfirmationYesButton() {
+	/*public Button getDeleteConfirmationYesButton() {
 		return deleteConfirmationMessgeAlert.getWarningConfirmationYesButton();
-	}
+	}*/
 
 	/**
 	 * Gets the delete confirmation no button.
 	 *
 	 * @return the delete confirmation no button
 	 */
-	public Button getDeleteConfirmationNoButton() {
+	/*public Button getDeleteConfirmationNoButton() {
 		return deleteConfirmationMessgeAlert.getWarningConfirmationNoButton();
-	}
+	}*/
 
 	/**
 	 * Sets the available QDS attribute list.

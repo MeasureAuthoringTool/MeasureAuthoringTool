@@ -237,7 +237,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		cqlLeftNavBarPanelView.getWarningConfirmationMessageAlert().clearAlert();
 		if(cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert() != null)
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
-		cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
+	//	cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
 		hideAceEditorAutoCompletePopUp();
 
 	}

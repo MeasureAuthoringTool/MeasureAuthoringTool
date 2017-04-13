@@ -39,6 +39,9 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	
 	/** The qdm view. */
 	private CQLAppliedValueSetView valueSetView;
+	
+	/** The code view. */
+	private CQLCodesView codesView;
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
@@ -76,6 +79,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
+		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
@@ -631,8 +635,38 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	}
 
 	@Override
+	public void buildCodes() {
+		mainFlowPanel.clear();
+		codesView.resetVSACValueSetWidget();
+		codesView.setWidgetToDefault();
+		resetMessageDisplay();
+		
+		unsetEachSectionSelectedObject();
+		VerticalPanel codesTopPanel = new VerticalPanel();
+
+		codesTopPanel.add(codesView.asWidget());
+		codesView.buildCellTableWidget();
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		codesTopPanel.setWidth("700px");
+		codesTopPanel.setStyleName("marginLeft15px");
+		vp.add(codesTopPanel);
+		
+		mainFlowPanel.add(vp);
+
+	}
+
+	
+	@Override
 	public CQLAppliedValueSetView getValueSetView() {
 		return valueSetView;
+	}
+
+
+	@Override
+	public CQLCodesView getCodesView() {
+		return codesView;
 	}
 
 }

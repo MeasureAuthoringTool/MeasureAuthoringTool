@@ -48,6 +48,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
+	
+	/** The code view. */
+	private CQLCodesView codesView;
 
 	/** The general information view. */
 	private CQLGeneralInformationView generalInformationView;
@@ -75,6 +78,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQlDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
+		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLViewCQLView();
@@ -178,6 +182,29 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 
+	@Override
+	public void buildCodes() {
+		mainFlowPanel.clear();
+		codesView.resetVSACValueSetWidget();
+		codesView.setWidgetToDefault();
+		resetMessageDisplay();
+		
+		unsetEachSectionSelectedObject();
+		VerticalPanel codesTopPanel = new VerticalPanel();
+
+		codesTopPanel.add(codesView.asWidget());
+		codesView.buildCellTableWidget();
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		codesTopPanel.setWidth("700px");
+		codesTopPanel.setStyleName("marginLeft15px");
+		vp.add(codesTopPanel);
+		
+		mainFlowPanel.add(vp);
+
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildIncludesView()
 	 */
@@ -564,4 +591,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		return cqlViewCQLView;
 	}
 
+	@Override
+	public CQLCodesView getCodesView() {
+		return codesView;
+	}
+	
 }

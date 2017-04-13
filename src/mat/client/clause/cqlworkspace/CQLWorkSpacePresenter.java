@@ -305,6 +305,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * Reset all.
 		 */
 		void resetAll();
+		
+		CQLCodesView getCodesView();
+
+		void buildCodes();
 
 	}
 
@@ -2609,6 +2613,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				viewCqlEvent();
 			}
 		});
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				codesEvent();
+				
+			}
+			
+		});
 
 	}
 
@@ -2692,6 +2706,32 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
+	
+	/**
+	 * codes event.
+	 */
+	private void codesEvent() {
+		// server
+		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
+		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+		if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_CODES;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+
+		} else {
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_CODES;
+			searchDisplay.buildCodes();
+			searchDisplay.getCodesView().buildCodesCellTable(
+					searchDisplay.getCqlLeftNavBarPanelView().getCodesTableList(),
+					MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getCodesView()
+					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+		}
+
+	}	
 	
 	/**
 	 * Build View for Definition when Definition AnchorList item is clicked.

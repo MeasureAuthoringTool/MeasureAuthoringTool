@@ -252,8 +252,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable);
 
 		CQLAppliedValueSetView getValueSetView();
+		
+		CQLCodesView getCodesView();
 
 		void buildAppliedQDM();
+
+		void buildCodes();
 
 	}
 
@@ -2861,6 +2865,16 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
+		searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				codesEvent();
+				
+			}
+			
+		});
+		
 		searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -4005,6 +4019,32 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
+		}
+
+	}
+	
+	/**
+	 * codes event.
+	 */
+	private void codesEvent() {
+		// server
+		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
+		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+		if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_CODES;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+
+		} else {
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setActive(true);
+			currentSection = CQLWorkSpaceConstants.CQL_CODES;
+			searchDisplay.buildCodes();
+			searchDisplay.getCodesView().buildCodesCellTable(
+					searchDisplay.getCqlLeftNavBarPanelView().getCodesTableList(),
+					MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getCodesView()
+					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 		}
 
 	}

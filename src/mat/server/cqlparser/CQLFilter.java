@@ -215,7 +215,8 @@ public class CQLFilter {
 			this.getUsedFunctions().addAll(expressionObject.getUsedFunctions());
 			this.getUsedParameters().addAll(expressionObject.getUsedParameters());
 			this.getUsedValuesets().addAll(expressionObject.getUsedValuesets());
-			this.getValueSetDataTypeMap().putAll(expressionObject.getValueSetDataTypeMap());
+			//this.getValueSetDataTypeMap().putAll(expressionObject.getValueSetDataTypeMap());
+			CQLExpressionObject.mergeValueSetMap(this.getValueSetDataTypeMap(), expressionObject.getValueSetDataTypeMap());
 		}
 	}
 

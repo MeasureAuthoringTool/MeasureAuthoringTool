@@ -120,4 +120,30 @@ public class CQLExpressionObject implements IsSerializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * @param combinedSupplementalValueSetMap
+	 * @param usedValueSetMap
+	 */
+	public static Map<String, List<String>> mergeValueSetMap(Map<String, List<String>> combinedSupplementalValueSetMap, 
+			Map<String, List<String>> usedValueSetMap) {
+		
+		for(String key: usedValueSetMap.keySet()){
+			
+			if(combinedSupplementalValueSetMap.get(key) == null){
+				combinedSupplementalValueSetMap.put(key, new ArrayList<String>(usedValueSetMap.get(key)));
+				continue;
+			}
+			
+			List<String> existingDataTypes = combinedSupplementalValueSetMap.get(key);
+			
+			for(String dataType : usedValueSetMap.get(key)){
+				if(!existingDataTypes.contains(dataType)){
+					existingDataTypes.add(dataType);
+				}
+			}
+		}
+		
+		return combinedSupplementalValueSetMap;
+	}
 }

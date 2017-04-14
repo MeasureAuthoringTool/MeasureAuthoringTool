@@ -34,6 +34,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.shared.CQLExpressionObject;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
@@ -335,7 +336,7 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
 			CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
 			
-			resolveValueSetsWithDataTypesUsed(originalDoc, result, cqlModel);
+			resolveAllValueSets(originalDoc, result, cqlModel);
 			
 			CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
 			CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
@@ -344,14 +345,9 @@ public class ExportSimpleXML {
 			System.out.println("All included libs:"+cqlModel.getIncludedCQLLibXMLMap().keySet());			
 		}
 		
-		private static void resolveValueSetsWithDataTypesUsed(
+		private static void resolveAllValueSets(
 				Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
 			
-			System.out.println("usedValueSetMap:"+result.getUsedCQLArtifacts().getValueSetDataTypeMap());
-			
-			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
-			List<String> valueSetDataTypeUniqueList = new ArrayList<String>();
-						
 			String xPathForElementLookupNode = "//elementLookUp";
 			Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
@@ -365,8 +361,104 @@ public class ExportSimpleXML {
 				parentNode.appendChild(elementLookUpNode);
 			}
 			
-			for(String valueSetName:result.getUsedCQLArtifacts().getValueSetDataTypeMap().keySet()){
-				List<String> dataTypeList = result.getUsedCQLArtifacts().getValueSetDataTypeMap().get(valueSetName);
+			resolveSupplementalValueSets(originalDoc, result, cqlModel);
+			resolveDataCriteriaValueSets(originalDoc, result, cqlModel);
+			
+			Set<String> valuesetSet = new HashSet<String>(result.getUsedCQLArtifacts().getValueSetDataTypeMap().keySet());
+			valuesetSet.addAll(result.getUsedCQLArtifacts().getUsedCQLValueSets());
+			System.out.println("used value sets:"+valuesetSet);
+			CQLUtil.removeUnusedValuesets(originalDoc, valuesetSet);	
+		}
+
+		private static void resolveDataCriteriaValueSets(Document originalDoc,
+				SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
+			
+			Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
+			
+			String groupingDefinitionXPath = "/measure/measureGrouping//cqldefinition";
+			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingDefinitionXPath);
+			
+			String groupingFunctionXPath = "/measure/measureGrouping//cqlfunction";
+			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingFunctionXPath);
+			
+			String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
+			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath);
+			
+			resolveValueSetsWithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, false);
+			
+		}
+
+		/**
+		 * @param originalDoc
+		 * @param result
+		 * @throws XPathExpressionException
+		 */
+		private static void resolveSupplementalValueSets(Document originalDoc,
+				SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
+			
+			Map<String, List<String>> supplementalValueSetMap = new HashMap<String, List<String>>();
+			
+			//find Supplemental Data definitions first
+			String supplementalDefinitionXPath = "/measure/supplementalDataElements/cqldefinition";
+			
+			getUsedValueSetMap(originalDoc, result, supplementalValueSetMap, supplementalDefinitionXPath);
+			
+			resolveValueSetsWithDataTypesUsed(originalDoc, supplementalValueSetMap, cqlModel, true);
+		}
+
+		/**
+		 * @param originalDoc
+		 * @param result
+		 * @param mergedValueSetMap
+		 * @param expressionReferenceXPath
+		 * @throws XPathExpressionException
+		 */
+		private static void getUsedValueSetMap(Document originalDoc,
+				SaveUpdateCQLResult result,
+				Map<String, List<String>> mergedValueSetMap,
+				String expressionReferenceXPath)
+				throws XPathExpressionException {
+			
+			NodeList expressionNodeList = (NodeList) xPath.evaluate(expressionReferenceXPath, originalDoc.getDocumentElement(),
+					XPathConstants.NODESET);
+			
+			if(expressionNodeList != null && expressionNodeList.getLength() > 0){
+				for(int i=0; i < expressionNodeList.getLength(); i++){
+					Node supplementalNode = expressionNodeList.item(i);
+					
+					String nodeUUID = supplementalNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					
+					String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
+					Node definitionNode = (Node) xPath.evaluate(definitionXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+					
+					if(definitionNode != null){
+						String definitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
+						
+						//find the used value-sets (with their datatypes) for this definition
+						List<CQLExpressionObject> definitionObjects = result.getCqlObject().getCqlDefinitionObjectList();
+						for(CQLExpressionObject expressionObject : definitionObjects){
+							
+							if(expressionObject.getName().equals(definitionName)){
+								
+								Map<String, List<String>> usedValueSetMap = expressionObject.getValueSetDataTypeMap();
+								CQLExpressionObject.mergeValueSetMap(mergedValueSetMap, usedValueSetMap);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private static void resolveValueSetsWithDataTypesUsed(
+				Document originalDoc, Map<String, List<String>> usedValueSetMap, CQLModel cqlModel, boolean isSupplemental) throws XPathExpressionException {
+			
+			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
+			List<String> valueSetDataTypeUniqueList = new ArrayList<String>();
+					
+			
+			for(String valueSetName:usedValueSetMap.keySet()){
+				List<String> dataTypeList = usedValueSetMap.get(valueSetName);
 				
 				Document xmlDoc = findXMLProcessor(valueSetName, cqlModel, includedXMLMap);
 				if(xmlDoc == null){
@@ -414,19 +506,16 @@ public class ExportSimpleXML {
 							((Element)clonedValueSetNode).setAttribute("name", codeName.getNodeValue());
 							clonedValueSetNode.getAttributes().removeNamedItem("codeName");
 						}
-						
-						//set "suppDataElement" attribute to "false"
-						Node suppDataElement = clonedValueSetNode.getAttributes().getNamedItem("suppDataElement");
-						if(suppDataElement == null){
-							((Element)clonedValueSetNode).setAttribute("suppDataElement", "false");
-						}
-						
+												
 						//set "uuid" attribute to new a UUID
 						Node uuid = clonedValueSetNode.getAttributes().getNamedItem("uuid");
 						if(uuid == null){
 							((Element)clonedValueSetNode).setAttribute("uuid", UUIDUtilClient.uuid());
 						}
 					}
+					
+					//set "suppDataElement" attribute 
+					((Element)clonedValueSetNode).setAttribute("suppDataElement", String.valueOf(isSupplemental));					
 					
 					//rename node to "qdm"
 					xmlDoc.renameNode(clonedValueSetNode, null, "qdm");
@@ -444,6 +533,9 @@ public class ExportSimpleXML {
 						continue;
 					}
 					
+					String xPathForElementLookupNode = "//elementLookUp";
+					Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
+					
 					Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSetNode, true);
 					elementLookUpNode.appendChild(importedNode);
 
@@ -451,10 +543,7 @@ public class ExportSimpleXML {
 				}
 			}
 			
-			Set<String> valuesetSet = new HashSet<String>(result.getUsedCQLArtifacts().getValueSetDataTypeMap().keySet());
-			valuesetSet.addAll(result.getUsedCQLArtifacts().getUsedCQLValueSets());
-			System.out.println("used value sets:"+valuesetSet);
-			CQLUtil.removeUnusedValuesets(originalDoc, valuesetSet);			
+					
 		}
 
 	private static Document findXMLProcessor(String valueSetName,

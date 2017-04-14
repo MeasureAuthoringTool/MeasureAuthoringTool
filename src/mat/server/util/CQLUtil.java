@@ -768,6 +768,7 @@ public class CQLUtil {
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@codeSystemName", cqlModel.getIncludedCodeNames());
 			
 		}
+		
 		System.out.println("Included Definition names:" + cqlModel.getIncludedDefNames());
 		System.out.println("Included Function names:" + cqlModel.getIncludedFuncNames());
 		System.out.println("Included Value-Set names:" + cqlModel.getIncludedValueSetNames());

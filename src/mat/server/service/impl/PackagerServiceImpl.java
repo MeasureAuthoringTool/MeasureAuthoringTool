@@ -13,20 +13,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -48,6 +34,20 @@ import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
+
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -98,6 +98,7 @@ public class PackagerServiceImpl implements PackagerService {
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition[@supplDataElement='true']";
+	
 	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqldefinition";	
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
@@ -856,9 +857,11 @@ public class PackagerServiceImpl implements PackagerService {
 		List<CQLDefinition> masterList = new ArrayList<CQLDefinition>();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
+	
 			NodeList nodesCQLDefinitionsAll = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_CQL_LOOKUP_SUPP,
+					XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS,
 					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+			
 			for (int i = 0; i < nodesCQLDefinitionsAll.getLength(); i++) {
 				Node newNode = nodesCQLDefinitionsAll.item(i);
 				CQLDefinition cqlDef = new CQLDefinition();

@@ -40,8 +40,9 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 					generateCSVOfAllUser();
 				} else if (model.getToBeGenerated().equalsIgnoreCase("Measure")) {
 					generateCSVOfActiveUserMeasureOwnership();
-				}
-				
+				} else if (model.getToBeGenerated().equalsIgnoreCase("Library")) {
+					generateCSVOfActiveUserCQLLibraryOwnership();
+				}	
 			}
 		});
 	}
@@ -65,6 +66,12 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?format=exportMeasureOwner";
 		Window.open(url + "&type=save", "_self", "");
 	}
+	
+	private void generateCSVOfActiveUserCQLLibraryOwnership() {
+		String url = GWT.getModuleBaseURL() + "export?format=exportCQLLibraryOwner";
+		Window.open(url + "&type=save", "_self", "");		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

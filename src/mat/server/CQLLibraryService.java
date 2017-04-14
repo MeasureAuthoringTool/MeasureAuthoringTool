@@ -44,6 +44,7 @@ import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.ShareLevelDAO;
+import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.LockedUserInfo;
 import mat.model.RecentCQLActivityLog;
@@ -1708,6 +1709,66 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			logger.info("Successfully updated Library XML for  : " + entrySet.getKey().getOid());
 		}
 		logger.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
+	}
+	
+	@Override
+	public List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner() {
+		Map<User, List<CQLLibrary>> map = new HashMap<>();
+		List<User> nonAdminUserList = getUserService().getAllNonAdminActiveUsers();
+		for(User user : nonAdminUserList) {
+			List<CQLLibrary> libraryList = cqlLibraryDAO.getLibraryListForLibraryOwner(user);
+			if((libraryList != null && libraryList.size() > 0)) {
+				map.put(user,  libraryList);
+			}
+		}
+		
+		List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = populateCQLLibraryOwnerReport(map); 
+		return cqlLibraryOwnerReports;
+	}
+	
+	/**
+	 * Populates the cql library ownership dto list
+	 * @param map the map of users and cql libraries
+	 * @return the cql library ownership report list
+	 */
+	private List<CQLLibraryOwnerReportDTO> populateCQLLibraryOwnerReport(Map<User, List<CQLLibrary>> map) {
+		List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = new ArrayList<CQLLibraryOwnerReportDTO>();
+		for(Entry<User, List<CQLLibrary>> entry : map.entrySet()) {
+			User user = entry.getKey();
+			List<CQLLibrary> libraries = entry.getValue();
+			
+			for(CQLLibrary cqlLibrary : libraries) {
+				
+				String cqlLibraryName = cqlLibrary.getName();
+				
+				String type = ""; 
+				if(cqlLibrary.getMeasureId() == null) {
+					type = "Stand Alone"; 
+				} else {
+					type = "Measure"; 
+				}
+				
+				String status = ""; 
+				if(cqlLibrary.isDraft()) {
+					status = "Draft";
+				} else {
+					status = "Versioned"; 
+				}
+				
+				
+				String versionNumber = "v" + cqlLibrary.getVersionNumber(); 
+				String id = cqlLibrary.getId();
+				String setId = cqlLibrary.getSet_id();
+				String firstName = user.getFirstName();
+				String lastName = user.getLastName(); 
+				String organization = user.getOrganization().getOrganizationName();
+				
+				CQLLibraryOwnerReportDTO cqlLibraryOwnerReportDTO = new CQLLibraryOwnerReportDTO(cqlLibraryName, type, status, versionNumber, id, setId, firstName, lastName, organization);
+				cqlLibraryOwnerReports.add(cqlLibraryOwnerReportDTO);
+			}
+		}
+		
+		return cqlLibraryOwnerReports; 
 	}
 	
 }

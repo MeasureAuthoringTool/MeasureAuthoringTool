@@ -721,7 +721,7 @@ class CQLLibraryComparator implements Comparator<CQLLibrary> {
 				Criteria mCriteria = getSessionFactory().getCurrentSession()
 						.createCriteria(CQLLibrary.class);
 				mCriteria.add(Restrictions.eq("set_id", cql.getSet_id()));
-				mCriteria.add(Restrictions.eq("ownerId", cql.getOwnerId().getId()));
+				mCriteria.add(Restrictions.eq("ownerId", cql.getOwnerId()));
 				// add check to filter Draft's version number when finding max version
 				// number.
 				mCriteria.add(Restrictions.ne("draft", true));

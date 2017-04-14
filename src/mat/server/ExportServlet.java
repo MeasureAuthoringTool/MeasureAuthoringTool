@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
@@ -53,6 +54,8 @@ public class ExportServlet extends HttpServlet {
 	
 	/** The Constant EXPORT_ACTIVE_OID_CSV. */
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
+	
+	private static final String EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP = "exportCQLLibraryOwner";
 	
 	/** The Constant VALUESET. */
 	//private static final String VALUESET = "valueset";
@@ -178,15 +181,16 @@ public class ExportServlet extends HttpServlet {
 				export = exportMeasureNotesCSV(resp, id, measure, fnu);
 			} else if("exportMeasureOwner".equalsIgnoreCase(format)){
 				exportActiveUserMeasureOwnershipListCSV(resp,fnu);
-				
-			}else if (EXPORT_ALL_USERS_CSV.equals(format)) {
+			} else if (EXPORT_ALL_USERS_CSV.equals(format)) {
 				exportAllUserCSV(resp, fnu);
+			} else if(EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP.equals(format)) {
+				exportActiveUserCQLLibraryOwnershipListCSV(resp, fnu);
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 		if (!CODELIST.equals(format) && !EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)&& !EXPORT_ALL_USERS_CSV.equals(format) && !EXPORT_ACTIVE_OID_CSV.equals(format)
-				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format) && !"exportMeasureOwner".equalsIgnoreCase(format)) {
+				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format) && !"exportMeasureOwner".equalsIgnoreCase(format) && !EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP.equalsIgnoreCase(format)) {
 			resp.getOutputStream().println(export.export);
 		}
 	}
@@ -321,6 +325,20 @@ public class ExportServlet extends HttpServlet {
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		if ("Administrator".equalsIgnoreCase(userRole)) {
 			String csvFileString = generateCSVOfMeasureOwnershipForActiveUser();
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String aCSVDate = formatter.format(new Date());
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ fnu.getCSVFileName("activeUsersMeasureOwnership", aCSVDate) + ";");
+			resp.setContentType("text/csv");
+			resp.getOutputStream().write(csvFileString.getBytes());
+			resp.getOutputStream().close();
+		}
+	}
+	
+	public void exportActiveUserCQLLibraryOwnershipListCSV(HttpServletResponse resp, FileNameUtility fnu) throws IOException {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		if("Administrator".equalsIgnoreCase(userRole)) {
+			String csvFileString = generateCSVOfCQLLibraryOwnershipForActiveUser();
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String aCSVDate = formatter.format(new Date());
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
@@ -704,6 +722,17 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	/**
+	 * Generate csv of cql library ownership for all active users
+	 * @return the csv string
+	 */
+	private String generateCSVOfCQLLibraryOwnershipForActiveUser() {
+		logger.info("Generating CSV of CQL Library Ownership for all Active Non Admin Users...");
+		List<CQLLibraryOwnerReportDTO> ownerList = getCQLLibraryService().getCQLLibrariesForOwner();
+		return createCSVOfActiveUserCQLLibrary(ownerList);
+		
+	}
+	
+	/**
 	 * Generate csv of active OIDs.
 	 * @return the string
 	 */
@@ -831,6 +860,36 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	/**
+	 * Creates the csv string for the cql library ownership report
+	 * @param ownerList the list of cql library owner reports
+	 * @return the csv string
+	 */
+	private String createCSVOfActiveUserCQLLibrary(final List<CQLLibraryOwnerReportDTO> ownerList) {
+		StringBuilder csvStringBuilder = new StringBuilder();
+		
+		// add the header
+		csvStringBuilder.append("CQL Library Name,Type,Status,Version #,ID #,Set ID #,First Name,Last Name,Organization");
+		csvStringBuilder.append("\r\n");
+		
+		// add data
+		for(CQLLibraryOwnerReportDTO cqlLibraryOwnerReport : ownerList) {
+			csvStringBuilder.append(cqlLibraryOwnerReport.getCqlLibraryName()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getType()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getStatus()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getVersionNumber()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getId()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getSetId()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getFirstName()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getLastName()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getOrganization() + "");
+			csvStringBuilder.append("\r\n");
+		}
+		
+		
+		return csvStringBuilder.toString();
+	}
+	
+	/**
 	 * Gets the service.
 	 * 
 	 * @return the service
@@ -874,5 +933,13 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private MeasureLibraryService getMeasureLibraryService(){
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
+	}	
+	
+	/**
+	 * Gets the cql library service
+	 * @return the cql library service
+	 */
+	private CQLLibraryService getCQLLibraryService() {
+		return (CQLLibraryService) context.getBean("cqlLibraryService");
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.umls.service.VsacApiResult;
+import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLDefinition;
@@ -107,4 +108,6 @@ public interface CQLLibraryServiceInterface {
 	CQLKeywords getCQLKeywordsLists();
 
 	List<CQLLibraryAssociation> getAssociations(String Id);
+
+	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 }

@@ -23,7 +23,7 @@ import com.google.gwt.view.client.ListDataProvider;
 
 
 public class ManageAdminReportingView implements ManageAdminReportingPresenter.Display {
-	private static final int PAGE_SIZE = 4;
+	private static final int PAGE_SIZE = 5;
 	public static interface Observer {
 		
 		/**
@@ -149,11 +149,19 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		orgModelReport.setButtonLabel("Generate CSV");
 		orgModelReport.setToBeGenerated("Org");
 		modelList.add(orgModelReport);
+		
 		ReportModel measureModelReport = new ReportModel();
 		measureModelReport.setReportName("Measure Ownership Report");
 		measureModelReport.setButtonLabel("Generate CSV");
 		measureModelReport.setToBeGenerated("Measure");
 		modelList.add(measureModelReport);
+		
+		ReportModel cqlLibraryModelReport = new ReportModel();
+		cqlLibraryModelReport.setReportName("CQL Library Ownership Report");
+		cqlLibraryModelReport.setButtonLabel("Generate CSV");
+		cqlLibraryModelReport.setToBeGenerated("Library");
+		modelList.add(cqlLibraryModelReport);
+		
 		return modelList;
 	}
 	@Override

@@ -214,10 +214,43 @@ public class CQLHumanReadableHTMLCreator {
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor, cqlModel,cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
-		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
+		//generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
+	}
+	
+	private static void generateSupplementalDataVariables(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult)
+					throws XPathExpressionException {
+		definitionsOrFunctionsAlreadyDisplayed.clear();
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement
+		.append("<h3><a name=\"d1e879\" href=\"#toc\">Supplemental Data Elements</a></h3>");
+		
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		
+		NodeList elements = simpleXMLProcessor.findNodeList(
+				simpleXMLProcessor.getOriginalDoc(),
+				"/measure/supplementalDataElements/cqldefinition");
+		
+		if (elements.getLength() > 0) {
+			for(int i=0;i<elements.getLength();i++){
+				Node childNode = elements.item(i);
+				String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				String xpathforSubTree = "/measure/cqlLookUp//definition[@id='"+ uuid +"']";
+				Node defineNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
+						xpathforSubTree);
+				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
+				defineNodeName = "\"" + defineNodeName + "\"";
+				generatePopulationCriteria(mainListElement, cqlModel, childNode, defineNodeName, defineNodeName, cqlResult, simpleXMLProcessor);
+				
+			}
+		} else {
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
 	}
 	
 	private static void generateRiskAdjustmentVariables(

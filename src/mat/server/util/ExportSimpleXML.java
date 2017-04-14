@@ -361,7 +361,6 @@ public class ExportSimpleXML {
 				parentNode.appendChild(elementLookUpNode);
 			}
 			
-			resolveSupplementalValueSets(originalDoc, result, cqlModel);
 			resolveDataCriteriaValueSets(originalDoc, result, cqlModel);
 			
 			Set<String> valuesetSet = new HashSet<String>(result.getUsedCQLArtifacts().getValueSetDataTypeMap().keySet());
@@ -381,29 +380,14 @@ public class ExportSimpleXML {
 			String groupingFunctionXPath = "/measure/measureGrouping//cqlfunction";
 			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingFunctionXPath);
 			
+			String supplementalDefinitionXPath = "/measure/supplementalDataElements/cqldefinition";
+			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, supplementalDefinitionXPath);
+			
 			String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
 			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath);
 			
 			resolveValueSetsWithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, false);
 			
-		}
-
-		/**
-		 * @param originalDoc
-		 * @param result
-		 * @throws XPathExpressionException
-		 */
-		private static void resolveSupplementalValueSets(Document originalDoc,
-				SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
-			
-			Map<String, List<String>> supplementalValueSetMap = new HashMap<String, List<String>>();
-			
-			//find Supplemental Data definitions first
-			String supplementalDefinitionXPath = "/measure/supplementalDataElements/cqldefinition";
-			
-			getUsedValueSetMap(originalDoc, result, supplementalValueSetMap, supplementalDefinitionXPath);
-			
-			resolveValueSetsWithDataTypesUsed(originalDoc, supplementalValueSetMap, cqlModel, true);
 		}
 
 		/**

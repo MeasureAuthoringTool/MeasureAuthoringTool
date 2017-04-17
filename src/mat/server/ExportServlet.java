@@ -837,15 +837,15 @@ public class ExportServlet extends HttpServlet {
 		csvStringBuilder.append("\r\n");
 		for (MeasureOwnerReportDTO measureOwnerReportDTO : ownerReList) {
 			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\"" + measureOwnerReportDTO.getFirstName()
-					+ "\",\"" + measureOwnerReportDTO.getOrganizationName()
-					+ "\",\"" + measureOwnerReportDTO.getMeasureDescription() + "\",\"");
+					+ "\",\"" + measureOwnerReportDTO.getOrganization()
+					+ "\",\"" + measureOwnerReportDTO.getName() + "\",\"");
 			if (measureOwnerReportDTO.getCmsNumber() != 0) {
 				csvStringBuilder.append(measureOwnerReportDTO.getCmsNumber() + "\",\"");
 			} else {
 				csvStringBuilder.append("" + "\",\"");
 			}
-			if (measureOwnerReportDTO.getGuid() != null) {
-				csvStringBuilder.append(measureOwnerReportDTO.getGuid() + "\"");
+			if (measureOwnerReportDTO.getId() != null) {
+				csvStringBuilder.append(measureOwnerReportDTO.getId() + "\"");
 			} else {
 				csvStringBuilder.append("" + "\"");
 			}
@@ -873,7 +873,7 @@ public class ExportServlet extends HttpServlet {
 		
 		// add data
 		for(CQLLibraryOwnerReportDTO cqlLibraryOwnerReport : ownerList) {
-			csvStringBuilder.append(cqlLibraryOwnerReport.getCqlLibraryName()  + ",");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getName() + ",");
 			csvStringBuilder.append(cqlLibraryOwnerReport.getType()  + ",");
 			csvStringBuilder.append(cqlLibraryOwnerReport.getStatus()  + ",");
 			csvStringBuilder.append(cqlLibraryOwnerReport.getVersionNumber()  + ",");

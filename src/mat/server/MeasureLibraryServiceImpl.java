@@ -5681,27 +5681,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (measureXML != null) {
 					String measureXmlString = measureXML.getMeasureXMLAsString();
 					if (measureXmlString != null) {
-						MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO();
-						ownerReportDTO.setFirstName(user.getFirstName());
-						ownerReportDTO.setLastName(user.getLastName());
-						ownerReportDTO.setOrganizationName(user.getOrganizationName());
-						ownerReportDTO.setMeasureDescription(measure.getDescription());
-						ownerReportDTO.setCmsNumber(measure.geteMeasureId());
+						String firstName = user.getFirstName();
+						String lastName = user.getLastName();
+						String organizationName = user.getOrganizationName();
+						String measureDescription = measure.getDescription();
+						int cmsNumber = measure.geteMeasureId();
 						XmlProcessor processor = new XmlProcessor(measureXmlString);
 						String xpathNqfId = "/measure/measureDetails/nqfid";
 						String xpathGuid = "/measure/measureDetails/guid";
 						Node nqfNode = processor.findNode(processor.getOriginalDoc(), xpathNqfId);
+						String nqfId = "";
 						if (nqfNode != null) {
 							if (nqfNode.getAttributes().getNamedItem("extension") != null) {
 								String nqfNumber = nqfNode.getAttributes().getNamedItem("extension").getNodeValue();
-								ownerReportDTO.setNqfId(nqfNumber);
+								nqfId = nqfNumber;
 							}
 						}
 						Node guidNode = processor.findNode(processor.getOriginalDoc(), xpathGuid);
+						String guid = "";
 						if (guidNode != null) {
 							String guidNumber = guidNode.getTextContent();
-							ownerReportDTO.setGuid(guidNumber);
+							guid = guidNumber;
 						}
+						
+						MeasureOwnerReportDTO ownerReportDTO = new MeasureOwnerReportDTO(firstName, lastName, organizationName, measureDescription, cmsNumber, nqfId, guid);
 						measureOwnerReportDTOs.add(ownerReportDTO);
 					}
 				} else {

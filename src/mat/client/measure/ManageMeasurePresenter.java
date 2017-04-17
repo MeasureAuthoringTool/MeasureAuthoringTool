@@ -441,20 +441,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
 		
 		/**
-		 * Gets the search button.
-		 * 
-		 * @return the search button
-		 */
-		//public HasClickHandlers getSearchButton();
-		
-		/**
-		 * Gets the search string.
-		 * 
-		 * @return the search string
-		 */
-		//public HasValue<String> getSearchString();
-		
-		/**
 		 * Gets the transfer button.
 		 * 
 		 * @return the transfer button
@@ -547,12 +533,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public FormPanel getForm();
 		
-		/**
-		 * Gets the measure data table.
-		 * 
-		 * @return the measure data table
-		 */
-		//public Grid508 getMeasureDataTable();
 		
 		/**
 		 * Gets the measure search filter widget.
@@ -572,29 +552,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the measure search view
 		 */
 		MeasureSearchView getMeasureSearchView();
-		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		//public HasPageSelectionHandler getPageSelectionTool();
-		
-		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		//public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		//public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
 		/**
 		 * Gets the search button.
@@ -677,26 +634,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getCancelButton();
 		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		//public HasPageSelectionHandler getPageSelectionTool();
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		//public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		//public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
 		/**
 		 * Gets the share button.
@@ -727,89 +664,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the new private
 		 */
 		public void setPrivate(boolean isPrivate);
-	}
-	
-	/**
-	 * The Interface TransferDisplay.
-	 */
-	public static interface TransferDisplay {
-		
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		public Widget asWidget();
-		
-		/**
-		 * Builds the cell table.
-		 *
-		 * @param results the results
-		 */
-		void buildCellTable( TransferMeasureOwnerShipModel results);
-		
-		/**
-		 * Builds the html for measures.
-		 * 
-		 * @param measureList
-		 *            the measure list
-		 */
-		void buildHTMLForMeasures(
-				List<ManageMeasureSearchModel.Result> measureList);
-		
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		public HasClickHandlers getCancelButton();
-		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-		public HasClickHandlers getSaveButton();
-		
-		/**
-		 * Gets the selected value.
-		 * 
-		 * @return the selected value
-		 */
-		public String getSelectedValue();
-		
-		/**
-		 * Gets the success message display.
-		 * 
-		 * @return the success message display
-		 */
-		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
-		
-		/**
-		 * Gets the search button.
-		 *
-		 * @return the search button
-		 */
-		HasClickHandlers getSearchButton();
-		
-		/**
-		 * Gets the search string.
-		 *
-		 * @return the search string
-		 */
-		HasValue<String> getSearchString();
-		
-		/**
-		 * Clear radio buttons.
-		 */
-		public void clearRadioButtons();
 	}
 	
 	/**
@@ -974,7 +828,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private String measureDelMessage;
 	
 	/** The model. */
-	private TransferMeasureOwnerShipModel model = null;
+	private TransferOwnerShipModel model = null;
 	
 	/** The panel. */
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
@@ -992,7 +846,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private int startIndex = 1;
 	
 	/** The transfer display. */
-	private TransferDisplay transferDisplay;
+	private TransferOwnershipView transferDisplay;
 	
 	/** The user share info. */
 	private UserShareInfoAdapter userShareInfo = new UserShareInfoAdapter();
@@ -1019,7 +873,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			DetailDisplay dDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
 			VersionDisplay vDisplay, DraftDisplay dDisplay,
-			final TransferDisplay transferDisplay) {
+			final TransferOwnershipView transferDisplay) {
 		
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
@@ -1547,7 +1401,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			.get()
 			.getMeasureService()
 			.searchUsers(searchString, startIndex, pageSize,
-					new AsyncCallback<TransferMeasureOwnerShipModel>() {
+					new AsyncCallback<TransferOwnerShipModel>() {
 				
 				@Override
 				public void onFailure(Throwable caught) {
@@ -1559,7 +1413,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				
 				@Override
 				public void onSuccess(
-						TransferMeasureOwnerShipModel result) {
+						TransferOwnerShipModel result) {
 					
 					transferDisplay
 					.buildHTMLForMeasures(transferMeasureResults);
@@ -3022,7 +2876,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		((Button) searchDisplay.getAdminSearchButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getAdminSearchString())).setEnabled(!busy);
-		((Button) transferDisplay.getSearchButton()).setEnabled(!busy);
+		((org.gwtbootstrap3.client.ui.Button) transferDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (transferDisplay.getSearchString())).setEnabled(!busy);
 		
 	}
@@ -3051,7 +2905,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param transferDisplay
 	 *            the transfer display
 	 */
-	private void transferDisplayHandlers(final TransferDisplay transferDisplay) {
+	private void transferDisplayHandlers(final TransferOwnershipView transferDisplay) {
 		
 		transferDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -3089,7 +2943,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									public void onSuccess(Void result) {
 										transferDisplay
 										.getSuccessMessageDisplay()
-										.setMessage(
+										.createAlert(
 												MatContext
 												.get()
 												.getMessageDelegate()
@@ -3104,7 +2958,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 				if (userSelected == false) {
 					transferDisplay.getSuccessMessageDisplay().clear();
-					transferDisplay.getErrorMessageDisplay().setMessage(
+					transferDisplay.getErrorMessageDisplay().createAlert(
 							MatContext.get().getMessageDelegate()
 							.getUserRequiredErrorMessage());
 				}

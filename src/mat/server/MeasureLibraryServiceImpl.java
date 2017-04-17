@@ -39,7 +39,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
-import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
@@ -3133,7 +3133,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#searchUsers(int, int)
 	 */
 	@Override
-	public final TransferMeasureOwnerShipModel searchUsers(final String searchText, final int startIndex,
+	public final TransferOwnerShipModel searchUsers(final String searchText, final int startIndex,
 			final int pageSize) {
 		UserService usersService = getUserService();
 		List<User> searchResults;
@@ -3144,10 +3144,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		logger.info("User search returned " + searchResults.size());
 
-		TransferMeasureOwnerShipModel result = new TransferMeasureOwnerShipModel();
-		List<TransferMeasureOwnerShipModel.Result> detailList = new ArrayList<TransferMeasureOwnerShipModel.Result>();
+		TransferOwnerShipModel result = new TransferOwnerShipModel();
+		List<TransferOwnerShipModel.Result> detailList = new ArrayList<TransferOwnerShipModel.Result>();
 		for (User user : searchResults) {
-			TransferMeasureOwnerShipModel.Result r = new TransferMeasureOwnerShipModel.Result();
+			TransferOwnerShipModel.Result r = new TransferOwnerShipModel.Result();
 			r.setFirstName(user.getFirstName());
 			r.setLastName(user.getLastName());
 			r.setEmailId(user.getEmailAddress());

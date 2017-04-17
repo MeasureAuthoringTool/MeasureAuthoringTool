@@ -666,6 +666,9 @@ public class MessageDelegate {
 	/** The transfer checkbox error measure. */
 	private final String TRANSFER_CHECKBOX_ERROR_MEASURE = "Please select at least one Measure to transfer ownership.";
 	
+	/** The transfer checkbox error measure. */
+	private final String TRANSFER_CHECKBOX_ERROR_CQL_LIBRARY = "Please select at least one CQL Library to transfer ownership.";
+	
 	/** The transfer ownership success. */
 	private final String TRANSFER_OWNERSHIP_SUCCESS = "Ownership successfully transferred to ";
 	
@@ -2752,7 +2755,7 @@ public class MessageDelegate {
 		return CQL_STAND_ALONE_LIBRARY_NAME_ERROR;
 	}
 
-	public static String getNoLibrarues() {
+	public String getNoLibrarues() {
 		return NO_LIBRARUES;
 	}
 
@@ -2834,6 +2837,10 @@ public class MessageDelegate {
 
 	public String getCqlFunctionArgumentNameError() {
 		return CQL_FUNCTION_ARGUMENT_NAME_ERROR;
+	}
+
+	public String getTRANSFER_CHECKBOX_ERROR_CQL_LIBRARY() {
+		return TRANSFER_CHECKBOX_ERROR_CQL_LIBRARY;
 	}
 	
 }

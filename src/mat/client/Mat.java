@@ -2,6 +2,8 @@ package mat.client;
 
 import java.util.Date;
 import mat.client.admin.ManageAdminPresenter;
+import mat.client.admin.ManageCQLLibraryAdminPresenter;
+import mat.client.admin.ManageCQLLibraryAdminView;
 import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
 import mat.client.codelist.ListBoxCodeProvider;
@@ -26,7 +28,7 @@ import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.ManageMeasureShareView;
 import mat.client.measure.ManageMeasureVersionView;
-import mat.client.measure.TransferMeasureOwnershipView;
+import mat.client.measure.TransferOwnershipView;
 import mat.client.myAccount.ChangePasswordPresenter;
 import mat.client.myAccount.ChangePasswordView;
 import mat.client.myAccount.MyAccountPresenter;
@@ -170,6 +172,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	/** The measure library. */
 	private ManageMeasurePresenter measureLibrary;
 	
+	private ManageCQLLibraryAdminPresenter cqlLibraryAdminPresenter;
+	
 	/** The cql composer. */
 	private CqlComposerPresenter cqlComposer;
 	
@@ -264,7 +268,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			/*ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();*/
-			TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
+			TransferOwnershipView transferOS = new TransferOwnershipView();
 			/*ManageMeasureShareView measureShareView = new ManageMeasureShareView();*/
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
 			/*ManageMeasureExportView measureExportView;
@@ -593,6 +597,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureLibrary = buildMeasureLibraryWidget(true);
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
+			
+			ManageCQLLibraryAdminView cqlLibraryAdminView = new ManageCQLLibraryAdminView();
+			CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
+			TransferOwnershipView transferOS = new TransferOwnershipView();
+			cqlLibraryAdminPresenter = new ManageCQLLibraryAdminPresenter(cqlLibraryAdminView,historyView,transferOS);
+			title = "CQL Library Ownership";
+			tabIndex = mainTabLayout.addPresenter(cqlLibraryAdminPresenter, mainTabLayout.fmt.normalTitle(title));
 			
 			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
 			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);

@@ -15,7 +15,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
-import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -319,7 +319,7 @@ public interface MeasureLibraryService {
 	 * @param pageSize the page size
 	 * @return the transfer measure owner ship model
 	 */
-	TransferMeasureOwnerShipModel searchUsers(String searchText, int startIndex,
+	TransferOwnerShipModel searchUsers(String searchText, int startIndex,
 			int pageSize);
 	
 	/**

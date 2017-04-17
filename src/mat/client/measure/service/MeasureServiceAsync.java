@@ -12,7 +12,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
-import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.TransferOwnerShipModel;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatValueSet;
@@ -337,7 +337,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 */
 	void searchUsers(String searchText, int startIndex, int pageSize,
-			AsyncCallback<TransferMeasureOwnerShipModel> callback);
+			AsyncCallback<TransferOwnerShipModel> callback);
 	
 	/**
 	 * Transfer owner ship to user.

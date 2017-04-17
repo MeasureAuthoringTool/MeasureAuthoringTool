@@ -202,4 +202,9 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	public CQLKeywords getCQLKeywordsLists() {
 		return this.getCQLLibraryService().getCQLKeywordsLists();
 	}
+	@Override
+	public 
+	void transferLibraryOwnerShipToUser(List<String> list, String toEmail){
+		this.getCQLLibraryService().transferLibraryOwnerShipToUser(list, toEmail);
+	}
 }

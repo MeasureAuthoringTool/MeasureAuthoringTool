@@ -12,7 +12,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
-import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.TransferOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
@@ -313,7 +313,7 @@ public interface MeasureService extends RemoteService {
 	 * @param pageSize the page size
 	 * @return the transfer measure owner ship model
 	 */
-	TransferMeasureOwnerShipModel searchUsers(String searchText, int startIndex, int pageSize);
+	TransferOwnerShipModel searchUsers(String searchText, int startIndex, int pageSize);
 	
 	/**
 	 * Transfer owner ship to user.

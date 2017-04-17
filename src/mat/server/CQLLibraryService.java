@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -36,6 +36,7 @@ import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.MatContext;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.util.ClientConstants;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
@@ -181,7 +182,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		for(CQLLibraryShareDTO dto : list){
-			CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(user, dto  );
+			User userForShare = user;
+			if(LoggedInUserUtil.getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+				userForShare = userDAO.find(dto.getOwnerUserId());
+			}
+			CQLLibraryDataSetObject object = extractCQLLibraryDataObjectFromShareDTO(userForShare, dto  );
 			allLibraries.add(object);
 		}
 	
@@ -1711,64 +1716,88 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		logger.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
 	}
 	
+	
 	@Override
-	public List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner() {
-		Map<User, List<CQLLibrary>> map = new HashMap<>();
-		List<User> nonAdminUserList = getUserService().getAllNonAdminActiveUsers();
-		for(User user : nonAdminUserList) {
-			List<CQLLibrary> libraryList = cqlLibraryDAO.getLibraryListForLibraryOwner(user);
-			if((libraryList != null && libraryList.size() > 0)) {
-				map.put(user,  libraryList);
-			}
-		}
+	public void transferLibraryOwnerShipToUser(final List<String> list, final String toEmail) {
+		User userTo = userDAO.findByEmail(toEmail);
 		
-		List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = populateCQLLibraryOwnerReport(map); 
-		return cqlLibraryOwnerReports;
-	}
-	
-	/**
-	 * Populates the cql library ownership dto list
-	 * @param map the map of users and cql libraries
-	 * @return the cql library ownership report list
-	 */
-	private List<CQLLibraryOwnerReportDTO> populateCQLLibraryOwnerReport(Map<User, List<CQLLibrary>> map) {
-		List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = new ArrayList<CQLLibraryOwnerReportDTO>();
-		for(Entry<User, List<CQLLibrary>> entry : map.entrySet()) {
-			User user = entry.getKey();
-			List<CQLLibrary> libraries = entry.getValue();
+		for (int i = 0; i < list.size(); i++) {
+			CQLLibrary library = cqlLibraryDAO.find(list.get(i));
+			List<CQLLibrary> libraries = new ArrayList <CQLLibrary>();
+			libraries.add(library);
+			//Get All Family Libraries for each CQL Library
+			List<CQLLibrary> allLibrariesInFamily = cqlLibraryDAO.getAllLibrariesInSet(libraries);
+			for (int j = 0; j < allLibrariesInFamily.size(); j++) {
+				String additionalInfo = "CQL Library Owner transferred from "
+						+ allLibrariesInFamily.get(j).getOwnerId().getEmailAddress() + " to " + toEmail;
+				allLibrariesInFamily.get(j).setOwnerId(userTo);
+				this.save(allLibrariesInFamily.get(j));
+				cqlLibraryAuditLogDAO.recordCQLLibraryEvent(allLibrariesInFamily.get(j), "CQL Library Ownership Changed", additionalInfo);
+				additionalInfo = "";
+				
+			}
+			List<CQLLibraryShare> cqlLibShareInfo = cqlLibraryDAO.getLibraryShareInforForLibrary(list.get(i));
+			for (int k = 0; k < cqlLibShareInfo.size(); k++) {
+				cqlLibShareInfo.get(k).setOwner(userTo);
+				cqlLibraryShareDAO.save(cqlLibShareInfo.get(k));
+			}
 			
-			for(CQLLibrary cqlLibrary : libraries) {
-				
-				String cqlLibraryName = cqlLibrary.getName();
-				
-				String type = ""; 
-				if(cqlLibrary.getMeasureId() == null) {
-					type = "Stand Alone"; 
-				} else {
-					type = "Measure"; 
-				}
-				
-				String status = ""; 
-				if(cqlLibrary.isDraft()) {
-					status = "Draft";
-				} else {
-					status = "Versioned"; 
-				}
-				
-				
-				String versionNumber = "v" + cqlLibrary.getVersionNumber(); 
-				String id = cqlLibrary.getId();
-				String setId = cqlLibrary.getSet_id();
-				String firstName = user.getFirstName();
-				String lastName = user.getLastName(); 
-				String organization = user.getOrganization().getOrganizationName();
-				
-				CQLLibraryOwnerReportDTO cqlLibraryOwnerReportDTO = new CQLLibraryOwnerReportDTO(cqlLibraryName, type, status, versionNumber, id, setId, firstName, lastName, organization);
-				cqlLibraryOwnerReports.add(cqlLibraryOwnerReportDTO);
-			}
 		}
 		
-		return cqlLibraryOwnerReports; 
 	}
 	
+	@Override
+    public List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner() {
+        Map<User, List<CQLLibrary>> map = new HashMap<>();
+        List<User> nonAdminUserList = getUserService().getAllNonAdminActiveUsers();
+        for(User user : nonAdminUserList) {
+            List<CQLLibrary> libraryList = cqlLibraryDAO.getLibraryListForLibraryOwner(user);
+            if((libraryList != null && libraryList.size() > 0)) {
+                map.put(user,  libraryList);
+            }
+        }
+ 
+        List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = populateCQLLibraryOwnerReport(map); 
+        return cqlLibraryOwnerReports;
+ 
+    }
+	
+	 /**
+     * Populates the cql library ownership dto list
+     * @param map the map of users and cql libraries
+     * @return the cql library ownership report list
+     */
+ 
+    private List<CQLLibraryOwnerReportDTO> populateCQLLibraryOwnerReport(Map<User, List<CQLLibrary>> map) {
+        List<CQLLibraryOwnerReportDTO> cqlLibraryOwnerReports = new ArrayList<CQLLibraryOwnerReportDTO>();
+        for(Entry<User, List<CQLLibrary>> entry : map.entrySet()) {
+            User user = entry.getKey();
+            List<CQLLibrary> libraries = entry.getValue();
+            for(CQLLibrary cqlLibrary : libraries) {
+                String cqlLibraryName = cqlLibrary.getName();
+                String type = ""; 
+                if(cqlLibrary.getMeasureId() == null) {
+                    type = "Stand Alone"; 
+                } else {
+                    type = "Measure"; 
+                }
+                String status = ""; 
+                if(cqlLibrary.isDraft()) {
+                    status = "Draft";
+                } else {
+                    status = "Versioned"; 
+                }
+                String versionNumber = "v" + cqlLibrary.getVersionNumber(); 
+                String id = cqlLibrary.getId();
+                String setId = cqlLibrary.getSet_id();
+                String firstName = user.getFirstName();
+                String lastName = user.getLastName(); 
+                String organization = user.getOrganization().getOrganizationName();
+                CQLLibraryOwnerReportDTO cqlLibraryOwnerReportDTO = new CQLLibraryOwnerReportDTO(cqlLibraryName, type, status, versionNumber, id, setId, firstName, lastName, organization);
+                cqlLibraryOwnerReports.add(cqlLibraryOwnerReportDTO);
+            }
+        }
+        return cqlLibraryOwnerReports; 
+ 
+    }
 }

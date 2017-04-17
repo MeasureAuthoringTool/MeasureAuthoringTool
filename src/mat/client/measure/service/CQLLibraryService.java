@@ -89,4 +89,5 @@ public interface CQLLibraryService extends RemoteService {
 	
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);
 	 CQLKeywords getCQLKeywordsLists();
+	 void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
 }

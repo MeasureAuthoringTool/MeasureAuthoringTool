@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Class TransferMeasureOwnerShipModel.
  */
-public class TransferMeasureOwnerShipModel implements SearchResults<TransferMeasureOwnerShipModel.Result>,
+public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipModel.Result>,
 		IsSerializable {
 	
 	/**

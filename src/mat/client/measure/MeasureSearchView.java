@@ -724,9 +724,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
-		}
-		
-		else{
+		}	else{
 			Label measureSearchHeader = new Label(getMeasureListLabel());
 			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 			measureSearchHeader.setStyleName("recentSearchHeader");

@@ -32,7 +32,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 
-public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay {
+public class CQLLibraryHistoryView  {
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
@@ -187,7 +187,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	 *
 	 * @param results the results
 	 */
-	@Override
+//	@Override
 	public void buildCellTable(List<AuditLogDTO> results){
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -271,7 +271,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#setMeasureName(java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void setCQLLibraryName(String name) {
 		this.cqlLibraryName = name;
 		nameText.setText("CQLLibrary: " + name);
@@ -281,7 +281,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#setMeasureId(java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void setCQLLibraryId(String id) {
 		this.cqlLibraryId = id;
 	}
@@ -290,7 +290,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#getMeasureId()
 	 */
-	@Override
+	//@Override
 	public String getCQLLibraryId() {
 		return cqlLibraryId;
 	}
@@ -300,7 +300,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#getMeasureName()
 	 */
-	@Override
+	//@Override
 	public String getCQLLibraryName() {
 		return cqlLibraryName;
 	}
@@ -309,7 +309,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#getReturnToLink()
 	 */
-	@Override
+	//@Override
 	public HasClickHandlers getReturnToLink() {
 		return goBackLink;
 	}
@@ -318,7 +318,7 @@ public class CQLLibraryHistoryView implements CqlLibraryPresenter.HistoryDisplay
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.HistoryDisplay#setReturnToLinkText(java.lang.String)
 	 */
-	@Override
+	//@Override
 	public void setReturnToLinkText(String s) {
 		goBackLink.setText(s);
 	}

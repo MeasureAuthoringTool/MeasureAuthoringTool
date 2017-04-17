@@ -12,7 +12,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
-import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
@@ -287,7 +287,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#searchUsers(int, int)
 	 */
 	@Override
-	public TransferMeasureOwnerShipModel searchUsers(String searchText, int startIndex,
+	public TransferOwnerShipModel searchUsers(String searchText, int startIndex,
 			int pageSize) {
 		return this.getMeasureLibraryService().searchUsers(searchText, startIndex, pageSize);
 	}

@@ -105,4 +105,6 @@ public interface CQLLibraryServiceAsync {
 			AsyncCallback<VsacApiResult> asyncCallback);
 
 	void getCQLKeywordsLists(AsyncCallback<CQLKeywords> callback);
+
+	void transferLibraryOwnerShipToUser(List<String> list, String toEmail, AsyncCallback<Void> callback);
 }

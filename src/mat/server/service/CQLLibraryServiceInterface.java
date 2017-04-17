@@ -109,5 +109,7 @@ public interface CQLLibraryServiceInterface {
 
 	List<CQLLibraryAssociation> getAssociations(String Id);
 
+	void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
+
 	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 }

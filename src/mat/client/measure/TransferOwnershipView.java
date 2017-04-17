@@ -3,19 +3,6 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.measure.TransferMeasureOwnerShipModel.Result;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.util.CellTableUtility;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -27,24 +14,36 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import mat.client.CustomPager;
+import mat.client.measure.TransferOwnerShipModel.Result;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.RadioButtonCell;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.util.CellTableUtility;
+import mat.model.cql.CQLLibraryDataSetObject;
+
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class TransferMeasureOwnershipView.
+ * The Class TransferOwnershipView.
  */
-public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.TransferDisplay {
+public class TransferOwnershipView {
 	
 	
 	
@@ -55,34 +54,36 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("transferMOwnership");
 	
 	/** The success messages. */
-	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	protected MessageAlert successMessages = new SuccessMessageAlert();
 	
-	/** The error messages. */
-	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	/** The CQL error message. */
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
 	/** The view. */
 	/*private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new 
 			SearchView<TransferMeasureOwnerShipModel.Result>("Users");*/
 	
 	/** The value set name panel. */
-	HorizontalPanel valueSetNamePanel = new HorizontalPanel();
+	HorizontalPanel TransferObjectNamePanel = new HorizontalPanel();
 	
 	/** The table. */
-	private CellTable<TransferMeasureOwnerShipModel.Result> table;
+	private CellTable<TransferOwnerShipModel.Result> table;
 	
 	 /** The selection model. */
- 	private SingleSelectionModel<TransferMeasureOwnerShipModel.Result> selectionModel;
+ 	private SingleSelectionModel<TransferOwnerShipModel.Result> selectionModel;
 	
 	/** The cell table panel. */
 	VerticalPanel cellTablePanel = new VerticalPanel();
 	
-	/** The search button. */
+	/** The search button. *//*
 	private Button searchButton = new PrimaryButton("Search", "primaryGreyLeftButton");
-	/** The search input. */
-	private TextBox searchInput = new TextBox();
+	*//** The search input. *//*
+	private TextBox searchInput = new TextBox();*/
+	
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
 	/** The selected measure list. */
-	private ArrayList<TransferMeasureOwnerShipModel.Result> selectedMeasureList;
+	private ArrayList<TransferOwnerShipModel.Result> selectedUserList;
 	
 	/** The Constant PAGE_SIZE. */
 	private static final int PAGE_SIZE = 25;
@@ -90,10 +91,11 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/**
 	 * Instantiates a new transfer measure ownership view.
 	 */
-	public TransferMeasureOwnershipView() {
+	public TransferOwnershipView() {
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(buildSearchWidget());
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(valueSetNamePanel);
+		mainPanel.add(TransferObjectNamePanel);
 		mainPanel.add(new SpacerWidget());
 		//mainPanel.add(view.asWidget());
 		mainPanel.add(cellTablePanel);
@@ -103,7 +105,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessages);
-		mainPanel.add(errorMessages);
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		buttons.getCancelButton().setTitle("Cancel");
 		buttons.getCancelButton().setText("Cancel");
@@ -119,7 +121,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#asWidget()
 	 */
-	@Override
+	//@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
@@ -127,9 +129,9 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildHTMLForMeasures(java.util.List)
 	 */
-	@Override
+//	@Override
 	public void buildHTMLForMeasures(List<ManageMeasureSearchModel.Result> measureList){
-		valueSetNamePanel.clear();
+		TransferObjectNamePanel.clear();
 		StringBuilder paragraph = new StringBuilder("<p><b>Measure Names :</b>");
 		for(int i=0;i<measureList.size();i++){
 			paragraph.append(measureList.get(i).getName());
@@ -139,13 +141,27 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		}
 		paragraph.append("</p>");
 		HTML paragraphHtml = new HTML(paragraph.toString());
-		valueSetNamePanel.add(paragraphHtml);
+		TransferObjectNamePanel.add(paragraphHtml);
+	}
+	
+	public void buildHTMLForLibraries(List<CQLLibraryDataSetObject> measureList){
+		TransferObjectNamePanel.clear();
+		StringBuilder paragraph = new StringBuilder("<p><b>CQL Library Names :</b>");
+		for(int i=0;i<measureList.size();i++){
+			paragraph.append(measureList.get(i).getCqlName());
+			if(i < measureList.size()-1){
+				paragraph.append(",");
+			}
+		}
+		paragraph.append("</p>");
+		HTML paragraphHtml = new HTML(paragraph.toString());
+		TransferObjectNamePanel.add(paragraphHtml);
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSaveButton()
 	 */
-	@Override
+//	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttons.getSaveButton();
 	}
@@ -153,7 +169,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getCancelButton()
 	 */
-	@Override
+//	@Override
 	public HasClickHandlers getCancelButton() {
 		
 		return buttons.getCancelButton();
@@ -162,7 +178,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSelectedValue()
 	 */
-	@Override
+	//@Override
 	public String getSelectedValue() {
 		return null;
 	}
@@ -170,16 +186,16 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getErrorMessageDisplay()
 	 */
-	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		return errorMessages;
+//	@Override
+	public MessageAlert getErrorMessageDisplay() {
+		return errorMessageAlert;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSuccessMessageDisplay()
 	 */
-	@Override
-	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
+	//@Override
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
@@ -189,7 +205,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
       *
       * @return the cell table
       */
-     private CellTable<TransferMeasureOwnerShipModel.Result> addColumnToTable() {
+     private CellTable<TransferOwnerShipModel.Result> addColumnToTable() {
     	 
     	   Label searchHeader = new Label("Active MAT User List");
 			searchHeader.getElement().setId("searchHeader_Label");
@@ -198,10 +214,10 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
-			selectionModel = new SingleSelectionModel<TransferMeasureOwnerShipModel.Result>();
+			selectionModel = new SingleSelectionModel<TransferOwnerShipModel.Result>();
 			table.setSelectionModel(selectionModel);
-			Column<TransferMeasureOwnerShipModel.Result,SafeHtml> userName = new 
-					Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
+			Column<TransferOwnerShipModel.Result,SafeHtml> userName = new 
+					Column<TransferOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 				@Override
 				public SafeHtml getValue(Result object) {
 					return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName(), 
@@ -211,8 +227,8 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 				table.addColumn(userName,SafeHtmlUtils.fromSafeConstant(
 						"<span title='Name'>" + "Name" + "</span>"));
 		   
-		    Column<TransferMeasureOwnerShipModel.Result,SafeHtml> emailAddress = new 
-		    		Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
+		    Column<TransferOwnerShipModel.Result,SafeHtml> emailAddress = new 
+		    		Column<TransferOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 		    	@Override
 		    	public SafeHtml getValue(Result object) {
 		    		return CellTableUtility.getColumnToolTip(object.getEmailId(), "Email Address "+object.getEmailId());
@@ -222,15 +238,15 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		    			"<span title='Email Address'>" + "Email Address" + "</span>"));
 				 
 		    RadioButtonCell radioButtonCell = new RadioButtonCell(true, true);
-		    Column<TransferMeasureOwnerShipModel.Result,Boolean> selectUser = new 
-		    		Column<TransferMeasureOwnerShipModel.Result,Boolean>(radioButtonCell){
+		    Column<TransferOwnerShipModel.Result,Boolean> selectUser = new 
+		    		Column<TransferOwnerShipModel.Result,Boolean>(radioButtonCell){
 		    	@Override
 		    	public Boolean getValue(Result object) {
 		    		return selectionModel.isSelected(object);
 		    		}
 		    	};
 		    	
-		    	selectUser.setFieldUpdater(new FieldUpdater<TransferMeasureOwnerShipModel.Result, Boolean>() {
+		    	selectUser.setFieldUpdater(new FieldUpdater<TransferOwnerShipModel.Result, Boolean>() {
 					
 					@Override
 					public void update(int index, Result object, Boolean value) {
@@ -247,17 +263,17 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildCellTable(mat.client.measure.TransferMeasureOwnerShipModel)
 	 */
-	@Override
-	public void buildCellTable(TransferMeasureOwnerShipModel results) {
+	//@Override
+	public void buildCellTable(TransferOwnerShipModel results) {
 		cellTablePanel.clear();
-		table = new CellTable<TransferMeasureOwnerShipModel.Result>();
+		table = new CellTable<TransferOwnerShipModel.Result>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<TransferMeasureOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferMeasureOwnerShipModel.Result>();
-		selectedMeasureList = new ArrayList<TransferMeasureOwnerShipModel.Result>();
-		selectedMeasureList.addAll(results.getData());
+		ListDataProvider<TransferOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferOwnerShipModel.Result>();
+		selectedUserList = new ArrayList<TransferOwnerShipModel.Result>();
+		selectedUserList.addAll(results.getData());
 		table.setPageSize(PAGE_SIZE);
 		table.redraw();
-		table.setRowCount(selectedMeasureList.size(), true);
+		table.setRowCount(selectedUserList.size(), true);
 		sortProvider.refresh();
 		sortProvider.getList().addAll(results.getData());
 		table = addColumnToTable();
@@ -280,7 +296,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		table.getElement().setAttribute("aria-describedby", "activeMATUsersListSummary");
 		cellTablePanel.setWidth("100%");
 		cellTablePanel.add(invisibleLabel);
-		cellTablePanel.add(buildSearchWidget());
+		//cellTablePanel.add(buildSearchWidget());
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(table);
 		cellTablePanel.add(new SpacerWidget());
@@ -291,11 +307,11 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#clearRadioButtons()
 	 */
-	@Override
+//	@Override
 	public void clearRadioButtons(){
 		List<Result> displayedItems = new ArrayList<Result>();
-		displayedItems.addAll(selectedMeasureList);
-		for (TransferMeasureOwnerShipModel.Result msg : displayedItems) {
+		displayedItems.addAll(selectedUserList);
+		for (TransferOwnerShipModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
 	}
@@ -308,28 +324,31 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	 */
 	private Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
-		FlowPanel fp1 = new FlowPanel();
+		/*FlowPanel fp1 = new FlowPanel();
 		fp1.add(searchInput);
 		searchButton.setTitle("Search");
 		fp1.add(searchButton);
 		fp1.add(new SpacerWidget());
-		hp.add(fp1);
+		hp.add(fp1);*/
+		searchWidgetBootStrap.getSearchBox().setWidth("232px");
+		hp.add(searchWidgetBootStrap.getSearchWidget());
+		hp.getElement().setAttribute("style", "width:100px;padding-left:620px;margin-top:20px;");
 		return hp;
 	}
 
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSearchButton()
 	 */
-	@Override
+//	@Override
 	public HasClickHandlers getSearchButton() {
-		return searchButton;
+		return searchWidgetBootStrap.getGo();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getSearchString()
 	 */
-	@Override
+	//@Override
 	public HasValue<String> getSearchString() {
-		return searchInput;
+		return searchWidgetBootStrap.getSearchBox();
 	}
 	
 	

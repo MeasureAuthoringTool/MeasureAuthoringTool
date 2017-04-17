@@ -2344,6 +2344,24 @@ public class MatContext implements IsSerializable {
 		}
 		return cqlLibraryService;
 	}
+	
+	/**
+	 * Checks if is measure is CQL Measure depending 
+	 * on Measure release version.
+	 *
+	 * @param releaseVersion the release version
+	 * @return true, if is CQL measure
+	 */
+	public boolean isCQLMeasure(String releaseVersion) {
+		
+		String str[] = releaseVersion.replace("v", "").split("\\.");
+		int version_int = Integer.parseInt(str[0]);
+		if(version_int<5){
+			return false;
+		}
+		
+		return true;
+	}
 
 	/*public GlobalCopyPaste getCopyPaste() {
 		return copyPaste;

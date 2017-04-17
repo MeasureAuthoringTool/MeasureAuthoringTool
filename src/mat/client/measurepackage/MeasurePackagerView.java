@@ -303,6 +303,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The risk adjust label. */
 	private HTML riskAdjustLabel = new HTML();
 	
+	/** The QDMElements label. */
+	private HTML qdmElementsLabel = new HTML();
+	
 	/**
 	 * Constructor.
 	 */
@@ -693,7 +696,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		//		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
 		//		qdmElementsLabel.addStyleName("valueSetHeader");
-		sPanel.add(new HTML("<b style='margin-left:15px;'> QDM Elements </b>"));
+		sPanel.add(getQdmElementsLabel());
 		
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.getElement().setId("LeftPanelSuppQDMList");
@@ -1800,6 +1803,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return riskAdjustLabel;
 	}
 
+	
+	/**
+	 * @return the qdmElementsLabel
+	 */
+	public HTML getQdmElementsLabel() {
+		return qdmElementsLabel;
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setRiskAdjustLabel(boolean)
 	 */
@@ -1809,6 +1820,19 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			riskAdjustLabel.setHTML("<b style='margin-left:15px;'> Definitions </b>");
 		} else {
 			riskAdjustLabel.setHTML("<b style='margin-left:15px;'> Clauses </b>");
+		}
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setRiskAdjustLabel(boolean)
+	 */
+	@Override
+	public void setQdmElementsLabel(boolean isCQLMeasure) {
+		if(isCQLMeasure){
+			qdmElementsLabel.setHTML("<b style='margin-left:15px;'> Definitions </b>");
+		} else {
+			qdmElementsLabel.setHTML("<b style='margin-left:15px;'> QDM Elements </b>");
 		}
 		
 	}

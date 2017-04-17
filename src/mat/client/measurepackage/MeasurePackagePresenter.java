@@ -435,6 +435,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @param isCQLMeasure the new risk adjust label
 		 */
 		void setRiskAdjustLabel(boolean isCQLMeasure);
+		
+		void setQdmElementsLabel(boolean isCQLMeasure);
 	}
 	
 	/** The vsacapi service async. */
@@ -1023,9 +1025,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		if(packageOverview.getReleaseVersion() != null 
-				&& isCQLMeasure(packageOverview.getReleaseVersion())){
+				&& MatContext.get().isCQLMeasure(packageOverview.getReleaseVersion())){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
+			view.setQdmElementsLabel(true);
 			//Set supple data to empty if CQL measure
 			view.setQDMElementsInSuppElements(Collections.<QualityDataSetDTO>emptyList());
 			view.setQDMElements(Collections.<QualityDataSetDTO>emptyList());
@@ -1035,6 +1038,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		else{
 			view.setCQLMeasure(false);
 			view.setRiskAdjustLabel(false);
+			view.setQdmElementsLabel(false);
 			//Set CQL Suppl data to empty
 			view.setCQLElementsInSuppElements(Collections.<CQLDefinition>emptyList());
 			view.setCQLQDMElements(Collections.<CQLDefinition>emptyList());
@@ -1380,24 +1384,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?id=" + model.getId()
 				+ "&format=zip";
 		Window.Location.replace(url + "&type=save");
-	}
-	
-	/**
-	 * Checks if is measure is CQL Measure depending 
-	 * on Measure release version.
-	 *
-	 * @param releaseVersion the release version
-	 * @return true, if is CQL measure
-	 */
-	private boolean isCQLMeasure(String releaseVersion) {
-		
-		String str[] = releaseVersion.replace("v", "").split("\\.");
-		int version_int = Integer.parseInt(str[0]);
-		if(version_int<5){
-			return false;
-		}
-		
-		return true;
 	}
 	
 }

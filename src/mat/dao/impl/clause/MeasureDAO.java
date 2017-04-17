@@ -583,7 +583,7 @@ mat.dao.clause.MeasureDAO {
 			boolean canDraft = dto.isDraft() ? false
 					: hasDraft.contains(dto.getMeasureSetId()) ? false
 							: dto.isLocked() ? false
-									: user.getSecurityRole()
+									: /*user.getSecurityRole()
 									.getDescription()
 									.equalsIgnoreCase(
 											SecurityRole.SUPER_USER_ROLE) ? true
@@ -593,7 +593,7 @@ mat.dao.clause.MeasureDAO {
 																	: dto.getShareLevel() == null ? false
 																			: dto.getShareLevel()
 																			.equalsIgnoreCase(
-																					ShareLevel.MODIFY_ID) ? true
+																					ShareLevel.MODIFY_ID)*/ isCurrentMeasureSharable(dto.getMeasureId()) ? true
 																							: false;
 			
 			if (canDraft) {
@@ -688,7 +688,7 @@ mat.dao.clause.MeasureDAO {
 		for (MeasureShareDTO dto : orderedDTOList) {
 			boolean canVersion = !dto.isDraft() ? false
 					: dto.isLocked() ? false
-							: user.getSecurityRole()
+							: /*user.getSecurityRole()
 							.getDescription()
 							.equalsIgnoreCase(
 									SecurityRole.SUPER_USER_ROLE) ? true
@@ -697,7 +697,7 @@ mat.dao.clause.MeasureDAO {
 															: dto.getShareLevel() == null ? false
 																	: dto.getShareLevel()
 																	.equalsIgnoreCase(
-																			ShareLevel.MODIFY_ID) ? true
+																			ShareLevel.MODIFY_ID)*/ isCurrentMeasureSharable(dto.getMeasureId()) ? true
 																					: false;
 			if (canVersion) {
 				dtoList.add(dto);
@@ -706,6 +706,27 @@ mat.dao.clause.MeasureDAO {
 		
 		return dtoList;
 	}
+	
+	//To check if current Measure is Sharable
+	public boolean isCurrentMeasureSharable(String measureId) {
+
+		Measure measure = find(measureId);
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		MeasureShareDTO dto = extractDTOFromMeasure(measure);
+		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
+		ShareLevel shareLevel = findShareLevelForUser(measureId,
+				currentUserId, dto.getMeasureSetId());
+		boolean isSharedToEdit = false;
+		if (shareLevel != null) {
+			isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel.getId());
+		}
+		boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+				
+		return isEditable;
+	}
+
 	
 	/*@Override
 	public List<MeasureShareDTO> getMeasuresForVersion(String searchText,User user,

@@ -25,7 +25,6 @@ import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.TransferOwnershipView;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
@@ -103,10 +102,16 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 		Button getTransferButton();
 
-		void clearTransferCheckBoxes();
+		//void clearTransferCheckBoxes();
 
 	}
 
+	/**
+	 * Constructor.
+	 * @param cqlLibraryAdminView
+	 * @param historyView
+	 * @param transferOwnershipView
+	 */
 	public ManageCQLLibraryAdminPresenter(ViewDisplay cqlLibraryAdminView, CQLLibraryHistoryView historyView,
 			TransferOwnershipView transferOwnershipView) {
 		super();
@@ -120,6 +125,9 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * This method is invoked to display CQL Library Tab and search Results.
+	 */
 	private void displaySearch() {
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
@@ -140,25 +148,11 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		Mat.focusSkipLists("CQLLibraryOwnership");
 	}
 
+	/**
+	 * CQL Library TransferOwnership event Handlers
+	 */
 	private void addCQLLibraryAdminViewEvents() {
-		/*cqlLibraryAdminView.getZoomButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-
-				isSearchBarVisible = !isSearchBarVisible;
-
-				if (isSearchBarVisible) {
-					cqlLibraryAdminView.getWidgetVP()
-							.add(cqlLibraryAdminView.getSearchWidgetBootStrap().getSearchWidget());
-				} else {
-					cqlLibraryAdminView.getWidgetVP().clear();
-				}
-
-			}
-		});*/
-
+		
 		cqlLibraryAdminView.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -187,9 +181,28 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 				//cqlLibraryAdminView.clearTransferCheckBoxes();
 			}
 		});
+		/*cqlLibraryAdminView.getZoomButton().addClickHandler(new ClickHandler() {
 
+		@Override
+		public void onClick(ClickEvent event) {
+			cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
+
+			isSearchBarVisible = !isSearchBarVisible;
+
+			if (isSearchBarVisible) {
+				cqlLibraryAdminView.getWidgetVP()
+						.add(cqlLibraryAdminView.getSearchWidgetBootStrap().getSearchWidget());
+			} else {
+				cqlLibraryAdminView.getWidgetVP().clear();
+			}
+
+		}
+	});*/
 	}
 
+	/**
+	 * History display Event Handlers.
+	 */
 	private void addHistoryDisplayHandlers() {
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
@@ -200,6 +213,9 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Observer Event Handlers.
+	 */
 	private void addObserverHandler() {
 		cqlLibraryAdminView.getCQLLibrarySearchView().setAdminObserver(new CQLLibrarySearchView.AdminObserver() {
 
@@ -420,7 +436,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	 */
 	private void search(final String searchText, final int filter, int startIndex, int pageSize) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-		// pageSize = Integer.MAX_VALUE;
 		pageSize = 25;
 		showSearchingBusy(true);
 		cqlLibraryAdminView.getSelectedId().clear();
@@ -445,7 +460,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					}
 				});
 	}

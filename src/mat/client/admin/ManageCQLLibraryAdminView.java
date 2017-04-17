@@ -7,18 +7,14 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-//import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.ImageResources;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -42,9 +38,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-
-	CustomButton zoomButton = (CustomButton) getImage("Search", ImageResources.INSTANCE.search_zoom(), "Search",
-			"CQLSearchButton");
 
 	VerticalPanel widgetVP = new VerticalPanel();
 	/**
@@ -78,30 +71,19 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public ManageCQLLibraryAdminView() {
 		mainPanel.setWidth("100%");
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
-	//	buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		buttonLayout.getElement().setAttribute("style", "margin-left:750px");
 		transferButton.setType(ButtonType.PRIMARY);
 		transferButton.getElement().setId("transferButton");
-	//	transferButton.setMarginTop(10);
 		transferButton.setTitle("Transfer");
 		transferButton.setText("Transfer");
-		/*transferButton.setIcon(IconType.EXCHANGE);
-		transferButton.setIconSize(IconSize.LARGE);*/
-		/*transferButton.setColor("#0964A2");
-		transferButton.setSize("30px", "30px");*/
 		transferButton.getElement().setAttribute("aria-label", "Transfer");
 		
 		
 		clearAllButton.setType(ButtonType.PRIMARY);
 		clearAllButton.getElement().setId("clearAllButton");
-		//clearAllButton.setMarginTop(10);
 		clearAllButton.setMarginLeft(10.00);
 		clearAllButton.setTitle("Clear All");
 		clearAllButton.setText("Clear All");
-		/*clearAllButton.setIcon(IconType.REFRESH);
-		clearAllButton.setIconSize(IconSize.LARGE);*/
-		//clearAllButton.setColor("#0964A2");
-		//clearAllButton.setSize("30px", "30px");
 		clearAllButton.getElement().setAttribute("aria-label", "clearAllButton");
 		
 		buttonLayout.add(transferButton);
@@ -139,8 +121,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainPanel.add(buttonLayout);;
 		mainPanel.add(new SpacerWidget());
 		
-		
-		/*mainPanel.add(new SpacerWidget());*/
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -164,30 +144,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 
 	}
 
-	/**
-	 * Add Image on Button with invisible text. This text will be available when
-	 * css is turned off.
-	 *
-	 * @param action
-	 *            - {@link String}
-	 * @param url
-	 *            - {@link ImageResource}.
-	 * @param key
-	 *            - {@link String}.
-	 * @param id
-	 *            the id
-	 * @return - {@link Widget}.
-	 */
-	private Widget getImage(String action, ImageResource url, String key, String id) {
-		CustomButton image = new CustomButton();
-		image.removeStyleName("gwt-button");
-		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
-		image.setTitle(action);
-		image.setResource(url, action);
-		image.getElement().setAttribute("id", id);
-		return image;
-	}
-
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
@@ -204,10 +160,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public void buildCellTable(SaveCQLLibraryResult result, String searchText, int filter) {
 		cqlLibrarySearchView.buildCellTable(result, searchText, filter);
 	}
-	//@Override
-	public CustomButton getZoomButton() {
-		return zoomButton;
-	}
+	
 	@Override
 	public SearchWidgetBootStrap getSearchWidgetBootStrap() {
 		return searchWidgetBootStrap;
@@ -237,7 +190,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		return transferButton;
 	}
 
-	@Override
+	/*@Override
 	public void clearTransferCheckBoxes() {
 		for ( CQLLibraryDataSetObject result : cqlLibrarySearchView.getAvailableLibrariesList()) {
 			result.setTransferable(false);
@@ -247,5 +200,5 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		
 		cqlLibrarySearchView.getTable().redraw();// TODO Auto-generated method stub
 		
-	}
+	}*/
 }

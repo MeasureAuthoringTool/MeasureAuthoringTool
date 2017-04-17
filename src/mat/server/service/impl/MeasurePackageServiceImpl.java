@@ -449,7 +449,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
 			int startIndex, int numResults, int filter) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		//User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
 	}
 	

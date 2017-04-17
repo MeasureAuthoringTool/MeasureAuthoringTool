@@ -224,6 +224,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The set name input. */
 	protected TextAreaWithMaxLength setNameInput = new TextAreaWithMaxLength();
 	
+	/** The patient based measure. */
+	protected Label patientBasedMeasure = new Label();
+	
 	/** The e measure identifier input. */
 	protected TextBox eMeasureIdentifierInput = new TextBox();
 	
@@ -588,6 +591,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		NQFIDInput.getElement().setId("NQFIDInput_TextBox");
 		//NQFIDInput.addKeyDownHandler(keyDownHandler);
 		topLeftSidePanel.add(new SpacerWidget());
+		
+		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
+		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
+		patientBasedMeasureLabel.setStyleName("measureDetailLabelStyle");
+		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
+		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
+		RadioButton radioYes = new RadioButton("patientBasedGroup", "Yes");
+	    RadioButton radioNo = new RadioButton("patientBasedGroup", "No");
+	    // Check 'No' by default.
+	    radioNo.setValue(true);
+		patientBasedMeasurePanel.add(radioNo);
+		patientBasedMeasurePanel.add(radioYes);
+		patientBasedMeasurePanel.add(new SpacerWidget());
+		topLeftSidePanel.add(patientBasedMeasurePanel);
 			
 		VerticalPanel measurementPeriodPanel = new VerticalPanel();
 		measurementPeriodPanel.getElement().setId("measurementPeriod_VerticalPanel");

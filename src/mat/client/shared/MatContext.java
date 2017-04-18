@@ -2299,6 +2299,48 @@ public class MatContext implements IsSerializable {
 	}
 	
 	/**
+	 * Gets the current CQL Library id.
+	 * 
+	 * @return the CQL Library id
+	 */
+	public String getCurrentCQLLibraryLockedUserId() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getLockedUserId();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
+	 * Gets the current CQL Library id.
+	 * 
+	 * @return the CQL Library id
+	 */
+	public String getCurrentCQLLibraryLockedUserName() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getLockedUserName();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
+	 * Gets the current CQL Library id.
+	 * 
+	 * @return the CQL Library id
+	 */
+	public String getCurrentCQLLibraryLockedUserEmail() {
+		if(currentLibraryInfo != null) {
+			return currentLibraryInfo.getLockedUserEmail();
+		}
+		else {
+			return "";
+		}
+	}
+	
+	/**
 	 * Gets the current CQL Library name.
 	 * 
 	 * @return the current CQL Library name

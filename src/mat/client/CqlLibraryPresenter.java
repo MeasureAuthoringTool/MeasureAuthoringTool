@@ -830,7 +830,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				draftDisplay.getSearchWidget().getSearchInput().setText("");
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-							null);
+							null,"","");
 					fireCqlLibraryEditEvent();
 					MatContext
 					.get()
@@ -918,6 +918,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				final String mid = event.getSelectedItem().getId();
 				//final boolean isEditable = event.getSelectedItem().isEditable();
 				final CQLLibraryDataSetObject selectedItem = event.getSelectedItem();
+				isLibrarySelected(selectedItem);
 				MatContext.get().getLibraryLockService().isLibraryLocked(mid);
 				Command waitForLockCheck = new Command() {
 					@Override
@@ -955,7 +956,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
 		String userId = selectedItem.getLockedUserId(selectedItem.getLockedUserInfo());
 		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), selectedItem.isLocked(),
-				userId);
+				userId,selectedItem.getLockedUserInfo().getEmailAddress(),selectedItem.getLockedUserInfo().getFirstName()+" "+ selectedItem.getLockedUserInfo().getLastName());
 		fireCqlLibraryEditEvent();
 	}
 
@@ -1139,7 +1140,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onSuccess(SaveCQLLibraryResult result) {
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-									null);
+									null,"","");
 					fireCqlLibraryEditEvent();
 				} else {
 						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
@@ -1167,8 +1168,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param lockedUserId the locked user id
 	 */
 	private void fireCQLLibrarySelectedEvent(String id, String version,
-			String name, boolean isEditable, boolean isLocked, String lockedUserId) {
-		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId);
+			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName) {
+		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName);
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		detailDisplay.getErrorMessage().clearAlert();
 		MatContext.get().getEventBus().fireEvent(evt);

@@ -321,7 +321,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		dataSetObject.setFinalizedDate(cqlLibrary.getFinalizedDate());
 		dataSetObject.setMeasureId(cqlLibrary.getMeasureId());
 		boolean isLocked =isLocked(cqlLibrary.getLockedOutDate());
-		
+		dataSetObject.setLocked(isLocked);
 		if (isLocked && (cqlLibrary.getLockedUserId() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
 			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getId());
@@ -332,7 +332,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			dataSetObject.setLockedUserInfo(lockedUserInfo);
 		} else {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
-			dataSetObject.setLocked(isLocked);
 			dataSetObject.setLockedUserInfo(lockedUserInfo);
 		}
 		
@@ -962,8 +961,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		List<CQLLibraryDataSetObject> cqlLibraryDataSetObjects = new ArrayList<CQLLibraryDataSetObject> ();
 		for (RecentCQLActivityLog activityLog : recentLibActivityList) {
-			CQLLibrary library = cqlLibraryDAO.find(activityLog.getCqlId());
-			CQLLibraryDataSetObject object = extractCQLLibraryDataObject(library);
+			CQLLibraryDataSetObject object = findCQLLibraryByID(activityLog.getCqlId());
+			//CQLLibraryDataSetObject object = extractCQLLibraryDataObject(library);
 			cqlLibraryDataSetObjects.add(object);
 		}
 		result.setCqlLibraryDataSetObjects(cqlLibraryDataSetObjects);

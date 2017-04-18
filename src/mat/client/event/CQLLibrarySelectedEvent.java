@@ -41,6 +41,10 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 	/** The locked user id. */
 	private String lockedUserId;
 	
+	private String lockedUserEmail;
+	
+	private String lockedUserName;
+	
 	/** The cql Librart version. */
 	private String cqlLibraryVersion;
 	
@@ -48,13 +52,15 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 	/**
 	 * Instantiates a new cql library selected event.
 	 */
-	public CQLLibrarySelectedEvent(String cqlLibraryId, String cqlLibraryVersion, String libraryName,  boolean isEditable,boolean isLocked,String lockedUserId) {
+	public CQLLibrarySelectedEvent(String cqlLibraryId, String cqlLibraryVersion, String libraryName,  boolean isEditable,boolean isLocked,String lockedUserId,String lockedUserEmail,String lockedUserName) {
 		this.cqlLibraryId = cqlLibraryId;
 		this.cqlLibraryVersion = cqlLibraryVersion;
 		this.libraryName = libraryName;
 		this.isEditable = isEditable;
 		this.isLocked = isLocked;
 		this.lockedUserId = lockedUserId;
+		this.lockedUserEmail = lockedUserEmail;
+		this.lockedUserName = lockedUserName;
 	}
 	
 	/* (non-Javadoc)
@@ -155,6 +161,22 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 	 */
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
+	}
+
+	public String getLockedUserEmail() {
+		return lockedUserEmail;
+	}
+
+	public void setLockedUserEmail(String lockedUserEmail) {
+		this.lockedUserEmail = lockedUserEmail;
+	}
+
+	public String getLockedUserName() {
+		return lockedUserName;
+	}
+
+	public void setLockedUserName(String lockedUserName) {
+		this.lockedUserName = lockedUserName;
 	}
 
 }

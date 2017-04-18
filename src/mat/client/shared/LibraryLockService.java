@@ -3,12 +3,11 @@
  */
 package mat.client.shared;
 
-import mat.client.event.CQLLibrarySelectedEvent;
-import mat.client.event.MeasureSelectedEvent;
-import mat.client.measure.service.CQLLibraryServiceAsync;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.measure.service.SaveCQLLibraryResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.service.CQLLibraryServiceAsync;
+import mat.client.measure.service.SaveCQLLibraryResult;
 
 /**
  * The Class LibraryLockService.
@@ -56,12 +55,12 @@ public class LibraryLockService {
 	/**
 	 * Release measure lock.
 	 */
-	public void releaseMeasureLock(){
-		String currentMeasureId = getCurrentLibraryId();
+	public void releaseLibraryLock(){
+		String currentLibraryId = getCurrentLibraryId();
 		MatContext.get().stopMeasureLockUpdate();
-		if(currentMeasureId != null && !currentMeasureId.equals("")){
+		if(currentLibraryId != null && !currentLibraryId.equals("")){
 			resettingLock = true;
-			getLibraryService().resetLockedDate(currentMeasureId,getLoggedinUserId(), new AsyncCallback<SaveCQLLibraryResult>() {
+			getLibraryService().resetLockedDate(currentLibraryId,getLoggedinUserId(), new AsyncCallback<SaveCQLLibraryResult>() {
 				
 				@Override
 				public void onSuccess(SaveCQLLibraryResult result) {
@@ -171,14 +170,14 @@ public class LibraryLockService {
 			public void onSuccess(Boolean isLocked) {
 				
 				SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
-				synchDel.setMeasureIsLocked(isLocked);
+				synchDel.setLibraryIsLocked(isLocked);
 				synchDel.setCheckingLock(false);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
-				synchDel.setMeasureIsLocked(false);
+				synchDel.setLibraryIsLocked(false);
 				synchDel.setCheckingLock(false);
 			}
 		});

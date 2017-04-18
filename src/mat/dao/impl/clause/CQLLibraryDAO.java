@@ -400,15 +400,17 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	public boolean isLibraryLocked(String cqlLibraryId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria libCriteria = session.createCriteria(CQLLibrary.class);
-		libCriteria.setProjection(Projections.property("lockedOutDate"));
+		//libCriteria.setProjection(Projections.property("lockedOutDate"));
 		libCriteria.add(Restrictions.eq("id", cqlLibraryId));
-		CQLLibrary libResults = (CQLLibrary) libCriteria.uniqueResult();
 		Timestamp lockedOutDate = null;
-		if (libResults != null) {
-			lockedOutDate = libResults.getLockedOutDate();
+		if(libCriteria.list() != null) {
+			CQLLibrary libResults = (CQLLibrary) libCriteria.list().get(0);
+			if (libResults != null) {
+				lockedOutDate = libResults.getLockedOutDate();
+			}
 		}
 		boolean locked = isLocked(lockedOutDate);
-		session.close();
+	//	session.close();
 		return locked;
 	}
 
@@ -446,7 +448,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			cqlLibrary.setLockedUserId(null);
 			session.update(cqlLibrary);
 			tx.commit();
-			session.close();
+			//session.close();
 		} finally {
 			rollbackUncommitted(tx);
 			closeSession(session);
@@ -649,7 +651,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		dto.setLocked(isLocked);
 		if (isLocked && (cqlLibrary.getLockedUserId() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
-			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getUserId());
+			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getId());
 			lockedUserInfo.setEmailAddress(cqlLibrary.getLockedUserId().getEmailAddress());
 			lockedUserInfo.setFirstName(cqlLibrary.getLockedUserId().getFirstName());
 			lockedUserInfo.setLastName(cqlLibrary.getLockedUserId().getLastName());

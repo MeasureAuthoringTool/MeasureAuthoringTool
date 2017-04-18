@@ -48,6 +48,12 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	public LockedUserInfo getLockedUserInfo() {
 		return lockedUserInfo;
 	}
+	public String getLockedUserId(LockedUserInfo info){
+		if(info != null)
+			return info.getUserId();
+		else
+			return "";
+	}
 	public void setLockedUserInfo(LockedUserInfo lockedUserInfo) {
 		this.lockedUserInfo = lockedUserInfo;
 	}

@@ -324,16 +324,19 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if (isLocked && (cqlLibrary.getLockedUserId() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
-			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getUserId());
+			lockedUserInfo.setUserId(cqlLibrary.getLockedUserId().getId());
 			lockedUserInfo.setEmailAddress(cqlLibrary.getLockedUserId()
 					.getEmailAddress());
 			lockedUserInfo.setFirstName(cqlLibrary.getLockedUserId().getFirstName());
 			lockedUserInfo.setLastName(cqlLibrary.getLockedUserId().getLastName());
 			dataSetObject.setLockedUserInfo(lockedUserInfo);
+		} else {
+			LockedUserInfo lockedUserInfo = new LockedUserInfo();
+			dataSetObject.setLocked(isLocked);
+			dataSetObject.setLockedUserInfo(lockedUserInfo);
 		}
 		
-		dataSetObject.setLocked(isLocked);
-		dataSetObject.setLockedUserInfo(cqlLibrary.getLockedUserId());
+		
 		User user = getUserService().getById(cqlLibrary.getOwnerId().getId());
 		dataSetObject.setOwnerFirstName(user.getFirstName());
 		dataSetObject.setOwnerLastName(user.getLastName());
@@ -904,7 +907,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if ((currentLibraryId != null) && (userId != null) && !currentLibraryId.isEmpty()) {
 			existingLibrary = cqlLibraryDAO.find(currentLibraryId);
 			if (existingLibrary != null) {
-				if ((existingLibrary.getLockedUserId() != null) && existingLibrary.getLockedUserId().toString().equalsIgnoreCase(userId)) {
+				if ((existingLibrary.getLockedUserId() != null) && existingLibrary.getLockedUserId().getId().equalsIgnoreCase(userId)) {
 					// Only if the lockedUser and loggedIn User are same we can
 					// allow the user to unlock the measure.
 					if (existingLibrary.getLockedOutDate() != null) {
@@ -927,23 +930,24 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	@Override
 	public SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId) {
-		CQLLibrary existingmeasure = null;
-		LockedUserInfo lockedUserInfo = new LockedUserInfo();
+		CQLLibrary cqlLib = null;
+		User user = null;
+		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		if ((currentLibraryId != null) && (userId != null)) {
-			existingmeasure = cqlLibraryDAO.find(currentLibraryId);
-			if (existingmeasure != null) {
-				if (!cqlLibraryDAO.isLibraryLocked(existingmeasure.getId())) {
-					lockedUserInfo.setUserId(userId);
-					existingmeasure.setLockedUserId(lockedUserInfo);
-					existingmeasure.setLockedOutDate(new Timestamp(new Date().getTime()));
-					cqlLibraryDAO.save(existingmeasure);
+			cqlLib = cqlLibraryDAO.find(currentLibraryId);
+			if (cqlLib != null) {
+				if (!cqlLibraryDAO.isLibraryLocked(cqlLib.getId())) {
+					user = getUserService().getById(userId);
+					cqlLib.setLockedUserId(user);
+					cqlLib.setLockedOutDate(new Timestamp(new Date().getTime()));
+					cqlLibraryDAO.save(cqlLib);
 					result.setSuccess(true);
 				}
 			}
 		}
 		
-		result.setId(existingmeasure.getId());
+		result.setId(cqlLib.getId());
 		return result;
 	}
 	

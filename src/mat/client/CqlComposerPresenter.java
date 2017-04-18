@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -134,8 +136,40 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		cqlComposerTabLayout.close();
 		cqlComposerTabLayout.updateHeaderSelection(0);
 		cqlComposerTabLayout.setSelectedIndex(0);
-		if (MatContext.get().getCurrentLibraryInfo() != null) {
+		
+		/*if (MatContext.get().getCurrentLibraryInfo() != null) {
 			MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
+		}*/
+		
+		MatContext.get().getLibraryLockService().releaseLibraryLock();
+		Command waitForUnlock = new Command() {
+			@Override
+			public void execute() {
+				if (!MatContext.get().getLibraryLockService().isResettingLock()) {
+					cqlComposerTabLayout.close();
+					cqlComposerTabLayout.updateHeaderSelection(0);
+					cqlComposerTabLayout.setSelectedIndex(0);
+					/*buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
+					buttonBar.setPageNamesOnState();*/
+				} else {
+					DeferredCommand.addCommand(this);
+				}
+			}
+		};
+		if (MatContext.get().getLibraryLockService().isResettingLock()) {
+			waitForUnlock.execute();
+			if (MatContext.get().getCurrentLibraryInfo() != null) {
+				MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
+			}
+		} else {
+			cqlComposerTabLayout.close();
+			cqlComposerTabLayout.updateHeaderSelection(0);
+			cqlComposerTabLayout.setSelectedIndex(0);
+			/*buttonBar.state = measureComposerTabLayout.getSelectedIndex();
+			buttonBar.setPageNamesOnState();*/
+			if (MatContext.get().getCurrentLibraryInfo() != null) {
+				MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
+			}
 		}
 		
 	}
@@ -150,9 +184,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		String currentLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		
 		if ((currentLibraryId != null) && !"".equals(currentLibraryId)) {
-			/*if (MatContext.get().isCurrentLibraryEditable()) {
+			if (MatContext.get().isCurrentLibraryEditable()) {
 				MatContext.get().getLibraryLockService().setLibraryLock();
-			}*/
+			}
 			//TODO: Get Library name and version from MatContext.
 			setContentHeading();
 			FlowPanel fp = new FlowPanel();

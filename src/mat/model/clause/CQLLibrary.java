@@ -78,7 +78,7 @@ public class CQLLibrary {
 	/**
 	 * The locked user id
 	 */
-	private LockedUserInfo lockedUserId;
+	private User lockedUserId;
 
 	/**
 	 * The locked out date
@@ -242,11 +242,11 @@ public class CQLLibrary {
 		this.releaseVersion = releaseVersion;
 	}
 
-	public LockedUserInfo getLockedUserId() {
+	public User getLockedUserId() {
 		return lockedUserId;
 	}
 
-	public void setLockedUserId(LockedUserInfo lockedUserId) {
+	public void setLockedUserId(User lockedUserId) {
 		this.lockedUserId = lockedUserId;
 	}
 

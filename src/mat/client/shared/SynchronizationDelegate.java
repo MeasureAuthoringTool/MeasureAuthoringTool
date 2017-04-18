@@ -23,6 +23,8 @@ public class SynchronizationDelegate {
 	/** The log off flag. */
 	private boolean logOffFlag = false;
 	
+	private boolean libraryIsLocked = false;
+	
 	/**
 	 * Checks if is saving measure details.
 	 * 
@@ -113,6 +115,14 @@ public class SynchronizationDelegate {
 	 */
 	public boolean getLogOffFlag() {
 		return logOffFlag;
+	}
+
+	public boolean isLibraryIsLocked() {
+		return libraryIsLocked;
+	}
+
+	public void setLibraryIsLocked(boolean libraryIsLocked) {
+		this.libraryIsLocked = libraryIsLocked;
 	}
 	
 	

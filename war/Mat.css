@@ -37,6 +37,7 @@ body#main select, body#main input, body#main textarea {
 	color:#cccc;
 }
 
+
 .codeListHeader{
 	background: #D3DEF6;
 	border-color:#BBBBBB;
@@ -1237,6 +1238,17 @@ left:50px;
 	margin-left: 20px;
 	font-weight: bold;
 }
+.standAloneLockedLabel {
+	color: #0964A2; 
+	font-size: small; 
+	margin-left: 2px;
+}
+.standAloneLockedWidget{
+	right: 150px; 
+	overflow: scroll; 
+	margin-top: -12px; 
+	position: absolute;
+}
 .searchResultsContainer {
     margin-left: 1px;
 	overflow: auto;
@@ -1934,7 +1946,13 @@ padding: 2px;
     font-weight: bold;
     padding: 5px;
     text-align:left;
-    color:#777;
+    color:#777; 
+    background-color: #6B97B8;
+	font-size: small;
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    text-align: left;
 }
 .filterDisclosurePanel{
     margin-left:345px; 

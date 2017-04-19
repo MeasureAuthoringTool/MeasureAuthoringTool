@@ -36,7 +36,11 @@ body#main select, body#main input, body#main textarea {
 .gwt-Anchor:hover {
 	color:#cccc;
 }
-
+.readonly-highlight{
+    background-color: lightSlateGrey;
+    opacity: 0.2;
+    position: absolute;
+}
 
 .codeListHeader{
 	background: #D3DEF6;
@@ -1244,7 +1248,7 @@ left:50px;
 	margin-left: 2px;
 }
 .standAloneLockedWidget{
-	right: 150px; 
+	right: 250px; 
 	overflow: scroll; 
 	margin-top: -12px; 
 	position: absolute;

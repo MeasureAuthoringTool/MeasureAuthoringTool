@@ -2711,13 +2711,10 @@ public class CQLServiceImpl implements CQLService {
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
 		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
 			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
+			List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
+					.sortCQLQualityDataSetDto(cqlModel.getValueSetList());
+			cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		}
-		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
-		String xmlString = model.getXml();
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-				.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetList());
-		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-
 		return cqlQualityDataModelWrapper;
 	}
 

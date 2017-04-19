@@ -955,8 +955,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void isLibrarySelected(CQLLibraryDataSetObject selectedItem) {
 		String userId = selectedItem.getLockedUserId(selectedItem.getLockedUserInfo());
+		String email = selectedItem.getLockedUserEmail(selectedItem.getLockedUserInfo());
+		String userName  = selectedItem.getLockedUserName(selectedItem.getLockedUserInfo());
 		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), selectedItem.isLocked(),
-				userId,selectedItem.getLockedUserInfo().getEmailAddress(),selectedItem.getLockedUserInfo().getFirstName()+" "+ selectedItem.getLockedUserInfo().getLastName());
+				userId,email,userName);
 		fireCqlLibraryEditEvent();
 	}
 

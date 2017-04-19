@@ -3,12 +3,14 @@ package mat.client.clause.cqlworkspace;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -70,6 +72,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	/** The clicked menu. */
 	public String nextClickedMenu = "general";
 	
+	private HorizontalPanel lockedButtonHPanel = new HorizontalPanel();
 	
 	/**
 	 * Instantiates a new CQL standalone work space view.
@@ -100,6 +103,8 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		buildGeneralInformation();
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLStandaloneWorkSpaceView.containerPanel");
+		buildLockedButtonPanel();
+		//mainPanel.add(lockedButtonVPanel);
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
@@ -110,6 +115,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
 		mainHPPanel.add(mainPanel);
+		//mainVPanel.add(lockedButtonVPanel);
 		mainVPanel.add(mainHPPanel);
         mainVPanel.add(valueSetView.getCellTableMainPanel());
         mainVPanel.add(codesView.getCellTableMainPanel());
@@ -268,8 +274,39 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 */
 	@Override
 	public Widget asWidget() {
+		//buildLockedButtonPanel();
 		return mainVPanel;
 	}
+
+	private void buildLockedButtonPanel() {
+		lockedButtonHPanel.clear();
+		
+		if(MatContext.get().getCurrentLibraryInfo().isLocked()){
+			Icon lockIcon = new Icon(IconType.LOCK);
+			lockIcon.setSize(IconSize.LARGE);
+			lockIcon.setColor("#daa520");
+			lockIcon.setId("LockedIcon");
+			lockIcon.setTitle("Locked by "+MatContext.get().getCurrentCQLLibraryLockedUserName());
+			lockedButtonHPanel.add(lockIcon);
+			String label= MatContext.get().getCurrentCQLLibraryLockedUserName();
+			if(label.length() > 20) {
+				label = label.substring(0, 19);
+			}
+			HTML html = new HTML("<p>Locked by " + label+"</p>");
+			//html.getElement().setAttribute("style", "color: #0964A2; font-size: small; margin-left: 2px;");
+			html.setStyleName("standAloneLockedLabel");
+			html.getElement().setAttribute("id", "LockedBy");
+			lockedButtonHPanel.add(html);
+			lockedButtonHPanel.getElement().setAttribute("id", "StandAloneCQL_LockedButtonHPanel");
+			//lockedButtonVPanel.getElement().setAttribute("style", "right: 150px; overflow: scroll; margin-top: -12px; position: absolute;");
+			lockedButtonHPanel.setStyleName("standAloneLockedWidget");
+			mainPanel.add(lockedButtonHPanel);
+		} else {
+			lockedButtonHPanel.removeStyleName("standAloneLockedWidget");
+		}
+		
+	}
+
 
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getMainHPanel()
@@ -669,6 +706,18 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	@Override
 	public CQLCodesView getCodesView() {
 		return codesView;
+	}
+
+	@Override
+	public HorizontalPanel getLockedButtonVPanel() {
+		//lockedButtonVPanel.clear();
+		//buildLockedButtonPanel();
+		return lockedButtonHPanel;
+	}
+
+
+	public void setLockedButtonVPanel(HorizontalPanel lockedButtonVPanel) {
+		this.lockedButtonHPanel = lockedButtonVPanel;
 	}
 
 }

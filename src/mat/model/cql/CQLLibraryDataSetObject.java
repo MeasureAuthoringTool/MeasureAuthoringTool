@@ -54,6 +54,19 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 		else
 			return "";
 	}
+	public String getLockedUserEmail(LockedUserInfo info){
+		if(info != null)
+			return info.getEmailAddress();
+		else
+			return "";
+	}
+	
+	public String getLockedUserName(LockedUserInfo info){
+		if(info != null)
+			return info.getFirstName() + " " + info.getLastName();
+		else
+			return "";
+	}
 	public void setLockedUserInfo(LockedUserInfo lockedUserInfo) {
 		this.lockedUserInfo = lockedUserInfo;
 	}

@@ -259,6 +259,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		void buildCodes();
 
+		HorizontalPanel getLockedButtonVPanel();
+
 	}
 
 	/**
@@ -2701,6 +2703,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			displayEmpty();
 		} else {
 			panel.clear();
+			searchDisplay.getLockedButtonVPanel();
 			panel.add(searchDisplay.asWidget());
 			if (!isCQLWorkSpaceLoaded) { // this check is made so that when CQL
 											// is
@@ -4199,6 +4202,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												error.getErrorMessage(), AceAnnotationType.WARNING);
 									}
 									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
+									//searchDisplay.getCqlAceEditor().lockEditor(0, 0);
 									searchDisplay.getCqlAceEditor().setAnnotations();
 									searchDisplay.getCqlAceEditor().redisplay();
 								} else if (!result.isDatatypeUsedCorrectly()) {

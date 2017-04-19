@@ -863,6 +863,11 @@ public class InsertIntoAceEditorDialogBox {
 							listAllItemNames.addItem(cqlNavBarView.getViewDefinitions().get(i)
 									.getDefinitionName());
 						}
+						
+						for (int j = 0; j < MatContext.get().getIncludedDefNames().size(); j++) {
+							listAllItemNames.addItem(MatContext.get().getIncludedDefNames().get(j));
+						}
+						
 					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
 						listAllItemNames.clear();
 						listAllItemNames.setEnabled(true);

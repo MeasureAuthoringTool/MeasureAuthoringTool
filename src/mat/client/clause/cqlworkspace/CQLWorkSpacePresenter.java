@@ -1260,6 +1260,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
 													.getMessageDelegate().getIncludeLibrarySuccessMessage(result.getIncludeLibrary().getAliasName()));
 											clearAlias();
+											MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 											if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
 											} else{
@@ -2434,6 +2435,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 								MatContext.get()
 										.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+								MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 							} else {
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
@@ -3370,7 +3372,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									if (result.isSuccess()) {
 										searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 										MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-										
+										MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 										searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();

@@ -857,6 +857,7 @@ public class CQLServiceImpl implements CQLService {
 
 		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
 			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+			CQLUtil.getIncludedCQLExpressions(cqlModel,cqlLibraryDAO);
 		}
 
 		return result;
@@ -2784,6 +2785,7 @@ public class CQLServiceImpl implements CQLService {
 
 		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
 			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+			CQLUtil.getIncludedCQLExpressions(cqlModel,cqlLibraryDAO);
 			System.out.println(result.getXml());
 			System.out.println(result.isSuccess());
 		}

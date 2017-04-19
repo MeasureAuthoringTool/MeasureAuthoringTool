@@ -2422,6 +2422,7 @@ public class CQLLeftNavBarPanelView {
 		MatContext.get().getFuncs().clear();
 		MatContext.get().getValuesets().clear();
 		MatContext.get().getIncludes().clear();
+		MatContext.get().getIncludedDefNames().clear();
 	}
 	
 	public void buildInfoPanel(Widget sourceWidget) {

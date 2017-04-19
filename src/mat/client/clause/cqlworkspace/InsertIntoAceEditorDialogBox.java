@@ -406,9 +406,10 @@ public class InsertIntoAceEditorDialogBox {
 										
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
 										StringBuilder sb = new StringBuilder(); 
-										sb = sb.append("\""); 
-										sb = sb.append(itemNameToBeInserted);
-										sb = sb.append("\""); 
+										String[] str = itemNameToBeInserted.toString().split("\\.");
+										sb = sb.append(str[0]);
+										sb = sb.append(".").append("\""); 
+										sb = sb.append(str[1]).append("\""); 
 										itemNameToBeInserted = sb.toString(); 
 									} else if(itemTypeName.equalsIgnoreCase("functions")) {
 										StringBuilder sb = new StringBuilder(); 

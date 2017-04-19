@@ -961,7 +961,9 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		
 		List<String> includedDefList = MatContext.get().getIncludedDefNames();
 		for (String string : includedDefList) {
-			jsArray.push('"'+string+'"');
+			String str[] = string.split("\\.");
+			string = str[0] + "." + "\"" + str[1] + "\"";
+			jsArray.push(string);
 		}
 		
 		return jsArray;

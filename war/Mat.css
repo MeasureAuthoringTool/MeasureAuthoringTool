@@ -1248,7 +1248,8 @@ left:50px;
 	margin-left: 2px;
 }
 .standAloneLockedWidget{
-	right: 230px; 
+	/* right: 230px; */
+	margin-left:520px; 
 	overflow: scroll; 
 	margin-top: -12px; 
 	position: absolute;

@@ -281,7 +281,8 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	private void buildLockedButtonPanel() {
 		lockedButtonHPanel.clear();
 		
-		if(MatContext.get().getCurrentLibraryInfo().isLocked()){
+		if(MatContext.get().getCurrentLibraryInfo().isEditable() && 
+				MatContext.get().getCurrentLibraryInfo().isLocked()){
 			Icon lockIcon = new Icon(IconType.LOCK);
 			lockIcon.setSize(IconSize.LARGE);
 			lockIcon.setColor("#daa520");

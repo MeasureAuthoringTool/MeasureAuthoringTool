@@ -833,7 +833,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(str != null) {
 			cqlResult = cqlService.getCQLData(str);
-			cqlResult.setExpIdentifier(getDefaultExpansionIdentifier(str));
+			cqlResult.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(str));
 			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
 		}
@@ -861,30 +861,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			}
 		}
 		return xmlString;
-	}
-	
-	public String getDefaultExpansionIdentifier(String xml) {
-		String defaultExpId = null;
-		if (xml != null) {
-			XmlProcessor processor = new XmlProcessor(xml);
-
-			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//cqlLookUp/valuesets/@vsacExpIdentifier";
-
-			try {
-				Node vsacExpIdAttr = (Node) XPathFactory.newInstance().newXPath().evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(),
-						XPathConstants.NODE);
-				if (vsacExpIdAttr != null) {
-					defaultExpId = vsacExpIdAttr.getNodeValue();
-				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		if(defaultExpId != null){
-			return defaultExpId;
-		} else{
-			return "";
-		}
 	}
 	
 	/* (non-Javadoc)

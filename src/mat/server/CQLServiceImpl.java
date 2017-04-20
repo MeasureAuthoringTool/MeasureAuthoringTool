@@ -18,7 +18,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -1191,7 +1193,31 @@ public class CQLServiceImpl implements CQLService {
 		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables End :  ");
 
 	}
+	@Override
+	public String getDefaultExpansionIdentifier(String xml) {
+		String defaultExpId = null;
+		if (xml != null) {
+			XmlProcessor processor = new XmlProcessor(xml);
 
+			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//cqlLookUp/valuesets/@vsacExpIdentifier";
+
+			try {
+				Node vsacExpIdAttr = (Node) XPathFactory.newInstance().newXPath().evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(),
+						XPathConstants.NODE);
+				if (vsacExpIdAttr != null) {
+					defaultExpId = vsacExpIdAttr.getNodeValue();
+				}
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		if(defaultExpId != null){
+			return defaultExpId;
+		} else{
+			return "";
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2705,13 +2731,6 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureId,
 			CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
-		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		CQLModel cqlModel = new CQLModel();
-		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlModel.getXml());
-		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
-		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
-			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
-		}
 		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
 		String xmlString = model.getXml();
 		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass

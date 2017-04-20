@@ -2083,6 +2083,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getIncludeLibrarySuccessMessage(
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
+											MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
@@ -2536,7 +2537,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 									MatContext.get()
 											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-
+									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -2822,6 +2823,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 									MatContext.get()
 											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 								} else {
 									searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 									searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();

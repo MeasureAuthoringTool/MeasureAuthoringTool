@@ -2245,6 +2245,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
 		isModified = false;
+		isExpansionProfile = false;
+		expProfileToAllValueSet = "";
 		setId= null;
 		modifyValueSetDTO = null;
 		curAceEditor = null;
@@ -2621,7 +2623,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void setExpansionProfilePanelValues() {
 		//if UMLS is not logged in
 		if (!MatContext.get().isUMLSLoggedIn()) {
-			if(expProfileToAllValueSet !=null){
+			if(expProfileToAllValueSet !=null && !expProfileToAllValueSet.equalsIgnoreCase("")){
 				searchDisplay.getValueSetView().getVSACExpansionProfileListBox().setEnabled(false);
 				searchDisplay.getValueSetView().getVSACExpansionProfileListBox().clear();
 				searchDisplay.getValueSetView().getVSACExpansionProfileListBox().addItem(expProfileToAllValueSet);
@@ -2632,7 +2634,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				isExpansionProfile = false;
 			}
 		} else {
-			if(expProfileToAllValueSet != null){
+			if(expProfileToAllValueSet != null && !expProfileToAllValueSet.equalsIgnoreCase("")){
 				isExpansionProfile = true;
 				searchDisplay.getValueSetView().getVSACExpansionProfileListBox().setEnabled(true);
 				searchDisplay.getValueSetView().setExpProfileList(MatContext.get()

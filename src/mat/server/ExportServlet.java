@@ -342,7 +342,7 @@ public class ExportServlet extends HttpServlet {
 			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String aCSVDate = formatter.format(new Date());
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getCSVFileName("activeUsersMeasureOwnership", aCSVDate) + ";");
+					+ fnu.getCSVFileName("activeUsersCQLLibraryOwnership", aCSVDate) + ";");
 			resp.setContentType("text/csv");
 			resp.getOutputStream().write(csvFileString.getBytes());
 			resp.getOutputStream().close();

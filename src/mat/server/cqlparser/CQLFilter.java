@@ -178,7 +178,7 @@ public class CQLFilter {
         	checkForUsedStatements(expressionName);
         }
 
-        System.out.println(this.includedLibraries);
+       // System.out.println(this.includedLibraries);
     }
     
     /**
@@ -201,7 +201,7 @@ public class CQLFilter {
         	}
         }
         collectUsed();
-        System.out.println(this.includedLibraries);
+        //System.out.println(this.includedLibraries);
     }
     
     // Combine All expressions used data for packaging and export.
@@ -228,7 +228,7 @@ public class CQLFilter {
      */
     private void checkForUsedStatements(String expressionName) {
 
-        System.out.println("<<<<<Getting expressions for "  + expressionName + ">>>>>");
+        //System.out.println("<<<<<Getting expressions for "  + expressionName + ">>>>>");
         
         ExpressionDef expression = findExpressionByName(expressionName);
         
@@ -294,7 +294,7 @@ public class CQLFilter {
         	funcObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
         	cqlObject.getCqlFunctionObjectList().add(funcObject);
         	
-        	System.out.println("Created Function object" + expression.getName() + " with used definitions as:"+funcObject.getUsedExpressions());
+        	//System.out.println("Created Function object" + expression.getName() + " with used definitions as:"+funcObject.getUsedExpressions());
         	
         	clearUsed();
         }
@@ -343,8 +343,8 @@ public class CQLFilter {
             return;
         }
 
-        System.out.println(expression.getClass());
-        System.out.println(expression.toString());
+       // System.out.println(expression.getClass());
+       // System.out.println(expression.toString());
 
         // check for parameter, definition, function, valueset references, codesystems //
         // check for expression references
@@ -525,8 +525,8 @@ public class CQLFilter {
         // since we found an expression ref, we want to get the details of it.
         // so we will recursively call get used statements on the expression ref
         String includedLibraryAlias = expressionRef.getLibraryName();
-        System.out.println("Expression name:"+expressionRef.getName());
-        System.out.println("Included library:"+includedLibraryAlias+":");
+       // System.out.println("Expression name:"+expressionRef.getName());
+        //System.out.println("Included library:"+includedLibraryAlias+":");
         
         String expressionName = expressionRef.getName();
         
@@ -534,7 +534,7 @@ public class CQLFilter {
     	
         if(includedLibraryAlias != null){
 	        LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
-	        System.out.println(this.includedLibraries);
+	       // System.out.println(this.includedLibraries);
 	        includedLibraryAlias = includedLibrary.getLibraryName()  + "-" + includedLibrary.getLibraryVersion() +  "|" + includedLibraryAlias;
 	      	existingLibrary = this.currentLibraryHolder; 
 	    	this.currentLibraryHolder = includedLibrary;
@@ -599,7 +599,7 @@ public class CQLFilter {
         // since we found a function ref, we want to get the details of it.
         // so we will recursively call get used statements on the function ref.
         String includedLibraryAlias = functionRef.getLibraryName();
-        System.out.println("Included library:"+includedLibraryAlias+":");
+       // System.out.println("Included library:"+includedLibraryAlias+":");
         
         String expressionName = functionRef.getName();
         
@@ -687,7 +687,7 @@ public class CQLFilter {
      */
     private void checkForInValuesets(Expression expression) {
         InValueSet inValueSet = (InValueSet) expression;
-        System.out.println("\t" + inValueSet.getValueset().getName());
+        //System.out.println("\t" + inValueSet.getValueset().getName());
         String name = inValueSet.getValueset().getName();
         
         if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
@@ -724,13 +724,13 @@ public class CQLFilter {
      */
     private void checkForCodeSystemRef(Expression expression) {
         CodeSystemRef codeSystemRef = (CodeSystemRef) expression;
-        System.out.println("\t" + codeSystemRef.getName());
+        //System.out.println("\t" + codeSystemRef.getName());
         this.addUsedCodeSystem(codeSystemRef.getName());
     }
     
     private void checkForCodeRef(Expression expression) {
         CodeRef codeRef = (CodeRef) expression;
-        System.out.println("\t" + codeRef.getName());
+       // System.out.println("\t" + codeRef.getName());
         String name = codeRef.getName();
         
         String libraryAlias = codeRef.getLibraryName();
@@ -753,7 +753,7 @@ public class CQLFilter {
      */
     private void checkForInCodeSystem(Expression expression) {
         InCodeSystem inCodeSystem = (InCodeSystem) expression;
-        System.out.println("\t" + inCodeSystem.getCodesystem().getName());
+        //System.out.println("\t" + inCodeSystem.getCodesystem().getName());
         this.addUsedCodeSystem(inCodeSystem.getCodesystem().getName());
     }
 
@@ -1100,7 +1100,7 @@ public class CQLFilter {
 			List<ExpressionDef> expressionDefs = libraryHolder.getLibrary().getStatements().getDef();
 	        
 	        for(ExpressionDef expressionDef : expressionDefs) {
-	        	System.out.println(expressionDef.getName());
+	        	//System.out.println(expressionDef.getName());
 	            if(expressionDef.getName().equals(expressionName)) {
 	               // return expressionDef.getExpression();
 	            	return expressionDef;
@@ -1117,8 +1117,8 @@ public class CQLFilter {
     	List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
     	
     	for(IncludeDef includeDef: includeDefs){
-    		System.out.println("Include alias:"+includeDef.getLocalIdentifier());
-    		System.out.println("Include library name:"+includeDef.getPath());
+    		//System.out.println("Include alias:"+includeDef.getLocalIdentifier());
+    		//System.out.println("Include library name:"+includeDef.getPath());
     		
     		if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
     			//System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
@@ -1126,11 +1126,11 @@ public class CQLFilter {
     			
     			if(includedLibrary == null){
     				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
-    				System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
+    				//System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
     				try {
     					
     					libraryPathName = this.cqlFolderPath + File.separator + libraryPathName + ".cql";						
-						System.out.println("Searching for:"+libraryPathName);
+						//System.out.println("Searching for:"+libraryPathName);
     					File includedLibraryFile = new File(libraryPathName);
 						
     					CQLtoELM includedCQLtoELM = new CQLtoELM(includedLibraryFile);

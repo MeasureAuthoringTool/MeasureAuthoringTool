@@ -226,9 +226,9 @@ public class CQLUtil {
 	public static String getCQLDefinitionUUID(Document originalDoc, CQLBaseStatementInterface cqlModelObject,
 			boolean isDefinition) throws XPathExpressionException {
 
-		System.out.println("cql defn name bfor:" + cqlModelObject.getIdentifier());
+		//System.out.println("cql defn name bfor:" + cqlModelObject.getIdentifier());
 		String defnName = cqlModelObject.getIdentifier().replaceAll("\"", "");
-		System.out.println("cql defn name aftr:" + defnName);
+		//System.out.println("cql defn name aftr:" + defnName);
 
 		String cqlArtifactName = "definitions//definition";
 		if (!isDefinition) {
@@ -236,7 +236,7 @@ public class CQLUtil {
 		}
 
 		String xPathForDefinitions = "//cqlLookUp/" + cqlArtifactName + "[@name='" + defnName + "']/@id";
-		System.out.println(xPathForDefinitions);
+		//System.out.println(xPathForDefinitions);
 		Node cqlDefinitionUUID = (Node) xPath.evaluate(xPathForDefinitions, originalDoc.getDocumentElement(),
 				XPathConstants.NODE);
 		return cqlDefinitionUUID.getNodeValue();
@@ -370,7 +370,7 @@ public class CQLUtil {
 		}
 
 		String xPathForUnusedDefinitions = "//cqlLookUp//definition" + idXPathString;
-		System.out.println(xPathForUnusedDefinitions);
+		//System.out.println(xPathForUnusedDefinitions);
 
 		NodeList unusedCQLDefNodeList = (NodeList) xPath.evaluate(xPathForUnusedDefinitions,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -401,7 +401,7 @@ public class CQLUtil {
 		}
 
 		String xPathForUnusedFunctions = "//cqlLookUp//function" + idXPathString;
-		System.out.println(xPathForUnusedFunctions);
+		//System.out.println(xPathForUnusedFunctions);
 
 		NodeList unusedCqlFuncNodeList = (NodeList) xPath.evaluate(xPathForUnusedFunctions,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -436,7 +436,7 @@ public class CQLUtil {
 		}	
 			
 		String xPathForUnusedValuesets = "//cqlLookUp//valueset" + nameXPathString;
-		System.out.println(xPathForUnusedValuesets);
+		//System.out.println(xPathForUnusedValuesets);
 
 		NodeList unusedCqlValuesetNodeList = (NodeList) xPath.evaluate(xPathForUnusedValuesets,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -468,7 +468,7 @@ public class CQLUtil {
 		}
 
 		String xPathForUnusedCodes = "//cqlLookUp//code" + nameXPathString;
-		System.out.println(xPathForUnusedCodes);
+		//System.out.println(xPathForUnusedCodes);
 
 		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -527,7 +527,7 @@ public class CQLUtil {
 		}
 
 		String xPathForUnusedParameters = "//cqlLookUp//parameter" + nameXPathString;
-		System.out.println(xPathForUnusedParameters);
+		//System.out.println(xPathForUnusedParameters);
 
 		NodeList unusedCqlParameterNodeList = (NodeList) xPath.evaluate(xPathForUnusedParameters,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -567,8 +567,8 @@ public class CQLUtil {
 		}
 
 		String xPathForUnusedIncludes = "//cqlLookUp//includeLibrarys/includeLibrary" + nameXPathString;
-		System.out.println("xPathForUnusedIncludes");
-		System.out.println(xPathForUnusedIncludes);
+		//System.out.println("xPathForUnusedIncludes");
+		//System.out.println(xPathForUnusedIncludes);
 		NodeList unusedCqlIncludeNodeList = (NodeList) xPath.evaluate(xPathForUnusedIncludes,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < unusedCqlIncludeNodeList.getLength(); i++) {
@@ -780,16 +780,16 @@ public class CQLUtil {
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
 			
-			System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
+			//System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
 			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
 						
-			System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
+			//System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
 			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
 			
-			System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
+			//System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
 			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
 			
-			System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
+			//System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
 			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
 		}
 	}
@@ -842,11 +842,11 @@ public class CQLUtil {
 			
 		}
 		
-		System.out.println("Included Definition names:" + cqlModel.getIncludedDefNames());
+		/*System.out.println("Included Definition names:" + cqlModel.getIncludedDefNames());
 		System.out.println("Included Function names:" + cqlModel.getIncludedFuncNames());
 		System.out.println("Included Value-Set names:" + cqlModel.getIncludedValueSetNames());
 		System.out.println("Included Parameter names:" + cqlModel.getIncludedParamNames());
-		System.out.println("Included Code names:" + cqlModel.getIncludedCodeNames());
+		System.out.println("Included Code names:" + cqlModel.getIncludedCodeNames());*/
 	}
 	
 	/**

@@ -220,7 +220,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 
 		searchPanel.add(searchHeader);
 		searchPanel.setWidth("550px");
-		searchPanel.setHeight("300px");
+		searchPanel.setHeight("350px");
 		searchPanelBody.add(new SpacerWidget());
 
 		saveCode.setText("Apply");
@@ -230,7 +230,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 
-		Grid searchGrid = new Grid(1, 1);
+		Grid searchGrid = new Grid(2, 1);
 		Grid codeGrid = new Grid(3, 2);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveCode);
@@ -275,21 +275,17 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		codeDescriptorLabel.setText("Code Descriptor");
 		codeDescriptorLabel.setTitle("Code Descriptor");
 		codeDescriptorInput.setTitle("Code Descriptor");
-		codeDescriptorInput.setWidth("200px");
+		codeDescriptorInput.setWidth("400px");
 		codeDescriptorInput.setHeight("30px");
 
 		codeDescriptorGroup.add(codeDescriptorLabel);
 		codeDescriptorGroup.add(codeDescriptorInput);
-		codeDescriptorGroup.add(new SpacerWidget());
 		codeGroup.add(codeLabel);
 		codeGroup.add(codeInput);
-		codeGroup.add(new SpacerWidget());
 		codeSystemGroup.add(codeSystemLabel);
 		codeSystemGroup.add(codeSystemInput);
-		codeSystemGroup.add(new SpacerWidget());
 		versionFormGroup.add(verLabel);
 		versionFormGroup.add(codeSystemVersionInput);
-		versionFormGroup.add(new SpacerWidget());
 
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
@@ -297,9 +293,10 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 
 
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
+		searchGrid.setWidget(1, 0, codeDescriptorGroup);
 		searchGrid.setStyleName("secondLabel");
-		codeGrid.setWidget(0, 0, codeDescriptorGroup);
-		codeGrid.setWidget(0, 1, codeGroup);
+		
+		codeGrid.setWidget(0, 0, codeGroup);
 		codeGrid.setWidget(1, 0, codeSystemGroup);
 		codeGrid.setWidget(1, 1, versionFormGroup);
 		codeGrid.setWidget(2, 0, buttonFormGroup);

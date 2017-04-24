@@ -1251,7 +1251,7 @@ left:50px;
 	/* right: 230px; */
 	margin-left:520px; 
 	overflow: scroll; 
-	margin-top: -12px; 
+	/* margin-top: -12px;  */
 	position: absolute;
 }
 .searchResultsContainer {
@@ -2001,6 +2001,26 @@ padding: 2px;
     margin-right:auto;
     margin-top:8px;
 }
+
+.searchFilterNew{
+	border:1px solid lightgray;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    padding-right: 5px;
+    padding-left:5px; 
+    padding-bottom: 8px;
+    padding-top: 8px;
+    font-size:.8em;
+    margin-left:20px; 
+    margin-right:auto;
+    margin-top:8px;
+    right:-20px;
+    position: relative;
+}
+
 
 .margin-left{
 	margin-left:85px;

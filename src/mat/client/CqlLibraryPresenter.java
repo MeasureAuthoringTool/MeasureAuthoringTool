@@ -1195,7 +1195,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
-				cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
+			//	cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 				isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
 				
 				if(isSearchFilterVisible){
@@ -1217,7 +1217,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
-				cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
+				//cqlLibraryView.getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 				if (isCreateNewItemWidgetVisible) {
 					isCreateNewItemWidgetVisible = !isCreateNewItemWidgetVisible;
 					cqlLibraryView.getWidgetVP().clear();

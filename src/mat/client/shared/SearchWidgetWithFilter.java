@@ -8,26 +8,20 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.util.MatTextBox;
 
 /**
  * SearchWidgetWithFilter.java.
  */
-public class SearchWidgetWithFilter extends Composite implements ClickHandler {
+public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	/**
 	 * ALL measure filter value.
 	 */
@@ -40,13 +34,13 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	/**
 	 * All Measure's Check Box.
 	 */
-	private CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures", "All Measures", false);
-
-	private CustomCheckBox allLibrariesCheckBox = new CustomCheckBox("All Libraries", "All Measures", false);
+	//private CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures", "All Measures", false);
+	
+	//private CustomCheckBox allLibrariesCheckBox = new CustomCheckBox("All Libraries", "All Measures", false);
 	/**
 	 * My Measures Check Box.
 	 */
-	private CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("My Measures", "My Measures", false);
+	private CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("Filter by My Measures", "Filter by My Measures", false);
 
 	private CustomCheckBox myLibrariesCheckBox = new CustomCheckBox("My Libraries", "My Measures", false);
 	/**
@@ -55,7 +49,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	private Button searchButton;
 
 	/** The search filter disclosure panel. {@link DisclosurePanel}. */
-	private DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
+	//private DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
 
 	/** The search input. {@link WatermarkedTextBox}. */
 	private MatTextBox searchInput = new MatTextBox();
@@ -78,7 +72,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		searchButton = new Button("Search");
 		searchButton.setType(ButtonType.PRIMARY);
 		searchButton.setTitle("Search");
-		searchButton.addClickHandler(this);
+		//searchButton.addClickHandler(this);
 		searchButton.setHeight("32px");
 		searchButton.setMarginLeft(5.0);
 		searchButton.setPaddingBottom(5.0);
@@ -86,13 +80,12 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		searchInput.setHeight("32px");
 		searchButton.setId("SearchWidgetButton_" + forView);
 		VerticalPanel topPanel = new VerticalPanel();
-		topPanel.setWidth("100px");
+		//topPanel.setWidth("100px");
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel_" + forView);
-		FlowPanel fp = new FlowPanel();
-		fp.getElement().setId("SearchFilterWidget_FlowPanel_" + forView);
+		//FlowPanel fp = new FlowPanel();
+		//fp.getElement().setId("SearchFilterWidget_FlowPanel_" + forView);
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		fp.getElement().setId("SearchFilterWidget_HorizontalPanel_" + forView);
-		createDisclosurePanel(horizontalPanel, forView);
+	
 		HorizontalPanel searchInputHPanel = new HorizontalPanel();
 		searchInputHPanel.getElement().setId("SearchFilterWidget_SearchInputHPanel_" + forView);
 		searchInputHPanel.add(searchInput);
@@ -100,14 +93,46 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		mainFocusPanel.add(searchInputHPanel);
 		horizontalPanel.add(mainFocusPanel);
 		horizontalPanel.add(searchButton);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed_" + forView),
-				"SearchWidgetDisplayed_" + forView);
-		topPanel.add(invisibleLabel);
-		topPanel.add(horizontalPanel);
-		fp.add(searchFilterDisclosurePanel);
-		fp.setStylePrimaryName(cssStyleDisclosurePanel);
-		topPanel.add(fp);
-		horizontalPanel.setStylePrimaryName(cssStyleTopPanel);
+		VerticalPanel mainPanel = new VerticalPanel();
+		mainPanel.add(horizontalPanel);
+		
+		if(forView.equalsIgnoreCase("forMeasure")) {
+
+			VerticalPanel checkBoxPanel = new VerticalPanel();
+			Label myMeasuresText = (Label) LabelBuilder.buildLabel("Filter by My Measures", "Filter by My Measures");
+			myMeasuresText.setStylePrimaryName("searchWidgetLabel");
+			myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+			HorizontalPanel myMeasurePanel = new HorizontalPanel();
+			myMeasurePanel.getElement().setId("SearchFilterWidget_HorizontalPanelMyMeasure_"+forView);
+			myMeasurePanel.getElement().setAttribute("style","margin-top:10px;");
+			myMeasurePanel.add(myMeasuresCheckBox);
+			myMeasurePanel.add(myMeasuresText);
+			checkBoxPanel.add(myMeasurePanel);
+			myMeasuresCheckBox.setValue(true);
+			mainPanel.setStylePrimaryName(cssStyleTopPanel);
+			
+			mainPanel.add(checkBoxPanel);
+		} else {
+			VerticalPanel checkBoxPanel = new VerticalPanel();
+			Label myLibrariesText = (Label) LabelBuilder.buildLabel("Filter by My Libraries", "Filter by My Libraries");
+			myLibrariesText.setStylePrimaryName("searchWidgetLabel");
+			myLibrariesCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+			HorizontalPanel myLibrariesPanel = new HorizontalPanel();
+			myLibrariesPanel.getElement().setId("SearchFilterWidget_HorizontalPanelLibraries_"+forView);
+			myLibrariesPanel.getElement().setAttribute("style","margin-top:10px;");
+			myLibrariesPanel.add(myLibrariesCheckBox);
+			myLibrariesPanel.add(myLibrariesText);
+			checkBoxPanel.add(myLibrariesPanel);
+			myLibrariesCheckBox.setValue(true);
+			
+			
+			mainPanel.setStylePrimaryName(cssStyleTopPanel);
+			mainPanel.add(checkBoxPanel);
+		}
+		
+	
+		topPanel.add(mainPanel);
+		
 		resetFilter(forView);
 		addHandlersToCheckBox();
 		Element element = topPanel.getElement();
@@ -117,10 +142,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");
 		element.setAttribute("role", "alert");
-		
-		//mainFocusPanel.add(topPanel);
-	//	mainFocusPanel.setStyleName("margin-left");
-		// All composites must call initWidget() in their constructors.
+		topPanel.setWidth("370px");
 		initWidget(topPanel);
 	}
 
@@ -128,54 +150,30 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 * Private method to add valueChangeHandler's to check box's.
 	 */
 	private void addHandlersToCheckBox() {
-		myMeasuresCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					allMeasuresCheckBox.setValue(false);
-					setSelectedFilter(MY);
-				} else {
-					allMeasuresCheckBox.setValue(true);
-					setSelectedFilter(ALL);
-				}
-			}
-		});
-		allMeasuresCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					myMeasuresCheckBox.setValue(false);
-					setSelectedFilter(ALL);
-				} else {
-					myMeasuresCheckBox.setValue(true);
-					setSelectedFilter(MY);
-				}
-			}
-		});
-
 		myLibrariesCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					allLibrariesCheckBox.setValue(false);
+				if(event.getValue()){
 					setSelectedFilter(MY);
 				} else {
-					allLibrariesCheckBox.setValue(true);
 					setSelectedFilter(ALL);
 				}
+				
 			}
 		});
+		
+		
+		myMeasuresCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 
-		allLibrariesCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if (event.getValue()) {
-					myLibrariesCheckBox.setValue(false);
-					setSelectedFilter(ALL);
-				} else {
-					myLibrariesCheckBox.setValue(true);
+				if(event.getValue()){
 					setSelectedFilter(MY);
+				} else {
+					setSelectedFilter(ALL);
 				}
+				
 			}
 		});
 	}
@@ -186,7 +184,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 * @param mainPanel
 	 *            : {@link HorizontalPanel}.
 	 */
-	private void createDisclosurePanel(HorizontalPanel mainPanel, String forView) {
+	/*private void createDisclosurePanel(HorizontalPanel mainPanel, String forView) {
 
 		searchFilterDisclosurePanel.setAnimationEnabled(true);
 		searchFilterDisclosurePanel.setOpen(false);
@@ -242,6 +240,10 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 			widgetPanel.setCellHorizontalAlignment(headerWidget, HasHorizontalAlignment.ALIGN_RIGHT);
 			widgetPanel.add(new SpacerWidget());
 			mainPanel.add(widgetPanel);
+			
+			
+			
+			
 		} else {
 			Label myLibLabel = (Label) LabelBuilder.buildLabel("My Libraries", "My Libraries");
 			myLibLabel.setStylePrimaryName("searchWidgetLabel");
@@ -267,7 +269,7 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 			widgetPanel.add(new SpacerWidget());
 			mainPanel.add(widgetPanel);
 		}
-	}
+	}*/
 
 	/**
 	 * Add Image on Button with invisible text. This text will be available when
@@ -281,14 +283,14 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 *            - {@link String}.
 	 * @return - {@link Widget}.
 	 */
-	private Widget getImage(String action, ImageResource url, String key) {
+	/*private Widget getImage(String action, ImageResource url, String key) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
 		return image;
-	}
+	}*/
 
 	/**
 	 * Gets the search button - {@link PrimaryButton}.
@@ -304,9 +306,9 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 * 
 	 * @return the searchFilterDisclosurePanel- {@link DisclosurePanel}.
 	 */
-	public final DisclosurePanel getSearchFilterDisclosurePanel() {
+	/*public final DisclosurePanel getSearchFilterDisclosurePanel() {
 		return searchFilterDisclosurePanel;
-	}
+	}*/
 
 	/**
 	 * Gets the search input.
@@ -333,10 +335,10 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	 * com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event
 	 * .dom.client.ClickEvent)
 	 */
-	@Override
-	public final void onClick(ClickEvent event) {
-		searchFilterDisclosurePanel.setOpen(false);
-	}
+	//@Override
+	/*public final void onClick(ClickEvent event) {
+		//searchFilterDisclosurePanel.setOpen(false);
+	}*/
 
 	/**
 	 * Method to Reset check box to default state.
@@ -344,11 +346,11 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 	public final void resetFilter(String forView) {
 		if(forView.equalsIgnoreCase("forMeasure")) {
 			myMeasuresCheckBox.setValue(true);
-			allMeasuresCheckBox.setValue(false);
+			//allMeasuresCheckBox.setValue(false);
 			setSelectedFilter(MY);
 		} else {
 			myLibrariesCheckBox.setValue(true);
-			allLibrariesCheckBox.setValue(false);
+			//allLibrariesCheckBox.setValue(false);
 			setSelectedFilter(MY);
 		}
 	}
@@ -385,5 +387,11 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler {
 
 	public FocusPanel getMainFocusPanel() {
 		return mainFocusPanel;
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		searchButton.addClickHandler(this);
 	}
 }

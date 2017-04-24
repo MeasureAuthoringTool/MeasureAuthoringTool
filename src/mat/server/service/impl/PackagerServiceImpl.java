@@ -97,11 +97,11 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
-	private static final String XPATH_MEASURE_CQL_LOOKUP_SUPP ="/measure/cqlLookUp/definitions/definition[@supplDataElement='true']";
-	
 	private static final String XPATH_MEASURE_NEW_RISK_ADJSUTMENT_VARIABLE="/measure/riskAdjustmentVariables/cqldefinition";	
 	
 	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS = "/measure/cqlLookUp/definitions/definition";
+	
+	private static final String XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS_CONTEXT_PATIENT = "/measure/cqlLookUp/definitions/definition[@context='Patient']";
 	
 	private static final String XPATH_SD_ELEMENTS_CQLDEFINITION = "/measure/supplementalDataElements/cqldefinition";
 	
@@ -157,6 +157,11 @@ public class PackagerServiceImpl implements PackagerService {
 				// find the GROUP/PACKAGECLAUSES that are not in the main CLAUSE nodes using the clause node UUID
 				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
 				for (int i = 0; i < measureClauses.getLength(); i++) {
+					
+					if(!measureClauses.item(i).hasChildNodes()){
+						continue;
+					}
+					
 					NamedNodeMap namedNodeMap = measureClauses.item(i).getAttributes();
 					Node uuidNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.UUID);
 					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
@@ -604,10 +609,10 @@ public class PackagerServiceImpl implements PackagerService {
 		String xpathStringForDefinition = "";
 		if(!uuidXPathString.isEmpty()){
 			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
-			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS+"["+uuidXPathString +"]" + 
+			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS_CONTEXT_PATIENT+"["+uuidXPathString +"]" + 
 			"[@supplDataElement='false']"; 
 		} else {
-			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS + 
+			xpathStringForDefinition= XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS_CONTEXT_PATIENT + 
 			"[@supplDataElement='false']";
 		}
 		NodeList nodesSubTreeLookUpAll = (NodeList) xPath.evaluate(xpathStringForDefinition,
@@ -859,7 +864,7 @@ public class PackagerServiceImpl implements PackagerService {
 		try {
 	
 			NodeList nodesCQLDefinitionsAll = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS,
+					XPATH_MEASURE_CQL_LOOKUP_DEFINITIONS_CONTEXT_PATIENT,
 					processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 			
 			for (int i = 0; i < nodesCQLDefinitionsAll.getLength(); i++) {
@@ -945,7 +950,6 @@ public class PackagerServiceImpl implements PackagerService {
 				}
 			}
 		
-			System.out.println("supplementalDataList:"+supplementalDataList);
 			
 			try{
 				//checkForPossibleSupplementalCQLDefinitions(processor, definitionList);
@@ -959,6 +963,7 @@ public class PackagerServiceImpl implements PackagerService {
 			overview.setCqlSuppDataElements(supplementalDataList);
 		}catch (XPathExpressionException e) {
 			logger.info("Error while getting default supplemental data elements : " +e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	

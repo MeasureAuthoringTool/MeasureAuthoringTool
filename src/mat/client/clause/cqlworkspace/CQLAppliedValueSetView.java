@@ -1027,7 +1027,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			@Override
 			public SafeHtml getValue(CQLQualityDataSetDTO object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Modify QDM";
+				String title = "Click to modify value set";
 				String cssClass = "customEditButton";
 				if(isEditable){
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
@@ -1078,7 +1078,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			@Override
 			public SafeHtml getValue(CQLQualityDataSetDTO object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Delete QDM";
+				String title = "Click to delete value set";
 				String cssClass;
 				if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";

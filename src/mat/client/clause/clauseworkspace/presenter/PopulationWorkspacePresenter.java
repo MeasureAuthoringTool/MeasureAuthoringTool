@@ -37,6 +37,8 @@ import com.google.gwt.xml.client.XMLParser;
  */
 public class PopulationWorkspacePresenter implements MatPresenter {
 	
+	
+
 	/** The simplepanel. */
 	private SimplePanel simplepanel = new SimplePanel();
 	
@@ -201,13 +203,13 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 		PopulationWorkSpaceConstants.subTreeLookUpNode = new LinkedHashMap<String, Node>();
 		
 		Document document = XMLParser.parse(xml);
-		NodeList nodeList = document.getElementsByTagName("elementLookUp");
-		setupElementLookupQDMNodes(nodeList);
+		//NodeList nodeList = document.getElementsByTagName("elementLookUp");
+		//setupElementLookupQDMNodes(nodeList);
 		setupSubTreeLookupNodes(sortedClauses, document);
 		
 		setupCQLArtifactsNodes(document);
 		
-		List<String> dataTypeList = new ArrayList<String>();
+		/*List<String> dataTypeList = new ArrayList<String>();
 		dataTypeList.addAll(PopulationWorkSpaceConstants.getElementLookUpDataTypeName().values());
 		attributeService.getDatatypeList(dataTypeList, new AsyncCallback<Map<String, List<String>>>() {
 			
@@ -220,7 +222,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			public void onSuccess(Map<String, List<String>> datatypeMap) {
 				PopulationWorkSpaceConstants.setDatatypeMap(datatypeMap);
 			}
-		});
+		});*/
 	}
 	
 	/**
@@ -248,6 +250,10 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 						for(int j=0;j < cqlDefinitionsList.getLength();j++){
 							Node cqlDefinitionNode = cqlDefinitionsList.item(j);
 							NamedNodeMap namedNodeMap = cqlDefinitionNode.getAttributes();
+							//MAT-8571 : Filter Non Patient Context type Definitions and Functions.
+							if(!namedNodeMap.getNamedItem("context").getNodeValue().equalsIgnoreCase(PopulationWorkSpaceConstants.CONTEXT_PATIENT)){
+								continue;
+							}
 							String definitionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
 							PopulationWorkSpaceConstants.defNames.add(definitionName);
@@ -261,6 +267,10 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 						for(int j=0;j < cqlFunctionsList.getLength();j++){
 							Node cqlFunctionNode = cqlFunctionsList.item(j);
 							NamedNodeMap namedNodeMap = cqlFunctionNode.getAttributes();
+							//MAT-8571 :Filter Non Patient Context type Definitions and Functions.
+							if(!namedNodeMap.getNamedItem("context").getNodeValue().equalsIgnoreCase(PopulationWorkSpaceConstants.CONTEXT_PATIENT)){
+								continue;
+							}
 							String functionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();
 							PopulationWorkSpaceConstants.funcNames.add(functionName);

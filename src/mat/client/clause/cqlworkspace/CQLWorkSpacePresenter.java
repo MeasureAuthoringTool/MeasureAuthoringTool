@@ -880,6 +880,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												// if the definition is in use, disable the definition delete button
 												else if (result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
 													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+													//MAT-8571 : Disable Definition context radio buttons if its used.
+													searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(false);
+													searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(false);
 												}
 											}
 											
@@ -954,6 +957,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												if (result.getUsedCQLFunctions().contains(
 														searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionName())) {
 													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+													//MAT-8571 :Disable Function context radio buttons if its used.
+													searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(false);
+													searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(false);
 
 												}
 											}

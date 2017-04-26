@@ -203,6 +203,8 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The datatype map. */
 	public static Map<String, List<String>> datatypeMap;
+	
+	public static final String CONTEXT_PATIENT = "Patient";
 
 	public static List<String> AggfuncNames = new ArrayList<String>();
 	

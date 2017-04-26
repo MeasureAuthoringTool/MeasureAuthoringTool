@@ -875,6 +875,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												// if there are cql errors, enable the definition delete button
 												if(!result.getCqlErrors().isEmpty()) {
 													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+													//MAT-8571 :Disable definition context radio buttons if cql has errors
+													searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
+													searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
 												}
 												
 												// if the definition is in use, disable the definition delete button
@@ -950,6 +953,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											// if the cql file has errors, enable the function delete button
 											if(!result.getCqlErrors().isEmpty()) {
 												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+												//MAT-8571 :Enable Function context radio buttons if its used and CQL has error.
+												searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(true);
+												searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(true);
 											}
 											
 											else {
@@ -1915,23 +1921,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											}else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
-											}
-											
-											// if there are errors, enable the function delete button
-											if(!result.getCqlErrors().isEmpty()) {
-												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-											}
-											
-											else {
-												// if the saved function is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionName)) {
-													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-												}
 												
-												else {
-													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-												}
 											}
+											
+											
 											
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setAnnotations();
 											searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().redisplay();
@@ -1963,7 +1956,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 									}
 									showSearchingBusy(false);
-																	}
+									// if there are errors, enable the function delete button
+									if(!result.getCqlErrors().isEmpty()) {
+										searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+										searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(true);
+										searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(true);
+									}
+									
+									else {
+										// if the saved function is in use, then disable the delete button
+										if (result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionName)) {
+											searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+											searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(false);
+											searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(false);
+										}
+										
+										else {
+											searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+											searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(true);
+											searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(true);
+										}
+									}
+								}
 							});
 				
 			} else {
@@ -2045,21 +2059,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											}
 											
 											
-											// if there are errors, enable the parameter delete button
-											if(!result.getCqlErrors().isEmpty()) {
-												searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-											}
 											
-											else {
-												// if the saved parameter is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
-													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-												}
-												
-												else {
-													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-												}
-											}
 											
 											searchDisplay.getCQLParametersView().getParameterAceEditor().setAnnotations();
 											searchDisplay.getCQLParametersView().getParameterAceEditor().redisplay();
@@ -2079,6 +2079,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										}
 									}
 									showSearchingBusy(false);
+									// if there are errors, enable the parameter delete button
+									if(!result.getCqlErrors().isEmpty()) {
+										searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+									}
+									
+									else {
+										// if the saved parameter is in use, then disable the delete button
+										if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
+											searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+										}
+										
+										else {
+											searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+										}
+									}
 								}
 							});
 				
@@ -2140,6 +2155,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 								@Override
 								public void onSuccess(SaveUpdateCQLResult result) {
+									
 									if(result != null){
 										if (result.isSuccess()) {
 											searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
@@ -2169,21 +2185,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
 											}
 											
-											// if there are errors, enable the definition button
-											if(!result.getCqlErrors().isEmpty()) {
-												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-											}
 											
-											else {
-												// if the saved definition is in use, then disable the delete button
-												if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionName)) {
-													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-												}
-												
-												else {
-													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-												}
-											}
 											
 
 											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setAnnotations();
@@ -2207,6 +2209,27 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 									}
 									showSearchingBusy(false);
+									// if there are errors, enable the definition button
+									if(!result.getCqlErrors().isEmpty()) {
+										searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+										searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
+										searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
+									}
+									
+									else {
+										// if the saved definition is in use, then disable the delete button
+										if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionName)) {
+											searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+											searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(false);
+											searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(false);
+										}
+										
+										else {
+											searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+											searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
+											searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
+										}
+									}
 																	}
 							});
 			} else {

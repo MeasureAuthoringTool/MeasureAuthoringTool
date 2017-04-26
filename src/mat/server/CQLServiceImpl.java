@@ -761,7 +761,7 @@ public class CQLServiceImpl implements CQLService {
 		if (result.isSuccess() && (wrapper.getCqlDefinitions().size() > 0)) {
 			result.getCqlModel().setDefinitionList(sortDefinitionsList(wrapper.getCqlDefinitions()));
 		}
-
+		
 		return result;
 	}
 
@@ -2018,6 +2018,14 @@ public class CQLServiceImpl implements CQLService {
 		if (errors.isEmpty()) {
 			boolean isValid = findValidDataTypeUsage(expressionName, expressionType, parsedCQL);
 			result.setDatatypeUsedCorrectly(isValid);
+			if(isValid) {
+				XmlProcessor xmlProcessor = new XmlProcessor(xml);
+				CQLArtifactHolder cqlArtifactHolder = CQLUtil
+						.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
+				parsedCQL.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
+				parsedCQL.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
+				System.out.println("USED LIBRARY: " + parsedCQL.getUsedCQLArtifacts().getUsedCQLLibraries());
+			}
 		}
 		result.setCqlErrors(errors);
 		result.setUsedCQLArtifacts(parsedCQL.getUsedCQLArtifacts());
@@ -2738,6 +2746,32 @@ public class CQLServiceImpl implements CQLService {
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 
 		return cqlQualityDataModelWrapper;
+		
+		/*MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		CQLModel cqlModel = new CQLModel();
+		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlModel.getXml());
+		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
+		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
+			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
+		}
+		
+		GetUsedCQLArtifactsResult result = getUsedCQlArtifacts(xmlModel.getXml());
+		
+		List<String> valuesets = result.getUsedCQLValueSets();
+		System.out.println("USED VALUSETS: " + valuesets);
+
+		for (CQLQualityDataSetDTO valueset : cqlModel.getAllValueSetList()) {
+			if (valuesets.contains(valueset.getCodeListName())) {
+				valueset.setUsed(true);
+			}
+		}
+		
+		
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
+				.sortCQLQualityDataSetDto(cqlModel.getAllValueSetList());
+		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
+		
+		return cqlQualityDataModelWrapper;*/
 	}
 
 	public CQLLibraryDAO getCqlLibraryDAO() {

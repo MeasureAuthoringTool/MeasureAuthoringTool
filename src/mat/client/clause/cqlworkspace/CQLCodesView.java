@@ -184,7 +184,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	/**
-	 * Builds the element with vsac value set widget.
+	 * Builds the element with Codes widget.
 	 *
 	 * @return the widget
 	 */

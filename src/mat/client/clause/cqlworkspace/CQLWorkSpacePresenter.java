@@ -458,7 +458,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		});
-		
+
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getEraseButton().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -479,23 +479,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
-				
+
 			}
 		});
-		
+
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
 						MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER());
-							
+
 			}
 
 		});
-		
+
 		searchDisplay.getCQLParametersView().getParameterNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			
+
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
@@ -504,9 +504,48 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
-		
-	}
+		// Parameter Add New Functionality
+		searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
+				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+				} else {
+					addNewParameter();
+				}
+			}
+		});
+	}
+	
+	private void addNewParameter() {
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
+		searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+		if ((searchDisplay.getCQLParametersView().getParameterAceEditor().getText() != null)) {
+			searchDisplay.getCQLParametersView().getParameterAceEditor().setText("");
+		}
+		if ((searchDisplay.getCQLParametersView().getParameterNameTxtArea() != null)) {
+			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
+		}
+
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		}
+		// Below lines are to clear search suggestion textbox and listbox
+		// selection after erase.
+		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox().setText("");
+		if (searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex() >= 0) {
+			searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox()
+					.setItemSelected(searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex(), false);
+		}
+
+		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+	}	
+	
 	/**
 	 * Adds the function section handlers.
 	 */
@@ -522,7 +561,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			}
 		});
-		
+
 		//Erase functionality for Function Section
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getEraseButton().addClickHandler(new ClickHandler() {
 
@@ -538,7 +577,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
-		
+
 		//Insert into Ace Editor functionality for Function Section
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -546,7 +585,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				buildInsertPopUp();
 			}
 		});
-		
+
 		//Info Icon functionality for Function Section
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
 
@@ -557,7 +596,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			}
 		});
-		
+
 		//Delete functionality for Function Section
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
 
@@ -568,7 +607,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
-	    //Creating Arguments for Functions in Function Section
+		//Creating Arguments for Functions in Function Section
 		searchDisplay.getCqlFunctionsView().getAddNewArgument().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -579,9 +618,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 			}
 		});
-		
+
 		searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			
+
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -590,11 +629,50 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		// Function Add New Functionality
+		searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
+				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+				} else {
+					addNewFunction();
+				}
+			}
+		});
 		addFunctionSectionObserverHandlers();
-		
-	}
 
+	}
+	
+	private void addNewFunction() {
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
+		searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
+		searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
+		searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(),MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+		if ((searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().getText() != null)) {
+			searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setText("");
+		}
+		if ((searchDisplay.getCqlFunctionsView().getFuncNameTxtArea() != null)) {
+			searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText("");
+		}
+		// Below lines are to clear search suggestion textbox and listbox
+		// selection after erase.
+		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
+		if (searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex() >= 0) {
+			searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().setItemSelected(
+					searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex(),
+					false);
+		}
+		searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setValue(true);
+		searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
+		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+	}	
 	
 	/**
 	 * Adds the function section observer handlers.
@@ -716,9 +794,56 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
-		
-	}
+		// Definition Add New Functionality
+				searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
+					@Override
+					public void onClick(ClickEvent event) {
+						searchDisplay.resetMessageDisplay();
+						searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+						searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
+						if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+							searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+						} else {
+							addNewDefinition();
+						}
+					}
+				});		
+	}
+	
+	private void addNewDefinition() {
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+		searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+		if ((searchDisplay.getCQlDefinitionsView().getDefineAceEditor().getText() != null)) {
+			searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setText("");
+		}
+		if ((searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea() != null)) {
+			searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText("");
+		}
+		// Below lines are to clear search suggestion textbox and listbox
+		// selection after erase.
+		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
+		if (searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex() >= 0) {
+			searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().setItemSelected(
+					searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex(), false);
+		}
+
+		// Functionality to reset the disabled features for supplemental data
+		// definitions when erased.
+		searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setReadOnly(false);
+		searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getSaveButton().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInsertButton().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getTimingExpButton().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
+		searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
+	
+		
+	}	
 	/**
 	 * Adds the list box event handler.
 	 */

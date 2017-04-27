@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -25,7 +26,6 @@ import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCaptionElement;
@@ -35,6 +35,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,9 +47,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
-
+import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -110,6 +110,9 @@ public class CQLFunctionsView {
 	/** The context pop toggle switch. */
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
 	
+	/** The function add new button. */
+	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("function");
+	
 	/** The function argument list. */
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
 	
@@ -152,7 +155,8 @@ public class CQLFunctionsView {
 	private void buildView(boolean isEditable) {
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
-
+		HorizontalPanel funcHP = new HorizontalPanel();
+		FormGroup funcFormGroup = new FormGroup();
 		Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
 		functionNameLabel.setMarginTop(5);
 		functionNameLabel.setId("Function_Label");
@@ -162,6 +166,15 @@ public class CQLFunctionsView {
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
 		functionNameLabel.setText("Function Name");
+		
+		funcFormGroup.clear();
+		funcFormGroup.add(functionNameLabel);
+		funcFormGroup.add(addNewButtonBar);
+		
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, funcFormGroup);
+
+		funcHP.add(queryGrid);
 
 		SimplePanel funcAceEditorPanel = new SimplePanel();
 		funcAceEditorPanel.setSize("685", "510");
@@ -208,7 +221,7 @@ public class CQLFunctionsView {
 		funcConextPanel.setStyleName("contextToggleSwitch");
 
 		funcVP.add(new SpacerWidget());
-		funcVP.add(functionNameLabel);
+		funcVP.add(funcHP);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
 		funcVP.add(new SpacerWidget());
@@ -787,7 +800,20 @@ public class CQLFunctionsView {
 		getFunctionBodyAceEditor().detach();
 	}
 	
-	
+	/**
+	 * @return the addNewButtonBar
+	 */
+	public CQLAddNewButton getAddNewButtonBar() {
+		return addNewButtonBar;
+	}
+
+	/**
+	 * @param addNewButtonBar the addNewButtonBar to set
+	 */
+	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
+		this.addNewButtonBar = addNewButtonBar;
+	}
+
 	/**
 	 * Sets the widget read only.
 	 *
@@ -798,6 +824,7 @@ public class CQLFunctionsView {
 		getFuncNameTxtArea().setEnabled(isEditable);
 		getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getAddNewArgument().setEnabled(isEditable);
 		getContextFuncPATRadioBtn().setEnabled(isEditable);
 		getContextFuncPOPRadioBtn().setEnabled(isEditable);

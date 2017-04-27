@@ -3,10 +3,12 @@
  */
 package mat.client.clause.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -14,6 +16,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
@@ -33,6 +36,9 @@ public class CQLParametersView {
 	private AceEditor parameterAceEditor = new AceEditor();
 
 	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
+	
+	/** The parameter add new button. */
+	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
 
 	VerticalPanel mainParamViewVerticalPanel = new VerticalPanel();
 
@@ -45,7 +51,8 @@ public class CQLParametersView {
 	private void buildView() {
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-
+		HorizontalPanel parameterHP = new HorizontalPanel();
+		FormGroup parameterFormGroup = new FormGroup();
 		Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
@@ -54,6 +61,14 @@ public class CQLParametersView {
 		parameterNameTxtArea.setSize("260px", "25px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
+		parameterFormGroup.clear();
+		parameterFormGroup.add(parameterLabel);
+		parameterFormGroup.add(addNewButtonBar);
+		
+		Grid queryGrid = new Grid(1,1);
+		queryGrid.setWidget(0, 0, parameterFormGroup);
+
+		parameterHP.add(queryGrid);
 
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("685px", "510px");
@@ -80,7 +95,7 @@ public class CQLParametersView {
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
 		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterLabel);
+		parameterVP.add(parameterHP);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
 		parameterVP.add(new SpacerWidget());
@@ -130,10 +145,19 @@ public class CQLParametersView {
 		getParameterAceEditor().setText("");
 	}
 
+	public CQLAddNewButton getAddNewButtonBar() {
+		return addNewButtonBar;
+	}
+
+	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
+		this.addNewButtonBar = addNewButtonBar;
+	}
+
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		System.out.println(
 				"in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);

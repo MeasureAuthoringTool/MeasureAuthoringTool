@@ -883,9 +883,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
-								searchDisplay.getCQLParametersView().getParameterButtonBar().getEraseButton().setEnabled(true);
 							}
 
+							searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
 									MatContext.get().getCurrentMeasureId(),
@@ -902,25 +902,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 											
-											// if it Measurement Period, disable the paramter delete button
-											if(currentParameter.isReadOnly()) {
-												searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-											}
-											
-											else {												
-												// if there are cql errors, enable the parameter delete button
-												if(!result.getCqlErrors().isEmpty()) {
+											// if it is not a default parameter, check if the delete button needs to be enabled 
+											if(!currentParameter.isReadOnly()) {
+												
+												// enable delete button if there are errors are the parameter is not in use. 
+												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
 													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
 
-												} 
-												
-												// check if the parameter is in use, if it is disable the parameter delete button
-												else if(result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
-													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-													
-												}											
-											}	
-											
+												}	
+											}
 										}
 
 									});
@@ -971,9 +961,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(!isReadOnly);
-								searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getEraseButton().setEnabled(true);
 							}
 
+							searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+							searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(false);
+							searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(false);
+							
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
 									MatContext.get().getCurrentMeasureId(),
@@ -990,30 +983,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
 
-											// if it is a 4 default definition, disable definition delete button
-											if(currentDefinition.isSupplDataElement()) {
-												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-											}
-											
-											else {				
+											// if the current definition is not a default definition, check if we need to enable the delete buttons
+											if(!currentDefinition.isSupplDataElement()) {
 												
-												// if there are cql errors, enable the definition delete button
-												if(!result.getCqlErrors().isEmpty()) {
+												// if there are errors or the definition is not used, enable the context radio buttons and delete button
+												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
 													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-													//MAT-8571 :Disable definition context radio buttons if cql has errors
 													searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
 													searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
 												}
-												
-												// if the definition is in use, disable the definition delete button
-												else if (result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
-													searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-													//MAT-8571 : Disable Definition context radio buttons if its used.
-													searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(false);
-													searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(false);
-												}
-											}
-											
+											}	
 										}
 
 									});
@@ -1061,6 +1040,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 							}
 
+							searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+							searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(false);
+							searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(false);
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
 									MatContext.get().getCurrentMeasureId(),
@@ -1075,26 +1057,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										@Override
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
 											
-											// if the cql file has errors, enable the function delete button
-											if(!result.getCqlErrors().isEmpty()) {
+											CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+											
+											// if there are errors or the function is not in use, enable the context radio buttons and delete button
+											if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
 												searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 												//MAT-8571 :Enable Function context radio buttons if its used and CQL has error.
 												searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(true);
 												searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(true);
-											}
-											
-											else {
-												// if the function is in use, disable the function delete button
-												if (result.getUsedCQLFunctions().contains(
-														searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionName())) {
-													searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-													//MAT-8571 :Disable Function context radio buttons if its used.
-													searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(false);
-													searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(false);
-
-												}
-											}
-											
+											}											
 										}
 
 									});
@@ -1156,9 +1127,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 												if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 													searchDisplay.getIncludeView().setWidgetReadOnly(false);
-													searchDisplay.getIncludeView().getDeleteButton().setEnabled(true);
 												}
 												
+												searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 												// load most recent used cql artifacts
 												MatContext.get().getMeasureService().getUsedCQLArtifacts(
 														MatContext.get().getCurrentMeasureId(),
@@ -1174,21 +1145,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 															public void onSuccess(GetUsedCQLArtifactsResult result) {
 																CQLIncludeLibrary cqlIncludeLibrary = searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID);
 													
-																// if the cql file has errors, enable the includes delete button
-																if(!result.getCqlErrors().isEmpty()) {
+																// if the cql file has errors or the library is not in use, enable the includes delete button
+																if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
+																		cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName())) {
 																	searchDisplay.getIncludeView().getDeleteButton().setEnabled(true);
-
 																}
-																
-																else {
-																	
-																	// if the includes is in use, disable the includes delete button
-																	if (result.getUsedCQLLibraries().contains(
-																			cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName())) {
-																		searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
-																	}
-																}
-
 															}
 
 														});

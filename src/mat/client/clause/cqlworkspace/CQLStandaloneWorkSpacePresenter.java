@@ -590,10 +590,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
-									searchDisplay.getCQLParametersView().getParameterButtonBar()
-									.getEraseButton().setEnabled(true);
 								}
 
+								searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 								// load most recent used cql artifacts
 								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 										MatContext.get().getCurrentCQLLibraryId(),
@@ -608,33 +607,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
 
-												CQLParameter currentParameter = searchDisplay
-														.getCqlLeftNavBarPanelView().getParameterMap()
-														.get(selectedParamID);
+												CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 
-												// if there are cql
-												// errors,
-												// enable the parameter
-												// delete button
-												if (!result.getCqlErrors().isEmpty()) {
-													searchDisplay.getCQLParametersView().getParameterButtonBar()
-													.getDeleteButton().setEnabled(true);
-
+												// if there are cql errors or the parameter is not in use, enable the delete button
+												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
+													searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
 												}
-
-												// check if the
-												// parameter is
-												// in use, if it is
-												// disable
-												// the parameter delete
-												// button
-												else if (result.getUsedCQLParameters()
-														.contains(currentParameter.getParameterName())) {
-													searchDisplay.getCQLParametersView().getParameterButtonBar()
-													.getDeleteButton().setEnabled(false);
-
-												}
-
 											}
 
 										});
@@ -804,10 +782,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
-									searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getEraseButton()
-									.setEnabled(true);
 								}
 
+								searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 								// load most recent used cql artifacts
 								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 										MatContext.get().getCurrentCQLLibraryId(),
@@ -822,30 +799,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
 
-												CQLDefinition currentDefinition = searchDisplay
-														.getCqlLeftNavBarPanelView().getDefinitionMap()
-														.get(selectedDefinitionID);
+												CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
 
-												// if there are cql
-												// errors,
-												// enable the definition
-												// delete button
-												if (!result.getCqlErrors().isEmpty()) {
-													searchDisplay.getCQLDefinitionsView().getDefineButtonBar()
-													.getDeleteButton().setEnabled(true);
+												// if there are cql errors or the definition is not in use, enable the delete button
+												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
+													searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
 												}
-
-												// if the definition is
-												// in
-												// use, disable the
-												// definition delete
-												// button
-												else if (result.getUsedCQLDefinitions()
-														.contains(currentDefinition.getDefinitionName())) {
-													searchDisplay.getCQLDefinitionsView().getDefineButtonBar()
-													.getDeleteButton().setEnabled(false);
-												}
-
 											}
 
 										});
@@ -1013,10 +972,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLFunctionsView().setWidgetReadOnly(true);
-									searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton()
-											.setEnabled(true);
 								}
 
+								searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 								// load most recent used cql artifacts
 								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 										MatContext.get().getCurrentCQLLibraryId(),
@@ -1031,30 +989,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
 
-												// if the cql file has errors,
-												// enable the function delete
-												// button
-												if (!result.getCqlErrors().isEmpty()) {
-													searchDisplay.getCQLFunctionsView().getFunctionButtonBar()
-															.getDeleteButton().setEnabled(true);
+												CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+												
+												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
+													searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 												}
-
-										else {
-													// if the function is in
-													// use,
-													// disable the function
-													// delete
-													// button
-													if (result.getUsedCQLFunctions()
-															.contains(searchDisplay.getCqlLeftNavBarPanelView()
-																	.getFunctionMap().get(selectedFunctionId)
-																	.getFunctionName())) {
-														searchDisplay.getCQLFunctionsView().getFunctionButtonBar()
-																.getDeleteButton().setEnabled(false);
-
-													}
-												}
-
 											}
 
 										});
@@ -1478,6 +1417,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															// load most recent
 															// used
 															// cql artifacts
+															searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 															MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 																	MatContext.get().getCurrentCQLLibraryId(),
 																	new AsyncCallback<GetUsedCQLArtifactsResult>() {
@@ -1497,53 +1437,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																					.getCqlLeftNavBarPanelView()
 																					.getIncludeLibraryMap()
 																					.get(selectedIncludeLibraryID);
-
-																			// if
-																			// the
-																			// cql
-																			// file
-																			// has
-																			// errors,
-																			// enable
-																			// the
-																			// includes
-																			// delete
-																			// button
-																			if (!result.getCqlErrors().isEmpty()) {
-																				searchDisplay.getIncludeView()
-																						.getDeleteButton()
-																						.setEnabled(true);
-
+																			
+																			// if there are errors or the library is not in use, enable the delete button
+																			if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
+																					cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary+ "|"
+																							+ cqlIncludeLibrary.getAliasName())) {
+																				searchDisplay.getIncludeView().getDeleteButton().setEnabled(true);
 																			}
-
-																	else {
-
-																				// if
-																				// the
-																				// includes
-																				// is
-																				// in
-																				// use,
-																				// disable
-																				// the
-																				// includes
-																				// delete
-																				// button
-																				if (result.getUsedCQLLibraries()
-																						.contains(cqlIncludeLibrary
-																								.getCqlLibraryName()
-																								+ "-"
-																								+ cqlIncludeLibrary
-																										.getVersion()
-																								+ "|"
-																								+ cqlIncludeLibrary
-																										.getAliasName())) {
-																					searchDisplay.getIncludeView()
-																							.getDeleteButton()
-																							.setEnabled(false);
-																				}
-																			}
-
 																		}
 
 																	});
@@ -1789,28 +1689,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getSUCESS_FUNCTION_MODIFY());
 										}
 
-										// if there are errors, enable the
-										// function delete button
-										if (!result.getCqlErrors().isEmpty()) {
-											searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton()
-													.setEnabled(true);
-										}
-
-										else {
-											// if the saved function is in use,
-											// then disable the delete button
-											if (result.getUsedCQLArtifacts().getUsedCQLFunctions()
-													.contains(functionName)) {
-												searchDisplay.getCQLFunctionsView().getFunctionButtonBar()
-														.getDeleteButton().setEnabled(false);
-											}
-
-											else {
-												searchDisplay.getCQLFunctionsView().getFunctionButtonBar()
-														.getDeleteButton().setEnabled(true);
-											}
-										}
-
 										searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
 										searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().redisplay();
 
@@ -1846,6 +1724,25 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								}
 								showSearchingBusy(false);
+								
+								// if there are cql errors enable the delete button
+								if(!result.getCqlErrors().isEmpty()) {
+									searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+								}
+								
+								else {
+									// if the function is in use, disable the delete button
+									if(result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(functionName)) {
+										searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+									}
+									
+									else {
+										searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+									}
+									
+								}
+								
+								
 							}
 						});
 
@@ -1937,27 +1834,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getSUCESS_PARAMETER_MODIFY());
 										}
 
-										// if there are errors, enable the
-										// parameter delete button
-										if (!result.getCqlErrors().isEmpty()) {
-											searchDisplay.getCQLParametersView().getParameterButtonBar()
-													.getDeleteButton().setEnabled(true);
-										}
-
-						else {
-											// if the saved parameter is in use,
-											// then disable the delete button
-											if (result.getUsedCQLArtifacts().getUsedCQLParameters()
-													.contains(parameterName)) {
-												searchDisplay.getCQLParametersView().getParameterButtonBar()
-														.getDeleteButton().setEnabled(false);
-											}
-
-						else {
-												searchDisplay.getCQLParametersView().getParameterButtonBar()
-														.getDeleteButton().setEnabled(true);
-											}
-										}
+										
 
 										searchDisplay.getCQLParametersView().getParameterAceEditor().setAnnotations();
 										searchDisplay.getCQLParametersView().getParameterAceEditor().redisplay();
@@ -1982,6 +1859,22 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									}
 								}
 								showSearchingBusy(false);
+								
+								// if there are errors, enable the parameter delete button
+								if (!result.getCqlErrors().isEmpty()) {
+									searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+								}
+
+								else {
+									// if the saved parameter is in use, then disable the delete button
+									if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
+										searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+									}
+
+									else {
+										searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+									}
+								}
 
 							}
 						});
@@ -2081,29 +1974,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getSUCESS_DEFINITION_MODIFY());
 										}
 
-										// if there are errors, enable the
-										// definition button
-										if (!result.getCqlErrors().isEmpty()) {
-											searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton()
-													.setEnabled(true);
-										}
-
-						else {
-											// if the saved definition is in
-											// use, then disable the delete
-											// button
-											if (result.getUsedCQLArtifacts().getUsedCQLDefinitions()
-													.contains(definitionName)) {
-												searchDisplay.getCQLDefinitionsView().getDefineButtonBar()
-														.getDeleteButton().setEnabled(false);
-											}
-
-						else {
-												searchDisplay.getCQLDefinitionsView().getDefineButtonBar()
-														.getDeleteButton().setEnabled(true);
-											}
-										}
-
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().redisplay();
 
@@ -2130,6 +2000,27 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								}
 								showSearchingBusy(false);
+								
+								// if there are errors, enable the
+								// definition button
+								if (!result.getCqlErrors().isEmpty()) {
+									searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton()
+											.setEnabled(true);
+								}
+				
+								else {
+									// if the saved definition is in
+									// use, then disable the delete
+									// button
+									if (result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(definitionName)) {
+										searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+									}
+			
+									else {
+										searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+									}
+								}
+
 							}
 						});
 			} else {

@@ -69,6 +69,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.service.MeasurePackageService;
+import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.ResourceLoader;
@@ -328,8 +329,6 @@ public class CQLServiceImpl implements CQLService {
 						}
 					}
 					if (isValidArgumentName) {
-						String cqlString = createFunctionsXML(currentObj);
-
 						logger.debug(" CQLServiceImpl: saveAndModifyFunctions Start :  ");
 
 						String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='"
@@ -339,6 +338,21 @@ public class CQLServiceImpl implements CQLService {
 									XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
 
 							if (nodeFunction != null) {
+								// Server Side check to see if Function is used and context is changed from developer's tool
+								// since if function is used we disable the context radio buttons then only allow to modify
+								// if either cql is invalid or function is not used.
+								String oldExpressionName = nodeFunction.getAttributes().getNamedItem("name").getNodeValue();
+								String oldExpressionLogic = nodeFunction.getChildNodes().item(0).getTextContent();
+								String oldContextValue = nodeFunction.getAttributes().getNamedItem("context").getNodeValue();
+								if(MatContextServiceUtil.get().isMeasure() && !oldContextValue.equalsIgnoreCase(currentObj.getContext())) {
+									parseCQLExpressionForErrors(result, xml, "define function" + " \"" + oldExpressionName	+ "\"",
+											oldExpressionLogic, oldExpressionName, "Function");
+									 if(result.getUsedCQLArtifacts().getUsedCQLFunctions().contains(oldExpressionName)){
+										currentObj.setContext(oldContextValue);
+									}
+									
+								} 
+								String cqlString = createFunctionsXML(currentObj);
 								processor.removeFromParent(nodeFunction);
 								processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
 
@@ -663,6 +677,21 @@ public class CQLServiceImpl implements CQLService {
 						Node nodeDefinition = processor.findNode(processor.getOriginalDoc(),
 								XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
 						if (nodeDefinition != null) {
+							
+							// Server Side check to see if Function is used and context is changed from developer's tool
+							// since if function is used we disable the context radio buttons then only allow to modify
+							// if either cql is invalid or function is not used.
+							String oldExpressionName = nodeDefinition.getAttributes().getNamedItem("name").getNodeValue();
+							String oldExpressionLogic = nodeDefinition.getChildNodes().item(0).getTextContent();
+							String oldContextValue = nodeDefinition.getAttributes().getNamedItem("context").getNodeValue();
+							if(MatContextServiceUtil.get().isMeasure() && !oldContextValue.equalsIgnoreCase(currentObj.getContext())) {
+								parseCQLExpressionForErrors(result, xml, "define" + " \"" + currentObj.getDefinitionName() + "\"",
+										oldExpressionLogic, oldExpressionName, "Definition");
+								 if(result.getUsedCQLArtifacts().getUsedCQLDefinitions().contains(oldExpressionName)){
+									currentObj.setContext(oldContextValue);
+								}
+								
+							} 
 							nodeDefinition.getAttributes().getNamedItem("context")
 									.setNodeValue(currentObj.getContext());
 							nodeDefinition.getAttributes().getNamedItem("name")

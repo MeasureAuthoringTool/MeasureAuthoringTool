@@ -5894,6 +5894,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
 			if (measureXMLModel != null) {
+				MatContextServiceUtil.get().setMeasure(true);
 				result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
 						definitionList);
 				if (result.isSuccess()) {
@@ -5902,6 +5903,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 		}
+		MatContextServiceUtil.get().setMeasure(false);
 		return result;
 	}
 
@@ -5950,6 +5952,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
 			if (measureXMLModel != null) {
+				MatContextServiceUtil.get().setMeasure(true);
 				result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj,
 						currentObj, functionsList);
 				if (result.isSuccess()) {
@@ -5958,6 +5961,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 		}
+		MatContextServiceUtil.get().setMeasure(false);
 		return result;
 
 	}

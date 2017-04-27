@@ -16,6 +16,7 @@ import mat.server.LoggedInUserUtil;
  * The Class MatContextServiceUtil.
  */
 public class MatContextServiceUtil {
+	private boolean isMeasure ;
 
 	/** The instance. */
 	private static MatContextServiceUtil instance = new MatContextServiceUtil();
@@ -163,6 +164,16 @@ public class MatContextServiceUtil {
 	public boolean isCurrentCQLLibraryDraftable(CQLLibraryDAO cqlLibraryDAO,
 			String libraryId){
 		return isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId, false);
+	}
+
+
+	public boolean isMeasure() {
+		return isMeasure;
+	}
+
+
+	public void setMeasure(boolean isMeasure) {
+		this.isMeasure = isMeasure;
 	}
 
 }

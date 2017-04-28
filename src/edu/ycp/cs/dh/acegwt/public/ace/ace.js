@@ -16580,12 +16580,12 @@ exports.defaultCommands = [{
     name: "alignCursors",
     exec: function(editor) { editor.alignCursors(); },
     bindKey: {win: "Ctrl-Alt-A", mac: "Ctrl-Alt-A"}
-}, {
+}/*, {
     name: "findAll",
     exec: function(editor) { editor.findAll(); },
     bindKey: {win: "Ctrl-Alt-K", mac: "Ctrl-Alt-G"},
     readonly: true
-}];
+}*/];
 exports.multiSelectCommands = [{
     name: "singleSelection",
     bindKey: "esc",

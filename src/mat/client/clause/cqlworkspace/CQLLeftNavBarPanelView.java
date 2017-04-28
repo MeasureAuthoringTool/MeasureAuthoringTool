@@ -2441,7 +2441,8 @@ public class CQLLeftNavBarPanelView {
 		HTML html5 = new HTML("Ctrl-Alt-p: parameters");
 		HTML html6 = new HTML("Ctrl-Alt-t: timings");
 		HTML html7 = new HTML("Ctrl-Alt-v: value sets");
-		HTML html8 = new HTML("Ctrl-Space: all");
+		HTML html8 = new HTML("Ctrl-Alt-k: keywords");
+		HTML html9 = new HTML("Ctrl-Space: all");
 
 		dialogContents.add(html1);
 		dialogContents.add(html2);
@@ -2451,6 +2452,7 @@ public class CQLLeftNavBarPanelView {
 		dialogContents.add(html6);
 		dialogContents.add(html7);
 		dialogContents.add(html8);
+		dialogContents.add(html9);
 		panel.show();
 	}
 

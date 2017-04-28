@@ -646,11 +646,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
-				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-				} else {
-					clearParameter();
-				}
+				eraseParameter(); 
 			}
 		});
 		// Parameter Delete Icon Functionality
@@ -840,11 +836,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
-				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-				} else {
-					clearDefinition();
-				}
+				eraseDefinition(); 
 			}
 		});
 		// Definition Info Icon Functionality
@@ -1046,11 +1038,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
-				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-				} else {
-					clearFunction();
-				}
+				eraseFunction(); 
 			}
 		});
 
@@ -2143,6 +2131,43 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getSAVE_INCLUDE_LIBRARY_VALIATION_ERROR());
+		}
+	}
+	
+	/**
+	 * Clears the ace editor for parameters. Functionality for the eraser icon in parameter section. 
+	 */
+	private void eraseParameter() {
+		
+		searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+		if(searchDisplay.getCQLParametersView().getParameterAceEditor().getText() != null) {
+			searchDisplay.getCQLParametersView().getParameterAceEditor().setText("");
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+		}
+		
+	}
+	
+	/**
+	 * Clears the ace editor for definitions. Functionality for the eraser icon in definition section. 
+	 */
+	private void eraseDefinition() {
+		
+		searchDisplay.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
+		if ((searchDisplay.getCQLDefinitionsView().getDefineAceEditor().getText() != null)) {
+			searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setText("");
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+		}
+	}
+	
+	/**
+	 * Clears the ace editor for functions. Functionality for the eraser icon in function section. 
+	 */
+	private void eraseFunction() {
+		
+		searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+		if ((searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().getText() != null)) {
+			searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setText("");
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 		}
 	}
 

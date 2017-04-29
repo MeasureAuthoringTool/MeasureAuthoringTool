@@ -1540,13 +1540,14 @@ var Autocomplete = function() {
                                     "Coalesce","Count","DateTime","Exp","First","Floor","IndexOf","Last","Length","Ln","Log","Max","Median","Min","Mode",
                                     "Now","PopulationStdDev","PopulationVariance","Round","StdDev","Sum","Time","TimeOfDay","Today","Truncate","Variance"];
             
-            var Keywords = ["after ","all ","and ","as ","asc ","ascending ","before ","between ","by ","called ","case ","cast ","Code ","codesystem ","codesystems ","collapse ",
-                            "Concept ","contains ","context ","convert ","date ","day ","days ","default ","define ","desc ","descending ","difference ","display ","distinct ","div ",
-                            "duration ","during ","else ","end ","ends ","except ","exists ","false ","flatten ","from ","function ","hour ","hours ","if ","in ","include ","includes ",
-                            "included in ","intersect ","Interval ","Is ","let ","library ","List ","maximum ","meets ","millisecond ","milliseconds ","minimum ","minute ","minutes ",
-                            "mod ","month ","months ","not ","null ","occurs ","of ","or ","or after ","or before ","or less ","or more ","overlaps ","parameter ","predecessor ","private ",
-                            "properly ","public ","return ","same ","singleton ","second ","seconds ","start ","starts ","sort ","successor ","such that ","then ","time ","timezone ","to ",
-                            "true ","Tuple ","union ","using ","valueset ","version ","week ","weeks ","where ","when ","width ","with ","within ","without ","xor ","year ","years"];
+            var Keywords = ["after","all","and","as","asc","ascending","before","between","by","called","case","cast","Code","codesystem","codesystems","collapse",
+                            "Concept","contains","context","convert","date","day","days","default","define","desc","descending","difference","display","distinct",
+                            "div","duration","during","else","end","ends","except","exists","false","flatten","from","function","hour","hours","if","in","include",
+                            "includes","included in","intersect","Interval","Is","let","library","List","maximum","meets","millisecond","milliseconds","minimum",
+                            "minute","minutes","mod","month","months","not","null","occurs","of","or","or after","or before","or less","or more","overlaps",
+                            "parameter","predecessor","private","properly","public","return","same","singleton","second","seconds","start","starts","sort",
+                            "successor","such that","then","time","timezone","to","true","Tuple","union","using","valueset","version","week","weeks","where","when",
+                            "width","with","within","without","xor","year","years"];
             
        	    var defineKeywords = window.definitioList();
         	var funcsKeywords = window.funcsList();

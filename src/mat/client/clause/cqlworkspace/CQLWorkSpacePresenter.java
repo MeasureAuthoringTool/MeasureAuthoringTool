@@ -530,6 +530,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -664,6 +665,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 	}	
 	
 	/**
@@ -823,6 +825,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setReadOnly(false);
 		searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getSaveButton().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInsertButton().setEnabled(true);
@@ -871,6 +874,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
+								//Checks if Draft
+								if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+									searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+								}
 							}
 
 							searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
@@ -949,6 +956,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(!isReadOnly);
+								//Checks if Draft
+								if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+									searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+								}
 							}
 
 							searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
@@ -1025,6 +1036,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCqlFunctionsView().setWidgetReadOnly(true);
+								//Checks if Draft
+								if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+									searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+								}
 								searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 							}
 
@@ -1879,6 +1894,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -1919,6 +1935,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setReadOnly(false);
 		searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
+		searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getSaveButton().setEnabled(true);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInsertButton().setEnabled(true);
@@ -1955,6 +1972,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+		searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 	}
 	
 
@@ -2844,7 +2862,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildParameterLibraryView();
 
 		searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-
+		//Checks if Draft
+		if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+			searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+		}
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
@@ -2909,7 +2930,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildDefinitionLibraryView();
 		
 		searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-
+		//Checks if Draft
+		if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+			searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+		}
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
@@ -2928,7 +2952,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		searchDisplay.buildFunctionLibraryView();
 		searchDisplay.getCqlFunctionsView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-
+		//Checks if Draft
+		if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+			searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
+		}
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor();

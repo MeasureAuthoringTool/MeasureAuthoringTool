@@ -1,14 +1,10 @@
 package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 
 
 // TODO: Auto-generated Javadoc
@@ -27,14 +23,17 @@ public class CQLAddNewButton extends Composite {
 	 */
 	public CQLAddNewButton(String sectionName) {
 		
-		addNewButton = new Button("+ Add New");
-		addNewButton.setType(ButtonType.LINK);
-		addNewButton.setSize(ButtonSize.SMALL);
-		addNewButton.setTitle("Add New");
-		addNewButton.setStyleName("btn-link");
-		addNewButton.getElement().setAttribute("aria-label", "Add New");
-		addNewButton.getElement().setId("addNewButton_"+sectionName);
+		addNewButton = new Button();
 		
+		addNewButton.setType(ButtonType.LINK);
+		addNewButton.getElement().setId("addNewButton_"+sectionName);
+
+		addNewButton.setTitle("Add New");
+		addNewButton.setText("Add New");
+		addNewButton.setId("Add_New_ID");
+		addNewButton.setIcon(IconType.PLUS);
+		addNewButton.setSize(ButtonSize.SMALL);
+
 		initWidget(addNewButton);
 		
 	}

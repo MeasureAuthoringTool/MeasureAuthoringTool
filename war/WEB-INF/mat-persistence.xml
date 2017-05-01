@@ -30,43 +30,14 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-   <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		dev db server
 		<property name="url" value="jdbc:mysql://localhost:3306/MAT_APP"/>
         <property name="username" value="root"/>
         <property name="password" value="admin"/>
-    </bean> -->
-     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-	   <!--  <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWERER"/>
-        <property name="username" value="mat_newerer_usr"/>
-        <property name="password" value="***REMOVED***"/>  --> 
-    <!--<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWER_TS"/>
-         <property name="username" value="mat_newer_ts_usr"/>
-         <property name="password" value="***REMOVED***"/>  -->
-       
-       
-        <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_APP2"/>
-        <!--  <property name="username" value="rtadepally"/>
-        <property name="password" value="***REMOVED***"/> -->  
-         <property name="username" value="jnarang"/>
-        <property name="password" value="***REMOVED***"/>
-        
-       <!--  <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_Stage_Copy"/>
-         <property name="username" value="cbajikar"/>
-        <property name="password" value="***REMOVED***"/> -->
-         
     </bean>
     
-   <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://mat-test-db01:3306/MAT_APP"/>
-        <property name="username" value="***REMOVED***"/>
-        <property name="password" value="***REMOVED***"/>  
-    </bean> -->
-
-	<context:annotation-config />
+    <context:annotation-config />
 	
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"

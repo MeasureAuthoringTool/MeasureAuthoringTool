@@ -525,31 +525,41 @@ public class CQLFilter {
         // since we found an expression ref, we want to get the details of it.
         // so we will recursively call get used statements on the expression ref
         String includedLibraryAlias = expressionRef.getLibraryName();
-       // System.out.println("Expression name:"+expressionRef.getName());
-        //System.out.println("Included library:"+includedLibraryAlias+":");
+//        System.out.println("Expression name:"+expressionRef.getName());
+//        System.out.println("Included library:"+includedLibraryAlias+":");
         
         String expressionName = expressionRef.getName();
         
         LibraryHolder existingLibrary = null;
+    	String finalExpressionName = expressionName;
     	
         if(includedLibraryAlias != null){
 	        LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
-	       // System.out.println(this.includedLibraries);
+	        //System.out.println(this.includedLibraries);
 	        includedLibraryAlias = includedLibrary.getLibraryName()  + "-" + includedLibrary.getLibraryVersion() +  "|" + includedLibraryAlias;
 	      	existingLibrary = this.currentLibraryHolder; 
 	    	this.currentLibraryHolder = includedLibrary;
-	    	this.addUsedExpression(includedLibraryAlias + "|" + expressionRef.getName());
+	    	finalExpressionName = includedLibraryAlias + "|" + expressionRef.getName();
+	    	//this.addUsedExpression(includedLibraryAlias + "|" + expressionRef.getName());
     	}else{
     		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
-    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName());
+    			
+    			finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
+    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName();
+    			
+//    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
+//    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName());
     		}else{
-    			this.addUsedExpression(expressionRef.getName());
+    			finalExpressionName = expressionRef.getName();
+    			//this.addUsedExpression(expressionRef.getName());
     		}
     	}
     	
+        this.addUsedExpression(finalExpressionName);
+        
         if(!expressionName.equals("Patient")){
-        	addToDirectRefDefMap(this.getUsedExpressions().get(this.getUsedExpressions().size() - 1));
+        	//addToDirectRefDefMap(this.getUsedExpressions().get(this.getUsedExpressions().size() - 1));
+        	addToDirectRefDefMap(finalExpressionName);
     	}        
         String tempCurrentDef = this.currentDefinitionName;
         String tempCurrentFunc = this.currentFunctionName;
@@ -593,32 +603,39 @@ public class CQLFilter {
 		
 	}
 
-	private void checkForFunctionRef(Expression expression) {
+    private void checkForFunctionRef(Expression expression) {
         FunctionRef functionRef = (FunctionRef) expression;
        
         // since we found a function ref, we want to get the details of it.
         // so we will recursively call get used statements on the function ref.
         String includedLibraryAlias = functionRef.getLibraryName();
-       // System.out.println("Included library:"+includedLibraryAlias+":");
+        //System.out.println("Included library:"+includedLibraryAlias+":");
         
         String expressionName = functionRef.getName();
         
         LibraryHolder existingLibrary = null;
+        String finalExpressionName = expressionName;
+        
     	if(includedLibraryAlias != null){
     		LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
     		includedLibraryAlias = includedLibrary.getLibraryName() + "-" + includedLibrary.getLibraryVersion() + "|" + includedLibraryAlias;
 	      	existingLibrary = this.currentLibraryHolder;
 	    	this.currentLibraryHolder = includedLibrary;
-	    	this.addUsedFunction(includedLibraryAlias + "|" + functionRef.getName());
+	    	finalExpressionName = includedLibraryAlias + "|" + functionRef.getName();
+	    	//this.addUsedFunction(includedLibraryAlias + "|" + functionRef.getName());
     	}else{
     		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName());
+    			finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName();
+    			//this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName());
     		}else{
-    			this.addUsedFunction(functionRef.getName());
+    			finalExpressionName = functionRef.getName();
+    			//this.addUsedFunction(functionRef.getName());
     		}
     	}
-        
-		addToDirectRefFuncMap(this.getUsedFunctions().get(this.getUsedFunctions().size() - 1));
+    	this.addUsedFunction(finalExpressionName);
+		//addToDirectRefFuncMap(this.getUsedFunctions().get(this.getUsedFunctions().size() - 1));    	
+    	addToDirectRefFuncMap(finalExpressionName);
+    	
 	    String tempCurrentDef = this.currentDefinitionName;
 	    String tempCurrentFunc = this.currentFunctionName;
 	    String tempCurrentParam = this.currentParameterName;
@@ -1068,8 +1085,12 @@ public class CQLFilter {
 
         List<RelationshipClause> relationships = query.getRelationship();
         for(RelationshipClause relationship : relationships) {
+        	
             Expression relationshipExpression = relationship.getExpression();
             checkForUsedStatements(relationshipExpression);
+            
+            Expression suchThatExpression = relationship.getSuchThat();
+            checkForUsedStatements(suchThatExpression);
         }
 
         Expression whereExpression = query.getWhere();
@@ -1148,9 +1169,10 @@ public class CQLFilter {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-    			}else{
-    				System.out.println("includedLibraryName:"+includedLibrary.library.getLocalId());
     			}
+//    			else{
+//    				System.out.println("includedLibraryName:"+includedLibrary.library.getLocalId());
+//    			}
     			
     			break;
     		}

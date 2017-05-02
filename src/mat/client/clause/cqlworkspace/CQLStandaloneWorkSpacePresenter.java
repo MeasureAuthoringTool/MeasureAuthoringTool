@@ -4096,9 +4096,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().buildAppliedValueSetCellTable(
 					searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(),
 					MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 			searchDisplay.getValueSetView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 		}
 
 	}

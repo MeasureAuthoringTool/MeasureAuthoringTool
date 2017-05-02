@@ -59,8 +59,11 @@ public class CQLLibraryShareDTO implements IsSerializable {
 	/** The measure set id. */
 	private String cqlLibrarySetId;
 	
-	/** The is private measure. */
-	private boolean isPrivateCQLLibrary;
+	
+	private boolean isDraftable;
+	
+	
+	private boolean isVersionable;
 
 	
 	/**
@@ -312,25 +315,24 @@ public class CQLLibraryShareDTO implements IsSerializable {
 		this.organizationName = organizationName;
 	}
 	
-	/**
-	 * Checks if is private measure.
-	 * 
-	 * @return the isPrivateMeasure
-	 */
-	public boolean isPrivateCQLLibrary() {
-		return isPrivateCQLLibrary;
-	}
 	
-	/**
-	 * Sets the private measure.
-	 * 
-	 * @param isPrivateMeasure
-	 *            the isPrivateMeasure to set
-	 */
-	public void setPrivateCQLLibrary(boolean isPrivateCQLLibrary) {
-		this.isPrivateCQLLibrary = isPrivateCQLLibrary;
-	}
 	
+	public boolean isDraftable() {
+		return isDraftable;
+	}
+
+	public void setDraftable(boolean isDraftable) {
+		this.isDraftable = isDraftable;
+	}
+
+	public boolean isVersionable() {
+		return isVersionable;
+	}
+
+	public void setVersionable(boolean isVersionable) {
+		this.isVersionable = isVersionable;
+	}
+
 	/**
 	 * @return the revisionNumber
 	 */

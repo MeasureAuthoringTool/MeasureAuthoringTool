@@ -4,9 +4,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
+
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -53,7 +59,7 @@ import mat.shared.ClickableSafeHtmlCell;
 /**
  * The Class CQLLibrarySearchView.
  */
-public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryDataSetObject>{
+public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryDataSetObject> {
 
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
@@ -83,7 +89,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private String cellTableOddRow = "cellTableOddRow";
 	/** The index. */
 	private int index;
-	
+
 	/** The library list label. */
 	private String cqlLibraryListLabel;
 	/**
@@ -92,50 +98,55 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private MultiSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	/** The selected list. */
 	List<CQLLibraryDataSetObject> selectedList;
-	
-	
+
 	/**
 	 * The Interface Observer.
 	 */
 	public static interface Observer {
-		
+
 		/**
 		 * On share clicked.
+		 * 
 		 * @param result
 		 *            the result
 		 */
 		void onShareClicked(CQLLibraryDataSetObject result);
+
 		/**
 		 * On history clicked.
+		 * 
 		 * @param result
 		 *            the result
 		 */
 		void onHistoryClicked(CQLLibraryDataSetObject result);
 		
+		void onCreateClicked(CQLLibraryDataSetObject object);
+
 	}
-	
+
 	/**
 	 * The Interface Observer.
 	 */
 	public static interface AdminObserver {
-		
+
 		/**
 		 * On history clicked.
+		 * 
 		 * @param result
 		 *            the result
 		 */
 		void onHistoryClicked(CQLLibraryDataSetObject result);
+
 		void onTransferSelectedClicked(CQLLibraryDataSetObject result);
-		
+
 	}
 
-		
 	/**
 	 * Builds the CQL library cell table.
 	 *
 	 * @return the flow panel
 	 */
-	public FlowPanel buildCQLLibraryCellTable(){
+	public FlowPanel buildCQLLibraryCellTable() {
 		mainPanel.clear();
 		mainPanel.getElement().setId("cqlLibrarySearchView_mainPanel");
 		mainPanel.setStylePrimaryName("measureSearchResultsContainer");
@@ -145,19 +156,20 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		mainPanel.setStyleName("serachView_mainPanel");
 		return mainPanel;
 	}
-	
+
 	/**
 	 * Builds the cell table.
 	 *
-	 * @param result the result
-	 * @param searchText the search text
+	 * @param result
+	 *            the result
+	 * @param searchText
+	 *            the search text
 	 */
 	public void buildCellTable(SaveCQLLibraryResult result, final String searchText, final int filter) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		if((result!=null) && (result.getCqlLibraryDataSetObjects().size() > 0)){
-			table = new CellTable<CQLLibraryDataSetObject>(PAGE_SIZE,
-					(Resources) GWT.create(CellTableResource.class));
+		if ((result != null) && (result.getCqlLibraryDataSetObjects().size() > 0)) {
+			table = new CellTable<CQLLibraryDataSetObject>(PAGE_SIZE, (Resources) GWT.create(CellTableResource.class));
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			selectedList = new ArrayList<CQLLibraryDataSetObject>();
 			availableLibrariesList = new ArrayList<CQLLibraryDataSetObject>();
@@ -167,43 +179,42 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			table.setPageSize(PAGE_SIZE);
 			table.redraw();
 
-		    AsyncDataProvider<CQLLibraryDataSetObject> provider = new AsyncDataProvider<CQLLibraryDataSetObject>() {
-		      @Override
-		      protected void onRangeChanged(HasData<CQLLibraryDataSetObject> display) {
-		        final int start = display.getVisibleRange().getStart();
-		        index = start;
-		        AsyncCallback<SaveCQLLibraryResult> callback = new AsyncCallback<SaveCQLLibraryResult>() {
-		          @Override
-		          public void onFailure(Throwable caught) {
-		        	  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		          }
-		          @Override
-		          public void onSuccess(SaveCQLLibraryResult result) {
-		        	  List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = 
-		        			  new ArrayList<CQLLibraryDataSetObject>();		        	  
-		        	  manageCQLLibrarySearchList.addAll(result.getCqlLibraryDataSetObjects());
-		        	  availableLibrariesList = manageCQLLibrarySearchList;
-		        	  buildCellTableCssStyle();
-		            updateRowData(start, manageCQLLibrarySearchList);
-		          }
-		        };
-		        
-		        MatContext.get().getCQLLibraryService().search(searchText, filter,index+1, 
-		        		index + PAGE_SIZE, callback);
-		      }
-		    };
-		   
-			
+			AsyncDataProvider<CQLLibraryDataSetObject> provider = new AsyncDataProvider<CQLLibraryDataSetObject>() {
+				@Override
+				protected void onRangeChanged(HasData<CQLLibraryDataSetObject> display) {
+					final int start = display.getVisibleRange().getStart();
+					index = start;
+					AsyncCallback<SaveCQLLibraryResult> callback = new AsyncCallback<SaveCQLLibraryResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+						@Override
+						public void onSuccess(SaveCQLLibraryResult result) {
+							List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = new ArrayList<CQLLibraryDataSetObject>();
+							manageCQLLibrarySearchList.addAll(result.getCqlLibraryDataSetObjects());
+							availableLibrariesList = manageCQLLibrarySearchList;
+							buildCellTableCssStyle();
+							updateRowData(start, manageCQLLibrarySearchList);
+						}
+					};
+
+					MatContext.get().getCQLLibraryService().search(searchText, filter, index + 1, index + PAGE_SIZE,
+							callback);
+				}
+			};
+
 			provider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"cqlLib");
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,
+					"cqlLib");
 			spager.setPageStart(0);
 			buildCellTableCssStyle();
 			spager.setDisplay(table);
 			spager.setPageSize(PAGE_SIZE);
 			table.setWidth("100%");
-			if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
-					.getLoggedInUserRole())){
+			if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())) {
 				addColumnToAdminTable();
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibraryTransferOwnershipSummary",
 						"In the following CQL Library Transfer Ownership Cell table, CQL Library Name is given in first column,"
@@ -216,11 +227,11 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);
 				table.setColumnWidth(4, 5.0, Unit.PCT);
-				    
+
 				cellTablePanel.add(invisibleLabel);
-				
+
 			} else {
-				table = addColumnToTable();    
+				table = addColumnToTable();
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibrarySearchSummary",
 						"In the following CQL Library Cell table, CQL Library Name is given in first column,"
 								+ " Version in second column, Finalized Date in third column,"
@@ -232,26 +243,27 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);
 				table.setColumnWidth(4, 5.0, Unit.PCT);
-				    
+				table.setColumnWidth(5, 5.0, Unit.PCT);
+
 				cellTablePanel.add(invisibleLabel);
 			}
-			
+
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
-		} else{
+		} else {
 			Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
 			cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
 			cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 			cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No "+ getCQLlibraryListLabel()+".</p>");
+			HTML desc = new HTML("<p> No " + getCQLlibraryListLabel() + ".</p>");
 			cellTablePanel.add(cqlLibrarySearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
-			
+
 		}
 	}
-	
+
 	/**
 	 * Adds the column to table For Non Admin.
 	 *
@@ -265,10 +277,12 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
-		/*selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
-		table.setSelectionModel(selectionModel);*/
-		
-		//CQL Library Name Column
+		/*
+		 * selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
+		 * table.setSelectionModel(selectionModel);
+		 */
+
+		// CQL Library Name Column
 		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override
@@ -276,101 +290,101 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				return getCQLLibraryNameColumnToolTip(object);
 			}
 		};
-		/*cqlLibraryName.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-			@Override
-			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-				SelectionEvent.fire(CQLLibrarySearchView.this, object);
-			}
-		});*/
-		table.addColumn(cqlLibraryName, SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>"
-				+ "CQL Library Name" + "</span>"));
-		
+		/*
+		 * cqlLibraryName.setFieldUpdater(new
+		 * FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
+		 * 
+		 * @Override public void update(int index, CQLLibraryDataSetObject
+		 * object, SafeHtml value) {
+		 * SelectionEvent.fire(CQLLibrarySearchView.this, object); } });
+		 */
+		table.addColumn(cqlLibraryName,
+				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
+
 		// Version Column
 		Column<CQLLibraryDataSetObject, SafeHtml> ownerName = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				return CellTableUtility.getColumnToolTip(object.getOwnerFirstName()
-						+ "  " + object.getOwnerLastName(),object.getOwnerFirstName()
-						+ "  " + object.getOwnerLastName());
+				return CellTableUtility.getColumnToolTip(object.getOwnerFirstName() + "  " + object.getOwnerLastName(),
+						object.getOwnerFirstName() + "  " + object.getOwnerLastName());
 			}
 		};
-		table.addColumn(ownerName, SafeHtmlUtils
-				.fromSafeConstant("<span title='ownerName'>" + "Owner Name"
-						+ "</span>"));
-		
-		//Finalized Date
+		table.addColumn(ownerName,
+				SafeHtmlUtils.fromSafeConstant("<span title='ownerName'>" + "Owner Name" + "</span>"));
+
+		// Finalized Date
 		Column<CQLLibraryDataSetObject, SafeHtml> emailAddress = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-					return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress());
-				
+				return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress());
+
 			}
 		};
 		table.addColumn(emailAddress, SafeHtmlUtils
-				.fromSafeConstant("<span title='Owner E-mail Address'>" + "Owner E-mail Address"
-						+ "</span>"));
-		
-		//History
+				.fromSafeConstant("<span title='Owner E-mail Address'>" + "Owner E-mail Address" + "</span>"));
+
+		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
-		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, 
-				String>(historyButton) {
+		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
+				historyButton) {
 			@Override
 			public String getValue(CQLLibraryDataSetObject object) {
 				return "History";
 			}
-				};
-				historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
-					@Override
-					public void update(int index, CQLLibraryDataSetObject object, String value) {
-						adminObserver.onHistoryClicked(object);
-					}
-				});
-				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
-						+ "History" + "</span>"));
-				
-				Cell<Boolean> transferCB = new MatCheckBoxCell();
-				Column<CQLLibraryDataSetObject, Boolean> transferColumn = new Column<CQLLibraryDataSetObject, Boolean>(transferCB) {
-					@Override
-					public Boolean getValue(CQLLibraryDataSetObject object) {
-						if (selectedList.size() > 0) {
-							for (int i = 0; i < selectedList.size(); i++) {
-								if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-									object.setTransferable(true);
-									break;
-								}
-							}
-						} else {
-							object.setTransferable(false);
-							}
-						return object.isTransferable();
-					}
-				};
-				transferColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
-					@Override
-					public void update(int index, CQLLibraryDataSetObject object, Boolean value) {
-						if(value){
-							if(!selectedList.contains(object)){
-							selectedList.add(object);
-							}
-						} else {
-							for (int i = 0; i < selectedList.size(); i++) {
-								if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-									selectedList.remove(i);
-									break;
-								}
-							}
+		};
+		historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
+			@Override
+			public void update(int index, CQLLibraryDataSetObject object, String value) {
+				adminObserver.onHistoryClicked(object);
+			}
+		});
+		table.addColumn(historyColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
+
+		Cell<Boolean> transferCB = new MatCheckBoxCell();
+		Column<CQLLibraryDataSetObject, Boolean> transferColumn = new Column<CQLLibraryDataSetObject, Boolean>(
+				transferCB) {
+			@Override
+			public Boolean getValue(CQLLibraryDataSetObject object) {
+				if (selectedList.size() > 0) {
+					for (int i = 0; i < selectedList.size(); i++) {
+						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							object.setTransferable(true);
+							break;
 						}
-						object.setTransferable(value);
-						adminObserver.onTransferSelectedClicked(object);
 					}
-				});		
-				table.addColumn(transferColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Check for Ownership Transfer\">"
-						+ "Transfer </span>"));	
-				return table;
+				} else {
+					object.setTransferable(false);
+				}
+				return object.isTransferable();
+			}
+		};
+		transferColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, Boolean>() {
+			@Override
+			public void update(int index, CQLLibraryDataSetObject object, Boolean value) {
+				if (value) {
+					if (!selectedList.contains(object)) {
+						selectedList.add(object);
+					}
+				} else {
+					for (int i = 0; i < selectedList.size(); i++) {
+						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							selectedList.remove(i);
+							break;
+						}
+					}
+				}
+				object.setTransferable(value);
+				adminObserver.onTransferSelectedClicked(object);
+			}
+		});
+		table.addColumn(transferColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title=\"Check for Ownership Transfer\">" + "Transfer </span>"));
+		return table;
 	}
-	
+
 	/**
 	 * Adds the column to table For Non Admin.
 	 *
@@ -386,8 +400,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
 		selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
 		table.setSelectionModel(selectionModel);
-		
-		//CQL Library Name Column
+
+		// CQL Library Name Column
 		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override
@@ -401,9 +415,9 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				SelectionEvent.fire(CQLLibrarySearchView.this, object);
 			}
 		});
-		table.addColumn(cqlLibraryName, SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>"
-				+ "CQL Library Name" + "</span>"));
-		
+		table.addColumn(cqlLibraryName,
+				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
+
 		// Version Column
 		Column<CQLLibraryDataSetObject, SafeHtml> version = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
@@ -412,91 +426,126 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				return CellTableUtility.getColumnToolTip(object.getVersion());
 			}
 		};
-		table.addColumn(version, SafeHtmlUtils
-				.fromSafeConstant("<span title='Version'>" + "Version"
-						+ "</span>"));
-		
-		//Finalized Date
+		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
+
+		// Finalized Date
 		Column<CQLLibraryDataSetObject, SafeHtml> versionedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
 				if (object.getFinalizedDate() != null) {
 					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-				} 
+				}
 				return null;
 			}
 		};
-		table.addColumn(versionedDate, SafeHtmlUtils
-				.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date"
-						+ "</span>"));
+		table.addColumn(versionedDate,
+				SafeHtmlUtils.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date" + "</span>"));
+
+		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
+		Column<CQLLibraryDataSetObject,String> draftOrVersionCol = new Column<CQLLibraryDataSetObject, String>(buttonCell) {
+
+			@Override
+			public String getValue(CQLLibraryDataSetObject object) {
+				// TODO Auto-generated method stub
+				return object.getCqlName();
+			}
+			
+			@Override
+			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
+				if (object.isDraftable()) {
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Create Draft\" tabindex=\"-1\">");
+					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\"></i>");
+					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
+					sb.appendHtmlConstant("</button>");
+				} else if (object.isVersionable()) {
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"-1\" title =\"Create Version\" style=\"color: goldenrod;\" >");
+					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\"></i>");
+					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
+					sb.appendHtmlConstant("</button>");
+				}
+				
+			}
+			@Override
+			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
+					NativeEvent event) {
+				// TODO Auto-generated method stub
+				//super.onBrowserEvent(context, elem, object, event);
+				if(!object.isDraftable() && !object.isVersionable()){
+					event.preventDefault();
+				} else {
+					observer.onCreateClicked(object);
+				}
+			}
+			
+		};
 		
-		//History
+		table.addColumn(draftOrVersionCol,
+				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Create Draft/Version" + "</span>"));
+		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
-		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, 
-				String>(historyButton) {
+		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
+				historyButton) {
 			@Override
 			public String getValue(CQLLibraryDataSetObject object) {
 				return "History";
 			}
-				};
-				historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
-					@Override
-					public void update(int index, CQLLibraryDataSetObject object, String value) {
-						observer.onHistoryClicked(object);
-					}
-				});
-				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
-						+ "History" + "</span>"));
-				
-				//Share
-				Column<CQLLibraryDataSetObject, SafeHtml> shareColumn = new Column<CQLLibraryDataSetObject, 
-						SafeHtml>(new ClickableSafeHtmlCell()) {
-					@Override
-					public SafeHtml getValue(CQLLibraryDataSetObject object) {						
-						return getShareColumnToolTip(object);
-					}
-				};
-				shareColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-					@Override
-					public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
-						if(object.isSharable())
-							observer.onShareClicked(object);
-					}
-				});
-				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-				
-				return table;
-	}
-	
+		};
+		historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
+			@Override
+			public void update(int index, CQLLibraryDataSetObject object, String value) {
+				observer.onHistoryClicked(object);
+			}
+		});
+		table.addColumn(historyColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
 
-	
+		// Share
+		Column<CQLLibraryDataSetObject, SafeHtml> shareColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
+				new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(CQLLibraryDataSetObject object) {
+				return getShareColumnToolTip(object);
+			}
+		};
+		shareColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
+			@Override
+			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
+				if (object.isSharable())
+					observer.onShareClicked(object);
+			}
+		});
+		table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
+
+		return table;
+	}
+
 	/**
 	 * Gets the history column tool tip.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the history column tool tip
 	 */
-	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object){
+	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object) {
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
 		String cssClass;
 		if (object.isSharable()) {
 			title = "Shareable";
 			cssClass = "customShareButton";
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Shareable</button>");
+			sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
+					+ "\">Shareable</button>");
 		} else {
 			title = "Shareable";
 			cssClass = "customGrayedShareButton";
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Shareable</button>");
+			sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
+					+ "\" disabled>Shareable</button>");
 		}
-		
+
 		return sb.toSafeHtml();
 	}
-	
-	
+
 	/**
 	 * Builds the cell table css style.
 	 */
@@ -508,14 +557,14 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		table.setRowStyles(new RowStyles<CQLLibraryDataSetObject>() {
 			@Override
 			public String getStyleNames(CQLLibraryDataSetObject rowObject, int rowIndex) {
-				if(rowIndex > PAGE_SIZE - 1){
+				if (rowIndex > PAGE_SIZE - 1) {
 					rowIndex = rowIndex - index;
 				}
 				if (rowIndex != 0) {
 					if (cellTableCssStyle.get(rowIndex) == null) {
 						if (even) {
-							if (rowObject.getCqlSetId().equalsIgnoreCase(
-									availableLibrariesList.get(rowIndex - 1).getCqlSetId())) {
+							if (rowObject.getCqlSetId()
+									.equalsIgnoreCase(availableLibrariesList.get(rowIndex - 1).getCqlSetId())) {
 								even = true;
 								cellTableCssStyle.add(rowIndex, cellTableOddRow);
 								return cellTableOddRow;
@@ -525,8 +574,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 								return cellTableEvenRow;
 							}
 						} else {
-							if (rowObject.getCqlSetId().equalsIgnoreCase(
-									availableLibrariesList.get(rowIndex - 1).getCqlSetId())) {
+							if (rowObject.getCqlSetId()
+									.equalsIgnoreCase(availableLibrariesList.get(rowIndex - 1).getCqlSetId())) {
 								even = false;
 								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
 								return cellTableEvenRow;
@@ -551,40 +600,41 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			}
 		});
 	}
-	
-	
-	
+
 	/**
 	 * Gets the CQL Library name column tool tip.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the CQL Library name column tool tip
 	 */
-	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object){
+	private SafeHtml getCQLLibraryNameColumnToolTip(CQLLibraryDataSetObject object) {
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String cssClass = "customCascadeButton";
 		if (object.isFamily()) {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
 					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">" + object.getCqlName() + "</span>");
+			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+					+ object.getCqlName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		} else {
 			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
-			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
-					+ object.getCqlName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">" + object.getCqlName() + "</span>");
+			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\"" + object.getCqlName()
+					+ "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
+			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getCqlName() + "\" tabindex=\"0\">"
+					+ object.getCqlName() + "</span>");
 			sb.appendHtmlConstant("</a></div>");
 		}
-		return sb.toSafeHtml();		
+		return sb.toSafeHtml();
 	}
-	
-	
+
 	/**
 	 * Convert timestamp to string.
 	 *
-	 * @param ts - Timestamp.
+	 * @param ts
+	 *            - Timestamp.
 	 * @return String.
 	 */
 	private String convertTimestampToString(Timestamp ts) {
@@ -599,14 +649,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			if (mins.length() == 1) {
 				mins = "0" + mins;
 			}
-			String hoursStr = modhours == 0 ? "12" : modhours+"";
-			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + (ts.getYear() + 1900) + " "
-					+ hoursStr + ":" + mins + " "+ap;
+			String hoursStr = modhours == 0 ? "12" : modhours + "";
+			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + (ts.getYear() + 1900) + " " + hoursStr + ":" + mins
+					+ " " + ap;
 		}
 		return tsStr;
 	}
-	
-	
+
 	/**
 	 * Gets the cql Library List Label.
 	 *
@@ -615,32 +664,40 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	public String getCQLlibraryListLabel() {
 		return cqlLibraryListLabel;
 	}
-	
+
 	/**
 	 * Sets the cqlLibrary list label.
 	 *
-	 * @param cqlLibraryListLabel the new cqlLibrary list label
+	 * @param cqlLibraryListLabel
+	 *            the new cqlLibrary list label
 	 */
 	public void setCQLLibraryListLabel(String cqlLibraryListLabel) {
 		this.cqlLibraryListLabel = cqlLibraryListLabel;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.
+	 * shared.GwtEvent)
 	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
-		handlerManager.fireEvent(event);	
+		handlerManager.fireEvent(event);
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#
+	 * addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
 	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<CQLLibraryDataSetObject> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
-	
+
 	/**
 	 * As widget.
 	 *
@@ -649,13 +706,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	public Widget asWidget() {
 		return mainPanel;
 	}
-	
+
 	/**
 	 * Gets the cell table panel.
 	 *
 	 * @return the cell table panel
 	 */
-	public VerticalPanel getCellTablePanel(){
+	public VerticalPanel getCellTablePanel() {
 		return cellTablePanel;
 	}
 
@@ -666,7 +723,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-	
+
 	public AdminObserver getAdminObserver() {
 		return adminObserver;
 	}
@@ -674,8 +731,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	public void setAdminObserver(AdminObserver adminObserver) {
 		this.adminObserver = adminObserver;
 	}
-	
-	
+
 	public List<CQLLibraryDataSetObject> getAvailableLibrariesList() {
 		return availableLibrariesList;
 	}

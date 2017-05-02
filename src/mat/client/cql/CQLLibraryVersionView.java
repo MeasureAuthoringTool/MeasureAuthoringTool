@@ -27,7 +27,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
-import mat.client.ImageResources;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -35,7 +34,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -58,12 +56,12 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
 	
 	/** The measure search filter widget. */
-	private SearchWidget searchWidget = new SearchWidget("Search", 
-            "Search", "searchWidget");
+	/*private SearchWidget searchWidget = new SearchWidget("Search", 
+            "Search", "searchWidget");*/
 	
 	/** Zoom Button for Showing Search Widget. */
-	private CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search");
+	/*private CustomButton zoomButton = (CustomButton) getImage("Search",
+			ImageResources.INSTANCE.search_zoom(), "Search");*/
 	
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
 	
@@ -74,20 +72,22 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlVersion");
 	
+	CQLLibraryDataSetObject selectedLibraryObject;
+	
 	public CQLLibraryVersionView(){
-		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
-		zoomButton.getElement().setId("CqlzoomButton_CustomButton");
+		//zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
+		//zoomButton.getElement().setId("CqlzoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		majorRadio.getElement().setId("CQL_MajorRadioButton");
 		minorRadio.getElement().setId("CQL_MinorRadioButton");
-		mainPanel.add(searchWidget);		
+		//mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		
-		cellTablePanel.getElement().setId("cqlcellTablePanel_VerticalPanel");
-		cellTablePanel.setWidth("99%");
-		mainPanel.add(cellTablePanel);
-		mainPanel.add(new SpacerWidget());
+		//cellTablePanel.getElement().setId("cqlcellTablePanel_VerticalPanel");
+		//cellTablePanel.setWidth("99%");
+		//mainPanel.add(cellTablePanel);
+		//mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
@@ -100,13 +100,28 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		majorRadio.getElement().setId("cqlmajorRadio_RadioButton");
 		radioPanel.add(minorRadio);
 		minorRadio.getElement().setId("cqlminorRadio_RadioButton");
-	
+		mainPanel.add(cellTablePanel);
+		mainPanel.add(new SpacerWidget());
 		mainPanel.add(radioPanel);
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(buttonBar);
 	}
 	
+	
+	
+	public void buildHTML(){
+		cellTablePanel.clear();
+		if(selectedLibraryObject != null){
+			String selectedItemName = selectedLibraryObject.getCqlName();
+			String selectedItemDraftText = selectedLibraryObject.getVersion();
+			StringBuilder paragraph = new StringBuilder("<p>You are creating version of <b>\""+ selectedItemName + " " + selectedItemDraftText +"\"</b>");
+			paragraph.append("</p>");
+			HTML paragraphHtml = new HTML(paragraph.toString());
+			cellTablePanel.add(paragraphHtml);
+		}
+		
+	}
 	/** Adds the column to table.
 	 * @param cellTable the cell table
 	 * @return the cell table */
@@ -226,6 +241,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	@Override
 	public Widget asWidget() {
+		buildHTML();
 		return mainPanel;
 	}
 	
@@ -241,7 +257,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public void setMinorRadio(RadioButton minorRadio) {
 		this.minorRadio = minorRadio;
 	}
-	@Override
+	/*@Override
 	public SearchWidget getSearchWidget() {
 		return searchWidget;
 	}
@@ -256,7 +272,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 
 	public void setZoomButton(CustomButton zoomButton) {
 		this.zoomButton = zoomButton;
-	}
+	}*/
 	@Override
 	public ErrorMessageAlert getErrorMessages() {
 		return errorMessages;
@@ -278,8 +294,13 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	@Override
 	public CQLLibraryDataSetObject getSelectedLibrary() {
-		return selectionModel.getSelectedObject();
+		return selectedLibraryObject;
 	}
+	@Override
+	public void setSelectedLibraryObject(CQLLibraryDataSetObject selectedLibraryObject) {
+		this.selectedLibraryObject = selectedLibraryObject;
+	}
+
 	@Override
 	public void clearRadioButtonSelection() {
 		getMajorRadioButton().setValue(false);

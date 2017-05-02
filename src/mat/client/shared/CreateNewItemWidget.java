@@ -105,8 +105,8 @@ public class CreateNewItemWidget extends Composite {
 		} else if (forView.equalsIgnoreCase("forCqlLibrary")) {
 			options.addItem(ConstantMessages.DEFAULT_SELECT);
 			options.addItem(ConstantMessages.CREATE_NEW_CQL);
-			options.addItem(ConstantMessages.CREATE_NEW_CQL_VERSION);
-			options.addItem(ConstantMessages.CREATE_NEW_CQL_DRAFT);
+			/*options.addItem(ConstantMessages.CREATE_NEW_CQL_VERSION);
+			options.addItem(ConstantMessages.CREATE_NEW_CQL_DRAFT);*/
 		}
 	}
 

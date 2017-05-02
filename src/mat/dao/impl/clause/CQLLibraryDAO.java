@@ -257,46 +257,65 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		StringUtility su = new StringUtility();
 
 		Map<String, CQLLibraryShareDTO> cqlLibIdDTOMap = new HashMap<String, CQLLibraryShareDTO>();
-		boolean isNormalUserAndAllCQLLib = user.getSecurityRole().getId().equals("3")
-				&& (filter == MeasureSearchFilterPanel.ALL_MEASURES);
+		Map<String, CQLLibraryShareDTO> cqlLibSetIdDraftableMap = new HashMap<String, CQLLibraryShareDTO>();
+		
 		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
 
 			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
 			if (matchesSearch) {
 				CQLLibraryShareDTO dto = extractDTOFromCQLLibrary(cqlLibrary);
+				boolean isDraft = dto.isDraft();
+				if(isDraft){
+					cqlLibSetIdDraftableMap.put(dto.getCqlLibrarySetId(), dto);
+				}
 				cqlLibIdDTOMap.put(cqlLibrary.getId(), dto);
 				orderedList.add(dto);
 			}
 		}
-
+		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryShare.class);
+		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
+		//shareCriteria.add(Restrictions.in("cqlLibrary.id", cqlLibIdDTOMap.keySet()));
+		List<CQLLibraryShare> shareList = shareCriteria.list();
+		// get share level for each cql set and set it on each dto
+		HashMap<String, String> cqlSetIdToShareLevel = new HashMap<String, String>();
 		if (orderedList.size() > 0) {
-			Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryShare.class);
-			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-			shareCriteria.add(Restrictions.in("cqlLibrary.id", cqlLibIdDTOMap.keySet()));
-			List<CQLLibraryShare> shareList = shareCriteria.list();
-			// get share level for each measure set and set it on each dto
-			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (CQLLibraryShare share : shareList) {
 				String msid = share.getCqlLibrary().getSet_id();
 				String shareLevel = share.getShareLevel().getId();
-
-				String existingShareLevel = measureSetIdToShareLevel.get(msid);
-				if ((existingShareLevel == null) || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)) {
-					measureSetIdToShareLevel.put(msid, shareLevel);
+				String existingShareLevel = cqlSetIdToShareLevel.get(msid);
+				if ((existingShareLevel == null) ){//|| ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)) {
+					cqlSetIdToShareLevel.put(msid, shareLevel);
 				}
 			}
-
-			for (Iterator<CQLLibraryShareDTO> iterator = orderedList.iterator(); iterator.hasNext();) {
-				CQLLibraryShareDTO dto = iterator.next();
-				String msid = dto.getCqlLibrarySetId();
-				String shareLevel = measureSetIdToShareLevel.get(msid);
-				if (isNormalUserAndAllCQLLib && dto.isPrivateCQLLibrary() && !dto.getOwnerUserId().equals(user.getId())
-						&& ((shareLevel == null) || !shareLevel.equals(ShareLevel.MODIFY_ID))) {
-					iterator.remove();
-					continue;
-				}
+			for (int i=0 ;i<orderedList.size();i++) {
+				CQLLibraryShareDTO dto = orderedList.get(i);
+				String cqlsid = dto.getCqlLibrarySetId();
+				boolean hasDraft = cqlLibSetIdDraftableMap.containsKey(cqlsid);
+				String shareLevel = cqlSetIdToShareLevel.get(cqlsid);
+				boolean isSharedToEdit = false;
 				if (shareLevel != null) {
 					dto.setShareLevel(shareLevel);
+					isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel);
+				}
+				String userRole = LoggedInUserUtil.getLoggedInUserRole();
+				boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+				boolean isOwner = LoggedInUserUtil.getLoggedInUser().equals(dto.getOwnerUserId());
+				boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+				if (!dto.isLocked() && isEditable) {
+					
+					if(hasDraft){
+						CQLLibraryShareDTO draftLibrary = cqlLibSetIdDraftableMap.get(cqlsid);
+						if(dto.getCqlLibraryId().equals(draftLibrary.getCqlLibraryId())){
+							dto.setVersionable(true);
+							dto.setDraftable(false);
+						} else if (dto.getCqlLibrarySetId().equals(draftLibrary.getCqlLibrarySetId())){
+							dto.setVersionable(false);
+							dto.setDraftable(false);
+						} 
+					} else {
+						dto.setVersionable(false);
+						dto.setDraftable(true);
+					}
 				}
 			}
 		}

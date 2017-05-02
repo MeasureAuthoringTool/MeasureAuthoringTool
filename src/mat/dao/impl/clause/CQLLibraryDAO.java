@@ -411,8 +411,14 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		Criteria criteria = session.createCriteria(CQLLibrary.class);
 		criteria.setProjection(Projections.property("measureId"));
 		criteria.add(Restrictions.eq("id", Id));
-		String measureId = (String) criteria.list().get(0);
-		return measureId;
+		if(criteria.list() != null && criteria.list().size() >0){
+			String measureId = (String) criteria.list().get(0);
+			return measureId;
+		} else {
+			System.out.println("Found Size zero " + Id);
+			return null;
+		}
+		
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
@@ -234,7 +235,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				table = addColumnToTable();
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibrarySearchSummary",
 						"In the following CQL Library Cell table, CQL Library Name is given in first column,"
-								+ " Version in second column, Finalized Date in third column,"
+								+ " Version in second column, Create Version or Draft in third column,"
 								+ "History in fourth column, Share in fifth column");
 				table.getElement().setAttribute("id", "CQLLibrarySearchCellTable");
 				table.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
@@ -243,8 +244,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);
 				table.setColumnWidth(4, 5.0, Unit.PCT);
-				table.setColumnWidth(5, 5.0, Unit.PCT);
-
+			
 				cellTablePanel.add(invisibleLabel);
 			}
 
@@ -429,7 +429,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
 		// Finalized Date
-		Column<CQLLibraryDataSetObject, SafeHtml> versionedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
+		/*Column<CQLLibraryDataSetObject, SafeHtml> versionedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(CQLLibraryDataSetObject object) {
@@ -440,7 +440,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			}
 		};
 		table.addColumn(versionedDate,
-				SafeHtmlUtils.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date" + "</span>"));
+				SafeHtmlUtils.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date" + "</span>"));*/
 
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
 		Column<CQLLibraryDataSetObject,String> draftOrVersionCol = new Column<CQLLibraryDataSetObject, String>(buttonCell) {
@@ -454,12 +454,12 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			@Override
 			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
 				if (object.isDraftable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Create Draft\" tabindex=\"-1\">");
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
 					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
 					sb.appendHtmlConstant("</button>");
 				} else if (object.isVersionable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"-1\" title =\"Create Version\" style=\"color: goldenrod;\" >");
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
 					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
@@ -471,17 +471,25 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 					NativeEvent event) {
 				// TODO Auto-generated method stub
 				//super.onBrowserEvent(context, elem, object, event);
-				if(!object.isDraftable() && !object.isVersionable()){
-					event.preventDefault();
+				String type = event.getType();
+				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
+					if(!object.isDraftable() && !object.isVersionable()){
+						event.preventDefault();
+					} else {
+						observer.onCreateClicked(object);
+					}
 				} else {
-					observer.onCreateClicked(object);
+					if(!object.isDraftable() && !object.isVersionable()){
+						event.preventDefault();
+					}
 				}
+				
 			}
 			
 		};
 		
 		table.addColumn(draftOrVersionCol,
-				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Create Draft/Version" + "</span>"));
+				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Version/Draft" + "</span>"));
 		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(

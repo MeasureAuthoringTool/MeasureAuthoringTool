@@ -124,7 +124,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void buildCellTable(SaveCQLLibraryResult result, String searchText,int filter) {
 		cqlLibrarySearchView.buildCellTable(result, searchText,filter);
 	}
-
+	@Override
+	public VerticalPanel getCellTablePanel() {
+		return cqlLibrarySearchView.getCellTablePanel();
+	}
 	@Override
 	public CreateNewItemWidget getCreateNewItemWidget() {
 		return createNewItemWidget;

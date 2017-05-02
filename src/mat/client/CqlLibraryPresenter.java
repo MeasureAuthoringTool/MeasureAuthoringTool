@@ -324,6 +324,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		 */
 		void buildMostRecentWidget();
 
+		VerticalPanel getCellTablePanel();
+
 	}
 
 	/**
@@ -1544,6 +1546,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * This method is called from beforeDisplay and this becomes main method for CQL Library View. 
 	 */
 	private void displaySearch() {
+		cqlLibraryView.getCellTablePanel().clear();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
 		panel.setHeading(heading, "CQLLibrary");

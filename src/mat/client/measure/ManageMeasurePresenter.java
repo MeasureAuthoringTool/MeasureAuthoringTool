@@ -2469,13 +2469,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if (searchDisplay.getSelectedOption().equalsIgnoreCase(
 						ConstantMessages.CREATE_NEW_MEASURE)) {
 					createNew();
-				} else if (searchDisplay.getSelectedOption().equalsIgnoreCase(
+				} /*else if (searchDisplay.getSelectedOption().equalsIgnoreCase(
 						ConstantMessages.CREATE_NEW_DRAFT)) {
 					createDraft();
 				} else if (searchDisplay.getSelectedOption().equalsIgnoreCase(
 						ConstantMessages.CREATE_NEW_VERSION)) {
 					createVersion();
-				} else {
+				} */else {
 					searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 					searchDisplay
 					.getErrorMessageDisplay()

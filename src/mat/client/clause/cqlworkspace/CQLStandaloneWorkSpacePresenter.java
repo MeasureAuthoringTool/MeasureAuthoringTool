@@ -1443,7 +1443,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																			
 																			// if there are errors or the library is not in use, enable the delete button
 																			if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
-																					cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary+ "|"
+																					cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
 																							+ cqlIncludeLibrary.getAliasName())) {
 																				searchDisplay.getIncludeView().getDeleteButton().setEnabled(true);
 																			}

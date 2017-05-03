@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.List;
 
+import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.model.Author;
 import mat.model.BaseModel;
 import mat.model.MeasureSteward;
@@ -213,6 +214,8 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	
 	/** The calender year. */
 	private boolean isCalenderYear;
+	
+	private MeasureDetailResult measureDetailResult; 
 	
 	
 	/**
@@ -2044,6 +2047,26 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	public void setStewardValue(String stewardValue) {
 		this.stewardValue = stewardValue;
 	}
+	
+	/**
+	 * Gets the measure detail result
+	 * 
+	 * @return the mneasure detail result
+	 */
+	public MeasureDetailResult getMeasureDetailResult() {
+		return measureDetailResult;
+	}
+
+	/**
+	 * Sets the measure detail result
+	 * 
+	 * @param measureDetailResult the measure detail result
+	 */
+	public void setMeasureDetailResult(MeasureDetailResult measureDetailResult) {
+		this.measureDetailResult = measureDetailResult;
+	}
+	
+	
 	
 	/*@Override
 	public void scrubForMarkUp() {

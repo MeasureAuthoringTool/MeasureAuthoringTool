@@ -1617,7 +1617,29 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
 		metaDataDisplay.getStratification().setValue(currentMeasureDetail.getStratification());
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());
-		setStewardAndMeasureDevelopers();
+		
+//		// steward list
+		if(currentMeasureDetail.getMeasureDetailResult().getUsedSteward() != null) {
+			metaDataDisplay.setStewardId(currentMeasureDetail.getMeasureDetailResult().getUsedSteward().getId());
+			metaDataDisplay.setStewardValue((currentMeasureDetail.getMeasureDetailResult().getUsedSteward().getOrgName()));
+		} else {
+			metaDataDisplay.setStewardId(null);
+			metaDataDisplay.setStewardValue(null);
+		}
+		
+		// author list
+		if(currentMeasureDetail.getAuthorSelectedList() != null) {
+			metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getMeasureDetailResult().getUsedAuthorList());
+		} else {
+			List<Author> authorList = new ArrayList<Author>();
+			metaDataDisplay.setAuthorsSelectedList(authorList);
+			currentMeasureDetail.setAuthorSelectedList(authorList);
+		}
+		dbAuthorList.clear();
+		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
+		metaDataDisplay.buildStewardCellTable(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
+		metaDataDisplay.buildAuthorCellTable(currentMeasureDetail.getMeasureDetailResult().getAllAuthorList(), editable);
+//		setStewardAndMeasureDevelopers();
 		
 		//measureTypeSelectList
 		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {

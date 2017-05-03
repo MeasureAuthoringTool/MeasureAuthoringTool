@@ -1836,9 +1836,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final ManageMeasureDetailModel getMeasure(final String key) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
+		System.out.println("HELLO WORLD");
 		Measure measure = getService().getById(key);
 		MeasureXmlModel xml = getMeasureXmlForMeasure(key);
-		return convertXmltoModel(xml, measure);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+		
+		ManageMeasureDetailModel manageMeasureDetailModel = convertXmltoModel(xml, measure);
+		manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+		System.out.println(measureDetailResult.getAllAuthorList());
+		System.out.println(measureDetailResult.getUsedSteward().getOrgName());
+		System.out.println(manageMeasureDetailModel.getName());
+		
+		return manageMeasureDetailModel;
 
 	}
 

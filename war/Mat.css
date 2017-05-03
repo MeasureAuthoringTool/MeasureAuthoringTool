@@ -1952,12 +1952,12 @@ padding: 2px;
     padding: 5px;
     text-align:left;
     color:#777; 
-    background-color: #6B97B8;
+   /*  background-color: #6B97B8; 
 	font-size: small;
     font-weight: bold;
     color: white;
     padding: 5px;
-    text-align: left;
+    text-align: left;*/
 }
 .filterDisclosurePanel{
     margin-left:345px; 

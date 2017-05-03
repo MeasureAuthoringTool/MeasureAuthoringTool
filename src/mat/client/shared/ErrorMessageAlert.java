@@ -1,5 +1,7 @@
 package mat.client.shared;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
@@ -7,6 +9,13 @@ public class ErrorMessageAlert extends MessageAlert implements MessageAlertInter
 	
 	@Override
 	public void createAlert (String errorMessage) {
+		clear();
+		createErrorAlert(errorMessage);
+		setVisible(true);
+	}
+	
+	@Override
+	public void createAlert (List<String> errorMessage) {
 		clear();
 		createErrorAlert(errorMessage);
 		setVisible(true);
@@ -23,6 +32,15 @@ public class ErrorMessageAlert extends MessageAlert implements MessageAlertInter
 	public void createErrorAlert(String errorMessage) {
 		setType(AlertType.DANGER);
 		setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage));
+		getElement().setAttribute("id", "ErrorMessageAlert");
+		setFocus();
+	}
+	
+	public void createErrorAlert(List<String> errorMessage) {
+		setType(AlertType.DANGER);
+		for(int i=0;i< errorMessage.size();i++){
+			setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage.get(i)));
+		}
 		getElement().setAttribute("id", "ErrorMessageAlert");
 		setFocus();
 	}

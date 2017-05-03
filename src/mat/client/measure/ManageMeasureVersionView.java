@@ -9,10 +9,12 @@ import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
@@ -31,6 +33,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,6 +52,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionDisplay {
 	
+	private ManageMeasureSearchModel.Result selectedMeasure;
+	
 	/** CellTable Page Size. */
 	private static final int PAGE_SIZE = 25;
 	
@@ -59,7 +64,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
@@ -90,13 +95,13 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		//searchWidget.getSearchInput().setHeight("20px");
-		mainPanel.add(searchWidget);		
+		//mainPanel.add(searchWidget);		
 		mainPanel.add(new SpacerWidget());
 		
-		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
+		/*cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("99%");
 		mainPanel.add(cellTablePanel);
-		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());*/
 		
 		mainPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
@@ -109,7 +114,8 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		majorRadio.getElement().setId("majorRadio_RadioButton");
 		radioPanel.add(minorRadio);
 		minorRadio.getElement().setId("minorRadio_RadioButton");
-	
+		mainPanel.add(cellTablePanel);
+		mainPanel.add(new SpacerWidget());
 		mainPanel.add(radioPanel);
 		mainPanel.add(new SpacerWidget());
 		
@@ -120,6 +126,19 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
 		mainPanel.add(buttonPanel);
+		
+	}
+	
+	public void buildHTML(){
+		cellTablePanel.clear();
+		if(selectedMeasure != null){
+			String selectedItemName = selectedMeasure.getName();
+			String selectedItemDraftText = selectedMeasure.getVersion();
+			StringBuilder paragraph = new StringBuilder("<p>You are creating version of <b>\""+ selectedItemName + " " + selectedItemDraftText +"\"</b>");
+			paragraph.append("</p>");
+			HTML paragraphHtml = new HTML(paragraph.toString());
+			cellTablePanel.add(paragraphHtml);
+		}
 		
 	}
 	
@@ -166,6 +185,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	 */
 	@Override
 	public Widget asWidget() {
+		buildHTML();
 		return mainPanel;
 	}
 	
@@ -234,7 +254,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -298,9 +318,13 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	 */
 	@Override
 	public Result getSelectedMeasure() {
-		return selectionModel.getSelectedObject();
+		return selectedMeasure;
 	}
-	
+	@Override
+	public void setSelectedMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
+		this.selectedMeasure = selectedMeasure;
+	}
+
 	/**
 	 * Gets the selection model with handler.
 	 *

@@ -3,12 +3,14 @@ package mat.client.measure;
 import java.util.List;
 
 import mat.client.codelist.HasListBox;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
@@ -59,7 +61,7 @@ public class ManageMeasureDetailView
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
@@ -210,7 +212,7 @@ public class ManageMeasureDetailView
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 

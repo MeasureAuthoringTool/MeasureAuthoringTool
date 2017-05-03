@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
@@ -58,6 +59,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
@@ -69,6 +71,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -94,7 +97,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 	}
 	
@@ -430,14 +433,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the error message display
 		 */
 		@Override
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Gets the error messages for transfer os.
 		 * 
 		 * @return the error messages for transfer os
 		 */
-		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
+		public MessageAlert getErrorMessagesForTransferOS();
 		
 		/**
 		 * Gets the transfer button.
@@ -509,14 +512,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the error measure deletion
 		 */
-		public ErrorMessageDisplay getErrorMeasureDeletion();
+		public MessageAlert getErrorMeasureDeletion();
 		
 		/**
 		 * Gets the error message display for bulk export.
 		 * 
 		 * @return the error message display for bulk export
 		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport();
+		public MessageAlert getErrorMessageDisplayForBulkExport();
 		
 		/**
 		 * Gets the export selected button.
@@ -606,12 +609,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the success measure deletion
 		 */
-		public SuccessMessageDisplay getSuccessMeasureDeletion();
+		public MessageAlert getSuccessMeasureDeletion();
 		
 		/** Gets the zoom button.
 		 * 
 		 * @return the zoom button */
 		CustomButton getZoomButton();
+
+		VerticalPanel getCellTablePanel();
 	}
 	
 	/**
@@ -727,6 +732,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return zoom button. */
 		CustomButton getZoomButton();
+
+		void setSelectedMeasure(Result selectedMeasure);
+		MessageAlert getErrorMessageDisplay();
 	}
 	
 	
@@ -1046,8 +1054,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				detailDisplay
-				.getErrorMessageDisplay()
-				.setMessage(
+				.getErrorMessageDisplay().createAlert(
 						"Error while adding bulk export log entry.");
 			}
 			
@@ -1089,8 +1096,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void cloneMeasure(final ManageMeasureDetailModel currentDetails,
 			final boolean isDraftCreation) {
 		String loggedinUserId = MatContext.get().getLoggedinUserId();
-		searchDisplay.getSuccessMeasureDeletion().clear();
-		searchDisplay.getErrorMeasureDeletion().clear();
+		searchDisplay.getSuccessMeasureDeletion().clearAlert();
+		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT
 				.create(MeasureCloningService.class);
 		
@@ -1103,7 +1110,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				.setEnabled(true);
 				
 				Mat.hideLoadingMessage();
-				shareDisplay.getErrorMessageDisplay().setMessage(
+				shareDisplay.getErrorMessageDisplay().createAlert(
 						MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(
@@ -1168,10 +1175,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void createDraft() {
 		searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
-		searchDisplay.getSuccessMeasureDeletion().clear();
-		searchDisplay.getErrorMeasureDeletion().clear();
-		draftDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		searchDisplay.getSuccessMeasureDeletion().clearAlert();
+		searchDisplay.getErrorMeasureDeletion().clearAlert();
+		draftDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(null,null, draftDisplay.getZoomButton(),"searchButton_measureDraft");
 		draftDisplay.getSearchWidget().setVisible(false);
@@ -1195,8 +1202,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Creates the new.
 	 */
 	private void createNew() {
-		detailDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
 		Mat.focusSkipLists("MeasureLibrary");
@@ -1206,15 +1213,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Creates the version.
 	 */
 	private void createVersion() {
-		searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue());
-		versionDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-		searchDisplay.getSuccessMeasureDeletion().clear();
-		searchDisplay.getErrorMeasureDeletion().clear();
+		//searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue());
+		versionDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+		searchDisplay.getSuccessMeasureDeletion().clearAlert();
+		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		panel.getButtonPanel().clear();
-		panel.setButtonPanel(null, null,versionDisplay.getZoomButton(),"searchButton_measureVersion");
-		versionDisplay.getSearchWidget().setVisible(false);
-		isSearchVisibleOnVersion = false;
+		//panel.setButtonPanel(null, null,versionDisplay.getZoomButton(),"searchButton_measureVersion");
+		//versionDisplay.getSearchWidget().setVisible(false);
+		//isSearchVisibleOnVersion = false;
 		panel.setHeading("My Measures > Create Measure Version of Draft", "MeasureLibrary");
 		panel.setContent(versionDisplay.asWidget());
 		Mat.focusSkipLists("MeasureLibrary");
@@ -1324,7 +1331,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Display search.
 	 */
 	private void displaySearch() {
-		
+		searchDisplay.getCellTablePanel().clear();
 		String heading = "Measure Library";
 		int filter;
 		panel.setHeading(heading, "MeasureLibrary");
@@ -1391,9 +1398,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel
 				.getSelectedTransferResults();
 		pageSize = Integer.MAX_VALUE;
-		searchDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessagesForTransferOS().clear();
-		transferDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessagesForTransferOS().clearAlert();
+		transferDisplay.getErrorMessageDisplay().clearAlert();
 		if (transferMeasureResults.size() != 0) {
 			showSearchingBusy(true);
 			MatContext
@@ -1426,7 +1433,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			});
 		} else {
-			searchDisplay.getErrorMessagesForTransferOS().setMessage(
+			searchDisplay.getErrorMessagesForTransferOS().createAlert(
 					MatContext.get().getMessageDelegate()
 					.getTransferCheckBoxErrorMeasure());
 		}
@@ -1466,11 +1473,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		draftDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
-				draftDisplay.getErrorMessageDisplay().clear();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				draftDisplay.getErrorMessageDisplay().clearAlert();
 				isSearchVisibleOnDraft = !isSearchVisibleOnDraft;
 				draftDisplay.getSearchWidget().setVisible(isSearchVisibleOnDraft);
 			}
@@ -1497,7 +1504,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onFailure(Throwable caught) {
 							// O&M 17
 							((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
-							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+							draftDisplay.getErrorMessageDisplay().createAlert(MatContext.get()
 									.getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null,	null,
 									"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -1514,7 +1521,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					// O&M 17
 					((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay()
-					.setMessage("Please select a Measure Version to create a Draft.");
+					.createAlert("Please select a Measure Version to create a Draft.");
 				}
 				
 			}
@@ -1530,8 +1537,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the name
 	 */
 	private void edit(String name) {
-		detailDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		MatContext
 		.get()
 		.getMeasureService()
@@ -1542,7 +1549,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				detailDisplay
 				.getErrorMessageDisplay()
-				.setMessage(
+				.createAlert(
 						MatContext
 						.get()
 						.getMessageDelegate()
@@ -1572,14 +1579,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the id
 	 */
 	private void editClone(String id) {
-		detailDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		MatContext.get().getMeasureService()
 		.getMeasure(id, new AsyncCallback<ManageMeasureDetailModel>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay().setMessage(
+				detailDisplay.getErrorMessageDisplay().createAlert(
 						MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(
@@ -1617,7 +1624,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				detailDisplay
 				.getErrorMessageDisplay()
-				.setMessage(
+				.createAlert(
 						"Error while adding export comment");
 			}
 			
@@ -1627,8 +1634,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 		});
 		currentExportId = id;
-		exportDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		exportDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Export", "MeasureLibrary");
 		panel.setContent(exportDisplay.asWidget());
@@ -1692,8 +1699,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			boolean isEditable, boolean isLocked, String lockedUserId) {
 		MeasureSelectedEvent evt = new MeasureSelectedEvent(id, version, name,
 				shortName, scoringType, isEditable, isLocked, lockedUserId);
-		searchDisplay.getSuccessMeasureDeletion().clear();
-		searchDisplay.getErrorMeasureDeletion().clear();
+		searchDisplay.getSuccessMeasureDeletion().clearAlert();
+		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 	
@@ -1717,8 +1724,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void getShareDetails(String id, int startIndex) {
 		shareStartIndex = startIndex;
-		searchDisplay.getSuccessMeasureDeletion().clear();
-		searchDisplay.getErrorMeasureDeletion().clear();
+		searchDisplay.getSuccessMeasureDeletion().clearAlert();
+		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MatContext
 		.get()
 		.getMeasureService()
@@ -1728,7 +1735,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				shareDisplay
 				.getErrorMessageDisplay()
-				.setMessage(
+				.createAlert(
 						MatContext
 						.get()
 						.getMessageDelegate()
@@ -1831,11 +1838,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		boolean valid = message.size() == 0;
 		if (!valid) {
-			detailDisplay.getErrorMessageDisplay().setMessages(message);
+			detailDisplay.getErrorMessageDisplay().createAlert(message);
 			Mat.hideLoadingMessage();
 		} else {
-			detailDisplay.getErrorMessageDisplay().clear();
-			searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+			detailDisplay.getErrorMessageDisplay().clearAlert();
+			searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		}
 		return valid;
 	}
@@ -1887,7 +1894,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				Mat.hideLoadingMessage();
 				versionDisplay
 				.getErrorMessageDisplay()
-				.setMessage(
+				.createAlert(
 						MatContext
 						.get()
 						.getMessageDelegate()
@@ -1934,7 +1941,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							});
 				} else {
 					if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
-						versionDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoVersionCreated());
+						versionDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
 					}
 				}
 			}
@@ -1973,7 +1980,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onFailure(Throwable caught) {
 							detailDisplay
 							.getErrorMessageDisplay()
-							.setMessage(
+							.createAlert(
 									MatContext
 									.get()
 									.getMessageDelegate()
@@ -2008,10 +2015,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onTransferSelectedClicked(Result result) {
 									searchDisplay
 									.getErrorMessageDisplay()
-									.clear();
+									.clearAlert();
 									searchDisplay
 									.getErrorMessagesForTransferOS()
-									.clear();
+									.clearAlert();
 									updateTransferIDs(result,
 											manageMeasureSearchModel);
 									
@@ -2039,7 +2046,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									&& !lastSearchText.isEmpty()) {
 								searchDisplay
 								.getErrorMessageDisplay()
-								.setMessage(
+								.createAlert(
 										MatContext
 										.get()
 										.getMessageDelegate()
@@ -2047,10 +2054,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 							} else {
 								searchDisplay
 								.getErrorMessageDisplay()
-								.clear();
+								.clearAlert();
 								searchDisplay
 								.getErrorMessagesForTransferOS()
-								.clear();
+								.clearAlert();
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result,
@@ -2078,7 +2085,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onFailure(Throwable caught) {
 							detailDisplay
 							.getErrorMessageDisplay()
-							.setMessage(
+							.createAlert(
 									MatContext
 									.get()
 									.getMessageDelegate()
@@ -2117,8 +2124,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onCloneClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									isClone = true;
 									editClone(result.getId());
 								}
@@ -2133,8 +2140,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 									// result.getLockedUserId(result.getLockedUserInfo()));
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									edit(result.getId());
 								}
 								
@@ -2142,8 +2149,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									export(result.getId(), result.getName());
 								}
 								
@@ -2151,9 +2158,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportSelectedClicked(Result result,boolean isCBChecked) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
-									searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 									updateExportedIDs(result, manageMeasureSearchModel,isCBChecked);
 									
 								}
@@ -2161,14 +2168,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportSelectedClicked(CustomCheckBox checkBox) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
-									searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 									if (checkBox.getValue()) {
 										if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
 											searchDisplay
 											.getErrorMessageDisplayForBulkExport()
-											.setMessage(
+											.createAlert(
 													"Export file has a limit of 90 measures");
 											searchDisplay.getExportSelectedButton().setFocus(true);
 											checkBox.setValue(false);
@@ -2186,8 +2193,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									historyDisplay
 									.setReturnToLinkText("<< Return to Measure Library");
 									//									if (!result.isEditable()) {
@@ -2203,8 +2210,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onShareClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
-									searchDisplay.getSuccessMeasureDeletion().clear();
-									searchDisplay.getErrorMeasureDeletion().clear();
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									displayShare(result.getId(), result.getName());
 								}
 								
@@ -2215,6 +2222,41 @@ public class ManageMeasurePresenter implements MatPresenter {
 											manageMeasureSearchModel.getSelectedExportResults());
 									manageMeasureSearchModel.getSelectedExportIds().removeAll(
 											manageMeasureSearchModel.getSelectedExportIds());
+									
+								}
+
+								@Override
+								public void onCreateClicked(Result object) {
+									ManageMeasureSearchModel.Result selectedLibrary = object;
+									if(selectedLibrary.isDraftable()){
+										if (((selectedLibrary !=null) && (selectedLibrary.getId() != null))) {
+											showSearchingBusy(true);
+											MatContext.get().getMeasureService().getMeasure(selectedLibrary.getId(),
+													new AsyncCallback<ManageMeasureDetailModel>() {
+												@Override
+												public void onFailure(Throwable caught) {
+													showSearchingBusy(false);
+													// O&M 17
+													searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get()
+															.getMessageDelegate().getGenericErrorMessage());
+													MatContext.get().recordTransactionEvent(null, null,	null,
+															"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+												}
+												
+												@Override
+												public void onSuccess(
+														ManageMeasureDetailModel result) {
+													showSearchingBusy(false);
+													searchDisplay.getErrorMessageDisplay().clearAlert();
+													currentDetails = result;
+													createDraftOfSelectedVersion(currentDetails);
+												}
+											});
+										}
+									} else if (selectedLibrary.isVersionable()){
+										versionDisplay.setSelectedMeasure(selectedLibrary);
+										createVersion();
+									} 
 									
 								}
 								
@@ -2231,28 +2273,28 @@ public class ManageMeasurePresenter implements MatPresenter {
 									&& !lastSearchText.isEmpty()) {
 								searchDisplay
 								.getErrorMessageDisplay()
-								.setMessage(
+								.createAlert(
 										MatContext
 										.get()
 										.getMessageDelegate()
 										.getNoMeasuresMessage());
 							} else {
 								searchDisplay.getErrorMessageDisplay()
-								.clear();
+								.clearAlert();
 								searchDisplay
 								.getErrorMessageDisplayForBulkExport()
-								.clear();
+								.clearAlert();
 								if (measureDeletion) {
 									if (isMeasureDeleted) {
 										searchDisplay
 										.getSuccessMeasureDeletion()
-										.setMessage(
+										.createAlert(
 												measureDelMessage);
 									} else {
 										if (measureDelMessage != null) {
 											searchDisplay
 											.getErrorMeasureDeletion()
-											.setMessage(
+											.createAlert(
 													measureDelMessage);
 										}
 									}
@@ -2260,10 +2302,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 								} else {
 									searchDisplay
 									.getSuccessMeasureDeletion()
-									.clear();
+									.clearAlert();
 									searchDisplay
 									.getErrorMeasureDeletion()
-									.clear();
+									.clearAlert();
 								}
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
@@ -2293,8 +2335,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					public void onSelection(
 							SelectionEvent<ManageMeasureSearchModel.Result> event) {
 						
-						searchDisplay.getErrorMeasureDeletion().clear();
-						searchDisplay.getSuccessMeasureDeletion().clear();
+						searchDisplay.getErrorMeasureDeletion().clearAlert();
+						searchDisplay.getSuccessMeasureDeletion().clearAlert();
 						measureDeletion = false;
 						isMeasureDeleted = false;
 						if (!currentUserRole
@@ -2358,8 +2400,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSelection(
 							SelectionEvent<ManageMeasureSearchModel.Result> event) {
-						searchDisplay.getErrorMeasureDeletion().clear();
-						searchDisplay.getSuccessMeasureDeletion().clear();
+						searchDisplay.getErrorMeasureDeletion().clearAlert();
+						searchDisplay.getSuccessMeasureDeletion().clearAlert();
 						measureDeletion = false;
 						isMeasureDeleted = false;
 						if (!currentUserRole
@@ -2419,8 +2461,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
 				measureDeletion = false;
 				isMeasureDeleted = false;
 				
@@ -2434,10 +2476,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 						ConstantMessages.CREATE_NEW_VERSION)) {
 					createVersion();
 				} else {
-					searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+					searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 					searchDisplay
 					.getErrorMessageDisplay()
-					.setMessage(
+					.createAlert(
 							"Please select an option from the Create list box.");
 				}
 			}
@@ -2448,9 +2490,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
 				measureDeletion = false;
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
 				int filter = searchDisplay.getSelectedFilter();
 				search(searchDisplay.getSearchString().getValue(), startIndex,
 						Integer.MAX_VALUE, filter);
@@ -2459,10 +2501,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
 				if (isCreateMeasureWidgetVisible) {
 					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
 					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
@@ -2477,10 +2519,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
 				if (isMeasureSearchFilterVisible) {
 					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
 					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
@@ -2492,21 +2534,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 				isMeasureDeleted = false;
 				measureDeletion = false;
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
-				versionDisplay.getErrorMessageDisplay().clear();
-				draftDisplay.getErrorMessageDisplay().clear();
-				detailDisplay.getErrorMessageDisplay().clear();
-				historyDisplay.getErrorMessageDisplay().clear();
-				exportDisplay.getErrorMessageDisplay().clear();
-				shareDisplay.getErrorMessageDisplay().clear();
+				searchDisplay.getErrorMeasureDeletion().clearAlert();
+				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				versionDisplay.getErrorMessageDisplay().clearAlert();
+				draftDisplay.getErrorMessageDisplay().clearAlert();
+				detailDisplay.getErrorMessageDisplay().clearAlert();
+				historyDisplay.getErrorMessageDisplay().clearAlert();
+				exportDisplay.getErrorMessageDisplay().clearAlert();
+				shareDisplay.getErrorMessageDisplay().clearAlert();
 				if (manageMeasureSearchModel.getSelectedExportIds().isEmpty()) {
 					searchDisplay.getErrorMessageDisplayForBulkExport()
-					.setMessage(
+					.createAlert(
 							MatContext.get().getMessageDelegate()
 							.getMeasureSelectionError());
 				} else {
@@ -2532,7 +2574,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					err.add("Export file size is " + errorMsg);
 					err.add("File size limit is 100 MB");
 					searchDisplay.getErrorMessageDisplayForBulkExport()
-					.setMessages(err);
+					.createAlert(err);
 				} else {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
@@ -2567,7 +2609,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onClick(ClickEvent event) {
 						int startIndex = 1;
-						searchDisplay.getErrorMessageDisplay().clear();
+						searchDisplay.getErrorMessageDisplay().clearAlert();
 						int filter = 1;
 						search(searchDisplay.getAdminSearchString().getValue(),
 								startIndex, Integer.MAX_VALUE, filter);
@@ -2636,7 +2678,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				filterList, new AsyncCallback<SearchHistoryDTO>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				historyDisplay.getErrorMessageDisplay().setMessage(
+				historyDisplay.getErrorMessageDisplay().createAlert(
 						MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(
 						null,
@@ -2665,7 +2707,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				draftDisplay.getErrorMessageDisplay().setMessage(
+				draftDisplay.getErrorMessageDisplay().createAlert(
 						MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -2696,7 +2738,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		.searchMeasuresForVersion(lastSearchText, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				versionDisplay.getErrorMessageDisplay().setMessage(
+				versionDisplay.getErrorMessageDisplay().createAlert(
 						MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -2729,8 +2771,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					public void onExportClicked(Result result) {
 						measureDeletion = false;
 						isMeasureDeleted = false;
-						searchDisplay.getSuccessMeasureDeletion().clear();
-						searchDisplay.getErrorMeasureDeletion().clear();
+						searchDisplay.getSuccessMeasureDeletion().clearAlert();
+						searchDisplay.getErrorMeasureDeletion().clearAlert();
 						export(result.getId(), result.getName());
 					}
 					
@@ -2744,8 +2786,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						// result.getLockedUserId(result.getLockedUserInfo()));
 						measureDeletion = false;
 						isMeasureDeleted = false;
-						searchDisplay.getSuccessMeasureDeletion().clear();
-						searchDisplay.getErrorMeasureDeletion().clear();
+						searchDisplay.getSuccessMeasureDeletion().clearAlert();
+						searchDisplay.getErrorMeasureDeletion().clearAlert();
 						edit(result.getId());
 						
 					}
@@ -2808,7 +2850,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					public void onFailure(Throwable caught) {
 						shareDisplay
 						.getErrorMessageDisplay()
-						.setMessage(
+						.createAlert(
 								MatContext
 								.get()
 								.getMessageDelegate()
@@ -2909,8 +2951,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		transferDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				transferDisplay.getErrorMessageDisplay().clear();
-				transferDisplay.getSuccessMessageDisplay().clear();
+				transferDisplay.getErrorMessageDisplay().clearAlert();
+				transferDisplay.getSuccessMessageDisplay().clearAlert();
 				boolean userSelected = false;
 				for (int i = 0; i < model.getData().size(); i = i + 1) {
 					if (model.getData().get(i).isSelected()) {
@@ -2956,7 +2998,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 				}
 				if (userSelected == false) {
-					transferDisplay.getSuccessMessageDisplay().clear();
+					transferDisplay.getSuccessMessageDisplay().clearAlert();
 					transferDisplay.getErrorMessageDisplay().createAlert(
 							MatContext.get().getMessageDelegate()
 							.getUserRequiredErrorMessage());
@@ -2974,8 +3016,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						.getSelectedTransferResults());
 				manageMeasureSearchModel.getSelectedTransferIds().removeAll(
 						manageMeasureSearchModel.getSelectedTransferIds());
-				transferDisplay.getSuccessMessageDisplay().clear();
-				transferDisplay.getErrorMessageDisplay().clear();
+				transferDisplay.getSuccessMessageDisplay().clearAlert();
+				transferDisplay.getErrorMessageDisplay().clearAlert();
 				int filter = 1;
 				search("", 1, Integer.MAX_VALUE, filter);
 			}
@@ -2984,7 +3026,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		transferDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				transferDisplay.getSuccessMessageDisplay().clear();
+				transferDisplay.getSuccessMessageDisplay().clearAlert();
 				displayTransferView(transferDisplay.getSearchString().getValue(),startIndex,
 						Integer.MAX_VALUE);
 				
@@ -3022,7 +3064,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					detailDisplay
 					.getErrorMessageDisplay()
-					.setMessage(
+					.createAlert(
 							caught.getLocalizedMessage());
 					Mat.hideLoadingMessage();
 				}
@@ -3054,7 +3096,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 										+ result.getFailureReason();
 						}
 						detailDisplay.getErrorMessageDisplay()
-						.setMessage(message);
+						.createAlert(message);
 					}
 					Mat.hideLoadingMessage();
 				}
@@ -3166,7 +3208,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});*/
 		
 		
-		versionDisplay.getSearchWidget().getSearchInputFocusPanel().addKeyUpHandler(new KeyUpHandler() {
+		/*versionDisplay.getSearchWidget().getSearchInputFocusPanel().addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
@@ -3195,13 +3237,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getText());
 			}
-		});
+		});*/
 		
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
-				versionDisplay.getErrorMessageDisplay().clear();
+				versionDisplay.getErrorMessageDisplay().clearAlert();
 				if (((selectedMeasure !=null) && (selectedMeasure.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
 								.getMinorRadioButton().getValue())) {
@@ -3211,8 +3253,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				} else {
 					versionDisplay
 					.getErrorMessageDisplay()
-					.setMessage(
-							"Please select a Measure Name to version and select a version type of Major or Minor.");
+					.createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());
 				}
 			}
 		});

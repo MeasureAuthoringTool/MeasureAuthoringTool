@@ -9,10 +9,12 @@ import mat.client.CustomPager;
 import mat.client.ImageResources;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
@@ -49,7 +51,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The measure search filter widget. */
@@ -191,7 +193,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	/**

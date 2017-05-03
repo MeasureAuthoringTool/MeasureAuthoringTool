@@ -5,11 +5,13 @@ import java.util.List;
 import mat.DTO.AuditLogDTO;
 import mat.client.CustomPager;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -59,7 +61,7 @@ public abstract class HistoryBaseView {
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	
 	/** The error messages. */
-	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	protected MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The err msg. */
 	private ErrorMessageDisplay errMsg = new ErrorMessageDisplay();
@@ -136,7 +138,7 @@ public abstract class HistoryBaseView {
 	 * 
 	 * @return the error message display
 	 */
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	

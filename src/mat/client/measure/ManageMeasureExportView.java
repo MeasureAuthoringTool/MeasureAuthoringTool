@@ -1,8 +1,10 @@
 package mat.client.measure;
 
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -26,7 +28,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The simple xml radio. */
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
@@ -128,7 +130,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 

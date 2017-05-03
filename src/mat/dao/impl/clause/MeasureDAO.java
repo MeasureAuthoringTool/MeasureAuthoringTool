@@ -24,6 +24,7 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
 import mat.shared.StringUtility;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +50,7 @@ mat.dao.clause.MeasureDAO {
 	/*
 	 * assumption: measures here are all part of the same measure set
 	 */
-	/**
+	/*
 	 * The Class MeasureComparator.
 	 */
 	class MeasureComparator implements Comparator<Measure> {
@@ -864,14 +865,20 @@ mat.dao.clause.MeasureDAO {
 				orderedDTOList.add(dto);
 			}
 		}
+		Criteria shareCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(MeasureShare.class);
+		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
+		/*shareCriteria.add(Restrictions.in("measure.id",
+				measureIdDTOMap.keySet()));*/
+		List<MeasureShare> shareList = shareCriteria.list();
 		
 		if (orderedDTOList.size() > 0) {
-			Criteria shareCriteria = getSessionFactory().getCurrentSession()
+			/*Criteria shareCriteria = getSessionFactory().getCurrentSession()
 					.createCriteria(MeasureShare.class);
 			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
 			shareCriteria.add(Restrictions.in("measure.id",
 					measureIdDTOMap.keySet()));
-			List<MeasureShare> shareList = shareCriteria.list();
+			List<MeasureShare> shareList = shareCriteria.list();*/
 			// get share level for each measure set and set it on each dto
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
@@ -959,6 +966,7 @@ mat.dao.clause.MeasureDAO {
 		mCriteria.setFirstResult(startIndex);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
+		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
@@ -976,18 +984,21 @@ mat.dao.clause.MeasureDAO {
 			if (searchResultsForMeasure(searchTextLC, su,
 					measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
+				boolean isDraft = dto.isDraft();
+				if(isDraft){
+					measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
+				}
 				measureIdDTOMap.put(measure.getId(), dto);
 				orderedDTOList.add(dto);
 			}
 		}
-		
+		Criteria shareCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(MeasureShare.class);
+		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
+		/*shareCriteria.add(Restrictions.in("measure.id",
+				measureIdDTOMap.keySet()));*/
+		List<MeasureShare> shareList = shareCriteria.list();
 		if (orderedDTOList.size() > 0) {
-			Criteria shareCriteria = getSessionFactory().getCurrentSession()
-					.createCriteria(MeasureShare.class);
-			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-			shareCriteria.add(Restrictions.in("measure.id",
-					measureIdDTOMap.keySet()));
-			List<MeasureShare> shareList = shareCriteria.list();
 			// get share level for each measure set and set it on each dto
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
@@ -1005,6 +1016,7 @@ mat.dao.clause.MeasureDAO {
 					.hasNext();) {
 				MeasureShareDTO dto = iterator.next();
 				String msid = dto.getMeasureSetId();
+				
 				String shareLevel = measureSetIdToShareLevel.get(msid);
 				if (isNormalUserAndAllMeasures
 						&& dto.isPrivateMeasure()
@@ -1014,9 +1026,32 @@ mat.dao.clause.MeasureDAO {
 					iterator.remove();
 					continue;
 				}
+				boolean hasDraft = measureSetIdDraftableMap.containsKey(msid);
+				boolean isSharedToEdit = false;
 				if (shareLevel != null) {
 					dto.setShareLevel(shareLevel);
+					isSharedToEdit = ShareLevel.MODIFY_ID.equals(shareLevel);
 				}
+				String userRole = LoggedInUserUtil.getLoggedInUserRole();
+				boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+				boolean isOwner = LoggedInUserUtil.getLoggedInUser().equals(dto.getOwnerUserId());
+				boolean isEditable = (isOwner || isSuperUser || isSharedToEdit);
+				if (!dto.isLocked() && isEditable) {
+					if(hasDraft){
+						MeasureShareDTO draftLibrary = measureSetIdDraftableMap.get(msid);
+						if(dto.getMeasureId().equals(draftLibrary.getMeasureId())){
+							dto.setVersionable(true);
+							dto.setDraftable(false);
+						} else if (dto.getMeasureSetId().equals(draftLibrary.getMeasureSetId())){
+							dto.setVersionable(false);
+							dto.setDraftable(false);
+						} 
+					} else {
+						dto.setVersionable(false);
+						dto.setDraftable(true);
+					}
+				}
+				
 			}
 		}
 		if (pageSize < orderedDTOList.size()) {

@@ -20,13 +20,16 @@ import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.util.ClientConstants;
 
@@ -52,22 +55,22 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private CreateNewItemWidget createMeasureWidget = new CreateNewItemWidget("forMeasureLibrary");
 	
 	/** The error messages for transfer os. */
-	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
+	private MessageAlert errorMessagesForTransferOS = new ErrorMessageAlert();
 	
 	/** The current user role. */
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
 	
 	/** The error measure deletion. */
-	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
+	private MessageAlert errorMeasureDeletion = new ErrorMessageAlert();
 	
 	/** The clear button. */
 	private Button clearButton = new PrimaryButton("Clear All", "primaryGreyLeftButton");
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The error messages for bulk export. */
-	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
+	private MessageAlert errorMessagesForBulkExport = new ErrorMessageAlert();
 	
 	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
@@ -98,7 +101,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private TextBox searchInput = new TextBox();
 	
 	/** The success measure deletion. */
-	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
+	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
 	
 	/** The transfer button. */
 	private Button transferButton = new PrimaryButton("Transfer", "primaryGreyButton");
@@ -179,7 +182,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @return the widget
 	 */
 	private Widget buildBottomButtonWidget(PrimaryButton bulkExportButton,
-			ErrorMessageDisplay errorMessageDisplay) {
+			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
@@ -200,7 +203,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @return the widget
 	 */
 	public Widget adminBuildBottomButtonWidget(PrimaryButton transferButton, PrimaryButton clearButton,
-			ErrorMessageDisplay errorMessageDisplay) {
+			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
 		transferButton.setTitle("Transfer");
@@ -246,6 +249,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	@Override
 	public void buildCellTable(ManageMeasureSearchModel
 			manageMeasureSearchModel, int filter, String searchText) {
+		measureSearchView.getCellTablePanel().clear();
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,searchText);
 	}
 	
@@ -258,8 +262,10 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		mostRecentVerticalPanel.clear();
 		mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget());
 	}
-	
-	
+	@Override
+	public VerticalPanel getCellTablePanel(){
+		return measureSearchView.getCellTablePanel();
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#clearBulkExportCheckBoxes(mat.client.measure.metadata.Grid508)
 	 */
@@ -359,7 +365,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMeasureDeletion()
 	 */
 	@Override
-	public ErrorMessageDisplay getErrorMeasureDeletion() {
+	public MessageAlert getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
 	}
 	
@@ -367,7 +373,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -375,7 +381,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMessageDisplayForBulkExport()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport() {
+	public MessageAlert getErrorMessageDisplayForBulkExport() {
 		return errorMessagesForBulkExport;
 	}
 	
@@ -509,7 +515,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
 	 */
 	@Override
-	public SuccessMessageDisplay getSuccessMeasureDeletion() {
+	public MessageAlert getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
 	
@@ -549,7 +555,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @param errorMeasureDeletion
 	 *            the new error measure deletion
 	 */
-	public void setErrorMeasureDeletion(ErrorMessageDisplay errorMeasureDeletion) {
+	public void setErrorMeasureDeletion(MessageAlert errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}
 	
@@ -564,7 +570,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * 
 	 * @param successMeasureDeletion the new success measure deletion */
 	public void setSuccessMeasureDeletion(
-			SuccessMessageDisplay successMeasureDeletion) {
+			MessageAlert successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
 
@@ -590,7 +596,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getErrorMessagesForTransferOS()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessagesForTransferOS() {
+	public MessageAlert getErrorMessagesForTransferOS() {
 		return errorMessagesForTransferOS;
 	}
 

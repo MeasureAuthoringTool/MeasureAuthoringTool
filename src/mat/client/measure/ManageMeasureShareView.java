@@ -5,12 +5,14 @@ import java.util.List;
 
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -55,7 +57,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private FlowPanel content = new FlowPanel();
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
@@ -260,7 +262,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	

@@ -93,6 +93,10 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		
 		private String hqmfReleaseVersion;
 		
+		private boolean isDraftable;
+		
+		private boolean isVersionable;
+		
 		/**
 		 * Checks if is measure family.
 		 *
@@ -570,6 +574,22 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 
 		public void setHqmfReleaseVersion(String hqmfReleaseVersion) {
 			this.hqmfReleaseVersion = hqmfReleaseVersion;
+		}
+
+		public boolean isDraftable() {
+			return isDraftable;
+		}
+
+		public void setDraftable(boolean isDraftable) {
+			this.isDraftable = isDraftable;
+		}
+
+		public boolean isVersionable() {
+			return isVersionable;
+		}
+
+		public void setVersionable(boolean isVersionable) {
+			this.isVersionable = isVersionable;
 		}
 		
 		

@@ -1340,6 +1340,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setVersion(formattedVersion);
 		detail.setFinalizedDate(dto.getFinalizedDate());
 		detail.setMeasureSetId(dto.getMeasureSetId());
+		detail.setDraftable(dto.isDraftable());
+		detail.setVersionable(dto.isVersionable());
 		return detail;
 	}
 
@@ -1836,7 +1838,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final ManageMeasureDetailModel getMeasure(final String key) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
-		System.out.println("HELLO WORLD");
 		Measure measure = getService().getById(key);
 		MeasureXmlModel xml = getMeasureXmlForMeasure(key);
 		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
@@ -1847,7 +1848,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		System.out.println(measureDetailResult.getAllAuthorList());
 		System.out.println(measureDetailResult.getUsedSteward().getOrgName());
 		System.out.println(manageMeasureDetailModel.getName());
-		
 		return manageMeasureDetailModel;
 
 	}

@@ -74,6 +74,10 @@ public class MeasureShareDTO implements IsSerializable {
 	/** The is private measure. */
 	private boolean isPrivateMeasure;
 	
+	private boolean isDraftable;
+	
+	private boolean isVersionable;
+	
 	
 	/**
 	 * Gets the scoring type.
@@ -468,6 +472,22 @@ public class MeasureShareDTO implements IsSerializable {
 	 */
 	public void setRevisionNumber(String revisionNumber) {
 		this.revisionNumber = revisionNumber;
+	}
+
+	public boolean isDraftable() {
+		return isDraftable;
+	}
+
+	public void setDraftable(boolean isDraftable) {
+		this.isDraftable = isDraftable;
+	}
+
+	public boolean isVersionable() {
+		return isVersionable;
+	}
+
+	public void setVersionable(boolean isVersionable) {
+		this.isVersionable = isVersionable;
 	}
 	
 	

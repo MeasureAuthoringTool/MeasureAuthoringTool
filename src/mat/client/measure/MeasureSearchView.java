@@ -6,28 +6,19 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.resource.CellTableResource;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSafeHTMLCell;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
-import mat.client.util.ClientConstants;
-import mat.shared.ClickableSafeHtmlCell;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -55,6 +46,21 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
+
+import mat.client.CustomPager;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.resource.CellTableResource;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatButtonCell;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSafeHTMLCell;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.CellTableUtility;
+import mat.client.util.ClientConstants;
+import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -171,6 +177,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		 * On clear all bulk export clicked.
 		 */
 		void onClearAllBulkExportClicked();
+		
+		void onCreateClicked(ManageMeasureSearchModel.Result object);
 	}
 	/**
 	 * Instantiates a new measure search view.
@@ -238,7 +246,56 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				.fromSafeConstant("<span title='Version'>" + "Version"
 						+ "</span>"));
 		
-		//Finalized Date
+		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
+		Column<ManageMeasureSearchModel.Result,String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(buttonCell) {
+
+			@Override
+			public String getValue(ManageMeasureSearchModel.Result object) {
+				// TODO Auto-generated method stub
+				return object.getShortName();
+			}
+			
+			@Override
+			public void render(Context context, ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
+				if (object.isDraftable()) {
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
+					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\"></i>");
+					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
+					sb.appendHtmlConstant("</button>");
+				} else if (object.isVersionable()) {
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
+					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\"></i>");
+					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
+					sb.appendHtmlConstant("</button>");
+				}
+				
+			}
+			@Override
+			public void onBrowserEvent(Context context, Element elem, ManageMeasureSearchModel.Result object,
+					NativeEvent event) {
+				// TODO Auto-generated method stub
+				//super.onBrowserEvent(context, elem, object, event);
+				String type = event.getType();
+				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
+					if(!object.isDraftable() && !object.isVersionable()){
+						event.preventDefault();
+					} else {
+						observer.onCreateClicked(object);
+					}
+				} else {
+					if(!object.isDraftable() && !object.isVersionable()){
+						event.preventDefault();
+					}
+				}
+				
+			}
+			
+		};
+		
+		table.addColumn(draftOrVersionCol,
+				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Version/Draft" + "</span>"));
+		
+		/*//Finalized Date
 		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDate = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new MatSafeHTMLCell()) {
 			@Override
@@ -251,7 +308,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		};
 		table.addColumn(finalizedDate, SafeHtmlUtils
 				.fromSafeConstant("<span title='Finalized Date'>" + "Finalized Date"
-						+ "</span>"));
+						+ "</span>"));*/
 		
 		//History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
@@ -701,16 +758,26 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			 if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 						.getLoggedInUserRole())){
 			    	table = addColumnToAdminTable(sortHandler);
+			    	Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
+							"In the following Measure List table, Measure Name is given in first column,"
+									+ " Version in second column, Finalized Date in third column,"
+									+ "History in fourth column, Edit in fifth column, Share in sixth column"
+									+ "Clone in seventh column and Export in eight column.");
+					table.getElement().setAttribute("id", "MeasureSearchCellTable");
+					table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+					cellTablePanel.add(invisibleLabel);
 			    }else{
 			    	table = addColumnToTable();
+			    	Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
+							"In the following Measure List table, Measure Name is given in first column,"
+									+ " Version in second column, Version/Draft in third column for creating version/draft,"
+									+ "History in fourth column, Edit in fifth column, Share in sixth column"
+									+ "Clone in seventh column and Export in eight column.");
+					table.getElement().setAttribute("id", "MeasureSearchCellTable");
+					table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+					cellTablePanel.add(invisibleLabel);
 			    }
-			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-					"In the following Measure List table, Measure Name is given in first column,"
-							+ " Version in second column, Finalized Date in third column,"
-							+ "History in fourth column, Edit in fifth column, Share in sixth column"
-							+ "Clone in seventh column and Export in eight column.");
-			table.getElement().setAttribute("id", "MeasureSearchCellTable");
-			table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 23.0, Unit.PCT);
@@ -720,7 +787,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			table.setColumnWidth(6, 2.0, Unit.PCT);
 			table.setColumnWidth(7, 22.0, Unit.PCT);
 			    
-			cellTablePanel.add(invisibleLabel);
+			
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
@@ -1086,5 +1153,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		getSelectedList().clear();
 		getData().setData(selectedMeasureList);
 		table.redraw();
+	}
+	public VerticalPanel getCellTablePanel() {
+		return cellTablePanel;
 	}
 }

@@ -736,6 +736,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
+	
+	boolean isLoading = false;
 
 	/**
 	 * Sets the sub skip embedded link.
@@ -899,6 +901,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		isMeasureDeleted = false;
 		measureDeletion = false;
 		isClone = false;
+		isLoading = false;
 	}
 
 	/*
@@ -1001,13 +1004,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getSuccessMeasureDeletion().clearAlert();
 		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
-		Mat.showLoadingMessage();
+		showSearchingBusy(true);
 		mcs.clone(currentDetails, loggedinUserId, isDraftCreation,
 				new AsyncCallback<ManageMeasureSearchModel.Result>() {
 					@Override
 					public void onFailure(Throwable caught) {
 
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						shareDisplay.getErrorMessageDisplay()
 								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(null, null, null,
@@ -1020,7 +1023,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								result.getShortName(), result.getScoringType(), result.isEditable(),
 								result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
 						// fireMeasureEditEvent();
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						isClone = false;
 
 						// LOGIT
@@ -1559,12 +1562,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the version
 	 */
 	private void saveFinalizedVersion(final String measureId, final boolean isMajor, final String version) {
-		Mat.showLoadingMessage();
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version,
 				new AsyncCallback<SaveMeasureResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						versionDisplay.getErrorMessageDisplay()
 								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(null, null, null,
@@ -1573,7 +1576,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(SaveMeasureResult result) {
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						if (result.isSuccess()) {
 							searchDisplay.clearSelections();
 							displaySearch();
@@ -1805,7 +1808,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onCreateClicked(Result object) {
 									ManageMeasureSearchModel.Result selectedLibrary = object;
-									if (selectedLibrary.isDraftable()) {
+									if (!isLoading && selectedLibrary.isDraftable()) {
 										if (((selectedLibrary != null) && (selectedLibrary.getId() != null))) {
 											showSearchingBusy(true);
 											MatContext.get().getMeasureService().getMeasure(selectedLibrary.getId(),
@@ -1825,14 +1828,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 														@Override
 														public void onSuccess(ManageMeasureDetailModel result) {
-															showSearchingBusy(false);
+															//showSearchingBusy(false);
 															searchDisplay.getErrorMessageDisplay().clearAlert();
 															currentDetails = result;
 															createDraftOfSelectedVersion(currentDetails);
 														}
 													});
 										}
-									} else if (selectedLibrary.isVersionable()) {
+									} else if (!isLoading && selectedLibrary.isVersionable()) {
 										versionDisplay.setSelectedMeasure(selectedLibrary);
 										createVersion();
 									}
@@ -2304,6 +2307,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the busy
 	 */
 	private void showSearchingBusy(boolean busy) {
+		isLoading = busy;
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {
@@ -2397,7 +2401,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			return;
 		}
 
-		Mat.showLoadingMessage();
+		showSearchingBusy(true);
 		updateDetailsFromView();
 
 		if (isClone && isValid(currentDetails)) {
@@ -2413,7 +2417,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-					Mat.hideLoadingMessage();
+					showSearchingBusy(false);
 				}
 
 				@Override
@@ -2440,7 +2444,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 						detailDisplay.getErrorMessageDisplay().createAlert(message);
 					}
-					Mat.hideLoadingMessage();
+					showSearchingBusy(false);
 				}
 			});
 		}

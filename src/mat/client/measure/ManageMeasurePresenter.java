@@ -1004,7 +1004,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getSuccessMeasureDeletion().clearAlert();
 		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
-		showSearchingBusy(true);
+		
 		mcs.clone(currentDetails, loggedinUserId, isDraftCreation,
 				new AsyncCallback<ManageMeasureSearchModel.Result>() {
 					@Override

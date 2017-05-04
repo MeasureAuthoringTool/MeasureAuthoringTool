@@ -3,6 +3,7 @@
  */
 package mat.client.clause.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
@@ -31,6 +32,8 @@ public class CQlDefinitionsView {
 	private MatTextBox defineNameTxtArea = new MatTextBox();
 	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
+	
+	private ButtonGroup contextGroup = new ButtonGroup();
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
@@ -105,11 +108,13 @@ public class CQlDefinitionsView {
 		contextDefinePOPRadioBtn.setValue(false);
 		contextDefinePOPRadioBtn.setText("Population");
 		contextDefinePOPRadioBtn.setId("context_PopulationRadioButton");
+		contextGroup.add(contextDefinePATRadioBtn);
+		contextGroup.add(contextDefinePOPRadioBtn);
+		contextGroup.setStyleName("contextToggleSwitch");
 		
 		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineButtonBar.getCloseButton().setVisible(false);
-		defineConextPanel.add(contextDefinePATRadioBtn);
-		defineConextPanel.add(contextDefinePOPRadioBtn);
+		defineConextPanel.add(contextGroup);
 		defineConextPanel.setStyleName("contextToggleSwitch");
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(definitionHP);
@@ -160,6 +165,14 @@ public class CQlDefinitionsView {
 
 	public void setDefineAceEditor(AceEditor defineAceEditor) {
 		this.defineAceEditor = defineAceEditor;
+	}
+
+	public ButtonGroup getContextGroup() {
+		return contextGroup;
+	}
+
+	public void setContextGroup(ButtonGroup contextGroup) {
+		this.contextGroup = contextGroup;
 	}
 
 	public InlineRadio getContextDefinePATRadioBtn() {

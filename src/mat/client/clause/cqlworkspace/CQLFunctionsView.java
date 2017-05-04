@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
@@ -103,6 +104,8 @@ public class CQLFunctionsView {
 
 	/** The function button bar. */
 	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar("function");
+	
+	private ButtonGroup contextGroup = new ButtonGroup();
 	
 	/** The context pat toggle switch. */
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
@@ -206,7 +209,6 @@ public class CQLFunctionsView {
 		addNewArgument.setPull(Pull.RIGHT);
 
 		Label funcContextLabel = new Label(LabelType.INFO, "Context");
-		FlowPanel funcConextPanel = new FlowPanel();
 
 		contextFuncPATRadioBtn.setValue(true);
 		contextFuncPATRadioBtn.setText("Patient");
@@ -216,9 +218,9 @@ public class CQLFunctionsView {
 		contextFuncPOPRadioBtn.setId("context_PopulationRadioButton");
 		functionButtonBar.getTimingExpButton().setVisible(false);
 		functionButtonBar.getCloseButton().setVisible(false);
-		funcConextPanel.add(contextFuncPATRadioBtn);
-		funcConextPanel.add(contextFuncPOPRadioBtn);
-		funcConextPanel.setStyleName("contextToggleSwitch");
+		contextGroup.add(contextFuncPATRadioBtn);
+		contextGroup.add(contextFuncPOPRadioBtn);
+		contextGroup.setStyleName("contextToggleSwitch");
 
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcHP);
@@ -227,7 +229,7 @@ public class CQLFunctionsView {
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcContextLabel);
 		funcVP.add(new SpacerWidget());
-		funcVP.add(funcConextPanel);
+		funcVP.add(contextGroup);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
@@ -692,6 +694,20 @@ public class CQLFunctionsView {
 	 */
 	public CQLButtonToolBar getFunctionButtonBar() {
 		return functionButtonBar;
+	}
+
+	/**
+	 * @return the contextGroup
+	 */
+	public ButtonGroup getContextGroup() {
+		return contextGroup;
+	}
+
+	/**
+	 * @param contextGroup the contextGroup to set
+	 */
+	public void setContextGroup(ButtonGroup contextGroup) {
+		this.contextGroup = contextGroup;
 	}
 
 	/**

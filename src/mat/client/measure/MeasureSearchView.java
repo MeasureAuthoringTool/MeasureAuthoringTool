@@ -259,12 +259,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			public void render(Context context, ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
 				if (object.isDraftable()) {
 					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
-					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\"></i>");
+					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
 					sb.appendHtmlConstant("</button>");
 				} else if (object.isVersionable()) {
 					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
-					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\"></i>");
+					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
 				}

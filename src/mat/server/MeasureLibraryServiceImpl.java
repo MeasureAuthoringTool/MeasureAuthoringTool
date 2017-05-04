@@ -1620,57 +1620,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.MeasureLibraryService#getAppliedQDMFromMeasureXml(java
-	 * .lang.String, boolean)
-	 */
-	// @Override
-	// public final ArrayList<QualityDataSetDTO>
-	// getAppliedQDMFromMeasureXml(final String measureId,
-	// final boolean checkForSupplementData) {
-	// MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
-	// QualityDataModelWrapper details =
-	// convertXmltoQualityDataDTOModel(measureXmlModel);
-	// ArrayList<QualityDataSetDTO> finalList = new
-	// ArrayList<QualityDataSetDTO>();
-	// if (details != null) {
-	// if ((details.getQualityDataDTO() != null) &&
-	// (details.getQualityDataDTO().size() != 0)) {
-	// logger.info(" details.getQualityDataDTO().size() :" +
-	// details.getQualityDataDTO().size());
-	// for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-	// if ((dataSetDTO.getOccurrenceText() != null)
-	// && StringUtils.isNotBlank(dataSetDTO.getOccurrenceText())
-	// && StringUtils.isNotEmpty(dataSetDTO.getOccurrenceText())) {
-	// dataSetDTO.setSpecificOccurrence(true);
-	// }
-	// if (dataSetDTO.getCodeListName() != null) {
-	// if ((checkForSupplementData && dataSetDTO.isSuppDataElement())) {
-	// continue;
-	// } else {
-	// finalList.add(dataSetDTO);
-	// }
-	// }
-	// }
-	// }
-	// Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
-	// @Override
-	// public int compare(final QualityDataSetDTO o1, final QualityDataSetDTO
-	// o2) {
-	// return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
-	// }
-	// });
-	// }
-	//
-	// finalList = findUsedQDMs(finalList, measureXmlModel);
-	// logger.info("finalList()of QualityDataSetDTO ::" + finalList.size());
-	// return finalList;
-	//
-	// }
-
+	
 	@Override
 	public final QualityDataModelWrapper getAppliedQDMFromMeasureXml(final String measureId,
 			final boolean checkForSupplementData) {
@@ -2125,21 +2075,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return sortedMainClauseMap;
 	}
 
-	/**
-	 * Gets the page count.
-	 * 
-	 * @param userId
-	 *            the user id
-	 * @return {@link Integer}. *
-	 */
-	/*
-	 * private int getPageCount(final long totalRows, final int numberOfRows) {
-	 * int pageCount = 0; int mod = (int) (totalRows % numberOfRows); pageCount
-	 * = (int) (totalRows / numberOfRows); pageCount = (mod > 0) ? (pageCount +
-	 * 1) : pageCount; return pageCount; }
-	 */
-
-	/*
+		/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -3090,53 +3026,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.MeasureLibraryService#searchMeasuresForDraft(java.lang
-	 * .String)
-	 */
-	@Override
-	public final ManageMeasureSearchModel searchMeasuresForDraft(final String searchText) {
-		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(searchText);
-		searchModel.setResultsTotal((int) getService().countMeasuresForDraft(searchText));
-		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
-		searchModel.setData(detailModelList);
-		for (MeasureShareDTO dto : measureList) {
-			setDTOtoModel(detailModelList, dto, currentUserId, isSuperUser);
-		}
-		return searchModel;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.MeasureLibraryService#searchMeasuresForVersion(java.
-	 * lang.String)
-	 */
-	@Override
-	public final ManageMeasureSearchModel searchMeasuresForVersion(final String searchText) {
-		String currentUserId = LoggedInUserUtil.getLoggedInUser();
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
-		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForVersion(searchText);
-		searchModel.setResultsTotal((int) getService().countMeasuresForVersion(searchText));
-		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
-		searchModel.setData(detailModelList);
-
-		for (MeasureShareDTO dto : measureList) {
-			setDTOtoModel(detailModelList, dto, currentUserId, isSuperUser);
-		}
-		return searchModel;
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

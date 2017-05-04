@@ -15,35 +15,6 @@ import mat.model.clause.ShareLevel;
 public interface MeasureDAO extends IDAO<Measure, String> {
 	
 	/**
-	 * Count measure for draft.
-	 *
-	 * @param searchText the search text
-	 * @param user the user
-	 * @return the int
-	 */
-	int countMeasureForDraft(String searchText, User user);
-	
-	/**
-	 * Count measure for draft.
-	 *
-	 * @param searchText the search text
-	 * @param user the user
-	 * @return the int
-	 */
-	/* public int countMeasureForDraft(User user); */
-	
-	
-	
-	/**
-	 * Count measure for version.
-	 * 
-	 * @param user
-	 *            the user
-	 * @return the int
-	 */
-	/* public int countMeasureForVersion(User user); */
-	int countMeasureForVersion(String searchText, User user);
-	/**
 	 * Count measure share info for user.
 	 * 
 	 * @param filter
@@ -126,14 +97,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 */
 	public int getMaxEMeasureId();
 	
-	/**
-	 * Gets the measures for draft.
-	 *
-	 * @param text the text
-	 * @param user the user
-	 * @return the measures for draft
-	 */
-	List<MeasureShareDTO> getMeasuresForDraft(String text, User user);
 	
 	/**
 	 * Gets the measures for draft.
@@ -147,15 +110,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the measures for draft
 	 */
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize);
-	
-	/**
-	 * Gets the measures for version.
-	 *
-	 * @param searchText the search text
-	 * @param user the user
-	 * @return the measures for version
-	 */
-	List<MeasureShareDTO> getMeasuresForVersion(String searchText, User user);
 	
 	/**
 	 * Gets the measure share for measure.

@@ -267,21 +267,6 @@ MeasureService {
 		return this.getMeasureLibraryService().search(searchText, startIndex, pageSize, filter);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#searchMeasuresForDraft(java.lang.String)
-	 */
-	@Override
-	public ManageMeasureSearchModel searchMeasuresForDraft(String searchText) {
-		return this.getMeasureLibraryService().searchMeasuresForDraft(searchText);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#searchMeasuresForVersion(java.lang.String)
-	 */
-	@Override
-	public ManageMeasureSearchModel searchMeasuresForVersion(String searchText) {
-		return this.getMeasureLibraryService().searchMeasuresForVersion(searchText);
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#searchUsers(int, int)

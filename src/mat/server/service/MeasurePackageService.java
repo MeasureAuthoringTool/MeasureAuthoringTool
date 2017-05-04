@@ -42,21 +42,6 @@ public interface MeasurePackageService {
 	 */
 	long count(String searchText);
 	
-	/** Count measures for draft.
-	 * 
-	 * @param searchText the search text
-	 * @return {@link Long}. * */
-	/* long countMeasuresForDraft(); */
-	
-	long countMeasuresForDraft(String searchText);
-	
-	/** Count measures for version.
-	 * 
-	 * @param searchText the search text
-	 * @return {@link Long}. * */
-	/* long countMeasuresForVersion(); */
-	
-	long countMeasuresForVersion(String searchText);
 	
 	/**
 	 * Count users for measure share.
@@ -261,23 +246,6 @@ public interface MeasurePackageService {
 	List<MeasureShareDTO> searchForAdminWithFilter(String searchText, int startIndex,
 			int numResults, int filter);
 	
-	/**
-	 * Search measures for draft.
-	 *
-	 * @param searchText
-	 * 				- {@link String}.
-	 * @return {@link List} {@link MeasureShareDTO}.
-	 */		
-	List<MeasureShareDTO> searchMeasuresForDraft(String searchText);
-	
-	/**
-	 * Search measures for version.
-	 *
-	 * @param searchText
-	 * 				- {@link String}.
-	 * @return {@link List} of {@link MeasureShareDTO}.
-	 */
-	List<MeasureShareDTO> searchMeasuresForVersion(String searchText);
 	
 	/**
 	 * Search with filter.

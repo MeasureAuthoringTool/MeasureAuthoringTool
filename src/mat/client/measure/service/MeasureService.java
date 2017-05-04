@@ -288,23 +288,6 @@ public interface MeasureService extends RemoteService {
 	ManageMeasureSearchModel search(String searchText, int startIndex,
 			int pageSize, int filter);
 	
-	
-	/**
-	 * Search measures for draft.
-	 *
-	 * @param searchText the search text
-	 * @return the manage measure search model
-	 */
-	ManageMeasureSearchModel searchMeasuresForDraft(String searchText);
-	
-	/**
-	 * Search measures for version.
-	 *
-	 * @param searchText the search text
-	 * @return the manage measure search model
-	 */
-	ManageMeasureSearchModel searchMeasuresForVersion(String searchText);
-	
 	/**
 	 * Search users.
 	 *

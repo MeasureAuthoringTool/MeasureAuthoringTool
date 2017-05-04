@@ -160,24 +160,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measurePackageDAO.countMeasureShareInfoForUser(searchText, user);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#countMeasuresForDraft()
-	 */
-	@Override
-	public long countMeasuresForDraft(String searchText) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForDraft(searchText, user);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#countMeasuresForVersion()
-	 */
-	@Override
-	public long countMeasuresForVersion(String searchText) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForVersion(searchText, user);
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#countUsersForMeasureShare()
 	 */
@@ -455,35 +438,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
 	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
-	 */
-	/*
-	 * @Override public List<MeasureShareDTO> searchMeasuresForDraft(final int startIndex, final int numResults) { User user =
-	 * userDAO.find(LoggedInUserUtil.getLoggedInUser()); return measurePackageDAO.getMeasuresForDraft(user, startIndex, numResults); }
-	 */
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(java.lang.String)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchMeasuresForDraft(final String searchText) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForDraft(searchText, user);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(java.lang.String)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchMeasuresForVersion(String searchText) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForVersion(searchText, user);
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#searchWithFilter(java.lang.String, int, int, int)
 	 */
 	@Override
@@ -686,5 +640,4 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
 		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
-	
 }

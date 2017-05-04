@@ -428,20 +428,6 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		};
 		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
 
-		// Finalized Date
-		/*Column<CQLLibraryDataSetObject, SafeHtml> versionedDate = new Column<CQLLibraryDataSetObject, SafeHtml>(
-				new MatSafeHTMLCell()) {
-			@Override
-			public SafeHtml getValue(CQLLibraryDataSetObject object) {
-				if (object.getFinalizedDate() != null) {
-					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-				}
-				return null;
-			}
-		};
-		table.addColumn(versionedDate,
-				SafeHtmlUtils.fromSafeConstant("<span title='Versioned Date'>" + "Versioned Date" + "</span>"));*/
-
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
 		Column<CQLLibraryDataSetObject,String> draftOrVersionCol = new Column<CQLLibraryDataSetObject, String>(buttonCell) {
 
@@ -455,12 +441,12 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
 				if (object.isDraftable()) {
 					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
-					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\"></i>");
+					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
 					sb.appendHtmlConstant("</button>");
 				} else if (object.isVersionable()) {
 					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
-					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\"></i>");
+					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
 				}

@@ -3084,6 +3084,15 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
                             @Override
                             public void onSuccess(GetUsedCQLArtifactsResult result) {
+                            	// if there are errors, set the valuesets to not used.
+                            	if(!result.getCqlErrors().isEmpty()) {
+                            		for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
+                                      cqlDTo.setUsed(false);
+                            		}
+                            	}
+                            	
+                            	// otherwise, check if the valueset is in the used valusets list
+                            	else {
                                    for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
                                           if (result.getUsedCQLValueSets().contains(cqlDTo.getCodeListName())) {
                                                  cqlDTo.setUsed(true);
@@ -3091,6 +3100,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
                                         	  cqlDTo.setUsed(false);
                                           }
                                    }
+                            	}
                                    searchDisplay.buildAppliedQDM();
                                    setExpansionProfilePanelValues();
                        			boolean isEditable = MatContext.get().getLibraryLockService().checkForEditPermission();

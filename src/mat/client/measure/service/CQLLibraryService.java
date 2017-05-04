@@ -32,11 +32,10 @@ public interface CQLLibraryService extends RemoteService {
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
-	SaveCQLLibraryResult searchForVersion(String searchText);
-
+	
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
 
-	SaveCQLLibraryResult searchForDraft(String searchText);
+	
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 	
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);

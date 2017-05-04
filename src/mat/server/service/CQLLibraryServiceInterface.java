@@ -46,13 +46,10 @@ public interface CQLLibraryServiceInterface {
 
 	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
 
-	SaveCQLLibraryResult searchForVersion(String searchText);
 
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
-
-	SaveCQLLibraryResult searchForDraft(String searchText);
 
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context);
 

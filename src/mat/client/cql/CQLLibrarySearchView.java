@@ -489,7 +489,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		};
 		
 		table.addColumn(draftOrVersionCol,
-				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Version/Draft" + "</span>"));
+				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
 		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(

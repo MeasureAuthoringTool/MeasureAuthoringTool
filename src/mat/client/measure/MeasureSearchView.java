@@ -293,7 +293,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		};
 		
 		table.addColumn(draftOrVersionCol,
-				SafeHtmlUtils.fromSafeConstant("<span title='Create Draft/Version'>" + "Version/Draft" + "</span>"));
+				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
 		
 		/*//Finalized Date
 		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDate = new Column<ManageMeasureSearchModel.Result, SafeHtml>(

@@ -1,51 +1,7 @@
 package mat.client;
 
 import java.util.Date;
-import mat.client.admin.ManageAdminPresenter;
-import mat.client.admin.ManageCQLLibraryAdminPresenter;
-import mat.client.admin.ManageCQLLibraryAdminView;
-import mat.client.admin.reports.ManageAdminReportingPresenter;
-import mat.client.admin.reports.ManageAdminReportingView;
-import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.cql.CQLLibraryDetailView;
-import mat.client.cql.CQLLibraryDraftView;
-import mat.client.cql.CQLLibraryHistoryView;
-import mat.client.cql.CQLLibraryShareView;
-import mat.client.cql.CQLLibraryVersionView;
-import mat.client.event.BackToLoginPageEvent;
-import mat.client.event.BackToMeasureLibraryPage;
-import mat.client.event.CQLLibraryEditEvent;
-import mat.client.event.LogoffEvent;
-import mat.client.event.MATClickHandler;
-import mat.client.event.MeasureEditEvent;
-import mat.client.event.TimedOutEvent;
-import mat.client.login.service.SessionManagementService;
-import mat.client.measure.ManageMeasureDetailView;
-import mat.client.measure.ManageMeasureDraftView;
-import mat.client.measure.ManageMeasureExportView;
-import mat.client.measure.ManageMeasureHistoryView;
-import mat.client.measure.ManageMeasurePresenter;
-import mat.client.measure.ManageMeasureSearchView;
-import mat.client.measure.ManageMeasureShareView;
-import mat.client.measure.ManageMeasureVersionView;
-import mat.client.measure.TransferOwnershipView;
-import mat.client.myAccount.ChangePasswordPresenter;
-import mat.client.myAccount.ChangePasswordView;
-import mat.client.myAccount.MyAccountPresenter;
-import mat.client.myAccount.MyAccountView;
-import mat.client.myAccount.PersonalInformationPresenter;
-import mat.client.myAccount.PersonalInformationView;
-import mat.client.myAccount.SecurityQuestionsPresenter;
-import mat.client.myAccount.SecurityQuestionsView;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatTabLayoutPanel;
-import mat.client.shared.SkipListBuilder;
-import mat.client.shared.ui.MATTabPanel;
-import mat.client.umls.ManageUmlsPresenter;
-import mat.client.umls.UmlsLoginView;
-import mat.client.util.ClientConstants;
-import mat.model.SecurityRole;
-import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -73,6 +29,51 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 //import mat.client.measure.AdminManageMeasureSearchView;
+
+import mat.client.admin.ManageAdminPresenter;
+import mat.client.admin.ManageCQLLibraryAdminPresenter;
+import mat.client.admin.ManageCQLLibraryAdminView;
+import mat.client.admin.reports.ManageAdminReportingPresenter;
+import mat.client.admin.reports.ManageAdminReportingView;
+import mat.client.codelist.ListBoxCodeProvider;
+import mat.client.cql.CQLLibraryDetailView;
+import mat.client.cql.CQLLibraryDraftView;
+import mat.client.cql.CQLLibraryHistoryView;
+import mat.client.cql.CQLLibraryShareView;
+import mat.client.cql.CQLLibraryVersionView;
+import mat.client.event.BackToLoginPageEvent;
+import mat.client.event.BackToMeasureLibraryPage;
+import mat.client.event.CQLLibraryEditEvent;
+import mat.client.event.LogoffEvent;
+import mat.client.event.MATClickHandler;
+import mat.client.event.MeasureEditEvent;
+import mat.client.event.TimedOutEvent;
+import mat.client.login.service.SessionManagementService;
+import mat.client.measure.ManageMeasureDetailView;
+import mat.client.measure.ManageMeasureExportView;
+import mat.client.measure.ManageMeasureHistoryView;
+import mat.client.measure.ManageMeasurePresenter;
+import mat.client.measure.ManageMeasureSearchView;
+import mat.client.measure.ManageMeasureShareView;
+import mat.client.measure.ManageMeasureVersionView;
+import mat.client.measure.TransferOwnershipView;
+import mat.client.myAccount.ChangePasswordPresenter;
+import mat.client.myAccount.ChangePasswordView;
+import mat.client.myAccount.MyAccountPresenter;
+import mat.client.myAccount.MyAccountView;
+import mat.client.myAccount.PersonalInformationPresenter;
+import mat.client.myAccount.PersonalInformationView;
+import mat.client.myAccount.SecurityQuestionsPresenter;
+import mat.client.myAccount.SecurityQuestionsView;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.SkipListBuilder;
+import mat.client.shared.ui.MATTabPanel;
+import mat.client.umls.ManageUmlsPresenter;
+import mat.client.umls.UmlsLoginView;
+import mat.client.util.ClientConstants;
+import mat.model.SecurityRole;
+import mat.shared.ConstantMessages;
 
 
 // TODO: Auto-generated Javadoc
@@ -278,13 +279,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				measureExportView = new ManageMeasureExportView(false);
 			}*/
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, historyView, null, null, transferOS);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, historyView, null, /*null,*/ transferOS);
 		}else{
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			/*AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();*/
 			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
-			ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
+			//ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
 			/*TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();*/
 			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
@@ -295,7 +296,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				measureExportView = new ManageMeasureExportView(false);
 			}
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView, historyView, versionView, measureDraftView, null);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView, historyView, versionView, /*measureDraftView,*/ null);
 		}
 		return measurePresenter;
 		

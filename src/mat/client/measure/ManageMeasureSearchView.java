@@ -1,16 +1,19 @@
 package mat.client.measure;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,17 +24,14 @@ import mat.client.measure.metadata.Grid508;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
-import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.util.ClientConstants;
+import mat.client.util.MatTextBox;
 
 
 // TODO: Auto-generated Javadoc
@@ -42,7 +42,7 @@ public class ManageMeasureSearchView implements
 ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDisplay*/ {
 	
 	/** The bulk export button. */
-	private Button bulkExportButton = new PrimaryButton("Export Selected");	
+	private Button bulkExportButton = new Button("Export Selected");	
 	
 	/** The create measure button. */
 	CustomButton createMeasureButton = (CustomButton) getImage("Create Measure",
@@ -64,7 +64,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private MessageAlert errorMeasureDeletion = new ErrorMessageAlert();
 	
 	/** The clear button. */
-	private Button clearButton = new PrimaryButton("Clear All", "primaryGreyLeftButton");
+	private Button clearButton = new Button("Clear All");
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
@@ -94,17 +94,16 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
 	/** The search button. */
-	private Button searchButton = new PrimaryButton("Search",
-			"primaryGreyLeftButton");
+	private Button searchButton = new Button("Search");
 	
 	/** The search input. */
-	private TextBox searchInput = new TextBox();
+	private MatTextBox searchInput = new MatTextBox();
 	
 	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
 	
 	/** The transfer button. */
-	private Button transferButton = new PrimaryButton("Transfer", "primaryGreyButton");
+	private Button transferButton = new Button("Transfer");
 	
 	/** The search view. */
 	MeasureSearchView searchView;
@@ -125,10 +124,10 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 			mainPanel.add(measureSearchView.asWidget());
 			mainPanel.setStyleName("contentPanel");
 			mainPanel.add(new SpacerWidget());			
-			mainPanel.add(adminBuildBottomButtonWidget((PrimaryButton) transferButton, (PrimaryButton) clearButton,
+			mainPanel.add(adminBuildBottomButtonWidget( transferButton, clearButton,
 					errorMessagesForTransferOS));
 		}else{
-		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
+		mainPanel.add(buildBottomButtonWidget(bulkExportButton,
 				errorMessagesForBulkExport));
 		
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -159,7 +158,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
+		mainPanel.add(buildBottomButtonWidget( bulkExportButton,
 				errorMessagesForBulkExport));
 		}
 		MatContext.get().setManageMeasureSearchView(this);
@@ -181,13 +180,16 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @param errorMessageDisplay the error message display
 	 * @return the widget
 	 */
-	private Widget buildBottomButtonWidget(PrimaryButton bulkExportButton,
+	private Widget buildBottomButtonWidget(Button bulkExportButton,
 			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
 		bulkExportButton.setTitle("Bulk Export");
+		bulkExportButton.setType(ButtonType.PRIMARY);
+		bulkExportButton.setIcon(IconType.DOWNLOAD);
+		bulkExportButton.setTitle(bulkExportButton.getText());
 		flowPanel.add(bulkExportButton);
 		form.setWidget(flowPanel);
 		form.getElement().setId("measureLibrary_bottomPanelForm");
@@ -202,12 +204,15 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * @param errorMessageDisplay the error message display
 	 * @return the widget
 	 */
-	public Widget adminBuildBottomButtonWidget(PrimaryButton transferButton, PrimaryButton clearButton,
+	public Widget adminBuildBottomButtonWidget(Button transferButton, Button clearButton,
 			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
 		transferButton.setTitle("Transfer");
 		clearButton.setTitle("Clear");
+		transferButton.setType(ButtonType.PRIMARY);
+		clearButton.setType(ButtonType.PRIMARY);
+		clearButton.setMarginLeft(10.00);
 		flowPanel.add(transferButton);
 		flowPanel.add(clearButton);
 		form.setWidget(flowPanel);
@@ -221,14 +226,17 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	public Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
-		FlowPanel fp1 = new FlowPanel();
-		fp1.add(searchInput);
+		//FlowPanel fp1 = new FlowPanel();
+		searchInput.setHeight("32px");
+		searchButton.setHeight("32px");
+		searchButton.setMarginLeft(5.00);
+		hp.add(searchInput);
 		searchInput.getElement().setId("searchInput_TextBox");
 		searchButton.setTitle("Search");
-		fp1.add(searchButton);
+		searchButton.setType(ButtonType.PRIMARY);
+		
+		hp.add(searchButton);
 		searchButton.getElement().setId("searchButton_Button");
-		fp1.add(new SpacerWidget());
-		hp.add(fp1);
 		return hp;
 	}
 	

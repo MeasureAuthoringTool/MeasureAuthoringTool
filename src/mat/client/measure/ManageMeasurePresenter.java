@@ -3,6 +3,8 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,7 +23,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -53,8 +55,6 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.ManageMeasureModelValidator;
@@ -66,12 +66,10 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
-import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -1100,13 +1098,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMeasureDeletion().clearAlert();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT
 				.create(MeasureCloningService.class);
-		
+		Mat.showLoadingMessage();
 		mcs.clone(currentDetails, loggedinUserId, isDraftCreation,
 				new AsyncCallback<ManageMeasureSearchModel.Result>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// O&M 17
-				((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton())
+				((Button) draftDisplay.getSaveButton())
 				.setEnabled(true);
 				
 				Mat.hideLoadingMessage();
@@ -1150,7 +1148,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onFailure(
 										Throwable caught) {
 									// O&M 17
-									((org.gwtbootstrap3.client.ui.Button) draftDisplay
+									((Button) draftDisplay
 											.getSaveButton())
 											.setEnabled(true);
 								}
@@ -1159,7 +1157,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onSuccess(
 										Boolean result) {
 									// O&M 17
-									((org.gwtbootstrap3.client.ui.Button) draftDisplay
+									((Button) draftDisplay
 											.getSaveButton())
 											.setEnabled(true);
 								}
@@ -1494,7 +1492,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				// O&M 17
-				((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(false);
+				((Button) draftDisplay.getSaveButton()).setEnabled(false);
 				
 				ManageMeasureSearchModel.Result selectedMeasure = draftDisplay.getSelectedMeasure();
 				if ((selectedMeasure != null) && (selectedMeasure.getId() != null)) {
@@ -1503,7 +1501,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						@Override
 						public void onFailure(Throwable caught) {
 							// O&M 17
-							((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
+							((Button) draftDisplay.getSaveButton()).setEnabled(true);
 							draftDisplay.getErrorMessageDisplay().createAlert(MatContext.get()
 									.getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null,	null,
@@ -1519,7 +1517,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					});
 				} else {
 					// O&M 17
-					((org.gwtbootstrap3.client.ui.Button) draftDisplay.getSaveButton()).setEnabled(true);
+					((Button) draftDisplay.getSaveButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay()
 					.createAlert("Please select a Measure Version to create a Draft.");
 				}
@@ -2917,7 +2915,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		((Button) searchDisplay.getAdminSearchButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getAdminSearchString())).setEnabled(!busy);
-		((org.gwtbootstrap3.client.ui.Button) transferDisplay.getSearchButton()).setEnabled(!busy);
+		((Button) transferDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (transferDisplay.getSearchString())).setEnabled(!busy);
 		
 	}
@@ -2934,7 +2932,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		((org.gwtbootstrap3.client.ui.Button) searchDisplay.getSearchButton()).setEnabled(!busy);
+		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 		

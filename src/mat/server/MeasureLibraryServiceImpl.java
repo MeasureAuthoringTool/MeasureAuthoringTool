@@ -6081,10 +6081,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject) {
 		
 		SaveUpdateCQLResult result = null;
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getMeasureId())) {
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getId())) {
 			result = getCqlService().saveCQLCodes(transferObject);
 			if(result != null && result.isSuccess()) {
-				saveCQLCodesInMeasureXml(result, transferObject.getMeasureId());
+				saveCQLCodesInMeasureXml(result, transferObject.getId());
 			}
 		}
 		return result;
@@ -6106,7 +6106,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		final String nodeName = "code";
 		MeasureXmlModel xmlModal = new MeasureXmlModel();
 		xmlModal.setMeasureId(measureId);
-		xmlModal.setParentNode("/measure/cqlLookUp/codes");
+		xmlModal.setParentNode("//cqlLookUp/codes");
 		xmlModal.setToReplaceNode(nodeName);
 		System.out.println("CODE NEW XML " + result.getXml());
 		xmlModal.setXml(result.getXml());

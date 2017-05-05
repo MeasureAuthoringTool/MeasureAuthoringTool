@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -48,12 +49,14 @@ import mat.dao.clause.ShareLevelDAO;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.LockedUserInfo;
+import mat.model.MatCodeTransferObject;
 import mat.model.RecentCQLActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibrarySet;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -1256,6 +1259,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		return result;
 	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject) {
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, transferObject.getId())) {
+			result = cqlService.saveCQLCodes(transferObject);
+			CQLLibrary library = cqlLibraryDAO.find(transferObject.getId());
+			if(result != null && result.isSuccess()) {
+				String nodeName = "code";
+				String parentNode = "//cqlLookUp/codes";
+				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+			}
+		}
+		return result;
+	}
+	
 	
 	/**
 	 * Save CQL user defined valuesetto measure.

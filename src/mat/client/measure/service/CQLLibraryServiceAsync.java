@@ -6,6 +6,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.MatCodeTransferObject;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -105,4 +107,6 @@ public interface CQLLibraryServiceAsync {
 	void getCQLKeywordsLists(AsyncCallback<CQLKeywords> callback);
 
 	void transferLibraryOwnerShipToUser(List<String> list, String toEmail, AsyncCallback<Void> callback);
+
+	void saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
 }

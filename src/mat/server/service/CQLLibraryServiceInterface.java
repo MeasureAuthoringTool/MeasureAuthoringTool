@@ -6,7 +6,9 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.MatCodeTransferObject;
 import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -109,4 +111,6 @@ public interface CQLLibraryServiceInterface {
 	void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
 
 	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
+
+	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
 }

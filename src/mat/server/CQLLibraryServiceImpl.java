@@ -6,6 +6,8 @@ import mat.client.measure.service.CQLLibraryService;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.MatCodeTransferObject;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -198,4 +200,10 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	void transferLibraryOwnerShipToUser(List<String> list, String toEmail){
 		this.getCQLLibraryService().transferLibraryOwnerShipToUser(list, toEmail);
 	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject){
+		return this.getCQLLibraryService().saveCQLCodestoCQLLibrary(transferObject);
+	}
+	
 }

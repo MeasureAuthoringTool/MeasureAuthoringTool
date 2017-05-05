@@ -2843,4 +2843,7 @@ public class MessageDelegate {
 		return TRANSFER_CHECKBOX_ERROR_CQL_LIBRARY;
 	}
 	
+	public String getCodeSuccessMessage(String codeName) {
+		return "Code " + codeName + " has been applied successfully.";
+	}
 }

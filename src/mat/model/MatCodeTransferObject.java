@@ -12,7 +12,7 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 	
 	CQLCode cqlCode;
 
-	String measureId;
+	String id;
 	
 	public CQLCode getCqlCode() {
 		return cqlCode;
@@ -30,12 +30,12 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 		this.cqlCode = cqlCode;
 	}
 
-	public String getMeasureId() {
-		return measureId;
+	public String getId() {
+		return id;
 	}
 
-	public void setMeasureId(String measureId) {
-		this.measureId = measureId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override

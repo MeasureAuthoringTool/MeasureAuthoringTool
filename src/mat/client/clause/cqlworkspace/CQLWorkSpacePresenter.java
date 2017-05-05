@@ -2573,6 +2573,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							MatContext.get().setValuesets(appliedAllValueSetList);
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(appliedAllValueSetList);
 							appliedValueSetTableList.clear();
+							appliedCodeTableList.clear();
 							for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
 								if (dto.isSuppDataElement())
 									continue;
@@ -3800,18 +3801,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
 		transferObject.setCqlCode(refCode);
-		transferObject.setMeasureId(measureId);
+		transferObject.setId(measureId);
 		
 		service.saveCQLCodestoMeasure(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				getAppliedCodeList();
+				if(result.isSuccess()){
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+					getAppliedCodeList();
+				}
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
 				
 			}
 		});
@@ -4026,7 +4033,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
 				
 			}
 
@@ -4611,7 +4619,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
 					
 				}
 			});

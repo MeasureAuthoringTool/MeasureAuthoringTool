@@ -7,6 +7,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.MatCodeTransferObject;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -89,4 +91,6 @@ public interface CQLLibraryService extends RemoteService {
 	VsacApiResult updateCQLVSACValueSets(String currentCQLLibraryId, String expansionId);
 	 CQLKeywords getCQLKeywordsLists();
 	 void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
+
+	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
 }

@@ -536,7 +536,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	 * This method returns a List of CQLLibraryShareDTO objects which have
 	 * userId,firstname,lastname and sharelevel for the given measureId.
 	 * 
-	 * @param measureId
+	 * @param id
 	 *            the measure id
 	 * @param startIndex
 	 *            the start index

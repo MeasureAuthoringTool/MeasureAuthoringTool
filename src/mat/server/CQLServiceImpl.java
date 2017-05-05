@@ -1616,7 +1616,7 @@ public class CQLServiceImpl implements CQLService {
 	 * 
 	 * @param identifierName
 	 *            the identifier name
-	 * @param measureId
+	 * @param id
 	 *            the measure id
 	 * @return true, if is duplicate identifier name
 	 */
@@ -1654,7 +1654,7 @@ public class CQLServiceImpl implements CQLService {
 	 *
 	 * @param identifierName
 	 *            the identifier name
-	 * @param measureId
+	 * @param id
 	 *            the measure id
 	 * @return true, if is dupidn name with msr name
 	 */
@@ -1964,7 +1964,7 @@ public class CQLServiceImpl implements CQLService {
 	 *
 	 * @param result
 	 *            the result
-	 * @param measureId
+	 * @param id
 	 *            the measure id
 	 * @param name
 	 *            the name

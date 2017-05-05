@@ -291,7 +291,7 @@ public class VSACApiServImpl implements VSACApiService{
 	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
 	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
 	 * @param map - HaspMap
-	 * @param measureId - String */
+	 * @param id - String */
 	private void updateAllCQLInLibraryXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String libraryId) {
 		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
 		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
@@ -647,7 +647,7 @@ public class VSACApiServImpl implements VSACApiService{
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip supplemental Data Elements and Timing elements, Expired, Birth date and User defined QDM.
 	 *
-	 * @param measureId            - Selected Measure Id.
+	 * @param id            - Selected Measure Id.
 	 * @param defaultExpId the default exp id
 	 * @return VsacApiResult - Result.
 	 */

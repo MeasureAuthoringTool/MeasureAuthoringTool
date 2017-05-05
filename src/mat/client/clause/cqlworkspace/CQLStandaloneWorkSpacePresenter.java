@@ -54,10 +54,13 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -128,6 +131,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet;
+	
+	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
 
 	/**
 	 * The Interface ViewDisplay.
@@ -334,6 +339,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		addGeneralInfoEventHandlers();
 		addValueSetEventHandlers();
+		addCodeSearchPanelHandlers();
 		addIncludeCQLLibraryHandlers();
 		addParameterEventHandlers();
 		addDefineEventHandlers();
@@ -2850,6 +2856,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								MatContext.get().setValuesets(appliedAllValueSetList);
 								searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(appliedAllValueSetList);
 								appliedValueSetTableList.clear();
+								appliedCodeTableList.clear();
 								for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
 									if (dto.isSuppDataElement())
 										continue;
@@ -2858,7 +2865,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlLeftNavBarPanelView()
 										.setAppliedQdmTableList(appliedValueSetTableList);
 								searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
-
+								
+								if(result.getCqlModel().getCodeList()!=null){
+									appliedCodeTableList.addAll(result.getCqlModel().getCodeList());	
+								}
+								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								searchDisplay.getCqlLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
+								
 								if ((result.getCqlModel().getDefinitionList() != null)
 										&& (result.getCqlModel().getDefinitionList().size() > 0)) {
 									searchDisplay.getCqlLeftNavBarPanelView()
@@ -3384,6 +3397,96 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		});
 	}
+	
+	
+private void addCodeSearchPanelHandlers() {
+		
+		
+		searchDisplay.getCodesView().getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					String version = null;
+					String expansionProfile = null;
+					searchCQLCodesInVsac(version, expansionProfile);
+				}
+			}
+		});
+		
+		searchDisplay.getCodesView().getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					MatContext.get().clearDVIMessages();
+					searchDisplay.resetMessageDisplay();
+					addNewCodes();
+				}
+				
+			}
+		});
+	}
+	
+	private void addNewCodes() {
+		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
+		MatCodeTransferObject transferObject = new MatCodeTransferObject();
+		CQLCode refCode = new CQLCode();
+		refCode.setCodeOID(searchDisplay.getCodesView().getCodeInput().getValue());
+		refCode.setCodeName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
+		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
+		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		transferObject.setCqlCode(refCode);
+		transferObject.setId(cqlLibraryId);
+		
+		cqlService.saveCQLCodestoCQLLibrary(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+			
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				if(result.isSuccess()){
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+					getAppliedCodeList();
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
+				
+			}
+		});
+	}
+	
+	private void getAppliedCodeList() {
+		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
+		if ((cqlLibraryId != null) && !cqlLibraryId.equals("")) {
+			
+			MatContext.get().getLibraryService().getCQLData(cqlLibraryId, new AsyncCallback<SaveUpdateCQLResult>() {
+				
+				@Override
+				public void onSuccess(SaveUpdateCQLResult result) {
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlModel().getCodeList());
+					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
+							.checkForEditPermission());
+					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+					
+				}
+			});
+		}
+	}
+
 
 	/**
 	 * Update vsac value sets.
@@ -3579,6 +3682,53 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	
+	private void searchCQLCodesInVsac(String version, String expansionProfile) {
+
+		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
+		if (!MatContext.get().isUMLSLoggedIn()) {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+
+			return;
+		}
+		
+		// OID validation.
+		if ((url == null) || url.trim().isEmpty()) {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+			return;
+		}
+		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
+		
+		
+		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
+				
+			}
+
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if (result.isSuccess()) {
+					
+					searchDisplay.getCodesView().getCodeDescriptorInput().setValue(result.getDirectReferenceCode().getCodeDescriptor());
+					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
+					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
+					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
+					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
+					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+				}
+			}
+		});
+		
+	}
+
+
 
 	/**
 	 * Modify QDM.
@@ -4125,7 +4275,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_CODES;
 			searchDisplay.buildCodes();
 			searchDisplay.getCodesView().buildCodesCellTable(
-					searchDisplay.getCqlLeftNavBarPanelView().getCodesTableList(),
+					appliedCodeTableList,
 					MatContext.get().getLibraryLockService().checkForEditPermission());
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());

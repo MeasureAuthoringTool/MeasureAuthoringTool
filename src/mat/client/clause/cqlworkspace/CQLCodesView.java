@@ -937,9 +937,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					@Override
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
-						if ((object != null)) {
+						/*if ((object != null)) {
 							observer.onModifyClicked(object);
-						}
+						}*/
 					}
 				};
 			}

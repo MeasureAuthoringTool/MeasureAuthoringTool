@@ -15,12 +15,14 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -756,6 +758,10 @@ public interface MeasureServiceAsync {
 
 	void updateCQLVSACValueSets(String currentMeasureId, String expansionId,
 			AsyncCallback<VsacApiResult> asyncCallback);
+
+	void saveCQLCodestoMeasure(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void getCQLCodes(String measureID, AsyncCallback<CQLCodeWrapper> callback);
 
 	
 }

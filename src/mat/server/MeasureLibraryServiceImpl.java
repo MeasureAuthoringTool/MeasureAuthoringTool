@@ -64,6 +64,7 @@ import mat.model.Author;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.DataType;
 import mat.model.LockedUserInfo;
+import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
@@ -82,6 +83,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -6074,6 +6076,44 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return result;
 	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject) {
+		
+		SaveUpdateCQLResult result = null;
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getMeasureId())) {
+			result = getCqlService().saveCQLCodes(transferObject);
+			if(result != null && result.isSuccess()) {
+				saveCQLCodesInMeasureXml(result, transferObject.getMeasureId());
+			}
+		}
+		return result;
+	}
+	
+	@Override
+	public CQLCodeWrapper getCQLCodes(String measureID) {
+		CQLCodeWrapper wrapper = new CQLCodeWrapper();
+		return this.getCqlService().getCQLCodes(measureID, wrapper);
+	}
+	
+	/**
+	 * Save CQL valueset in measure xml.
+	 *
+	 * @param result
+	 *            the result
+	 */
+	private void saveCQLCodesInMeasureXml(SaveUpdateCQLResult result, String measureId) {
+		final String nodeName = "code";
+		MeasureXmlModel xmlModal = new MeasureXmlModel();
+		xmlModal.setMeasureId(measureId);
+		xmlModal.setParentNode("/measure/cqlLookUp/codes");
+		xmlModal.setToReplaceNode(nodeName);
+		System.out.println("CODE NEW XML " + result.getXml());
+		xmlModal.setXml(result.getXml());
+
+		appendAndSaveNode(xmlModal, nodeName);
+	}
+
 
 	/**
 	 * Save CQL valueset in measure xml.

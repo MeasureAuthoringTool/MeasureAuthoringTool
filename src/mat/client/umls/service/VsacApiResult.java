@@ -3,6 +3,8 @@ package mat.client.umls.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfile;
@@ -48,6 +50,8 @@ public class VsacApiResult implements IsSerializable {
 	private List<VSACVersion> vsacVersionResp;
 	
 	private HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> cqlQualityDataSetMap;
+	
+	private DirectReferenceCode directReferenceCode;
 	
 	/**
 	 * Gets the failure reason.
@@ -170,6 +174,14 @@ public class VsacApiResult implements IsSerializable {
 
 	public void setCqlQualityDataSetMap(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> cqlQualityDataSetMap) {
 		this.cqlQualityDataSetMap = cqlQualityDataSetMap;
+	}
+
+	public DirectReferenceCode getDirectReferenceCode() {
+		return directReferenceCode;
+	}
+
+	public void setDirectReferenceCode(DirectReferenceCode directReferenceCode) {
+		this.directReferenceCode = directReferenceCode;
 	}
 	
 }

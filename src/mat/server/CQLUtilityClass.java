@@ -715,6 +715,17 @@ public class CQLUtilityClass {
 		return cqlQualityDataSetDTOs;
 	}
 	
+	public static List<CQLCode> sortCQLCodeDTO(List<CQLCode> cqlCode){
+		Collections.sort(cqlCode, new Comparator<CQLCode>() {
+			@Override
+			public int compare(final CQLCode o1, final CQLCode o2) {
+				return o1.getCodeName().compareToIgnoreCase(o2.getCodeName());
+			}
+		});
+		
+		return cqlCode;
+	}
+	
 	private static List<CQLQualityDataSetDTO> filterValuesets(List<CQLQualityDataSetDTO> cqlValuesets){
 		
 		List<CQLQualityDataSetDTO> filteredValuesets = new ArrayList<CQLQualityDataSetDTO>();

@@ -50,10 +50,13 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -120,6 +123,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
+	
+	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
 	
 	private AceEditor curAceEditor;
 	
@@ -361,6 +366,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addEventHandlersOnContextRadioButtons();
 		addIncludeCQLLibraryHandlers();
 		addValueSetSearchPanelHandlers();
+		addCodeSearchPanelHandlers();
 		addParameterSectionHandlers();
 		addDefinitionSectionHandlers();
 		addFunctionSectionHandlers();
@@ -2572,8 +2578,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									continue;
 								appliedValueSetTableList.add(dto);
 							}
+							if(result.getCqlModel().getCodeList()!=null){
+								appliedCodeTableList.addAll(result.getCqlModel().getCodeList());	
+							}
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
-								searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+							searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+							searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+							searchDisplay.getCqlLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
 							if ((result.getCqlModel().getDefinitionList() != null)
 									&& (result.getCqlModel().getDefinitionList().size() > 0)) {
 								searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
@@ -2926,7 +2937,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_CODES;
 			searchDisplay.buildCodes();
 			searchDisplay.getCodesView().buildCodesCellTable(
-					searchDisplay.getCqlLeftNavBarPanelView().getCodesTableList(),
+					appliedCodeTableList,
 					MatContext.get().getLibraryLockService().checkForEditPermission());
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
@@ -3748,6 +3759,64 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addValuSetObserverHandler();
 	}
 	
+	
+	private void addCodeSearchPanelHandlers() {
+		
+		
+		searchDisplay.getCodesView().getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					String version = null;
+					String expansionProfile = null;
+					searchCQLCodesInVsac(version, expansionProfile);
+				}
+			}
+		});
+		
+		searchDisplay.getCodesView().getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					MatContext.get().clearDVIMessages();
+					searchDisplay.resetMessageDisplay();
+					addNewCodes();
+				}
+				
+			}
+		});
+	}
+	
+	private void addNewCodes() {
+		String measureId = MatContext.get().getCurrentMeasureId();
+		MatCodeTransferObject transferObject = new MatCodeTransferObject();
+		CQLCode refCode = new CQLCode();
+		refCode.setCodeOID(searchDisplay.getCodesView().getCodeInput().getValue());
+		refCode.setCodeName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
+		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
+		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		transferObject.setCqlCode(refCode);
+		transferObject.setMeasureId(measureId);
+		
+		service.saveCQLCodestoMeasure(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
+			
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				getAppliedCodeList();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
 	/**
 	 * Update vsac value sets.
 	 */
@@ -3933,6 +4002,50 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	private void searchCQLCodesInVsac(String version, String expansionProfile) {
+
+		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
+		if (!MatContext.get().isUMLSLoggedIn()) {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+
+			return;
+		}
+		
+		// OID validation.
+		if ((url == null) || url.trim().isEmpty()) {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+			return;
+		}
+		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
+		
+		
+		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if (result.isSuccess()) {
+					
+					searchDisplay.getCodesView().getCodeDescriptorInput().setValue(result.getDirectReferenceCode().getCodeDescriptor());
+					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
+					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
+					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
+					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
+					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+				}
+			}
+		});
+		
+	}
+
 	
 	/**
 	 * Search value set in vsac.
@@ -4479,6 +4592,32 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		
 	}
+	
+	
+	private void getAppliedCodeList() {
+		String measureId = MatContext.get().getCurrentMeasureId();
+		if ((measureId != null) && !measureId.equals("")) {
+			
+			service.getCQLCodes(measureId, new AsyncCallback<CQLCodeWrapper>() {
+				
+				@Override
+				public void onSuccess(CQLCodeWrapper result) {
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlCodeList());
+					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getMeasureLockService()
+							.checkForEditPermission());
+					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+	}
+	
 	
 	
 	/**

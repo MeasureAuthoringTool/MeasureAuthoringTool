@@ -145,6 +145,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.getVsacApiService().updateStandaloneCQLVSACValueSets(libraryId, defaultExpId, sessionId);
 	}
+
+
+	@Override
+	public VsacApiResult getDirectReferenceCode(String url) {
+		String sessionId = getThreadLocalRequest().getSession().getId();
+		return this.getVsacApiService().getDirectReferenceCode(url, sessionId);
+	}
 	
 	
 	

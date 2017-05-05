@@ -106,5 +106,7 @@ public interface VSACAPIServiceAsync {
 	
     void getMostRecentValueSetByOID(final String oid, final String profile, 
 			AsyncCallback<VsacApiResult> callback);
+
+	void getDirectReferenceCode(String url, AsyncCallback<VsacApiResult> callback);
 	
 }

@@ -1,22 +1,40 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -26,7 +44,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
+import mat.client.CustomPager;
 import mat.client.Mat;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -34,8 +54,12 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
-import mat.model.cql.CQLQualityDataSetDTO;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCode;
+import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.ConstantMessages;
 
 
 
@@ -44,6 +68,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
  * The Class QDMAppliedSelectionView.
  */
 public class CQLCodesView implements HasSelectionHandlers<Boolean>{
+	
 	
 	/**
 	 * The Interface Observer.
@@ -56,7 +81,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		 * @param result
 		 *            the result
 		 */
-		void onModifyClicked(CQLQualityDataSetDTO result);
+		void onModifyClicked(CQLCode result);
 		
 		/**
 		 * On delete clicked.
@@ -64,7 +89,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		 * @param result            the result
 		 * @param index the index
 		 */
-		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
+		void onDeleteClicked(CQLCode result, int index);
 		
 	}
 	
@@ -86,13 +111,13 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	private Panel cellTablePanel = new Panel();
 	
 	/** The table. */
-	private CellTable<CQLQualityDataSetDTO> table;
+	private CellTable<CQLCode> table;
 	
 	/** The sort provider. */
-	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
+	private ListDataProvider<CQLCode> listDataProvider;
 	
 	/** The last selected object. */
-	private CQLQualityDataSetDTO lastSelectedObject;
+	private CQLCode lastSelectedObject;
 	
 	/** the Code Descriptor input */
 	private MatTextBox codeDescriptorInput = new MatTextBox();
@@ -132,6 +157,8 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	
 	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
+	
+	private static final int TABLE_ROW_COUNT = 10;
 	
 	
 	/**
@@ -245,6 +272,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		sWidget.setSearchBoxWidth("400px");
+		sWidget.getGo().setEnabled(true);
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 
@@ -427,7 +455,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the selected element to remove
 	 */
-	public CQLQualityDataSetDTO getSelectedElementToRemove() {
+	public CQLCode getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
 	
@@ -509,7 +537,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the list data provider
 	 */
-	public ListDataProvider<CQLQualityDataSetDTO> getListDataProvider(){
+	public ListDataProvider<CQLCode> getListDataProvider(){
 		return listDataProvider;
 	}
 	
@@ -527,7 +555,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the celltable
 	 */
-	public CellTable<CQLQualityDataSetDTO> getCelltable(){
+	public CellTable<CQLCode> getCelltable(){
 		return table;
 	}
 	
@@ -559,13 +587,13 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	public void setWidgetsReadOnly(boolean editable){
 		
 		getCodeSearchInput().setEnabled(editable);
-		getCodeDescriptorInput().setEnabled(editable);
-		getCodeInput().setEnabled(editable);
-		getCodeSystemInput().setEnabled(editable);
-		getCodeSystemVersionInput().setEnabled(editable);
+		getCodeDescriptorInput().setEnabled(false);
+		getCodeInput().setEnabled(false);
+		getCodeSystemInput().setEnabled(false);
+		getCodeSystemVersionInput().setEnabled(false);
 		
 		getCancelCodeButton().setEnabled(editable);
-		getRetrieveFromVSACButton().setEnabled(editable);
+	//	getRetrieveFromVSACButton().setEnabled(editable);
 		getSaveButton().setEnabled(false);
 		
 	}
@@ -643,16 +671,17 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		getSearchHeader().clear();
 		getSearchHeader().add(searchHeaderText);
-		
 		getCodeSearchInput().setEnabled(true);
 		getCodeSearchInput().setValue("");
 		getCodeSearchInput().setTitle("Enter Code");
-		
+		getCodeDescriptorInput().setValue("");
+		getCodeInput().setValue("");
+		getCodeSystemInput().setValue("");
+		getCodeSystemVersionInput().setValue("");
 		getSaveButton().setEnabled(false);
-		
 	}
 
-	public void buildCodesCellTable(List<CQLQualityDataSetDTO> codesTableList, boolean checkForEditPermission) {
+	public void buildCodesCellTable(List<CQLCode> codesTableList, boolean checkForEditPermission) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -665,11 +694,334 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		HTML searchHeaderText = new HTML("<strong>Applied Codes</strong>");
 		codesElementsHeader.add(searchHeaderText);
 		cellTablePanel.add(codesElementsHeader);
-		HTML desc = new HTML("<p> No Codes.</p>");
-		cellTablePanelBody.add(desc);
-		cellTablePanel.add(cellTablePanelBody);
-	
+		if ((codesTableList != null)
+				&& (codesTableList.size() > 0)) {
+			
+			table = new CellTable<CQLCode>();
+			setEditable(checkForEditPermission);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			listDataProvider = new ListDataProvider<CQLCode>();
+			/*qdmSelectedList = new ArrayList<CQLCode>();*/
+			table.setPageSize(TABLE_ROW_COUNT);
+			table.redraw();
+			listDataProvider.refresh();
+			listDataProvider.getList().addAll(codesTableList);
+			ListHandler<CQLCode> sortHandler = new ListHandler<CQLCode>(
+					listDataProvider.getList());
+			table.addColumnSortHandler(sortHandler);
+			table = addColumnToTable(table, sortHandler, isEditable);
+			listDataProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT
+					.create(CustomPager.Resources.class);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER,
+					pagerResources, false, 0, true,"valuesetAndCodes");
+			spager.setDisplay(table);
+			spager.setPageStart(0);
+			com.google.gwt.user.client.ui.Label invisibleLabel;
+			if(isEditable){
+				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
+						.buildInvisibleLabel(
+								"appliedQDMTableSummary",
+								"In the Following Applied Value Sets table Name in First Column"
+										+ "OID in Second Column, TableCaptionElement in Third Column, Version in Fourth Column,"
+										+ "And Modify in Fifth Column where the user can Edit and Delete "
+										+ "the existing Value set. The Applied Value Sets are listed alphabetically in a table.");
+				
+				
+			} else {
+				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
+						.buildInvisibleLabel(
+								"appliedQDMTableSummary",
+								"In the Following Applied Value Sets table Name in First Column"
+										+ "OID in Second Column, Expansion Profile in Third Column, Version in Fourth Column,"
+										+ "and Select in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+			}
+			table.getElement().setAttribute("id", "AppliedQDMTable");
+			table.getElement().setAttribute("aria-describedby",
+					"appliedQDMTableSummary");
+			
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(table);
+			cellTablePanel.add(spager);
+			cellTablePanel.add(cellTablePanelBody);
+			
+			
+		} else {
+			HTML desc = new HTML("<p> No Codes.</p>");
+			cellTablePanelBody.add(desc);
+			cellTablePanel.add(cellTablePanelBody);
+		}
 		
+	}
+
+	private CellTable<CQLCode> addColumnToTable(CellTable<CQLCode> table2, ListHandler<CQLCode> sortHandler,
+			boolean isEditable2) {
+		
+		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
+			Label searchHeader = new Label("Applied Codes");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
+			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			searchHeader.setVisible(false);
+			caption.appendChild(searchHeader.getElement());
+			
+			//table.setSelectionModel(selectionModel);
+			
+			// Descriptor Column
+			Column<CQLCode, SafeHtml> nameColumn = new Column<CQLCode, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					StringBuilder title = new StringBuilder();
+					String value = object.getCodeName();
+					title = title.append("Descriptor : ").append(value);
+					title.append("");
+					
+					return CellTableUtility.getNameColumnToolTip(value, title.toString());
+				}
+			};
+			table.addColumn(nameColumn, SafeHtmlUtils
+					.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"
+							+ "</span>"));
+			
+			// Identifier Column
+			Column<CQLCode, SafeHtml> identifierColumn = new Column<CQLCode, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					StringBuilder title = new StringBuilder();
+					String value = object.getDisplayName();
+					title = title.append("Identifier : ").append(value);
+					title.append("");
+					return CellTableUtility.getColumnToolTip(value, title.toString());
+				}
+			};
+			table.addColumn(identifierColumn, SafeHtmlUtils
+					.fromSafeConstant("<span title=\"Identifier\">" + "Identifier"
+							+ "</span>"));
+			
+			
+			// Code Profile Column
+			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					StringBuilder title = new StringBuilder();
+					String value = object.getCodeOID();
+					title = title.append("Code : ").append(value);
+					title.append("");
+					return CellTableUtility.getColumnToolTip(value, title.toString());
+				}
+			};
+			table.addColumn(codeColumn, SafeHtmlUtils
+					.fromSafeConstant("<span title=\"Code\">"
+							+ "Code" + "</span>"));
+			
+			// CodeSystem Profile Column
+			Column<CQLCode, SafeHtml> codeSystemColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					StringBuilder title = new StringBuilder();
+					String value = object.getCodeSystemName();
+					title = title.append("CodeSystem : ").append(value);
+					title.append("");
+					return CellTableUtility.getColumnToolTip(value, title.toString());
+				}
+			};
+			table.addColumn(codeSystemColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"CodeSystem\">" + "CodeSystem" + "</span>"));
+			
+			
+			// Version Profile Column
+			Column<CQLCode, SafeHtml> versionColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					StringBuilder title = new StringBuilder();
+					String value = object.getCodeSystemVersion();
+					title = title.append("Version : ").append(value);
+					title.append("");
+					return CellTableUtility.getColumnToolTip(value, title.toString());
+				}
+			};
+			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));			
+			
+			
+			if(isEditable){
+				// Modify by Delete Column
+				String colName = "Modify";
+				table.addColumn(new Column<CQLCode, CQLCode>(
+						getCompositeCellForQDMModifyAndDelete(isEditable)) {
+					
+					@Override
+					public CQLCode getValue(CQLCode object) {
+						return object;
+					}
+				}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+						+ colName + "</span>"));
+			}
+			
+			table.setColumnWidth(0, 25.0, Unit.PCT);
+			table.setColumnWidth(1, 25.0, Unit.PCT);
+			table.setColumnWidth(2, 25.0, Unit.PCT);
+			table.setColumnWidth(3, 10.0, Unit.PCT);
+			table.setColumnWidth(4, 10.0, Unit.PCT);
+			table.setColumnWidth(5, 2.0, Unit.PCT);
+		}
+		
+		return table;
+	}
+	
+	
+	private CompositeCell<CQLCode> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
+		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
+		if(isEditable){
+			cells.add(getModifyQDMButtonCell());
+			cells.add(getDeleteQDMButtonCell());
+		}
+		
+		CompositeCell<CQLCode> cell = new CompositeCell<CQLCode>(
+				cells) {
+			@Override
+			public void render(Context context, CQLCode object,
+					SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
+				for (HasCell<CQLCode, ?> hasCell : cells) {
+					render(context, object, sb, hasCell);
+				}
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			
+			@Override
+			protected <X> void render(Context context,
+					CQLCode object, SafeHtmlBuilder sb,
+					HasCell<CQLCode, X> hasCell) {
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				if ((object != null)) {
+					cell.render(context, hasCell.getValue(object), sb);
+				} else {
+					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				}
+				sb.appendHtmlConstant("</td>");
+			}
+			
+			@Override
+			protected Element getContainerElement(Element parent) {
+				return parent.getFirstChildElement().getFirstChildElement()
+						.getFirstChildElement();
+			}
+		};
+		return cell;
+	}
+	
+	/**
+	 * Gets the modify qdm button cell.
+	 * 
+	 * @return the modify qdm button cell
+	 */
+	private HasCell<CQLCode, SafeHtml> getModifyQDMButtonCell() {
+		
+		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
+			
+			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return modifyButonCell;
+			}
+			
+			//@Override
+			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLCode, SafeHtml>() {
+					@Override
+					public void update(int index, CQLCode object,
+							SafeHtml value) {
+						if ((object != null)) {
+							observer.onModifyClicked(object);
+						}
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLCode object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to modify value set";
+				String cssClass = "customEditButton";
+				/*if(isEditable){
+					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
+							+ "' class=\" " + cssClass + "\">Editable</button>");
+				} else {*/
+					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
+							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
+				//}
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
+	}
+	
+	/**
+	 * Gets the delete qdm button cell.
+	 * 
+	 * @return the delete qdm button cell
+	 */
+	private HasCell<CQLCode, SafeHtml> getDeleteQDMButtonCell() {
+		
+		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
+			
+			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return deleteButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLCode, SafeHtml>() {
+					@Override
+					public void update(int index, CQLCode object,
+							SafeHtml value) {
+						/*if ((object != null) && !object.isUsed()) {
+							lastSelectedObject = object;
+							observer.onDeleteClicked(object, index);
+						}*/
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLCode object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to delete Code";
+				String cssClass;
+				/*if (object.isUsed()) {
+					cssClass = "customDeleteDisableButton";
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass
+							+ "\"disabled/>Delete</button>");
+				} else {
+					cssClass = "customDeleteButton";
+					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
+							+ title + "' class=\" " + cssClass
+							+ "\"/>Delete</button>");
+				}*/
+				cssClass = "customDeleteDisableButton";
+				sb.appendHtmlConstant("<button type=\"button\" title='"
+						+ title + "' tabindex=\"0\" class=\" " + cssClass
+						+ "\"disabled/>Delete</button>");
+				
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
 	}
 	
 }

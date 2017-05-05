@@ -31,4 +31,6 @@ public interface VSACApiService {
 
 	VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId,
 			String sessionId);
+
+	VsacApiResult getDirectReferenceCode(String oid, String sessionId);
 }

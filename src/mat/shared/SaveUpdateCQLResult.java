@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.shared.GenericResult;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -76,6 +77,10 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	/** The cql quality data set DTO. */
 	CQLQualityDataSetDTO cqlQualityDataSetDTO;
+	
+	List<CQLCode> cqlCodeList;
+	
+	CQLCode cqlCode;
 
 	private String elmString = "";
 	
@@ -245,6 +250,22 @@ public class SaveUpdateCQLResult extends GenericResult{
 	 */
 	public void setCqlAppliedQDMList(List<CQLQualityDataSetDTO> cqlAppliedQDMList) {
 		this.cqlAppliedQDMList = cqlAppliedQDMList;
+	}
+
+	public List<CQLCode> getCqlCodeList() {
+		return cqlCodeList;
+	}
+
+	public void setCqlCodeList(List<CQLCode> cqlCodeList) {
+		this.cqlCodeList = cqlCodeList;
+	}
+
+	public CQLCode getCqlCode() {
+		return cqlCode;
+	}
+
+	public void setCqlCode(CQLCode cqlCode) {
+		this.cqlCode = cqlCode;
 	}
 
 	/**

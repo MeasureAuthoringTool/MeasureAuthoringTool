@@ -51,8 +51,12 @@ import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.DirectReferenceCode;
+import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.model.cql.CQLFunctionArgument;
@@ -2377,6 +2381,19 @@ public class CQLServiceImpl implements CQLService {
 		return finalList;
 
 	}
+	
+	private List<CQLCode> sortCodeList(final List<CQLCode> finalList) {
+
+		Collections.sort(finalList, new Comparator<CQLCode>() {
+			@Override
+			public int compare(final CQLCode o1, final CQLCode o2) {
+				return o1.getCodeName().compareToIgnoreCase(o2.getCodeName());
+			}
+		});
+
+		return finalList;
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -2425,6 +2442,25 @@ public class CQLServiceImpl implements CQLService {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 		}
+		return result;
+	}
+	
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodes(MatCodeTransferObject transferObject) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLCodeWrapper wrapper = new CQLCodeWrapper();
+		//transferObject.scrubForMarkUp();
+		ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
+		//List<CQLCode> existingCodeList = transferObject.getCodeList();
+		
+		wrapper.setCqlCodeList(codeList);
+	    wrapper.getCqlCodeList().add(transferObject.getCqlCode());
+	    String codeXMLString = addCQLAppliedCodesInMeasureXML(wrapper);
+	    result.setSuccess(true);
+		result.setCqlCodeList(sortCodeList(wrapper.getCqlCodeList()));
+		result.setXml(codeXMLString);
+		
 		return result;
 	}
 
@@ -2683,6 +2719,17 @@ public class CQLServiceImpl implements CQLService {
 		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
 		return xmlString;
 	}
+	
+	
+	private String addCQLAppliedCodesInMeasureXML(final CQLCodeWrapper wrapper) {
+		logger.info("addCQLAppliedCodesInMeasureXML Method Call Start.");
+		ByteArrayOutputStream stream = createNewCodeXML(wrapper);
+		int startIndex = stream.toString().indexOf("<code ", 0);
+		int lastIndex = stream.toString().indexOf("/>", startIndex);
+		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
+		logger.debug("addCQLAppliedCodesInMeasureXML Method Call xmlString :: " + xmlString);
+		return xmlString;
+	}
 
 	/**
 	 * Creates the new XML.
@@ -2715,6 +2762,34 @@ public class CQLServiceImpl implements CQLService {
 			}
 		}
 		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		return stream;
+	}
+	
+	
+	private ByteArrayOutputStream createNewCodeXML(final CQLCodeWrapper wrapper) {
+		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(wrapper);
+			logger.debug("Marshalling of CQLCode is successful.." + stream.toString());
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		logger.info("Exiting CQLServiceImpl.createNewCodeXml()");
 		return stream;
 	}
 
@@ -2801,6 +2876,17 @@ public class CQLServiceImpl implements CQLService {
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 		
 		return cqlQualityDataModelWrapper;*/
+	}
+	
+	@Override
+	public CQLCodeWrapper getCQLCodes(String measureId,
+			CQLCodeWrapper cqlCodeWrapper) {
+		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
+		String xmlString = model.getXml();
+		List<CQLCode> cqlCodeDtos = CQLUtilityClass
+				.sortCQLCodeDTO(getCQLData(xmlString).getCqlModel().getCodeList());
+		cqlCodeWrapper.setCqlCodeList(cqlCodeDtos);
+		return cqlCodeWrapper;
 	}
 
 	public CQLLibraryDAO getCqlLibraryDAO() {

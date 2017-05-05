@@ -947,7 +947,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			@Override
 			public SafeHtml getValue(CQLCode object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to modify value set";
+				String title = "Click to modify Code";
 				String cssClass = "customEditButton";
 				/*if(isEditable){
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title

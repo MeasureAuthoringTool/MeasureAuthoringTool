@@ -721,24 +721,24 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			if(isEditable){
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
-								"appliedQDMTableSummary",
-								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, TableCaptionElement in Third Column, Version in Fourth Column,"
-										+ "And Modify in Fifth Column where the user can Edit and Delete "
-										+ "the existing Value set. The Applied Value Sets are listed alphabetically in a table.");
+								"appliedCodeTableSummary",
+								"In the Following Applied Codes table Descriptor in First Column"
+										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
+										+ "Version in Fifth Column And Modify in Sixth Column where the user can Edit and Delete "
+										+ "the existing code. The Applied codes are listed alphabetically in a table.");
 				
 				
 			} else {
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
-								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Expansion Profile in Third Column, Version in Fourth Column,"
-										+ "and Select in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+								"In the Following Applied Codes table Descriptor in First Column"
+										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
+										+ "Version in Fifth Column. The Applied Codes are listed alphabetically in a table.");
 			}
-			table.getElement().setAttribute("id", "AppliedQDMTable");
+			table.getElement().setAttribute("id", "AppliedCodeTable");
 			table.getElement().setAttribute("aria-describedby",
-					"appliedQDMTableSummary");
+					"appliedCodeTableSummary");
 			
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);

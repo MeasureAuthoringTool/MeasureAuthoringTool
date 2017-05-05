@@ -2938,9 +2938,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.buildCodes();
 			searchDisplay.getCodesView().buildCodesCellTable(
 					appliedCodeTableList,
-					MatContext.get().getLibraryLockService().checkForEditPermission());
+					MatContext.get().getMeasureLockService().checkForEditPermission());
 			searchDisplay.getCodesView()
-					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 		}
 
@@ -4820,7 +4820,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getDefinitionLibrary().setEnabled(!busy);
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setEnabled(!busy);
 		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
-		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(false);
 			searchDisplay.getIncludeView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getIncludeView().getEraseButton().setEnabled(!busy);

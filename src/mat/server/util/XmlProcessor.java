@@ -2,7 +2,6 @@ package mat.server.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,18 +27,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.model.QualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,6 +37,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import mat.shared.UUIDUtilClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,12 +53,6 @@ public class XmlProcessor {
 	
 	/** The Constant MEASUREMENT_PERIOD_OID. */
 	//private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
-	
-	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
-	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
-	
-	/** The Constant PATIENT_CHARACTERISTIC_EXPIRED_OID. */
-	private static final String PATIENT_CHARACTERISTIC_EXPIRED_OID = "419099009";
 	
 	/** The Constant XPATH_POPULATIONS. */
 	private static final String XPATH_POPULATIONS = "/measure/populations";
@@ -123,9 +108,6 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_SCORING. */
 	private static final String XPATH_DETAILS_SCORING = "/measure/measureDetails/scoring";
-	
-	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
-	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
 	/** The Constant XPATH_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
@@ -220,9 +202,6 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_OLD_ALL_RELATIONALOP_EBOD. */
 	public static final String XPATH_OLD_ALL_RELATIONALOP_EBOD = "/measure//*/relationalOp[@type='EBOD']";
-	
-	/** The Constant XPATH_STRATA. */
-	private static final String XPATH_STRATA = "/measure/strata";
 	
 	/** The Constant STRATIFICATION. */
 	public static final String  STRATIFICATION = "stratification";

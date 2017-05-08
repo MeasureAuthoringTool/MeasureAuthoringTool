@@ -95,6 +95,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	/** The is search visible on draft. */
 	boolean isSearchVisibleOnDraft = true;
 	
+	boolean isLoading = false;
 
 	/** The cql model. */
 	private CQLModel cqlModel;
@@ -562,12 +563,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 			@Override
 			public void onCreateClicked(CQLLibraryDataSetObject object) {
-				if(object.isDraftable()){
+				if(!isLoading && object.isDraftable()){
 					CQLLibraryDataSetObject selectedLibrary = object;
 					if (((selectedLibrary !=null) && (selectedLibrary.getId() != null))) {
 						saveDraftFromVersion(selectedLibrary);
 					}
-				} else if (object.isVersionable()){
+				} else if (!isLoading && object.isVersionable()){
 					versionDisplay.setSelectedLibraryObject(object);
 					createVersion();
 				} 
@@ -673,16 +674,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
-		
+		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().saveDraftFromVersion(selectedLibrary.getId(), new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				showSearchingBusy(false);
 				cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
+				showSearchingBusy(false);
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
 							null,"","");
@@ -865,9 +868,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param version the version
 	 */
 	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
-		Mat.showLoadingMessage();
+		
 		versionDisplay.getErrorMessages().clearAlert();
-	
+		showSearchingBusy(true);
 		((Button)versionDisplay.getSaveButton()).setEnabled(false);
 		((Button)versionDisplay.getCancelButton()).setEnabled(false);
 		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version,
@@ -876,7 +879,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						versionDisplay.getErrorMessages()
 								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						//versionDisplay.getZoomButton().setEnabled(true);
@@ -886,7 +889,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
-						Mat.hideLoadingMessage();
+						showSearchingBusy(false);
 						((Button) versionDisplay.getSaveButton()).setEnabled(true);
 						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 						if (result.isSuccess()) {
@@ -1350,6 +1353,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		shareDisplay.getSearchWidget().getSearchInput().setText("");
+		isLoading = false;
 	}
 
 	/* (non-Javadoc)
@@ -1393,6 +1397,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 *            the busy
 	 */
 	private void showSearchingBusy(boolean busy) {
+		isLoading= busy;
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {

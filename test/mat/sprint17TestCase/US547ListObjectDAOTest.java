@@ -43,7 +43,7 @@ public class US547ListObjectDAOTest extends SpringInitializationTest{
 		valueSetPackageDate = new Timestamp(currentDate.getTime());
 	}
     
-	@Test
+	/*@Test
 	public void testToFindMostRecentValueSet(){
 		if(sampleListObject != null){
 			ListObject mostRecentVS =  listObjectDAO.findMostRecentValueSet(sampleListObject, valueSetPackageDate);
@@ -56,5 +56,5 @@ public class US547ListObjectDAOTest extends SpringInitializationTest{
 		}else{
 			System.out.println("There exists only old data with no last modified date");
 		}
-	}
+	}*/
 }

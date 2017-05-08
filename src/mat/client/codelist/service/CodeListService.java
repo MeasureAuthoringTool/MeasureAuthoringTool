@@ -1,20 +1,15 @@
 package mat.client.codelist.service;
 
 import java.util.List;
-import java.util.Map;
-import mat.DTO.OperatorDTO;
-import mat.client.codelist.AdminManageCodeListSearchModel;
-import mat.client.codelist.HasListBox;
-import mat.client.codelist.ManageCodeListDetailModel;
-import mat.client.codelist.ManageCodeListSearchModel;
-import mat.client.codelist.ManageValueSetSearchModel;
-import mat.client.codelist.TransferOwnerShipModel;
-import mat.model.Code;
-import mat.model.MatValueSetTransferObject;
-import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import mat.DTO.OperatorDTO;
+import mat.client.codelist.HasListBox;
+import mat.model.MatValueSetTransferObject;
+import mat.model.QualityDataSetDTO;
 
 /**
  * The Interface CodeListService.
@@ -386,46 +381,6 @@ public interface CodeListService extends RemoteService {
 		
 	}
 	
-	//US193
-	/**
-	 * Creates the clone.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the manage value set search model
-	 */
-	public ManageValueSetSearchModel createClone(String id);
-	
-	/**
-	 * Creates the draft.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param oid
-	 *            the oid
-	 * @return the manage value set search model
-	 */
-	public ManageValueSetSearchModel createDraft(String id, String oid);
-	
-	/**
-	 * Delete codes.
-	 * 
-	 * @param codeListID
-	 *            the code list id
-	 * @param Codes
-	 *            the codes
-	 * @return the manage code list detail model
-	 */
-	public ManageCodeListDetailModel deleteCodes(String codeListID,List<Code> Codes);
-	
-	/**
-	 * Generate unique oid.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @return the string
-	 */
-	public String generateUniqueOid(ManageCodeListDetailModel currentDetails);
 	
 	/**
 	 * Gets the all data types.
@@ -448,69 +403,7 @@ public interface CodeListService extends RemoteService {
 	 */
 	List<String> getAllUnits();
 	
-	/**
-	 * Gets the code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the code list
-	 */
-	public ManageCodeListDetailModel getCodeList(String key);
-	/**
-	 * Gets the code lists for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @return the code lists for category
-	 */
-	public List<? extends HasListBox> getCodeListsForCategory(String category);
-	
-	
-	/**
-	 * Gets the codes.
-	 * 
-	 * @param codeListId
-	 *            the code list id
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @return the codes
-	 */
-	public List<Code> getCodes(String codeListId,int startIndex, int pageSize);
-	
-	/**
-	 * Gets the code systems for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @return the code systems for category
-	 */
-	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
-	
-	/**
-	 * Gets the grouped code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @return the grouped code list
-	 */
-	public ManageCodeListDetailModel getGroupedCodeList(String key);
-	
-	
-	/**
-	 * Gets the grouped code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @return the grouped code list
-	 */
-	public ManageCodeListDetailModel getGroupedCodeList(String key, int startIndex,
-			int pageSize);
+
 	
 	/**
 	 * Gets the list box data.
@@ -539,48 +432,6 @@ public interface CodeListService extends RemoteService {
 	 */
 	public List<QualityDataSetDTO> getQDSElements(String measureId, String vertsion);
 	
-	/**
-	 * Gets the rel associations operators.
-	 * 
-	 * @return the rel associations operators
-	 */
-	Map<String, String> getRelAssociationsOperators();
-	
-	/**
-	 * Gets the timing operators.
-	 * 
-	 * @return the timing operators
-	 */
-	public Map<String, String> getTimingOperators();
-	
-	/**
-	 * Checks if is code already exists.
-	 * 
-	 * @param codeListId
-	 *            the code list id
-	 * @param code
-	 *            the code
-	 * @return true, if is code already exists
-	 */
-	public boolean isCodeAlreadyExists(String codeListId, Code code);
-	
-	/**
-	 * Saveor update code list.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @return the save update code list result
-	 */
-	public SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails);
-	
-	/**
-	 * Save or update grouped code list.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @return the save update code list result
-	 */
-	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails);
 	
 	/**
 	 * Save qds to measure.
@@ -600,107 +451,7 @@ public interface CodeListService extends RemoteService {
 	 */
 	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param sortColumn
-	 *            the sort column
-	 * @param isAsc
-	 *            the is asc
-	 * @param defaultCodeList
-	 *            the default code list
-	 * @param filter
-	 *            the filter
-	 * @return the manage code list search model
-	 */
-	public ManageCodeListSearchModel search(String searchText,
-			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
 	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param sortColumn
-	 *            the sort column
-	 * @param isAsc
-	 *            the is asc
-	 * @param defaultCodeList
-	 *            the default code list
-	 * @param filter
-	 *            the filter
-	 * @param categoryId
-	 *            the category id
-	 * @return the manage code list search model
-	 */
-	public ManageCodeListSearchModel search(String searchText,
-			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
-			String categoryId);
-	
-	/**
-	 * Search for admin.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param sortColumn
-	 *            the sort column
-	 * @param isAsc
-	 *            the is asc
-	 * @param defaultCodeList
-	 *            the default code list
-	 * @param filter
-	 *            the filter
-	 * @return the admin manage code list search model
-	 */
-	public AdminManageCodeListSearchModel searchForAdmin(String searchText,
-			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
-	
-	/**
-	 * Search users.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @return the transfer owner ship model
-	 */
-	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize);
-	
-	/*US537*/
-	/**
-	 * Search value sets for draft.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @return the manage value set search model
-	 */
-	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
-	
-	/**
-	 * Transfer owner ship to user.
-	 * 
-	 * @param list
-	 *            the list
-	 * @param toEmail
-	 *            the to email
-	 */
-	public void transferOwnerShipToUser(List<String> list, String toEmail);
 	
 	/**
 	 * Update code list to measure.
@@ -712,9 +463,7 @@ public interface CodeListService extends RemoteService {
 	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
 	
-	SaveUpdateCodeListResult saveCopiedQDMListToMeasure(mat.model.GlobalCopyPasteObject gbCopyPaste,
-			List<QualityDataSetDTO> qdmList, String measureId);
-
+	
 	List<String> getAllCqlUnits();
 	
 	

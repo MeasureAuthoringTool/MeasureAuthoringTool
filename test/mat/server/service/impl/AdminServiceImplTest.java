@@ -53,7 +53,7 @@ public class AdminServiceImplTest extends SpringInitializationTest {
 	}
 
 	
-	@Test
+	/*@Test
 	public void testForDefaultCodeList(){
 		User usr = userDAO.findByEmail(userDetails.getEmailAddress());
 		List<CodeListSearchDTO> defaultCodeList = listObjectDAO.searchByUser("", usr.getId(), 0, 1, "name", true, true);
@@ -62,7 +62,7 @@ public class AdminServiceImplTest extends SpringInitializationTest {
 				System.out.println("Default CodeList:"+ defaultCdlst.getName());
 			}
 		}
-	}
+	}*/
 	
 	
 	@Test

@@ -1,28 +1,16 @@
 package mat.dao.impl;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 
-import mat.client.codelist.ValueSetSearchFilterPanel;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+
 import mat.dao.search.GenericDAO;
 import mat.model.CodeListSearchDTO;
-import mat.model.ListObject;
 import mat.model.ListObjectLT;
-import mat.server.LoggedInUserUtil;
-import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Query;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 
 
 /**
@@ -109,8 +97,8 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 * 
 	 * @return the list objects to draft
 	 */
-	@Override
-	public List<ListObjectLT> getListObjectsToDraft() {
+	//@Override
+	/*public List<ListObjectLT> getListObjectsToDraft() {
 		
 		String userId = LoggedInUserUtil.getLoggedInUser();
 		Session session = getSessionFactory().getCurrentSession();
@@ -143,7 +131,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 		ret = (ArrayList<ListObjectLT>) sortValueSets(ret);
 		
 		return ret;
-	}
+	}*/
 	
 	/*
 	 * ListObjectComparator :- compares listobject within the same measureSet
@@ -208,7 +196,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 *            the value set result list
 	 * @return the array list
 	 */
-	private ArrayList<ListObjectLT> sortValueSets(List<ListObjectLT> valueSetResultList){
+	/*private ArrayList<ListObjectLT> sortValueSets(List<ListObjectLT> valueSetResultList){
 		List<List<ListObjectLT>> valueSetLists = new ArrayList<List<ListObjectLT>>(); 
 		for(ListObjectLT lo : valueSetResultList){
 			boolean hasList = false;
@@ -240,7 +228,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 			}
 		}
 		return retList;
-	}
+	}*/
 	
 	
 	
@@ -254,14 +242,14 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 *            the showshowdefault code list
 	 * @return the criteria
 	 */
-	private Criteria buildCriteriaForAllValueSets(String searchText,boolean showshowdefaultCodeList) {
+	/*private Criteria buildCriteriaForAllValueSets(String searchText,boolean showshowdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = 
 			new ListObjectSearchCriteriaBuilder(getSessionFactory(), ListObject.class, searchText, showshowdefaultCodeList);
 		DetachedCriteria criteria = loBuilder.buildBaseCriteriaForIDs();
 		Criteria mainCriteria = getSessionFactory().getCurrentSession().createCriteria(ListObject.class);
 		mainCriteria.add(Subqueries.propertyIn("id", criteria));
 		return mainCriteria;
-	}
+	}*/
 	
 	/**
 	 * Builds the criteria for applied by user.
@@ -274,7 +262,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 *            the showdefault code list
 	 * @return the criteria
 	 */
-	private Criteria buildCriteriaForAppliedByUser(String searchText, String loggedInUserid, boolean showdefaultCodeList) {
+	/*private Criteria buildCriteriaForAppliedByUser(String searchText, String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
 //		List<String> loids = session.createQuery("select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
 //				"(select m.id from mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
@@ -305,7 +293,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 		mainCriteria.add(Restrictions.not(Restrictions.in("oid", ConstantMessages.SUPPLEMENTAL_DATA_ELEMENT_OID_ARR)));
 		mainCriteria.add(Subqueries.propertyIn("id", criteria));
 		return mainCriteria;
-	}
+	}*/
 	
 	/**
 	 * Builds the criteria for user code lists.
@@ -318,7 +306,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 *            the showshowdefault code list
 	 * @return the criteria
 	 */
-	private Criteria buildCriteriaForUserCodeLists(String searchText, String mOwneruserId,boolean showshowdefaultCodeList) {
+	/*private Criteria buildCriteriaForUserCodeLists(String searchText, String mOwneruserId,boolean showshowdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = 
 			new ListObjectSearchCriteriaBuilder(getSessionFactory(), ListObject.class, searchText, showshowdefaultCodeList);
 		DetachedCriteria criteria = loBuilder.buildBaseCriteriaForIDs();
@@ -326,7 +314,7 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 		Criteria mainCriteria = getSessionFactory().getCurrentSession().createCriteria(ListObject.class);
 		mainCriteria.add(Subqueries.propertyIn("id", criteria));
 		return mainCriteria;
-	}
+	}*/
 	
 	/**
 	 * Gets the criteria for search with filter.
@@ -341,23 +329,23 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 *            the filter
 	 * @return the criteria for search with filter
 	 */
-	private Criteria getCriteriaForSearchWithFilter(String searchText, String userid, boolean defaultCodeList, int filter){
+	/*private Criteria getCriteriaForSearchWithFilter(String searchText, String userid, boolean defaultCodeList, int filter){
 		Criteria mainCriteria = null;
 		if(filter == ValueSetSearchFilterPanel.MY_VALUE_SETS)
 			mainCriteria = buildCriteriaForUserCodeLists(searchText, userid, defaultCodeList);
 		else if(filter == ValueSetSearchFilterPanel.ALL_VALUE_SETS)
 			mainCriteria = buildCriteriaForAllValueSets(searchText, defaultCodeList);
-		/*else if(filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
-			mainCriteria = buildCriteriaForAppliedByUser(searchText, userid, defaultCodeList);*/
+		else if(filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
+			mainCriteria = buildCriteriaForAppliedByUser(searchText, userid, defaultCodeList);
 		
 		return mainCriteria;
 	}
-	
+	*/
 	/* (non-Javadoc)
 	 * @see mat.dao.ListObjectLTDAO#countSearchResultsWithFilter(java.lang.String, java.lang.String, boolean, int)
 	 */
-	@Override
-	public int countSearchResultsWithFilter(String searchText, String userid, boolean defaultCodeList, int filter) {
+	//@Override
+	/*public int countSearchResultsWithFilter(String searchText, String userid, boolean defaultCodeList, int filter) {
 		
 		Criteria mainCriteria = getCriteriaForSearchWithFilter(searchText, userid, defaultCodeList, filter);
 		if(mainCriteria == null){
@@ -366,6 +354,6 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 		List<ListObjectLT> lolts = mainCriteria.list();
 		int count = lolts.size();
 		return count;
-	}
+	}*/
 	
 }

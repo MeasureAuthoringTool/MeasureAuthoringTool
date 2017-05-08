@@ -5,16 +5,11 @@ import java.util.List;
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
-import mat.client.codelist.ManageCodeListDetailModel;
-import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
-import mat.model.ListObject;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
-import mat.model.User;
-import mat.server.exception.ExcelParsingException;
 
 /**
  * The Interface CodeListService.
@@ -42,7 +37,7 @@ public interface CodeListService {
 	 *            the id
 	 * @return the manage value set search model
 	 */
-	ManageValueSetSearchModel createClone(String id);
+//	ManageValueSetSearchModel createClone(String id);
 	
 	/**
 	 * Creates the draft.
@@ -53,7 +48,7 @@ public interface CodeListService {
 	 *            the oid
 	 * @return the manage value set search model
 	 */
-	ManageValueSetSearchModel createDraft(String id, String oid);
+	//ManageValueSetSearchModel createDraft(String id, String oid);
 	
 	/**
 	 * Delete codes.
@@ -64,7 +59,7 @@ public interface CodeListService {
 	 *            the codes
 	 * @return the manage code list detail model
 	 */
-	ManageCodeListDetailModel deleteCodes(String key, List<Code> Codes);
+	//ManageCodeListDetailModel deleteCodes(String key, List<Code> Codes);
 	
 	/**
 	 * Generate unique oid.
@@ -73,7 +68,7 @@ public interface CodeListService {
 	 *            the current details
 	 * @return the string
 	 */
-	String generateUniqueOid(ManageCodeListDetailModel currentDetails);
+	//String generateUniqueOid(ManageCodeListDetailModel currentDetails);
 	
 	/**
 	 * Gets the all data types.
@@ -103,7 +98,7 @@ public interface CodeListService {
 	 *            the key
 	 * @return the code list
 	 */
-	ManageCodeListDetailModel getCodeList(String key);
+	//ManageCodeListDetailModel getCodeList(String key);
 	
 	/**
 	 * Gets the code lists for category.
@@ -143,7 +138,7 @@ public interface CodeListService {
 	 *            the key
 	 * @return the grouped code list
 	 */
-	ManageCodeListDetailModel getGroupedCodeList(String key);
+	//ManageCodeListDetailModel getGroupedCodeList(String key);
 	
 	/**
 	 * Gets the grouped code list code systems for category.
@@ -152,7 +147,7 @@ public interface CodeListService {
 	 *            the category id
 	 * @return the grouped code list code systems for category
 	 */
-	String getGroupedCodeListCodeSystemsForCategory(String categoryId);
+	//String getGroupedCodeListCodeSystemsForCategory(String categoryId);
 	
 	/**
 	 * Gets the list box data.
@@ -186,21 +181,21 @@ public interface CodeListService {
 	 * 
 	 * @return the rel associations operators
 	 */
-	List<OperatorDTO> getRelAssociationsOperators();
+//	List<OperatorDTO> getRelAssociationsOperators();
 	
 	/**
 	 * Gets the supplimental code list.
 	 * 
 	 * @return the supplimental code list
 	 */
-	List<ListObject> getSupplimentalCodeList();
+//	List<ListObject> getSupplimentalCodeList();
 	
 	/**
 	 * Gets the timing operators.
 	 * 
 	 * @return the timing operators
 	 */
-	List<OperatorDTO> getTimingOperators();
+//	List<OperatorDTO> getTimingOperators();
 	
 	/**
 	 * Checks if is code already exists.
@@ -211,7 +206,7 @@ public interface CodeListService {
 	 *            the code
 	 * @return true, if is code already exists
 	 */
-	boolean isCodeAlreadyExists(String codeListId, Code code);
+//	boolean isCodeAlreadyExists(String codeListId, Code code);
 	
 	/**
 	 * Save default code list.
@@ -222,7 +217,7 @@ public interface CodeListService {
 	 * @throws CodeListNotUniqueException
 	 *             the code list not unique exception
 	 */
-	SaveUpdateCodeListResult saveDefaultCodeList(User user) throws CodeListNotUniqueException;
+//	SaveUpdateCodeListResult saveDefaultCodeList(User user) throws CodeListNotUniqueException;
 	
 	/**
 	 * Saveor update code list.
@@ -241,9 +236,9 @@ public interface CodeListService {
 	 * @throws ValueSetLastModifiedDateNotUniqueException
 	 *             the value set last modified date not unique exception
 	 */
-	SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
-	CodeListOidNotUniqueException, ExcelParsingException, InvalidLastModifiedDateException,
-	ValueSetLastModifiedDateNotUniqueException;
+	//SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
+	//CodeListOidNotUniqueException, ExcelParsingException, InvalidLastModifiedDateException,
+	//ValueSetLastModifiedDateNotUniqueException;
 	
 	/**
 	 * Saveor update grouped code list.
@@ -260,8 +255,8 @@ public interface CodeListService {
 	 * @throws ValueSetLastModifiedDateNotUniqueException
 	 *             the value set last modified date not unique exception
 	 */
-	SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
-	CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;
+	//SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
+//	CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;
 	
 	/**
 	 * Save qd sto measure.
@@ -325,8 +320,8 @@ public interface CodeListService {
 	 *            the category id
 	 * @return the list
 	 */
-	List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn, boolean isAsc,
-			boolean defaultCodeList, int filter, String categoryId);
+//	List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn, boolean isAsc,
+//			boolean defaultCodeList, int filter, String categoryId);
 	
 	/**
 	 * Search value sets for draft.
@@ -337,7 +332,7 @@ public interface CodeListService {
 	 *            the page size
 	 * @return the manage value set search model
 	 */
-	ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
+	//ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
 	
 	/**
 	 * Transfer owner ship to user.
@@ -347,7 +342,7 @@ public interface CodeListService {
 	 * @param toEmail
 	 *            the to email
 	 */
-	void transferOwnerShipToUser(List<String> list, String toEmail);
+	//void transferOwnerShipToUser(List<String> list, String toEmail);
 	
 	/**
 	 * Update qds to measure.

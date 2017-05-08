@@ -1,24 +1,18 @@
 package mat.dao.impl;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import mat.DTO.CodesDTO;
-import mat.client.codelist.ManageCodeListDetailModel;
-import mat.dao.search.GenericDAO;
-import mat.model.Code;
-import mat.model.CodeList;
-import mat.model.clause.Measure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
+import mat.DTO.CodesDTO;
+import mat.dao.search.GenericDAO;
+import mat.model.Code;
+import mat.model.CodeList;
 
 
 /**
@@ -33,7 +27,7 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeListDAO#getCodeListsForCategoryByMeasure(java.lang.String, mat.model.clause.Measure)
 	 */
-	@Override
+	/*@Override
 	public List<CodeList> getCodeListsForCategoryByMeasure(String categoryId,
 			Measure measure) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -46,14 +40,14 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		criteria.createAlias("qualityDataSets", "qds", Criteria.LEFT_JOIN);
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
-	}
+	}*/
 
 	//US 413. Include condition for Steward Other value.
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeListDAO#getCodeList(mat.client.codelist.ManageCodeListDetailModel, java.lang.String)
 	 */
-	@Override
-	public CodeList getCodeList(ManageCodeListDetailModel currentDetails, String userid) {
+	//@Override
+	/*public CodeList getCodeList(ManageCodeListDetailModel currentDetails, String userid) {
 		CodeList cl = find(currentDetails.getID());
 		String newOID = currentDetails.getOid();
 		//determine family oid to ensure no dups outside of family
@@ -75,18 +69,18 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		}else{
 			return null;
 		}
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeListDAO#getValueSetsForCategory(java.lang.String)
 	 */
-	@Override
+	/*@Override
 	public List<CodeList> getValueSetsForCategory(String categoryId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(CodeList.class);
 		criteria.add(Restrictions.eq("category.id", categoryId));
 		
-		/*return only the most recent name*/
+		return only the most recent name
 		criteria.addOrder(Order.desc("oid")).addOrder(Order.desc("draft")).addOrder(Order.desc("lastModified"));
 		List<CodeList> cls = criteria.list();
 		ArrayList<CodeList> ret = new ArrayList<CodeList>();
@@ -99,7 +93,7 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 			oid = coid;
 		}
 		return ret;
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeListDAO#getCodes(java.lang.String)
@@ -123,7 +117,7 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeListDAO#getCodeList(mat.client.codelist.ManageCodeListDetailModel, java.sql.Timestamp)
 	 */
-	@Override
+	/*@Override
 	public List<CodeList> getCodeList(ManageCodeListDetailModel currentDetails, Timestamp ts) {
 		CodeList cl = find(currentDetails.getID());
 		String newOID = currentDetails.getOid();
@@ -137,6 +131,6 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		criteria.add(Restrictions.eq("lastModified", ts));
 		List<CodeList> cls = criteria.list();
 		return cls;
-	}
+	}*/
 	
 }

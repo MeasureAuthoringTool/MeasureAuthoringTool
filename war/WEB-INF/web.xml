@@ -122,10 +122,10 @@
     <servlet-name>bulkExportServlet</servlet-name>
     <servlet-class>mat.server.BulkExportServlet</servlet-class>
   </servlet>
-   <servlet>
+   <!-- <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
     <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
-  </servlet>
+  </servlet> -->
   <servlet>
    <servlet-name>auditServiceImpl</servlet-name>
    <servlet-class>mat.server.AuditServiceImpl</servlet-class>
@@ -135,10 +135,10 @@
     <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
   </servlet>
   
-  <servlet-mapping>
+ <!--  <servlet-mapping>
     <servlet-name>FileUploadServlet</servlet-name>
     <url-pattern>/mat/uploadFormHandler</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> -->
   
   <servlet-mapping>
     <servlet-name>exportServlet</servlet-name>

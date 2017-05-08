@@ -1,13 +1,8 @@
 package mat.dao;
 
-import java.sql.Timestamp;
 import java.util.List;
 
-import mat.client.codelist.ManageCodeListDetailModel;
-import mat.model.CodeListSearchDTO;
 import mat.model.ListObject;
-import mat.model.User;
-import mat.model.clause.Measure;
 
 /**
  * The Interface ListObjectDAO.
@@ -25,8 +20,8 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the default code list
 	 * @return the int
 	 */
-	public int countSearchResultsByUser(String searchText, String userId,
-			boolean defaultCodeList);
+	/*public int countSearchResultsByUser(String searchText, String userId,
+			boolean defaultCodeList);*/
 
 	/**
 	 * Search by user.
@@ -47,10 +42,10 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the default code list
 	 * @return the list
 	 */
-	public List<CodeListSearchDTO> searchByUser(String searchText,
+	/*public List<CodeListSearchDTO> searchByUser(String searchText,
 			String userId, int startIndex, int pageSize, String sortColumn,
 			boolean isAsc, boolean defaultCodeList);
-
+*/
 	/**
 	 * Count search results by measure.
 	 * 
@@ -62,9 +57,9 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the default code list
 	 * @return the int
 	 */
-	public int countSearchResultsByMeasure(String searchText, Measure measure,
+	/*public int countSearchResultsByMeasure(String searchText, Measure measure,
 			boolean defaultCodeList);
-
+*/
 	/**
 	 * Search by measure owner.
 	 * 
@@ -84,9 +79,9 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the default code list
 	 * @return the list
 	 */
-	public List<CodeListSearchDTO> searchByMeasureOwner(String searchText,
+	/*public List<CodeListSearchDTO> searchByMeasureOwner(String searchText,
 			String ownerId, int startIndex, int pageSize, String sortColumn,
-			boolean isAsc, boolean defaultCodeList);
+			boolean isAsc, boolean defaultCodeList);*/
 
 	// US 413. Added parameter for Steward Other
 	/**
@@ -98,9 +93,9 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the userid
 	 * @return the list object
 	 */
-	public ListObject getListObject(ManageCodeListDetailModel currentDetails,
+	/*public ListObject getListObject(ManageCodeListDetailModel currentDetails,
 			String userid);
-
+*/
 	/**
 	 * Gets the list object.
 	 * 
@@ -114,9 +109,9 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the userid
 	 * @return the list object
 	 */
-	public ListObject getListObject(String name, String steward,
+	/*public ListObject getListObject(String name, String steward,
 			String categoryCd, String userid);
-
+*/
 	/**
 	 * Load all code list per user.
 	 * 
@@ -124,7 +119,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the user
 	 * @return the list
 	 */
-	public List<ListObject> loadAllCodeListPerUser(String user);
+	/*public List<ListObject> loadAllCodeListPerUser(String user);*/
 
 	/**
 	 * Find most recent value set.
@@ -135,8 +130,8 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the vs package date
 	 * @return the list object
 	 */
-	public ListObject findMostRecentValueSet(ListObject loFamily,
-			Timestamp vsPackageDate);
+	/*public ListObject findMostRecentValueSet(ListObject loFamily,
+			Timestamp vsPackageDate);*/
 
 	/**
 	 * Gets the list object.
@@ -145,7 +140,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the oid
 	 * @return the list object
 	 */
-	public List<ListObject> getListObject(String Oid);
+	/*public List<ListObject> getListObject(String Oid);*/
 
 	/**
 	 * Generate unique oid.
@@ -154,7 +149,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the user
 	 * @return the string
 	 */
-	public String generateUniqueOid(User user);
+	/*public String generateUniqueOid(User user);*/
 
 	/**
 	 * Count list objects by oid and not id.
@@ -165,7 +160,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the id
 	 * @return count(*) from list_object l where l.oid = oid and not l.id = id
 	 */
-	public int countListObjectsByOidAndNotId(String oid, String id);
+	//public int countListObjectsByOidAndNotId(String oid, String id);
 
 	/**
 	 * Gets the list objects by measure.
@@ -174,14 +169,14 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the measure
 	 * @return the list objects by measure
 	 */
-	public List<ListObject> getListObjectsByMeasure(Measure measure);
+//	public List<ListObject> getListObjectsByMeasure(Measure measure);
 
 	/**
 	 * Gets the list objects to draft.
 	 * 
 	 * @return the list objects to draft
 	 */
-	public List<ListObject> getListObjectsToDraft();
+	//public List<ListObject> getListObjectsToDraft();
 
 	/**
 	 * Update family oid.
@@ -191,7 +186,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 * @param newOID
 	 *            the new oid
 	 */
-	public void updateFamilyOid(String oldOID, String newOID);
+	//public void updateFamilyOid(String oldOID, String newOID);
 
 	/**
 	 * Checks for draft.
@@ -200,7 +195,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the oid
 	 * @return true, if successful
 	 */
-	public boolean hasDraft(String oid);
+	//public boolean hasDraft(String oid);
 
 	/**
 	 * Gets the list object.
@@ -211,8 +206,8 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the ts
 	 * @return the list object
 	 */
-	public List<ListObject> getListObject(
-			ManageCodeListDetailModel currentDetails, Timestamp ts);
+//	public List<ListObject> getListObject(
+	//		ManageCodeListDetailModel currentDetails, Timestamp ts);
 
 	/**
 	 * Gets the supplimental code list.
@@ -230,7 +225,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the owner id
 	 * @return true, if is my value set
 	 */
-	public boolean isMyValueSet(String id, String ownerId);
+//	public boolean isMyValueSet(String id, String ownerId);
 
 	/**
 	 * Search with filter.
@@ -253,9 +248,9 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the filter
 	 * @return the list
 	 */
-	public List<CodeListSearchDTO> searchWithFilter(String searchText,
-			String loggedInUserid, int i, int pageSize, String sortColumn,
-			boolean isAsc, boolean defaultCodeList, int filter);
+//	public List<CodeListSearchDTO> searchWithFilter(String searchText,
+//			String loggedInUserid, int i, int pageSize, String sortColumn,
+//			boolean isAsc, boolean defaultCodeList, int filter);
 
 	/**
 	 * Generate unique name.
@@ -266,7 +261,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	 *            the u
 	 * @return the string
 	 */
-	String generateUniqueName(String name, User u);
+	//String generateUniqueName(String name, User u);
 
 	/**
 	 * Gets the element code list by oid.

@@ -1,9 +1,7 @@
 package mat.client.codelist.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.shared.GenericResult;
 import mat.model.QualityDataSetDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
@@ -116,7 +114,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	}
 
 	/** The code list detail model. */
-	private ManageCodeListDetailModel codeListDetailModel;
+	//private ManageCodeListDetailModel codeListDetailModel;
 	
 	/** The duplicate count. */
 	private int duplicateCount;
@@ -278,9 +276,9 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 * 
 	 * @return the code list detail model
 	 */
-	public ManageCodeListDetailModel getCodeListDetailModel() {
+	/*public ManageCodeListDetailModel getCodeListDetailModel() {
 		return codeListDetailModel;
-	}
+	}*/
 
 	/**
 	 * Sets the code list detail model.
@@ -288,10 +286,10 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 * @param codeListDetailModel
 	 *            the new code list detail model
 	 */
-	public void setCodeListDetailModel(ManageCodeListDetailModel codeListDetailModel) {
+	/*public void setCodeListDetailModel(ManageCodeListDetailModel codeListDetailModel) {
 		this.codeListDetailModel = codeListDetailModel;
 	}
-
+*/
 	/**
 	 * Gets the applied qdm list.
 	 * 

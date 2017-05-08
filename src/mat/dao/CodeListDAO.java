@@ -1,13 +1,6 @@
 package mat.dao;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Set;
-
-import mat.DTO.CodesDTO;
-import mat.client.codelist.ManageCodeListDetailModel;
 import mat.model.CodeList;
-import mat.model.clause.Measure;
 
 /**
  * The Interface CodeListDAO.
@@ -23,7 +16,7 @@ public interface CodeListDAO extends IDAO<CodeList, String> {
 	 *            the userid
 	 * @return the code list
 	 */
-	public CodeList getCodeList(ManageCodeListDetailModel currentDetails, String userid);
+	//public CodeList getCodeList(ManageCodeListDetailModel currentDetails, String userid);
 	
 	/**
 	 * Gets the value sets for category.
@@ -32,7 +25,7 @@ public interface CodeListDAO extends IDAO<CodeList, String> {
 	 *            the category id
 	 * @return the value sets for category
 	 */
-	public List<CodeList> getValueSetsForCategory(String categoryId);
+	//public List<CodeList> getValueSetsForCategory(String categoryId);
 	
 	/**
 	 * Gets the code lists for category by measure.
@@ -43,7 +36,7 @@ public interface CodeListDAO extends IDAO<CodeList, String> {
 	 *            the measure
 	 * @return the code lists for category by measure
 	 */
-	public List<CodeList> getCodeListsForCategoryByMeasure(String categoryId, Measure measure);
+	//public List<CodeList> getCodeListsForCategoryByMeasure(String categoryId, Measure measure);
 	
 	/**
 	 * Gets the codes.
@@ -52,7 +45,7 @@ public interface CodeListDAO extends IDAO<CodeList, String> {
 	 *            the code list id
 	 * @return the codes
 	 */
-	public Set<CodesDTO> getCodes(String codeListId);
+	//public Set<CodesDTO> getCodes(String codeListId);
 	
 	/**
 	 * Gets the code list.
@@ -63,5 +56,5 @@ public interface CodeListDAO extends IDAO<CodeList, String> {
 	 *            the ts
 	 * @return the code list
 	 */
-	public List<CodeList> getCodeList(ManageCodeListDetailModel currentDetails, Timestamp ts);
+	//public List<CodeList> getCodeList(ManageCodeListDetailModel currentDetails, Timestamp ts);
 }

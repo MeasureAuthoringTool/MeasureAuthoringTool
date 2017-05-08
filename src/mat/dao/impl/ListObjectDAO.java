@@ -8,18 +8,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import mat.client.codelist.ManageCodeListDetailModel;
-import mat.client.codelist.ValueSetSearchFilterPanel;
-import mat.dao.search.GenericDAO;
-import mat.model.CodeList;
-import mat.model.CodeListSearchDTO;
-import mat.model.ListObject;
-import mat.model.User;
-import mat.model.clause.Measure;
-import mat.server.LoggedInUserUtil;
-import mat.shared.ConstantMessages;
-import mat.shared.DateUtility;
-
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -30,6 +18,16 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 
+import mat.dao.search.GenericDAO;
+import mat.model.CodeList;
+import mat.model.CodeListSearchDTO;
+import mat.model.ListObject;
+import mat.model.User;
+import mat.model.clause.Measure;
+import mat.server.LoggedInUserUtil;
+import mat.shared.ConstantMessages;
+import mat.shared.DateUtility;
+
 /**
  * The Class ListObjectDAO.
  */
@@ -38,7 +36,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 
 	/* (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#countSearchResultsByUser(java.lang.String, java.lang.String, boolean)
-	 */
+	 
 	@Override
 	public int countSearchResultsByUser(String searchText, String userId,
 			boolean showdefaultCodeList) {
@@ -48,9 +46,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return ((Long) mainCriteria.uniqueResult()).intValue();
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#countSearchResultsByMeasure(java.lang.String, mat.model.clause.Measure, boolean)
-	 */
+	 
 	@Override
 	public int countSearchResultsByMeasure(String searchText, Measure measure,
 			boolean showdefaultCodeList) {
@@ -60,9 +58,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return ((Long) mainCriteria.uniqueResult()).intValue();
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#searchByUser(java.lang.String, java.lang.String, int, int, java.lang.String, boolean, boolean)
-	 */
+	 
 	@Override
 	public List<CodeListSearchDTO> searchByUser(String searchText,
 			String measureOwnerUserId, int startIndex, int pageSize,
@@ -116,7 +114,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 
 	}
 
-	/**
+	*//**
 	 * Only return filtered list.
 	 * 
 	 * @param pageSize
@@ -124,7 +122,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param orderedDTOList
 	 *            the ordered dto list
 	 * @return the list
-	 */
+	 *//*
 	private List<CodeListSearchDTO> onlyReturnFilteredList(int pageSize,
 			ArrayList<CodeListSearchDTO> orderedDTOList) {
 		List<CodeListSearchDTO> orderedDTOValueSets = new ArrayList<CodeListSearchDTO>();
@@ -140,13 +138,13 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return orderedDTOValueSets;
 	}
 
-	/**
+	*//**
 	 * Builds the results dto list.
 	 * 
 	 * @param queryresults
 	 *            the queryresults
 	 * @return the array list
-	 */
+	 *//*
 	private ArrayList<CodeListSearchDTO> buildResultsDTOList(
 			List<ListObject> queryresults) {
 		ArrayList<CodeListSearchDTO> results = new ArrayList<CodeListSearchDTO>();
@@ -162,9 +160,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return results;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#loadAllCodeListPerUser(java.lang.String)
-	 */
+	 
 	@Override
 	public List<ListObject> loadAllCodeListPerUser(String loggedInUser) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -174,9 +172,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	}
 
 	// US 413. Added condition for Steward Other.
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getListObject(mat.client.codelist.ManageCodeListDetailModel, java.lang.String)
-	 */
+	 
 	@Override
 	public ListObject getListObject(ManageCodeListDetailModel currentDetails,
 			String userid) {
@@ -207,9 +205,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		}
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getListObject(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
+	 
 	@Override
 	public ListObject getListObject(String name, String steward,
 			String categoryCd, String userid) {
@@ -222,9 +220,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return (ListObject) criteria.uniqueResult();
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#generateUniqueOid(mat.model.User)
-	 */
+	 
 	public String generateUniqueOid(User user) {
 		Session session = getSessionFactory().getCurrentSession();
 		List<String> oids = (List<String>) session.createQuery(
@@ -242,13 +240,13 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return retStr;
 	}
 
-	/**
+	*//**
 	 * Checks if is int.
 	 * 
 	 * @param s
 	 *            the s
 	 * @return true, if is int
-	 */
+	 *//*
 	private boolean isInt(String s) {
 		try {
 			Integer.parseInt(s);
@@ -258,14 +256,14 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		}
 	}
 
-	/**
+	*//**
 	 * Sets the dto values from model.
 	 * 
 	 * @param cl
 	 *            the cl
 	 * @param dto
 	 *            the dto
-	 */
+	 *//*
 	void setDTOValuesFromModel(ListObject cl, CodeListSearchDTO dto) {
 		dto.setCategoryCode(cl.getCategory().getId());
 		dto.setCategoryDisplay(cl.getCategory().getDescription());
@@ -296,7 +294,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 
 	}
 
-	/**
+	*//**
 	 * Sets the paging.
 	 * 
 	 * @param criteria
@@ -305,7 +303,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 *            the start index
 	 * @param pageSize
 	 *            the page size
-	 */
+	 *//*
 	final void setPaging(Criteria criteria, int startIndex, int pageSize) {
 		criteria.setFirstResult(startIndex);
 		if (pageSize > 0) {
@@ -313,7 +311,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		}
 	}
 
-	/**
+	*//**
 	 * Sets the sorting.
 	 * 
 	 * @param criteria
@@ -322,7 +320,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 *            the sort column
 	 * @param isAsc
 	 *            the is asc
-	 */
+	 *//*
 	final void setSorting(Criteria criteria, String sortColumn, boolean isAsc) {
 		if (!isEmpty(sortColumn)) {
 
@@ -339,7 +337,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	}
 
 	// US536 value set search refactored to be a simple query.
-	/**
+	*//**
 	 * Builds the criteria for user code lists.
 	 * 
 	 * @param searchText
@@ -349,7 +347,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param showshowdefaultCodeList
 	 *            the showshowdefault code list
 	 * @return the criteria
-	 */
+	 *//*
 	private Criteria buildCriteriaForUserCodeLists(String searchText,
 			String mOwneruserId, boolean showshowdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = new ListObjectSearchCriteriaBuilder(
@@ -363,7 +361,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/**
+	*//**
 	 * Builds the criteria for measure owner code lists.
 	 * 
 	 * @param searchText
@@ -373,7 +371,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param showshowdefaultCodeList
 	 *            the showshowdefault code list
 	 * @return the criteria
-	 */
+	 *//*
 	private Criteria buildCriteriaForMeasureOwnerCodeLists(String searchText,
 			String measureOwnerId, boolean showshowdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = new ListObjectSearchCriteriaBuilder(
@@ -395,7 +393,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/**
+	*//**
 	 * Builds the criteria for measure code lists.
 	 * 
 	 * @param searchText
@@ -405,7 +403,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param showdefaultCodeList
 	 *            the showdefault code list
 	 * @return the criteria
-	 */
+	 *//*
 	private Criteria buildCriteriaForMeasureCodeLists(String searchText,
 			Measure measure, boolean showdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = new ListObjectSearchCriteriaBuilder(
@@ -427,19 +425,19 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#countListObjectsByOidAndNotId(java.lang.String, java.lang.String)
-	 */
+	 
 	@Override
 	public int countListObjectsByOidAndNotId(String oid, String id) {
 
 		ListObject lo = find(id);
 		String famOid = lo == null ? null : lo.getOid();
 
-		/*
+		
 		 * only new oids need to be verified assuming old oids were checked at
 		 * the time they were set
-		 */
+		 
 		if (oid.equalsIgnoreCase(famOid))
 			return 0;
 
@@ -456,9 +454,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return count.intValue();
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getListObjectsByMeasure(mat.model.clause.Measure)
-	 */
+	 
 	@Override
 	public List<ListObject> getListObjectsByMeasure(Measure measure) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -469,9 +467,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 
 	// US547:- This method is used to find the mostRecent Value set whose
 	// lastModifiedDate is less than valueSetPackageDate.
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#findMostRecentValueSet(mat.model.ListObject, java.sql.Timestamp)
-	 */
+	 
 	@Override
 	public ListObject findMostRecentValueSet(ListObject loFamily,
 			Timestamp vsPackageDate) {
@@ -499,13 +497,13 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 
 	// US204:- This method is used to find out whether the given listObject
 	// family is the mostRecentVS.
-	/**
+	*//**
 	 * Checks if is most recent value set.
 	 * 
 	 * @param loFamily
 	 *            the lo family
 	 * @return true, if is most recent value set
-	 */
+	 *//*
 	private boolean isMostRecentValueSet(ListObject loFamily) {
 		if (loFamily.isDraft())
 			return true;
@@ -532,12 +530,12 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return false;
 	}
 
-	/*
+	
 	 * (non-Javadoc)
 	 * 
 	 * @see mat.dao.ListObjectDAO#searchByMeasureOwner(java.lang.String,
 	 * java.lang.String, int, int, java.lang.String, boolean, boolean)
-	 */
+	 
 	@Override
 	public List<CodeListSearchDTO> searchByMeasureOwner(String searchText,
 			String ownerId, int startIndex, int pageSize, String sortColumn,
@@ -555,12 +553,12 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return results;
 	}
 
-	/**
+	*//**
 	 * select MAX(based on lastModified) from L_O where OID in (select OID from
 	 * L_O where there is no draft).
 	 * 
 	 * @return the list objects to draft
-	 */
+	 *//*
 	@Override
 	public List<ListObject> getListObjectsToDraft() {
 
@@ -598,10 +596,10 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return ret;
 	}
 
-	/* US552 */
-	/* (non-Javadoc)
+	 US552 
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#updateFamilyOid(java.lang.String, java.lang.String)
-	 */
+	 
 	@Override
 	public void updateFamilyOid(String oldOID, String newOID) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -615,17 +613,17 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	}
 
 	// US536
-	/*
+	
 	 * ListObjectComparator :- compares listobject within the same measureSet
-	 */
-	/**
+	 
+	*//**
 	 * The Class ListObjectComparator.
-	 */
+	 *//*
 	class ListObjectComparator implements Comparator<ListObject> {
 		
-		/* (non-Javadoc)
+		 (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
+		 
 		@Override
 		public int compare(ListObject l1, ListObject l2) {
 			// 1 check whether it is draft
@@ -636,7 +634,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 			return ret;
 		}
 
-		/**
+		*//**
 		 * Compare two time stamp.
 		 * 
 		 * @param t1
@@ -644,7 +642,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		 * @param t2
 		 *            the t2
 		 * @return the int
-		 */
+		 *//*
 		private int compareTwoTimeStamp(Timestamp t1, Timestamp t2) {
 			int ret = t1.getTime() < t2.getTime() ? 1 : t1.getTime() == t2
 					.getTime() ? 0 : -1;
@@ -653,18 +651,18 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	}
 
 	// US536
-	/*
+	
 	 * ListObjectFamilyComparator:- compares ListObjectFamily by the ListObject
 	 * Name
-	 */
-	/**
+	 
+	*//**
 	 * The Class ListObjectFamilyComparator.
-	 */
+	 *//*
 	class ListObjectFamilyComparator implements Comparator<List<ListObject>> {
 		
-		/* (non-Javadoc)
+		 (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
+		 
 		@Override
 		public int compare(List<ListObject> l1, List<ListObject> l2) {
 			String v1 = l1.get(0).getName();
@@ -674,13 +672,13 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	}
 
 	// US536
-	/**
+	*//**
 	 * Sort value sets.
 	 * 
 	 * @param valueSetResultList
 	 *            the value set result list
 	 * @return the array list
-	 */
+	 *//*
 	private ArrayList<ListObject> sortValueSets(
 			List<ListObject> valueSetResultList) {
 		List<List<ListObject>> valueSetLists = new ArrayList<List<ListObject>>();
@@ -721,9 +719,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return retList;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#hasDraft(java.lang.String)
-	 */
+	 
 	@Override
 	public boolean hasDraft(String oid) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -734,10 +732,10 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return ((Long) criteria.uniqueResult()).intValue() > 0;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getListObject(mat.client.codelist.ManageCodeListDetailModel, java.sql.Timestamp)
-	 */
-	@Override
+	 
+	//@Override
 	public List<ListObject> getListObject(
 			ManageCodeListDetailModel currentDetails, Timestamp ts) {
 		ListObject lo = find(currentDetails.getID());
@@ -753,42 +751,23 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return los;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getSupplimentalCodeList()
-	 */
-	@Override
-	public List<ListObject> getSupplimentalCodeList() {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(ListObject.class);
-		criteria.add(Restrictions
-				.eq("codeListContext", "Supplimental CodeList"));
-		List<ListObject> suppElementList = criteria.list();
-		return suppElementList;
-	}
+	 
+	
 
-	/**
+	*//**
 	 * This method will get the ListObject by their OID values.
 	 * 
 	 * @param elementOIDList
 	 *            the element oid list
 	 * @return the element code list by oid
-	 */
-	@Override
-	public List<ListObject> getElementCodeListByOID(List<String> elementOIDList) {
-		List<ListObject> timingElementList = new ArrayList<ListObject>();
+	 *//*
+	
 
-		if (elementOIDList != null && !elementOIDList.isEmpty()) {
-			Session session = getSessionFactory().getCurrentSession();
-			Criteria criteria = session.createCriteria(ListObject.class);
-			criteria.add(Restrictions.in("oid", elementOIDList));
-			timingElementList = criteria.list();
-		}
-		return timingElementList;
-	}
-
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#isMyValueSet(java.lang.String, java.lang.String)
-	 */
+	 
 	@Override
 	public boolean isMyValueSet(String id, String ownerId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -801,7 +780,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 			return false;
 	}
 
-	/**
+	*//**
 	 * Builds the criteria for all value sets.
 	 * 
 	 * @param searchText
@@ -809,7 +788,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param showshowdefaultCodeList
 	 *            the showshowdefault code list
 	 * @return the criteria
-	 */
+	 *//*
 	private Criteria buildCriteriaForAllValueSets(String searchText,
 			boolean showshowdefaultCodeList) {
 		ListObjectSearchCriteriaBuilder loBuilder = new ListObjectSearchCriteriaBuilder(
@@ -822,7 +801,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/**
+	*//**
 	 * Builds the criteria for applied by user.
 	 * 
 	 * @param searchText
@@ -832,7 +811,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param showdefaultCodeList
 	 *            the showdefault code list
 	 * @return the criteria
-	 */
+	 *//*
 	private Criteria buildCriteriaForAppliedByUser(String searchText,
 			String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -875,7 +854,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/**
+	*//**
 	 * Gets the criteria for search with filter.
 	 * 
 	 * @param searchText
@@ -895,7 +874,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param filter
 	 *            the filter
 	 * @return the criteria for search with filter
-	 */
+	 *//*
 	private Criteria getCriteriaForSearchWithFilter(String searchText,
 			String loggedInUserid, int startIndex, int pageSize,
 			String sortColumn, boolean isAsc, boolean defaultCodeList,
@@ -907,9 +886,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		else if (filter == ValueSetSearchFilterPanel.ALL_VALUE_SETS)
 			mainCriteria = buildCriteriaForAllValueSets(searchText,
 					defaultCodeList);
-		/*else if (filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
+		else if (filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
 			mainCriteria = buildCriteriaForAppliedByUser(searchText,
-					loggedInUserid, defaultCodeList);*/
+					loggedInUserid, defaultCodeList);
 
 		if (mainCriteria == null) {
 			return null;
@@ -926,9 +905,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return mainCriteria;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#searchWithFilter(java.lang.String, java.lang.String, int, int, java.lang.String, boolean, boolean, int)
-	 */
+	 
 	@Override
 	public List<CodeListSearchDTO> searchWithFilter(String searchText,
 			String loggedInUserid, int startIndex, int pageSize,
@@ -997,9 +976,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 			return orderedFilteredDTOList;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#generateUniqueName(java.lang.String, mat.model.User)
-	 */
+	 
 	@Override
 	public String generateUniqueName(String name, User u) {
 		String suffix = " Clone";
@@ -1039,7 +1018,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 			return newName;
 	}
 
-	/**
+	*//**
 	 * Checks if is unique name.
 	 * 
 	 * @param name
@@ -1047,7 +1026,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 * @param u
 	 *            the u
 	 * @return true, if is unique name
-	 */
+	 *//*
 	private boolean isUniqueName(String name, User u) {
 		Session session = getSessionFactory().getCurrentSession();
 //		String sql = "select count(*) from mat.model.ListObject where objectOwner.id='"
@@ -1061,9 +1040,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		return list.get(0) == 0;
 	}
 
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see mat.dao.ListObjectDAO#getListObject(java.lang.String)
-	 */
+	 
 	@Override
 	public List<ListObject> getListObject(String Oid) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -1073,6 +1052,28 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		List<ListObject> los = criteria.list();
 		return los;
 
-	}
+	}*/
 
+	@Override
+		public List<ListObject> getSupplimentalCodeList() {
+			Session session = getSessionFactory().getCurrentSession();
+			Criteria criteria = session.createCriteria(ListObject.class);
+			criteria.add(Restrictions
+					.eq("codeListContext", "Supplimental CodeList"));
+			List<ListObject> suppElementList = criteria.list();
+			return suppElementList;
+		}
+	
+	@Override
+	public List<ListObject> getElementCodeListByOID(List<String> elementOIDList) {
+		List<ListObject> timingElementList = new ArrayList<ListObject>();
+
+		if (elementOIDList != null && !elementOIDList.isEmpty()) {
+			Session session = getSessionFactory().getCurrentSession();
+			Criteria criteria = session.createCriteria(ListObject.class);
+			criteria.add(Restrictions.in("oid", elementOIDList));
+			timingElementList = criteria.list();
+		}
+		return timingElementList;
+	}
 }

@@ -16,7 +16,7 @@ public interface ListObjectLTDAO extends IDAO<ListObjectLT, String> {
 	 * 
 	 * @return the list objects to draft
 	 */
-	public List<ListObjectLT> getListObjectsToDraft();
+	//public List<ListObjectLT> getListObjectsToDraft();
 	
 	/**
 	 * Count search results with filter.
@@ -31,5 +31,5 @@ public interface ListObjectLTDAO extends IDAO<ListObjectLT, String> {
 	 *            the filter
 	 * @return the int
 	 */
-	public int countSearchResultsWithFilter(String searchText, String userid, boolean defaultCodeList, int filter);
+	//public int countSearchResultsWithFilter(String searchText, String userid, boolean defaultCodeList, int filter);
 }

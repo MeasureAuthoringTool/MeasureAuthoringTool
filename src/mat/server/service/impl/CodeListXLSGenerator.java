@@ -147,7 +147,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	@Override
 	protected final void cacheXLSRow(ListObject lo, final ListObjectDAO listObjectDAO, final Timestamp vsPackageDate){
 		//Make sure we have the most recent non-draft value set from that OID that is before the timestamp
-		ListObject vsTobeExported = listObjectDAO.findMostRecentValueSet(lo, vsPackageDate);
+		/*ListObject vsTobeExported = listObjectDAO.findMostRecentValueSet(lo, vsPackageDate);
 		if (vsTobeExported == null) {
 			return;
 		}
@@ -157,6 +157,6 @@ public class CodeListXLSGenerator extends XLSGenerator{
 				qdmOIDs.add(lo.getOid());
 				processXLSRow(lo, listObjectDAO, vsPackageDate);
 			}
-		}
+		}*/
 	}
 }

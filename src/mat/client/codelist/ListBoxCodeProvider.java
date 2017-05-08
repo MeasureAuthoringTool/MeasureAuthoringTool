@@ -453,32 +453,8 @@ public class ListBoxCodeProvider implements IsSerializable {
 		this.objectStatusList = objectStatusList;
 	}
 
-	/**
-	 * Gets the code system list for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param callback
-	 *            the callback
-	 * @return the code system list for category
-	 */
-	public void getCodeSystemListForCategory(String category, final AsyncCallback<List<? extends HasListBox>> callback) {
-		MatContext.get().getCodeListService().getCodeSystemsForCategory(category, new AsyncCallback<List<? extends HasListBox>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				callback.onFailure(caught);
-			}
-
-			@Override
-			public void onSuccess(List<? extends HasListBox> result) {
-				Collections.sort(result, new HasListBox.Comparator());
-				callback.onSuccess(result);
-			}
-		});
-		
-		
-	}
+	
+	
 	
 	/**
 	 * Gets the qDS data type for category.

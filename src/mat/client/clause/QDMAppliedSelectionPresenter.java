@@ -2298,7 +2298,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
 		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
 			gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
-			MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
+			/*MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
 					new AsyncCallback<SaveUpdateCodeListResult>() {
 				
 				@Override
@@ -2317,7 +2317,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
 				}
 			});
-			
+			*/
 		}
 	}
 	

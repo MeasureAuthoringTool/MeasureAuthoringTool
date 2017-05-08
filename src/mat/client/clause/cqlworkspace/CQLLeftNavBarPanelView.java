@@ -2456,10 +2456,11 @@ public class CQLLeftNavBarPanelView {
 		HTML html2 = new HTML("Ctrl-Alt-y: datatypes");
 		HTML html3 = new HTML("Ctrl-Alt-d: definitions");
 		HTML html4 = new HTML("Ctrl-Alt-f: functions");
-		HTML html5 = new HTML("Ctrl-Alt-p: parameters");
-		HTML html6 = new HTML("Ctrl-Alt-t: timings");
-		HTML html7 = new HTML("Ctrl-Alt-v: value sets");
-		HTML html8 = new HTML("Ctrl-Alt-k: keywords");
+		HTML html5 = new HTML("Ctrl-Alt-k: keywords");
+		HTML html6 = new HTML("Ctrl-Alt-p: parameters");
+		HTML html7 = new HTML("Ctrl-Alt-t: timings");
+		HTML html8 = new HTML("Ctrl-Alt-v: value sets");
+		
 		HTML html9 = new HTML("Ctrl-Space: all");
 
 		dialogContents.add(html1);

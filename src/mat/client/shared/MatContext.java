@@ -33,7 +33,7 @@ import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
-import mat.client.codelist.AdminManageCodeListSearchModel;
+
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
@@ -192,7 +192,7 @@ public class MatContext implements IsSerializable {
 	//private ManageCodeListSearchView manageCodeListSearchView;
 	
 	/** The manage code list search model. */
-	private AdminManageCodeListSearchModel manageCodeListSearchModel;
+	//private AdminManageCodeListSearchModel manageCodeListSearchModel;
 	
 	
 	/** The synchronization delegate. */
@@ -1525,26 +1525,6 @@ public class MatContext implements IsSerializable {
 	
 	
 	/**
-	 * Sets the manage code list searc model.
-	 * 
-	 * @param manageCodeListSearchModel
-	 *            the new manage code list searc model
-	 */
-	public void setManageCodeListSearcModel(AdminManageCodeListSearchModel manageCodeListSearchModel) {
-		this.manageCodeListSearchModel =  manageCodeListSearchModel;
-	}
-	
-	
-	/**
-	 * Gets the manage code list search model.
-	 * 
-	 * @return the manageCodeListSearcModel
-	 */
-	public AdminManageCodeListSearchModel getManageCodeListSearchModel() {
-		return manageCodeListSearchModel;
-	}
-	
-	/**
 	 * Method is called on SignOut/ X out / Time Out.
 	 * 
 	 * @param activityType
@@ -1678,9 +1658,9 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the all cql keywords and qdm datatypes for cql work space
 	 */
-	public void getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace(){
+	public void getAllCqlKeywords(){
 				
-		measureService.getCQLKeywordsList(new AsyncCallback<CQLKeywords>() {
+		getMeasureService().getCQLKeywordsList(new AsyncCallback<CQLKeywords>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1694,57 +1674,8 @@ public class MatContext implements IsSerializable {
 				
 			}
 		});
-		getAllDataType();
-		
 	}
-
-	public void getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpaceSA(){
-		
-		cqlLibraryService.getCQLKeywordsLists(new AsyncCallback<CQLKeywords>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onSuccess(CQLKeywords result) {
-				cqlKeywords = result;
-				
-			}
-		});
-		getAllDataType();
-		
-	}
-
-/*	private void getAllDataTypes() {
-		listBoxCodeProvider.getAllDataType(
-				new AsyncCallback<List<? extends HasListBox>>() {
-					
-					@Override
-					public void onFailure(final Throwable caught) {
-					}
-					
-					@Override
-					public void onSuccess(
-							final List<? extends HasListBox> result) {
-						Collections.sort(result,
-								new HasListBox.Comparator());
-						dataTypeList.clear();
-						dataTypeList.add(MatContext.PLEASE_SELECT);
-						if (result != null) {
-							for (HasListBox listBoxContent : result) {
-								if(! listBoxContent.getItem().equalsIgnoreCase("attribute")){
-									dataTypeList.add(listBoxContent.getItem());
-								}
-								
-							}
-							
-						}
-					}
-				});
-	}*/
+	
 	
 	/**
  * Gets of all of the units and updates the all units list.
@@ -1777,6 +1708,15 @@ public class MatContext implements IsSerializable {
 	 * @return all cql list.
 	 */
 	public List<String> getAllCQLUnits() {
+		return allCQLUnitsList;
+		
+	}
+
+
+	/**
+	 * 
+	 */
+	public void setCQLUnits() {
 		getCodeListService().getAllCqlUnits(new AsyncCallback<List<String>> (){
 
 			@Override
@@ -1795,8 +1735,6 @@ public class MatContext implements IsSerializable {
 				}
 			}
 		});
-		return allCQLUnitsList;
-		
 	}
 	
 	/**

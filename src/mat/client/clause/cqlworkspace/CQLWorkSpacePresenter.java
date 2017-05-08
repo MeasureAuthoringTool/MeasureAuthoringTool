@@ -329,7 +329,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 		JSONAttributeModeUtility.getAllAttrModeList();
 		JSONAttributeModeUtility.getAllModeDetailsList();
-		MatContext.get().getAllAttributesList();
+		
 	}
 
 	/**
@@ -2448,8 +2448,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		panel.add(searchDisplay.asWidget());
 		getCQLData();
-		MatContext.get().getAllCqlKeywordsAndQDMDatatypesForCQLWorkSpace();
-		MatContext.get().getAllUnits();
 		// getAppliedQDMList(true);
 		//loadElementLookUpNode();
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {

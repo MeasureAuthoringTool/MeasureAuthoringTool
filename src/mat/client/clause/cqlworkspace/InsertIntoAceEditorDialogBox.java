@@ -1445,7 +1445,7 @@ private static void defaultFrmGrpValidations(){
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
 		for(String unit : allUnits) {
-			UnitslistBox.addItem(unit);
+			UnitslistBox.addItem(unit, unit);
 		}
 		//setting itemcount value to 1 turns listbox into a drop-down list.
 		UnitslistBox.setVisibleItemCount(1);

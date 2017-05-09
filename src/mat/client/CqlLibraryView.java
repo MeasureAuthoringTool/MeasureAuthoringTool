@@ -1,13 +1,13 @@
 package mat.client;
 
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -16,9 +16,9 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentCQLLibraryWidget;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLLibraryDataSetObject;
 
@@ -29,10 +29,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-
-	/** The create measure widget. */
-	private CreateNewItemWidget createNewItemWidget = new CreateNewItemWidget("forCqlLibrary");
 	
+	private Button createNewLibraryButton = new Button("New Library");
 	
 	/** The measure search filter widget. */
 	private SearchWidgetWithFilter searchFilterWidget = new SearchWidgetWithFilter("searchFilter",
@@ -128,14 +126,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public VerticalPanel getCellTablePanel() {
 		return cqlLibrarySearchView.getCellTablePanel();
 	}
-	@Override
-	public CreateNewItemWidget getCreateNewItemWidget() {
-		return createNewItemWidget;
-	}
-
-	public void setCreateNewItemWidget(CreateNewItemWidget CreateNewItemWidget) {
-		this.createNewItemWidget = CreateNewItemWidget;
-	}
 
 	public void setMainPanel(FlowPanel mainPanel) {
 		this.mainPanel = mainPanel;
@@ -185,9 +175,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	}
 	
 	@Override
-	public String getSelectedOption() {
-		return createNewItemWidget.getOptions().getItemText(createNewItemWidget.getOptions().getSelectedIndex());
+	public Button getCreateNewLibraryButton() {
+		return createNewLibraryButton;
 	}
+	
 	@Override
 	public MessageAlert getErrorMessageAlert() {
 		return errorMessageAlert;
@@ -195,11 +186,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	public void setErrorMessageAlert(MessageAlert errorMessageAlert) {
 		this.errorMessageAlert = errorMessageAlert;
-	}
-	
-	@Override
-	public void clearSelections() {
-		createNewItemWidget.getOptions().setSelectedIndex(0);
 	}
 	
 	@Override
@@ -231,8 +217,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchFilterWidget.getSearchButton();
-		
 	}
+	
+	
+	
 	@Override
 	public MostRecentCQLLibraryWidget getMostRecentLibraryWidget() {
 		return mostRecentLibraryWidget;

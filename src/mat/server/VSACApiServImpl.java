@@ -81,6 +81,9 @@ public class VSACApiServImpl implements VSACApiService{
 	
 	/** The default exp id. */
 	private String defaultExpId;
+	
+	private String vsacServerUrl;
+	
 	public VSACApiServImpl(){
 		PROXY_HOST = System.getProperty("vsac_proxy_host");
 		if(PROXY_HOST !=null) {
@@ -849,15 +852,22 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 	
 	@Override
-	public final VsacApiResult getDirectReferenceCode (final String url, String sessionId) {
-		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + url);
+	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
+		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
 		VsacApiResult result = new VsacApiResult();
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
 		if (eightHourTicket != null) {
 			if ((url != null) && StringUtils.isNotEmpty(url) && StringUtils.isNotBlank(url)) {
-				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
+				LOGGER.info(" VSACAPIServiceImpl getDirectReferenceCode method Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-				VSACResponseResult vsacResponseResult = vGroovyClient.getStandardDirectReferenceCode(fiveMinServiceTicket);	
+				if(url.contains(":")){
+					String[] arg = url.split(":");
+					if(arg.length >0 && arg[1] != null) {
+						url = arg[1];
+						LOGGER.info("VSACAPIServiceImpl getDirectReferenceCode method : URL after dropping text before : is :: "+ url);
+					}
+				}
+				VSACResponseResult vsacResponseResult = vGroovyClient.getDirectReferenceCode(vsacServerUrl+url, fiveMinServiceTicket);	
 				
 				if((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)
 						&& (!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad()))) {
@@ -867,7 +877,7 @@ public class VSACApiServImpl implements VSACApiService{
 				}
 			}  else {
 				result.setSuccess(false);
-				result.setFailureReason(result.OID_REQUIRED);
+				result.setFailureReason(result.CODE_URL_REQUIRED);
 				LOGGER.info("URL is required");
 			}
 		} else {
@@ -1041,6 +1051,14 @@ public class VSACApiServImpl implements VSACApiService{
 		this.defaultExpId = defaultExpId;
 	}
 	
+	public String getVsacServerUrl() {
+		return vsacServerUrl;
+	}
+
+	public void setVsacServerUrl(String vsacServerUrl) {
+		this.vsacServerUrl = vsacServerUrl;
+	}
+
 	/**
 	 * Gets the default expansion id from Mat.properties file
 	 *

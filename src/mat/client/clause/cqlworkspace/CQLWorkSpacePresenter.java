@@ -3787,6 +3787,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 			}
 		});
+		
+		searchDisplay.getCodesView().getCancelCodeButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+				}
+			}
+		});
+		
+		
 	}
 	
 	private void addNewCodes() {
@@ -4020,11 +4033,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		// OID validation.
 		if ((url == null) || url.trim().isEmpty()) {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED());
+			
 			return;
 		}
-		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
+		
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		
 		
 		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
@@ -4033,11 +4047,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				
 			}
 
 			@Override
 			public void onSuccess(VsacApiResult result) {
+				
 				if (result.isSuccess()) {
 					
 					searchDisplay.getCodesView().getCodeDescriptorInput().setValue(result.getDirectReferenceCode().getCodeDescriptor());
@@ -4045,8 +4061,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
 					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
-					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+					
+				} else {
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				}
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 			}
 		});
 		

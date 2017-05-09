@@ -22,6 +22,9 @@ public class VsacApiResult implements IsSerializable {
 	/** The Constant OID_REQUIRED. */
 	public  final static int OID_REQUIRED = 2;
 	
+	/** The Constant OID_REQUIRED. */
+	public  final static int CODE_URL_REQUIRED = 4;
+	
 	/** The Constant UMLS_NOT_LOGGEDIN. */
 	public  final static int UMLS_NOT_LOGGEDIN = 1;
 	

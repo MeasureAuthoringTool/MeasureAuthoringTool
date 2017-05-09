@@ -246,7 +246,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 
 
 		searchPanel.add(searchHeader);
-		searchPanel.setWidth("550px");
+		/*searchPanel.setWidth("550px");*/
 		searchPanel.setHeight("350px");
 		searchPanelBody.add(new SpacerWidget());
 
@@ -258,7 +258,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		cancelButton.setTitle("Cancel");
 
 		Grid searchGrid = new Grid(2, 1);
-		Grid codeGrid = new Grid(3, 2);
+		Grid codeGrid = new Grid(2, 3);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveCode);
 		buttonToolBar.add(cancelButton);
@@ -271,7 +271,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 
 
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("400px");
+		sWidget.setSearchBoxWidth("430px");
 		sWidget.getGo().setEnabled(true);
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
@@ -288,7 +288,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		codeSystemLabel.setText("Code System");
 		codeSystemLabel.setTitle("Code System");
 		codeSystemInput.setTitle("Code System");
-		codeSystemInput.setWidth("200px");
+		codeSystemInput.setWidth("180px");
 		codeSystemInput.setHeight("30px");
 
 		VerticalPanel codeGroup = new VerticalPanel();
@@ -303,7 +303,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		codeDescriptorLabel.setText("Code Descriptor");
 		codeDescriptorLabel.setTitle("Code Descriptor");
 		codeDescriptorInput.setTitle("Code Descriptor");
-		codeDescriptorInput.setWidth("400px");
+		codeDescriptorInput.setWidth("510px");
 		codeDescriptorInput.setHeight("30px");
 
 		codeDescriptorGroup.add(codeDescriptorLabel);
@@ -325,9 +325,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		searchGrid.setStyleName("secondLabel");
 		
 		codeGrid.setWidget(0, 0, codeGroup);
-		codeGrid.setWidget(1, 0, codeSystemGroup);
-		codeGrid.setWidget(1, 1, versionFormGroup);
-		codeGrid.setWidget(2, 0, buttonFormGroup);
+		codeGrid.setWidget(0, 1, codeSystemGroup);
+		codeGrid.setWidget(0, 2, versionFormGroup);
+		codeGrid.setWidget(1, 0, buttonFormGroup);
 		codeGrid.setStyleName("code-grid");
 
 		VerticalPanel codeFormGroup = new VerticalPanel();
@@ -350,20 +350,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		return containerPanel;
 	}
 	
-	/**
-	 * Gets the data type text.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the data type text
-	 */
-	public String getDataTypeText(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getItemText(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-	
+
 	/**
 	 * Check for enable.
 	 * 
@@ -437,7 +424,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @return the retrieve from vsac button
 	 */
-	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
+	public Button getRetrieveFromVSACButton(){
 		return sWidget.getGo();
 	}
 	
@@ -591,9 +578,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		getCodeInput().setEnabled(false);
 		getCodeSystemInput().setEnabled(false);
 		getCodeSystemVersionInput().setEnabled(false);
-		
+		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
-	//	getRetrieveFromVSACButton().setEnabled(editable);
+	
 		getSaveButton().setEnabled(false);
 		
 	}
@@ -654,8 +641,8 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		case VsacApiResult.UMLS_NOT_LOGGEDIN:
 			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
 			break;
-		case VsacApiResult.OID_REQUIRED:
-			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
+		case VsacApiResult.CODE_URL_REQUIRED:
+			message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
 			break;
 		default:
 			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
@@ -785,7 +772,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"
 							+ "</span>"));
 			
-			// Identifier Column
+			/*// Identifier Column
 			Column<CQLCode, SafeHtml> identifierColumn = new Column<CQLCode, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
@@ -799,7 +786,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			};
 			table.addColumn(identifierColumn, SafeHtmlUtils
 					.fromSafeConstant("<span title=\"Identifier\">" + "Identifier"
-							+ "</span>"));
+							+ "</span>"));*/
 			
 			
 			// Code Profile Column
@@ -848,7 +835,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			
 			if(isEditable){
 				// Modify by Delete Column
-				String colName = "Modify";
+				String colName = "Delete";
 				table.addColumn(new Column<CQLCode, CQLCode>(
 						getCompositeCellForQDMModifyAndDelete(isEditable)) {
 					
@@ -865,7 +852,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			table.setColumnWidth(2, 25.0, Unit.PCT);
 			table.setColumnWidth(3, 10.0, Unit.PCT);
 			table.setColumnWidth(4, 10.0, Unit.PCT);
-			table.setColumnWidth(5, 2.0, Unit.PCT);
+			/*table.setColumnWidth(5, 2.0, Unit.PCT);*/
 		}
 		
 		return table;

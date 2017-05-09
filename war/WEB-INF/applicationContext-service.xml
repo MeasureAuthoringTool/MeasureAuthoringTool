@@ -90,6 +90,7 @@
    
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
+    	<property name="vsacServerUrl" value="${mat.vsac.server.url}"/>
     </bean>
     
     <bean id="matOtpValidator" class="${2FA_AUTH_CLASS}"/>

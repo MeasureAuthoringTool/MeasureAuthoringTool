@@ -7,7 +7,6 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;

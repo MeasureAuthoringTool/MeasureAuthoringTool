@@ -517,16 +517,16 @@ public class CQLUtil {
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
 			
-			System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
+//			System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
 			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
 						
-			System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
+//			System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
 			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
 			
-			System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
+//			System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
 			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
 			
-			System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
+//			System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
 			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
 		}
 	}

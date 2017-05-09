@@ -20,9 +20,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -76,6 +79,8 @@ public class ManageMeasureDetailView
     
     /** The required instructions. */
     protected HTML requiredInstructions = new HTML("All fields are required.");
+    
+    protected Label patientBasedMeasure = new Label();
 	
 	/**
 	 * Instantiates a new manage measure detail view.
@@ -132,6 +137,20 @@ public class ManageMeasureDetailView
 		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
 		leftPanel.add(hp);
 		leftPanel.add(new SpacerWidget());
+		
+		//Patient Based Measure
+		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
+		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
+		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
+		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
+		RadioButton radioYes = new RadioButton("patientBasedGroup", "Yes");
+	    RadioButton radioNo = new RadioButton("patientBasedGroup", "No");
+	    // Check 'No' by default.
+	    radioNo.setValue(true);
+		patientBasedMeasurePanel.add(radioNo);
+		patientBasedMeasurePanel.add(radioYes);
+		patientBasedMeasurePanel.add(new SpacerWidget());
+		leftPanel.add(patientBasedMeasurePanel);
 
 		SimplePanel buttonPanel = new SimplePanel();
 		buttonPanel.getElement().setId("buttonPanel_SimplePanel");

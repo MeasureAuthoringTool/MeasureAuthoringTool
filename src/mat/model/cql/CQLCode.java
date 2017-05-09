@@ -26,6 +26,7 @@ public class CQLCode implements IsSerializable {
 	/** The Display Name. */
 	private String displayName;
 
+	private boolean isUsed;
 	
 	/**
 	 * Gets the id.
@@ -119,6 +120,14 @@ public class CQLCode implements IsSerializable {
 	 */
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
 	}
 	
 }

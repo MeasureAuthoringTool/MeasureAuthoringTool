@@ -17,11 +17,10 @@ import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -47,7 +46,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.Mat;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -57,9 +55,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.ConstantMessages;
 
 
 
@@ -273,6 +269,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		sWidget.setSearchBoxWidth("430px");
 		sWidget.getGo().setEnabled(true);
+		sWidget.getGo().setTitle("Reterive Code Identifier");
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 
@@ -837,7 +834,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 				// Modify by Delete Column
 				String colName = "Delete";
 				table.addColumn(new Column<CQLCode, CQLCode>(
-						getCompositeCellForQDMModifyAndDelete(isEditable)) {
+						getCompositeCell(isEditable)) {
 					
 					@Override
 					public CQLCode getValue(CQLCode object) {
@@ -849,9 +846,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 25.0, Unit.PCT);
-			table.setColumnWidth(3, 10.0, Unit.PCT);
-			table.setColumnWidth(4, 10.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(3, 17.0, Unit.PCT);
+			table.setColumnWidth(4, 2.0, Unit.PCT);
 			/*table.setColumnWidth(5, 2.0, Unit.PCT);*/
 		}
 		
@@ -859,11 +856,11 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	
-	private CompositeCell<CQLCode> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
+	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable) {
 		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
 		if(isEditable){
-			cells.add(getModifyQDMButtonCell());
-			cells.add(getDeleteQDMButtonCell());
+			//cells.add(getModifyQDMButtonCell());
+			cells.add(getDeleteButtonCell());
 		}
 		
 		CompositeCell<CQLCode> cell = new CompositeCell<CQLCode>(
@@ -905,7 +902,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 * Gets the modify qdm button cell.
 	 * 
 	 * @return the modify qdm button cell
-	 */
+	 *//*
 	private HasCell<CQLCode, SafeHtml> getModifyQDMButtonCell() {
 		
 		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
@@ -924,9 +921,9 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					@Override
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
-						/*if ((object != null)) {
+						if ((object != null)) {
 							observer.onModifyClicked(object);
-						}*/
+						}
 					}
 				};
 			}
@@ -936,10 +933,10 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to modify Code";
 				String cssClass = "customEditButton";
-				/*if(isEditable){
+				if(isEditable){
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
 							+ "' class=\" " + cssClass + "\">Editable</button>");
-				} else {*/
+				} else {
 					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
 							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
 				//}
@@ -949,14 +946,14 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		};
 		
 		return hasCell;
-	}
+	}*/
 	
 	/**
 	 * Gets the delete qdm button cell.
 	 * 
 	 * @return the delete qdm button cell
 	 */
-	private HasCell<CQLCode, SafeHtml> getDeleteQDMButtonCell() {
+	private HasCell<CQLCode, SafeHtml> getDeleteButtonCell() {
 		
 		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
 			
@@ -987,7 +984,10 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to delete Code";
 				String cssClass;
-				/*if (object.isUsed()) {
+				// Delete button is not created for default codes - Dead and Birthdate.
+				if(object.getCodeOID().equals("419099009") || object.getCodeOID().equals("21112-8")){
+					sb.appendHtmlConstant("<span></span>");
+				} else	if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass
@@ -997,13 +997,8 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
 							+ title + "' class=\" " + cssClass
 							+ "\"/>Delete</button>");
-				}*/
-				cssClass = "customDeleteDisableButton";
-				sb.appendHtmlConstant("<button type=\"button\" title='"
-						+ title + "' tabindex=\"0\" class=\" " + cssClass
-						+ "\"disabled/>Delete</button>");
-				
-				
+				}
+								
 				return sb.toSafeHtml();
 			}
 		};

@@ -45,14 +45,10 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private Button bulkExportButton = new Button("Export Selected");	
 	
 	/** The create measure button. */
-	CustomButton createMeasureButton = (CustomButton) getImage("Create Measure",
-			ImageResources.INSTANCE.createMeasure(), "Create Measure" , "createMeasurePlusButton");
+	Button createMeasureButton = new Button("New Measure"); 
 	
 	/** The table. */
 	CellTable<ManageMeasureSearchModel.Result> table;
-	
-	/** The create measure widget. */
-	private CreateNewItemWidget createMeasureWidget = new CreateNewItemWidget("forMeasureLibrary");
 	
 	/** The error messages for transfer os. */
 	private MessageAlert errorMessagesForTransferOS = new ErrorMessageAlert();
@@ -143,7 +139,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
-		measureFilterVP.add(createMeasureWidget);
 		measureFilterVP.add(measureSearchFilterWidget);
 		buildMostRecentWidget();
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
@@ -330,44 +325,13 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#clearSelections()
-	 */
-	@Override
-	public void clearSelections() {
-		createMeasureWidget.getOptions().setSelectedIndex(0);
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getBulkExportButton()
 	 */
 	@Override
 	public HasClickHandlers getBulkExportButton() {
 		return bulkExportButton;
-	}
+	}	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getCreateButton()
-	 */
-	@Override
-	public HasClickHandlers getCreateButton() {
-		return createMeasureWidget.getCreateItemButton();
-	}
-	
-	/** Gets the create button.
-	 * 
-	 * @return the createMeasureButton */
-	@Override
-	public CustomButton getCreateMeasureButton() {
-		return createMeasureButton;
-	}
-	
-	/** Gets the creates the measure widget.
-	 * 
-	 * @return the createMeasureWidget */
-	@Override
-	public CreateNewItemWidget getCreateMeasureWidget() {
-		return createMeasureWidget;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMeasureDeletion()
@@ -499,17 +463,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectIdForEditTool()
-	 */
-	/**
-	 * (non-Javadoc).
-	 * 
-	 * @return the selected option
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption
-	 */
-	@Override
-	public String getSelectedOption() {
-		return createMeasureWidget.getOptions().getItemText(createMeasureWidget.getOptions().getSelectedIndex());
-	}
+	 */	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
@@ -546,17 +500,10 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	/** Sets the create button.
 	 * 
 	 * @param createMeasureButton the createMeasureButton to set */
-	public void setCreateMeasureButton(CustomButton createMeasureButton) {
+	public void setCreateMeasureButton(Button createMeasureButton) {
 		this.createMeasureButton = createMeasureButton;
 	}
-	
-	/** Sets the creates the measure widget.
-	 * 
-	 * @param createMeasureWidget the createMeasureWidget to set */
-	public void setCreateMeasureWidget(CreateNewItemWidget createMeasureWidget) {
-		this.createMeasureWidget = createMeasureWidget;
-	}
-	
+		
 	/**
 	 * Sets the error measure deletion.
 	 * 
@@ -658,6 +605,15 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	public HasValue<String> getAdminSearchString() {		
 		return searchInput;
 	}
+
+	@Override
+	public Button getCreateMeasureButton() {
+		return createMeasureButton;
+	}
 	
-	
+	@Override
+	public String getSelectedOption() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -52,7 +55,6 @@ import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
@@ -433,11 +435,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void clearBulkExportCheckBoxes(Grid508 dataTable);
 
 		/**
-		 * Clear selections.
-		 */
-		public void clearSelections();
-
-		/**
 		 * Gets the bulk export button.
 		 * 
 		 * @return the bulk export button
@@ -445,25 +442,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getBulkExportButton();
 
 		/**
-		 * Gets the creates the button.
-		 * 
-		 * @return the creates the button
-		 */
-		public HasClickHandlers getCreateButton();
-
-		/**
 		 * Gets the creates the measure button.
 		 * 
 		 * @return the creates the measure button
 		 */
-		CustomButton getCreateMeasureButton();
-
-		/**
-		 * Gets the creates the measure widget.
-		 * 
-		 * @return the creates the measure widget
-		 */
-		CreateNewItemWidget getCreateMeasureWidget();
+		Button getCreateMeasureButton();
 
 		/**
 		 * Gets the error measure deletion.
@@ -687,7 +670,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			detailDisplay.getName().setValue("");
 			detailDisplay.getShortName().setValue("");
-			searchDisplay.clearSelections();
 			displaySearch();
 		}
 	};
@@ -831,7 +813,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displaySearch();
 		if (searchDisplay != null) {
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-			searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
 			searchDisplayHandlers(searchDisplay);
 		}
 
@@ -1198,21 +1179,36 @@ public class ManageMeasurePresenter implements MatPresenter {
 			fp.add(searchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
-			searchDisplay.getCreateMeasureWidget().setVisible(false);
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(true);
 			isMeasureSearchFilterVisible = true;
 			isCreateMeasureWidgetVisible = false;
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
-			panel.getButtonPanel().clear();
-			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), "createElement_measureLib",
-					searchDisplay.getZoomButton(), "searchButton_measureLib");
+			buildCreateMeasure(); 
+			
 			fp.add(searchDisplay.asWidget());
 		}
 
 		panel.setContent(fp);
 		Mat.focusSkipLists("MeasureLibrary");
+	}
+	
+	/**
+	 * Builds the Create Measure Button
+	 */
+	private void buildCreateMeasure() {
+		panel.getButtonPanel().clear();
+
+		searchDisplay.getCreateMeasureButton().setIcon(IconType.LIGHTBULB_O);
+		searchDisplay.getCreateMeasureButton().setIconSize(IconSize.LARGE);
+		searchDisplay.getCreateMeasureButton().setType(ButtonType.LINK);
+		searchDisplay.getCreateMeasureButton().setTitle("New Measure");
+		
+		
+		searchDisplay.getCreateMeasureButton().getElement().setAttribute("style", "width: 0px; position: relative; right: 70px; font-weight: 600"); 
+
+		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
 
 	/**
@@ -1578,7 +1574,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 					public void onSuccess(SaveMeasureResult result) {
 						showSearchingBusy(false);
 						if (result.isSuccess()) {
-							searchDisplay.clearSelections();
 							displaySearch();
 							String versionStr = result.getVersionStr();
 							MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Versioned",
@@ -1983,7 +1978,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					}
 				});
-		searchDisplay.getCreateButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1992,13 +1987,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				measureDeletion = false;
 				isMeasureDeleted = false;
 
-				if (searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_MEASURE)) {
-					createNew();
-				} else {
-					searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-					searchDisplay.getErrorMessageDisplay()
-							.createAlert("Please select an option from the Create list box.");
-				}
+				createNew(); 
 			}
 		});
 
@@ -2014,39 +2003,39 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
 			}
 		});
-		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				if (isCreateMeasureWidgetVisible) {
-					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-				}
-				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-
-			}
-		});
-
-		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				if (isMeasureSearchFilterVisible) {
-					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-				}
-				isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-				searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-			}
-		});
+//		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+//				searchDisplay.getErrorMeasureDeletion().clearAlert();
+//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+//				searchDisplay.getErrorMessageDisplay().clearAlert();
+//				if (isCreateMeasureWidgetVisible) {
+//					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
+//					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
+//				}
+//				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
+//				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+//
+//			}
+//		});
+//
+//		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
+//
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+//				searchDisplay.getErrorMeasureDeletion().clearAlert();
+//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+//				searchDisplay.getErrorMessageDisplay().clearAlert();
+//				if (isMeasureSearchFilterVisible) {
+//					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
+//					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+//				}
+//				isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
+//				searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
+//			}
+//		});
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

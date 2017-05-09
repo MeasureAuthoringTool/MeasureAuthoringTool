@@ -51,7 +51,6 @@ import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
-import mat.model.DirectReferenceCode;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;

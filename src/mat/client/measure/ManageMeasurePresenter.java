@@ -701,20 +701,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The is clone. */
 	private boolean isClone;
 
-	/** The is create measure widget visible. */
-	boolean isCreateMeasureWidgetVisible = false;
-
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
 
 	/** The is measure search filter visible. */
 	boolean isMeasureSearchFilterVisible = true;
-
-	/** The is search visible on draft. */
-	boolean isSearchVisibleOnDraft = true;
-
-	/** The is search visible on version. */
-	boolean isSearchVisibleOnVersion = true;
 
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
@@ -1181,7 +1172,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			// MAT-1929 : Retain filters at measure library screen
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(true);
 			isMeasureSearchFilterVisible = true;
-			isCreateMeasureWidgetVisible = false;
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
@@ -1200,14 +1190,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void buildCreateMeasure() {
 		panel.getButtonPanel().clear();
 
+		searchDisplay.getCreateMeasureButton().setId("newMeasure_button");
 		searchDisplay.getCreateMeasureButton().setIcon(IconType.LIGHTBULB_O);
 		searchDisplay.getCreateMeasureButton().setIconSize(IconSize.LARGE);
 		searchDisplay.getCreateMeasureButton().setType(ButtonType.LINK);
-		searchDisplay.getCreateMeasureButton().setTitle("New Measure");
-		
-		
-		searchDisplay.getCreateMeasureButton().getElement().setAttribute("style", "width: 0px; position: relative; right: 70px; font-weight: 600"); 
-
+		searchDisplay.getCreateMeasureButton().setTitle("Click to create new measure");
+				
+		searchDisplay.getCreateMeasureButton().setStyleName("createNewButton");
 		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
 

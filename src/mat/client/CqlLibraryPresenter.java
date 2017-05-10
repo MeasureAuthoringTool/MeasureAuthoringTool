@@ -1238,13 +1238,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private void buildCreateLibrary() {
 		panel.getButtonPanel().clear();
 
+		cqlLibraryView.getCreateNewLibraryButton().setId("newLibrary_button");
 		cqlLibraryView.getCreateNewLibraryButton().setIcon(IconType.LIGHTBULB_O);
 		cqlLibraryView.getCreateNewLibraryButton().setIconSize(IconSize.LARGE);
 		cqlLibraryView.getCreateNewLibraryButton().setType(ButtonType.LINK);
-		cqlLibraryView.getCreateNewLibraryButton().setTitle("New Library");
+		cqlLibraryView.getCreateNewLibraryButton().setTitle("Click to create new library");
 		
-		cqlLibraryView.getCreateNewLibraryButton().getElement().setAttribute("style", "width: 0px; position: relative; right: 60px; font-weight: 600"); 
-
+		cqlLibraryView.getCreateNewLibraryButton().setStyleName("createNewButton");
 		panel.getButtonPanel().add(cqlLibraryView.getCreateNewLibraryButton());
 	}
 	

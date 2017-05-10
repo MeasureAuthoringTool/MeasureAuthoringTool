@@ -1986,6 +1986,35 @@ padding: 2px;
     margin-top:8px;
 }
 
+.createNewButton {
+	color: #fff;
+	background-color: transparent;
+	border-color: #2e6da4
+	display: inline-block;
+	padding: 6px 0px;
+	margin-bottom: 0;
+	font-size: 14px;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-weight: 600;
+	color: #337ab7;
+	border-radius: 0;
+	position: relative;
+	right: 70px;
+}
+
 .searchFilter{
 	border:1px solid lightgray;
     -moz-box-sizing: border-box;

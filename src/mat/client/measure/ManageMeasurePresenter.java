@@ -9,6 +9,8 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -193,6 +195,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the show
 		 */
 		public void showMeasureName(boolean show);
+
+		/**
+		 * Gets the yes patient based radio button
+		 */
+		org.gwtbootstrap3.client.ui.RadioButton getPatientBasedYesRadioButton();
+
+		/**
+		 * Gets the no patient based radio button
+		 */
+		org.gwtbootstrap3.client.ui.RadioButton getPatientBasedNoRadioButton();
 	}
 
 	/**
@@ -1083,6 +1095,31 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onSuccess(List<? extends HasListBox> result) {
 				detailDisplay.setScoringChoices(result);
 			}
+		});
+		
+		detailDisplay.getMeasScoringChoice().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Proportion") ||
+						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Cohort") || 
+						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Ratio")) {
+					
+					detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
+					detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
+					
+					detailDisplay.getPatientBasedNoRadioButton().setValue(false);
+					detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+				}
+				
+				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Continuous Variable")) {
+					detailDisplay.getPatientBasedNoRadioButton().setValue(true);
+					detailDisplay.getPatientBasedYesRadioButton().setValue(false);
+					
+					detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
+					detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
+				}
+			}			
 		});
 	}
 
@@ -2389,7 +2426,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			final String name = currentDetails.getName();
 			final String shortName = currentDetails.getShortName();
 			final String scoringType = currentDetails.getMeasScoring();
-			final String version = currentDetails.getVersionNumber();
+			final String version = currentDetails.getVersionNumber();		
 			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
 				@Override
@@ -2435,11 +2472,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentDetails.setName(detailDisplay.getName().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
 		String measureScoring = detailDisplay.getMeasScoringValue();
-
+		
 		// US 421. Update the Measure scoring choice from the UI.
 		// if (isValidValue(measureScoring)) {
 		currentDetails.setMeasScoring(measureScoring);
 		// }
+		
+		// update the current measure details model based on the patient based radio buttons
+		if(detailDisplay.getPatientBasedNoRadioButton().getValue() == true) {
+			currentDetails.setIsPatientBased(false);
+		} else {
+			currentDetails.setIsPatientBased(true);
+		}
+		
 		currentDetails.scrubForMarkUp();
 		detailDisplay.getName().setValue(currentDetails.getName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());

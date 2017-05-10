@@ -27,6 +27,12 @@ public class ManageMeasureModelValidator {
 			//|| enteredScoringValue.equals("--Select--")) {
 			message.add(MatContext.get().getMessageDelegate().s_ERR_MEASURE_SCORE_REQUIRED);
 		}
+		
+		// MAT-8602 Continous Variable measures must be patient based.
+		if((scoring.equalsIgnoreCase("Continous Variable") && (model.isPatientBased() == false))) {
+			message.add(MatContext.get().getMessageDelegate().CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR);
+		}
+		
 		return message;
 	}
 	

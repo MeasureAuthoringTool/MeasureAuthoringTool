@@ -215,6 +215,9 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	/** The calender year. */
 	private boolean isCalenderYear;
 	
+	/** The is patient based flag **/
+	private boolean isPatientBased; 
+	
 	private MeasureDetailResult measureDetailResult; 
 	
 	
@@ -2046,6 +2049,21 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	 */
 	public void setStewardValue(String stewardValue) {
 		this.stewardValue = stewardValue;
+	}
+	
+	/**
+	 * is the measure patient based?
+	 * @return true if the measure is patient based, false if it is not. 
+	 */
+	public boolean isPatientBased() {
+		return isPatientBased;
+	}
+	
+	/**
+	 * set is the measure patient based
+	 */
+	public void setIsPatientBased(boolean isPatientBased) {
+		this.isPatientBased = isPatientBased;
 	}
 	
 	/**

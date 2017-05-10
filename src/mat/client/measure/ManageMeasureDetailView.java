@@ -69,6 +69,16 @@ public class ManageMeasureDetailView
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
+	/**
+	 * The yes patient based radio button
+	 */
+	private RadioButton radioBtnYes;
+	
+	/**
+	 * The no patient based radio button
+	 */
+	private RadioButton radioBtnNo;
+	
 	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
 	//User Story # 1391 Sprint 11
@@ -175,8 +185,8 @@ public class ManageMeasureDetailView
 		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
 		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
 		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
-		RadioButton radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
-		RadioButton radioBtnNo = new RadioButton("patientBasedGroup", "No");
+		radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
+		radioBtnNo = new RadioButton("patientBasedGroup", "No");
 		radioBtnYes.getElement().setId("RadioBtn_Yes");
 		radioBtnNo.getElement().setId("RadioBtn_No");
 		// Check 'No' by default.
@@ -340,5 +350,24 @@ public class ManageMeasureDetailView
 		}else{
 			cautionMsgPlaceHolder.setHTML("");
 		}
+	}
+
+
+	/**
+	 * Gets the yes patient based radio button
+	 */
+	@Override
+	public RadioButton getPatientBasedYesRadioButton() {
+		return radioBtnYes;
+	}
+
+
+	/**
+	 * Gets the no patient based radio button
+	 */
+	@Override
+	public RadioButton getPatientBasedNoRadioButton() {
+		// TODO Auto-generated method stub
+		return radioBtnNo;
 	}
 }

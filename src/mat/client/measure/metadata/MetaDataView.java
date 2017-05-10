@@ -4,32 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.ImageResources;
-import mat.client.clause.QDSAppliedListModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.TextAreaWithMaxLength;
-import mat.client.util.CellTableUtility;
-import mat.model.Author;
-import mat.model.MeasureSteward;
-import mat.model.MeasureType;
-import mat.model.QualityDataSetDTO;
-import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -76,6 +50,32 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import mat.client.ImageResources;
+import mat.client.clause.QDSAppliedListModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.HorizontalFlowPanel;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.RadioButtonCell;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.util.CellTableUtility;
+import mat.model.Author;
+import mat.model.MeasureSteward;
+import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class MetaDataView.
@@ -96,6 +96,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The abbr input. */
 	protected Label abbrInput = new Label();
+	
+	/** The patient based input */
+	protected Label patientBasedInput = new Label(); 
 	
 	/** The meas scoring input. */
 	protected Label measScoringInput = new Label();
@@ -508,7 +511,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(measScoringInput);
 		generalPanel.add(new SpacerWidget());
 		
-		Label abbrInputLabel = (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
+		// MAT-8616 Add patient based measure field to Measure Details > General Information Section
+		Label patientBasedLabel = (Label) LabelBuilder.buildLabel(patientBasedInput, "Patient Based Measure");
+		patientBasedLabel.setStyleName("marginLeft20pxBold");
+		patientBasedLabel.setTitle(patientBasedLabel.getText());
+		generalPanel.add(patientBasedLabel);
+		
+		patientBasedInput.getElement().setId("abbrInput");
+		patientBasedInput.setStyleName("marginLeft20px");
+		generalPanel.add(patientBasedInput);
+		generalPanel.add(new SpacerWidget());
+		
+		Label abbrInputLabel =  (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
 		abbrInputLabel.setStyleName("marginLeft20pxBold");
 		abbrInputLabel.setTitle(abbrInputLabel.getText());
 		generalPanel.add(abbrInputLabel);
@@ -2845,6 +2859,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return abbrInput;
 	}
 	
+	/**
+	 * @return the patient based input field
+	 */
+	@Override
+	public Label getPatientBasedInput() {
+		return patientBasedInput;
+	}
 	
 	
 	

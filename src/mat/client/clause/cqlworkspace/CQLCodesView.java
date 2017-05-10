@@ -140,7 +140,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	private Button cancelButton = new Button("Cancel");
 	
 	/** The s widget. */
-	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code");
+	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code Identifier");
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel;
@@ -363,7 +363,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	 */
 	public void resetVSACCodeWidget() {
 		if(checkForEnable()){
-			sWidget.getSearchBox().setTitle("Enter Code");
+			sWidget.getSearchBox().setTitle("Enter Code Identifier");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();
@@ -657,7 +657,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		getSearchHeader().add(searchHeaderText);
 		getCodeSearchInput().setEnabled(true);
 		getCodeSearchInput().setValue("");
-		getCodeSearchInput().setTitle("Enter Code");
+		
 		getCodeDescriptorInput().setValue("");
 		getCodeInput().setValue("");
 		getCodeSystemInput().setValue("");
@@ -669,7 +669,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		cellTablePanel.setWidth("95%");
+		cellTablePanel.setWidth("100%");
 		PanelHeader codesElementsHeader = new PanelHeader();
 		codesElementsHeader.getElement().setId("searchHeader_Label");
 		codesElementsHeader.setStyleName("measureGroupingTableHeader");
@@ -762,7 +762,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					title = title.append("Descriptor : ").append(value);
 					title.append("");
 					
-					return CellTableUtility.getNameColumnToolTip(value, title.toString());
+					return CellTableUtility.getCodeDescriptorColumnToolTip(value, title.toString());
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils
@@ -844,11 +844,11 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 						+ colName + "</span>"));
 			}
 			
-			table.setColumnWidth(0, 25.0, Unit.PCT);
-			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 20.0, Unit.PCT);
-			table.setColumnWidth(3, 17.0, Unit.PCT);
-			table.setColumnWidth(4, 2.0, Unit.PCT);
+			table.setColumnWidth(0, 55.0, Unit.PCT);
+			table.setColumnWidth(1, 15.0, Unit.PCT);
+			table.setColumnWidth(2, 15.0, Unit.PCT);
+			table.setColumnWidth(3, 15.0, Unit.PCT);
+			table.setColumnWidth(4, 5.0, Unit.PCT);
 			/*table.setColumnWidth(5, 2.0, Unit.PCT);*/
 		}
 		

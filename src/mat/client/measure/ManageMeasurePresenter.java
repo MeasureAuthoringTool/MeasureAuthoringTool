@@ -72,6 +72,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -205,6 +206,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * Gets the no patient based radio button
 		 */
 		org.gwtbootstrap3.client.ui.RadioButton getPatientBasedNoRadioButton();
+
+		Label getInvisibleRadioAlertYes();
+
+		Label getInvisibleRadioAlertNo();
 	}
 
 	/**
@@ -1101,23 +1106,29 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Proportion") ||
-						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Cohort") || 
-						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Ratio")) {
+				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
+						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
+						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
 					
 					detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
 					detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
 					
 					detailDisplay.getPatientBasedNoRadioButton().setValue(false);
 					detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+					
+					detailDisplay.getInvisibleRadioAlertNo().getElement().removeAttribute("role");
+					detailDisplay.getInvisibleRadioAlertYes().getElement().setAttribute("role", "alert");
 				}
 				
-				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equals("Continuous Variable")) {
+				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
 					detailDisplay.getPatientBasedNoRadioButton().setValue(true);
 					detailDisplay.getPatientBasedYesRadioButton().setValue(false);
 					
 					detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
 					detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
+					
+					detailDisplay.getInvisibleRadioAlertYes().getElement().removeAttribute("role");
+					detailDisplay.getInvisibleRadioAlertNo().getElement().setAttribute("role", "alert");
 				}
 			}			
 		});

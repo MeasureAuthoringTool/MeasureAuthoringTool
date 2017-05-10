@@ -95,6 +95,10 @@ public class ManageMeasureDetailView
     
     /** The patient based measure. */
     protected Label patientBasedMeasure = new Label();
+    
+    Label invisibleRadioYes; 
+    
+    Label invisibleRadioNo;
 	
 	/**
 	 * Instantiates a new manage measure detail view.
@@ -151,7 +155,7 @@ public class ManageMeasureDetailView
 		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
 		leftPanel.add(hp);
 		leftPanel.add(new SpacerWidget());
-	
+			
 		leftPanel.add(buildPatientBasedMeasurePanel());
 
 		SimplePanel buttonPanel = new SimplePanel();
@@ -184,17 +188,27 @@ public class ManageMeasureDetailView
 		radionButtonPanel.getElement().setId("patientBasedMeasure_HorizontalPanel");
 		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
 		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
+		
+		invisibleRadioYes = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoYes", "PatientBasedIndicatorchangedtoYes.");
+		invisibleRadioNo = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoNo", "PatientBasedIndicatorchangedtoNo.");
+		
 		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
 		radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
 		radioBtnNo = new RadioButton("patientBasedGroup", "No");
 		radioBtnYes.getElement().setId("RadioBtn_Yes");
 		radioBtnNo.getElement().setId("RadioBtn_No");
+		
+		radioBtnYes.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoYes");
+		radioBtnNo.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoNo");
+		
 		// Check 'No' by default.
 		radioBtnNo.setValue(true);
 		radionButtonPanel.add(radioBtnNo);
 		radionButtonPanel.add(radioBtnYes);
 		radionButtonPanel.setStyleName("myAccountButtonLayout");
 		patientBasedMeasurePanel.add(radionButtonPanel);
+		patientBasedMeasurePanel.add(invisibleRadioNo);
+		patientBasedMeasurePanel.add(invisibleRadioYes);
 		patientBasedMeasurePanel.add(new SpacerWidget());
 		return patientBasedMeasurePanel;
 	}
@@ -369,5 +383,15 @@ public class ManageMeasureDetailView
 	public RadioButton getPatientBasedNoRadioButton() {
 		// TODO Auto-generated method stub
 		return radioBtnNo;
+	}
+	
+	@Override
+	public Label getInvisibleRadioAlertYes() {
+		return invisibleRadioYes;
+	}
+	
+	@Override
+	public Label getInvisibleRadioAlertNo() {
+		return invisibleRadioNo;
 	}
 }

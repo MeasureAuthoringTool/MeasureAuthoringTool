@@ -2,6 +2,8 @@ package mat.client.measure;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.RadioButton;
+
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
@@ -22,12 +24,13 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
+//import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureDetailView.
  */
@@ -80,6 +83,7 @@ public class ManageMeasureDetailView
     /** The required instructions. */
     protected HTML requiredInstructions = new HTML("All fields are required.");
     
+    /** The patient based measure. */
     protected Label patientBasedMeasure = new Label();
 	
 	/**
@@ -137,20 +141,8 @@ public class ManageMeasureDetailView
 		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
 		leftPanel.add(hp);
 		leftPanel.add(new SpacerWidget());
-		
-		//Patient Based Measure
-		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
-		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
-		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
-		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
-		RadioButton radioYes = new RadioButton("patientBasedGroup", "Yes");
-	    RadioButton radioNo = new RadioButton("patientBasedGroup", "No");
-	    // Check 'No' by default.
-	    radioNo.setValue(true);
-		patientBasedMeasurePanel.add(radioNo);
-		patientBasedMeasurePanel.add(radioYes);
-		patientBasedMeasurePanel.add(new SpacerWidget());
-		leftPanel.add(patientBasedMeasurePanel);
+	
+		leftPanel.add(buildPatientBasedMeasurePanel());
 
 		SimplePanel buttonPanel = new SimplePanel();
 		buttonPanel.getElement().setId("buttonPanel_SimplePanel");
@@ -169,6 +161,34 @@ public class ManageMeasureDetailView
 		name.setWidth("400px");
 	}
 
+	
+	/**
+	 * Builds the patient based measure panel.
+	 *
+	 * @return the vertical panel
+	 */
+	public VerticalPanel buildPatientBasedMeasurePanel(){
+		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
+		patientBasedMeasurePanel.getElement().setId("patientBasedMeasure_VerticalPanel");
+		HorizontalPanel radionButtonPanel = new HorizontalPanel();
+		radionButtonPanel.getElement().setId("patientBasedMeasure_HorizontalPanel");
+		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
+		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
+		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
+		RadioButton radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
+		RadioButton radioBtnNo = new RadioButton("patientBasedGroup", "No");
+		radioBtnYes.getElement().setId("RadioBtn_Yes");
+		radioBtnNo.getElement().setId("RadioBtn_No");
+		// Check 'No' by default.
+		radioBtnNo.setValue(true);
+		radionButtonPanel.add(radioBtnNo);
+		radionButtonPanel.add(radioBtnYes);
+		radionButtonPanel.setStyleName("myAccountButtonLayout");
+		patientBasedMeasurePanel.add(radionButtonPanel);
+		patientBasedMeasurePanel.add(new SpacerWidget());
+		return patientBasedMeasurePanel;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setMeasureName(java.lang.String)
 	 */

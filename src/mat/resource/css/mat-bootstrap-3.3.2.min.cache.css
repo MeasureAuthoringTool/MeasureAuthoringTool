@@ -3316,7 +3316,7 @@ select[multiple].form-group-lg .form-control,textarea.form-group-lg .form-contro
 }
 
 .btn.disabled,.btn[disabled],fieldset[disabled] .btn {
-	pointer-events: none;
+	pointer-events: all;
 	cursor: not-allowed;
 	filter: alpha(opacity = 65);
 	-webkit-box-shadow: none;

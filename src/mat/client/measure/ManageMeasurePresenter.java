@@ -200,12 +200,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		/**
 		 * Gets the yes patient based radio button
 		 */
-		org.gwtbootstrap3.client.ui.RadioButton getPatientBasedYesRadioButton();
+		RadioButton getPatientBasedYesRadioButton();
 
 		/**
 		 * Gets the no patient based radio button
 		 */
-		org.gwtbootstrap3.client.ui.RadioButton getPatientBasedNoRadioButton();
+		RadioButton getPatientBasedNoRadioButton();
 
 		Label getInvisibleRadioAlertYes();
 

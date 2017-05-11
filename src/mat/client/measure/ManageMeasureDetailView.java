@@ -2,20 +2,6 @@ package mat.client.measure;
 
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.RadioButton;
-
-import mat.client.codelist.HasListBox;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.TextAreaWithMaxLength;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -24,11 +10,22 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-//import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.codelist.HasListBox;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.TextAreaWithMaxLength;
 
 // TODO: Auto-generated Javadoc
 /**

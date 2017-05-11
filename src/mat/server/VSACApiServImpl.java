@@ -8,23 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import mat.client.umls.service.VsacApiResult;
-import mat.dao.DataTypeDAO;
-import mat.model.DataType;
-import mat.model.DirectReferenceCode;
-import mat.model.MatValueSet;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.VSACExpansionProfileWrapper;
-import mat.model.VSACValueSetWrapper;
-import mat.model.VSACVersionWrapper;
-import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.service.MeasureLibraryService;
-import mat.server.service.VSACApiService;
-import mat.server.util.ResourceLoader;
-import mat.server.util.UMLSSessionTicket;
-import mat.shared.ConstantMessages;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +21,23 @@ import org.springframework.context.ApplicationContext;
 import org.vsac.VSACGroovyClient;
 import org.vsac.VSACResponseResult;
 import org.xml.sax.InputSource;
+
+import mat.client.umls.service.VsacApiResult;
+import mat.dao.DataTypeDAO;
+import mat.model.DataType;
+import mat.model.DirectReferenceCode;
+import mat.model.MatValueSet;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
+import mat.model.VSACExpansionProfileWrapper;
+import mat.model.VSACValueSetWrapper;
+import mat.model.VSACVersionWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.service.MeasureLibraryService;
+import mat.server.service.VSACApiService;
+import mat.server.util.ResourceLoader;
+import mat.server.util.UMLSSessionTicket;
+import mat.shared.ConstantMessages;
 
 
 public class VSACApiServImpl implements VSACApiService{
@@ -60,8 +61,7 @@ public class VSACApiServImpl implements VSACApiService{
 	
 	/** The profile service. */
 	private String profileService;
-	/** serialVersionUID for VSACAPIServiceImpl class. **/
-	private static final long serialVersionUID = -6645961609626183169L;
+	
 	/** The Constant REQUEST_FAILURE_CODE. */
 	private static final int VSAC_REQUEST_FAILURE_CODE = 4;
 	/** The Constant TIME_OUT_FAILURE_CODE. */
@@ -82,7 +82,7 @@ public class VSACApiServImpl implements VSACApiService{
 	/** The default exp id. */
 	private String defaultExpId;
 	
-	private String vsacServerUrl;
+	private String vsacServerDRCUrl;
 	
 	public VSACApiServImpl(){
 		PROXY_HOST = System.getProperty("vsac_proxy_host");
@@ -94,7 +94,14 @@ public class VSACApiServImpl implements VSACApiService{
 		retieriveMultiOIDSService = System.getProperty("SERVER_MULTIPLE_VALUESET_URL_NEW");
 		profileService = System.getProperty("PROFILE_SERVICE");
 		versionService = System.getProperty("VERSION_SERVICE");
-		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService);
+		vsacServerDRCUrl = System.getProperty("VSAC_DRC_URL");
+		
+		if(vsacServerDRCUrl == null || vsacServerDRCUrl.isEmpty()){
+			LOGGER.info("DRC URL is null and is not set in system properties....");
+			vsacServerDRCUrl ="https://vsac.nlm.nih.gov/vsac";
+		}
+		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService,vsacServerDRCUrl);
+		
 		//defaultExpId = getDefaultExpansionId();
 	}
 	
@@ -854,6 +861,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
+		
 		VsacApiResult result = new VsacApiResult();
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
 		if (eightHourTicket != null) {
@@ -867,7 +875,7 @@ public class VSACApiServImpl implements VSACApiService{
 						LOGGER.info("VSACAPIServiceImpl getDirectReferenceCode method : URL after dropping text before : is :: "+ url);
 					}
 				}
-				VSACResponseResult vsacResponseResult = vGroovyClient.getDirectReferenceCode(vsacServerUrl+url, fiveMinServiceTicket);	
+				VSACResponseResult vsacResponseResult = vGroovyClient.getDirectReferenceCode(url, fiveMinServiceTicket);	
 				
 				if((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)
 						&& (!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad()))) {
@@ -1052,11 +1060,11 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 	
 	public String getVsacServerUrl() {
-		return vsacServerUrl;
+		return vsacServerDRCUrl;
 	}
 
 	public void setVsacServerUrl(String vsacServerUrl) {
-		this.vsacServerUrl = vsacServerUrl;
+		this.vsacServerDRCUrl = vsacServerUrl;
 	}
 
 	/**

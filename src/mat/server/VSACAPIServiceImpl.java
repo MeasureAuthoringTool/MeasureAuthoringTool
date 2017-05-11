@@ -8,7 +8,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 
 // TODO: Auto-generated Javadoc
 /** VSACAPIServiceImpl class. **/
-@SuppressWarnings("static-access")
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 	/**
 	 * 

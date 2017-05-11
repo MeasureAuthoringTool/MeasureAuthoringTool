@@ -1139,6 +1139,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
+		
+		// on create measure, have nothing selected at first and make sure they are enabled.
+		detailDisplay.getPatientBasedYesRadioButton().setValue(false);
+		detailDisplay.getPatientBasedNoRadioButton().setValue(false);
+		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
+		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
+		
 		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
 		setDetailsToView();
 		detailDisplay.showMeasureName(false);
@@ -1151,13 +1158,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
+		
+		// ensure the radio buttons are enabled
+		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
+		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
+		
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 		
 		if(currentDetails.isPatientBased()) {
+			detailDisplay.getPatientBasedNoRadioButton().setValue(false);
 			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
 		} else {
+			detailDisplay.getPatientBasedYesRadioButton().setValue(false);
 			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
 		}
 		
@@ -1178,14 +1192,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
+		
+		// ensure the radio buttons are enabled
+		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
+		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
+		
 		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		
 		if(currentDetails.isPatientBased()) {
+			detailDisplay.getPatientBasedNoRadioButton().setValue(false);
 			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
 		} else {
+			detailDisplay.getPatientBasedYesRadioButton().setValue(false);
 			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
 		}
 		

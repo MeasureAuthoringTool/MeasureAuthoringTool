@@ -1154,6 +1154,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
+		
+		if(currentDetails.isPatientBased()) {
+			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+		} else {
+			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
+		}
+		
+		if(currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+			detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
+			detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
+		}
+		
+		
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Clone Measure", "MeasureLibrary");
 		panel.setContent(detailDisplay.asWidget());
@@ -1169,6 +1182,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
+		
+		if(currentDetails.isPatientBased()) {
+			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+		} else {
+			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
+		}
+		
+		if(currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+			detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
+			detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
+		}
+		
 		panel.setContent(detailDisplay.asWidget());
 	}
 

@@ -262,6 +262,17 @@ implements MeasureCloningService {
 				clonedMeasure.setVersion(VERSION_ZERO);
 				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetails();
+				
+				//copy over value of "Patient based indicator" from the original measure.
+						
+				NodeList nodeList = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
+				Node measureDetailsNode = nodeList.item(0);
+				
+				Node patientBasedIndicatorNode = clonedDoc.createElement("patientBasedIndicator");
+				String isPatientBasedIndicator = currentDetails.isPatientBased() + "";
+				patientBasedIndicatorNode.setTextContent(isPatientBasedIndicator);
+				
+				measureDetailsNode.appendChild(patientBasedIndicatorNode);
 			}
 			
 			// Create the measureGrouping tag

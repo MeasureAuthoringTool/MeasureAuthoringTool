@@ -113,4 +113,6 @@ public interface CQLLibraryServiceInterface {
 	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
+
+	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 }

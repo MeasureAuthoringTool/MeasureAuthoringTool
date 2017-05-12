@@ -762,4 +762,6 @@ public interface MeasureLibraryService {
 
 	CQLCodeWrapper getCQLCodes(String measureID);
 
+	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID);
+
 }

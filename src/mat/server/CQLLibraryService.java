@@ -1245,7 +1245,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	@Override
 	public SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		
-		SaveUpdateCQLResult result = null;
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, valueSetTransferObject.getCqlLibraryId())) {
 			CQLLibrary library = cqlLibraryDAO.find(valueSetTransferObject.getCqlLibraryId());
 			if (library != null) {
@@ -1263,19 +1263,36 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	@Override
 	public SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject) {
 		
-		SaveUpdateCQLResult result = null;
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, transferObject.getId())) {
-			result = cqlService.saveCQLCodes(transferObject);
-			CQLLibrary library = cqlLibraryDAO.find(transferObject.getId());
-			if(result != null && result.isSuccess()) {
-				String nodeName = "code";
-				String parentNode = "//cqlLookUp/codes";
-				appendAndSaveNode(library, nodeName, result.getXml(), parentNode);
+			
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(transferObject.getId());
+			if (cqlLibrary != null) {
+				String cqlXml = getCQLLibraryXml(cqlLibrary);
+				if(!cqlXml.isEmpty()){
+					result = cqlService.saveCQLCodes(cqlXml,transferObject);
+					if(result != null && result.isSuccess()) {
+						String nodeName = "code";
+						String parentNode = "//cqlLookUp/codes";
+						String newXml= appendAndSaveNode(cqlLibrary, nodeName, result.getXml(), parentNode);
+						System.out.println("newXml ::: " + newXml);
+						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
+					}
+				}
 			}
 		}
 		return result;
 	}
 	
+	
+	private CQLCodeWrapper getSortedCQLCodes(String newXml) {
+		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
+		if(newXml != null && !newXml.isEmpty()){
+			cqlCodeWrapper = cqlService.getCQLCodes(newXml);
+		}
+		
+		return cqlCodeWrapper;
+	}
 	
 	/**
 	 * Save CQL user defined valuesetto measure.
@@ -1355,6 +1372,26 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return cqlResult;
 	}
 	
+	
+	@Override
+	public SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId) {
+		
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary library = cqlLibraryDAO.find(libraryId);
+			if (library != null) {
+				cqlResult = cqlService.deleteValueSet(getCQLLibraryXml(library), toBeDeletedId);
+				if (cqlResult != null && cqlResult.isSuccess()) {
+					library.setCQLByteArray(cqlResult.getXml().getBytes());
+					save(library);
+					cqlResult.setCqlCodeList(getSortedCQLCodes(cqlResult.getXml()).getCqlCodeList());
+					
+				}
+			}
+		}
+		return cqlResult;
+	}
+	
 	/**
 	 * Append and save node.
 	 *
@@ -1363,15 +1400,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param newXml the new xml
 	 * @param parentNode the parent node
 	 */
-	public final void appendAndSaveNode(CQLLibrary library, final String nodeName, String newXml, String parentNode) {
-		
+	public final String appendAndSaveNode(CQLLibrary library, final String nodeName, String newXml, String parentNode) {
+		String result = new String();
 		if ((library != null && !StringUtils.isEmpty(getCQLLibraryXml(library)))
 				&& (nodeName != null && StringUtils.isNotBlank(nodeName))) {
-			String result = callAppendNode(getCQLLibraryXml(library), newXml, nodeName,
+			 result = callAppendNode(getCQLLibraryXml(library), newXml, nodeName,
 					parentNode);
 			library.setCQLByteArray(result.getBytes());
 			save(library);
 		}
+		return result;
 
 	}
 	

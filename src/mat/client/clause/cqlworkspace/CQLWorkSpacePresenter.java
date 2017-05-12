@@ -36,6 +36,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
@@ -1647,7 +1648,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			break;
 		}
 	}
-
+	
 	/**
 	 * Adds the Value Set observer handler.
 	 */
@@ -2842,19 +2843,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void getUsedArtifacts() {
+		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
         MatContext.get().getMeasureService().getUsedCQLArtifacts(
                      MatContext.get().getCurrentMeasureId(),
                      new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
-                                   // TODO Auto-generated method stub
-                                   
+                                   Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                   searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
                             }
 
                             @Override
                             public void onSuccess(GetUsedCQLArtifactsResult result) {
-                            	
+                            	searchDisplay.getValueSetView().showSearchingBusyOnQDM(false); 
                             	// if there are errors, set the valuesets to not used.
                             	if(!result.getCqlErrors().isEmpty()) {
                             		for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
@@ -2880,7 +2882,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
                        					isEditable);
                        			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
                        				searchDisplay.getValueSetView().setWidgetsReadOnly(isEditable);
-                                   
+                       				
                             }
                             
                      });
@@ -2943,6 +2945,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_CODES;
+			searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 			searchDisplay.buildCodes();
 			searchDisplay.getCodesView().buildCodesCellTable(
 					appliedCodeTableList,
@@ -2950,6 +2953,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+			searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 		}
 
 	}	
@@ -3769,6 +3773,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		addValueSetExpProfileHandlers();
 		addValuSetObserverHandler();
+		
 	}
 	
 	
@@ -3812,9 +3817,51 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
-		
+		searchDisplay.getCodesView().setDelegator(new Delegator() {
+			
+			@Override
+			public void onDeleteClicked(CQLCode result, int index) {
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clear();
+				if(result != null){
+					searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+					MatContext.get().getMeasureService().deleteCode(result.getId(), MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+							if(result.isSuccess()){
+								searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code has been removed successfully.");
+								searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+								appliedCodeTableList.clear();
+								appliedCodeTableList.addAll(result.getCqlCodeList());
+								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								//searchDisplay.buildCodes();
+								searchDisplay.getCodesView().buildCodesCellTable(
+										appliedCodeTableList,
+										MatContext.get().getMeasureLockService().checkForEditPermission());
+								//getAppliedCodeList();
+							} else {
+								
+								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
+								
+							}
+						}
+					});
+				}
+				
+			}
+		});
 	}
 	
+	
+
 	private void addNewCodes() {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
@@ -3823,26 +3870,42 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		refCode.setCodeName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
-		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		refCode.setDisplayName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(measureId);
-		
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		service.saveCQLCodestoMeasure(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				if(result.isSuccess()){
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
-							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
+							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeInput().getText()));
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
-					getAppliedCodeList();
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlCodeList());
+					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					//searchDisplay.buildCodes();
+					searchDisplay.getCodesView().buildCodesCellTable(
+							appliedCodeTableList,
+							MatContext.get().getMeasureLockService().checkForEditPermission());
+					//getAppliedCodeList();
+				} else {
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
+					if(result.getFailureReason()==result.DUPLICATE_CODE){
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Code "+ searchDisplay.getCodesView().getCodeInput().getText() +" already exists.");
+					}
 				}
+				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				
 			}
 		});
@@ -4642,9 +4705,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				public void onSuccess(CQLCodeWrapper result) {
 					appliedCodeTableList.clear();
 					appliedCodeTableList.addAll(result.getCqlCodeList());
+					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getMeasureLockService()
 							.checkForEditPermission());
-					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					
 				}
 				
 				@Override

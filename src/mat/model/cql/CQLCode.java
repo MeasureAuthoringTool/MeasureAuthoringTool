@@ -25,6 +25,8 @@ public class CQLCode implements IsSerializable {
 	
 	/** The Display Name. */
 	private String displayName;
+	
+	private String codeIdentifier;
 
 	private boolean isUsed;
 	
@@ -129,5 +131,15 @@ public class CQLCode implements IsSerializable {
 	public void setUsed(boolean isUsed) {
 		this.isUsed = isUsed;
 	}
+
+	public String getCodeIdentifier() {
+		return codeIdentifier;
+	}
+
+	public void setCodeIdentifier(String codeIdentifier) {
+		this.codeIdentifier = codeIdentifier;
+	}
+
+	
 	
 }

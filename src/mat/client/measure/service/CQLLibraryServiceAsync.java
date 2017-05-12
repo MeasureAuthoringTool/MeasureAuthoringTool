@@ -109,4 +109,6 @@ public interface CQLLibraryServiceAsync {
 	void transferLibraryOwnerShipToUser(List<String> list, String toEmail, AsyncCallback<Void> callback);
 
 	void saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
+
+	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 }

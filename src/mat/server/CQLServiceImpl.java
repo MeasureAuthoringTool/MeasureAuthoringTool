@@ -1072,6 +1072,33 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 
 	}
+	@Override
+	public SaveUpdateCQLResult deleteCode(String xml , String toBeDeletedCodeId){
+		logger.info("Start deleteCode : ");
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		try {
+			String xpathforCodeNode = "//cqlLookUp//code[@id='" + toBeDeletedCodeId + "']";
+			Node codeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeNode);
+			if (codeNode != null) {
+				Node parentNode = codeNode.getParentNode();
+				parentNode.removeChild(codeNode);
+				result.setSuccess(true);
+				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			} else {
+				logger.info("Unable to find the selected Code element with id in deleteCode : "
+						+ toBeDeletedCodeId);
+				result.setSuccess(false);
+			}
+		} catch (XPathExpressionException e) {
+			result.setSuccess(false);
+			logger.info("Error in method deleteCode: " + e.getMessage());
+		}
+
+		logger.info("END deleteCode : ");
+		
+		return result;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1506,7 +1533,7 @@ public class CQLServiceImpl implements CQLService {
 				e.printStackTrace();
 			}
 		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createDefinitionsXML()");
+		logger.info("Exiting CQLServiceImpl.createDefinitionsXML()");
 		return stream.toString();
 
 	}
@@ -2445,8 +2472,8 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
-	@Override
-	public SaveUpdateCQLResult saveCQLCodes(MatCodeTransferObject transferObject) {
+	
+	/*public SaveUpdateCQLResult saveCQLCodes(MatCodeTransferObject transferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLCodeWrapper wrapper = new CQLCodeWrapper();
 		//transferObject.scrubForMarkUp();
@@ -2455,11 +2482,44 @@ public class CQLServiceImpl implements CQLService {
 		
 		wrapper.setCqlCodeList(codeList);
 	    wrapper.getCqlCodeList().add(transferObject.getCqlCode());
-	    String codeXMLString = addCQLAppliedCodesInMeasureXML(wrapper);
+	    String codeXMLString = generateXmlForAppliedCode(wrapper);
 	    result.setSuccess(true);
-		result.setCqlCodeList(sortCodeList(wrapper.getCqlCodeList()));
 		result.setXml(codeXMLString);
 		
+		return result;
+	}*/
+	@Override
+	public SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject){
+		logger.info("================CQlServiceImpl saveCQLCodes Start ===============");
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		CQLCode appliedCode = codeTransferObject.getCqlCode();
+		appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+		try {
+			/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//cqlLookUp/codes/code[@codeName='"+appliedCode.getCodeName() +
+			"' and @codeOID='"+ appliedCode.getCodeOID()+"' and @codeSystemName='"+
+			 appliedCode.getCodeSystemName()+"' and @codeSystemVersion ='"+
+			 appliedCode.getCodeSystemVersion() +"' and @displayName = '"
+			 + appliedCode.getDisplayName()+"' ]");*/
+			Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),"//cqlLookUp/codes/code[@codeOID='"+ appliedCode.getCodeOID()+"' ]");
+			if(existingCodeList!= null){
+				logger.info("================Duplicate Code ===============");
+				result.setSuccess(false);
+				result.setFailureReason(result.DUPLICATE_CODE);
+			} else {
+				CQLCodeWrapper wrapper = new CQLCodeWrapper();
+				ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
+				wrapper.setCqlCodeList(codeList);
+			    wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
+			    String codeXMLString = generateXmlForAppliedCode(wrapper);
+			    result.setSuccess(true);
+				result.setXml(codeXMLString);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("================CQlServiceImpl saveCQLCodes End ===============");
 		return result;
 	}
 
@@ -2720,13 +2780,13 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
-	private String addCQLAppliedCodesInMeasureXML(final CQLCodeWrapper wrapper) {
-		logger.info("addCQLAppliedCodesInMeasureXML Method Call Start.");
+	private String generateXmlForAppliedCode(CQLCodeWrapper wrapper) {
+		logger.info("generateXmlForAppliedCode Method Call Start.");
 		ByteArrayOutputStream stream = createNewCodeXML(wrapper);
 		int startIndex = stream.toString().indexOf("<code ", 0);
 		int lastIndex = stream.toString().indexOf("/>", startIndex);
 		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
-		logger.debug("addCQLAppliedCodesInMeasureXML Method Call xmlString :: " + xmlString);
+		logger.debug("generateXmlForAppliedCode Method Call xmlString :: " + xmlString);
 		return xmlString;
 	}
 
@@ -2738,7 +2798,7 @@ public class CQLServiceImpl implements CQLService {
 	 * @return the byte array output stream
 	 */
 	private ByteArrayOutputStream createNewXML(final CQLQualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		logger.info("In CQLServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
@@ -2760,13 +2820,13 @@ public class CQLServiceImpl implements CQLService {
 				logger.info("Other Exception" + e);
 			}
 		}
-		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		logger.info("Exiting CQLServiceImpl.createXml()");
 		return stream;
 	}
 	
 	
 	private ByteArrayOutputStream createNewCodeXML(final CQLCodeWrapper wrapper) {
-		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		logger.info("In CQLServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
@@ -2849,42 +2909,17 @@ public class CQLServiceImpl implements CQLService {
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 
 		return cqlQualityDataModelWrapper;
-		
-		/*MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
-		CQLModel cqlModel = new CQLModel();
-		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlModel.getXml());
-		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
-		if (StringUtils.isNotBlank(cqlLookUpXMLString)) {
-			CQLUtilityClass.getValueSet(cqlModel, cqlLookUpXMLString);
-		}
-		
-		GetUsedCQLArtifactsResult result = getUsedCQlArtifacts(xmlModel.getXml());
-		
-		List<String> valuesets = result.getUsedCQLValueSets();
-		System.out.println("USED VALUSETS: " + valuesets);
-
-		for (CQLQualityDataSetDTO valueset : cqlModel.getAllValueSetList()) {
-			if (valuesets.contains(valueset.getCodeListName())) {
-				valueset.setUsed(true);
-			}
-		}
-		
-		
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-				.sortCQLQualityDataSetDto(cqlModel.getAllValueSetList());
-		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
-		
-		return cqlQualityDataModelWrapper;*/
 	}
 	
 	@Override
-	public CQLCodeWrapper getCQLCodes(String measureId,
-			CQLCodeWrapper cqlCodeWrapper) {
-		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
-		String xmlString = model.getXml();
-		List<CQLCode> cqlCodeDtos = CQLUtilityClass
-				.sortCQLCodeDTO(getCQLData(xmlString).getCqlModel().getCodeList());
-		cqlCodeWrapper.setCqlCodeList(cqlCodeDtos);
+	public CQLCodeWrapper getCQLCodes(String xmlString){
+		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
+		if(xmlString != null && !xmlString.isEmpty()) {
+			List<CQLCode> cqlCodeDtos = CQLUtilityClass
+					.sortCQLCodeDTO(getCQLData(xmlString).getCqlModel().getCodeList());
+			cqlCodeWrapper.setCqlCodeList(cqlCodeDtos);
+		}
+		
 		return cqlCodeWrapper;
 	}
 

@@ -3100,18 +3100,21 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	}
 	
 	private void getUsedArtifacts() {
+		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
         MatContext.get().getLibraryService().getUsedCqlArtifacts(
                      MatContext.get().getCurrentCQLLibraryId(),
                      new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
                             @Override
                             public void onFailure(Throwable caught) {
-                                   // TODO Auto-generated method stub
+                            	 Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                 searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
                                    
                             }
 
                             @Override
                             public void onSuccess(GetUsedCQLArtifactsResult result) {
+                            	searchDisplay.getValueSetView().showSearchingBusyOnQDM(false); 
                             	// if there are errors, set the valuesets to not used.
                             	if(!result.getCqlErrors().isEmpty()) {
                             		for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
@@ -3463,16 +3466,27 @@ private void addCodeSearchPanelHandlers() {
 		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(cqlLibraryId);
-		
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		cqlService.saveCQLCodestoCQLLibrary(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 			
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				if(result.isSuccess()){
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
-							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
+							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeInput().getText()));
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
-					getAppliedCodeList();
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlModel().getCodeList());
+					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
+							.checkForEditPermission());
+					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					//getAppliedCodeList();
+				} else {
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
+					if(result.getFailureReason()==result.DUPLICATE_CODE){
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Duplicate Codes.");
+					}
 				}
 			}
 			
@@ -3480,6 +3494,7 @@ private void addCodeSearchPanelHandlers() {
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				
 			}
 		});

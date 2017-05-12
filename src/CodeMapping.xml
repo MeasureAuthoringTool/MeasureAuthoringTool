@@ -29,6 +29,9 @@
 					<field name="codeOID" type="java.lang.String">
 						<bind-xml name="codeOID" node="attribute" />
 					</field>
+					<field name="codeIdentifier" type="java.lang.String">
+						<bind-xml name="codeIdentifier" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>

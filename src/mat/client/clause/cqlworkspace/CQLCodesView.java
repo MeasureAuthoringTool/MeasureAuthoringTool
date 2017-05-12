@@ -45,6 +45,7 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
+import mat.client.clause.cqlworkspace.CQLAppliedValueSetView.Observer;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -63,21 +64,12 @@ import mat.shared.ClickableSafeHtmlCell;
 /**
  * The Class QDMAppliedSelectionView.
  */
-public class CQLCodesView implements HasSelectionHandlers<Boolean>{
-	
+public class CQLCodesView {
 	
 	/**
 	 * The Interface Observer.
 	 */
-	public static interface Observer {
-		
-		/**
-		 * On modify clicked.
-		 * 
-		 * @param result
-		 *            the result
-		 */
-		void onModifyClicked(CQLCode result);
+	public static interface Delegator {
 		
 		/**
 		 * On delete clicked.
@@ -88,9 +80,14 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 		void onDeleteClicked(CQLCode result, int index);
 		
 	}
+	private static final String BIRTHDATE = "21112-8";
+
+	public static final String DEAD = "419099009";
+
+	
 	
 	/** The observer. */
-	private Observer observer;
+	private Delegator delegator;
 	
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
@@ -377,6 +374,14 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
+	public Delegator getDelegator() {
+		return delegator;
+	}
+
+	public void setDelegator(Delegator delegator) {
+		this.delegator = delegator;
+	}
+
 	/**
 	 * Adds the selection handler.
 	 *
@@ -386,24 +391,6 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
-	}
-	
-	/**
-	 * Gets the observer.
-	 * 
-	 * @return the observer
-	 */
-	public Observer getObserver() {
-		return observer;
-	}
-	
-	/**
-	 * Sets the observer.
-	 *
-	 * @param observer the new observer
-	 */
-	public void setObserver(Observer observer) {
-		this.observer = observer;
 	}
 	
 	
@@ -971,10 +958,10 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 					@Override
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
-						/*if ((object != null) && !object.isUsed()) {
+						if ((object != null) && !object.isUsed()) {
 							lastSelectedObject = object;
-							observer.onDeleteClicked(object, index);
-						}*/
+							delegator.onDeleteClicked(object, index);
+						}
 					}
 				};
 			}
@@ -985,7 +972,7 @@ public class CQLCodesView implements HasSelectionHandlers<Boolean>{
 				String title = "Click to delete Code";
 				String cssClass;
 				// Delete button is not created for default codes - Dead and Birthdate.
-				if(object.getCodeOID().equals("419099009") || object.getCodeOID().equals("21112-8")){
+				if(object.getCodeOID().equals(DEAD) || object.getCodeOID().equals(BIRTHDATE)){
 					sb.appendHtmlConstant("<span></span>");
 				} else	if (object.isUsed()) {
 					cssClass = "customDeleteDisableButton";

@@ -763,5 +763,7 @@ public interface MeasureServiceAsync {
 
 	void getCQLCodes(String measureID, AsyncCallback<CQLCodeWrapper> callback);
 
+	void deleteCode(String toBeDeletedId, String measureID, AsyncCallback<SaveUpdateCQLResult> callback);
+
 	
 }

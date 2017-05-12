@@ -698,4 +698,6 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject);
 
 	CQLCodeWrapper getCQLCodes(String measureID);
+
+	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID);
 }

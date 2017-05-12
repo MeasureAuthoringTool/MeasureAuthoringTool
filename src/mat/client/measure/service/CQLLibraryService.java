@@ -93,4 +93,6 @@ public interface CQLLibraryService extends RemoteService {
 	 void transferLibraryOwnerShipToUser(List<String> list, String toEmail);
 
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
+
+	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 }

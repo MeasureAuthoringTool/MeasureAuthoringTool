@@ -646,6 +646,12 @@ MeasureService {
 		return this.getMeasureLibraryService().deleteValueSet(toBeDeletedValueSetId,  measureID);
 		
 	}
+	
+	@Override
+	public SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID) {
+		return this.getMeasureLibraryService().deleteCode(toBeDeletedId,  measureID);
+		
+	}
 
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {

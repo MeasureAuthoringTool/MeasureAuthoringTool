@@ -575,7 +575,7 @@ public class CQLUtil {
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFuncNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset/@name", cqlModel.getIncludedValueSetNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter/@name", cqlModel.getIncludedParamNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@codeSystemName", cqlModel.getIncludedCodeNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@codeName", cqlModel.getIncludedCodeNames());
 			
 		}
 		

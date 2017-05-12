@@ -332,15 +332,18 @@ public class InsertIntoAceEditorDialogBox {
 											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
 												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											}
-											
 										}
-										String name = itemNameToBeInserted;
+										String[] str = itemNameToBeInserted.toString().split("\\.");
+										StringBuilder sb = new StringBuilder();
+										if(str.length>1){
+											sb.append(str[0]).append(".");
+											itemNameToBeInserted = str[1];
+										}
 										if(dataType != null){
-											if(name.equalsIgnoreCase(DEAD)){
+											if(itemNameToBeInserted.equalsIgnoreCase(DEAD)){
 												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
-													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(name + "\"]");
+													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
 													itemNameToBeInserted = sb.toString();
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
@@ -350,11 +353,10 @@ public class InsertIntoAceEditorDialogBox {
 													itemNameToBeInserted = "";
 												}
 												
-											} else if(name.equalsIgnoreCase(BIRTH_DATE)){
+											} else if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
 												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
-													StringBuilder sb = new StringBuilder();
 													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(name + "\"]");
+													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
 													itemNameToBeInserted = sb.toString();
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
@@ -364,10 +366,9 @@ public class InsertIntoAceEditorDialogBox {
 													itemNameToBeInserted = "";
 												}
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
-												if(name.equalsIgnoreCase(BIRTH_DATE)){
-													StringBuilder sb = new StringBuilder();
+												if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
 													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(name + "\"]");
+													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
 													itemNameToBeInserted = sb.toString();
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
@@ -377,10 +378,9 @@ public class InsertIntoAceEditorDialogBox {
 													itemNameToBeInserted = "";
 												}
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
-												if(name.equalsIgnoreCase(DEAD)){
-													StringBuilder sb = new StringBuilder();
+												if(itemNameToBeInserted.equalsIgnoreCase(DEAD)){
 													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(name + "\"]");
+													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
 													itemNameToBeInserted = sb.toString();
 												} else {
 													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
@@ -390,17 +390,13 @@ public class InsertIntoAceEditorDialogBox {
 													itemNameToBeInserted = "";
 												}
 											} else {
-												StringBuilder sb = new StringBuilder();
 												sb = sb.append("[\"" + dataType + "\"");
-												sb = sb.append(": \"").append(name + "\"]");
+												sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
 												itemNameToBeInserted = sb.toString();
 											}
 											
-											
-											
 										} else {
-											StringBuilder sb = new StringBuilder();
-											sb = sb.append("\"" + name + "\"");
+											sb = sb.append("\"" + itemNameToBeInserted + "\"");
 											itemNameToBeInserted = sb.toString();
 										}
 										
@@ -408,19 +404,21 @@ public class InsertIntoAceEditorDialogBox {
 										StringBuilder sb = new StringBuilder(); 
 										String[] str = itemNameToBeInserted.toString().split("\\.");
 										if(str.length>1){
-											sb = sb.append(str[0]);
-											sb = sb.append(".").append("\""); 
-											sb = sb.append(str[1]).append("\""); 
-										} else {
-											sb = sb.append("\"").append(str[0]).append("\"");
-										}
-										
+											sb = sb.append(str[0]).append(".");
+										    itemNameToBeInserted = str[1];		
+										} 
+										sb = sb.append("\"").append(itemNameToBeInserted).append("\"");
 										itemNameToBeInserted = sb.toString(); 
 									} else if(itemTypeName.equalsIgnoreCase("functions")) {
 										StringBuilder sb = new StringBuilder(); 
+										String[] str = itemNameToBeInserted.toString().split("\\.");
+										if(str.length>1){
+											sb = sb.append(str[0]).append(".");
+											itemNameToBeInserted = str[1];		
+										} 
 										sb = sb.append("\""); 
-										itemNameToBeInserted = itemNameToBeInserted.substring(0, itemNameToBeInserted.indexOf("("));
-										sb = sb.append(itemNameToBeInserted); 
+										str[0] = str[0].substring(0, str[0].indexOf("("));
+										sb = sb.append(str[0]); 
 										sb = sb.append("\"()");
 										itemNameToBeInserted = sb.toString(); 
 									}
@@ -843,6 +841,10 @@ public class InsertIntoAceEditorDialogBox {
 							listAllItemNames.addItem(cqlNavBarView.getViewParameterList().get(i)
 									.getParameterName());
 						}
+						
+						for (int j = 0; j < MatContext.get().getIncludedParamNames().size(); j++) {
+							listAllItemNames.addItem(MatContext.get().getIncludedParamNames().get(j));
+						}
 					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
@@ -856,6 +858,10 @@ public class InsertIntoAceEditorDialogBox {
 							String funcArg = getFunctionArgumentValueBuilder(functions);
 							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
 							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
+						}
+						
+						for (int j = 0; j < MatContext.get().getIncludedFuncNames().size(); j++) {
+							listAllItemNames.addItem(MatContext.get().getIncludedFuncNames().get(j));
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();
@@ -922,6 +928,9 @@ public class InsertIntoAceEditorDialogBox {
 								
 							//}
 							
+						}
+						for (int j = 0; j < MatContext.get().getIncludedValueSetNames().size(); j++) {
+							listAllItemNames.addItem(MatContext.get().getIncludedValueSetNames().get(j));
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
 						//open new popup/dialogBox

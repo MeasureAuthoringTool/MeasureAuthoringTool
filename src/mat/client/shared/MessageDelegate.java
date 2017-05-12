@@ -2849,7 +2849,7 @@ public class MessageDelegate {
 	}
 	
 	public String getCodeSuccessMessage(String codeName) {
-		return "Code " + codeName + " has been applied successfully.";
+		return "Code "+ codeName + " has been applied successfully.";
 	}
 
 	public String getUMLS_CODE_IDENTIFIER_REQUIRED() {

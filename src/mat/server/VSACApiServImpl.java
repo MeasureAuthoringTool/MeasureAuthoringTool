@@ -96,10 +96,10 @@ public class VSACApiServImpl implements VSACApiService{
 		versionService = System.getProperty("VERSION_SERVICE");
 		vsacServerDRCUrl = System.getProperty("VSAC_DRC_URL");
 		
-		if(vsacServerDRCUrl == null || vsacServerDRCUrl.isEmpty()){
+	/*	if(vsacServerDRCUrl == null || vsacServerDRCUrl.isEmpty()){*/
 			LOGGER.info("DRC URL is null and is not set in system properties....");
 			vsacServerDRCUrl ="https://vsac.nlm.nih.gov/vsac";
-		}
+		/*}*/
 		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService,vsacServerDRCUrl);
 		
 		//defaultExpId = getDefaultExpansionId();

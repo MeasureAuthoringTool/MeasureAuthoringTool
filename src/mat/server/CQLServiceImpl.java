@@ -55,6 +55,8 @@ import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;
 import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeSystem;
+import mat.model.cql.CQLCodeSystemWrapper;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
@@ -1085,6 +1087,11 @@ public class CQLServiceImpl implements CQLService {
 				parentNode.removeChild(codeNode);
 				result.setSuccess(true);
 				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				result.setCqlCodeList(getCQLCodes(result.getXml()).getCqlCodeList());
+				/*CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(result.getXml());
+				
+				SaveUpdateCQLResult parseResult = parseCQLLibraryForErrors(cqlModel);*/
+				
 			} else {
 				logger.info("Unable to find the selected Code element with id in deleteCode : "
 						+ toBeDeletedCodeId);
@@ -2375,7 +2382,7 @@ public class CQLServiceImpl implements CQLService {
 
 		if (!isDuplicate(valueSetTransferObject, true)) {
 			wrapper.getQualityDataDTO().add(qds);
-			String xmlString = addCQLAppliedQDMInMeasureXML(wrapper);
+			String xmlString = generateXmlForAppliedValueset(wrapper);
 			result.setSuccess(true);
 			qualityDataSetDTOs.add(qds);
 			result.setCqlAppliedQDMList(sortQualityDataSetList(qualityDataSetDTOs));
@@ -2456,7 +2463,7 @@ public class CQLServiceImpl implements CQLService {
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");
 				wrapper.getQualityDataDTO().add(qds);
-				String qdmXMLString = addCQLAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 				result.setXml(qdmXMLString);
@@ -2490,7 +2497,7 @@ public class CQLServiceImpl implements CQLService {
 	}*/
 	@Override
 	public SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject){
-		logger.info("================CQlServiceImpl saveCQLCodes Start ===============");
+		logger.info("::: CQLServiceImpl saveCQLCodes Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		XmlProcessor xmlProcessor = new XmlProcessor(xml);
 		CQLCode appliedCode = codeTransferObject.getCqlCode();
@@ -2503,9 +2510,9 @@ public class CQLServiceImpl implements CQLService {
 			 + appliedCode.getDisplayName()+"' ]");*/
 			Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),"//cqlLookUp/codes/code[@codeOID='"+ appliedCode.getCodeOID()+"' ]");
 			if(existingCodeList!= null){
-				logger.info("================Duplicate Code ===============");
+				logger.info("::: Duplicate Code :::");
 				result.setSuccess(false);
-				result.setFailureReason(result.DUPLICATE_CODE);
+				result.setFailureReason(result.getDuplicateCode());
 			} else {
 				CQLCodeWrapper wrapper = new CQLCodeWrapper();
 				ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
@@ -2519,9 +2526,41 @@ public class CQLServiceImpl implements CQLService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("================CQlServiceImpl saveCQLCodes End ===============");
+		logger.info("::: CQLServiceImpl saveCQLCodes End :::");
 		return result;
 	}
+	
+	
+	public SaveUpdateCQLResult saveCQLCodeSystem(String xml , CQLCodeSystem codeSystem){
+		logger.info("::: CQLServiceImpl saveCQLCodeSystem Start :::");
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+		
+		codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+		try {
+			Node existingCodeSystemList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//cqlLookUp/codeSystems/codeSystem[@codeSystem='"+codeSystem.getCodeSystem() +
+			"' and @codeSystemName='"+ codeSystem.getCodeSystemName()+"' and @codeSystemVersion='"+
+			codeSystem.getCodeSystemVersion()+"' ]");
+			/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),"//cqlLookUp/codes/code[@codeOID='"+ appliedCode.getCodeOID()+"' ]");*/
+			if(existingCodeSystemList!= null){
+				logger.info("::: CodeSystem Already added :::");
+			} else {
+				CQLCodeSystemWrapper wrapper = new CQLCodeSystemWrapper();
+				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
+				wrapper.setCqlCodeSystemList(codeSystemList);;
+			    wrapper.getCqlCodeSystemList().add(codeSystem);
+			    String codeSystemXMLString = generateXmlForAppliedCodeSystem(wrapper);
+			    result.setSuccess(true);
+				result.setXml(codeSystemXMLString);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.info("::: CQLServiceImpl saveCQLCodeSystem End :::");
+		return result;
+	}
+	
 
 	/**
 	 * Checks if is duplicate.
@@ -2746,7 +2785,7 @@ public class CQLServiceImpl implements CQLService {
 				qds.setVersion("1.0");
 				wrapper = modifyAppliedElementList(qds,
 						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
-				String qdmXMLString = addCQLAppliedQDMInMeasureXML(wrapper);
+				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 				result.setXml(qdmXMLString);
@@ -2769,7 +2808,7 @@ public class CQLServiceImpl implements CQLService {
 	 *            the quality data set DTO wrapper
 	 * @return the string
 	 */
-	private String addCQLAppliedQDMInMeasureXML(final CQLQualityDataModelWrapper qualityDataSetDTOWrapper) {
+	private String generateXmlForAppliedValueset(final CQLQualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
 		ByteArrayOutputStream stream = createNewXML(qualityDataSetDTOWrapper);
 		int startIndex = stream.toString().indexOf("<valueset ", 0);
@@ -2789,6 +2828,17 @@ public class CQLServiceImpl implements CQLService {
 		logger.debug("generateXmlForAppliedCode Method Call xmlString :: " + xmlString);
 		return xmlString;
 	}
+	
+	private String generateXmlForAppliedCodeSystem(CQLCodeSystemWrapper wrapper) {
+		logger.info("generateXmlForAppliedCodeSystem Method Call Start.");
+		ByteArrayOutputStream stream = createNewCodeSystemXML(wrapper);
+		int startIndex = stream.toString().indexOf("<codeSystem ", 0);
+		int lastIndex = stream.toString().indexOf("/>", startIndex);
+		String xmlString = stream.toString().substring(startIndex, lastIndex + 2);
+		logger.debug("generateXmlForAppliedCodeSystem Method Call xmlString :: " + xmlString);
+		return xmlString;
+	}
+	
 
 	/**
 	 * Creates the new XML.
@@ -2852,6 +2902,34 @@ public class CQLServiceImpl implements CQLService {
 		return stream;
 	}
 
+	private ByteArrayOutputStream createNewCodeSystemXML(final CQLCodeSystemWrapper wrapper) {
+		logger.info("In CQLServiceImpl.createNewCodeSystemXML()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeSystemsMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+			marshaller.marshal(wrapper);
+			logger.debug("Marshalling of CQLCode is successful.." + stream.toString());
+		} catch (Exception e) {
+			if (e instanceof IOException) {
+				logger.info("Failed to load CQLMapping.xml" + e);
+			} else if (e instanceof MappingException) {
+				logger.info("Mapping Failed" + e);
+			} else if (e instanceof MarshalException) {
+				logger.info("Unmarshalling Failed" + e);
+			} else if (e instanceof ValidationException) {
+				logger.info("Validation Exception" + e);
+			} else {
+				logger.info("Other Exception" + e);
+			}
+		}
+		logger.info("Exiting CQLServiceImpl.createNewCodeSystemXML()");
+		return stream;
+	}
+
+	
 	/**
 	 * Modify applied element list.
 	 *
@@ -2915,8 +2993,24 @@ public class CQLServiceImpl implements CQLService {
 	public CQLCodeWrapper getCQLCodes(String xmlString){
 		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
 		if(xmlString != null && !xmlString.isEmpty()) {
+			SaveUpdateCQLResult parsedResult = getCQLData(xmlString);
+			CQLModel cqlModel = parsedResult.getCqlModel();
+			List<CQLCode> allCodes = cqlModel.getCodeList();
+			if(parsedResult.getCqlErrors().isEmpty()){
+				GetUsedCQLArtifactsResult artifactsResult = parsedResult.getUsedCQLArtifacts();
+				List<String> usedCodes = artifactsResult.getUsedCQLcodes();
+				for(CQLCode code : allCodes){
+					if(usedCodes.contains(code.getId())){
+						code.setUsed(true);
+					}
+				}
+			} else {
+				for(CQLCode code : allCodes){
+					code.setUsed(false);
+				}
+			}
 			List<CQLCode> cqlCodeDtos = CQLUtilityClass
-					.sortCQLCodeDTO(getCQLData(xmlString).getCqlModel().getCodeList());
+					.sortCQLCodeDTO(allCodes);
 			cqlCodeWrapper.setCqlCodeList(cqlCodeDtos);
 		}
 		

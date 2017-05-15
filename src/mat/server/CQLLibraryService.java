@@ -1380,7 +1380,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			CQLLibrary library = cqlLibraryDAO.find(libraryId);
 			if (library != null) {
-				cqlResult = cqlService.deleteValueSet(getCQLLibraryXml(library), toBeDeletedId);
+				cqlResult = cqlService.deleteCode(getCQLLibraryXml(library), toBeDeletedId);
 				if (cqlResult != null && cqlResult.isSuccess()) {
 					library.setCQLByteArray(cqlResult.getXml().getBytes());
 					save(library);

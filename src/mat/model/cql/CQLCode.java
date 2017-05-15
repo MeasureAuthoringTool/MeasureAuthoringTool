@@ -20,6 +20,8 @@ public class CQLCode implements IsSerializable {
 	/** The code system version. */
 	private String codeSystemVersion;
 	
+	private String codeSystemOID;
+	
 	/** The OID. */
 	private String codeOID;
 	
@@ -138,6 +140,14 @@ public class CQLCode implements IsSerializable {
 
 	public void setCodeIdentifier(String codeIdentifier) {
 		this.codeIdentifier = codeIdentifier;
+	}
+
+	public String getCodeSystemOID() {
+		return codeSystemOID;
+	}
+
+	public void setCodeSystemOID(String codeSystemOID) {
+		this.codeSystemOID = codeSystemOID;
 	}
 
 	

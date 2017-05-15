@@ -3786,9 +3786,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					searchDisplay.resetMessageDisplay();
-					String version = null;
-					String expansionProfile = null;
-					searchCQLCodesInVsac(version, expansionProfile);
+					searchCQLCodesInVsac();
 				}
 			}
 		});
@@ -3799,8 +3797,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					MatContext.get().clearDVIMessages();
-					searchDisplay.resetMessageDisplay();
 					addNewCodes();
+					searchDisplay.resetMessageDisplay();
 				}
 				
 			}
@@ -3872,6 +3870,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
 		refCode.setDisplayName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(measureId);
 		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
@@ -4097,7 +4096,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 	}
 	
-	private void searchCQLCodesInVsac(String version, String expansionProfile) {
+	private void searchCQLCodesInVsac() {
 
 		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
@@ -4136,6 +4135,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
 					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
 					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
+					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
 					
 				} else {

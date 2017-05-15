@@ -20,6 +20,9 @@
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>
+					<field name="codeSystemOID" type="java.lang.String">
+						<bind-xml name="codeSystemOID" node="attribute" />
+					</field>
 					<field name="codeSystemVersion" type="java.lang.String">
 						<bind-xml name="codeSystemVersion" node="attribute" />
 					</field>

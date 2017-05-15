@@ -124,6 +124,8 @@ public class CQLCodesView {
 	/** the Code system Version input */
 	private MatTextBox codeSystemVersionInput = new MatTextBox();
 	
+	private String CodeSystemOid;
+	
 	/** The is editable. */
 	private boolean isEditable;
 	
@@ -649,6 +651,7 @@ public class CQLCodesView {
 		getCodeInput().setValue("");
 		getCodeSystemInput().setValue("");
 		getCodeSystemVersionInput().setValue("");
+		setCodeSystemOid("");
 		getSaveButton().setEnabled(false);
 	}
 
@@ -991,6 +994,14 @@ public class CQLCodesView {
 		};
 		
 		return hasCell;
+	}
+
+	public String getCodeSystemOid() {
+		return CodeSystemOid;
+	}
+
+	public void setCodeSystemOid(String codeSystemOid) {
+		CodeSystemOid = codeSystemOid;
 	}
 	
 }

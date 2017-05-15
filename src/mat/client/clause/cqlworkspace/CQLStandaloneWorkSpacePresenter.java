@@ -61,7 +61,6 @@ import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -3424,9 +3423,7 @@ private void addCodeSearchPanelHandlers() {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 					searchDisplay.resetMessageDisplay();
-					String version = null;
-					String expansionProfile = null;
-					searchCQLCodesInVsac(version, expansionProfile);
+					searchCQLCodesInVsac();
 				}
 			}
 		});
@@ -3506,6 +3503,7 @@ private void addCodeSearchPanelHandlers() {
 		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(cqlLibraryId);
 		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
@@ -3764,7 +3762,7 @@ private void addCodeSearchPanelHandlers() {
 	}
 	
 	
-	private void searchCQLCodesInVsac(String version, String expansionProfile) {
+	private void searchCQLCodesInVsac() {
 
 		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
@@ -3803,6 +3801,7 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
 					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
 					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
+					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
 					
 				} else {

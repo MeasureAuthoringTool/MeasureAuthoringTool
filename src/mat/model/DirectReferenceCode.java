@@ -17,6 +17,8 @@ public class DirectReferenceCode implements IsSerializable{
 	/** The code system version. */
 	private String codeSystemVersion;
 	
+	private String codeSystemOid;
+	
 	/** The code. */
 	private String code;
 	
@@ -90,6 +92,14 @@ public class DirectReferenceCode implements IsSerializable{
 	 */
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getCodeSystemOid() {
+		return codeSystemOid;
+	}
+
+	public void setCodeSystemOid(String codeSystemOid) {
+		this.codeSystemOid = codeSystemOid;
 	}
 	
 }

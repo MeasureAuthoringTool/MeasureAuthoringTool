@@ -17,6 +17,10 @@
 			<bind-xml name="csVersion" node="element" />
 		</field>
 		
+		<field name="codeSystemOid" type="java.lang.String">
+			<bind-xml name="csOID" node="element" />
+		</field>
+		
 		<field name="code" type="java.lang.String">
 			<bind-xml name="code" node="element" />
 		</field>

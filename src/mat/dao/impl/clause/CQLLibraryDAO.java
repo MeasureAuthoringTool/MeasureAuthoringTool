@@ -834,5 +834,9 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		}
 		return updatedLibraryList;
 	}
+	@Override
+	public void refresh(CQLLibrary libObject){
+		getSessionFactory().getCurrentSession().refresh(libObject);
+	}
 
 }

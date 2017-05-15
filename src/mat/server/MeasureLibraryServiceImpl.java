@@ -105,6 +105,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -6053,6 +6054,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if(wrapper!= null && !wrapper.getCqlCodeList().isEmpty()){
 							result.setCqlCodeList(wrapper.getCqlCodeList());
 						}
+						CQLCodeSystem codeSystem = new CQLCodeSystem();
+						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
+						codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
+						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
+						SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(newSavedXml, codeSystem);
+						if(updatedResult.isSuccess()) {
+							 saveCQLCodeSystemInMeasureXml(updatedResult, transferObject.getId());
+						}
+						
+						
+						
 					}
 				}
 
@@ -6092,6 +6104,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 
+	
+	private String saveCQLCodeSystemInMeasureXml(SaveUpdateCQLResult result, String measureId) {
+		final String nodeName = "codeSystem";
+		MeasureXmlModel xmlModal = new MeasureXmlModel();
+		xmlModal.setMeasureId(measureId);
+		xmlModal.setParentNode("//cqlLookUp/codeSystems");
+		xmlModal.setToReplaceNode(nodeName);
+		System.out.println("codeSystems NEW XML " + result.getXml());
+		xmlModal.setXml(result.getXml());
+
+		return appendAndSaveNode(xmlModal, nodeName);
+		
+	}
 
 	/**
 	 * Save CQL valueset in measure xml.

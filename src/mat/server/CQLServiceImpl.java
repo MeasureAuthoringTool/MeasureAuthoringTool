@@ -2479,22 +2479,6 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	
-	
-	/*public SaveUpdateCQLResult saveCQLCodes(MatCodeTransferObject transferObject) {
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLCodeWrapper wrapper = new CQLCodeWrapper();
-		//transferObject.scrubForMarkUp();
-		ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
-		//List<CQLCode> existingCodeList = transferObject.getCodeList();
-		
-		wrapper.setCqlCodeList(codeList);
-	    wrapper.getCqlCodeList().add(transferObject.getCqlCode());
-	    String codeXMLString = generateXmlForAppliedCode(wrapper);
-	    result.setSuccess(true);
-		result.setXml(codeXMLString);
-		
-		return result;
-	}*/
 	@Override
 	public SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject){
 		logger.info("::: CQLServiceImpl saveCQLCodes Start :::");
@@ -2530,7 +2514,7 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 	
-	
+	@Override
 	public SaveUpdateCQLResult saveCQLCodeSystem(String xml , CQLCodeSystem codeSystem){
 		logger.info("::: CQLServiceImpl saveCQLCodeSystem Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -2538,12 +2522,16 @@ public class CQLServiceImpl implements CQLService {
 		
 		codeSystem.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		try {
-			Node existingCodeSystemList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//cqlLookUp/codeSystems/codeSystem[@codeSystem='"+codeSystem.getCodeSystem() +
+			/*Node existingCodeSystemList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//cqlLookUp/codeSystems/codeSystem[@codeSystem='"+codeSystem.getCodeSystem() +
 			"' and @codeSystemName='"+ codeSystem.getCodeSystemName()+"' and @codeSystemVersion='"+
-			codeSystem.getCodeSystemVersion()+"' ]");
-			/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),"//cqlLookUp/codes/code[@codeOID='"+ appliedCode.getCodeOID()+"' ]");*/
+			codeSystem.getCodeSystemVersion()+"' ]");*/
+			
+			Node existingCodeSystemList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "//cqlLookUp/codeSystems/codeSystem[@codeSystemName='"+ codeSystem.getCodeSystemName()+"' and @codeSystemVersion='"+
+					codeSystem.getCodeSystemVersion()+"' ]");
+			
 			if(existingCodeSystemList!= null){
 				logger.info("::: CodeSystem Already added :::");
+				result.setSuccess(false);
 			} else {
 				CQLCodeSystemWrapper wrapper = new CQLCodeSystemWrapper();
 				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();

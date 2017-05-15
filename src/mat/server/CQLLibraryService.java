@@ -56,6 +56,7 @@ import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibrarySet;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -206,6 +207,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	@Override
 	public void save(CQLLibrary library) {
 		this.cqlLibraryDAO.save(library);
+		
+		
 	}
 	
 	/**
@@ -1275,13 +1278,33 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						String nodeName = "code";
 						String parentNode = "//cqlLookUp/codes";
 						String newXml= appendAndSaveNode(cqlLibrary, nodeName, result.getXml(), parentNode);
+						cqlLibraryDAO.refresh(cqlLibrary);
 						System.out.println("newXml ::: " + newXml);
 						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
+						
+						CQLCodeSystem codeSystem = new CQLCodeSystem();
+						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
+						codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
+						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
+						SaveUpdateCQLResult updatedResult = cqlService.saveCQLCodeSystem(newXml, codeSystem);
+						if(updatedResult.isSuccess()) {
+							saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
+						}
 					}
 				}
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * @param cqlLibrary
+	 * @param updatedResult
+	 */
+	private void saveCQLCodeSystemInLibrary(CQLLibrary cqlLibrary, SaveUpdateCQLResult updatedResult) {
+		String nodeName = "codeSystem";
+		String parentNode = "//cqlLookUp/codeSystems";
+		 appendAndSaveNode(cqlLibrary, nodeName, updatedResult.getXml(), parentNode);
 	}
 	
 	

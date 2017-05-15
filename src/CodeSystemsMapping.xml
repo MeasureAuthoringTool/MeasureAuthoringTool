@@ -6,7 +6,7 @@
 	<class name="mat.model.cql.CQLCodeSystemWrapper">
 		<map-to xml="cqlLookUp" />
 		
-		<field name="qualityDataDTOList" type="mat.model.cql.CQLCodeSystem"
+		<field name="cqlCodeSystemList" type="mat.model.cql.CQLCodeSystem"
 			get-method="getCqlCodeSystemList" set-method="setCqlCodeSystemList"
 			collection="arraylist">
 			<bind-xml name="codeSystem" location="codeSystems">

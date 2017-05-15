@@ -233,16 +233,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
+	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
+		String result = new String();
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml()))
 				&& (nodeName != null && StringUtils.isNotBlank(nodeName))) {
-			String result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName,
+			 result = callAppendNode(xmlModel, measureXmlModel.getXml(), nodeName,
 					measureXmlModel.getParentNode());
 			xmlModel.setXml(result);
 			getService().saveMeasureXml(xmlModel);
 		}
-
+		return result;
 	}
 
 	/*
@@ -6046,8 +6047,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
 				result = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
 				if (result != null && result.isSuccess()) {
-					saveCQLCodesInMeasureXml(result, transferObject.getId());
-					result.setCqlCodeList(getCQLCodes(transferObject.getId()).getCqlCodeList());
+					String newSavedXml = saveCQLCodesInMeasureXml(result, transferObject.getId());
+					if(!newSavedXml.isEmpty()){
+						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(newSavedXml);
+						if(wrapper!= null && !wrapper.getCqlCodeList().isEmpty()){
+							result.setCqlCodeList(wrapper.getCqlCodeList());
+						}
+					}
 				}
 
 			}
@@ -6073,7 +6079,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param result
 	 *            the result
 	 */
-	private void saveCQLCodesInMeasureXml(SaveUpdateCQLResult result, String measureId) {
+	private String saveCQLCodesInMeasureXml(SaveUpdateCQLResult result, String measureId) {
 		final String nodeName = "code";
 		MeasureXmlModel xmlModal = new MeasureXmlModel();
 		xmlModal.setMeasureId(measureId);
@@ -6082,7 +6088,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		System.out.println("CODE NEW XML " + result.getXml());
 		xmlModal.setXml(result.getXml());
 
-		appendAndSaveNode(xmlModal, nodeName);
+		return appendAndSaveNode(xmlModal, nodeName);
+		
 	}
 
 

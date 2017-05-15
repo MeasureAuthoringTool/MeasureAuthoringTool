@@ -61,8 +61,9 @@ public interface MeasureLibraryService {
 	 *            the new measure xml model
 	 * @param nodeName
 	 *            the new node name
+	 * @return 
 	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
+	String appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	
 	/**
 	 * Check for timing elements and append.

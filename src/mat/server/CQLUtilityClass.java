@@ -415,7 +415,7 @@ public class CQLUtilityClass {
 			sortCQLQualityDataSetDto(valueSetsList);
 			cqlModel.setAllValueSetList(valueSetsList);
 		}
-		
+		sortCQLCodeDTO(cqlModel.getCodeList());
 		if(!cqlModel.getCodeList().isEmpty()){
 			//Combine Codes and Value sets in allValueSetList for UI
 			List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(cqlModel.getCodeList());
@@ -426,7 +426,7 @@ public class CQLUtilityClass {
 		//System.out.println("End time getCQLStringFromXML " + (System.currentTimeMillis() - currentTime));
 		return cqlModel;
 	}	
-
+/*
 	private static void getCodeSystems(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLCodeSystemWrapper codeSystemWrapper;
 		try {			 
@@ -470,7 +470,7 @@ public class CQLUtilityClass {
 			logger.info("Error while getting codes :" +e.getMessage());
 		}
 		
-	}
+	}*/
 
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;

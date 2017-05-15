@@ -3894,7 +3894,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					//getAppliedCodeList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
-					if(result.getFailureReason()==result.DUPLICATE_CODE){
+					if(result.getFailureReason()==result.getDuplicateCode()){
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Code "+ searchDisplay.getCodesView().getCodeInput().getText() +" already exists.");
 					}
 				}

@@ -40,6 +40,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
@@ -3453,6 +3454,47 @@ private void addCodeSearchPanelHandlers() {
 				}
 			}
 		});
+		searchDisplay.getCodesView().setDelegator(new Delegator() {
+			
+			@Override
+			public void onDeleteClicked(CQLCode result, int index) {
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clear();
+				if(result != null){
+					searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+					MatContext.get().getCQLLibraryService().deleteCode(result.getId(), MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+							if(result.isSuccess()){
+								searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code has been removed successfully.");
+								searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+								appliedCodeTableList.clear();
+								appliedCodeTableList.addAll(result.getCqlCodeList());
+								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								//searchDisplay.buildCodes();
+								searchDisplay.getCodesView().buildCodesCellTable(
+										appliedCodeTableList,
+										MatContext.get().getLibraryLockService().checkForEditPermission());
+								//getAppliedCodeList();
+							} else {
+								
+								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
+								
+							}
+						}
+					});
+				}
+				
+			}
+		});
 	}
 	
 	private void addNewCodes() {
@@ -3477,14 +3519,14 @@ private void addCodeSearchPanelHandlers() {
 							getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeInput().getText()));
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					appliedCodeTableList.clear();
-					appliedCodeTableList.addAll(result.getCqlModel().getCodeList());
+					appliedCodeTableList.addAll(result.getCqlCodeList());
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
 							.checkForEditPermission());
 					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
 					//getAppliedCodeList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
-					if(result.getFailureReason()==result.DUPLICATE_CODE){
+					if(result.getFailureReason()==result.getDuplicateCode()){
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Duplicate Codes.");
 					}
 				}

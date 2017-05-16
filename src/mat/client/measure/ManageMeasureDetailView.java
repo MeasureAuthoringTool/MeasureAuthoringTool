@@ -6,7 +6,9 @@ import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -62,7 +64,7 @@ public class ManageMeasureDetailView
 	/** The meas scoring input. */
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
-	private ListBoxMVP patientBasedInput = new ListBoxMVP();
+	private ListBox patientBasedInput = new ListBox();
 	
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
@@ -104,9 +106,9 @@ public class ManageMeasureDetailView
     private FormGroup measureNameGroup = new FormGroup();
 	private FormGroup shortNameGroup = new FormGroup();
 	private FormGroup scoringGroup = new FormGroup();
-	//private FormGroup messageFormGrp = new FormGroup();
+	private FormGroup messageFormGrp = new FormGroup();
 	private FormGroup patientBasedFormGrp = new FormGroup();
-	//private HelpBlock helpBlock = new HelpBlock();
+	private HelpBlock helpBlock = new HelpBlock();
 
 	
 	/**
@@ -208,6 +210,9 @@ public class ManageMeasureDetailView
 		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
 		buttonFormGroup.add(buttonBar);
 		
+		messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
@@ -216,6 +221,7 @@ public class ManageMeasureDetailView
 		formFieldSet.add(patientBasedFormGrp);
 		formFieldSet.add(buttonFormGroup);
 		createMeasureForm.add(formFieldSet);
+		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
 		mainPanel.add(fPanel);
 		
@@ -397,7 +403,7 @@ public class ManageMeasureDetailView
 	@Override
 	public HasValue<String> getShortName() {
 		return shortName;
-	}
+	}		
 
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
@@ -415,6 +421,8 @@ public class ManageMeasureDetailView
 		name.setText("");
 		shortName.setText("");
 		measScoringInput.setSelectedIndex(0);//default to --Select-- value.
+		helpBlock.setText("");
+		messageFormGrp.setValidationState(ValidationState.NONE);
 		
 	}
 	
@@ -524,13 +532,25 @@ public class ManageMeasureDetailView
 
 
 	@Override
-	public ListBoxMVP getPatientBasedInput() {
+	public ListBox getPatientBasedInput() {
 		return patientBasedInput;
 	}
 
 
 	@Override
-	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
+	public void setPatientBasedInput(ListBox patientBasedInput) {
 		this.patientBasedInput = patientBasedInput;
+	}
+@Override
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
+	}
+	@Override
+	public FormGroup getMessageFormGrp() {
+		return messageFormGrp;
 	}
 }

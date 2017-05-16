@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,6 +37,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -201,9 +205,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		Label getInvisibleRadioAlertNo();
 
-		ListBoxMVP getPatientBasedInput();
+		ListBox getPatientBasedInput();
 
-		void setPatientBasedInput(ListBoxMVP patientBasedInput);
+		
+		HelpBlock getHelpBlock();
+
+		FormGroup getMessageFormGrp();
+
+		void setPatientBasedInput(ListBox patientBasedInput);
 	}
 
 	/**
@@ -885,6 +894,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		measureDeletion = false;
 		isClone = false;
 		isLoading = false;
+		detailDisplay.getMessageFormGrp().setValidationState(ValidationState.NONE);
+		detailDisplay.getHelpBlock().setText("");
 	}
 
 	/*
@@ -1107,6 +1118,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 						
 						// default the selected index to be 1, which is yes.  
 						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
+						detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+						detailDisplay.getHelpBlock().setColor("transparent");
+						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
+						
+						
 				}
 				
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
@@ -1114,6 +1130,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 					// yes is the second element in the list, so the 1 index. 
 					detailDisplay.getPatientBasedInput().removeItem(1);
 					detailDisplay.getPatientBasedInput().setSelectedIndex(0);
+					detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+					detailDisplay.getHelpBlock().setColor("transparent");
+					detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
+					
 				}
 			}			
 		});

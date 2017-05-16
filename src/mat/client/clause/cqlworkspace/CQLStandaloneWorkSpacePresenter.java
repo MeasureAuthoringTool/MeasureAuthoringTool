@@ -3502,7 +3502,8 @@ private void addCodeSearchPanelHandlers() {
 		refCode.setCodeName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
-		refCode.setDisplayName(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
+		refCode.setDisplayName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(cqlLibraryId);

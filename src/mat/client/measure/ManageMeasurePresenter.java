@@ -210,6 +210,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Label getInvisibleRadioAlertYes();
 
 		Label getInvisibleRadioAlertNo();
+
+		ListBoxMVP getPatientBasedInput();
+
+		void setPatientBasedInput(ListBoxMVP patientBasedInput);
 	}
 
 	/**
@@ -1109,26 +1113,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
-					
-					detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
-					detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
-					
-					detailDisplay.getPatientBasedNoRadioButton().setValue(false);
-					detailDisplay.getPatientBasedYesRadioButton().setValue(true);
-					
-					detailDisplay.getInvisibleRadioAlertNo().getElement().removeAttribute("role");
-					detailDisplay.getInvisibleRadioAlertYes().getElement().setAttribute("role", "alert");
+						resetPatientBasedInput(); 
+						
+						// default the selected index to be 1, which is yes.  
+						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 				}
 				
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
-					detailDisplay.getPatientBasedNoRadioButton().setValue(true);
-					detailDisplay.getPatientBasedYesRadioButton().setValue(false);
-					
-					detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
-					detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
-					
-					detailDisplay.getInvisibleRadioAlertYes().getElement().removeAttribute("role");
-					detailDisplay.getInvisibleRadioAlertNo().getElement().setAttribute("role", "alert");
+
+					// yes is the second element in the list, so the 1 index. 
+					detailDisplay.getPatientBasedInput().removeItem(1);
+					detailDisplay.getPatientBasedInput().setSelectedIndex(0);
 				}
 			}			
 		});
@@ -1139,13 +1134,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
-		
-		// on create measure, have nothing selected at first and make sure they are enabled.
-		detailDisplay.getPatientBasedYesRadioButton().setValue(false);
-		detailDisplay.getPatientBasedNoRadioButton().setValue(false);
-		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
-		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
-		
+		resetPatientBasedInput(); 
+			
 		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
 		setDetailsToView();
 		detailDisplay.showMeasureName(false);
@@ -1158,26 +1148,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
-		
-		// ensure the radio buttons are enabled
-		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
-		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
+		resetPatientBasedInput(); 
 		
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 		
+		// set the patient based indicators, yes is index 1, no is index 0
 		if(currentDetails.isPatientBased()) {
-			detailDisplay.getPatientBasedNoRadioButton().setValue(false);
-			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 		} else {
-			detailDisplay.getPatientBasedYesRadioButton().setValue(false);
-			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
 		}
 		
 		if(currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
-			detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
-			detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
+			detailDisplay.getPatientBasedInput().removeItem(1);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
 		}
 		
 		
@@ -1192,30 +1178,35 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
-		
-		// ensure the radio buttons are enabled
-		detailDisplay.getPatientBasedYesRadioButton().setEnabled(true);
-		detailDisplay.getPatientBasedNoRadioButton().setEnabled(true);
-		
+		resetPatientBasedInput(); 
+				
 		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		
+		// set the patient based indicators, yes is index 1, no is index 0
 		if(currentDetails.isPatientBased()) {
-			detailDisplay.getPatientBasedNoRadioButton().setValue(false);
-			detailDisplay.getPatientBasedYesRadioButton().setValue(true);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 		} else {
-			detailDisplay.getPatientBasedYesRadioButton().setValue(false);
-			detailDisplay.getPatientBasedNoRadioButton().setValue(true);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
 		}
 		
 		if(currentDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
-			detailDisplay.getPatientBasedYesRadioButton().setEnabled(false);
-			detailDisplay.getPatientBasedNoRadioButton().setEnabled(false);
+			detailDisplay.getPatientBasedInput().removeItem(1);
 		}
 		
 		panel.setContent(detailDisplay.asWidget());
+	}
+	
+	/**
+	 * resets the patient based input by clearing the list, adding no and yes options, and setting the selected index to 0. 
+	 */
+	private void resetPatientBasedInput() {
+		detailDisplay.getPatientBasedInput().clear();
+		detailDisplay.getPatientBasedInput().addItem("No");
+		detailDisplay.getPatientBasedInput().addItem("Yes");
+		detailDisplay.getPatientBasedInput().setSelectedIndex(0);
 	}
 
 	/**
@@ -2536,10 +2527,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		// }
 		
 		// update the current measure details model based on the patient based radio buttons
-		if(detailDisplay.getPatientBasedNoRadioButton().getValue() == true) {
-			currentDetails.setIsPatientBased(false);
-		} else {
+		if(detailDisplay.getPatientBasedInput().getItemText(detailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
 			currentDetails.setIsPatientBased(true);
+		} else {
+			currentDetails.setIsPatientBased(false);
 		}
 		
 		currentDetails.scrubForMarkUp();

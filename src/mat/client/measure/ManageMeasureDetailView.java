@@ -60,6 +60,8 @@ public class ManageMeasureDetailView
 	/** The meas scoring input. */
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
+	private ListBoxMVP patientBasedInput = new ListBoxMVP();
+	
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
 	
@@ -186,26 +188,31 @@ public class ManageMeasureDetailView
 		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
 		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
 		
-		invisibleRadioYes = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoYes", "PatientBasedIndicatorchangedtoYes.");
-		invisibleRadioNo = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoNo", "PatientBasedIndicatorchangedtoNo.");
+		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
+		patientBasedMeasurePanel.add(patientBasedInput);
+		patientBasedInput.addItem("No");
+		patientBasedInput.addItem("Yes");
 		
-		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
-		radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
-		radioBtnNo = new RadioButton("patientBasedGroup", "No");
-		radioBtnYes.getElement().setId("RadioBtn_Yes");
-		radioBtnNo.getElement().setId("RadioBtn_No");
-		
-		radioBtnYes.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoYes");
-		radioBtnNo.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoNo");
-		
+//		invisibleRadioYes = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoYes", "PatientBasedIndicatorchangedtoYes.");
+//		invisibleRadioNo = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoNo", "PatientBasedIndicatorchangedtoNo.");
+//		
+//		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
+//		radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
+//		radioBtnNo = new RadioButton("patientBasedGroup", "No");
+//		radioBtnYes.getElement().setId("RadioBtn_Yes");
+//		radioBtnNo.getElement().setId("RadioBtn_No");
+//		
+//		radioBtnYes.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoYes");
+//		radioBtnNo.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoNo");
+//		
 		// Check 'No' by default.
-		radioBtnNo.setValue(true);
-		radionButtonPanel.add(radioBtnNo);
-		radionButtonPanel.add(radioBtnYes);
-		radionButtonPanel.setStyleName("myAccountButtonLayout");
-		patientBasedMeasurePanel.add(radionButtonPanel);
-		patientBasedMeasurePanel.add(invisibleRadioNo);
-		patientBasedMeasurePanel.add(invisibleRadioYes);
+//		radioBtnNo.setValue(true);
+//		radionButtonPanel.add(radioBtnNo);
+//		radionButtonPanel.add(radioBtnYes);
+//		radionButtonPanel.setStyleName("myAccountButtonLayout");
+//		patientBasedMeasurePanel.add(radionButtonPanel);
+//		patientBasedMeasurePanel.add(invisibleRadioNo);
+//		patientBasedMeasurePanel.add(invisibleRadioYes);
 		patientBasedMeasurePanel.add(new SpacerWidget());
 		return patientBasedMeasurePanel;
 	}
@@ -390,5 +397,17 @@ public class ManageMeasureDetailView
 	@Override
 	public Label getInvisibleRadioAlertNo() {
 		return invisibleRadioNo;
+	}
+
+
+	@Override
+	public ListBoxMVP getPatientBasedInput() {
+		return patientBasedInput;
+	}
+
+
+	@Override
+	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
+		this.patientBasedInput = patientBasedInput;
 	}
 }

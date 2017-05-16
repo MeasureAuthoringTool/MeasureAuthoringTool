@@ -901,7 +901,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	@SuppressWarnings("unchecked")
 	private static JsArrayString createValueSetJsArrayString() {
-		List<String> valueSetList = MatContext.get().getValuesets();
+		List<String> valueSetList = new ArrayList<String>();
+		valueSetList.addAll(MatContext.get().getValuesets());
 		valueSetList.add("SDE Ethnicity");
 		valueSetList.add("SDE Race");
 		valueSetList.add("SDE Sex");
@@ -960,7 +961,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createDefinitionsJsArrayString() {
-		List<String> defineList = MatContext.get().definitions;
+		List<String> defineList = new ArrayList<String>();
+		defineList.addAll(MatContext.get().getDefinitions());
 		defineList.addAll(MatContext.get().getIncludedDefNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		
@@ -983,7 +985,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createParamsJsArrayString() {
-		List<String> paramList = MatContext.get().parameters;
+		List<String> paramList = new ArrayList<String>();
+		paramList.addAll(MatContext.get().getParameters());
 		paramList.addAll(MatContext.get().getIncludedParamNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		for (String string : paramList) {
@@ -1004,7 +1007,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createfuncsJsArrayString() {
-		List<String> funcsList = MatContext.get().funcs;
+		List<String> funcsList = new ArrayList<String>();
+		funcsList.addAll(MatContext.get().getFuncs());
 		funcsList.addAll(MatContext.get().getIncludedFuncNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		for (String string : funcsList) {

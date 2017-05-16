@@ -335,69 +335,49 @@ public class InsertIntoAceEditorDialogBox {
 										}
 										String[] str = itemNameToBeInserted.toString().split("\\.");
 										StringBuilder sb = new StringBuilder();
+										boolean isNotValidCode = false;
+										String aliasStr = "";
 										if(str.length>1){
-											sb.append(str[0]).append(".");
+											aliasStr = str[0];
 											itemNameToBeInserted = str[1];
-										}
+										} 
 										if(dataType != null){
-											if(itemNameToBeInserted.equalsIgnoreCase(DEAD)){
-												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
-													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
-													itemNameToBeInserted = sb.toString();
-												} else {
-													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
-													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
-													messageFormgroup.setValidationState(ValidationState.ERROR);
-													itemNameToBeInserted = "";
-												}
-												
-											} else if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
-												if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
-													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
-													itemNameToBeInserted = sb.toString();
-												} else {
-													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
-													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
-													messageFormgroup.setValidationState(ValidationState.ERROR);
-													itemNameToBeInserted = "";
-												}
-											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
-												if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
-													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
-													itemNameToBeInserted = sb.toString();
-												} else {
-													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
-													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
-													messageFormgroup.setValidationState(ValidationState.ERROR);
-													itemNameToBeInserted = "";
-												}
-											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
-												if(itemNameToBeInserted.equalsIgnoreCase(DEAD)){
-													sb = sb.append("[\"" + dataType + "\"");
-													sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
-													itemNameToBeInserted = sb.toString();
-												} else {
-													dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
-													helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-													helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
-													messageFormgroup.setValidationState(ValidationState.ERROR);
-													itemNameToBeInserted = "";
-												}
+											if(itemNameToBeInserted.equalsIgnoreCase(DEAD) 
+													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
+												isNotValidCode = true;											
+											} else if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE) 
+													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
+												isNotValidCode = true;
+											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)
+												&& !itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
+												isNotValidCode = true;
+											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)
+												&& !itemNameToBeInserted.equalsIgnoreCase(DEAD)){
+												isNotValidCode = true;
+											}
+											if(isNotValidCode){
+												helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+												helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
+												messageFormgroup.setValidationState(ValidationState.ERROR);
+												itemNameToBeInserted = "";
 											} else {
+												
 												sb = sb.append("[\"" + dataType + "\"");
-												sb = sb.append(": \"").append(itemNameToBeInserted + "\"]");
+												sb = sb.append(": ");
+												if(!aliasStr.isEmpty()){
+													sb = sb.append(aliasStr).append(".");
+												}
+												sb= sb.append("\"").append(itemNameToBeInserted).append("\"]");
 												itemNameToBeInserted = sb.toString();
 											}
-											
+										
 										} else {
-											sb = sb.append("\"" + itemNameToBeInserted + "\"");
-											itemNameToBeInserted = sb.toString();
+											
+											if(!aliasStr.isEmpty()){
+												sb = sb.append(aliasStr).append(".");
+											}
+											sb= sb.append("\"").append(itemNameToBeInserted).append("\"");
+											itemNameToBeInserted = sb.toString();	
 										}
 										
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {

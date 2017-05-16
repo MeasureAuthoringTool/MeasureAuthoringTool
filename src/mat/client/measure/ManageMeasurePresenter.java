@@ -197,16 +197,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public void showMeasureName(boolean show);
 
-		/**
-		 * Gets the yes patient based radio button
-		 */
-		RadioButton getPatientBasedYesRadioButton();
-
-		/**
-		 * Gets the no patient based radio button
-		 */
-		RadioButton getPatientBasedNoRadioButton();
-
 		Label getInvisibleRadioAlertYes();
 
 		Label getInvisibleRadioAlertNo();
@@ -1206,7 +1196,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getPatientBasedInput().clear();
 		detailDisplay.getPatientBasedInput().addItem("No");
 		detailDisplay.getPatientBasedInput().addItem("Yes");
-		detailDisplay.getPatientBasedInput().setSelectedIndex(0);
+		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	/**

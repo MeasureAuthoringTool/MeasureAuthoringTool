@@ -13,6 +13,34 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.measurepackage.service.MeasurePackageSaveResult;
+import mat.client.shared.MatContext;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureXMLDAO;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
+import mat.model.RiskAdjustmentDTO;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLDefinitionsWrapper;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
+import mat.server.service.PackagerService;
+import mat.server.util.CQLUtil;
+import mat.server.util.MATPropertiesService;
+import mat.server.util.ResourceLoader;
+import mat.server.util.XmlProcessor;
+import mat.shared.CQLExpressionObject;
+import mat.shared.ConstantMessages;
+import mat.shared.MeasurePackageClauseValidator;
+import mat.shared.SaveUpdateCQLResult;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -26,28 +54,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.measurepackage.MeasurePackageClauseDetail;
-import mat.client.measurepackage.MeasurePackageDetail;
-import mat.client.measurepackage.MeasurePackageOverview;
-import mat.client.measurepackage.service.MeasurePackageSaveResult;
-import mat.client.shared.MatContext;
-import mat.dao.clause.MeasureDAO;
-import mat.dao.clause.MeasureXMLDAO;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-import mat.model.RiskAdjustmentDTO;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
-import mat.server.service.PackagerService;
-import mat.server.util.MATPropertiesService;
-import mat.server.util.ResourceLoader;
-import mat.server.util.XmlProcessor;
-import mat.shared.ConstantMessages;
-import mat.shared.MeasurePackageClauseValidator;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -117,6 +123,10 @@ public class PackagerServiceImpl implements PackagerService {
 
 	@Autowired
 	private MeasureDAO measureDAO;
+	
+	/** The cql library DAO. */
+	@Autowired
+	private CQLLibraryDAO cqlLibraryDAO;
 
 	/**
 	 * 1) Loads the MeasureXml from DB and converts into Xml Document Object 2)
@@ -1002,9 +1012,23 @@ public class PackagerServiceImpl implements PackagerService {
 	 */
 	@Override
 	public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
+		
+		long time1 = System.currentTimeMillis();
+		
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
 		List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses());
 		MeasurePackageSaveResult result = new MeasurePackageSaveResult();
+		
+		if(messages.size() == 0){
+			MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+			
+			try {
+				messages = checkPatientBasedValidations(measureXML, detail);
+			} catch (XPathExpressionException e) {
+				messages.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
+			}
+		}
+		
 		if (messages.size() == 0) {
 			result.setSuccess(true);
 			MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
@@ -1054,7 +1078,112 @@ public class PackagerServiceImpl implements PackagerService {
 			result.setMessages(messages);
 			result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
 		}
+		long time2 = System.currentTimeMillis();
+		logger.info("Time for grouping validation:"+(time2-time1));
 		return result;
+	}
+
+	private List<String> checkPatientBasedValidations(MeasureXML measureXML, MeasurePackageDetail detail) throws XPathExpressionException {
+			
+		List<String> errorMessages = new ArrayList<String>();
+		
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML.getMeasureXMLAsString());
+		XmlProcessor xmlProcessor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+
+		Node patientBasedIndicatorNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureDetails/patientBasedIndicator");
+		String patientBasedIndicator = patientBasedIndicatorNode.getTextContent();
+		boolean isPatientBasedIndicator = patientBasedIndicator.equals("true");
+		
+		Node scoringNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureDetails/scoring");
+		String scoringType = scoringNode.getTextContent();
+		
+		List<String> exprList = new ArrayList<String>();
+		
+		List<MeasurePackageClauseDetail> packageClauses =  detail.getPackageClauses();
+		
+		for(MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses){
+			String populationUUID = measurePackageClauseDetail.getId();
+			String type = measurePackageClauseDetail.getType();
+			//ignore "stratification" nodes.
+			if(type.equals("stratification")){
+				continue;
+			}
+			
+			Node clauseNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//clause[@uuid='"+populationUUID+"']");
+			
+			
+			if(type.equals("measureObservation")){
+				
+				if(ConstantMessages.RATIO_SCORING.equals(scoringType)){
+					continue;
+				}
+				
+				//find the cqlfunction here
+				Node firstChildNode = clauseNode.getFirstChild();
+				
+				if(firstChildNode.getNodeName().equals("cqlaggfunction")){
+					if(firstChildNode.hasChildNodes()){
+						firstChildNode = firstChildNode.getFirstChild();
+					}else{
+						continue;
+					}
+				}				
+				exprList.add(firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue());
+				
+			}else{
+				
+				//find cqldefinition here
+				Node firstChildNode = clauseNode.getFirstChild();
+				
+				String definitionName = firstChildNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				
+				if(!exprList.contains(definitionName)){
+					exprList.add(definitionName);
+				}
+			}
+		}
+
+		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, exprList);
+		
+		List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getAllExpressionList();
+		List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();
+		
+		for(CQLExpressionObject cqlExpressionObject : expressions){
+			String name = cqlExpressionObject.getName();
+			if(exprList.contains(name)){
+				expressionsToBeChecked.add(cqlExpressionObject);
+			}
+		}
+		
+		if(isPatientBasedIndicator){
+			List<String> messages = checkPatientTypeAndBoolean(expressionsToBeChecked);
+			if(messages.size() > 0){
+				errorMessages.addAll(messages);
+			}
+		}
+		
+		return errorMessages;
+	}
+
+	private List<String> checkPatientTypeAndBoolean(
+			List<CQLExpressionObject> expressionsToBeChecked) {
+		
+		List<String> returnMessages = new ArrayList<String>();
+		
+		for(CQLExpressionObject cqlExpressionObject : expressionsToBeChecked){
+			
+			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
+			
+			String returnType = cqlExpressionObject.getReturnType();
+			returnType = returnType.replaceAll("<", "[");
+			returnType = returnType.replaceAll(">", "]");
+			
+			//check for return type to be "System.Boolean"
+			if(!cqlExpressionObject.getReturnType().equals("System.Boolean")){
+				returnMessages.add("CQL "+cqlExpressionObject.getType() + " " +cqlExpressionObject.getName() + " has return type as "+returnType+ ". Must be System.Boolean.");
+			}
+		}		
+		return returnMessages;
 	}
 
 	/*

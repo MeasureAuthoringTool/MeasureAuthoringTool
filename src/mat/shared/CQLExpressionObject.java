@@ -9,12 +9,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLExpressionObject implements IsSerializable {
 	
-	public CQLExpressionObject(String type, String name) {
-		// TODO Auto-generated constructor stub
-		this.type = type;
-		this.name = name;
-	}
-	 /**
+	private String type;
+    private String name;
+    private String returnType;
+	
+	/**
      * The used expressions list
      */
     private List<String> usedExpressions = new ArrayList<String>();
@@ -46,9 +45,12 @@ public class CQLExpressionObject implements IsSerializable {
     private List<String> usedCodes = new ArrayList<String>();
     private Map<String, List<String>> valueSetDataTypeMap = new HashMap<String,List<String>>();
     
-    String type;
-    String name;
-
+    public CQLExpressionObject(String type, String name) {
+		// TODO Auto-generated constructor stub
+		this.type = type;
+		this.name = name;
+	}
+    
 	public List<String> getUsedExpressions() {
 		return usedExpressions;
 	}
@@ -122,20 +124,20 @@ public class CQLExpressionObject implements IsSerializable {
 	}
 
 	/**
-	 * @param combinedSupplementalValueSetMap
+	 * @param mergedValueSetMap
 	 * @param usedValueSetMap
 	 */
-	public static Map<String, List<String>> mergeValueSetMap(Map<String, List<String>> combinedSupplementalValueSetMap, 
+	public static Map<String, List<String>> mergeValueSetMap(Map<String, List<String>> mergedValueSetMap, 
 			Map<String, List<String>> usedValueSetMap) {
 		
 		for(String key: usedValueSetMap.keySet()){
 			
-			if(combinedSupplementalValueSetMap.get(key) == null){
-				combinedSupplementalValueSetMap.put(key, new ArrayList<String>(usedValueSetMap.get(key)));
+			if(mergedValueSetMap.get(key) == null){
+				mergedValueSetMap.put(key, new ArrayList<String>(usedValueSetMap.get(key)));
 				continue;
 			}
 			
-			List<String> existingDataTypes = combinedSupplementalValueSetMap.get(key);
+			List<String> existingDataTypes = mergedValueSetMap.get(key);
 			
 			for(String dataType : usedValueSetMap.get(key)){
 				if(!existingDataTypes.contains(dataType)){
@@ -144,6 +146,14 @@ public class CQLExpressionObject implements IsSerializable {
 			}
 		}
 		
-		return combinedSupplementalValueSetMap;
+		return mergedValueSetMap;
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
 	}
 }

@@ -270,6 +270,7 @@ public class CQLFilter {
     	
     	if(expression.getClass().equals(ExpressionDef.class)) {
            CQLExpressionObject definitionObject = new CQLExpressionObject("Definition",expression.getName());
+           definitionObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
            definitionObject.getUsedCodes().addAll(this.getUsedCodes());
            definitionObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
            definitionObject.getUsedExpressions().addAll(this.getUsedExpressions());
@@ -285,6 +286,7 @@ public class CQLFilter {
 
         else if(expression.getClass().equals(FunctionDef.class)) {
         	CQLExpressionObject funcObject = new CQLExpressionObject("Function",expression.getName());
+        	funcObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
         	funcObject.getUsedCodes().addAll(this.getUsedCodes());
         	funcObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
         	funcObject.getUsedExpressions().addAll(this.getUsedExpressions());
@@ -302,6 +304,7 @@ public class CQLFilter {
         // check for parameters
         else if(expression.getClass().equals(ParameterDef.class)) {
         	CQLExpressionObject paramObject = new CQLExpressionObject("Parameter",expression.getName());
+        	paramObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
         	paramObject.getUsedCodes().addAll(this.getUsedCodes());
         	paramObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
         	paramObject.getUsedExpressions().addAll(this.getUsedExpressions());

@@ -2,6 +2,11 @@ package mat.client.measure;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -12,13 +17,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
@@ -68,6 +70,16 @@ public class ManageMeasureDetailView
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
+	/**
+	 * The yes patient based radio button
+	 */
+	private RadioButton radioBtnYes;
+	
+	/**
+	 * The no patient based radio button
+	 */
+	private RadioButton radioBtnNo;
+	
 	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
 	//User Story # 1391 Sprint 11
@@ -88,6 +100,14 @@ public class ManageMeasureDetailView
     Label invisibleRadioYes; 
     
     Label invisibleRadioNo;
+    
+    private FormGroup measureNameGroup = new FormGroup();
+	private FormGroup shortNameGroup = new FormGroup();
+	private FormGroup scoringGroup = new FormGroup();
+	//private FormGroup messageFormGrp = new FormGroup();
+	private FormGroup patientBasedFormGrp = new FormGroup();
+	//private HelpBlock helpBlock = new HelpBlock();
+
 	
 	/**
 	 * Instantiates a new manage measure detail view.
@@ -98,7 +118,6 @@ public class ManageMeasureDetailView
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.getElement().setId("mainPanel_SimplePanel");
-
 
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.getElement().setId("fPanel_FlowPanel");
@@ -116,61 +135,167 @@ public class ManageMeasureDetailView
 		fPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
+		Form createMeasureForm = new Form();
+		
+		/*messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		createMeasureForm.add(messageFormGrp);*/
+		
+		FormLabel measureNameLabel = new FormLabel();
+		measureNameLabel.setText("Name");
+		measureNameLabel.setTitle("Name");
+		measureNameLabel.setFor("NameTextArea");
+		measureNameLabel.setId("NameTextArea_Id");
+		name.getElement().setId("name_TextAreaWithMaxLength");
+		name.setWidth("400px");
+		name.setMaxLength(500);
+		measureNameGroup.add(measureNameLabel);
+		measureNameGroup.add(name);
+		
+		FormLabel shortNameLabel = new FormLabel();
+		shortNameLabel.setText("Abbreviated Name");
+		shortNameLabel.setTitle("Abbreviated Name");
+		shortNameLabel.setFor("ShortNameTextBox");
+		shortNameLabel.setId("ShortNameTextBox_Id");
+		shortName.getElement().setId("shortName_TextBox");
+		shortName.setWidth("18em");
+		shortName.setMaxLength(32);
+		shortNameGroup.add(shortNameLabel);
+		shortNameGroup.add(shortName);
+		
+		FormLabel scoringLabel = new FormLabel();
+		scoringLabel.setText("Measure Scoring");
+		scoringLabel.setTitle("Measure Scoring");
+		scoringLabel.setFor("MeasureScoringListBox");
+		scoringLabel.setId("MeasureScoringListBox");
+		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
+		measScoringInput.setStyleName("form-control");
+		measScoringInput.setVisibleItemCount(1);
+		measScoringInput.setWidth("18em");
+		scoringGroup.add(scoringLabel);
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(measScoringInput);
+		hp.add(new HTML("&nbsp;"));
+		hp.add(cautionMsgPlaceHolder);
+		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");
+		scoringGroup.add(hp);
+		/*scoringGroup.add(measScoringInput);
+		scoringGroup.add(new HTML("&nbsp;"));
+		scoringGroup.add(cautionMsgPlaceHolder);
+		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");*/
+		
+		FormLabel patientBasedLabel = new FormLabel();
+		patientBasedLabel.setText("Patient Based Measure");
+		patientBasedLabel.setTitle("Patient Based Measure");
+		patientBasedLabel.setFor("PatientBasedMeasureListBox");
+		patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
+		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
+		patientBasedInput.setStyleName("form-control");
+		patientBasedInput.setVisibleItemCount(1);
+		patientBasedInput.setWidth("18em");
+		patientBasedFormGrp.add(patientBasedLabel);
+		patientBasedFormGrp.add(patientBasedInput);
+		
+		FormGroup buttonFormGroup = new FormGroup();
+		buttonBar.getSaveButton().setText("Save and Continue");
+		buttonBar.getSaveButton().setTitle("Save and Continue");
+		buttonBar.getCancelButton().setTitle("Cancel");
+		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
+		buttonFormGroup.add(buttonBar);
+		
+		
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(measureNameGroup);
+		formFieldSet.add(shortNameGroup);
+		formFieldSet.add(scoringGroup);
+		formFieldSet.add(patientBasedFormGrp);
+		formFieldSet.add(buttonFormGroup);
+		createMeasureForm.add(formFieldSet);
+		fPanel.add(createMeasureForm);
+		mainPanel.add(fPanel);
+		
+		/*
 		FlowPanel leftPanel = new FlowPanel();
 		leftPanel.getElement().setId("leftPanel_FlowPanel");
-		fPanel.add(leftPanel);
+		fPanel.add(leftPanel);*/
 		
-		leftPanel.add(LabelBuilder.buildLabel(name, nameLabel));
+		/*leftPanel.add(LabelBuilder.buildLabel(name, nameLabel));
 		leftPanel.add(name);
 		name.getElement().setId("name_TextAreaWithMaxLength");
 		leftPanel.add(new SpacerWidget());
-		
-		
-		leftPanel.add(LabelBuilder.buildLabel(shortName, shortNameLabel));
-		leftPanel.add(shortName);
-		shortName.getElement().setId("shortName_TextBox");
-		leftPanel.add(new SpacerWidget());
+		*/
+		//leftPanel.add(LabelBuilder.buildLabel(shortName, shortNameLabel));
+		//leftPanel.add(shortName);
+		/*shortName.getElement().setId("shortName_TextBox");
+		shortName.setWidth("18em");*/
+		/*leftPanel.add(new SpacerWidget());
 		//US 195 Adding Static Caution Message
 		HorizontalPanel hp = new HorizontalPanel();
 		leftPanel.getElement().setId("hp_HorizontalPanel");
-		hp.add(measScoringInput);
-		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
+		*/
+		/*measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
+		measScoringInput.setStyleName("form-control");
+		measScoringInput.setVisibleItemCount(1);
+		measScoringInput.setWidth("18em");
+		*/
+		/*hp.add(measScoringInput);
 		hp.add(new HTML("&nbsp;"));
 		hp.add(cautionMsgPlaceHolder);
 		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");
 		
 		//US 421. Measure scoring choice is now part of measure creation process.
-		leftPanel.add(LabelBuilder.buildLabel(measScoringInput, scoringLabel));
-		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
+		//leftPanel.add(LabelBuilder.buildLabel(measScoringInput, scoringLabel));
 		leftPanel.add(hp);
 		leftPanel.add(new SpacerWidget());
 			
 		leftPanel.add(buildPatientBasedMeasurePanel());
-
-		SimplePanel buttonPanel = new SimplePanel();
-		buttonPanel.getElement().setId("buttonPanel_SimplePanel");
-		buttonBar.getSaveButton().setText("Save and Continue");
+*/
+		//SimplePanel buttonPanel = new SimplePanel();
+		//buttonPanel.getElement().setId("buttonPanel_SimplePanel");
+		/*buttonBar.getSaveButton().setText("Save and Continue");
 		buttonBar.getSaveButton().setTitle("Save and Continue");
 		buttonBar.getCancelButton().setTitle("Cancel");
 		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
-		fPanel.add(buttonPanel);
-		mainPanel.add(fPanel);
+		fPanel.add(buttonPanel);*/
+		//shortName.setWidth("192px");
 		
-		shortName.setMaxLength(32);
-		shortName.setWidth("192px");
-		name.setMaxLength(500);
-		name.setWidth("400px");
+		
 	}
 
-	
+	/*@Override
+	public FormGroup getMeasureNameGroup() {
+		return measureNameGroup;
+	}
+
+	@Override	
+	public FormGroup getShortNameGroup() {
+		return shortNameGroup;
+	}
+
+	@Override
+	public FormGroup getScoringGroup() {
+		return scoringGroup;
+	}*/
+
+	/*@Override
+	public FormGroup getMessageFormGrp() {
+		return messageFormGrp;
+	}*/
+
+	/*@Override
+	public FormGroup getPatientBasedFormGrp() {
+		return patientBasedFormGrp;
+	}*/
+
+
 	/**
 	 * Builds the patient based measure panel.
 	 *
 	 * @return the vertical panel
 	 */
-	public VerticalPanel buildPatientBasedMeasurePanel(){
+	/*public VerticalPanel buildPatientBasedMeasurePanel(){
 		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
 		patientBasedMeasurePanel.getElement().setId("patientBasedMeasure_VerticalPanel");
 		HorizontalPanel radionButtonPanel = new HorizontalPanel();
@@ -179,11 +304,13 @@ public class ManageMeasureDetailView
 		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
 		
 		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
-		patientBasedInput.setWidth("147px");
+		patientBasedInput.setStyleName("form-control");
+		patientBasedInput.setVisibleItemCount(1);
+		patientBasedInput.setWidth("18em");
+		
 		patientBasedMeasurePanel.add(patientBasedInput);
 		patientBasedInput.addItem("No");
 		patientBasedInput.addItem("Yes");
-		
 		
 //		invisibleRadioYes = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoYes", "PatientBasedIndicatorchangedtoYes.");
 //		invisibleRadioNo = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoNo", "PatientBasedIndicatorchangedtoNo.");
@@ -207,7 +334,7 @@ public class ManageMeasureDetailView
 //		patientBasedMeasurePanel.add(invisibleRadioYes);
 		patientBasedMeasurePanel.add(new SpacerWidget());
 		return patientBasedMeasurePanel;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setMeasureName(java.lang.String)
@@ -361,6 +488,24 @@ public class ManageMeasureDetailView
 			cautionMsgPlaceHolder.setHTML("");
 		}
 	}
+
+
+	/**
+	 * Gets the yes patient based radio button
+	 */
+	/*@Override
+	public RadioButton getPatientBasedYesRadioButton() {
+		return radioBtnYes;
+	}
+
+
+	*//**
+	 * Gets the no patient based radio button
+	 *//*
+	@Override
+	public RadioButton getPatientBasedNoRadioButton() {
+		return radioBtnNo;
+	}*/
 	
 	@Override
 	public Label getInvisibleRadioAlertYes() {

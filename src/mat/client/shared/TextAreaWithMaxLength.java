@@ -1,8 +1,10 @@
 package mat.client.shared;
 
+import org.gwtbootstrap3.client.ui.TextArea;
+
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.TextArea;
+//import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * The Class TextAreaWithMaxLength.

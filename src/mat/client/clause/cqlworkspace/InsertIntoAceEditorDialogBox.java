@@ -397,8 +397,9 @@ public class InsertIntoAceEditorDialogBox {
 											itemNameToBeInserted = str[1];		
 										} 
 										sb = sb.append("\""); 
-										str[0] = str[0].substring(0, str[0].indexOf("("));
-										sb = sb.append(str[0]); 
+										itemNameToBeInserted = itemNameToBeInserted.substring(0, 
+												itemNameToBeInserted.indexOf("("));
+										sb = sb.append(itemNameToBeInserted); 
 										sb = sb.append("\"()");
 										itemNameToBeInserted = sb.toString(); 
 									}
@@ -841,7 +842,7 @@ public class InsertIntoAceEditorDialogBox {
 						}
 						
 						for (int j = 0; j < MatContext.get().getIncludedFuncNames().size(); j++) {
-							listAllItemNames.addItem(MatContext.get().getIncludedFuncNames().get(j));
+							listAllItemNames.addItem(MatContext.get().getIncludedFuncNames().get(j)+"()");
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();

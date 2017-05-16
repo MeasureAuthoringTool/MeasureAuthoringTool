@@ -145,9 +145,11 @@ public class ManageMeasureDetailView
 		measureNameLabel.setText("Name");
 		measureNameLabel.setTitle("Name");
 		measureNameLabel.setFor("NameTextArea");
+		measureNameLabel.setShowRequiredIndicator(true);
 		measureNameLabel.setId("NameTextArea_Id");
 		name.getElement().setId("name_TextAreaWithMaxLength");
 		name.setWidth("400px");
+		name.setHeight("50px");
 		name.setMaxLength(500);
 		measureNameGroup.add(measureNameLabel);
 		measureNameGroup.add(name);
@@ -156,6 +158,7 @@ public class ManageMeasureDetailView
 		shortNameLabel.setText("Abbreviated Name");
 		shortNameLabel.setTitle("Abbreviated Name");
 		shortNameLabel.setFor("ShortNameTextBox");
+		shortNameLabel.setShowRequiredIndicator(true);
 		shortNameLabel.setId("ShortNameTextBox_Id");
 		shortName.getElement().setId("shortName_TextBox");
 		shortName.setWidth("18em");
@@ -167,6 +170,7 @@ public class ManageMeasureDetailView
 		scoringLabel.setText("Measure Scoring");
 		scoringLabel.setTitle("Measure Scoring");
 		scoringLabel.setFor("MeasureScoringListBox");
+		scoringLabel.setShowRequiredIndicator(true);
 		scoringLabel.setId("MeasureScoringListBox");
 		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
 		measScoringInput.setStyleName("form-control");
@@ -188,6 +192,7 @@ public class ManageMeasureDetailView
 		patientBasedLabel.setText("Patient Based Measure");
 		patientBasedLabel.setTitle("Patient Based Measure");
 		patientBasedLabel.setFor("PatientBasedMeasureListBox");
+		patientBasedLabel.setShowRequiredIndicator(true);
 		patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
 		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
 		patientBasedInput.setStyleName("form-control");

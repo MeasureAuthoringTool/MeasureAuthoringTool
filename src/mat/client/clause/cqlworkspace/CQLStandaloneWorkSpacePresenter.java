@@ -479,8 +479,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					MatContext.get().setValuesets(allValuesets);
 					for (CQLQualityDataSetDTO valueset : allValuesets) {
 						// filtering out codes from valuesets list
-						if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8"))
+						if((valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8") 
+								|| (valueset.getType() !=null) && valueset.getType().equalsIgnoreCase("code"))){
 							continue;
+						}
 
 						appliedValueSetTableList.add(valueset);
 					}
@@ -2877,7 +2879,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								if(result.getCqlModel().getCodeList()!=null){
 									appliedCodeTableList.addAll(result.getCqlModel().getCodeList());	
 								}
-								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 								searchDisplay.getCqlLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
 								
 								if ((result.getCqlModel().getDefinitionList() != null)
@@ -3475,7 +3477,7 @@ private void addCodeSearchPanelHandlers() {
 								searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 								appliedCodeTableList.clear();
 								appliedCodeTableList.addAll(result.getCqlCodeList());
-								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 								//searchDisplay.buildCodes();
 								searchDisplay.getCodesView().buildCodesCellTable(
 										appliedCodeTableList,
@@ -3521,7 +3523,7 @@ private void addCodeSearchPanelHandlers() {
 					appliedCodeTableList.addAll(result.getCqlCodeList());
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
 							.checkForEditPermission());
-					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 					//getAppliedCodeList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
@@ -3553,7 +3555,7 @@ private void addCodeSearchPanelHandlers() {
 					appliedCodeTableList.addAll(result.getCqlModel().getCodeList());
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
 							.checkForEditPermission());
-					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 				}
 				
 				@Override

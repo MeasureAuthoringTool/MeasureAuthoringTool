@@ -2587,7 +2587,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
 							searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
-							searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+							searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 							searchDisplay.getCqlLeftNavBarPanelView().setAppliedCodeTableList(appliedCodeTableList);
 							if ((result.getCqlModel().getDefinitionList() != null)
 									&& (result.getCqlModel().getDefinitionList().size() > 0)) {
@@ -3839,7 +3839,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 								appliedCodeTableList.clear();
 								appliedCodeTableList.addAll(result.getCqlCodeList());
-								searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+								searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 								//searchDisplay.buildCodes();
 								searchDisplay.getCodesView().buildCodesCellTable(
 										appliedCodeTableList,
@@ -3885,12 +3885,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					appliedCodeTableList.clear();
 					appliedCodeTableList.addAll(result.getCqlCodeList());
-					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
-					//searchDisplay.buildCodes();
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 					searchDisplay.getCodesView().buildCodesCellTable(
 							appliedCodeTableList,
 							MatContext.get().getMeasureLockService().checkForEditPermission());
-					//getAppliedCodeList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
 					if(result.getFailureReason()==result.getDuplicateCode()){
@@ -4639,8 +4637,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					MatContext.get().setValuesets(allValuesets);
 					for(CQLQualityDataSetDTO valueset : allValuesets){
 						//filtering out codes from valuesets list
-						if (valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8")) 
+						//if ()
+						if((valueset.getOid().equals("419099009") || valueset.getOid().equals("21112-8") 
+								|| (valueset.getType() !=null) && valueset.getType().equalsIgnoreCase("code"))){
 							continue;
+						}
+							
 								
 						appliedValueSetTableList.add(valueset);
 					}
@@ -4705,7 +4707,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				public void onSuccess(CQLCodeWrapper result) {
 					appliedCodeTableList.clear();
 					appliedCodeTableList.addAll(result.getCqlCodeList());
-					searchDisplay.getCqlLeftNavBarPanelView().updateCodeMap(appliedCodeTableList);
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getMeasureLockService()
 							.checkForEditPermission());
 					
